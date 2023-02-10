@@ -22,7 +22,7 @@ pub mod stdint_intn_h {
     pub type int16_t = __int16_t;
     #[c2rust::src_loc = "26:1"]
     pub type int32_t = __int32_t;
-    use super::types_h::{__int8_t, __int16_t, __int32_t};
+    use super::types_h::{__int16_t, __int32_t, __int8_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
 pub mod stdint_uintn_h {
@@ -32,7 +32,7 @@ pub mod stdint_uintn_h {
     pub type uint16_t = __uint16_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint8_t, __uint16_t, __uint32_t};
+    use super::types_h::{__uint16_t, __uint32_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
 pub mod opus_types_h {
@@ -48,8 +48,8 @@ pub mod opus_types_h {
     pub type opus_int32 = int32_t;
     #[c2rust::src_loc = "56:4"]
     pub type opus_uint32 = uint32_t;
-    use super::stdint_intn_h::{int8_t, int16_t, int32_t};
-    use super::stdint_uintn_h::{uint8_t, uint16_t, uint32_t};
+    use super::stdint_intn_h::{int16_t, int32_t, int8_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:32"]
 pub mod resampler_structs_h {
@@ -79,14 +79,14 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int32, opus_int16};
+    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:32"]
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]
-    pub use core::arch::x86::{__m128, _mm_cvtss_si32, _mm_cvt_ss2si, _mm_set_ss};
+    pub use core::arch::x86::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
     #[cfg(target_arch = "x86_64")]
-    pub use core::arch::x86_64::{__m128, _mm_cvtss_si32, _mm_cvt_ss2si, _mm_set_ss};
+    pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
 pub mod structs_h {
@@ -246,7 +246,7 @@ pub mod structs_h {
         pub indices_LBRR: [SideInfoIndices; 3],
         pub pulses_LBRR: [[opus_int8; 320]; 3],
     }
-    use super::opus_types_h::{opus_int16, opus_int32, opus_uint8, opus_int8};
+    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:32"]
@@ -291,7 +291,7 @@ pub mod structs_FLP_h {
         pub GainsUnq_Q16: [opus_int32; 4],
         pub lastGainIndexPrev: opus_int8,
     }
-    use super::opus_types_h::{opus_int8, opus_int32};
+    use super::opus_types_h::{opus_int32, opus_int8};
     use super::structs_h::silk_encoder_state;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
@@ -299,11 +299,7 @@ pub mod SigProc_FIX_h {
     use super::opus_types_h::{opus_int16, opus_int32};
     extern "C" {
         #[c2rust::src_loc = "279:1"]
-        pub fn silk_A2NLSF(
-            NLSF: *mut opus_int16,
-            a_Q16: *mut opus_int32,
-            d: libc::c_int,
-        );
+        pub fn silk_A2NLSF(NLSF: *mut opus_int16, a_Q16: *mut opus_int32, d: libc::c_int);
         #[c2rust::src_loc = "286:1"]
         pub fn silk_NLSF2A(
             a_Q12: *mut opus_int16,
@@ -330,8 +326,8 @@ pub mod SigProc_FLP_h {
     pub unsafe extern "C" fn silk_float2int(x: libc::c_float) -> opus_int32 {
         return float2int(x);
     }
-    use super::opus_types_h::opus_int32;
     use super::float_cast_h::float2int;
+    use super::opus_types_h::opus_int32;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
 pub mod tables_h {
@@ -343,7 +339,7 @@ pub mod tables_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
-    use super::opus_types_h::{opus_int16, opus_int8, opus_int32};
+    use super::opus_types_h::{opus_int16, opus_int32, opus_int8};
     use super::structs_h::{silk_encoder_state, silk_nsq_state, SideInfoIndices};
     extern "C" {
         #[c2rust::src_loc = "211:1"]
@@ -413,32 +409,28 @@ pub mod define_h {
     #[c2rust::src_loc = "72:9"]
     pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
 }
-pub use self::types_h::{
-    __int8_t, __uint8_t, __int16_t, __uint16_t, __int32_t, __uint32_t,
-};
-pub use self::stdint_intn_h::{int8_t, int16_t, int32_t};
-pub use self::stdint_uintn_h::{uint8_t, uint16_t, uint32_t};
+pub use self::define_h::{LTP_ORDER, MAX_SHAPE_LPC_ORDER, TYPE_VOICED};
+pub use self::float_cast_h::float2int;
+use self::main_h::{silk_NSQ_c, silk_NSQ_del_dec_c, silk_process_NLSFs, silk_quant_LTP_gains};
 pub use self::opus_types_h::{
-    opus_int8, opus_uint8, opus_int16, opus_uint16, opus_int32, opus_uint32,
+    opus_int16, opus_int32, opus_int8, opus_uint16, opus_uint32, opus_uint8,
 };
 pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
+    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
+};
+pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
+pub use self::stdint_uintn_h::{uint16_t, uint32_t, uint8_t};
+pub use self::structs_FLP_h::{
+    silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
 };
 pub use self::structs_h::{
-    silk_nsq_state, silk_VAD_state, silk_LP_state, silk_NLSF_CB_struct, SideInfoIndices,
-    silk_encoder_state,
+    silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
+    SideInfoIndices,
 };
-pub use self::structs_FLP_h::{
-    silk_shape_state_FLP, silk_encoder_state_FLP, silk_encoder_control_FLP,
-};
-use self::SigProc_FIX_h::{silk_A2NLSF, silk_NLSF2A};
-pub use self::float_cast_h::float2int;
-pub use self::SigProc_FLP_h::silk_float2int;
 use self::tables_h::silk_LTPScales_table_Q14;
-use self::main_h::{
-    silk_quant_LTP_gains, silk_NSQ_c, silk_NSQ_del_dec_c, silk_process_NLSFs,
-};
-pub use self::define_h::{LTP_ORDER, MAX_SHAPE_LPC_ORDER, TYPE_VOICED};
+pub use self::types_h::{__int16_t, __int32_t, __int8_t, __uint16_t, __uint32_t, __uint8_t};
+use self::SigProc_FIX_h::{silk_A2NLSF, silk_NLSF2A};
+pub use self::SigProc_FLP_h::silk_float2int;
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn silk_A2NLSF_FLP(
@@ -468,10 +460,7 @@ pub unsafe extern "C" fn silk_NLSF2A_FLP(
     silk_NLSF2A(a_fix_Q12.as_mut_ptr(), NLSF_Q15, LPC_order, arch);
     i = 0 as libc::c_int;
     while i < LPC_order {
-        *pAR
-            .offset(
-                i as isize,
-            ) = a_fix_Q12[i as usize] as libc::c_float * (1.0f32 / 4096.0f32);
+        *pAR.offset(i as isize) = a_fix_Q12[i as usize] as libc::c_float * (1.0f32 / 4096.0f32);
         i += 1;
     }
 }
@@ -491,12 +480,8 @@ pub unsafe extern "C" fn silk_process_NLSFs_FLP(
     while j < 2 as libc::c_int {
         i = 0 as libc::c_int;
         while i < (*psEncC).predictLPCOrder {
-            (*PredCoef
-                .offset(
-                    j as isize,
-                ))[i
-                as usize] = PredCoef_Q12[j as usize][i as usize] as libc::c_float
-                * (1.0f32 / 4096.0f32);
+            (*PredCoef.offset(j as isize))[i as usize] =
+                PredCoef_Q12[j as usize][i as usize] as libc::c_float * (1.0f32 / 4096.0f32);
             i += 1;
         }
         j += 1;
@@ -528,59 +513,51 @@ pub unsafe extern "C" fn silk_NSQ_wrapper_FLP(
     while i < (*psEnc).sCmn.nb_subfr {
         j = 0 as libc::c_int;
         while j < (*psEnc).sCmn.shapingLPCOrder {
-            AR_Q13[(i * MAX_SHAPE_LPC_ORDER + j)
-                as usize] = silk_float2int(
-                (*psEncCtrl).AR[(i * MAX_SHAPE_LPC_ORDER + j) as usize] * 8192.0f32,
-            ) as opus_int16;
+            AR_Q13[(i * MAX_SHAPE_LPC_ORDER + j) as usize] =
+                silk_float2int((*psEncCtrl).AR[(i * MAX_SHAPE_LPC_ORDER + j) as usize] * 8192.0f32)
+                    as opus_int16;
             j += 1;
         }
         i += 1;
     }
     i = 0 as libc::c_int;
     while i < (*psEnc).sCmn.nb_subfr {
-        LF_shp_Q14[i
-            as usize] = ((silk_float2int((*psEncCtrl).LF_AR_shp[i as usize] * 16384.0f32)
-            as opus_uint32) << 16 as libc::c_int) as opus_int32
-            | silk_float2int((*psEncCtrl).LF_MA_shp[i as usize] * 16384.0f32)
-                as opus_uint16 as libc::c_int;
-        Tilt_Q14[i
-            as usize] = silk_float2int((*psEncCtrl).Tilt[i as usize] * 16384.0f32);
-        HarmShapeGain_Q14[i
-            as usize] = silk_float2int(
-            (*psEncCtrl).HarmShapeGain[i as usize] * 16384.0f32,
-        );
+        LF_shp_Q14[i as usize] = ((silk_float2int((*psEncCtrl).LF_AR_shp[i as usize] * 16384.0f32)
+            as opus_uint32)
+            << 16 as libc::c_int) as opus_int32
+            | silk_float2int((*psEncCtrl).LF_MA_shp[i as usize] * 16384.0f32) as opus_uint16
+                as libc::c_int;
+        Tilt_Q14[i as usize] = silk_float2int((*psEncCtrl).Tilt[i as usize] * 16384.0f32);
+        HarmShapeGain_Q14[i as usize] =
+            silk_float2int((*psEncCtrl).HarmShapeGain[i as usize] * 16384.0f32);
         i += 1;
     }
     Lambda_Q10 = silk_float2int((*psEncCtrl).Lambda * 1024.0f32);
     i = 0 as libc::c_int;
     while i < (*psEnc).sCmn.nb_subfr * LTP_ORDER {
-        LTPCoef_Q14[i
-            as usize] = silk_float2int((*psEncCtrl).LTPCoef[i as usize] * 16384.0f32)
-            as opus_int16;
+        LTPCoef_Q14[i as usize] =
+            silk_float2int((*psEncCtrl).LTPCoef[i as usize] * 16384.0f32) as opus_int16;
         i += 1;
     }
     j = 0 as libc::c_int;
     while j < 2 as libc::c_int {
         i = 0 as libc::c_int;
         while i < (*psEnc).sCmn.predictLPCOrder {
-            PredCoef_Q12[j
-                as usize][i
-                as usize] = silk_float2int(
-                (*psEncCtrl).PredCoef[j as usize][i as usize] * 4096.0f32,
-            ) as opus_int16;
+            PredCoef_Q12[j as usize][i as usize] =
+                silk_float2int((*psEncCtrl).PredCoef[j as usize][i as usize] * 4096.0f32)
+                    as opus_int16;
             i += 1;
         }
         j += 1;
     }
     i = 0 as libc::c_int;
     while i < (*psEnc).sCmn.nb_subfr {
-        Gains_Q16[i
-            as usize] = silk_float2int((*psEncCtrl).Gains[i as usize] * 65536.0f32);
+        Gains_Q16[i as usize] = silk_float2int((*psEncCtrl).Gains[i as usize] * 65536.0f32);
         i += 1;
     }
     if (*psIndices).signalType as libc::c_int == TYPE_VOICED {
-        LTP_scale_Q14 = silk_LTPScales_table_Q14[(*psIndices).LTP_scaleIndex as usize]
-            as libc::c_int;
+        LTP_scale_Q14 =
+            silk_LTPScales_table_Q14[(*psIndices).LTP_scaleIndex as usize] as libc::c_int;
     } else {
         LTP_scale_Q14 = 0 as libc::c_int;
     }
@@ -672,10 +649,7 @@ pub unsafe extern "C" fn silk_quant_LTP_gains_FLP(
     );
     i = 0 as libc::c_int;
     while i < nb_subfr * LTP_ORDER {
-        *B
-            .offset(
-                i as isize,
-            ) = B_Q14[i as usize] as libc::c_float * (1.0f32 / 16384.0f32);
+        *B.offset(i as isize) = B_Q14[i as usize] as libc::c_float * (1.0f32 / 16384.0f32);
         i += 1;
     }
     *pred_gain_dB = pred_gain_dB_Q7 as libc::c_float * (1.0f32 / 128.0f32);

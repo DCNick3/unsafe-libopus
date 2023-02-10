@@ -24,7 +24,7 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     #[c2rust::src_loc = "27:1"]
     pub type int64_t = __int64_t;
-    use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
+    use super::types_h::{__int16_t, __int32_t, __int64_t, __int8_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
 pub mod stdint_uintn_h {
@@ -32,7 +32,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint8_t, __uint32_t};
+    use super::types_h::{__uint32_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
 pub mod opus_types_h {
@@ -48,8 +48,8 @@ pub mod opus_types_h {
     pub type opus_uint32 = uint32_t;
     #[c2rust::src_loc = "57:4"]
     pub type opus_int64 = int64_t;
-    use super::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
+    use super::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
 pub mod structs_h {
@@ -98,17 +98,15 @@ pub mod main_h {
         );
     }
 }
-pub use self::types_h::{
-    __int8_t, __uint8_t, __int16_t, __int32_t, __uint32_t, __int64_t,
-};
-pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
-pub use self::stdint_uintn_h::{uint8_t, uint32_t};
-pub use self::opus_types_h::{
-    opus_int8, opus_uint8, opus_int16, opus_int32, opus_uint32, opus_int64,
-};
-pub use self::structs_h::silk_NLSF_CB_struct;
-use self::SigProc_FIX_h::silk_NLSF_stabilize;
 use self::main_h::silk_NLSF_unpack;
+pub use self::opus_types_h::{
+    opus_int16, opus_int32, opus_int64, opus_int8, opus_uint32, opus_uint8,
+};
+pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+pub use self::stdint_uintn_h::{uint32_t, uint8_t};
+pub use self::structs_h::silk_NLSF_CB_struct;
+pub use self::types_h::{__int16_t, __int32_t, __int64_t, __int8_t, __uint32_t, __uint8_t};
+use self::SigProc_FIX_h::silk_NLSF_stabilize;
 #[inline]
 #[c2rust::src_loc = "35:1"]
 unsafe extern "C" fn silk_NLSF_residual_dequant(
@@ -127,18 +125,17 @@ unsafe extern "C" fn silk_NLSF_residual_dequant(
         pred_Q10 = out_Q10 as opus_int16 as opus_int32
             * *pred_coef_Q8.offset(i as isize) as opus_int16 as opus_int32
             >> 8 as libc::c_int;
-        out_Q10 = ((*indices.offset(i as isize) as opus_uint32) << 10 as libc::c_int)
-            as opus_int32;
+        out_Q10 = ((*indices.offset(i as isize) as opus_uint32) << 10 as libc::c_int) as opus_int32;
         if out_Q10 > 0 as libc::c_int {
             out_Q10 = out_Q10
                 - (0.1f64
-                    * ((1 as libc::c_int as opus_int64) << 10 as libc::c_int)
-                        as libc::c_double + 0.5f64) as opus_int32;
+                    * ((1 as libc::c_int as opus_int64) << 10 as libc::c_int) as libc::c_double
+                    + 0.5f64) as opus_int32;
         } else if out_Q10 < 0 as libc::c_int {
             out_Q10 = out_Q10
                 + (0.1f64
-                    * ((1 as libc::c_int as opus_int64) << 10 as libc::c_int)
-                        as libc::c_double + 0.5f64) as opus_int32;
+                    * ((1 as libc::c_int as opus_int64) << 10 as libc::c_int) as libc::c_double
+                    + 0.5f64) as opus_int32;
         }
         out_Q10 = (pred_Q10 as libc::c_long
             + (out_Q10 as libc::c_long * quant_step_size_Q16 as opus_int16 as opus_int64
@@ -169,33 +166,27 @@ pub unsafe extern "C" fn silk_NLSF_decode(
     );
     silk_NLSF_residual_dequant(
         res_Q10.as_mut_ptr(),
-        &mut *NLSFIndices.offset(1 as libc::c_int as isize) as *mut opus_int8
-            as *const opus_int8,
+        &mut *NLSFIndices.offset(1 as libc::c_int as isize) as *mut opus_int8 as *const opus_int8,
         pred_Q8.as_mut_ptr() as *const opus_uint8,
         (*psNLSF_CB).quantStepSize_Q16 as libc::c_int,
         (*psNLSF_CB).order,
     );
-    pCB_element = &*((*psNLSF_CB).CB1_NLSF_Q8)
-        .offset(
-            (*NLSFIndices.offset(0 as libc::c_int as isize) as libc::c_int
-                * (*psNLSF_CB).order as libc::c_int) as isize,
-        ) as *const opus_uint8;
-    pCB_Wght_Q9 = &*((*psNLSF_CB).CB1_Wght_Q9)
-        .offset(
-            (*NLSFIndices.offset(0 as libc::c_int as isize) as libc::c_int
-                * (*psNLSF_CB).order as libc::c_int) as isize,
-        ) as *const opus_int16;
+    pCB_element = &*((*psNLSF_CB).CB1_NLSF_Q8).offset(
+        (*NLSFIndices.offset(0 as libc::c_int as isize) as libc::c_int
+            * (*psNLSF_CB).order as libc::c_int) as isize,
+    ) as *const opus_uint8;
+    pCB_Wght_Q9 = &*((*psNLSF_CB).CB1_Wght_Q9).offset(
+        (*NLSFIndices.offset(0 as libc::c_int as isize) as libc::c_int
+            * (*psNLSF_CB).order as libc::c_int) as isize,
+    ) as *const opus_int16;
     i = 0 as libc::c_int;
     while i < (*psNLSF_CB).order as libc::c_int {
-        NLSF_Q15_tmp = ((res_Q10[i as usize] as opus_int32 as opus_uint32)
-            << 14 as libc::c_int) as opus_int32
+        NLSF_Q15_tmp = ((res_Q10[i as usize] as opus_int32 as opus_uint32) << 14 as libc::c_int)
+            as opus_int32
             / *pCB_Wght_Q9.offset(i as isize) as libc::c_int
-            + ((*pCB_element.offset(i as isize) as opus_int16 as opus_uint32)
-                << 7 as libc::c_int) as opus_int32;
-        *pNLSF_Q15
-            .offset(
-                i as isize,
-            ) = (if 0 as libc::c_int > 32767 as libc::c_int {
+            + ((*pCB_element.offset(i as isize) as opus_int16 as opus_uint32) << 7 as libc::c_int)
+                as opus_int32;
+        *pNLSF_Q15.offset(i as isize) = (if 0 as libc::c_int > 32767 as libc::c_int {
             if NLSF_Q15_tmp > 0 as libc::c_int {
                 0 as libc::c_int
             } else if NLSF_Q15_tmp < 32767 as libc::c_int {

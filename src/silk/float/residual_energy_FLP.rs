@@ -32,10 +32,8 @@ pub mod main_FLP_h {
 pub mod SigProc_FLP_h {
     extern "C" {
         #[c2rust::src_loc = "134:1"]
-        pub fn silk_energy_FLP(
-            data: *const libc::c_float,
-            dataSize: libc::c_int,
-        ) -> libc::c_double;
+        pub fn silk_energy_FLP(data: *const libc::c_float, dataSize: libc::c_int)
+            -> libc::c_double;
     }
 }
 use self::arch_h::celt_fatal;
@@ -89,10 +87,8 @@ pub unsafe extern "C" fn silk_residual_energy_covar_FLP(
                 tmp += *wXX.offset((i + D * j) as isize) * *c.offset(j as isize);
                 j += 1;
             }
-            nrg
-                += *c.offset(i as isize)
-                    * (2.0f32 * tmp
-                        + *wXX.offset((i + D * i) as isize) * *c.offset(i as isize));
+            nrg += *c.offset(i as isize)
+                * (2.0f32 * tmp + *wXX.offset((i + D * i) as isize) * *c.offset(i as isize));
             i += 1;
         }
         if nrg > 0 as libc::c_int as libc::c_float {
@@ -134,20 +130,16 @@ pub unsafe extern "C" fn silk_residual_energy_FLP(
         2 as libc::c_int * shift,
         LPC_order,
     );
-    *nrgs
-        .offset(
-            0 as libc::c_int as isize,
-        ) = ((*gains.offset(0 as libc::c_int as isize)
-        * *gains.offset(0 as libc::c_int as isize)) as libc::c_double
+    *nrgs.offset(0 as libc::c_int as isize) = ((*gains.offset(0 as libc::c_int as isize)
+        * *gains.offset(0 as libc::c_int as isize))
+        as libc::c_double
         * silk_energy_FLP(
             LPC_res_ptr.offset((0 as libc::c_int * shift) as isize),
             subfr_length,
         )) as libc::c_float;
-    *nrgs
-        .offset(
-            1 as libc::c_int as isize,
-        ) = ((*gains.offset(1 as libc::c_int as isize)
-        * *gains.offset(1 as libc::c_int as isize)) as libc::c_double
+    *nrgs.offset(1 as libc::c_int as isize) = ((*gains.offset(1 as libc::c_int as isize)
+        * *gains.offset(1 as libc::c_int as isize))
+        as libc::c_double
         * silk_energy_FLP(
             LPC_res_ptr.offset((1 as libc::c_int * shift) as isize),
             subfr_length,
@@ -160,20 +152,16 @@ pub unsafe extern "C" fn silk_residual_energy_FLP(
             2 as libc::c_int * shift,
             LPC_order,
         );
-        *nrgs
-            .offset(
-                2 as libc::c_int as isize,
-            ) = ((*gains.offset(2 as libc::c_int as isize)
-            * *gains.offset(2 as libc::c_int as isize)) as libc::c_double
+        *nrgs.offset(2 as libc::c_int as isize) = ((*gains.offset(2 as libc::c_int as isize)
+            * *gains.offset(2 as libc::c_int as isize))
+            as libc::c_double
             * silk_energy_FLP(
                 LPC_res_ptr.offset((0 as libc::c_int * shift) as isize),
                 subfr_length,
             )) as libc::c_float;
-        *nrgs
-            .offset(
-                3 as libc::c_int as isize,
-            ) = ((*gains.offset(3 as libc::c_int as isize)
-            * *gains.offset(3 as libc::c_int as isize)) as libc::c_double
+        *nrgs.offset(3 as libc::c_int as isize) = ((*gains.offset(3 as libc::c_int as isize)
+            * *gains.offset(3 as libc::c_int as isize))
+            as libc::c_double
             * silk_energy_FLP(
                 LPC_res_ptr.offset((1 as libc::c_int * shift) as isize),
                 subfr_length,

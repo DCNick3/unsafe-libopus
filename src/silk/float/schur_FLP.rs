@@ -34,12 +34,8 @@ pub unsafe extern "C" fn silk_schur_FLP(
     }
     k = 0 as libc::c_int;
     loop {
-        C[k
-            as usize][1 as libc::c_int
-            as usize] = *auto_corr.offset(k as isize) as libc::c_double;
-        C[k
-            as usize][0 as libc::c_int
-            as usize] = C[k as usize][1 as libc::c_int as usize];
+        C[k as usize][1 as libc::c_int as usize] = *auto_corr.offset(k as isize) as libc::c_double;
+        C[k as usize][0 as libc::c_int as usize] = C[k as usize][1 as libc::c_int as usize];
         k += 1;
         if !(k <= order) {
             break;
@@ -60,8 +56,8 @@ pub unsafe extern "C" fn silk_schur_FLP(
         while n < order - k {
             Ctmp1 = C[(n + k + 1 as libc::c_int) as usize][0 as libc::c_int as usize];
             Ctmp2 = C[n as usize][1 as libc::c_int as usize];
-            C[(n + k + 1 as libc::c_int)
-                as usize][0 as libc::c_int as usize] = Ctmp1 + Ctmp2 * rc_tmp;
+            C[(n + k + 1 as libc::c_int) as usize][0 as libc::c_int as usize] =
+                Ctmp1 + Ctmp2 * rc_tmp;
             C[n as usize][1 as libc::c_int as usize] = Ctmp2 + Ctmp1 * rc_tmp;
             n += 1;
         }

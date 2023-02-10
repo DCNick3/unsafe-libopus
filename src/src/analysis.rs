@@ -16,7 +16,7 @@ pub mod stdint_intn_h {
     pub type int16_t = __int16_t;
     #[c2rust::src_loc = "26:1"]
     pub type int32_t = __int32_t;
-    use super::types_h::{__int8_t, __int16_t, __int32_t};
+    use super::types_h::{__int16_t, __int32_t, __int8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:36"]
 pub mod opus_types_h {
@@ -26,7 +26,7 @@ pub mod opus_types_h {
     pub type opus_int16 = int16_t;
     #[c2rust::src_loc = "55:4"]
     pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::{int8_t, int16_t, int32_t};
+    use super::stdint_intn_h::{int16_t, int32_t, int8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:36"]
 pub mod arch_h {
@@ -122,9 +122,9 @@ pub mod modes_h {
         pub bits: *const libc::c_uchar,
         pub caps: *const libc::c_uchar,
     }
-    use super::opus_types_h::{opus_int32, opus_int16};
     use super::arch_h::opus_val16;
     use super::mdct_h::mdct_lookup;
+    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:39"]
 pub mod mdct_h {
@@ -164,7 +164,7 @@ pub mod celt_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/opus_private.h:42"]
 pub mod opus_private_h {
     #[c2rust::src_loc = "135:1"]
-    pub type downmix_func = Option::<
+    pub type downmix_func = Option<
         unsafe extern "C" fn(
             *const libc::c_void,
             *mut opus_val32,
@@ -175,7 +175,7 @@ pub mod opus_private_h {
             libc::c_int,
         ) -> (),
     >;
-    use super::arch_h::{opus_val32, opus_val16};
+    use super::arch_h::{opus_val16, opus_val32};
     extern "C" {
         #[c2rust::src_loc = "138:1"]
         pub fn is_digital_silence(
@@ -277,16 +277,16 @@ pub mod analysis_h {
     pub const NB_FRAMES: libc::c_int = 8 as libc::c_int;
     #[c2rust::src_loc = "36:9"]
     pub const NB_TBANDS: libc::c_int = 18 as libc::c_int;
-    use super::opus_types_h::opus_int32;
     use super::arch_h::opus_val32;
     use super::celt_h::AnalysisInfo;
+    use super::opus_types_h::opus_int32;
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:45"]
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]
-    pub use core::arch::x86::{__m128, _mm_set_ss, _mm_cvt_ss2si, _mm_cvtss_si32};
+    pub use core::arch::x86::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
     #[cfg(target_arch = "x86_64")]
-    pub use core::arch::x86_64::{__m128, _mm_set_ss, _mm_cvt_ss2si, _mm_cvtss_si32};
+    pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:34"]
 pub mod stddef_h {
@@ -329,21 +329,14 @@ pub mod string_h {
             _: libc::c_ulong,
         ) -> *mut libc::c_void;
         #[c2rust::src_loc = "61:14"]
-        pub fn memset(
-            _: *mut libc::c_void,
-            _: libc::c_int,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
+        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.h:36"]
 pub mod mathops_h {
     #[inline]
     #[c2rust::src_loc = "54:1"]
-    pub unsafe extern "C" fn fast_atan2f(
-        y: libc::c_float,
-        x: libc::c_float,
-    ) -> libc::c_float {
+    pub unsafe extern "C" fn fast_atan2f(y: libc::c_float, x: libc::c_float) -> libc::c_float {
         let mut x2: libc::c_float = 0.;
         let mut y2: libc::c_float = 0.;
         x2 = x * x;
@@ -354,12 +347,24 @@ pub mod mathops_h {
         if x2 < y2 {
             let den: libc::c_float = (y2 + cB * x2) * (y2 + cC * x2);
             return -x * y * (y2 + cA * x2) / den
-                + (if y < 0 as libc::c_int as libc::c_float { -cE } else { cE });
+                + (if y < 0 as libc::c_int as libc::c_float {
+                    -cE
+                } else {
+                    cE
+                });
         } else {
             let den_0: libc::c_float = (x2 + cB * y2) * (x2 + cC * y2);
             return x * y * (x2 + cA * y2) / den_0
-                + (if y < 0 as libc::c_int as libc::c_float { -cE } else { cE })
-                - (if x * y < 0 as libc::c_int as libc::c_float { -cE } else { cE });
+                + (if y < 0 as libc::c_int as libc::c_float {
+                    -cE
+                } else {
+                    cE
+                })
+                - (if x * y < 0 as libc::c_int as libc::c_float {
+                    -cE
+                } else {
+                    cE
+                });
         };
     }
     #[c2rust::src_loc = "41:9"]
@@ -391,30 +396,28 @@ pub mod float_cast_h {
     use super::opus_types_h::opus_int32;
     use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
 }
-pub use self::types_h::{__int8_t, __int16_t, __int32_t};
-pub use self::stdint_intn_h::{int8_t, int16_t, int32_t};
-pub use self::opus_types_h::{opus_int8, opus_int16, opus_int32};
-pub use self::arch_h::{opus_val16, opus_val32, opus_val64, celt_fatal};
-pub use self::kiss_fft_h::{
-    kiss_fft_cpx, kiss_twiddle_cpx, arch_fft_state, kiss_fft_state, opus_fft_c,
-};
-pub use self::modes_h::{OpusCustomMode, PulseCache};
-pub use self::mdct_h::mdct_lookup;
-pub use self::celt_h::{AnalysisInfo, LEAK_BANDS};
-pub use self::opus_private_h::{downmix_func, is_digital_silence};
-pub use self::mlp_h::{
-    DenseLayer, GRULayer, layer0, layer1, layer2, compute_dense, compute_gru,
-};
 pub use self::analysis_h::{
     TonalityAnalysisState, ANALYSIS_BUF_SIZE, DETECT_SIZE, NB_FRAMES, NB_TBANDS,
 };
-pub use self::stddef_h::NULL;
-pub use self::math_h::M_PI;
-use self::mathcalls_h::{log, log10, sqrt, fabs, floor};
-use self::string_h::{memcpy, memmove, memset};
-pub use self::mathops_h::{fast_atan2f, PI, cE, cC, cB, cA};
+pub use self::arch_h::{celt_fatal, opus_val16, opus_val32, opus_val64};
+pub use self::celt_h::{AnalysisInfo, LEAK_BANDS};
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::float_cast_h::float2int;
+pub use self::kiss_fft_h::{
+    arch_fft_state, kiss_fft_cpx, kiss_fft_state, kiss_twiddle_cpx, opus_fft_c,
+};
+pub use self::math_h::M_PI;
+use self::mathcalls_h::{fabs, floor, log, log10, sqrt};
+pub use self::mathops_h::{cA, cB, cC, cE, fast_atan2f, PI};
+pub use self::mdct_h::mdct_lookup;
+pub use self::mlp_h::{compute_dense, compute_gru, layer0, layer1, layer2, DenseLayer, GRULayer};
+pub use self::modes_h::{OpusCustomMode, PulseCache};
+pub use self::opus_private_h::{downmix_func, is_digital_silence};
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_int8};
+pub use self::stddef_h::NULL;
+pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
+use self::string_h::{memcpy, memmove, memset};
+pub use self::types_h::{__int16_t, __int32_t, __int8_t};
 #[c2rust::src_loc = "55:20"]
 static mut dct_table: [libc::c_float; 128] = [
     0.250000f32,
@@ -880,11 +883,8 @@ unsafe extern "C" fn downmix_and_resample(
         offset = offset * 2 as libc::c_int / 3 as libc::c_int;
     }
     let vla = subframe as usize;
-    let mut tmp: Vec::<opus_val32> = ::std::vec::from_elem(0., vla);
-    downmix
-        .expect(
-            "non-null function pointer",
-        )(_x, tmp.as_mut_ptr(), subframe, offset, c1, c2, C);
+    let mut tmp: Vec<opus_val32> = ::std::vec::from_elem(0., vla);
+    downmix.expect("non-null function pointer")(_x, tmp.as_mut_ptr(), subframe, offset, c1, c2, C);
     scale = 1.0f32 / 32768 as libc::c_int as libc::c_float;
     if c2 == -(2 as libc::c_int) {
         scale /= C as libc::c_float;
@@ -913,24 +913,19 @@ unsafe extern "C" fn downmix_and_resample(
         );
     } else if Fs == 16000 as libc::c_int {
         let vla_0 = (3 as libc::c_int * subframe) as usize;
-        let mut tmp3x: Vec::<opus_val32> = ::std::vec::from_elem(0., vla_0);
+        let mut tmp3x: Vec<opus_val32> = ::std::vec::from_elem(0., vla_0);
         j = 0 as libc::c_int;
         while j < subframe {
+            *tmp3x.as_mut_ptr().offset((3 as libc::c_int * j) as isize) =
+                *tmp.as_mut_ptr().offset(j as isize);
             *tmp3x
                 .as_mut_ptr()
-                .offset(
-                    (3 as libc::c_int * j) as isize,
-                ) = *tmp.as_mut_ptr().offset(j as isize);
+                .offset((3 as libc::c_int * j + 1 as libc::c_int) as isize) =
+                *tmp.as_mut_ptr().offset(j as isize);
             *tmp3x
                 .as_mut_ptr()
-                .offset(
-                    (3 as libc::c_int * j + 1 as libc::c_int) as isize,
-                ) = *tmp.as_mut_ptr().offset(j as isize);
-            *tmp3x
-                .as_mut_ptr()
-                .offset(
-                    (3 as libc::c_int * j + 2 as libc::c_int) as isize,
-                ) = *tmp.as_mut_ptr().offset(j as isize);
+                .offset((3 as libc::c_int * j + 2 as libc::c_int) as isize) =
+                *tmp.as_mut_ptr().offset(j as isize);
             j += 1;
         }
         silk_resampler_down2_hp(S, y, tmp3x.as_mut_ptr(), 3 as libc::c_int * subframe);
@@ -950,15 +945,14 @@ pub unsafe extern "C" fn tonality_analysis_init(
 #[no_mangle]
 #[c2rust::src_loc = "224:1"]
 pub unsafe extern "C" fn tonality_analysis_reset(tonal: *mut TonalityAnalysisState) {
-    let start: *mut libc::c_char = &mut (*tonal).angle as *mut [libc::c_float; 240]
-        as *mut libc::c_char;
+    let start: *mut libc::c_char =
+        &mut (*tonal).angle as *mut [libc::c_float; 240] as *mut libc::c_char;
     memset(
         start as *mut libc::c_void,
         0 as libc::c_int,
         (::core::mem::size_of::<TonalityAnalysisState>() as libc::c_ulong)
             .wrapping_sub(
-                start.offset_from(tonal as *mut libc::c_char) as libc::c_long
-                    as libc::c_ulong,
+                start.offset_from(tonal as *mut libc::c_char) as libc::c_long as libc::c_ulong,
             )
             .wrapping_mul(::core::mem::size_of::<libc::c_char>() as libc::c_ulong),
     );
@@ -1019,10 +1013,8 @@ pub unsafe extern "C" fn tonality_get_info(
             .wrapping_mul(::core::mem::size_of::<AnalysisInfo>() as libc::c_ulong)
             .wrapping_add(
                 (0 as libc::c_int as libc::c_long
-                    * info_out
-                        .offset_from(
-                            &mut *((*tonal).info).as_mut_ptr().offset(pos as isize),
-                        ) as libc::c_long) as libc::c_ulong,
+                    * info_out.offset_from(&mut *((*tonal).info).as_mut_ptr().offset(pos as isize))
+                        as libc::c_long) as libc::c_ulong,
             ),
     );
     if (*info_out).valid == 0 {
@@ -1048,9 +1040,7 @@ pub unsafe extern "C" fn tonality_get_info(
         };
         tonality_avg += (*tonal).info[pos as usize].tonality;
         tonality_count += 1;
-        (*info_out)
-            .bandwidth = if (*info_out).bandwidth > (*tonal).info[pos as usize].bandwidth
-        {
+        (*info_out).bandwidth = if (*info_out).bandwidth > (*tonal).info[pos as usize].bandwidth {
             (*info_out).bandwidth
         } else {
             (*tonal).info[pos as usize].bandwidth
@@ -1068,18 +1058,14 @@ pub unsafe extern "C" fn tonality_get_info(
         if pos == (*tonal).write_pos {
             break;
         }
-        (*info_out)
-            .bandwidth = if (*info_out).bandwidth > (*tonal).info[pos as usize].bandwidth
-        {
+        (*info_out).bandwidth = if (*info_out).bandwidth > (*tonal).info[pos as usize].bandwidth {
             (*info_out).bandwidth
         } else {
             (*tonal).info[pos as usize].bandwidth
         };
         i += 1;
     }
-    (*info_out)
-        .tonality = if tonality_avg / tonality_count as libc::c_float
-        > tonality_max - 0.2f32
+    (*info_out).tonality = if tonality_avg / tonality_count as libc::c_float > tonality_max - 0.2f32
     {
         tonality_avg / tonality_count as libc::c_float
     } else {
@@ -1120,28 +1106,25 @@ pub unsafe extern "C" fn tonality_get_info(
             break;
         }
         pos_vad = (*tonal).info[vpos as usize].activity_probability;
-        prob_min = if (prob_avg
-            - 10 as libc::c_int as libc::c_float * (vad_prob - pos_vad)) / prob_count
+        prob_min = if (prob_avg - 10 as libc::c_int as libc::c_float * (vad_prob - pos_vad))
+            / prob_count
             < prob_min
         {
-            (prob_avg - 10 as libc::c_int as libc::c_float * (vad_prob - pos_vad))
-                / prob_count
+            (prob_avg - 10 as libc::c_int as libc::c_float * (vad_prob - pos_vad)) / prob_count
         } else {
             prob_min
         };
-        prob_max = if (prob_avg
-            + 10 as libc::c_int as libc::c_float * (vad_prob - pos_vad)) / prob_count
+        prob_max = if (prob_avg + 10 as libc::c_int as libc::c_float * (vad_prob - pos_vad))
+            / prob_count
             > prob_max
         {
-            (prob_avg + 10 as libc::c_int as libc::c_float * (vad_prob - pos_vad))
-                / prob_count
+            (prob_avg + 10 as libc::c_int as libc::c_float * (vad_prob - pos_vad)) / prob_count
         } else {
             prob_max
         };
         prob_count += if 0.1f32 > pos_vad { 0.1f32 } else { pos_vad };
-        prob_avg
-            += (if 0.1f32 > pos_vad { 0.1f32 } else { pos_vad })
-                * (*tonal).info[mpos as usize].music_prob;
+        prob_avg += (if 0.1f32 > pos_vad { 0.1f32 } else { pos_vad })
+            * (*tonal).info[mpos as usize].music_prob;
     }
     (*info_out).music_prob = prob_avg / prob_count;
     prob_min = if prob_avg / prob_count < prob_min {
@@ -1196,10 +1179,8 @@ pub unsafe extern "C" fn tonality_get_info(
         } else {
             pmax + 0.1f32 * vad_prob
         };
-        prob_min
-            += (1.0f32 - 0.1f32 * curr_lookahead as libc::c_float) * (pmin - prob_min);
-        prob_max
-            += (1.0f32 - 0.1f32 * curr_lookahead as libc::c_float) * (pmax - prob_max);
+        prob_min += (1.0f32 - 0.1f32 * curr_lookahead as libc::c_float) * (pmin - prob_min);
+        prob_max += (1.0f32 - 0.1f32 * curr_lookahead as libc::c_float) * (pmax - prob_max);
     }
     (*info_out).music_prob_min = prob_min;
     (*info_out).music_prob_max = prob_max;
@@ -1308,23 +1289,24 @@ unsafe extern "C" fn tonality_analysis(
         offset = 3 as libc::c_int * offset / 2 as libc::c_int;
     }
     kfft = (*celt_mode).mdct.kfft[0 as libc::c_int as usize];
-    (*tonal).hp_ener_accum
-        += downmix_and_resample(
-            downmix,
-            x,
-            &mut *((*tonal).inmem).as_mut_ptr().offset((*tonal).mem_fill as isize),
-            ((*tonal).downmix_state).as_mut_ptr(),
-            if len < 720 as libc::c_int - (*tonal).mem_fill {
-                len
-            } else {
-                720 as libc::c_int - (*tonal).mem_fill
-            },
-            offset,
-            c1,
-            c2,
-            C,
-            (*tonal).Fs,
-        );
+    (*tonal).hp_ener_accum += downmix_and_resample(
+        downmix,
+        x,
+        &mut *((*tonal).inmem)
+            .as_mut_ptr()
+            .offset((*tonal).mem_fill as isize),
+        ((*tonal).downmix_state).as_mut_ptr(),
+        if len < 720 as libc::c_int - (*tonal).mem_fill {
+            len
+        } else {
+            720 as libc::c_int - (*tonal).mem_fill
+        },
+        offset,
+        c1,
+        c2,
+        C,
+        (*tonal).Fs,
+    );
     if (*tonal).mem_fill + len < ANALYSIS_BUF_SIZE {
         (*tonal).mem_fill += len;
         return;
@@ -1332,8 +1314,7 @@ unsafe extern "C" fn tonality_analysis(
     hp_ener = (*tonal).hp_ener_accum;
     let fresh1 = (*tonal).write_pos;
     (*tonal).write_pos = (*tonal).write_pos + 1;
-    info = &mut *((*tonal).info).as_mut_ptr().offset(fresh1 as isize)
-        as *mut AnalysisInfo;
+    info = &mut *((*tonal).info).as_mut_ptr().offset(fresh1 as isize) as *mut AnalysisInfo;
     if (*tonal).write_pos >= DETECT_SIZE {
         (*tonal).write_pos -= DETECT_SIZE;
     }
@@ -1352,10 +1333,10 @@ unsafe extern "C" fn tonality_analysis(
         let w: libc::c_float = analysis_window[i as usize];
         in_0[i as usize].r = w * (*tonal).inmem[i as usize];
         in_0[i as usize].i = w * (*tonal).inmem[(N2 + i) as usize];
-        in_0[(N - i - 1 as libc::c_int) as usize]
-            .r = w * (*tonal).inmem[(N - i - 1 as libc::c_int) as usize];
-        in_0[(N - i - 1 as libc::c_int) as usize]
-            .i = w * (*tonal).inmem[(N + N2 - i - 1 as libc::c_int) as usize];
+        in_0[(N - i - 1 as libc::c_int) as usize].r =
+            w * (*tonal).inmem[(N - i - 1 as libc::c_int) as usize];
+        in_0[(N - i - 1 as libc::c_int) as usize].i =
+            w * (*tonal).inmem[(N + N2 - i - 1 as libc::c_int) as usize];
         i += 1;
     }
     memmove(
@@ -1368,22 +1349,21 @@ unsafe extern "C" fn tonality_analysis(
             .wrapping_mul(::core::mem::size_of::<opus_val32>() as libc::c_ulong)
             .wrapping_add(
                 (0 as libc::c_int as libc::c_long
-                    * ((*tonal).inmem)
-                        .as_mut_ptr()
-                        .offset_from(
-                            ((*tonal).inmem)
-                                .as_mut_ptr()
-                                .offset(720 as libc::c_int as isize)
-                                .offset(-(240 as libc::c_int as isize)),
-                        ) as libc::c_long) as libc::c_ulong,
+                    * ((*tonal).inmem).as_mut_ptr().offset_from(
+                        ((*tonal).inmem)
+                            .as_mut_ptr()
+                            .offset(720 as libc::c_int as isize)
+                            .offset(-(240 as libc::c_int as isize)),
+                    ) as libc::c_long) as libc::c_ulong,
             ),
     );
     remaining = len - (ANALYSIS_BUF_SIZE - (*tonal).mem_fill);
-    (*tonal)
-        .hp_ener_accum = downmix_and_resample(
+    (*tonal).hp_ener_accum = downmix_and_resample(
         downmix,
         x,
-        &mut *((*tonal).inmem).as_mut_ptr().offset(240 as libc::c_int as isize),
+        &mut *((*tonal).inmem)
+            .as_mut_ptr()
+            .offset(240 as libc::c_int as isize),
         ((*tonal).downmix_state).as_mut_ptr(),
         remaining,
         offset + ANALYSIS_BUF_SIZE - (*tonal).mem_fill,
@@ -1400,16 +1380,15 @@ unsafe extern "C" fn tonality_analysis(
         }
         memcpy(
             info as *mut libc::c_void,
-            &mut *((*tonal).info).as_mut_ptr().offset(prev_pos as isize)
-                as *mut AnalysisInfo as *const libc::c_void,
+            &mut *((*tonal).info).as_mut_ptr().offset(prev_pos as isize) as *mut AnalysisInfo
+                as *const libc::c_void,
             (1 as libc::c_int as libc::c_ulong)
                 .wrapping_mul(::core::mem::size_of::<AnalysisInfo>() as libc::c_ulong)
                 .wrapping_add(
                     (0 as libc::c_int as libc::c_long
-                        * info
-                            .offset_from(
-                                &mut *((*tonal).info).as_mut_ptr().offset(prev_pos as isize),
-                            ) as libc::c_long) as libc::c_ulong,
+                        * info.offset_from(
+                            &mut *((*tonal).info).as_mut_ptr().offset(prev_pos as isize),
+                        ) as libc::c_long) as libc::c_ulong,
                 ),
         );
         return;
@@ -1438,12 +1417,10 @@ unsafe extern "C" fn tonality_analysis(
         X1i = out[i as usize].i - out[(N - i) as usize].i;
         X2r = out[i as usize].i + out[(N - i) as usize].i;
         X2i = out[(N - i) as usize].r - out[i as usize].r;
-        angle = (0.5f32 as libc::c_double / M_PI) as libc::c_float
-            * fast_atan2f(X1i, X1r);
+        angle = (0.5f32 as libc::c_double / M_PI) as libc::c_float * fast_atan2f(X1i, X1r);
         d_angle = angle - *A.offset(i as isize);
         d2_angle = d_angle - *dA.offset(i as isize);
-        angle2 = (0.5f32 as libc::c_double / M_PI) as libc::c_float
-            * fast_atan2f(X2i, X2r);
+        angle2 = (0.5f32 as libc::c_double / M_PI) as libc::c_float * fast_atan2f(X2i, X2r);
         d_angle2 = angle2 - angle;
         d2_angle2 = d_angle2 - d_angle;
         mod1 = d2_angle - float2int(d2_angle) as libc::c_float;
@@ -1454,13 +1431,10 @@ unsafe extern "C" fn tonality_analysis(
         noisiness[i as usize] += fabs(mod2 as libc::c_double) as libc::c_float;
         mod2 *= mod2;
         mod2 *= mod2;
-        avg_mod = 0.25f32
-            * (*d2A.offset(i as isize) + mod1
-                + 2 as libc::c_int as libc::c_float * mod2);
-        tonality[i
-            as usize] = 1.0f32 / (1.0f32 + 40.0f32 * 16.0f32 * pi4 * avg_mod) - 0.015f32;
-        tonality2[i
-            as usize] = 1.0f32 / (1.0f32 + 40.0f32 * 16.0f32 * pi4 * mod2) - 0.015f32;
+        avg_mod =
+            0.25f32 * (*d2A.offset(i as isize) + mod1 + 2 as libc::c_int as libc::c_float * mod2);
+        tonality[i as usize] = 1.0f32 / (1.0f32 + 40.0f32 * 16.0f32 * pi4 * avg_mod) - 0.015f32;
+        tonality2[i as usize] = 1.0f32 / (1.0f32 + 40.0f32 * 16.0f32 * pi4 * mod2) - 0.015f32;
         *A.offset(i as isize) = angle2;
         *dA.offset(i as isize) = d_angle2;
         *d2A.offset(i as isize) = mod2;
@@ -1475,8 +1449,7 @@ unsafe extern "C" fn tonality_analysis(
                 tonality2[(i - 1 as libc::c_int) as usize]
             } else {
                 tonality2[(i + 1 as libc::c_int) as usize]
-            })
-        {
+            }) {
             tonality2[i as usize]
         } else if tonality2[(i - 1 as libc::c_int) as usize]
             > tonality2[(i + 1 as libc::c_int) as usize]
@@ -1485,8 +1458,7 @@ unsafe extern "C" fn tonality_analysis(
         } else {
             tonality2[(i + 1 as libc::c_int) as usize]
         };
-        tonality[i
-            as usize] = 0.9f32
+        tonality[i as usize] = 0.9f32
             * (if tonality[i as usize] > tt - 0.1f32 {
                 tonality[i as usize]
             } else {
@@ -1525,9 +1497,8 @@ unsafe extern "C" fn tonality_analysis(
         i += 1;
     }
     E = E;
-    band_log2[0 as libc::c_int
-        as usize] = 0.5f32 * 1.442695f32
-        * log((E + 1e-10f32) as libc::c_double) as libc::c_float;
+    band_log2[0 as libc::c_int as usize] =
+        0.5f32 * 1.442695f32 * log((E + 1e-10f32) as libc::c_double) as libc::c_float;
     b = 0 as libc::c_int;
     while b < NB_TBANDS {
         let mut E_0: libc::c_float = 0 as libc::c_int as libc::c_float;
@@ -1544,13 +1515,12 @@ unsafe extern "C" fn tonality_analysis(
                 + out[(N - i) as usize].i * out[(N - i) as usize].i;
             binE_0 = binE_0;
             E_0 += binE_0;
-            tE
-                += binE_0
-                    * (if 0 as libc::c_int as libc::c_float > tonality[i as usize] {
-                        0 as libc::c_int as libc::c_float
-                    } else {
-                        tonality[i as usize]
-                    });
+            tE += binE_0
+                * (if 0 as libc::c_int as libc::c_float > tonality[i as usize] {
+                    0 as libc::c_int as libc::c_float
+                } else {
+                    tonality[i as usize]
+                });
             nE += binE_0 * 2.0f32 * (0.5f32 - noisiness[i as usize]);
             i += 1;
         }
@@ -1562,9 +1532,8 @@ unsafe extern "C" fn tonality_analysis(
         frame_noisiness += nE / (1e-15f32 + E_0);
         frame_loudness += sqrt((E_0 + 1e-10f32) as libc::c_double) as libc::c_float;
         logE[b as usize] = log((E_0 + 1e-10f32) as libc::c_double) as libc::c_float;
-        band_log2[(b + 1 as libc::c_int)
-            as usize] = 0.5f32 * 1.442695f32
-            * log((E_0 + 1e-10f32) as libc::c_double) as libc::c_float;
+        band_log2[(b + 1 as libc::c_int) as usize] =
+            0.5f32 * 1.442695f32 * log((E_0 + 1e-10f32) as libc::c_double) as libc::c_float;
         (*tonal).logE[(*tonal).E_count as usize][b as usize] = logE[b as usize];
         if (*tonal).count == 0 as libc::c_int {
             (*tonal).lowE[b as usize] = logE[b as usize];
@@ -1583,10 +1552,9 @@ unsafe extern "C" fn tonality_analysis(
         }
         if logE[b as usize] > (*tonal).highE[b as usize] {
             (*tonal).highE[b as usize] = logE[b as usize];
-            (*tonal)
-                .lowE[b
-                as usize] = if (*tonal).highE[b as usize]
-                - 15 as libc::c_int as libc::c_float > (*tonal).lowE[b as usize]
+            (*tonal).lowE[b as usize] = if (*tonal).highE[b as usize]
+                - 15 as libc::c_int as libc::c_float
+                > (*tonal).lowE[b as usize]
             {
                 (*tonal).highE[b as usize] - 15 as libc::c_int as libc::c_float
             } else {
@@ -1594,89 +1562,72 @@ unsafe extern "C" fn tonality_analysis(
             };
         } else if logE[b as usize] < (*tonal).lowE[b as usize] {
             (*tonal).lowE[b as usize] = logE[b as usize];
-            (*tonal)
-                .highE[b
-                as usize] = if ((*tonal).lowE[b as usize]
-                + 15 as libc::c_int as libc::c_float) < (*tonal).highE[b as usize]
+            (*tonal).highE[b as usize] = if ((*tonal).lowE[b as usize]
+                + 15 as libc::c_int as libc::c_float)
+                < (*tonal).highE[b as usize]
             {
                 (*tonal).lowE[b as usize] + 15 as libc::c_int as libc::c_float
             } else {
                 (*tonal).highE[b as usize]
             };
         }
-        relativeE
-            += (logE[b as usize] - (*tonal).lowE[b as usize])
-                / (1e-5f32 + ((*tonal).highE[b as usize] - (*tonal).lowE[b as usize]));
+        relativeE += (logE[b as usize] - (*tonal).lowE[b as usize])
+            / (1e-5f32 + ((*tonal).highE[b as usize] - (*tonal).lowE[b as usize]));
         L2 = 0 as libc::c_int as libc::c_float;
         L1 = L2;
         i = 0 as libc::c_int;
         while i < NB_FRAMES {
-            L1
-                += sqrt((*tonal).E[i as usize][b as usize] as libc::c_double)
-                    as libc::c_float;
+            L1 += sqrt((*tonal).E[i as usize][b as usize] as libc::c_double) as libc::c_float;
             L2 += (*tonal).E[i as usize][b as usize];
             i += 1;
         }
         stationarity = if 0.99f32
-            < L1
-                / sqrt(
-                    1e-15f64 + (8 as libc::c_int as libc::c_float * L2) as libc::c_double,
-                ) as libc::c_float
+            < L1 / sqrt(1e-15f64 + (8 as libc::c_int as libc::c_float * L2) as libc::c_double)
+                as libc::c_float
         {
             0.99f32
         } else {
-            L1
-                / sqrt(
-                    1e-15f64 + (8 as libc::c_int as libc::c_float * L2) as libc::c_double,
-                ) as libc::c_float
+            L1 / sqrt(1e-15f64 + (8 as libc::c_int as libc::c_float * L2) as libc::c_double)
+                as libc::c_float
         };
         stationarity *= stationarity;
         stationarity *= stationarity;
         frame_stationarity += stationarity;
-        band_tonality[b
-            as usize] = if tE / (1e-15f32 + E_0)
-            > stationarity * (*tonal).prev_band_tonality[b as usize]
-        {
-            tE / (1e-15f32 + E_0)
-        } else {
-            stationarity * (*tonal).prev_band_tonality[b as usize]
-        };
+        band_tonality[b as usize] =
+            if tE / (1e-15f32 + E_0) > stationarity * (*tonal).prev_band_tonality[b as usize] {
+                tE / (1e-15f32 + E_0)
+            } else {
+                stationarity * (*tonal).prev_band_tonality[b as usize]
+            };
         frame_tonality += band_tonality[b as usize];
         if b >= NB_TBANDS - NB_TONAL_SKIP_BANDS {
-            frame_tonality
-                -= band_tonality[(b - NB_TBANDS + NB_TONAL_SKIP_BANDS) as usize];
+            frame_tonality -= band_tonality[(b - NB_TBANDS + NB_TONAL_SKIP_BANDS) as usize];
         }
         max_frame_tonality = if max_frame_tonality
-            > (1.0f32 + 0.03f32 * (b - 18 as libc::c_int) as libc::c_float)
-                * frame_tonality
+            > (1.0f32 + 0.03f32 * (b - 18 as libc::c_int) as libc::c_float) * frame_tonality
         {
             max_frame_tonality
         } else {
-            (1.0f32 + 0.03f32 * (b - 18 as libc::c_int) as libc::c_float)
-                * frame_tonality
+            (1.0f32 + 0.03f32 * (b - 18 as libc::c_int) as libc::c_float) * frame_tonality
         };
         slope += band_tonality[b as usize] * (b - 8 as libc::c_int) as libc::c_float;
         (*tonal).prev_band_tonality[b as usize] = band_tonality[b as usize];
         b += 1;
     }
     leakage_from[0 as libc::c_int as usize] = band_log2[0 as libc::c_int as usize];
-    leakage_to[0 as libc::c_int
-        as usize] = band_log2[0 as libc::c_int as usize] - LEAKAGE_OFFSET;
+    leakage_to[0 as libc::c_int as usize] = band_log2[0 as libc::c_int as usize] - LEAKAGE_OFFSET;
     b = 1 as libc::c_int;
     while b < NB_TBANDS + 1 as libc::c_int {
         let leak_slope: libc::c_float = LEAKAGE_SLOPE
-            * (tbands[b as usize] - tbands[(b - 1 as libc::c_int) as usize])
-                as libc::c_float / 4 as libc::c_int as libc::c_float;
-        leakage_from[b
-            as usize] = if leakage_from[(b - 1 as libc::c_int) as usize] + leak_slope
-            < band_log2[b as usize]
-        {
-            leakage_from[(b - 1 as libc::c_int) as usize] + leak_slope
-        } else {
-            band_log2[b as usize]
-        };
-        leakage_to[b
-            as usize] = if leakage_to[(b - 1 as libc::c_int) as usize] - leak_slope
+            * (tbands[b as usize] - tbands[(b - 1 as libc::c_int) as usize]) as libc::c_float
+            / 4 as libc::c_int as libc::c_float;
+        leakage_from[b as usize] =
+            if leakage_from[(b - 1 as libc::c_int) as usize] + leak_slope < band_log2[b as usize] {
+                leakage_from[(b - 1 as libc::c_int) as usize] + leak_slope
+            } else {
+                band_log2[b as usize]
+            };
+        leakage_to[b as usize] = if leakage_to[(b - 1 as libc::c_int) as usize] - leak_slope
             > band_log2[b as usize] - 2.5f32
         {
             leakage_to[(b - 1 as libc::c_int) as usize] - leak_slope
@@ -1688,18 +1639,16 @@ unsafe extern "C" fn tonality_analysis(
     b = NB_TBANDS - 2 as libc::c_int;
     while b >= 0 as libc::c_int {
         let leak_slope_0: libc::c_float = LEAKAGE_SLOPE
-            * (tbands[(b + 1 as libc::c_int) as usize] - tbands[b as usize])
-                as libc::c_float / 4 as libc::c_int as libc::c_float;
-        leakage_from[b
-            as usize] = if leakage_from[(b + 1 as libc::c_int) as usize] + leak_slope_0
+            * (tbands[(b + 1 as libc::c_int) as usize] - tbands[b as usize]) as libc::c_float
+            / 4 as libc::c_int as libc::c_float;
+        leakage_from[b as usize] = if leakage_from[(b + 1 as libc::c_int) as usize] + leak_slope_0
             < leakage_from[b as usize]
         {
             leakage_from[(b + 1 as libc::c_int) as usize] + leak_slope_0
         } else {
             leakage_from[b as usize]
         };
-        leakage_to[b
-            as usize] = if leakage_to[(b + 1 as libc::c_int) as usize] - leak_slope_0
+        leakage_to[b as usize] = if leakage_to[(b + 1 as libc::c_int) as usize] - leak_slope_0
             > leakage_to[b as usize]
         {
             leakage_to[(b + 1 as libc::c_int) as usize] - leak_slope_0
@@ -1710,8 +1659,7 @@ unsafe extern "C" fn tonality_analysis(
     }
     if !(18 as libc::c_int + 1 as libc::c_int <= 19 as libc::c_int) {
         celt_fatal(
-            b"assertion failed: NB_TBANDS+1 <= LEAK_BANDS\0" as *const u8
-                as *const libc::c_char,
+            b"assertion failed: NB_TBANDS+1 <= LEAK_BANDS\0" as *const u8 as *const libc::c_char,
             b"src/analysis.c\0" as *const u8 as *const libc::c_char,
             740 as libc::c_int,
         );
@@ -1724,17 +1672,14 @@ unsafe extern "C" fn tonality_analysis(
             0 as libc::c_int as libc::c_float
         } else {
             leakage_to[b as usize] - band_log2[b as usize]
-        })
-            + (if 0 as libc::c_int as libc::c_float
-                > band_log2[b as usize] - (leakage_from[b as usize] + 2.5f32)
-            {
-                0 as libc::c_int as libc::c_float
-            } else {
-                band_log2[b as usize] - (leakage_from[b as usize] + 2.5f32)
-            });
-        (*info)
-            .leak_boost[b
-            as usize] = (if (255 as libc::c_int)
+        }) + (if 0 as libc::c_int as libc::c_float
+            > band_log2[b as usize] - (leakage_from[b as usize] + 2.5f32)
+        {
+            0 as libc::c_int as libc::c_float
+        } else {
+            band_log2[b as usize] - (leakage_from[b as usize] + 2.5f32)
+        });
+        (*info).leak_boost[b as usize] = (if (255 as libc::c_int)
             < floor(0.5f64 + (64.0f32 * boost) as libc::c_double) as libc::c_int
         {
             255 as libc::c_int
@@ -1758,8 +1703,7 @@ unsafe extern "C" fn tonality_analysis(
             k = 0 as libc::c_int;
             while k < NB_TBANDS {
                 let mut tmp: libc::c_float = 0.;
-                tmp = (*tonal).logE[i as usize][k as usize]
-                    - (*tonal).logE[j as usize][k as usize];
+                tmp = (*tonal).logE[i as usize][k as usize] - (*tonal).logE[j as usize][k as usize];
                 dist += tmp * tmp;
                 k += 1;
             }
@@ -1812,15 +1756,12 @@ unsafe extern "C" fn tonality_analysis(
         } else {
             above_max_pitch += E_1;
         }
-        (*tonal)
-            .meanE[b
-            as usize] = if (1 as libc::c_int as libc::c_float - alphaE2)
-            * (*tonal).meanE[b as usize] > E_1
-        {
-            (1 as libc::c_int as libc::c_float - alphaE2) * (*tonal).meanE[b as usize]
-        } else {
-            E_1
-        };
+        (*tonal).meanE[b as usize] =
+            if (1 as libc::c_int as libc::c_float - alphaE2) * (*tonal).meanE[b as usize] > E_1 {
+                (1 as libc::c_int as libc::c_float - alphaE2) * (*tonal).meanE[b as usize]
+            } else {
+                E_1
+            };
         Em = if E_1 > (*tonal).meanE[b as usize] {
             E_1
         } else {
@@ -1828,14 +1769,14 @@ unsafe extern "C" fn tonality_analysis(
         };
         if E_1 * 1e9f32 > maxE
             && (Em
-                > 3 as libc::c_int as libc::c_float * noise_floor
+                > 3 as libc::c_int as libc::c_float
+                    * noise_floor
                     * (band_end - band_start) as libc::c_float
                 || E_1 > noise_floor * (band_end - band_start) as libc::c_float)
         {
             bandwidth = b + 1 as libc::c_int;
         }
-        is_masked[b
-            as usize] = (E_1
+        is_masked[b as usize] = (E_1
             < (if (*tonal).prev_bandwidth >= b + 1 as libc::c_int {
                 0.01f32
             } else {
@@ -1851,37 +1792,35 @@ unsafe extern "C" fn tonality_analysis(
     if (*tonal).Fs == 48000 as libc::c_int {
         let mut noise_ratio: libc::c_float = 0.;
         let mut Em_0: libc::c_float = 0.;
-        let E_2: libc::c_float = hp_ener
-            * (1.0f32 / (60 as libc::c_int * 60 as libc::c_int) as libc::c_float);
+        let E_2: libc::c_float =
+            hp_ener * (1.0f32 / (60 as libc::c_int * 60 as libc::c_int) as libc::c_float);
         noise_ratio = if (*tonal).prev_bandwidth == 20 as libc::c_int {
             10.0f32
         } else {
             30.0f32
         };
         above_max_pitch += E_2;
-        (*tonal)
-            .meanE[b
-            as usize] = if (1 as libc::c_int as libc::c_float - alphaE2)
-            * (*tonal).meanE[b as usize] > E_2
-        {
-            (1 as libc::c_int as libc::c_float - alphaE2) * (*tonal).meanE[b as usize]
-        } else {
-            E_2
-        };
+        (*tonal).meanE[b as usize] =
+            if (1 as libc::c_int as libc::c_float - alphaE2) * (*tonal).meanE[b as usize] > E_2 {
+                (1 as libc::c_int as libc::c_float - alphaE2) * (*tonal).meanE[b as usize]
+            } else {
+                E_2
+            };
         Em_0 = if E_2 > (*tonal).meanE[b as usize] {
             E_2
         } else {
             (*tonal).meanE[b as usize]
         };
         if Em_0
-            > 3 as libc::c_int as libc::c_float * noise_ratio * noise_floor
+            > 3 as libc::c_int as libc::c_float
+                * noise_ratio
+                * noise_floor
                 * 160 as libc::c_int as libc::c_float
             || E_2 > noise_ratio * noise_floor * 160 as libc::c_int as libc::c_float
         {
             bandwidth = 20 as libc::c_int;
         }
-        is_masked[b
-            as usize] = (E_2
+        is_masked[b as usize] = (E_2
             < (if (*tonal).prev_bandwidth == 20 as libc::c_int {
                 0.01f32
             } else {
@@ -1895,7 +1834,8 @@ unsafe extern "C" fn tonality_analysis(
     }
     if bandwidth == 20 as libc::c_int && is_masked[NB_TBANDS as usize] != 0 {
         bandwidth -= 2 as libc::c_int;
-    } else if bandwidth > 0 as libc::c_int && bandwidth <= NB_TBANDS
+    } else if bandwidth > 0 as libc::c_int
+        && bandwidth <= NB_TBANDS
         && is_masked[(bandwidth - 1 as libc::c_int) as usize] != 0
     {
         bandwidth -= 1;
@@ -1905,8 +1845,7 @@ unsafe extern "C" fn tonality_analysis(
     }
     frame_loudness = 20 as libc::c_int as libc::c_float
         * log10(frame_loudness as libc::c_double) as libc::c_float;
-    (*tonal)
-        .Etracker = if (*tonal).Etracker - 0.003f32 > frame_loudness {
+    (*tonal).Etracker = if (*tonal).Etracker - 0.003f32 > frame_loudness {
         (*tonal).Etracker - 0.003f32
     } else {
         frame_loudness
@@ -1931,9 +1870,9 @@ unsafe extern "C" fn tonality_analysis(
         let mut sum_0: libc::c_float = 0 as libc::c_int as libc::c_float;
         b = 0 as libc::c_int;
         while b < 16 as libc::c_int {
-            sum_0
-                += dct_table[(i * 16 as libc::c_int + b) as usize] * 0.5f32
-                    * ((*tonal).highE[b as usize] + (*tonal).lowE[b as usize]);
+            sum_0 += dct_table[(i * 16 as libc::c_int + b) as usize]
+                * 0.5f32
+                * ((*tonal).highE[b as usize] + (*tonal).lowE[b as usize]);
             b += 1;
         }
         midE[i as usize] = sum_0;
@@ -1945,11 +1884,9 @@ unsafe extern "C" fn tonality_analysis(
         relativeE = 0.5f32;
     }
     frame_noisiness /= NB_TBANDS as libc::c_float;
-    (*info)
-        .activity = frame_noisiness
-        + (1 as libc::c_int as libc::c_float - frame_noisiness) * relativeE;
-    frame_tonality = max_frame_tonality
-        / (NB_TBANDS - NB_TONAL_SKIP_BANDS) as libc::c_float;
+    (*info).activity =
+        frame_noisiness + (1 as libc::c_int as libc::c_float - frame_noisiness) * relativeE;
+    frame_tonality = max_frame_tonality / (NB_TBANDS - NB_TONAL_SKIP_BANDS) as libc::c_float;
     frame_tonality = if frame_tonality > (*tonal).prev_tonality * 0.8f32 {
         frame_tonality
     } else {
@@ -1959,8 +1896,7 @@ unsafe extern "C" fn tonality_analysis(
     slope /= (8 as libc::c_int * 8 as libc::c_int) as libc::c_float;
     (*info).tonality_slope = slope;
     (*tonal).E_count = ((*tonal).E_count + 1 as libc::c_int) % NB_FRAMES;
-    (*tonal)
-        .count = if ((*tonal).count + 1 as libc::c_int) < 10000 as libc::c_int {
+    (*tonal).count = if ((*tonal).count + 1 as libc::c_int) < 10000 as libc::c_int {
         (*tonal).count + 1 as libc::c_int
     } else {
         10000 as libc::c_int
@@ -1968,51 +1904,42 @@ unsafe extern "C" fn tonality_analysis(
     (*info).tonality = frame_tonality;
     i = 0 as libc::c_int;
     while i < 4 as libc::c_int {
-        features[i
-            as usize] = -0.12299f32
+        features[i as usize] = -0.12299f32
             * (BFCC[i as usize] + (*tonal).mem[(i + 24 as libc::c_int) as usize])
             + 0.49195f32
-                * ((*tonal).mem[i as usize]
-                    + (*tonal).mem[(i + 16 as libc::c_int) as usize])
+                * ((*tonal).mem[i as usize] + (*tonal).mem[(i + 16 as libc::c_int) as usize])
             + 0.69693f32 * (*tonal).mem[(i + 8 as libc::c_int) as usize]
             - 1.4349f32 * (*tonal).cmean[i as usize];
         i += 1;
     }
     i = 0 as libc::c_int;
     while i < 4 as libc::c_int {
-        (*tonal)
-            .cmean[i
-            as usize] = (1 as libc::c_int as libc::c_float - alpha)
-            * (*tonal).cmean[i as usize] + alpha * BFCC[i as usize];
+        (*tonal).cmean[i as usize] = (1 as libc::c_int as libc::c_float - alpha)
+            * (*tonal).cmean[i as usize]
+            + alpha * BFCC[i as usize];
         i += 1;
     }
     i = 0 as libc::c_int;
     while i < 4 as libc::c_int {
-        features[(4 as libc::c_int + i)
-            as usize] = 0.63246f32
+        features[(4 as libc::c_int + i) as usize] = 0.63246f32
             * (BFCC[i as usize] - (*tonal).mem[(i + 24 as libc::c_int) as usize])
             + 0.31623f32
-                * ((*tonal).mem[i as usize]
-                    - (*tonal).mem[(i + 16 as libc::c_int) as usize]);
+                * ((*tonal).mem[i as usize] - (*tonal).mem[(i + 16 as libc::c_int) as usize]);
         i += 1;
     }
     i = 0 as libc::c_int;
     while i < 3 as libc::c_int {
-        features[(8 as libc::c_int + i)
-            as usize] = 0.53452f32
+        features[(8 as libc::c_int + i) as usize] = 0.53452f32
             * (BFCC[i as usize] + (*tonal).mem[(i + 24 as libc::c_int) as usize])
             - 0.26726f32
-                * ((*tonal).mem[i as usize]
-                    + (*tonal).mem[(i + 16 as libc::c_int) as usize])
+                * ((*tonal).mem[i as usize] + (*tonal).mem[(i + 16 as libc::c_int) as usize])
             - 0.53452f32 * (*tonal).mem[(i + 8 as libc::c_int) as usize];
         i += 1;
     }
     if (*tonal).count > 5 as libc::c_int {
         i = 0 as libc::c_int;
         while i < 9 as libc::c_int {
-            (*tonal)
-                .std[i
-                as usize] = (1 as libc::c_int as libc::c_float - alpha)
+            (*tonal).std[i as usize] = (1 as libc::c_int as libc::c_float - alpha)
                 * (*tonal).std[i as usize]
                 + alpha * features[i as usize] * features[i as usize];
             i += 1;
@@ -2025,21 +1952,19 @@ unsafe extern "C" fn tonality_analysis(
     }
     i = 0 as libc::c_int;
     while i < 8 as libc::c_int {
-        (*tonal)
-            .mem[(i + 24 as libc::c_int)
-            as usize] = (*tonal).mem[(i + 16 as libc::c_int) as usize];
-        (*tonal)
-            .mem[(i + 16 as libc::c_int)
-            as usize] = (*tonal).mem[(i + 8 as libc::c_int) as usize];
+        (*tonal).mem[(i + 24 as libc::c_int) as usize] =
+            (*tonal).mem[(i + 16 as libc::c_int) as usize];
+        (*tonal).mem[(i + 16 as libc::c_int) as usize] =
+            (*tonal).mem[(i + 8 as libc::c_int) as usize];
         (*tonal).mem[(i + 8 as libc::c_int) as usize] = (*tonal).mem[i as usize];
         (*tonal).mem[i as usize] = BFCC[i as usize];
         i += 1;
     }
     i = 0 as libc::c_int;
     while i < 9 as libc::c_int {
-        features[(11 as libc::c_int + i)
-            as usize] = sqrt((*tonal).std[i as usize] as libc::c_double) as libc::c_float
-            - std_feature_bias[i as usize];
+        features[(11 as libc::c_int + i) as usize] =
+            sqrt((*tonal).std[i as usize] as libc::c_double) as libc::c_float
+                - std_feature_bias[i as usize];
         i += 1;
     }
     features[18 as libc::c_int as usize] = spec_variability - 0.78f32;
@@ -2049,8 +1974,16 @@ unsafe extern "C" fn tonality_analysis(
     features[23 as libc::c_int as usize] = (*info).tonality_slope + 0.069216f32;
     features[24 as libc::c_int as usize] = (*tonal).lowECount - 0.067930f32;
     compute_dense(&layer0, layer_out.as_mut_ptr(), features.as_mut_ptr());
-    compute_gru(&layer1, ((*tonal).rnn_state).as_mut_ptr(), layer_out.as_mut_ptr());
-    compute_dense(&layer2, frame_probs.as_mut_ptr(), ((*tonal).rnn_state).as_mut_ptr());
+    compute_gru(
+        &layer1,
+        ((*tonal).rnn_state).as_mut_ptr(),
+        layer_out.as_mut_ptr(),
+    );
+    compute_dense(
+        &layer2,
+        frame_probs.as_mut_ptr(),
+        ((*tonal).rnn_state).as_mut_ptr(),
+    );
     (*info).activity_probability = frame_probs[1 as libc::c_int as usize];
     (*info).music_prob = frame_probs[0 as libc::c_int as usize];
     (*info).bandwidth = bandwidth;
@@ -2078,8 +2011,8 @@ pub unsafe extern "C" fn run_analysis(
     let mut pcm_len: libc::c_int = 0;
     analysis_frame_size -= analysis_frame_size & 1 as libc::c_int;
     if !analysis_pcm.is_null() {
-        analysis_frame_size = if ((100 as libc::c_int - 5 as libc::c_int) * Fs
-            / 50 as libc::c_int) < analysis_frame_size
+        analysis_frame_size = if ((100 as libc::c_int - 5 as libc::c_int) * Fs / 50 as libc::c_int)
+            < analysis_frame_size
         {
             (100 as libc::c_int - 5 as libc::c_int) * Fs / 50 as libc::c_int
         } else {

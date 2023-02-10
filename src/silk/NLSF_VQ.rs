@@ -24,7 +24,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint8_t, __uint32_t};
+    use super::types_h::{__uint32_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
 pub mod opus_types_h {
@@ -36,8 +36,8 @@ pub mod opus_types_h {
     pub type opus_int32 = int32_t;
     #[c2rust::src_loc = "56:4"]
     pub type opus_uint32 = uint32_t;
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
     use super::stdint_intn_h::{int16_t, int32_t};
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
 pub mod arch_h {
@@ -50,11 +50,11 @@ pub mod arch_h {
         ) -> !;
     }
 }
-pub use self::types_h::{__uint8_t, __int16_t, __int32_t, __uint32_t};
-pub use self::stdint_intn_h::{int16_t, int32_t};
-pub use self::stdint_uintn_h::{uint8_t, uint32_t};
-pub use self::opus_types_h::{opus_uint8, opus_int16, opus_int32, opus_uint32};
 use self::arch_h::celt_fatal;
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32, opus_uint8};
+pub use self::stdint_intn_h::{int16_t, int32_t};
+pub use self::stdint_uintn_h::{uint32_t, uint8_t};
+pub use self::types_h::{__int16_t, __int32_t, __uint32_t, __uint8_t};
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_NLSF_VQ(
@@ -75,8 +75,7 @@ pub unsafe extern "C" fn silk_NLSF_VQ(
     let mut cb_Q8_ptr: *const opus_uint8 = 0 as *const opus_uint8;
     if !(LPC_order & 1 as libc::c_int == 0 as libc::c_int) {
         celt_fatal(
-            b"assertion failed: ( LPC_order & 1 ) == 0\0" as *const u8
-                as *const libc::c_char,
+            b"assertion failed: ( LPC_order & 1 ) == 0\0" as *const u8 as *const libc::c_char,
             b"silk/NLSF_VQ.c\0" as *const u8 as *const libc::c_char,
             49 as libc::c_int,
         );
@@ -91,7 +90,8 @@ pub unsafe extern "C" fn silk_NLSF_VQ(
         while m >= 0 as libc::c_int {
             diff_Q15 = *in_Q15.offset((m + 1 as libc::c_int) as isize) as libc::c_int
                 - ((*cb_Q8_ptr.offset((m + 1 as libc::c_int) as isize) as opus_int32
-                    as opus_uint32) << 7 as libc::c_int) as opus_int32;
+                    as opus_uint32)
+                    << 7 as libc::c_int) as opus_int32;
             diffw_Q24 = diff_Q15 as opus_int16 as opus_int32
                 * *w_Q9_ptr.offset((m + 1 as libc::c_int) as isize) as opus_int32;
             sum_error_Q24 = sum_error_Q24
@@ -102,10 +102,10 @@ pub unsafe extern "C" fn silk_NLSF_VQ(
                 });
             pred_Q24 = diffw_Q24;
             diff_Q15 = *in_Q15.offset(m as isize) as libc::c_int
-                - ((*cb_Q8_ptr.offset(m as isize) as opus_int32 as opus_uint32)
-                    << 7 as libc::c_int) as opus_int32;
-            diffw_Q24 = diff_Q15 as opus_int16 as opus_int32
-                * *w_Q9_ptr.offset(m as isize) as opus_int32;
+                - ((*cb_Q8_ptr.offset(m as isize) as opus_int32 as opus_uint32) << 7 as libc::c_int)
+                    as opus_int32;
+            diffw_Q24 =
+                diff_Q15 as opus_int16 as opus_int32 * *w_Q9_ptr.offset(m as isize) as opus_int32;
             sum_error_Q24 = sum_error_Q24
                 + (if diffw_Q24 - (pred_Q24 >> 1 as libc::c_int) > 0 as libc::c_int {
                     diffw_Q24 - (pred_Q24 >> 1 as libc::c_int)

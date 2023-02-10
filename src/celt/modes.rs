@@ -53,9 +53,9 @@ pub mod modes_h {
         pub bits: *const libc::c_uchar,
         pub caps: *const libc::c_uchar,
     }
-    use super::opus_types_h::{opus_int32, opus_int16};
     use super::arch_h::opus_val16;
     use super::mdct_h::mdct_lookup;
+    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:35"]
 pub mod mdct_h {
@@ -7194,32 +7194,31 @@ pub mod static_modes_float_h {
     #[c2rust::src_loc = "885:9"]
     pub const TOTAL_MODES: libc::c_int = 1 as libc::c_int;
     #[c2rust::src_loc = "886:31"]
-    pub static mut static_mode_list: [*const OpusCustomMode; 1] = unsafe {
-        [&mode48000_960_120 as *const OpusCustomMode]
-    };
+    pub static mut static_mode_list: [*const OpusCustomMode; 1] =
+        unsafe { [&mode48000_960_120 as *const OpusCustomMode] };
     use super::arch_h::opus_val16;
-    use super::opus_types_h::{opus_int16};
-    use super::kiss_fft_h::{kiss_twiddle_cpx, arch_fft_state, kiss_fft_state};
-    use super::stddef_h::NULL;
+    use super::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
     use super::mdct_h::mdct_lookup;
-    use super::modes_h::{PulseCache, OpusCustomMode};
-    use super::{eband5ms, band_allocation};
+    use super::modes_h::{OpusCustomMode, PulseCache};
+    use super::opus_types_h::opus_int16;
+    use super::stddef_h::NULL;
+    use super::{band_allocation, eband5ms};
 }
-pub use self::types_h::{__int16_t, __int32_t};
-pub use self::stdint_intn_h::{int16_t, int32_t};
-pub use self::opus_types_h::{opus_int16, opus_int32};
-pub use self::modes_h::{OpusCustomMode, PulseCache};
-pub use self::mdct_h::mdct_lookup;
-pub use self::kiss_fft_h::{kiss_fft_state, arch_fft_state, kiss_twiddle_cpx};
 pub use self::arch_h::opus_val16;
-pub use self::opus_defines_h::{OPUS_OK, OPUS_BAD_ARG};
-pub use self::stddef_h::NULL;
+pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
+pub use self::mdct_h::mdct_lookup;
+pub use self::modes_h::{OpusCustomMode, PulseCache};
+pub use self::opus_defines_h::{OPUS_BAD_ARG, OPUS_OK};
+pub use self::opus_types_h::{opus_int16, opus_int32};
 pub use self::static_modes_float_h::{
-    window120, logN400, cache_index50, cache_bits50, cache_caps50, fft_twiddles48000_960,
-    fft_bitrev480, fft_bitrev240, fft_bitrev120, fft_bitrev60, fft_state48000_960_0,
-    fft_state48000_960_1, fft_state48000_960_2, fft_state48000_960_3, mdct_twiddles960,
-    mode48000_960_120, TOTAL_MODES, static_mode_list,
+    cache_bits50, cache_caps50, cache_index50, fft_bitrev120, fft_bitrev240, fft_bitrev480,
+    fft_bitrev60, fft_state48000_960_0, fft_state48000_960_1, fft_state48000_960_2,
+    fft_state48000_960_3, fft_twiddles48000_960, logN400, mdct_twiddles960, mode48000_960_120,
+    static_mode_list, window120, TOTAL_MODES,
 };
+pub use self::stddef_h::NULL;
+pub use self::stdint_intn_h::{int16_t, int32_t};
+pub use self::types_h::{__int16_t, __int32_t};
 #[c2rust::src_loc = "42:25"]
 static mut eband5ms: [opus_int16; 22] = [
     0 as libc::c_int as opus_int16,

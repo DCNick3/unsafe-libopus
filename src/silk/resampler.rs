@@ -22,7 +22,7 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     #[c2rust::src_loc = "27:1"]
     pub type int64_t = __int64_t;
-    use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
+    use super::types_h::{__int16_t, __int32_t, __int64_t, __int8_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:50"]
 pub mod stdint_uintn_h {
@@ -42,7 +42,7 @@ pub mod opus_types_h {
     pub type opus_uint32 = uint32_t;
     #[c2rust::src_loc = "57:4"]
     pub type opus_int64 = int64_t;
-    use super::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
+    use super::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
     use super::stdint_uintn_h::uint32_t;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:50"]
@@ -73,7 +73,7 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int32, opus_int16};
+    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:50"]
 pub mod arch_h {
@@ -90,11 +90,7 @@ pub mod arch_h {
 pub mod string_h {
     extern "C" {
         #[c2rust::src_loc = "61:14"]
-        pub fn memset(
-            _: *mut libc::c_void,
-            _: libc::c_int,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
+        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
         #[c2rust::src_loc = "43:14"]
         pub fn memcpy(
             _: *mut libc::c_void,
@@ -156,24 +152,24 @@ pub mod resampler_private_h {
         );
     }
 }
-pub use self::types_h::{__int8_t, __int16_t, __int32_t, __uint32_t, __int64_t};
-pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
-pub use self::stdint_uintn_h::uint32_t;
-pub use self::opus_types_h::{opus_int8, opus_int16, opus_int32, opus_uint32, opus_int64};
-pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
-};
 use self::arch_h::celt_fatal;
-use self::string_h::{memset, memcpy};
-pub use self::resampler_rom_h::{
-    RESAMPLER_DOWN_ORDER_FIR2, RESAMPLER_DOWN_ORDER_FIR1, RESAMPLER_DOWN_ORDER_FIR0,
-    silk_Resampler_1_6_COEFS, silk_Resampler_1_4_COEFS, silk_Resampler_1_3_COEFS,
-    silk_Resampler_1_2_COEFS, silk_Resampler_2_3_COEFS, silk_Resampler_3_4_COEFS,
-};
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_int8, opus_uint32};
 pub use self::resampler_private_h::{
-    RESAMPLER_MAX_BATCH_SIZE_MS, silk_resampler_private_down_FIR,
-    silk_resampler_private_IIR_FIR, silk_resampler_private_up2_HQ_wrapper,
+    silk_resampler_private_IIR_FIR, silk_resampler_private_down_FIR,
+    silk_resampler_private_up2_HQ_wrapper, RESAMPLER_MAX_BATCH_SIZE_MS,
 };
+pub use self::resampler_rom_h::{
+    silk_Resampler_1_2_COEFS, silk_Resampler_1_3_COEFS, silk_Resampler_1_4_COEFS,
+    silk_Resampler_1_6_COEFS, silk_Resampler_2_3_COEFS, silk_Resampler_3_4_COEFS,
+    RESAMPLER_DOWN_ORDER_FIR0, RESAMPLER_DOWN_ORDER_FIR1, RESAMPLER_DOWN_ORDER_FIR2,
+};
+pub use self::resampler_structs_h::{
+    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
+};
+pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+pub use self::stdint_uintn_h::uint32_t;
+use self::string_h::{memcpy, memset};
+pub use self::types_h::{__int16_t, __int32_t, __int64_t, __int8_t, __uint32_t};
 #[c2rust::src_loc = "53:24"]
 static mut delay_matrix_enc: [[opus_int8; 3]; 5] = [
     [
@@ -249,10 +245,13 @@ pub unsafe extern "C" fn silk_resampler_init(
         ::core::mem::size_of::<silk_resampler_state_struct>() as libc::c_ulong,
     );
     if forEnc != 0 {
-        if Fs_Hz_in != 8000 as libc::c_int && Fs_Hz_in != 12000 as libc::c_int
-            && Fs_Hz_in != 16000 as libc::c_int && Fs_Hz_in != 24000 as libc::c_int
+        if Fs_Hz_in != 8000 as libc::c_int
+            && Fs_Hz_in != 12000 as libc::c_int
+            && Fs_Hz_in != 16000 as libc::c_int
+            && Fs_Hz_in != 24000 as libc::c_int
             && Fs_Hz_in != 48000 as libc::c_int
-            || Fs_Hz_out != 8000 as libc::c_int && Fs_Hz_out != 12000 as libc::c_int
+            || Fs_Hz_out != 8000 as libc::c_int
+                && Fs_Hz_out != 12000 as libc::c_int
                 && Fs_Hz_out != 16000 as libc::c_int
         {
             if 0 as libc::c_int == 0 {
@@ -264,19 +263,21 @@ pub unsafe extern "C" fn silk_resampler_init(
             }
             return -(1 as libc::c_int);
         }
-        (*S)
-            .inputDelay = delay_matrix_enc[(((Fs_Hz_in >> 12 as libc::c_int)
+        (*S).inputDelay = delay_matrix_enc[(((Fs_Hz_in >> 12 as libc::c_int)
             - (Fs_Hz_in > 16000 as libc::c_int) as libc::c_int
-            >> (Fs_Hz_in > 24000 as libc::c_int) as libc::c_int) - 1 as libc::c_int)
-            as usize][(((Fs_Hz_out >> 12 as libc::c_int)
+            >> (Fs_Hz_in > 24000 as libc::c_int) as libc::c_int)
+            - 1 as libc::c_int) as usize][(((Fs_Hz_out >> 12 as libc::c_int)
             - (Fs_Hz_out > 16000 as libc::c_int) as libc::c_int
-            >> (Fs_Hz_out > 24000 as libc::c_int) as libc::c_int) - 1 as libc::c_int)
-            as usize] as libc::c_int;
+            >> (Fs_Hz_out > 24000 as libc::c_int) as libc::c_int)
+            - 1 as libc::c_int) as usize] as libc::c_int;
     } else {
-        if Fs_Hz_in != 8000 as libc::c_int && Fs_Hz_in != 12000 as libc::c_int
+        if Fs_Hz_in != 8000 as libc::c_int
+            && Fs_Hz_in != 12000 as libc::c_int
             && Fs_Hz_in != 16000 as libc::c_int
-            || Fs_Hz_out != 8000 as libc::c_int && Fs_Hz_out != 12000 as libc::c_int
-                && Fs_Hz_out != 16000 as libc::c_int && Fs_Hz_out != 24000 as libc::c_int
+            || Fs_Hz_out != 8000 as libc::c_int
+                && Fs_Hz_out != 12000 as libc::c_int
+                && Fs_Hz_out != 16000 as libc::c_int
+                && Fs_Hz_out != 24000 as libc::c_int
                 && Fs_Hz_out != 48000 as libc::c_int
         {
             if 0 as libc::c_int == 0 {
@@ -288,14 +289,13 @@ pub unsafe extern "C" fn silk_resampler_init(
             }
             return -(1 as libc::c_int);
         }
-        (*S)
-            .inputDelay = delay_matrix_dec[(((Fs_Hz_in >> 12 as libc::c_int)
+        (*S).inputDelay = delay_matrix_dec[(((Fs_Hz_in >> 12 as libc::c_int)
             - (Fs_Hz_in > 16000 as libc::c_int) as libc::c_int
-            >> (Fs_Hz_in > 24000 as libc::c_int) as libc::c_int) - 1 as libc::c_int)
-            as usize][(((Fs_Hz_out >> 12 as libc::c_int)
+            >> (Fs_Hz_in > 24000 as libc::c_int) as libc::c_int)
+            - 1 as libc::c_int) as usize][(((Fs_Hz_out >> 12 as libc::c_int)
             - (Fs_Hz_out > 16000 as libc::c_int) as libc::c_int
-            >> (Fs_Hz_out > 24000 as libc::c_int) as libc::c_int) - 1 as libc::c_int)
-            as usize] as libc::c_int;
+            >> (Fs_Hz_out > 24000 as libc::c_int) as libc::c_int)
+            - 1 as libc::c_int) as usize] as libc::c_int;
     }
     (*S).Fs_in_kHz = Fs_Hz_in / 1000 as libc::c_int;
     (*S).Fs_out_kHz = Fs_Hz_out / 1000 as libc::c_int;
@@ -347,11 +347,11 @@ pub unsafe extern "C" fn silk_resampler_init(
     } else {
         (*S).resampler_function = USE_silk_resampler_copy;
     }
-    (*S)
-        .invRatio_Q16 = (((((Fs_Hz_in as opus_uint32) << 14 as libc::c_int + up2x)
-        as opus_int32 / Fs_Hz_out) as opus_uint32) << 2 as libc::c_int) as opus_int32;
-    while (((*S).invRatio_Q16 as opus_int64 * Fs_Hz_out as libc::c_long
-        >> 16 as libc::c_int) as opus_int32)
+    (*S).invRatio_Q16 = (((((Fs_Hz_in as opus_uint32) << 14 as libc::c_int + up2x) as opus_int32
+        / Fs_Hz_out) as opus_uint32)
+        << 2 as libc::c_int) as opus_int32;
+    while (((*S).invRatio_Q16 as opus_int64 * Fs_Hz_out as libc::c_long >> 16 as libc::c_int)
+        as opus_int32)
         < ((Fs_Hz_in as opus_uint32) << up2x) as opus_int32
     {
         (*S).invRatio_Q16 += 1;
@@ -369,8 +369,7 @@ pub unsafe extern "C" fn silk_resampler(
     let mut nSamples: libc::c_int = 0;
     if !(inLen >= (*S).Fs_in_kHz) {
         celt_fatal(
-            b"assertion failed: inLen >= S->Fs_in_kHz\0" as *const u8
-                as *const libc::c_char,
+            b"assertion failed: inLen >= S->Fs_in_kHz\0" as *const u8 as *const libc::c_char,
             b"silk/resampler.c\0" as *const u8 as *const libc::c_char,
             184 as libc::c_int,
         );
@@ -385,8 +384,9 @@ pub unsafe extern "C" fn silk_resampler(
     }
     nSamples = (*S).Fs_in_kHz - (*S).inputDelay;
     memcpy(
-        &mut *((*S).delayBuf).as_mut_ptr().offset((*S).inputDelay as isize)
-            as *mut opus_int16 as *mut libc::c_void,
+        &mut *((*S).delayBuf)
+            .as_mut_ptr()
+            .offset((*S).inputDelay as isize) as *mut opus_int16 as *mut libc::c_void,
         in_0 as *const libc::c_void,
         (nSamples as libc::c_ulong)
             .wrapping_mul(::core::mem::size_of::<opus_int16>() as libc::c_ulong),
@@ -442,10 +442,8 @@ pub unsafe extern "C" fn silk_resampler(
                     .wrapping_mul(::core::mem::size_of::<opus_int16>() as libc::c_ulong),
             );
             memcpy(
-                &mut *out.offset((*S).Fs_out_kHz as isize) as *mut opus_int16
-                    as *mut libc::c_void,
-                &*in_0.offset(nSamples as isize) as *const opus_int16
-                    as *const libc::c_void,
+                &mut *out.offset((*S).Fs_out_kHz as isize) as *mut opus_int16 as *mut libc::c_void,
+                &*in_0.offset(nSamples as isize) as *const opus_int16 as *const libc::c_void,
                 ((inLen - (*S).Fs_in_kHz) as libc::c_ulong)
                     .wrapping_mul(::core::mem::size_of::<opus_int16>() as libc::c_ulong),
             );

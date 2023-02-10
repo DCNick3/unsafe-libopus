@@ -42,9 +42,9 @@ pub mod arch_h {
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:33"]
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]
-    pub use core::arch::x86::{__m128, _mm_cvtss_si32, _mm_cvt_ss2si, _mm_set_ss};
+    pub use core::arch::x86::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
     #[cfg(target_arch = "x86_64")]
-    pub use core::arch::x86_64::{__m128, _mm_cvtss_si32, _mm_cvt_ss2si, _mm_set_ss};
+    pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/opus_private.h:34"]
 pub mod opus_private_h {
@@ -73,8 +73,8 @@ pub mod opus_private_h {
             .wrapping_div(alignment)
             .wrapping_mul(alignment) as libc::c_int;
     }
-    use super::opus_types_h::opus_int32;
     use super::arch_h::opus_val32;
+    use super::opus_types_h::opus_int32;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/mapping_matrix.h:36"]
 pub mod mapping_matrix_h {
@@ -110,17 +110,17 @@ pub mod float_cast_h {
     pub unsafe extern "C" fn float2int(x: libc::c_float) -> opus_int32 {
         return _mm_cvt_ss2si(_mm_set_ss(x));
     }
-    use super::opus_types_h::{opus_int16, opus_int32};
     use super::arch_h::CELT_SIG_SCALE;
+    use super::opus_types_h::{opus_int16, opus_int32};
     use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
 }
-pub use self::types_h::{__int16_t, __int32_t};
-pub use self::stdint_intn_h::{int16_t, int32_t};
-pub use self::opus_types_h::{opus_int16, opus_int32};
-pub use self::arch_h::{opus_val16, opus_val32, CELT_SIG_SCALE, celt_fatal};
-pub use self::opus_private_h::{foo, C2RustUnnamed, align};
+pub use self::arch_h::{celt_fatal, opus_val16, opus_val32, CELT_SIG_SCALE};
+pub use self::float_cast_h::{float2int, FLOAT2INT16};
 pub use self::mapping_matrix_h::MappingMatrix;
-pub use self::float_cast_h::{FLOAT2INT16, float2int};
+pub use self::opus_private_h::{align, foo, C2RustUnnamed};
+pub use self::opus_types_h::{opus_int16, opus_int32};
+pub use self::stdint_intn_h::{int16_t, int32_t};
+pub use self::types_h::{__int16_t, __int32_t};
 #[no_mangle]
 #[c2rust::src_loc = "40:1"]
 pub unsafe extern "C" fn mapping_matrix_get_size(
@@ -142,15 +142,10 @@ pub unsafe extern "C" fn mapping_matrix_get_size(
 }
 #[no_mangle]
 #[c2rust::src_loc = "57:1"]
-pub unsafe extern "C" fn mapping_matrix_get_data(
-    matrix: *const MappingMatrix,
-) -> *mut opus_int16 {
-    return (matrix as *mut libc::c_char)
-        .offset(
-            align(
-                ::core::mem::size_of::<MappingMatrix>() as libc::c_ulong as libc::c_int,
-            ) as isize,
-        ) as *mut libc::c_void as *mut opus_int16;
+pub unsafe extern "C" fn mapping_matrix_get_data(matrix: *const MappingMatrix) -> *mut opus_int16 {
+    return (matrix as *mut libc::c_char).offset(align(
+        ::core::mem::size_of::<MappingMatrix>() as libc::c_ulong as libc::c_int
+    ) as isize) as *mut libc::c_void as *mut opus_int16;
 }
 #[no_mangle]
 #[c2rust::src_loc = "63:1"]
@@ -216,16 +211,13 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_in_float(
         let mut tmp: libc::c_float = 0 as libc::c_int as libc::c_float;
         col = 0 as libc::c_int;
         while col < input_rows {
-            tmp
-                += *matrix_data.offset(((*matrix).rows * col + output_row) as isize)
-                    as libc::c_int as libc::c_float
-                    * *input.offset((input_rows * i + col) as isize);
+            tmp += *matrix_data.offset(((*matrix).rows * col + output_row) as isize) as libc::c_int
+                as libc::c_float
+                * *input.offset((input_rows * i + col) as isize);
             col += 1;
         }
-        *output
-            .offset(
-                (output_rows * i) as isize,
-            ) = 1 as libc::c_int as libc::c_float / 32768.0f32 * tmp;
+        *output.offset((output_rows * i) as isize) =
+            1 as libc::c_int as libc::c_float / 32768.0f32 * tmp;
         i += 1;
     }
 }
@@ -259,8 +251,9 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_out_float(
         row = 0 as libc::c_int;
         while row < output_rows {
             let tmp: libc::c_float = 1 as libc::c_int as libc::c_float / 32768.0f32
-                * *matrix_data.offset(((*matrix).rows * input_row + row) as isize)
-                    as libc::c_int as libc::c_float * input_sample;
+                * *matrix_data.offset(((*matrix).rows * input_row + row) as isize) as libc::c_int
+                    as libc::c_float
+                * input_sample;
             *output.offset((output_rows * i + row) as isize) += tmp;
             row += 1;
         }
@@ -295,17 +288,14 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_in_short(
         let mut tmp: opus_val32 = 0 as libc::c_int as opus_val32;
         col = 0 as libc::c_int;
         while col < input_rows {
-            tmp
-                += (*matrix_data.offset(((*matrix).rows * col + output_row) as isize)
-                    as libc::c_int
-                    * *input.offset((input_rows * i + col) as isize) as libc::c_int)
-                    as libc::c_float;
+            tmp += (*matrix_data.offset(((*matrix).rows * col + output_row) as isize)
+                as libc::c_int
+                * *input.offset((input_rows * i + col) as isize) as libc::c_int)
+                as libc::c_float;
             col += 1;
         }
-        *output
-            .offset(
-                (output_rows * i) as isize,
-            ) = 1 as libc::c_int as libc::c_float / (32768.0f32 * 32768.0f32) * tmp;
+        *output.offset((output_rows * i) as isize) =
+            1 as libc::c_int as libc::c_float / (32768.0f32 * 32768.0f32) * tmp;
         i += 1;
     }
 }
@@ -335,16 +325,15 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_out_short(
     matrix_data = mapping_matrix_get_data(matrix);
     i = 0 as libc::c_int;
     while i < frame_size {
-        input_sample = FLOAT2INT16(*input.offset((input_rows * i) as isize))
-            as opus_int32;
+        input_sample = FLOAT2INT16(*input.offset((input_rows * i) as isize)) as opus_int32;
         row = 0 as libc::c_int;
         while row < output_rows {
-            let tmp: opus_int32 = *matrix_data
-                .offset(((*matrix).rows * input_row + row) as isize) as opus_int32
+            let tmp: opus_int32 = *matrix_data.offset(((*matrix).rows * input_row + row) as isize)
+                as opus_int32
                 * input_sample;
             let ref mut fresh0 = *output.offset((output_rows * i + row) as isize);
-            *fresh0 = (*fresh0 as libc::c_int
-                + (tmp + 16384 as libc::c_int >> 15 as libc::c_int)) as opus_int16;
+            *fresh0 = (*fresh0 as libc::c_int + (tmp + 16384 as libc::c_int >> 15 as libc::c_int))
+                as opus_int16;
             row += 1;
         }
         i += 1;

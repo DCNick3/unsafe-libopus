@@ -18,7 +18,7 @@ pub mod stdint_intn_h {
     pub type int16_t = __int16_t;
     #[c2rust::src_loc = "26:1"]
     pub type int32_t = __int32_t;
-    use super::types_h::{__int8_t, __int16_t, __int32_t};
+    use super::types_h::{__int16_t, __int32_t, __int8_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
 pub mod stdint_uintn_h {
@@ -36,7 +36,7 @@ pub mod opus_types_h {
     pub type opus_int16 = int16_t;
     #[c2rust::src_loc = "55:4"]
     pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::{int8_t, int16_t, int32_t};
+    use super::stdint_intn_h::{int16_t, int32_t, int8_t};
     use super::stdint_uintn_h::uint8_t;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:32"]
@@ -67,7 +67,7 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int32, opus_int16};
+    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
 pub mod structs_h {
@@ -227,7 +227,7 @@ pub mod structs_h {
         pub indices_LBRR: [SideInfoIndices; 3],
         pub pulses_LBRR: [[opus_int8; 320]; 3],
     }
-    use super::opus_types_h::{opus_int16, opus_int32, opus_uint8, opus_int8};
+    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/control.h:32"]
@@ -268,11 +268,7 @@ pub mod control_h {
 pub mod string_h {
     extern "C" {
         #[c2rust::src_loc = "61:14"]
-        pub fn memset(
-            _: *mut libc::c_void,
-            _: libc::c_int,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
+        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
@@ -288,23 +284,22 @@ pub mod define_h {
     #[c2rust::src_loc = "219:9"]
     pub const TRANSITION_FRAMES: libc::c_int = TRANSITION_TIME_MS / MAX_FRAME_LENGTH_MS;
 }
-pub use self::types_h::{__int8_t, __uint8_t, __int16_t, __int32_t};
-pub use self::stdint_intn_h::{int8_t, int16_t, int32_t};
-pub use self::stdint_uintn_h::uint8_t;
-pub use self::opus_types_h::{opus_int8, opus_uint8, opus_int16, opus_int32};
-pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
-};
-pub use self::structs_h::{
-    silk_nsq_state, silk_VAD_state, silk_LP_state, silk_NLSF_CB_struct, SideInfoIndices,
-    silk_encoder_state,
-};
 pub use self::control_h::silk_EncControlStruct;
-use self::string_h::memset;
 pub use self::define_h::{
-    MAX_NB_SUBFR, SUB_FRAME_LENGTH_MS, MAX_FRAME_LENGTH_MS, TRANSITION_TIME_MS,
-    TRANSITION_FRAMES,
+    MAX_FRAME_LENGTH_MS, MAX_NB_SUBFR, SUB_FRAME_LENGTH_MS, TRANSITION_FRAMES, TRANSITION_TIME_MS,
 };
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
+pub use self::resampler_structs_h::{
+    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
+};
+pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
+pub use self::stdint_uintn_h::uint8_t;
+use self::string_h::memset;
+pub use self::structs_h::{
+    silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
+    SideInfoIndices,
+};
+pub use self::types_h::{__int16_t, __int32_t, __int8_t, __uint8_t};
 #[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_control_audio_bandwidth(
@@ -319,8 +314,7 @@ pub unsafe extern "C" fn silk_control_audio_bandwidth(
         orig_kHz = (*psEncC).sLP.saved_fs_kHz;
     }
     fs_kHz = orig_kHz;
-    fs_Hz = fs_kHz as opus_int16 as opus_int32
-        * 1000 as libc::c_int as opus_int16 as opus_int32;
+    fs_Hz = fs_kHz as opus_int16 as opus_int32 * 1000 as libc::c_int as opus_int16 as opus_int32;
     if fs_Hz == 0 as libc::c_int {
         fs_Hz = if (*psEncC).desiredInternal_fs_Hz < (*psEncC).API_fs_Hz {
             (*psEncC).desiredInternal_fs_Hz
@@ -328,7 +322,8 @@ pub unsafe extern "C" fn silk_control_audio_bandwidth(
             (*psEncC).API_fs_Hz
         };
         fs_kHz = fs_Hz / 1000 as libc::c_int;
-    } else if fs_Hz > (*psEncC).API_fs_Hz || fs_Hz > (*psEncC).maxInternal_fs_Hz
+    } else if fs_Hz > (*psEncC).API_fs_Hz
+        || fs_Hz > (*psEncC).maxInternal_fs_Hz
         || fs_Hz < (*psEncC).minInternal_fs_Hz
     {
         fs_Hz = (*psEncC).API_fs_Hz;
@@ -369,9 +364,8 @@ pub unsafe extern "C" fn silk_control_audio_bandwidth(
                     };
                 } else if (*psEncC).sLP.transition_frame_no <= 0 as libc::c_int {
                     (*encControl).switchReady = 1 as libc::c_int;
-                    (*encControl).maxBits
-                        -= (*encControl).maxBits * 5 as libc::c_int
-                            / ((*encControl).payloadSize_ms + 5 as libc::c_int);
+                    (*encControl).maxBits -= (*encControl).maxBits * 5 as libc::c_int
+                        / ((*encControl).payloadSize_ms + 5 as libc::c_int);
                 } else {
                     (*psEncC).sLP.mode = -(2 as libc::c_int);
                 }
@@ -394,9 +388,8 @@ pub unsafe extern "C" fn silk_control_audio_bandwidth(
                     (*psEncC).sLP.mode = 1 as libc::c_int;
                 } else if (*psEncC).sLP.mode == 0 as libc::c_int {
                     (*encControl).switchReady = 1 as libc::c_int;
-                    (*encControl).maxBits
-                        -= (*encControl).maxBits * 5 as libc::c_int
-                            / ((*encControl).payloadSize_ms + 5 as libc::c_int);
+                    (*encControl).maxBits -= (*encControl).maxBits * 5 as libc::c_int
+                        / ((*encControl).payloadSize_ms + 5 as libc::c_int);
                 } else {
                     (*psEncC).sLP.mode = 1 as libc::c_int;
                 }

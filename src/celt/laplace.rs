@@ -93,14 +93,14 @@ pub mod arch_h {
         ) -> !;
     }
 }
-pub use self::types_h::{__int32_t, __uint32_t};
-pub use self::stdint_intn_h::int32_t;
-pub use self::stdint_uintn_h::uint32_t;
-pub use self::opus_types_h::{opus_int32, opus_uint32};
-pub use self::entcode_h::{ec_window, ec_ctx, ec_enc, ec_dec};
+use self::arch_h::celt_fatal;
+pub use self::entcode_h::{ec_ctx, ec_dec, ec_enc, ec_window};
 use self::entdec_h::{ec_dec_update, ec_decode_bin};
 use self::entenc_h::ec_encode_bin;
-use self::arch_h::celt_fatal;
+pub use self::opus_types_h::{opus_int32, opus_uint32};
+pub use self::stdint_intn_h::int32_t;
+pub use self::stdint_uintn_h::uint32_t;
+pub use self::types_h::{__int32_t, __uint32_t};
 #[c2rust::src_loc = "37:9"]
 pub const LAPLACE_LOG_MINP: libc::c_int = 0 as libc::c_int;
 #[c2rust::src_loc = "38:9"]
@@ -108,16 +108,12 @@ pub const LAPLACE_MINP: libc::c_int = (1 as libc::c_int) << LAPLACE_LOG_MINP;
 #[c2rust::src_loc = "41:9"]
 pub const LAPLACE_NMIN: libc::c_int = 16 as libc::c_int;
 #[c2rust::src_loc = "44:1"]
-unsafe extern "C" fn ec_laplace_get_freq1(
-    fs0: libc::c_uint,
-    decay: libc::c_int,
-) -> libc::c_uint {
+unsafe extern "C" fn ec_laplace_get_freq1(fs0: libc::c_uint, decay: libc::c_int) -> libc::c_uint {
     let mut ft: libc::c_uint = 0;
     ft = ((32768 as libc::c_int - LAPLACE_MINP * (2 as libc::c_int * LAPLACE_NMIN))
         as libc::c_uint)
         .wrapping_sub(fs0);
-    return ft.wrapping_mul((16384 as libc::c_int - decay) as libc::c_uint)
-        >> 15 as libc::c_int;
+    return ft.wrapping_mul((16384 as libc::c_int - decay) as libc::c_uint) >> 15 as libc::c_int;
 }
 #[no_mangle]
 #[c2rust::src_loc = "51:1"]
@@ -140,10 +136,8 @@ pub unsafe extern "C" fn ec_laplace_encode(
         i = 1 as libc::c_int;
         while fs > 0 as libc::c_int as libc::c_uint && i < val {
             fs = fs.wrapping_mul(2 as libc::c_int as libc::c_uint);
-            fl = fl
-                .wrapping_add(
-                    fs.wrapping_add((2 as libc::c_int * LAPLACE_MINP) as libc::c_uint),
-                );
+            fl =
+                fl.wrapping_add(fs.wrapping_add((2 as libc::c_int * LAPLACE_MINP) as libc::c_uint));
             fs = fs.wrapping_mul(decay as libc::c_uint) >> 15 as libc::c_int;
             i += 1;
         }
@@ -153,19 +147,17 @@ pub unsafe extern "C" fn ec_laplace_encode(
             ndi_max = ((32768 as libc::c_int as libc::c_uint)
                 .wrapping_sub(fl)
                 .wrapping_add(LAPLACE_MINP as libc::c_uint)
-                .wrapping_sub(1 as libc::c_int as libc::c_uint) >> LAPLACE_LOG_MINP)
-                as libc::c_int;
+                .wrapping_sub(1 as libc::c_int as libc::c_uint)
+                >> LAPLACE_LOG_MINP) as libc::c_int;
             ndi_max = ndi_max - s >> 1 as libc::c_int;
             di = if val - i < ndi_max - 1 as libc::c_int {
                 val - i
             } else {
                 ndi_max - 1 as libc::c_int
             };
-            fl = fl
-                .wrapping_add(
-                    ((2 as libc::c_int * di + 1 as libc::c_int + s) * LAPLACE_MINP)
-                        as libc::c_uint,
-                );
+            fl = fl.wrapping_add(
+                ((2 as libc::c_int * di + 1 as libc::c_int + s) * LAPLACE_MINP) as libc::c_uint,
+            );
             fs = if (((1 as libc::c_int) << 0 as libc::c_int) as libc::c_uint)
                 < (32768 as libc::c_int as libc::c_uint).wrapping_sub(fl)
             {
@@ -193,7 +185,12 @@ pub unsafe extern "C" fn ec_laplace_encode(
             );
         }
     }
-    ec_encode_bin(enc, fl, fl.wrapping_add(fs), 15 as libc::c_int as libc::c_uint);
+    ec_encode_bin(
+        enc,
+        fl,
+        fl.wrapping_add(fs),
+        15 as libc::c_int as libc::c_uint,
+    );
 }
 #[no_mangle]
 #[c2rust::src_loc = "94:1"]
@@ -210,8 +207,7 @@ pub unsafe extern "C" fn ec_laplace_decode(
     if fm >= fs {
         val += 1;
         fl = fs;
-        fs = (ec_laplace_get_freq1(fs, decay))
-            .wrapping_add(LAPLACE_MINP as libc::c_uint);
+        fs = (ec_laplace_get_freq1(fs, decay)).wrapping_add(LAPLACE_MINP as libc::c_uint);
         while fs > LAPLACE_MINP as libc::c_uint
             && fm >= fl.wrapping_add((2 as libc::c_int as libc::c_uint).wrapping_mul(fs))
         {
@@ -219,14 +215,14 @@ pub unsafe extern "C" fn ec_laplace_decode(
             fl = fl.wrapping_add(fs);
             fs = fs
                 .wrapping_sub((2 as libc::c_int * LAPLACE_MINP) as libc::c_uint)
-                .wrapping_mul(decay as libc::c_uint) >> 15 as libc::c_int;
+                .wrapping_mul(decay as libc::c_uint)
+                >> 15 as libc::c_int;
             fs = fs.wrapping_add(LAPLACE_MINP as libc::c_uint);
             val += 1;
         }
         if fs <= LAPLACE_MINP as libc::c_uint {
             let mut di: libc::c_int = 0;
-            di = (fm.wrapping_sub(fl) >> LAPLACE_LOG_MINP + 1 as libc::c_int)
-                as libc::c_int;
+            di = (fm.wrapping_sub(fl) >> LAPLACE_LOG_MINP + 1 as libc::c_int) as libc::c_int;
             val += di;
             fl = fl.wrapping_add((2 as libc::c_int * di * LAPLACE_MINP) as libc::c_uint);
         }
@@ -265,8 +261,7 @@ pub unsafe extern "C" fn ec_laplace_decode(
         }))
     {
         celt_fatal(
-            b"assertion failed: fm<IMIN(fl+fs,32768)\0" as *const u8
-                as *const libc::c_char,
+            b"assertion failed: fm<IMIN(fl+fs,32768)\0" as *const u8 as *const libc::c_char,
             b"celt/laplace.c\0" as *const u8 as *const libc::c_char,
             131 as libc::c_int,
         );

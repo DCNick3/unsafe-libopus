@@ -73,9 +73,9 @@ pub mod modes_h {
         pub bits: *const libc::c_uchar,
         pub caps: *const libc::c_uchar,
     }
-    use super::opus_types_h::{opus_int32, opus_int16};
     use super::arch_h::opus_val16;
     use super::mdct_h::mdct_lookup;
+    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:33"]
 pub mod mdct_h {
@@ -153,9 +153,7 @@ pub mod entcode_h {
     }
     #[inline]
     #[c2rust::src_loc = "97:1"]
-    pub unsafe extern "C" fn ec_get_buffer(
-        mut _this: *mut ec_ctx,
-    ) -> *mut libc::c_uchar {
+    pub unsafe extern "C" fn ec_get_buffer(mut _this: *mut ec_ctx) -> *mut libc::c_uchar {
         return (*_this).buf;
     }
     #[inline]
@@ -164,8 +162,7 @@ pub mod entcode_h {
         return (*_this).nbits_total - (EC_CLZ0 - ((*_this).rng).leading_zeros() as i32);
     }
     use super::opus_types_h::opus_uint32;
-    
-    
+
     use super::ecintrin_h::EC_CLZ0;
     extern "C" {
         #[c2rust::src_loc = "121:1"]
@@ -190,8 +187,8 @@ pub mod limits_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:33"]
 pub mod ecintrin_h {
     #[c2rust::src_loc = "69:11"]
-    pub const EC_CLZ0: libc::c_int = ::core::mem::size_of::<libc::c_uint>()
-        as libc::c_ulong as libc::c_int * CHAR_BIT;
+    pub const EC_CLZ0: libc::c_int =
+        ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:33"]
@@ -200,11 +197,7 @@ pub mod entenc_h {
     use super::opus_types_h::opus_uint32;
     extern "C" {
         #[c2rust::src_loc = "56:1"]
-        pub fn ec_enc_bit_logp(
-            _this: *mut ec_enc,
-            _val: libc::c_int,
-            _logp: libc::c_uint,
-        );
+        pub fn ec_enc_bit_logp(_this: *mut ec_enc, _val: libc::c_int, _logp: libc::c_uint);
         #[c2rust::src_loc = "65:1"]
         pub fn ec_enc_icdf(
             _this: *mut ec_enc,
@@ -253,7 +246,7 @@ pub mod stdlib_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/laplace.h:34"]
 pub mod laplace_h {
-    use super::entcode_h::{ec_enc, ec_dec};
+    use super::entcode_h::{ec_dec, ec_enc};
     extern "C" {
         #[c2rust::src_loc = "39:1"]
         pub fn ec_laplace_encode(
@@ -285,29 +278,28 @@ pub mod rate_h {
     #[c2rust::src_loc = "37:9"]
     pub const MAX_FINE_BITS: libc::c_int = 8 as libc::c_int;
 }
-pub use self::types_h::{__int16_t, __int32_t, __uint32_t};
+pub use self::arch_h::{celt_ener, opus_val16, opus_val32};
+pub use self::ecintrin_h::EC_CLZ0;
+pub use self::entcode_h::{
+    ec_ctx, ec_dec, ec_enc, ec_get_buffer, ec_range_bytes, ec_tell, ec_tell_frac, ec_window,
+};
+use self::entdec_h::{ec_dec_bit_logp, ec_dec_bits, ec_dec_icdf};
+use self::entenc_h::{ec_enc_bit_logp, ec_enc_bits, ec_enc_icdf};
+pub use self::internal::__CHAR_BIT__;
+pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
+use self::laplace_h::{ec_laplace_decode, ec_laplace_encode};
+pub use self::limits_h::CHAR_BIT;
+use self::mathcalls_h::{floor, log};
+pub use self::mdct_h::mdct_lookup;
+pub use self::modes_h::{OpusCustomMode, PulseCache};
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32};
+pub use self::rate_h::MAX_FINE_BITS;
+pub use self::stack_alloc_h::ALLOC_NONE;
 pub use self::stdint_intn_h::{int16_t, int32_t};
 pub use self::stdint_uintn_h::uint32_t;
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32};
-pub use self::arch_h::{opus_val16, opus_val32, celt_ener};
-pub use self::modes_h::{OpusCustomMode, PulseCache};
-pub use self::mdct_h::mdct_lookup;
-pub use self::kiss_fft_h::{kiss_fft_state, arch_fft_state, kiss_twiddle_cpx};
-pub use self::entcode_h::{
-    ec_window, ec_ctx, ec_enc, ec_dec, ec_range_bytes, ec_get_buffer, ec_tell,
-    ec_tell_frac,
-};
-use self::mathcalls_h::{log, floor};
-pub use self::limits_h::CHAR_BIT;
-pub use self::ecintrin_h::EC_CLZ0;
-use self::entenc_h::{ec_enc_bit_logp, ec_enc_icdf, ec_enc_bits};
-use self::entdec_h::{ec_dec_bit_logp, ec_dec_icdf, ec_dec_bits};
-use self::string_h::memcpy;
 use self::stdlib_h::abs;
-use self::laplace_h::{ec_laplace_encode, ec_laplace_decode};
-pub use self::internal::__CHAR_BIT__;
-pub use self::stack_alloc_h::ALLOC_NONE;
-pub use self::rate_h::MAX_FINE_BITS;
+use self::string_h::memcpy;
+pub use self::types_h::{__int16_t, __int32_t, __uint32_t};
 #[no_mangle]
 #[c2rust::src_loc = "53:18"]
 pub static mut eMeans: [opus_val16; 25] = [
@@ -352,8 +344,8 @@ static mut beta_coef: [opus_val16; 4] = [
     (6554 as libc::c_int as libc::c_double / 32768.0f64) as opus_val16,
 ];
 #[c2rust::src_loc = "69:25"]
-static mut beta_intra: opus_val16 = (4915 as libc::c_int as libc::c_double / 32768.0f64)
-    as opus_val16;
+static mut beta_intra: opus_val16 =
+    (4915 as libc::c_int as libc::c_double / 32768.0f64) as opus_val16;
 #[c2rust::src_loc = "77:28"]
 static mut e_prob_model: [[[libc::c_uchar; 42]; 2]; 4] = [
     [
@@ -739,8 +731,8 @@ unsafe extern "C" fn loss_distortion(
     loop {
         i = start;
         while i < end {
-            let d: opus_val16 = *eBands.offset((i + c * len) as isize)
-                - *oldEBands.offset((i + c * len) as isize);
+            let d: opus_val16 =
+                *eBands.offset((i + c * len) as isize) - *oldEBands.offset((i + c * len) as isize);
             dist = dist + d * d;
             i += 1;
         }
@@ -813,9 +805,7 @@ unsafe extern "C" fn quant_coarse_energy_impl(
             };
             f = x - coef * oldE - prev[c as usize];
             qi = floor((0.5f32 + f) as libc::c_double) as libc::c_int;
-            decay_bound = (if -28.0f32
-                > *oldEBands.offset((i + c * (*m).nbEBands) as isize)
-            {
+            decay_bound = (if -28.0f32 > *oldEBands.offset((i + c * (*m).nbEBands) as isize) {
                 -28.0f32
             } else {
                 *oldEBands.offset((i + c * (*m).nbEBands) as isize)
@@ -831,31 +821,50 @@ unsafe extern "C" fn quant_coarse_energy_impl(
             bits_left = budget - tell - 3 as libc::c_int * C * (end - i);
             if i != start && bits_left < 30 as libc::c_int {
                 if bits_left < 24 as libc::c_int {
-                    qi = if (1 as libc::c_int) < qi { 1 as libc::c_int } else { qi };
+                    qi = if (1 as libc::c_int) < qi {
+                        1 as libc::c_int
+                    } else {
+                        qi
+                    };
                 }
                 if bits_left < 16 as libc::c_int {
-                    qi = if -(1 as libc::c_int) > qi { -(1 as libc::c_int) } else { qi };
+                    qi = if -(1 as libc::c_int) > qi {
+                        -(1 as libc::c_int)
+                    } else {
+                        qi
+                    };
                 }
             }
             if lfe != 0 && i >= 2 as libc::c_int {
-                qi = if qi < 0 as libc::c_int { qi } else { 0 as libc::c_int };
+                qi = if qi < 0 as libc::c_int {
+                    qi
+                } else {
+                    0 as libc::c_int
+                };
             }
             if budget - tell >= 15 as libc::c_int {
                 let mut pi: libc::c_int = 0;
                 pi = 2 as libc::c_int
-                    * (if i < 20 as libc::c_int { i } else { 20 as libc::c_int });
+                    * (if i < 20 as libc::c_int {
+                        i
+                    } else {
+                        20 as libc::c_int
+                    });
                 ec_laplace_encode(
                     enc,
                     &mut qi,
-                    ((*prob_model.offset(pi as isize) as libc::c_int)
-                        << 7 as libc::c_int) as libc::c_uint,
+                    ((*prob_model.offset(pi as isize) as libc::c_int) << 7 as libc::c_int)
+                        as libc::c_uint,
                     (*prob_model.offset((pi + 1 as libc::c_int) as isize) as libc::c_int)
                         << 6 as libc::c_int,
                 );
             } else if budget - tell >= 2 as libc::c_int {
                 qi = if -(1 as libc::c_int)
-                    > (if qi < 1 as libc::c_int { qi } else { 1 as libc::c_int })
-                {
+                    > (if qi < 1 as libc::c_int {
+                        qi
+                    } else {
+                        1 as libc::c_int
+                    }) {
                     -(1 as libc::c_int)
                 } else if qi < 1 as libc::c_int {
                     qi
@@ -869,7 +878,11 @@ unsafe extern "C" fn quant_coarse_energy_impl(
                     2 as libc::c_int as libc::c_uint,
                 );
             } else if budget - tell >= 1 as libc::c_int {
-                qi = if (0 as libc::c_int) < qi { 0 as libc::c_int } else { qi };
+                qi = if (0 as libc::c_int) < qi {
+                    0 as libc::c_int
+                } else {
+                    qi
+                };
                 ec_enc_bit_logp(enc, -qi, 1 as libc::c_int as libc::c_uint);
             } else {
                 qi = -(1 as libc::c_int);
@@ -955,9 +968,9 @@ pub unsafe extern "C" fn quant_coarse_energy(
     }
     enc_start_state = *enc;
     let vla = (C * (*m).nbEBands) as usize;
-    let mut oldEBands_intra: Vec::<opus_val16> = ::std::vec::from_elem(0., vla);
+    let mut oldEBands_intra: Vec<opus_val16> = ::std::vec::from_elem(0., vla);
     let vla_0 = (C * (*m).nbEBands) as usize;
-    let mut error_intra: Vec::<opus_val16> = ::std::vec::from_elem(0., vla_0);
+    let mut error_intra: Vec<opus_val16> = ::std::vec::from_elem(0., vla_0);
     memcpy(
         oldEBands_intra.as_mut_ptr() as *mut libc::c_void,
         oldEBands as *const libc::c_void,
@@ -965,8 +978,8 @@ pub unsafe extern "C" fn quant_coarse_energy(
             .wrapping_mul(::core::mem::size_of::<opus_val16>() as libc::c_ulong)
             .wrapping_add(
                 (0 as libc::c_int as libc::c_long
-                    * oldEBands_intra.as_mut_ptr().offset_from(oldEBands)
-                        as libc::c_long) as libc::c_ulong,
+                    * oldEBands_intra.as_mut_ptr().offset_from(oldEBands) as libc::c_long)
+                    as libc::c_ulong,
             ),
     );
     if two_pass != 0 || intra != 0 {
@@ -1019,7 +1032,7 @@ pub unsafe extern "C" fn quant_coarse_energy(
             save_bytes = ALLOC_NONE as opus_uint32;
         }
         let vla_1 = save_bytes as usize;
-        let mut intra_bits: Vec::<libc::c_uchar> = ::std::vec::from_elem(0, vla_1);
+        let mut intra_bits: Vec<libc::c_uchar> = ::std::vec::from_elem(0, vla_1);
         memcpy(
             intra_bits.as_mut_ptr() as *mut libc::c_void,
             intra_buf as *const libc::c_void,
@@ -1059,13 +1072,11 @@ pub unsafe extern "C" fn quant_coarse_energy(
                 intra_buf as *mut libc::c_void,
                 intra_bits.as_mut_ptr() as *const libc::c_void,
                 (nintra_bytes.wrapping_sub(nstart_bytes) as libc::c_ulong)
-                    .wrapping_mul(
-                        ::core::mem::size_of::<libc::c_uchar>() as libc::c_ulong,
-                    )
+                    .wrapping_mul(::core::mem::size_of::<libc::c_uchar>() as libc::c_ulong)
                     .wrapping_add(
                         (0 as libc::c_int as libc::c_long
-                            * intra_buf.offset_from(intra_bits.as_mut_ptr())
-                                as libc::c_long) as libc::c_ulong,
+                            * intra_buf.offset_from(intra_bits.as_mut_ptr()) as libc::c_long)
+                            as libc::c_ulong,
                     ),
             );
             memcpy(
@@ -1075,8 +1086,8 @@ pub unsafe extern "C" fn quant_coarse_energy(
                     .wrapping_mul(::core::mem::size_of::<opus_val16>() as libc::c_ulong)
                     .wrapping_add(
                         (0 as libc::c_int as libc::c_long
-                            * oldEBands.offset_from(oldEBands_intra.as_mut_ptr())
-                                as libc::c_long) as libc::c_ulong,
+                            * oldEBands.offset_from(oldEBands_intra.as_mut_ptr()) as libc::c_long)
+                            as libc::c_ulong,
                     ),
             );
             memcpy(
@@ -1086,8 +1097,8 @@ pub unsafe extern "C" fn quant_coarse_energy(
                     .wrapping_mul(::core::mem::size_of::<opus_val16>() as libc::c_ulong)
                     .wrapping_add(
                         (0 as libc::c_int as libc::c_long
-                            * error.offset_from(error_intra.as_mut_ptr())
-                                as libc::c_long) as libc::c_ulong,
+                            * error.offset_from(error_intra.as_mut_ptr()) as libc::c_long)
+                            as libc::c_ulong,
                     ),
             );
             intra = 1 as libc::c_int;
@@ -1100,8 +1111,8 @@ pub unsafe extern "C" fn quant_coarse_energy(
                 .wrapping_mul(::core::mem::size_of::<opus_val16>() as libc::c_ulong)
                 .wrapping_add(
                     (0 as libc::c_int as libc::c_long
-                        * oldEBands.offset_from(oldEBands_intra.as_mut_ptr())
-                            as libc::c_long) as libc::c_ulong,
+                        * oldEBands.offset_from(oldEBands_intra.as_mut_ptr()) as libc::c_long)
+                        as libc::c_ulong,
                 ),
         );
         memcpy(
@@ -1119,8 +1130,8 @@ pub unsafe extern "C" fn quant_coarse_energy(
     if intra != 0 {
         *delayedIntra = new_distortion;
     } else {
-        *delayedIntra = pred_coef[LM as usize] * pred_coef[LM as usize] * *delayedIntra
-            + new_distortion;
+        *delayedIntra =
+            pred_coef[LM as usize] * pred_coef[LM as usize] * *delayedIntra + new_distortion;
     };
 }
 #[no_mangle]
@@ -1139,8 +1150,7 @@ pub unsafe extern "C" fn quant_fine_energy(
     let mut c: libc::c_int = 0;
     i = start;
     while i < end {
-        let frac: opus_int16 = ((1 as libc::c_int) << *fine_quant.offset(i as isize))
-            as opus_int16;
+        let frac: opus_int16 = ((1 as libc::c_int) << *fine_quant.offset(i as isize)) as opus_int16;
         if !(*fine_quant.offset(i as isize) <= 0 as libc::c_int) {
             c = 0 as libc::c_int;
             loop {
@@ -1148,7 +1158,8 @@ pub unsafe extern "C" fn quant_fine_energy(
                 let mut offset: opus_val16 = 0.;
                 q2 = floor(
                     ((*error.offset((i + c * (*m).nbEBands) as isize) + 0.5f32)
-                        * frac as libc::c_int as libc::c_float) as libc::c_double,
+                        * frac as libc::c_int as libc::c_float)
+                        as libc::c_double,
                 ) as libc::c_int;
                 if q2 > frac as libc::c_int - 1 as libc::c_int {
                     q2 = frac as libc::c_int - 1 as libc::c_int;
@@ -1162,10 +1173,10 @@ pub unsafe extern "C" fn quant_fine_energy(
                     *fine_quant.offset(i as isize) as libc::c_uint,
                 );
                 offset = (q2 as libc::c_float + 0.5f32)
-                    * ((1 as libc::c_int)
-                        << 14 as libc::c_int - *fine_quant.offset(i as isize))
+                    * ((1 as libc::c_int) << 14 as libc::c_int - *fine_quant.offset(i as isize))
                         as libc::c_float
-                    * (1.0f32 / 16384 as libc::c_int as libc::c_float) - 0.5f32;
+                    * (1.0f32 / 16384 as libc::c_int as libc::c_float)
+                    - 0.5f32;
                 let ref mut fresh0 = *oldEBands.offset((i + c * (*m).nbEBands) as isize);
                 *fresh0 += offset;
                 let ref mut fresh1 = *error.offset((i + c * (*m).nbEBands) as isize);
@@ -1214,18 +1225,14 @@ pub unsafe extern "C" fn quant_energy_finalise(
                     } else {
                         1 as libc::c_int
                     };
-                    ec_enc_bits(
-                        enc,
-                        q2 as opus_uint32,
-                        1 as libc::c_int as libc::c_uint,
-                    );
+                    ec_enc_bits(enc, q2 as opus_uint32, 1 as libc::c_int as libc::c_uint);
                     offset = (q2 as libc::c_float - 0.5f32)
                         * ((1 as libc::c_int)
-                            << 14 as libc::c_int - *fine_quant.offset(i as isize)
+                            << 14 as libc::c_int
+                                - *fine_quant.offset(i as isize)
                                 - 1 as libc::c_int) as libc::c_float
                         * (1.0f32 / 16384 as libc::c_int as libc::c_float);
-                    let ref mut fresh2 = *oldEBands
-                        .offset((i + c * (*m).nbEBands) as isize);
+                    let ref mut fresh2 = *oldEBands.offset((i + c * (*m).nbEBands) as isize);
                     *fresh2 += offset;
                     let ref mut fresh3 = *error.offset((i + c * (*m).nbEBands) as isize);
                     *fresh3 -= offset;
@@ -1253,9 +1260,7 @@ pub unsafe extern "C" fn unquant_coarse_energy(
     C: libc::c_int,
     LM: libc::c_int,
 ) {
-    let prob_model: *const libc::c_uchar = (e_prob_model[LM
-        as usize][intra as usize])
-        .as_ptr();
+    let prob_model: *const libc::c_uchar = (e_prob_model[LM as usize][intra as usize]).as_ptr();
     let mut i: libc::c_int = 0;
     let mut c: libc::c_int = 0;
     let mut prev: [opus_val32; 2] = [
@@ -1273,8 +1278,7 @@ pub unsafe extern "C" fn unquant_coarse_energy(
         beta = beta_coef[LM as usize];
         coef = pred_coef[LM as usize];
     }
-    budget = ((*dec).storage).wrapping_mul(8 as libc::c_int as libc::c_uint)
-        as opus_int32;
+    budget = ((*dec).storage).wrapping_mul(8 as libc::c_int as libc::c_uint) as opus_int32;
     i = start;
     while i < end {
         c = 0 as libc::c_int;
@@ -1286,11 +1290,15 @@ pub unsafe extern "C" fn unquant_coarse_energy(
             if budget - tell >= 15 as libc::c_int {
                 let mut pi: libc::c_int = 0;
                 pi = 2 as libc::c_int
-                    * (if i < 20 as libc::c_int { i } else { 20 as libc::c_int });
+                    * (if i < 20 as libc::c_int {
+                        i
+                    } else {
+                        20 as libc::c_int
+                    });
                 qi = ec_laplace_decode(
                     dec,
-                    ((*prob_model.offset(pi as isize) as libc::c_int)
-                        << 7 as libc::c_int) as libc::c_uint,
+                    ((*prob_model.offset(pi as isize) as libc::c_int) << 7 as libc::c_int)
+                        as libc::c_uint,
                     (*prob_model.offset((pi + 1 as libc::c_int) as isize) as libc::c_int)
                         << 6 as libc::c_int,
                 );
@@ -1307,16 +1315,13 @@ pub unsafe extern "C" fn unquant_coarse_energy(
                 qi = -(1 as libc::c_int);
             }
             q = qi as opus_val32;
-            *oldEBands
-                .offset(
-                    (i + c * (*m).nbEBands) as isize,
-                ) = if -9.0f32 > *oldEBands.offset((i + c * (*m).nbEBands) as isize) {
-                -9.0f32
-            } else {
-                *oldEBands.offset((i + c * (*m).nbEBands) as isize)
-            };
-            tmp = coef * *oldEBands.offset((i + c * (*m).nbEBands) as isize)
-                + prev[c as usize] + q;
+            *oldEBands.offset((i + c * (*m).nbEBands) as isize) =
+                if -9.0f32 > *oldEBands.offset((i + c * (*m).nbEBands) as isize) {
+                    -9.0f32
+                } else {
+                    *oldEBands.offset((i + c * (*m).nbEBands) as isize)
+                };
+            tmp = coef * *oldEBands.offset((i + c * (*m).nbEBands) as isize) + prev[c as usize] + q;
             *oldEBands.offset((i + c * (*m).nbEBands) as isize) = tmp;
             prev[c as usize] = prev[c as usize] + q - beta * q;
             c += 1;
@@ -1347,13 +1352,13 @@ pub unsafe extern "C" fn unquant_fine_energy(
             loop {
                 let mut q2: libc::c_int = 0;
                 let mut offset: opus_val16 = 0.;
-                q2 = ec_dec_bits(dec, *fine_quant.offset(i as isize) as libc::c_uint)
-                    as libc::c_int;
+                q2 =
+                    ec_dec_bits(dec, *fine_quant.offset(i as isize) as libc::c_uint) as libc::c_int;
                 offset = (q2 as libc::c_float + 0.5f32)
-                    * ((1 as libc::c_int)
-                        << 14 as libc::c_int - *fine_quant.offset(i as isize))
+                    * ((1 as libc::c_int) << 14 as libc::c_int - *fine_quant.offset(i as isize))
                         as libc::c_float
-                    * (1.0f32 / 16384 as libc::c_int as libc::c_float) - 0.5f32;
+                    * (1.0f32 / 16384 as libc::c_int as libc::c_float)
+                    - 0.5f32;
                 let ref mut fresh4 = *oldEBands.offset((i + c * (*m).nbEBands) as isize);
                 *fresh4 += offset;
                 c += 1;
@@ -1392,15 +1397,14 @@ pub unsafe extern "C" fn unquant_energy_finalise(
                 loop {
                     let mut q2: libc::c_int = 0;
                     let mut offset: opus_val16 = 0.;
-                    q2 = ec_dec_bits(dec, 1 as libc::c_int as libc::c_uint)
-                        as libc::c_int;
+                    q2 = ec_dec_bits(dec, 1 as libc::c_int as libc::c_uint) as libc::c_int;
                     offset = (q2 as libc::c_float - 0.5f32)
                         * ((1 as libc::c_int)
-                            << 14 as libc::c_int - *fine_quant.offset(i as isize)
+                            << 14 as libc::c_int
+                                - *fine_quant.offset(i as isize)
                                 - 1 as libc::c_int) as libc::c_float
                         * (1.0f32 / 16384 as libc::c_int as libc::c_float);
-                    let ref mut fresh5 = *oldEBands
-                        .offset((i + c * (*m).nbEBands) as isize);
+                    let ref mut fresh5 = *oldEBands.offset((i + c * (*m).nbEBands) as isize);
                     *fresh5 += offset;
                     bits_left -= 1;
                     c += 1;
@@ -1430,12 +1434,10 @@ pub unsafe extern "C" fn amp2Log2(
     loop {
         i = 0 as libc::c_int;
         while i < effEnd {
-            *bandLogE
-                .offset(
-                    (i + c * (*m).nbEBands) as isize,
-                ) = (1.442695040888963387f64
+            *bandLogE.offset((i + c * (*m).nbEBands) as isize) = (1.442695040888963387f64
                 * log(*bandE.offset((i + c * (*m).nbEBands) as isize) as libc::c_double))
-                as libc::c_float - eMeans[i as usize];
+                as libc::c_float
+                - eMeans[i as usize];
             i += 1;
         }
         i = effEnd;
@@ -1447,5 +1449,5 @@ pub unsafe extern "C" fn amp2Log2(
         if !(c < C) {
             break;
         }
-    };
+    }
 }

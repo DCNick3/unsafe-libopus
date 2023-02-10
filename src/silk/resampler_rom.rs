@@ -16,9 +16,9 @@ pub mod opus_types_h {
     pub type opus_int16 = int16_t;
     use super::stdint_intn_h::int16_t;
 }
-pub use self::types_h::__int16_t;
-pub use self::stdint_intn_h::int16_t;
 pub use self::opus_types_h::opus_int16;
+pub use self::stdint_intn_h::int16_t;
+pub use self::types_h::__int16_t;
 #[no_mangle]
 #[c2rust::src_loc = "43:35"]
 pub static mut silk_Resampler_3_4_COEFS: [opus_int16; 29] = [

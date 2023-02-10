@@ -91,9 +91,9 @@ pub mod modes_h {
         pub bits: *const libc::c_uchar,
         pub caps: *const libc::c_uchar,
     }
-    use super::opus_types_h::{opus_int32, opus_int16};
     use super::arch_h::opus_val16;
     use super::mdct_h::mdct_lookup;
+    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:35"]
 pub mod mdct_h {
@@ -166,23 +166,17 @@ pub mod entcode_h {
     pub type ec_dec = ec_ctx;
     #[inline]
     #[c2rust::src_loc = "124:1"]
-    pub unsafe extern "C" fn celt_udiv(
-        n: opus_uint32,
-        d: opus_uint32,
-    ) -> opus_uint32 {
+    pub unsafe extern "C" fn celt_udiv(n: opus_uint32, d: opus_uint32) -> opus_uint32 {
         return n.wrapping_div(d);
     }
     #[inline]
     #[c2rust::src_loc = "140:1"]
-    pub unsafe extern "C" fn celt_sudiv(
-        n: opus_int32,
-        d: opus_int32,
-    ) -> opus_int32 {
+    pub unsafe extern "C" fn celt_sudiv(n: opus_int32, d: opus_int32) -> opus_int32 {
         return n / d;
     }
     #[c2rust::src_loc = "57:10"]
     pub const BITRES: libc::c_int = 3 as libc::c_int;
-    use super::opus_types_h::{opus_uint32, opus_int32};
+    use super::opus_types_h::{opus_int32, opus_uint32};
     extern "C" {
         #[c2rust::src_loc = "121:1"]
         pub fn ec_tell_frac(_this: *mut ec_ctx) -> opus_uint32;
@@ -206,8 +200,8 @@ pub mod limits_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:35"]
 pub mod ecintrin_h {
     #[c2rust::src_loc = "69:11"]
-    pub const EC_CLZ0: libc::c_int = ::core::mem::size_of::<libc::c_uint>()
-        as libc::c_ulong as libc::c_int * CHAR_BIT;
+    pub const EC_CLZ0: libc::c_int =
+        ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:35"]
@@ -223,11 +217,7 @@ pub mod entenc_h {
             _ft: libc::c_uint,
         );
         #[c2rust::src_loc = "56:1"]
-        pub fn ec_enc_bit_logp(
-            _this: *mut ec_enc,
-            _val: libc::c_int,
-            _logp: libc::c_uint,
-        );
+        pub fn ec_enc_bit_logp(_this: *mut ec_enc, _val: libc::c_int, _logp: libc::c_uint);
         #[c2rust::src_loc = "71:1"]
         pub fn ec_enc_uint(_this: *mut ec_enc, _fl: opus_uint32, _ft: opus_uint32);
         #[c2rust::src_loc = "77:1"]
@@ -264,8 +254,7 @@ pub mod rate_h {
         return if i < 8 as libc::c_int {
             i
         } else {
-            8 as libc::c_int + (i & 7 as libc::c_int)
-                << (i >> 3 as libc::c_int) - 1 as libc::c_int
+            8 as libc::c_int + (i & 7 as libc::c_int) << (i >> 3 as libc::c_int) - 1 as libc::c_int
         };
     }
     #[inline]
@@ -281,11 +270,10 @@ pub mod rate_h {
         let mut hi: libc::c_int = 0;
         let mut cache: *const libc::c_uchar = 0 as *const libc::c_uchar;
         LM += 1;
-        cache = ((*m).cache.bits)
-            .offset(
-                *((*m).cache.index).offset((LM * (*m).nbEBands + band) as isize)
-                    as libc::c_int as isize,
-            );
+        cache = ((*m).cache.bits).offset(
+            *((*m).cache.index).offset((LM * (*m).nbEBands + band) as isize) as libc::c_int
+                as isize,
+        );
         lo = 0 as libc::c_int;
         hi = *cache.offset(0 as libc::c_int as isize) as libc::c_int;
         bits -= 1;
@@ -304,11 +292,12 @@ pub mod rate_h {
                 -(1 as libc::c_int)
             } else {
                 *cache.offset(lo as isize) as libc::c_int
-            }) <= *cache.offset(hi as isize) as libc::c_int - bits
+            })
+            <= *cache.offset(hi as isize) as libc::c_int - bits
         {
-            return lo
+            return lo;
         } else {
-            return hi
+            return hi;
         };
     }
     #[c2rust::src_loc = "33:9"]
@@ -323,11 +312,10 @@ pub mod rate_h {
     ) -> libc::c_int {
         let mut cache: *const libc::c_uchar = 0 as *const libc::c_uchar;
         LM += 1;
-        cache = ((*m).cache.bits)
-            .offset(
-                *((*m).cache.index).offset((LM * (*m).nbEBands + band) as isize)
-                    as libc::c_int as isize,
-            );
+        cache = ((*m).cache.bits).offset(
+            *((*m).cache.index).offset((LM * (*m).nbEBands + band) as isize) as libc::c_int
+                as isize,
+        );
         return if pulses == 0 as libc::c_int {
             0 as libc::c_int
         } else {
@@ -339,7 +327,6 @@ pub mod rate_h {
     #[c2rust::src_loc = "40:9"]
     pub const QTHETA_OFFSET: libc::c_int = 4 as libc::c_int;
     use super::modes_h::OpusCustomMode;
-    
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/bands.h:35"]
 pub mod bands_h {
@@ -370,7 +357,7 @@ pub mod internal {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/vq.h:37"]
 pub mod vq_h {
     use super::arch_h::{celt_norm, opus_val16};
-    use super::entcode_h::{ec_enc, ec_dec};
+    use super::entcode_h::{ec_dec, ec_enc};
     extern "C" {
         #[c2rust::src_loc = "62:1"]
         pub fn alg_quant(
@@ -415,11 +402,7 @@ pub mod vq_h {
 pub mod string_h {
     extern "C" {
         #[c2rust::src_loc = "61:14"]
-        pub fn memset(
-            _: *mut libc::c_void,
-            _: libc::c_int,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
+        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
         #[c2rust::src_loc = "43:14"]
         pub fn memcpy(
             _: *mut libc::c_void,
@@ -486,40 +469,37 @@ pub mod pitch_h {
     }
     use super::arch_h::{opus_val16, opus_val32};
 }
-pub use self::types_h::{__int16_t, __int32_t, __uint32_t};
-pub use self::stdint_intn_h::{int16_t, int32_t};
-pub use self::stdint_uintn_h::uint32_t;
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32};
 pub use self::arch_h::{
-    opus_val16, opus_val32, celt_sig, celt_norm, celt_ener, Q15ONE, NORM_SCALING,
-    EPSILON, celt_fatal,
+    celt_ener, celt_fatal, celt_norm, celt_sig, opus_val16, opus_val32, EPSILON, NORM_SCALING,
+    Q15ONE,
 };
-pub use self::modes_h::{OpusCustomMode, PulseCache};
-pub use self::mdct_h::mdct_lookup;
-pub use self::kiss_fft_h::{kiss_fft_state, arch_fft_state, kiss_twiddle_cpx};
-pub use self::entcode_h::{
-    ec_window, ec_ctx, ec_enc, ec_dec, celt_udiv, celt_sudiv, BITRES, ec_tell_frac,
-};
-use self::mathcalls_h::{exp, sqrt};
-pub use self::limits_h::CHAR_BIT;
+pub use self::bands_h::{SPREAD_AGGRESSIVE, SPREAD_LIGHT, SPREAD_NONE, SPREAD_NORMAL};
 pub use self::ecintrin_h::EC_CLZ0;
-use self::entenc_h::{ec_encode, ec_enc_bit_logp, ec_enc_uint, ec_enc_bits};
-use self::entdec_h::{
-    ec_decode, ec_dec_update, ec_dec_bit_logp, ec_dec_uint, ec_dec_bits,
+pub use self::entcode_h::{
+    celt_sudiv, celt_udiv, ec_ctx, ec_dec, ec_enc, ec_tell_frac, ec_window, BITRES,
 };
+use self::entdec_h::{ec_dec_bit_logp, ec_dec_bits, ec_dec_uint, ec_dec_update, ec_decode};
+use self::entenc_h::{ec_enc_bit_logp, ec_enc_bits, ec_enc_uint, ec_encode};
+pub use self::internal::__CHAR_BIT__;
+pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
+pub use self::limits_h::CHAR_BIT;
+use self::mathcalls_h::{exp, sqrt};
+use self::mathops_h::isqrt32;
+pub use self::mdct_h::mdct_lookup;
+pub use self::modes_h::{OpusCustomMode, PulseCache};
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32};
+pub use self::pitch_h::{celt_inner_prod_c, dual_inner_prod_c};
+use self::quant_bands_h::eMeans;
 pub use self::rate_h::{
-    get_pulses, bits2pulses, LOG_MAX_PSEUDO, pulses2bits, QTHETA_OFFSET_TWOPHASE,
-    QTHETA_OFFSET,
+    bits2pulses, get_pulses, pulses2bits, LOG_MAX_PSEUDO, QTHETA_OFFSET, QTHETA_OFFSET_TWOPHASE,
 };
-pub use self::bands_h::{SPREAD_NONE, SPREAD_LIGHT, SPREAD_NORMAL, SPREAD_AGGRESSIVE};
 pub use self::stack_alloc_h::ALLOC_NONE;
 pub use self::stddef_h::NULL;
-pub use self::internal::__CHAR_BIT__;
+pub use self::stdint_intn_h::{int16_t, int32_t};
+pub use self::stdint_uintn_h::uint32_t;
+use self::string_h::{memcpy, memset};
+pub use self::types_h::{__int16_t, __int32_t, __uint32_t};
 use self::vq_h::{alg_quant, alg_unquant, renormalise_vector, stereo_itheta};
-use self::string_h::{memset, memcpy};
-use self::mathops_h::isqrt32;
-use self::quant_bands_h::eMeans;
-pub use self::pitch_h::{dual_inner_prod_c, celt_inner_prod_c};
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "673:8"]
@@ -561,16 +541,13 @@ pub unsafe extern "C" fn hysteresis_decision(
     prev: libc::c_int,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
-    i = 0 as libc::c_int;
     while i < N {
         if val < *thresholds.offset(i as isize) {
             break;
         }
         i += 1;
     }
-    if i > prev
-        && val < *thresholds.offset(prev as isize) + *hysteresis.offset(prev as isize)
-    {
+    if i > prev && val < *thresholds.offset(prev as isize) + *hysteresis.offset(prev as isize) {
         i = prev;
     }
     if i < prev
@@ -605,9 +582,11 @@ pub unsafe extern "C" fn bitexact_cos(x: opus_int16) -> opus_int16 {
                             * (8277 as libc::c_int
                                 + (16384 as libc::c_int
                                     + -(626 as libc::c_int) as opus_int16 as opus_int32
-                                        * x2 as libc::c_int >> 15 as libc::c_int)) as opus_int16
-                                as libc::c_int >> 15 as libc::c_int)) as opus_int16
-                    as libc::c_int >> 15 as libc::c_int)) as opus_int16;
+                                        * x2 as libc::c_int
+                                    >> 15 as libc::c_int))
+                                as opus_int16 as libc::c_int
+                        >> 15 as libc::c_int)) as opus_int16 as libc::c_int
+            >> 15 as libc::c_int)) as opus_int16;
     return (1 as libc::c_int + x2 as libc::c_int) as opus_int16;
 }
 #[no_mangle]
@@ -628,15 +607,17 @@ pub unsafe extern "C" fn bitexact_log2tan(
                 * ((16384 as libc::c_int
                     + isin as opus_int16 as opus_int32
                         * -(2597 as libc::c_int) as opus_int16 as libc::c_int
-                    >> 15 as libc::c_int) + 7932 as libc::c_int) as opus_int16
-                    as libc::c_int >> 15 as libc::c_int)
+                    >> 15 as libc::c_int)
+                    + 7932 as libc::c_int) as opus_int16 as libc::c_int
+            >> 15 as libc::c_int)
         - (16384 as libc::c_int
             + icos as opus_int16 as opus_int32
                 * ((16384 as libc::c_int
                     + icos as opus_int16 as opus_int32
                         * -(2597 as libc::c_int) as opus_int16 as libc::c_int
-                    >> 15 as libc::c_int) + 7932 as libc::c_int) as opus_int16
-                    as libc::c_int >> 15 as libc::c_int);
+                    >> 15 as libc::c_int)
+                    + 7932 as libc::c_int) as opus_int16 as libc::c_int
+            >> 15 as libc::c_int);
 }
 #[no_mangle]
 #[c2rust::src_loc = "159:1"]
@@ -661,30 +642,25 @@ pub unsafe extern "C" fn compute_band_energies(
             let mut sum: opus_val32 = 0.;
             sum = 1e-27f32
                 + celt_inner_prod_c(
-                    &*X
-                        .offset(
-                            (c * N + ((*eBands.offset(i as isize) as libc::c_int) << LM))
-                                as isize,
-                        ),
-                    &*X
-                        .offset(
-                            (c * N + ((*eBands.offset(i as isize) as libc::c_int) << LM))
-                                as isize,
-                        ),
+                    &*X.offset(
+                        (c * N + ((*eBands.offset(i as isize) as libc::c_int) << LM)) as isize,
+                    ),
+                    &*X.offset(
+                        (c * N + ((*eBands.offset(i as isize) as libc::c_int) << LM)) as isize,
+                    ),
                     (*eBands.offset((i + 1 as libc::c_int) as isize) as libc::c_int
-                        - *eBands.offset(i as isize) as libc::c_int) << LM,
+                        - *eBands.offset(i as isize) as libc::c_int)
+                        << LM,
                 );
-            *bandE
-                .offset(
-                    (i + c * (*m).nbEBands) as isize,
-                ) = sqrt(sum as libc::c_double) as libc::c_float;
+            *bandE.offset((i + c * (*m).nbEBands) as isize) =
+                sqrt(sum as libc::c_double) as libc::c_float;
             i += 1;
         }
         c += 1;
         if !(c < C) {
             break;
         }
-    };
+    }
 }
 #[no_mangle]
 #[c2rust::src_loc = "177:1"]
@@ -707,11 +683,10 @@ pub unsafe extern "C" fn normalise_bands(
         i = 0 as libc::c_int;
         while i < end {
             let mut j: libc::c_int = 0;
-            let g: opus_val16 = 1.0f32
-                / (1e-27f32 + *bandE.offset((i + c * (*m).nbEBands) as isize));
+            let g: opus_val16 =
+                1.0f32 / (1e-27f32 + *bandE.offset((i + c * (*m).nbEBands) as isize));
             j = M * *eBands.offset(i as isize) as libc::c_int;
-            while j < M * *eBands.offset((i + 1 as libc::c_int) as isize) as libc::c_int
-            {
+            while j < M * *eBands.offset((i + 1 as libc::c_int) as isize) as libc::c_int {
                 *X.offset((j + c * N) as isize) = *freq.offset((j + c * N) as isize) * g;
                 j += 1;
             }
@@ -721,7 +696,7 @@ pub unsafe extern "C" fn normalise_bands(
         if !(c < C) {
             break;
         }
-    };
+    }
 }
 #[no_mangle]
 #[c2rust::src_loc = "196:1"]
@@ -745,7 +720,11 @@ pub unsafe extern "C" fn denormalise_bands(
     N = M * (*m).shortMdctSize;
     bound = M * *eBands.offset(end as isize) as libc::c_int;
     if downsample != 1 as libc::c_int {
-        bound = if bound < N / downsample { bound } else { N / downsample };
+        bound = if bound < N / downsample {
+            bound
+        } else {
+            N / downsample
+        };
     }
     if silence != 0 {
         bound = 0 as libc::c_int;
@@ -770,10 +749,10 @@ pub unsafe extern "C" fn denormalise_bands(
         j = M * *eBands.offset(i as isize) as libc::c_int;
         band_end = M * *eBands.offset((i + 1 as libc::c_int) as isize) as libc::c_int;
         lg = *bandLogE.offset(i as isize) + eMeans[i as usize];
-        g = exp(
-            0.6931471805599453094f64
-                * (if 32.0f32 < lg { 32.0f32 } else { lg }) as libc::c_double,
-        ) as libc::c_float;
+        g =
+            exp(0.6931471805599453094f64
+                * (if 32.0f32 < lg { 32.0f32 } else { lg }) as libc::c_double)
+                as libc::c_float;
         loop {
             let fresh1 = x;
             x = x.offset(1);
@@ -837,10 +816,8 @@ pub unsafe extern "C" fn anti_collapse(
                 - *((*m).eBands).offset(i as isize) as libc::c_int) as opus_uint32,
         ) >> LM) as libc::c_int;
         thresh = 0.5f32
-            * exp(
-                0.6931471805599453094f64
-                    * (-0.125f32 * depth as libc::c_float) as libc::c_double,
-            ) as libc::c_float;
+            * exp(0.6931471805599453094f64 * (-0.125f32 * depth as libc::c_float) as libc::c_double)
+                as libc::c_float;
         sqrt_1 = 1.0f32 / sqrt((N0 << LM) as libc::c_double) as libc::c_float;
         c = 0 as libc::c_int;
         loop {
@@ -871,9 +848,7 @@ pub unsafe extern "C" fn anti_collapse(
             } else {
                 Ediff
             };
-            r = 2.0f32
-                * exp(0.6931471805599453094f64 * -Ediff as libc::c_double)
-                    as libc::c_float;
+            r = 2.0f32 * exp(0.6931471805599453094f64 * -Ediff as libc::c_double) as libc::c_float;
             if LM == 3 as libc::c_int {
                 r *= 1.41421356f32;
             }
@@ -881,25 +856,22 @@ pub unsafe extern "C" fn anti_collapse(
             r = r * sqrt_1;
             X = X_
                 .offset((c * size) as isize)
-                .offset(
-                    ((*((*m).eBands).offset(i as isize) as libc::c_int) << LM) as isize,
-                );
+                .offset(((*((*m).eBands).offset(i as isize) as libc::c_int) << LM) as isize);
             k = 0 as libc::c_int;
             while k < (1 as libc::c_int) << LM {
                 if *collapse_masks.offset((i * C + c) as isize) as libc::c_int
-                    & (1 as libc::c_int) << k == 0
+                    & (1 as libc::c_int) << k
+                    == 0
                 {
                     j = 0 as libc::c_int;
                     while j < N0 {
                         seed = celt_lcg_rand(seed);
-                        *X
-                            .offset(
-                                ((j << LM) + k) as isize,
-                            ) = if seed & 0x8000 as libc::c_int as libc::c_uint != 0 {
-                            r
-                        } else {
-                            -r
-                        };
+                        *X.offset(((j << LM) + k) as isize) =
+                            if seed & 0x8000 as libc::c_int as libc::c_uint != 0 {
+                                r
+                            } else {
+                                -r
+                            };
                         j += 1;
                     }
                     renormalize = 1 as libc::c_int;
@@ -948,9 +920,8 @@ unsafe extern "C" fn intensity_stereo(
     let mut norm: opus_val16 = 0.;
     left = *bandE.offset(i as isize);
     right = *bandE.offset((i + (*m).nbEBands) as isize);
-    norm = EPSILON
-        + sqrt((1e-15f32 + left * left + right * right) as libc::c_double)
-            as libc::c_float;
+    norm =
+        EPSILON + sqrt((1e-15f32 + left * left + right * right) as libc::c_double) as libc::c_float;
     a1 = left / norm;
     a2 = right / norm;
     j = 0 as libc::c_int;
@@ -964,11 +935,7 @@ unsafe extern "C" fn intensity_stereo(
     }
 }
 #[c2rust::src_loc = "413:1"]
-unsafe extern "C" fn stereo_split(
-    X: *mut celt_norm,
-    Y: *mut celt_norm,
-    N: libc::c_int,
-) {
+unsafe extern "C" fn stereo_split(X: *mut celt_norm, Y: *mut celt_norm, N: libc::c_int) {
     let mut j: libc::c_int = 0;
     j = 0 as libc::c_int;
     while j < N {
@@ -1062,9 +1029,8 @@ pub unsafe extern "C" fn spreading_decision(
         );
     }
     N0 = M * (*m).shortMdctSize;
-    if M
-        * (*eBands.offset(end as isize) as libc::c_int
-            - *eBands.offset((end - 1 as libc::c_int) as isize) as libc::c_int)
+    if M * (*eBands.offset(end as isize) as libc::c_int
+        - *eBands.offset((end - 1 as libc::c_int) as isize) as libc::c_int)
         <= 8 as libc::c_int
     {
         return SPREAD_NONE;
@@ -1076,11 +1042,8 @@ pub unsafe extern "C" fn spreading_decision(
             let mut j: libc::c_int = 0;
             let mut N: libc::c_int = 0;
             let mut tmp: libc::c_int = 0 as libc::c_int;
-            let mut tcount: [libc::c_int; 3] = [
-                0 as libc::c_int,
-                0 as libc::c_int,
-                0 as libc::c_int,
-            ];
+            let mut tcount: [libc::c_int; 3] =
+                [0 as libc::c_int, 0 as libc::c_int, 0 as libc::c_int];
             let x: *const celt_norm = X
                 .offset((M * *eBands.offset(i as isize) as libc::c_int) as isize)
                 .offset((c * N0) as isize);
@@ -1091,8 +1054,7 @@ pub unsafe extern "C" fn spreading_decision(
                 j = 0 as libc::c_int;
                 while j < N {
                     let mut x2N: opus_val32 = 0.;
-                    x2N = *x.offset(j as isize) * *x.offset(j as isize)
-                        * N as opus_val32;
+                    x2N = *x.offset(j as isize) * *x.offset(j as isize) * N as opus_val32;
                     if x2N < 0.25f32 {
                         tcount[0 as libc::c_int as usize] += 1;
                     }
@@ -1105,22 +1067,17 @@ pub unsafe extern "C" fn spreading_decision(
                     j += 1;
                 }
                 if i > (*m).nbEBands - 4 as libc::c_int {
-                    hf_sum = (hf_sum as libc::c_uint)
-                        .wrapping_add(
-                            celt_udiv(
-                                (32 as libc::c_int
-                                    * (tcount[1 as libc::c_int as usize]
-                                        + tcount[0 as libc::c_int as usize])) as opus_uint32,
-                                N as opus_uint32,
-                            ),
-                        ) as libc::c_int as libc::c_int;
+                    hf_sum = (hf_sum as libc::c_uint).wrapping_add(celt_udiv(
+                        (32 as libc::c_int
+                            * (tcount[1 as libc::c_int as usize]
+                                + tcount[0 as libc::c_int as usize]))
+                            as opus_uint32,
+                        N as opus_uint32,
+                    )) as libc::c_int as libc::c_int;
                 }
-                tmp = (2 as libc::c_int * tcount[2 as libc::c_int as usize] >= N)
-                    as libc::c_int
-                    + (2 as libc::c_int * tcount[1 as libc::c_int as usize] >= N)
-                        as libc::c_int
-                    + (2 as libc::c_int * tcount[0 as libc::c_int as usize] >= N)
-                        as libc::c_int;
+                tmp = (2 as libc::c_int * tcount[2 as libc::c_int as usize] >= N) as libc::c_int
+                    + (2 as libc::c_int * tcount[1 as libc::c_int as usize] >= N) as libc::c_int
+                    + (2 as libc::c_int * tcount[0 as libc::c_int as usize] >= N) as libc::c_int;
                 sum += tmp * *spread_weight.offset(i as isize);
                 nbBands += *spread_weight.offset(i as isize);
             }
@@ -1167,13 +1124,16 @@ pub unsafe extern "C" fn spreading_decision(
             546 as libc::c_int,
         );
     }
-    sum = celt_udiv((sum << 8 as libc::c_int) as opus_uint32, nbBands as opus_uint32)
-        as libc::c_int;
+    sum = celt_udiv(
+        (sum << 8 as libc::c_int) as opus_uint32,
+        nbBands as opus_uint32,
+    ) as libc::c_int;
     sum = sum + *average >> 1 as libc::c_int;
     *average = sum;
     sum = 3 as libc::c_int * sum
         + ((3 as libc::c_int - last_decision << 7 as libc::c_int) + 64 as libc::c_int)
-        + 2 as libc::c_int >> 2 as libc::c_int;
+        + 2 as libc::c_int
+        >> 2 as libc::c_int;
     if sum < 80 as libc::c_int {
         decision = SPREAD_AGGRESSIVE;
     } else if sum < 256 as libc::c_int {
@@ -1230,7 +1190,7 @@ unsafe extern "C" fn deinterleave_hadamard(
     let mut N: libc::c_int = 0;
     N = N0 * stride;
     let vla = N as usize;
-    let mut tmp: Vec::<celt_norm> = ::std::vec::from_elem(0., vla);
+    let mut tmp: Vec<celt_norm> = ::std::vec::from_elem(0., vla);
     if !(stride > 0 as libc::c_int) {
         celt_fatal(
             b"assertion failed: stride>0\0" as *const u8 as *const libc::c_char,
@@ -1247,11 +1207,9 @@ unsafe extern "C" fn deinterleave_hadamard(
         while i < stride {
             j = 0 as libc::c_int;
             while j < N0 {
-                *tmp
-                    .as_mut_ptr()
-                    .offset(
-                        (*ordery.offset(i as isize) * N0 + j) as isize,
-                    ) = *X.offset((j * stride + i) as isize);
+                *tmp.as_mut_ptr()
+                    .offset((*ordery.offset(i as isize) * N0 + j) as isize) =
+                    *X.offset((j * stride + i) as isize);
                 j += 1;
             }
             i += 1;
@@ -1261,11 +1219,8 @@ unsafe extern "C" fn deinterleave_hadamard(
         while i < stride {
             j = 0 as libc::c_int;
             while j < N0 {
-                *tmp
-                    .as_mut_ptr()
-                    .offset(
-                        (i * N0 + j) as isize,
-                    ) = *X.offset((j * stride + i) as isize);
+                *tmp.as_mut_ptr().offset((i * N0 + j) as isize) =
+                    *X.offset((j * stride + i) as isize);
                 j += 1;
             }
             i += 1;
@@ -1277,8 +1232,8 @@ unsafe extern "C" fn deinterleave_hadamard(
         (N as libc::c_ulong)
             .wrapping_mul(::core::mem::size_of::<celt_norm>() as libc::c_ulong)
             .wrapping_add(
-                (0 as libc::c_int as libc::c_long
-                    * X.offset_from(tmp.as_mut_ptr()) as libc::c_long) as libc::c_ulong,
+                (0 as libc::c_int as libc::c_long * X.offset_from(tmp.as_mut_ptr()) as libc::c_long)
+                    as libc::c_ulong,
             ),
     );
 }
@@ -1294,7 +1249,7 @@ unsafe extern "C" fn interleave_hadamard(
     let mut N: libc::c_int = 0;
     N = N0 * stride;
     let vla = N as usize;
-    let mut tmp: Vec::<celt_norm> = ::std::vec::from_elem(0., vla);
+    let mut tmp: Vec<celt_norm> = ::std::vec::from_elem(0., vla);
     if hadamard != 0 {
         let ordery: *const libc::c_int = ordery_table
             .as_ptr()
@@ -1304,11 +1259,8 @@ unsafe extern "C" fn interleave_hadamard(
         while i < stride {
             j = 0 as libc::c_int;
             while j < N0 {
-                *tmp
-                    .as_mut_ptr()
-                    .offset(
-                        (j * stride + i) as isize,
-                    ) = *X.offset((*ordery.offset(i as isize) * N0 + j) as isize);
+                *tmp.as_mut_ptr().offset((j * stride + i) as isize) =
+                    *X.offset((*ordery.offset(i as isize) * N0 + j) as isize);
                 j += 1;
             }
             i += 1;
@@ -1318,11 +1270,8 @@ unsafe extern "C" fn interleave_hadamard(
         while i < stride {
             j = 0 as libc::c_int;
             while j < N0 {
-                *tmp
-                    .as_mut_ptr()
-                    .offset(
-                        (j * stride + i) as isize,
-                    ) = *X.offset((i * N0 + j) as isize);
+                *tmp.as_mut_ptr().offset((j * stride + i) as isize) =
+                    *X.offset((i * N0 + j) as isize);
                 j += 1;
             }
             i += 1;
@@ -1334,18 +1283,14 @@ unsafe extern "C" fn interleave_hadamard(
         (N as libc::c_ulong)
             .wrapping_mul(::core::mem::size_of::<celt_norm>() as libc::c_ulong)
             .wrapping_add(
-                (0 as libc::c_int as libc::c_long
-                    * X.offset_from(tmp.as_mut_ptr()) as libc::c_long) as libc::c_ulong,
+                (0 as libc::c_int as libc::c_long * X.offset_from(tmp.as_mut_ptr()) as libc::c_long)
+                    as libc::c_ulong,
             ),
     );
 }
 #[no_mangle]
 #[c2rust::src_loc = "632:1"]
-pub unsafe extern "C" fn haar1(
-    X: *mut celt_norm,
-    mut N0: libc::c_int,
-    stride: libc::c_int,
-) {
+pub unsafe extern "C" fn haar1(X: *mut celt_norm, mut N0: libc::c_int, stride: libc::c_int) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     N0 >>= 1 as libc::c_int;
@@ -1355,18 +1300,12 @@ pub unsafe extern "C" fn haar1(
         while j < N0 {
             let mut tmp1: opus_val32 = 0.;
             let mut tmp2: opus_val32 = 0.;
-            tmp1 = 0.70710678f32
-                * *X.offset((stride * 2 as libc::c_int * j + i) as isize);
+            tmp1 = 0.70710678f32 * *X.offset((stride * 2 as libc::c_int * j + i) as isize);
             tmp2 = 0.70710678f32
-                * *X
-                    .offset(
-                        (stride * (2 as libc::c_int * j + 1 as libc::c_int) + i) as isize,
-                    );
+                * *X.offset((stride * (2 as libc::c_int * j + 1 as libc::c_int) + i) as isize);
             *X.offset((stride * 2 as libc::c_int * j + i) as isize) = tmp1 + tmp2;
-            *X
-                .offset(
-                    (stride * (2 as libc::c_int * j + 1 as libc::c_int) + i) as isize,
-                ) = tmp1 - tmp2;
+            *X.offset((stride * (2 as libc::c_int * j + 1 as libc::c_int) + i) as isize) =
+                tmp1 - tmp2;
             j += 1;
         }
         i += 1;
@@ -1459,8 +1398,8 @@ unsafe extern "C" fn compute_theta(
     intensity = (*ctx).intensity;
     ec = (*ctx).ec;
     bandE = (*ctx).bandE;
-    pulse_cap = *((*m).logN).offset(i as isize) as libc::c_int
-        + LM * ((1 as libc::c_int) << BITRES);
+    pulse_cap =
+        *((*m).logN).offset(i as isize) as libc::c_int + LM * ((1 as libc::c_int) << BITRES);
     offset = (pulse_cap >> 1 as libc::c_int)
         - (if stereo != 0 && N == 2 as libc::c_int {
             QTHETA_OFFSET_TWOPHASE
@@ -1479,20 +1418,20 @@ unsafe extern "C" fn compute_theta(
         if encode != 0 {
             if stereo == 0 || (*ctx).theta_round == 0 as libc::c_int {
                 itheta = itheta * qn + 8192 as libc::c_int >> 14 as libc::c_int;
-                if stereo == 0 && (*ctx).avoid_split_noise != 0
-                    && itheta > 0 as libc::c_int && itheta < qn
+                if stereo == 0
+                    && (*ctx).avoid_split_noise != 0
+                    && itheta > 0 as libc::c_int
+                    && itheta < qn
                 {
                     let unquantized: libc::c_int = celt_udiv(
                         (itheta * 16384 as libc::c_int) as opus_uint32,
                         qn as opus_uint32,
                     ) as libc::c_int;
                     imid = bitexact_cos(unquantized as opus_int16) as libc::c_int;
-                    iside = bitexact_cos(
-                        (16384 as libc::c_int - unquantized) as opus_int16,
-                    ) as libc::c_int;
+                    iside = bitexact_cos((16384 as libc::c_int - unquantized) as opus_int16)
+                        as libc::c_int;
                     delta = 16384 as libc::c_int
-                        + ((N - 1 as libc::c_int) << 7 as libc::c_int) as opus_int16
-                            as opus_int32
+                        + ((N - 1 as libc::c_int) << 7 as libc::c_int) as opus_int16 as opus_int32
                             * bitexact_log2tan(iside, imid) as opus_int16 as libc::c_int
                         >> 15 as libc::c_int;
                     if delta > *b {
@@ -1513,8 +1452,7 @@ unsafe extern "C" fn compute_theta(
                         0 as libc::c_int
                     } else {
                         itheta * qn + bias >> 14 as libc::c_int
-                    })
-                {
+                    }) {
                     qn - 1 as libc::c_int
                 } else if 0 as libc::c_int > itheta * qn + bias >> 14 as libc::c_int {
                     0 as libc::c_int
@@ -1580,8 +1518,7 @@ unsafe extern "C" fn compute_theta(
                     (qn + 1 as libc::c_int) as opus_uint32,
                 );
             } else {
-                itheta = ec_dec_uint(ec, (qn + 1 as libc::c_int) as opus_uint32)
-                    as libc::c_int;
+                itheta = ec_dec_uint(ec, (qn + 1 as libc::c_int) as opus_uint32) as libc::c_int;
             }
         } else {
             let mut fs_0: libc::c_int = 1 as libc::c_int;
@@ -1598,9 +1535,8 @@ unsafe extern "C" fn compute_theta(
                 fl = if itheta <= qn >> 1 as libc::c_int {
                     itheta * (itheta + 1 as libc::c_int) >> 1 as libc::c_int
                 } else {
-                    ft_0
-                        - ((qn + 1 as libc::c_int - itheta)
-                            * (qn + 2 as libc::c_int - itheta) >> 1 as libc::c_int)
+                    ft_0 - ((qn + 1 as libc::c_int - itheta) * (qn + 2 as libc::c_int - itheta)
+                        >> 1 as libc::c_int)
                 };
                 ec_encode(
                     ec,
@@ -1613,8 +1549,7 @@ unsafe extern "C" fn compute_theta(
                 let mut fm: libc::c_int = 0;
                 fm = ec_decode(ec, ft_0 as libc::c_uint) as libc::c_int;
                 if fm
-                    < (qn >> 1 as libc::c_int)
-                        * ((qn >> 1 as libc::c_int) + 1 as libc::c_int)
+                    < (qn >> 1 as libc::c_int) * ((qn >> 1 as libc::c_int) + 1 as libc::c_int)
                         >> 1 as libc::c_int
                 {
                     itheta = ((isqrt32(
@@ -1622,24 +1557,22 @@ unsafe extern "C" fn compute_theta(
                             .wrapping_mul(fm as opus_uint32)
                             .wrapping_add(1 as libc::c_int as libc::c_uint),
                     ))
-                        .wrapping_sub(1 as libc::c_int as libc::c_uint)
+                    .wrapping_sub(1 as libc::c_int as libc::c_uint)
                         >> 1 as libc::c_int) as libc::c_int;
                     fs_0 = itheta + 1 as libc::c_int;
                     fl_0 = itheta * (itheta + 1 as libc::c_int) >> 1 as libc::c_int;
                 } else {
-                    itheta = (((2 as libc::c_int * (qn + 1 as libc::c_int))
-                        as libc::c_uint)
-                        .wrapping_sub(
-                            isqrt32(
-                                (8 as libc::c_int as libc::c_uint)
-                                    .wrapping_mul((ft_0 - fm - 1 as libc::c_int) as opus_uint32)
-                                    .wrapping_add(1 as libc::c_int as libc::c_uint),
-                            ),
-                        ) >> 1 as libc::c_int) as libc::c_int;
+                    itheta = (((2 as libc::c_int * (qn + 1 as libc::c_int)) as libc::c_uint)
+                        .wrapping_sub(isqrt32(
+                            (8 as libc::c_int as libc::c_uint)
+                                .wrapping_mul((ft_0 - fm - 1 as libc::c_int) as opus_uint32)
+                                .wrapping_add(1 as libc::c_int as libc::c_uint),
+                        ))
+                        >> 1 as libc::c_int) as libc::c_int;
                     fs_0 = qn + 1 as libc::c_int - itheta;
                     fl_0 = ft_0
-                        - ((qn + 1 as libc::c_int - itheta)
-                            * (qn + 2 as libc::c_int - itheta) >> 1 as libc::c_int);
+                        - ((qn + 1 as libc::c_int - itheta) * (qn + 2 as libc::c_int - itheta)
+                            >> 1 as libc::c_int);
                 }
                 ec_dec_update(
                     ec,
@@ -1669,8 +1602,7 @@ unsafe extern "C" fn compute_theta(
         }
     } else if stereo != 0 {
         if encode != 0 {
-            inv = (itheta > 8192 as libc::c_int && (*ctx).disable_inv == 0)
-                as libc::c_int;
+            inv = (itheta > 8192 as libc::c_int && (*ctx).disable_inv == 0) as libc::c_int;
             if inv != 0 {
                 let mut j: libc::c_int = 0;
                 j = 0 as libc::c_int;
@@ -1681,8 +1613,7 @@ unsafe extern "C" fn compute_theta(
             }
             intensity_stereo(m, X, Y, bandE, i, N);
         }
-        if *b > (2 as libc::c_int) << BITRES
-            && (*ctx).remaining_bits > (2 as libc::c_int) << BITRES
+        if *b > (2 as libc::c_int) << BITRES && (*ctx).remaining_bits > (2 as libc::c_int) << BITRES
         {
             if encode != 0 {
                 ec_enc_bit_logp(ec, inv, 2 as libc::c_int as libc::c_uint);
@@ -1711,8 +1642,7 @@ unsafe extern "C" fn compute_theta(
         delta = 16384 as libc::c_int;
     } else {
         imid = bitexact_cos(itheta as opus_int16) as libc::c_int;
-        iside = bitexact_cos((16384 as libc::c_int - itheta) as opus_int16)
-            as libc::c_int;
+        iside = bitexact_cos((16384 as libc::c_int - itheta) as opus_int16) as libc::c_int;
         delta = 16384 as libc::c_int
             + ((N - 1 as libc::c_int) << 7 as libc::c_int) as opus_int16 as opus_int32
                 * bitexact_log2tan(iside, imid) as opus_int16 as libc::c_int
@@ -1746,8 +1676,8 @@ unsafe extern "C" fn quant_band_n1(
         let mut sign: libc::c_int = 0 as libc::c_int;
         if (*ctx).remaining_bits >= (1 as libc::c_int) << BITRES {
             if encode != 0 {
-                sign = (*x.offset(0 as libc::c_int as isize)
-                    < 0 as libc::c_int as libc::c_float) as libc::c_int;
+                sign = (*x.offset(0 as libc::c_int as isize) < 0 as libc::c_int as libc::c_float)
+                    as libc::c_int;
                 ec_enc_bits(ec, sign as opus_uint32, 1 as libc::c_int as libc::c_uint);
             } else {
                 sign = ec_dec_bits(ec, 1 as libc::c_int as libc::c_uint) as libc::c_int;
@@ -1756,10 +1686,11 @@ unsafe extern "C" fn quant_band_n1(
             b -= (1 as libc::c_int) << BITRES;
         }
         if (*ctx).resynth != 0 {
-            *x
-                .offset(
-                    0 as libc::c_int as isize,
-                ) = if sign != 0 { -NORM_SCALING } else { NORM_SCALING };
+            *x.offset(0 as libc::c_int as isize) = if sign != 0 {
+                -NORM_SCALING
+            } else {
+                NORM_SCALING
+            };
         }
         x = Y;
         c += 1;
@@ -1768,8 +1699,7 @@ unsafe extern "C" fn quant_band_n1(
         }
     }
     if !lowband_out.is_null() {
-        *lowband_out
-            .offset(0 as libc::c_int as isize) = *X.offset(0 as libc::c_int as isize);
+        *lowband_out.offset(0 as libc::c_int as isize) = *X.offset(0 as libc::c_int as isize);
     }
     return 1 as libc::c_int as libc::c_uint;
 }
@@ -1805,16 +1735,14 @@ unsafe extern "C" fn quant_partition(
     i = (*ctx).i;
     spread = (*ctx).spread;
     ec = (*ctx).ec;
-    cache = ((*m).cache.bits)
-        .offset(
-            *((*m).cache.index)
-                .offset(((LM + 1 as libc::c_int) * (*m).nbEBands + i) as isize)
-                as libc::c_int as isize,
-        );
+    cache = ((*m).cache.bits).offset(
+        *((*m).cache.index).offset(((LM + 1 as libc::c_int) * (*m).nbEBands + i) as isize)
+            as libc::c_int as isize,
+    );
     if LM != -(1 as libc::c_int)
-        && b
-            > *cache.offset(*cache.offset(0 as libc::c_int as isize) as isize)
-                as libc::c_int + 12 as libc::c_int && N > 2 as libc::c_int
+        && b > *cache.offset(*cache.offset(0 as libc::c_int as isize) as isize) as libc::c_int
+            + 12 as libc::c_int
+        && N > 2 as libc::c_int
     {
         let mut mbits: libc::c_int = 0;
         let mut sbits: libc::c_int = 0;
@@ -1876,8 +1804,7 @@ unsafe extern "C" fn quant_partition(
                 b
             } else {
                 (b - delta) / 2 as libc::c_int
-            })
-        {
+            }) {
             0 as libc::c_int
         } else if b < (b - delta) / 2 as libc::c_int {
             b
@@ -1896,18 +1823,17 @@ unsafe extern "C" fn quant_partition(
             if rebalance > (3 as libc::c_int) << BITRES && itheta != 0 as libc::c_int {
                 sbits += rebalance - ((3 as libc::c_int) << BITRES);
             }
-            cm
-                |= quant_partition(
-                    ctx,
-                    Y,
-                    N,
-                    sbits,
-                    B,
-                    next_lowband2,
-                    LM,
-                    gain * side,
-                    fill >> B,
-                ) << (B0 >> 1 as libc::c_int);
+            cm |= quant_partition(
+                ctx,
+                Y,
+                N,
+                sbits,
+                B,
+                next_lowband2,
+                LM,
+                gain * side,
+                fill >> B,
+            ) << (B0 >> 1 as libc::c_int);
         } else {
             cm = quant_partition(
                 ctx,
@@ -1921,8 +1847,7 @@ unsafe extern "C" fn quant_partition(
                 fill >> B,
             ) << (B0 >> 1 as libc::c_int);
             rebalance = sbits - (rebalance - (*ctx).remaining_bits);
-            if rebalance > (3 as libc::c_int) << BITRES && itheta != 16384 as libc::c_int
-            {
+            if rebalance > (3 as libc::c_int) << BITRES && itheta != 16384 as libc::c_int {
                 mbits += rebalance - ((3 as libc::c_int) << BITRES);
             }
             cm |= quant_partition(ctx, X, N, mbits, B, lowband, LM, gain * mid, fill);
@@ -1940,17 +1865,7 @@ unsafe extern "C" fn quant_partition(
         if q != 0 as libc::c_int {
             let K: libc::c_int = get_pulses(q);
             if encode != 0 {
-                cm = alg_quant(
-                    X,
-                    N,
-                    K,
-                    spread,
-                    B,
-                    ec,
-                    gain,
-                    (*ctx).resynth,
-                    (*ctx).arch,
-                );
+                cm = alg_quant(X, N, K, spread, B, ec, gain, (*ctx).resynth, (*ctx).arch);
             } else {
                 cm = alg_unquant(X, N, K, spread, B, ec, gain);
             }
@@ -1966,20 +1881,15 @@ unsafe extern "C" fn quant_partition(
                         X as *mut libc::c_void,
                         0 as libc::c_int,
                         (N as libc::c_ulong)
-                            .wrapping_mul(
-                                ::core::mem::size_of::<celt_norm>() as libc::c_ulong,
-                            ),
+                            .wrapping_mul(::core::mem::size_of::<celt_norm>() as libc::c_ulong),
                     );
                 } else {
                     if lowband.is_null() {
                         j = 0 as libc::c_int;
                         while j < N {
                             (*ctx).seed = celt_lcg_rand((*ctx).seed);
-                            *X
-                                .offset(
-                                    j as isize,
-                                ) = ((*ctx).seed as opus_int32 >> 20 as libc::c_int)
-                                as celt_norm;
+                            *X.offset(j as isize) =
+                                ((*ctx).seed as opus_int32 >> 20 as libc::c_int) as celt_norm;
                             j += 1;
                         }
                         cm = cm_mask;
@@ -1989,9 +1899,7 @@ unsafe extern "C" fn quant_partition(
                             let mut tmp: opus_val16 = 0.;
                             (*ctx).seed = celt_lcg_rand((*ctx).seed);
                             tmp = 1.0f32 / 256 as libc::c_int as libc::c_float;
-                            tmp = if (*ctx).seed & 0x8000 as libc::c_int as libc::c_uint
-                                != 0
-                            {
+                            tmp = if (*ctx).seed & 0x8000 as libc::c_int as libc::c_uint != 0 {
                                 tmp
                             } else {
                                 -tmp
@@ -2043,7 +1951,8 @@ unsafe extern "C" fn quant_band(
     if tf_change > 0 as libc::c_int {
         recombine = tf_change;
     }
-    if !lowband_scratch.is_null() && !lowband.is_null()
+    if !lowband_scratch.is_null()
+        && !lowband.is_null()
         && (recombine != 0
             || N_B & 1 as libc::c_int == 0 as libc::c_int && tf_change < 0 as libc::c_int
             || B0 > 1 as libc::c_int)
@@ -2114,12 +2023,7 @@ unsafe extern "C" fn quant_band(
             deinterleave_hadamard(X, N_B >> recombine, B0 << recombine, longBlocks);
         }
         if !lowband.is_null() {
-            deinterleave_hadamard(
-                lowband,
-                N_B >> recombine,
-                B0 << recombine,
-                longBlocks,
-            );
+            deinterleave_hadamard(lowband, N_B >> recombine, B0 << recombine, longBlocks);
         }
     }
     cm = quant_partition(ctx, X, N, b, B, lowband, LM, gain, fill);
@@ -2258,8 +2162,7 @@ unsafe extern "C" fn quant_band_stereo(
             if encode != 0 {
                 sign = (*x2.offset(0 as libc::c_int as isize)
                     * *y2.offset(1 as libc::c_int as isize)
-                    - *x2.offset(1 as libc::c_int as isize)
-                        * *y2.offset(0 as libc::c_int as isize)
+                    - *x2.offset(1 as libc::c_int as isize) * *y2.offset(0 as libc::c_int as isize)
                     < 0 as libc::c_int as libc::c_float) as libc::c_int;
                 ec_enc_bits(ec, sign as opus_uint32, 1 as libc::c_int as libc::c_uint);
             } else {
@@ -2280,50 +2183,22 @@ unsafe extern "C" fn quant_band_stereo(
             lowband_scratch,
             orig_fill,
         );
-        *y2
-            .offset(
-                0 as libc::c_int as isize,
-            ) = -sign as libc::c_float * *x2.offset(1 as libc::c_int as isize);
-        *y2
-            .offset(
-                1 as libc::c_int as isize,
-            ) = sign as libc::c_float * *x2.offset(0 as libc::c_int as isize);
+        *y2.offset(0 as libc::c_int as isize) =
+            -sign as libc::c_float * *x2.offset(1 as libc::c_int as isize);
+        *y2.offset(1 as libc::c_int as isize) =
+            sign as libc::c_float * *x2.offset(0 as libc::c_int as isize);
         if (*ctx).resynth != 0 {
             let mut tmp: celt_norm = 0.;
-            *X
-                .offset(
-                    0 as libc::c_int as isize,
-                ) = mid * *X.offset(0 as libc::c_int as isize);
-            *X
-                .offset(
-                    1 as libc::c_int as isize,
-                ) = mid * *X.offset(1 as libc::c_int as isize);
-            *Y
-                .offset(
-                    0 as libc::c_int as isize,
-                ) = side * *Y.offset(0 as libc::c_int as isize);
-            *Y
-                .offset(
-                    1 as libc::c_int as isize,
-                ) = side * *Y.offset(1 as libc::c_int as isize);
+            *X.offset(0 as libc::c_int as isize) = mid * *X.offset(0 as libc::c_int as isize);
+            *X.offset(1 as libc::c_int as isize) = mid * *X.offset(1 as libc::c_int as isize);
+            *Y.offset(0 as libc::c_int as isize) = side * *Y.offset(0 as libc::c_int as isize);
+            *Y.offset(1 as libc::c_int as isize) = side * *Y.offset(1 as libc::c_int as isize);
             tmp = *X.offset(0 as libc::c_int as isize);
-            *X
-                .offset(
-                    0 as libc::c_int as isize,
-                ) = tmp - *Y.offset(0 as libc::c_int as isize);
-            *Y
-                .offset(
-                    0 as libc::c_int as isize,
-                ) = tmp + *Y.offset(0 as libc::c_int as isize);
+            *X.offset(0 as libc::c_int as isize) = tmp - *Y.offset(0 as libc::c_int as isize);
+            *Y.offset(0 as libc::c_int as isize) = tmp + *Y.offset(0 as libc::c_int as isize);
             tmp = *X.offset(1 as libc::c_int as isize);
-            *X
-                .offset(
-                    1 as libc::c_int as isize,
-                ) = tmp - *Y.offset(1 as libc::c_int as isize);
-            *Y
-                .offset(
-                    1 as libc::c_int as isize,
-                ) = tmp + *Y.offset(1 as libc::c_int as isize);
+            *X.offset(1 as libc::c_int as isize) = tmp - *Y.offset(1 as libc::c_int as isize);
+            *Y.offset(1 as libc::c_int as isize) = tmp + *Y.offset(1 as libc::c_int as isize);
         }
     } else {
         let mut rebalance: opus_int32 = 0;
@@ -2332,8 +2207,7 @@ unsafe extern "C" fn quant_band_stereo(
                 b
             } else {
                 (b - delta) / 2 as libc::c_int
-            })
-        {
+            }) {
             0 as libc::c_int
         } else if b < (b - delta) / 2 as libc::c_int {
             b
@@ -2361,20 +2235,19 @@ unsafe extern "C" fn quant_band_stereo(
             if rebalance > (3 as libc::c_int) << BITRES && itheta != 0 as libc::c_int {
                 sbits += rebalance - ((3 as libc::c_int) << BITRES);
             }
-            cm
-                |= quant_band(
-                    ctx,
-                    Y,
-                    N,
-                    sbits,
-                    B,
-                    NULL as *mut celt_norm,
-                    LM,
-                    NULL as *mut celt_norm,
-                    side,
-                    NULL as *mut celt_norm,
-                    fill >> B,
-                );
+            cm |= quant_band(
+                ctx,
+                Y,
+                N,
+                sbits,
+                B,
+                NULL as *mut celt_norm,
+                LM,
+                NULL as *mut celt_norm,
+                side,
+                NULL as *mut celt_norm,
+                fill >> B,
+            );
         } else {
             cm = quant_band(
                 ctx,
@@ -2390,24 +2263,22 @@ unsafe extern "C" fn quant_band_stereo(
                 fill >> B,
             );
             rebalance = sbits - (rebalance - (*ctx).remaining_bits);
-            if rebalance > (3 as libc::c_int) << BITRES && itheta != 16384 as libc::c_int
-            {
+            if rebalance > (3 as libc::c_int) << BITRES && itheta != 16384 as libc::c_int {
                 mbits += rebalance - ((3 as libc::c_int) << BITRES);
             }
-            cm
-                |= quant_band(
-                    ctx,
-                    X,
-                    N,
-                    mbits,
-                    B,
-                    lowband,
-                    LM,
-                    lowband_out,
-                    Q15ONE,
-                    lowband_scratch,
-                    fill,
-                );
+            cm |= quant_band(
+                ctx,
+                X,
+                N,
+                mbits,
+                B,
+                lowband,
+                LM,
+                lowband_out,
+                Q15ONE,
+                lowband_scratch,
+                fill,
+            );
         }
     }
     if (*ctx).resynth != 0 {
@@ -2452,9 +2323,8 @@ unsafe extern "C" fn special_hybrid_folding(
             .wrapping_add(
                 (0 as libc::c_int as libc::c_long
                     * (&mut *norm.offset(n1 as isize) as *mut celt_norm)
-                        .offset_from(
-                            &mut *norm.offset((2 as libc::c_int * n1 - n2) as isize),
-                        ) as libc::c_long) as libc::c_ulong,
+                        .offset_from(&mut *norm.offset((2 as libc::c_int * n1 - n2) as isize))
+                        as libc::c_long) as libc::c_ulong,
             ),
     );
     if dual_stereo != 0 {
@@ -2467,9 +2337,8 @@ unsafe extern "C" fn special_hybrid_folding(
                 .wrapping_add(
                     (0 as libc::c_int as libc::c_long
                         * (&mut *norm2.offset(n1 as isize) as *mut celt_norm)
-                            .offset_from(
-                                &mut *norm2.offset((2 as libc::c_int * n1 - n2) as isize),
-                            ) as libc::c_long) as libc::c_ulong,
+                            .offset_from(&mut *norm2.offset((2 as libc::c_int * n1 - n2) as isize))
+                            as libc::c_long) as libc::c_ulong,
                 ),
         );
     }
@@ -2518,8 +2387,9 @@ pub unsafe extern "C" fn quant_all_bands(
         1 as libc::c_int
     };
     let mut norm_offset: libc::c_int = 0;
-    let theta_rdo: libc::c_int = (encode != 0 && !Y_.is_null() && dual_stereo == 0
-        && complexity >= 8 as libc::c_int) as libc::c_int;
+    let theta_rdo: libc::c_int =
+        (encode != 0 && !Y_.is_null() && dual_stereo == 0 && complexity >= 8 as libc::c_int)
+            as libc::c_int;
     let resynth: libc::c_int = (encode == 0 || theta_rdo != 0) as libc::c_int;
     let mut ctx: band_ctx = band_ctx {
         encode: 0,
@@ -2539,50 +2409,50 @@ pub unsafe extern "C" fn quant_all_bands(
         avoid_split_noise: 0,
     };
     M = (1 as libc::c_int) << LM;
-    B = if shortBlocks != 0 { M } else { 1 as libc::c_int };
+    B = if shortBlocks != 0 {
+        M
+    } else {
+        1 as libc::c_int
+    };
     norm_offset = M * *eBands.offset(start as isize) as libc::c_int;
     let vla = (C
         * (M * *eBands.offset(((*m).nbEBands - 1 as libc::c_int) as isize) as libc::c_int
             - norm_offset)) as usize;
-    let mut _norm: Vec::<celt_norm> = ::std::vec::from_elem(0., vla);
+    let mut _norm: Vec<celt_norm> = ::std::vec::from_elem(0., vla);
     norm = _norm.as_mut_ptr();
     norm2 = norm
         .offset(
-            (M
-                * *eBands.offset(((*m).nbEBands - 1 as libc::c_int) as isize)
-                    as libc::c_int) as isize,
+            (M * *eBands.offset(((*m).nbEBands - 1 as libc::c_int) as isize) as libc::c_int)
+                as isize,
         )
         .offset(-(norm_offset as isize));
     if encode != 0 && resynth != 0 {
         resynth_alloc = M
             * (*eBands.offset((*m).nbEBands as isize) as libc::c_int
-                - *eBands.offset(((*m).nbEBands - 1 as libc::c_int) as isize)
-                    as libc::c_int);
+                - *eBands.offset(((*m).nbEBands - 1 as libc::c_int) as isize) as libc::c_int);
     } else {
         resynth_alloc = ALLOC_NONE;
     }
     let vla_0 = resynth_alloc as usize;
-    let mut _lowband_scratch: Vec::<celt_norm> = ::std::vec::from_elem(0., vla_0);
+    let mut _lowband_scratch: Vec<celt_norm> = ::std::vec::from_elem(0., vla_0);
     if encode != 0 && resynth != 0 {
         lowband_scratch = _lowband_scratch.as_mut_ptr();
     } else {
-        lowband_scratch = X_
-            .offset(
-                (M
-                    * *eBands.offset(((*m).nbEBands - 1 as libc::c_int) as isize)
-                        as libc::c_int) as isize,
-            );
+        lowband_scratch = X_.offset(
+            (M * *eBands.offset(((*m).nbEBands - 1 as libc::c_int) as isize) as libc::c_int)
+                as isize,
+        );
     }
     let vla_1 = resynth_alloc as usize;
-    let mut X_save: Vec::<celt_norm> = ::std::vec::from_elem(0., vla_1);
+    let mut X_save: Vec<celt_norm> = ::std::vec::from_elem(0., vla_1);
     let vla_2 = resynth_alloc as usize;
-    let mut Y_save: Vec::<celt_norm> = ::std::vec::from_elem(0., vla_2);
+    let mut Y_save: Vec<celt_norm> = ::std::vec::from_elem(0., vla_2);
     let vla_3 = resynth_alloc as usize;
-    let mut X_save2: Vec::<celt_norm> = ::std::vec::from_elem(0., vla_3);
+    let mut X_save2: Vec<celt_norm> = ::std::vec::from_elem(0., vla_3);
     let vla_4 = resynth_alloc as usize;
-    let mut Y_save2: Vec::<celt_norm> = ::std::vec::from_elem(0., vla_4);
+    let mut Y_save2: Vec<celt_norm> = ::std::vec::from_elem(0., vla_4);
     let vla_5 = resynth_alloc as usize;
-    let mut norm_save2: Vec::<celt_norm> = ::std::vec::from_elem(0., vla_5);
+    let mut norm_save2: Vec<celt_norm> = ::std::vec::from_elem(0., vla_5);
     lowband_offset = 0 as libc::c_int;
     ctx.bandE = bandE;
     ctx.ec = ec;
@@ -2660,8 +2530,7 @@ pub unsafe extern "C" fn quant_all_bands(
                     } else {
                         *pulses.offset(i as isize) + curr_balance
                     }
-                })
-            {
+                }) {
                 0 as libc::c_int
             } else if (16383 as libc::c_int)
                 < (if (remaining_bits + 1 as libc::c_int)
@@ -2707,20 +2576,17 @@ pub unsafe extern "C" fn quant_all_bands(
             lowband_scratch = NULL as *mut celt_norm;
         }
         if lowband_offset != 0 as libc::c_int
-            && (spread != SPREAD_AGGRESSIVE || B > 1 as libc::c_int
-                || tf_change < 0 as libc::c_int)
+            && (spread != SPREAD_AGGRESSIVE || B > 1 as libc::c_int || tf_change < 0 as libc::c_int)
         {
             let mut fold_start: libc::c_int = 0;
             let mut fold_end: libc::c_int = 0;
             let mut fold_i: libc::c_int = 0;
             effective_lowband = if 0 as libc::c_int
-                > M * *eBands.offset(lowband_offset as isize) as libc::c_int
-                    - norm_offset - N
+                > M * *eBands.offset(lowband_offset as isize) as libc::c_int - norm_offset - N
             {
                 0 as libc::c_int
             } else {
-                M * *eBands.offset(lowband_offset as isize) as libc::c_int - norm_offset
-                    - N
+                M * *eBands.offset(lowband_offset as isize) as libc::c_int - norm_offset - N
             };
             fold_start = lowband_offset;
             loop {
@@ -2745,13 +2611,10 @@ pub unsafe extern "C" fn quant_all_bands(
             x_cm = y_cm;
             fold_i = fold_start;
             loop {
-                x_cm
-                    |= *collapse_masks.offset((fold_i * C + 0 as libc::c_int) as isize)
-                        as libc::c_uint;
-                y_cm
-                    |= *collapse_masks
-                        .offset((fold_i * C + C - 1 as libc::c_int) as isize)
-                        as libc::c_uint;
+                x_cm |= *collapse_masks.offset((fold_i * C + 0 as libc::c_int) as isize)
+                    as libc::c_uint;
+                y_cm |= *collapse_masks.offset((fold_i * C + C - 1 as libc::c_int) as isize)
+                    as libc::c_uint;
                 fold_i += 1;
                 if !(fold_i < fold_end) {
                     break;
@@ -2767,11 +2630,8 @@ pub unsafe extern "C" fn quant_all_bands(
             if resynth != 0 {
                 j = 0 as libc::c_int;
                 while j < M * *eBands.offset(i as isize) as libc::c_int - norm_offset {
-                    *norm
-                        .offset(
-                            j as isize,
-                        ) = 0.5f32
-                        * (*norm.offset(j as isize) + *norm2.offset(j as isize));
+                    *norm.offset(j as isize) =
+                        0.5f32 * (*norm.offset(j as isize) + *norm2.offset(j as isize));
                     j += 1;
                 }
             }
@@ -2909,9 +2769,7 @@ pub unsafe extern "C" fn quant_all_bands(
                         X_save.as_mut_ptr() as *mut libc::c_void,
                         X as *const libc::c_void,
                         (N as libc::c_ulong)
-                            .wrapping_mul(
-                                ::core::mem::size_of::<celt_norm>() as libc::c_ulong,
-                            )
+                            .wrapping_mul(::core::mem::size_of::<celt_norm>() as libc::c_ulong)
                             .wrapping_add(
                                 (0 as libc::c_int as libc::c_long
                                     * X_save.as_mut_ptr().offset_from(X) as libc::c_long)
@@ -2922,9 +2780,7 @@ pub unsafe extern "C" fn quant_all_bands(
                         Y_save.as_mut_ptr() as *mut libc::c_void,
                         Y as *const libc::c_void,
                         (N as libc::c_ulong)
-                            .wrapping_mul(
-                                ::core::mem::size_of::<celt_norm>() as libc::c_ulong,
-                            )
+                            .wrapping_mul(::core::mem::size_of::<celt_norm>() as libc::c_ulong)
                             .wrapping_add(
                                 (0 as libc::c_int as libc::c_long
                                     * Y_save.as_mut_ptr().offset_from(Y) as libc::c_long)
@@ -2948,9 +2804,7 @@ pub unsafe extern "C" fn quant_all_bands(
                         if last != 0 {
                             NULL as *mut celt_norm
                         } else {
-                            norm.offset(
-                                    (M * *eBands.offset(i as isize) as libc::c_int) as isize,
-                                )
+                            norm.offset((M * *eBands.offset(i as isize) as libc::c_int) as isize)
                                 .offset(-(norm_offset as isize))
                         },
                         lowband_scratch,
@@ -2967,9 +2821,7 @@ pub unsafe extern "C" fn quant_all_bands(
                         X_save2.as_mut_ptr() as *mut libc::c_void,
                         X as *const libc::c_void,
                         (N as libc::c_ulong)
-                            .wrapping_mul(
-                                ::core::mem::size_of::<celt_norm>() as libc::c_ulong,
-                            )
+                            .wrapping_mul(::core::mem::size_of::<celt_norm>() as libc::c_ulong)
                             .wrapping_add(
                                 (0 as libc::c_int as libc::c_long
                                     * X_save2.as_mut_ptr().offset_from(X) as libc::c_long)
@@ -2980,9 +2832,7 @@ pub unsafe extern "C" fn quant_all_bands(
                         Y_save2.as_mut_ptr() as *mut libc::c_void,
                         Y as *const libc::c_void,
                         (N as libc::c_ulong)
-                            .wrapping_mul(
-                                ::core::mem::size_of::<celt_norm>() as libc::c_ulong,
-                            )
+                            .wrapping_mul(::core::mem::size_of::<celt_norm>() as libc::c_ulong)
                             .wrapping_add(
                                 (0 as libc::c_int as libc::c_long
                                     * Y_save2.as_mut_ptr().offset_from(Y) as libc::c_long)
@@ -2992,26 +2842,21 @@ pub unsafe extern "C" fn quant_all_bands(
                     if last == 0 {
                         memcpy(
                             norm_save2.as_mut_ptr() as *mut libc::c_void,
-                            norm
-                                .offset(
-                                    (M * *eBands.offset(i as isize) as libc::c_int) as isize,
-                                )
-                                .offset(-(norm_offset as isize)) as *const libc::c_void,
+                            norm.offset((M * *eBands.offset(i as isize) as libc::c_int) as isize)
+                                .offset(-(norm_offset as isize))
+                                as *const libc::c_void,
                             (N as libc::c_ulong)
-                                .wrapping_mul(
-                                    ::core::mem::size_of::<celt_norm>() as libc::c_ulong,
-                                )
+                                .wrapping_mul(::core::mem::size_of::<celt_norm>() as libc::c_ulong)
                                 .wrapping_add(
                                     (0 as libc::c_int as libc::c_long
-                                        * norm_save2
-                                            .as_mut_ptr()
-                                            .offset_from(
-                                                norm
-                                                    .offset(
-                                                        (M * *eBands.offset(i as isize) as libc::c_int) as isize,
-                                                    )
-                                                    .offset(-(norm_offset as isize)),
-                                            ) as libc::c_long) as libc::c_ulong,
+                                        * norm_save2.as_mut_ptr().offset_from(
+                                            norm.offset(
+                                                (M * *eBands.offset(i as isize) as libc::c_int)
+                                                    as isize,
+                                            )
+                                            .offset(-(norm_offset as isize)),
+                                        ) as libc::c_long)
+                                        as libc::c_ulong,
                                 ),
                         );
                     }
@@ -3023,13 +2868,12 @@ pub unsafe extern "C" fn quant_all_bands(
                         bytes_save.as_mut_ptr() as *mut libc::c_void,
                         bytes_buf as *const libc::c_void,
                         (save_bytes as libc::c_ulong)
-                            .wrapping_mul(
-                                ::core::mem::size_of::<libc::c_uchar>() as libc::c_ulong,
-                            )
+                            .wrapping_mul(::core::mem::size_of::<libc::c_uchar>() as libc::c_ulong)
                             .wrapping_add(
                                 (0 as libc::c_int as libc::c_long
                                     * bytes_save.as_mut_ptr().offset_from(bytes_buf)
-                                        as libc::c_long) as libc::c_ulong,
+                                        as libc::c_long)
+                                    as libc::c_ulong,
                             ),
                     );
                     *ec = ec_save;
@@ -3038,9 +2882,7 @@ pub unsafe extern "C" fn quant_all_bands(
                         X as *mut libc::c_void,
                         X_save.as_mut_ptr() as *const libc::c_void,
                         (N as libc::c_ulong)
-                            .wrapping_mul(
-                                ::core::mem::size_of::<celt_norm>() as libc::c_ulong,
-                            )
+                            .wrapping_mul(::core::mem::size_of::<celt_norm>() as libc::c_ulong)
                             .wrapping_add(
                                 (0 as libc::c_int as libc::c_long
                                     * X.offset_from(X_save.as_mut_ptr()) as libc::c_long)
@@ -3051,9 +2893,7 @@ pub unsafe extern "C" fn quant_all_bands(
                         Y as *mut libc::c_void,
                         Y_save.as_mut_ptr() as *const libc::c_void,
                         (N as libc::c_ulong)
-                            .wrapping_mul(
-                                ::core::mem::size_of::<celt_norm>() as libc::c_ulong,
-                            )
+                            .wrapping_mul(::core::mem::size_of::<celt_norm>() as libc::c_ulong)
                             .wrapping_add(
                                 (0 as libc::c_int as libc::c_long
                                     * Y.offset_from(Y_save.as_mut_ptr()) as libc::c_long)
@@ -3080,9 +2920,7 @@ pub unsafe extern "C" fn quant_all_bands(
                         if last != 0 {
                             NULL as *mut celt_norm
                         } else {
-                            norm.offset(
-                                    (M * *eBands.offset(i as isize) as libc::c_int) as isize,
-                                )
+                            norm.offset((M * *eBands.offset(i as isize) as libc::c_int) as isize)
                                 .offset(-(norm_offset as isize))
                         },
                         lowband_scratch,
@@ -3100,9 +2938,7 @@ pub unsafe extern "C" fn quant_all_bands(
                             X as *mut libc::c_void,
                             X_save2.as_mut_ptr() as *const libc::c_void,
                             (N as libc::c_ulong)
-                                .wrapping_mul(
-                                    ::core::mem::size_of::<celt_norm>() as libc::c_ulong,
-                                )
+                                .wrapping_mul(::core::mem::size_of::<celt_norm>() as libc::c_ulong)
                                 .wrapping_add(
                                     (0 as libc::c_int as libc::c_long
                                         * X.offset_from(X_save2.as_mut_ptr()) as libc::c_long)
@@ -3113,9 +2949,7 @@ pub unsafe extern "C" fn quant_all_bands(
                             Y as *mut libc::c_void,
                             Y_save2.as_mut_ptr() as *const libc::c_void,
                             (N as libc::c_ulong)
-                                .wrapping_mul(
-                                    ::core::mem::size_of::<celt_norm>() as libc::c_ulong,
-                                )
+                                .wrapping_mul(::core::mem::size_of::<celt_norm>() as libc::c_ulong)
                                 .wrapping_add(
                                     (0 as libc::c_int as libc::c_long
                                         * Y.offset_from(Y_save2.as_mut_ptr()) as libc::c_long)
@@ -3124,24 +2958,26 @@ pub unsafe extern "C" fn quant_all_bands(
                         );
                         if last == 0 {
                             memcpy(
-                                norm
-                                    .offset(
-                                        (M * *eBands.offset(i as isize) as libc::c_int) as isize,
-                                    )
-                                    .offset(-(norm_offset as isize)) as *mut libc::c_void,
+                                norm.offset(
+                                    (M * *eBands.offset(i as isize) as libc::c_int) as isize,
+                                )
+                                .offset(-(norm_offset as isize))
+                                    as *mut libc::c_void,
                                 norm_save2.as_mut_ptr() as *const libc::c_void,
                                 (N as libc::c_ulong)
                                     .wrapping_mul(
-                                        ::core::mem::size_of::<celt_norm>() as libc::c_ulong,
+                                        ::core::mem::size_of::<celt_norm>() as libc::c_ulong
                                     )
                                     .wrapping_add(
                                         (0 as libc::c_int as libc::c_long
                                             * norm
                                                 .offset(
-                                                    (M * *eBands.offset(i as isize) as libc::c_int) as isize,
+                                                    (M * *eBands.offset(i as isize) as libc::c_int)
+                                                        as isize,
                                                 )
                                                 .offset(-(norm_offset as isize))
-                                                .offset_from(norm_save2.as_mut_ptr()) as libc::c_long)
+                                                .offset_from(norm_save2.as_mut_ptr())
+                                                as libc::c_long)
                                             as libc::c_ulong,
                                     ),
                             );
@@ -3151,12 +2987,13 @@ pub unsafe extern "C" fn quant_all_bands(
                             bytes_save.as_mut_ptr() as *const libc::c_void,
                             (save_bytes as libc::c_ulong)
                                 .wrapping_mul(
-                                    ::core::mem::size_of::<libc::c_uchar>() as libc::c_ulong,
+                                    ::core::mem::size_of::<libc::c_uchar>() as libc::c_ulong
                                 )
                                 .wrapping_add(
                                     (0 as libc::c_int as libc::c_long
                                         * bytes_buf.offset_from(bytes_save.as_mut_ptr())
-                                            as libc::c_long) as libc::c_ulong,
+                                            as libc::c_long)
+                                        as libc::c_ulong,
                                 ),
                         );
                     }
@@ -3178,9 +3015,7 @@ pub unsafe extern "C" fn quant_all_bands(
                         if last != 0 {
                             NULL as *mut celt_norm
                         } else {
-                            norm.offset(
-                                    (M * *eBands.offset(i as isize) as libc::c_int) as isize,
-                                )
+                            norm.offset((M * *eBands.offset(i as isize) as libc::c_int) as isize)
                                 .offset(-(norm_offset as isize))
                         },
                         lowband_scratch,
@@ -3203,9 +3038,7 @@ pub unsafe extern "C" fn quant_all_bands(
                     if last != 0 {
                         NULL as *mut celt_norm
                     } else {
-                        norm.offset(
-                                (M * *eBands.offset(i as isize) as libc::c_int) as isize,
-                            )
+                        norm.offset((M * *eBands.offset(i as isize) as libc::c_int) as isize)
                             .offset(-(norm_offset as isize))
                     },
                     Q15ONE,
@@ -3215,10 +3048,8 @@ pub unsafe extern "C" fn quant_all_bands(
             }
             y_cm = x_cm;
         }
-        *collapse_masks
-            .offset((i * C + 0 as libc::c_int) as isize) = x_cm as libc::c_uchar;
-        *collapse_masks
-            .offset((i * C + C - 1 as libc::c_int) as isize) = y_cm as libc::c_uchar;
+        *collapse_masks.offset((i * C + 0 as libc::c_int) as isize) = x_cm as libc::c_uchar;
+        *collapse_masks.offset((i * C + C - 1 as libc::c_int) as isize) = y_cm as libc::c_uchar;
         balance += *pulses.offset(i as isize) + tell;
         update_lowband = (b > N << BITRES) as libc::c_int;
         ctx.avoid_split_noise = 0 as libc::c_int;

@@ -18,7 +18,7 @@ pub mod stdint_intn_h {
     pub type int16_t = __int16_t;
     #[c2rust::src_loc = "26:1"]
     pub type int32_t = __int32_t;
-    use super::types_h::{__int8_t, __int16_t, __int32_t};
+    use super::types_h::{__int16_t, __int32_t, __int8_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
 pub mod stdint_uintn_h {
@@ -36,7 +36,7 @@ pub mod opus_types_h {
     pub type opus_int16 = int16_t;
     #[c2rust::src_loc = "55:4"]
     pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::{int8_t, int16_t, int32_t};
+    use super::stdint_intn_h::{int16_t, int32_t, int8_t};
     use super::stdint_uintn_h::uint8_t;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:32"]
@@ -67,7 +67,7 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int32, opus_int16};
+    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
 pub mod structs_h {
@@ -227,7 +227,7 @@ pub mod structs_h {
         pub indices_LBRR: [SideInfoIndices; 3],
         pub pulses_LBRR: [[opus_int8; 320]; 3],
     }
-    use super::opus_types_h::{opus_int16, opus_int32, opus_uint8, opus_int8};
+    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/errors.h:32"]
@@ -235,18 +235,18 @@ pub mod errors_h {
     #[c2rust::src_loc = "39:9"]
     pub const SILK_NO_ERROR: libc::c_int = 0 as libc::c_int;
 }
-pub use self::types_h::{__int8_t, __uint8_t, __int16_t, __int32_t};
-pub use self::stdint_intn_h::{int8_t, int16_t, int32_t};
-pub use self::stdint_uintn_h::uint8_t;
-pub use self::opus_types_h::{opus_int8, opus_uint8, opus_int16, opus_int32};
-pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
-};
-pub use self::structs_h::{
-    silk_nsq_state, silk_VAD_state, silk_LP_state, silk_NLSF_CB_struct, SideInfoIndices,
-    silk_encoder_state,
-};
 pub use self::errors_h::SILK_NO_ERROR;
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
+pub use self::resampler_structs_h::{
+    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
+};
+pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
+pub use self::stdint_uintn_h::uint8_t;
+pub use self::structs_h::{
+    silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
+    SideInfoIndices,
+};
+pub use self::types_h::{__int16_t, __int32_t, __int8_t, __uint8_t};
 #[c2rust::src_loc = "40:28"]
 static mut silk_TargetRate_NB_21: [libc::c_uchar; 107] = [
     0 as libc::c_int as libc::c_uchar,
@@ -723,16 +723,13 @@ pub unsafe extern "C" fn silk_control_SNR(
         TargetRate_bps -= 2000 as libc::c_int + (*psEncC).fs_kHz / 16 as libc::c_int;
     }
     if (*psEncC).fs_kHz == 8 as libc::c_int {
-        bound = ::core::mem::size_of::<[libc::c_uchar; 107]>() as libc::c_ulong
-            as libc::c_int;
+        bound = ::core::mem::size_of::<[libc::c_uchar; 107]>() as libc::c_ulong as libc::c_int;
         snr_table = silk_TargetRate_NB_21.as_ptr();
     } else if (*psEncC).fs_kHz == 12 as libc::c_int {
-        bound = ::core::mem::size_of::<[libc::c_uchar; 155]>() as libc::c_ulong
-            as libc::c_int;
+        bound = ::core::mem::size_of::<[libc::c_uchar; 155]>() as libc::c_ulong as libc::c_int;
         snr_table = silk_TargetRate_MB_21.as_ptr();
     } else {
-        bound = ::core::mem::size_of::<[libc::c_uchar; 191]>() as libc::c_ulong
-            as libc::c_int;
+        bound = ::core::mem::size_of::<[libc::c_uchar; 191]>() as libc::c_ulong as libc::c_int;
         snr_table = silk_TargetRate_WB_21.as_ptr();
     }
     id = (TargetRate_bps + 200 as libc::c_int) / 400 as libc::c_int;
@@ -744,9 +741,7 @@ pub unsafe extern "C" fn silk_control_SNR(
     if id <= 0 as libc::c_int {
         (*psEncC).SNR_dB_Q7 = 0 as libc::c_int;
     } else {
-        (*psEncC)
-            .SNR_dB_Q7 = *snr_table.offset(id as isize) as libc::c_int
-            * 21 as libc::c_int;
+        (*psEncC).SNR_dB_Q7 = *snr_table.offset(id as isize) as libc::c_int * 21 as libc::c_int;
     }
     return SILK_NO_ERROR;
 }

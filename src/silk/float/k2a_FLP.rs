@@ -16,9 +16,9 @@ pub mod opus_types_h {
     pub type opus_int32 = int32_t;
     use super::stdint_intn_h::int32_t;
 }
-pub use self::types_h::__int32_t;
-pub use self::stdint_intn_h::int32_t;
 pub use self::opus_types_h::opus_int32;
+pub use self::stdint_intn_h::int32_t;
+pub use self::types_h::__int32_t;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_k2a_FLP(

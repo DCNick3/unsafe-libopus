@@ -42,8 +42,8 @@ pub mod limits_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:32"]
 pub mod ecintrin_h {
     #[c2rust::src_loc = "69:11"]
-    pub const EC_CLZ0: libc::c_int = ::core::mem::size_of::<libc::c_uint>()
-        as libc::c_ulong as libc::c_int * CHAR_BIT;
+    pub const EC_CLZ0: libc::c_int =
+        ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/macros.h:32"]
@@ -57,17 +57,14 @@ pub mod macros_h {
             32 as libc::c_int
         };
     }
-    use super::opus_types_h::opus_int32;
     use super::ecintrin_h::EC_CLZ0;
+    use super::opus_types_h::opus_int32;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
 pub mod SigProc_FIX_h {
     #[inline]
     #[c2rust::src_loc = "572:1"]
-    pub unsafe extern "C" fn silk_max_32(
-        a: opus_int32,
-        b: opus_int32,
-    ) -> opus_int32 {
+    pub unsafe extern "C" fn silk_max_32(a: opus_int32, b: opus_int32) -> opus_int32 {
         return if a > b { a } else { b };
     }
     use super::opus_types_h::opus_int32;
@@ -77,15 +74,15 @@ pub mod internal {
     #[c2rust::src_loc = "36:9"]
     pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
 }
-pub use self::types_h::{__int16_t, __int32_t, __uint32_t};
+pub use self::ecintrin_h::EC_CLZ0;
+pub use self::internal::__CHAR_BIT__;
+pub use self::limits_h::CHAR_BIT;
+pub use self::macros_h::silk_CLZ32;
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32};
 pub use self::stdint_intn_h::{int16_t, int32_t};
 pub use self::stdint_uintn_h::uint32_t;
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32};
-pub use self::limits_h::CHAR_BIT;
-pub use self::ecintrin_h::EC_CLZ0;
-pub use self::macros_h::silk_CLZ32;
+pub use self::types_h::{__int16_t, __int32_t, __uint32_t};
 pub use self::SigProc_FIX_h::silk_max_32;
-pub use self::internal::__CHAR_BIT__;
 #[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_sum_sqr_shift(
@@ -102,40 +99,38 @@ pub unsafe extern "C" fn silk_sum_sqr_shift(
     nrg = len;
     i = 0 as libc::c_int;
     while i < len - 1 as libc::c_int {
-        nrg_tmp = (*x.offset(i as isize) as opus_int32
-            * *x.offset(i as isize) as opus_int32) as opus_uint32;
-        nrg_tmp = nrg_tmp
-            .wrapping_add(
-                (*x.offset((i + 1 as libc::c_int) as isize) as opus_int32
-                    * *x.offset((i + 1 as libc::c_int) as isize) as opus_int32)
-                    as opus_uint32,
-            ) as opus_int32 as opus_uint32;
+        nrg_tmp = (*x.offset(i as isize) as opus_int32 * *x.offset(i as isize) as opus_int32)
+            as opus_uint32;
+        nrg_tmp = nrg_tmp.wrapping_add(
+            (*x.offset((i + 1 as libc::c_int) as isize) as opus_int32
+                * *x.offset((i + 1 as libc::c_int) as isize) as opus_int32)
+                as opus_uint32,
+        ) as opus_int32 as opus_uint32;
         nrg = (nrg as libc::c_uint).wrapping_add(nrg_tmp >> shft) as opus_int32;
         i += 2 as libc::c_int;
     }
     if i < len {
-        nrg_tmp = (*x.offset(i as isize) as opus_int32
-            * *x.offset(i as isize) as opus_int32) as opus_uint32;
+        nrg_tmp = (*x.offset(i as isize) as opus_int32 * *x.offset(i as isize) as opus_int32)
+            as opus_uint32;
         nrg = (nrg as libc::c_uint).wrapping_add(nrg_tmp >> shft) as opus_int32;
     }
     shft = silk_max_32(0 as libc::c_int, shft + 3 as libc::c_int - silk_CLZ32(nrg));
     nrg = 0 as libc::c_int;
     i = 0 as libc::c_int;
     while i < len - 1 as libc::c_int {
-        nrg_tmp = (*x.offset(i as isize) as opus_int32
-            * *x.offset(i as isize) as opus_int32) as opus_uint32;
-        nrg_tmp = nrg_tmp
-            .wrapping_add(
-                (*x.offset((i + 1 as libc::c_int) as isize) as opus_int32
-                    * *x.offset((i + 1 as libc::c_int) as isize) as opus_int32)
-                    as opus_uint32,
-            ) as opus_int32 as opus_uint32;
+        nrg_tmp = (*x.offset(i as isize) as opus_int32 * *x.offset(i as isize) as opus_int32)
+            as opus_uint32;
+        nrg_tmp = nrg_tmp.wrapping_add(
+            (*x.offset((i + 1 as libc::c_int) as isize) as opus_int32
+                * *x.offset((i + 1 as libc::c_int) as isize) as opus_int32)
+                as opus_uint32,
+        ) as opus_int32 as opus_uint32;
         nrg = (nrg as libc::c_uint).wrapping_add(nrg_tmp >> shft) as opus_int32;
         i += 2 as libc::c_int;
     }
     if i < len {
-        nrg_tmp = (*x.offset(i as isize) as opus_int32
-            * *x.offset(i as isize) as opus_int32) as opus_uint32;
+        nrg_tmp = (*x.offset(i as isize) as opus_int32 * *x.offset(i as isize) as opus_int32)
+            as opus_uint32;
         nrg = (nrg as libc::c_uint).wrapping_add(nrg_tmp >> shft) as opus_int32;
     }
     *shift = shft;

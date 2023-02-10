@@ -40,8 +40,7 @@ pub unsafe extern "C" fn silk_apply_sine_window_FLP(
     }
     if !(length & 3 as libc::c_int == 0 as libc::c_int) {
         celt_fatal(
-            b"assertion failed: ( length & 3 ) == 0\0" as *const u8
-                as *const libc::c_char,
+            b"assertion failed: ( length & 3 ) == 0\0" as *const u8 as *const libc::c_char,
             b"silk/float/apply_sine_window_FLP.c\0" as *const u8 as *const libc::c_char,
             51 as libc::c_int,
         );
@@ -57,23 +56,15 @@ pub unsafe extern "C" fn silk_apply_sine_window_FLP(
     }
     k = 0 as libc::c_int;
     while k < length {
-        *px_win
-            .offset(
-                (k + 0 as libc::c_int) as isize,
-            ) = *px.offset((k + 0 as libc::c_int) as isize) * 0.5f32 * (S0 + S1);
-        *px_win
-            .offset(
-                (k + 1 as libc::c_int) as isize,
-            ) = *px.offset((k + 1 as libc::c_int) as isize) * S1;
+        *px_win.offset((k + 0 as libc::c_int) as isize) =
+            *px.offset((k + 0 as libc::c_int) as isize) * 0.5f32 * (S0 + S1);
+        *px_win.offset((k + 1 as libc::c_int) as isize) =
+            *px.offset((k + 1 as libc::c_int) as isize) * S1;
         S0 = c * S1 - S0;
-        *px_win
-            .offset(
-                (k + 2 as libc::c_int) as isize,
-            ) = *px.offset((k + 2 as libc::c_int) as isize) * 0.5f32 * (S1 + S0);
-        *px_win
-            .offset(
-                (k + 3 as libc::c_int) as isize,
-            ) = *px.offset((k + 3 as libc::c_int) as isize) * S0;
+        *px_win.offset((k + 2 as libc::c_int) as isize) =
+            *px.offset((k + 2 as libc::c_int) as isize) * 0.5f32 * (S1 + S0);
+        *px_win.offset((k + 3 as libc::c_int) as isize) =
+            *px.offset((k + 3 as libc::c_int) as isize) * S0;
         S1 = c * S0 - S1;
         k += 4 as libc::c_int;
     }

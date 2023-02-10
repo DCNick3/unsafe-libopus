@@ -22,9 +22,9 @@ pub mod opus_types_h {
     pub type opus_int64 = int64_t;
     use super::stdint_intn_h::{int32_t, int64_t};
 }
-pub use self::types_h::{__int32_t, __int64_t};
-pub use self::stdint_intn_h::{int32_t, int64_t};
 pub use self::opus_types_h::{opus_int32, opus_int64};
+pub use self::stdint_intn_h::{int32_t, int64_t};
+pub use self::types_h::{__int32_t, __int64_t};
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_bwexpander_32(
@@ -36,25 +36,19 @@ pub unsafe extern "C" fn silk_bwexpander_32(
     let chirp_minus_one_Q16: opus_int32 = chirp_Q16 - 65536 as libc::c_int;
     i = 0 as libc::c_int;
     while i < d - 1 as libc::c_int {
-        *ar
-            .offset(
-                i as isize,
-            ) = (chirp_Q16 as opus_int64 * *ar.offset(i as isize) as libc::c_long
+        *ar.offset(i as isize) = (chirp_Q16 as opus_int64 * *ar.offset(i as isize) as libc::c_long
             >> 16 as libc::c_int) as opus_int32;
-        chirp_Q16
-            += if 16 as libc::c_int == 1 as libc::c_int {
-                (chirp_Q16 * chirp_minus_one_Q16 >> 1 as libc::c_int)
-                    + (chirp_Q16 * chirp_minus_one_Q16 & 1 as libc::c_int)
-            } else {
-                (chirp_Q16 * chirp_minus_one_Q16 >> 16 as libc::c_int - 1 as libc::c_int)
-                    + 1 as libc::c_int >> 1 as libc::c_int
-            };
+        chirp_Q16 += if 16 as libc::c_int == 1 as libc::c_int {
+            (chirp_Q16 * chirp_minus_one_Q16 >> 1 as libc::c_int)
+                + (chirp_Q16 * chirp_minus_one_Q16 & 1 as libc::c_int)
+        } else {
+            (chirp_Q16 * chirp_minus_one_Q16 >> 16 as libc::c_int - 1 as libc::c_int)
+                + 1 as libc::c_int
+                >> 1 as libc::c_int
+        };
         i += 1;
     }
-    *ar
-        .offset(
-            (d - 1 as libc::c_int) as isize,
-        ) = (chirp_Q16 as opus_int64
+    *ar.offset((d - 1 as libc::c_int) as isize) = (chirp_Q16 as opus_int64
         * *ar.offset((d - 1 as libc::c_int) as isize) as libc::c_long
         >> 16 as libc::c_int) as opus_int32;
 }

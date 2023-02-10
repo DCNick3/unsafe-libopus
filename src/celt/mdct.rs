@@ -76,14 +76,14 @@ pub mod mdct_h {
     }
     use super::kiss_fft_h::kiss_fft_state;
 }
-pub use self::types_h::__int16_t;
-pub use self::stdint_intn_h::int16_t;
-pub use self::opus_types_h::opus_int16;
 pub use self::arch_h::opus_val16;
 pub use self::kiss_fft_h::{
-    kiss_fft_cpx, kiss_twiddle_cpx, arch_fft_state, kiss_fft_state, opus_fft_impl,
+    arch_fft_state, kiss_fft_cpx, kiss_fft_state, kiss_twiddle_cpx, opus_fft_impl,
 };
 pub use self::mdct_h::mdct_lookup;
+pub use self::opus_types_h::opus_int16;
+pub use self::stdint_intn_h::int16_t;
+pub use self::types_h::__int16_t;
 #[no_mangle]
 #[c2rust::src_loc = "119:1"]
 pub unsafe extern "C" fn clt_mdct_forward_c(
@@ -115,21 +115,16 @@ pub unsafe extern "C" fn clt_mdct_forward_c(
     N2 = N >> 1 as libc::c_int;
     N4 = N >> 2 as libc::c_int;
     let vla = N2 as usize;
-    let mut f: Vec::<libc::c_float> = ::std::vec::from_elem(0., vla);
+    let mut f: Vec<libc::c_float> = ::std::vec::from_elem(0., vla);
     let vla_0 = N4 as usize;
-    let mut f2: Vec::<kiss_fft_cpx> = ::std::vec::from_elem(
-        kiss_fft_cpx { r: 0., i: 0. },
-        vla_0,
-    );
-    let mut xp1: *const libc::c_float = in_0
-        .offset((overlap >> 1 as libc::c_int) as isize);
+    let mut f2: Vec<kiss_fft_cpx> = ::std::vec::from_elem(kiss_fft_cpx { r: 0., i: 0. }, vla_0);
+    let mut xp1: *const libc::c_float = in_0.offset((overlap >> 1 as libc::c_int) as isize);
     let mut xp2: *const libc::c_float = in_0
         .offset(N2 as isize)
         .offset(-(1 as libc::c_int as isize))
         .offset((overlap >> 1 as libc::c_int) as isize);
     let mut yp: *mut libc::c_float = f.as_mut_ptr();
-    let mut wp1: *const opus_val16 = window
-        .offset((overlap >> 1 as libc::c_int) as isize);
+    let mut wp1: *const opus_val16 = window.offset((overlap >> 1 as libc::c_int) as isize);
     let mut wp2: *const opus_val16 = window
         .offset((overlap >> 1 as libc::c_int) as isize)
         .offset(-(1 as libc::c_int as isize));
@@ -148,7 +143,9 @@ pub unsafe extern "C" fn clt_mdct_forward_c(
         i += 1;
     }
     wp1 = window;
-    wp2 = window.offset(overlap as isize).offset(-(1 as libc::c_int as isize));
+    wp2 = window
+        .offset(overlap as isize)
+        .offset(-(1 as libc::c_int as isize));
     while i < N4 - (overlap + 3 as libc::c_int >> 2 as libc::c_int) {
         let fresh2 = yp;
         yp = yp.offset(1);
@@ -174,8 +171,7 @@ pub unsafe extern "C" fn clt_mdct_forward_c(
         i += 1;
     }
     let mut yp_0: *mut libc::c_float = f.as_mut_ptr();
-    let t: *const libc::c_float = &*trig.offset(0 as libc::c_int as isize)
-        as *const libc::c_float;
+    let t: *const libc::c_float = &*trig.offset(0 as libc::c_int as isize) as *const libc::c_float;
     i = 0 as libc::c_int;
     while i < N4 {
         let mut yc: kiss_fft_cpx = kiss_fft_cpx { r: 0., i: 0. };
@@ -199,24 +195,22 @@ pub unsafe extern "C" fn clt_mdct_forward_c(
         yc.i = yi;
         yc.r = scale * yc.r;
         yc.i = scale * yc.i;
-        *f2.as_mut_ptr().offset(*((*st).bitrev).offset(i as isize) as isize) = yc;
+        *f2.as_mut_ptr()
+            .offset(*((*st).bitrev).offset(i as isize) as isize) = yc;
         i += 1;
     }
     opus_fft_impl(st, f2.as_mut_ptr());
     let mut fp: *const kiss_fft_cpx = f2.as_mut_ptr();
     let mut yp1: *mut libc::c_float = out;
-    let mut yp2: *mut libc::c_float = out
-        .offset((stride * (N2 - 1 as libc::c_int)) as isize);
-    let t_0: *const libc::c_float = &*trig.offset(0 as libc::c_int as isize)
-        as *const libc::c_float;
+    let mut yp2: *mut libc::c_float = out.offset((stride * (N2 - 1 as libc::c_int)) as isize);
+    let t_0: *const libc::c_float =
+        &*trig.offset(0 as libc::c_int as isize) as *const libc::c_float;
     i = 0 as libc::c_int;
     while i < N4 {
         let mut yr_0: libc::c_float = 0.;
         let mut yi_0: libc::c_float = 0.;
-        yr_0 = (*fp).i * *t_0.offset((N4 + i) as isize)
-            - (*fp).r * *t_0.offset(i as isize);
-        yi_0 = (*fp).r * *t_0.offset((N4 + i) as isize)
-            + (*fp).i * *t_0.offset(i as isize);
+        yr_0 = (*fp).i * *t_0.offset((N4 + i) as isize) - (*fp).r * *t_0.offset(i as isize);
+        yi_0 = (*fp).r * *t_0.offset((N4 + i) as isize) + (*fp).i * *t_0.offset(i as isize);
         *yp1 = yr_0;
         *yp2 = yi_0;
         fp = fp.offset(1);
@@ -253,11 +247,9 @@ pub unsafe extern "C" fn clt_mdct_backward_c(
     N2 = N >> 1 as libc::c_int;
     N4 = N >> 2 as libc::c_int;
     let mut xp1: *const libc::c_float = in_0;
-    let mut xp2: *const libc::c_float = in_0
-        .offset((stride * (N2 - 1 as libc::c_int)) as isize);
+    let mut xp2: *const libc::c_float = in_0.offset((stride * (N2 - 1 as libc::c_int)) as isize);
     let yp: *mut libc::c_float = out.offset((overlap >> 1 as libc::c_int) as isize);
-    let t: *const libc::c_float = &*trig.offset(0 as libc::c_int as isize)
-        as *const libc::c_float;
+    let t: *const libc::c_float = &*trig.offset(0 as libc::c_int as isize) as *const libc::c_float;
     let mut bitrev: *const opus_int16 = (*(*l).kfft[shift as usize]).bitrev;
     i = 0 as libc::c_int;
     while i < N4 {
@@ -284,8 +276,8 @@ pub unsafe extern "C" fn clt_mdct_backward_c(
         .offset((overlap >> 1 as libc::c_int) as isize)
         .offset(N2 as isize)
         .offset(-(2 as libc::c_int as isize));
-    let t_0: *const libc::c_float = &*trig.offset(0 as libc::c_int as isize)
-        as *const libc::c_float;
+    let t_0: *const libc::c_float =
+        &*trig.offset(0 as libc::c_int as isize) as *const libc::c_float;
     i = 0 as libc::c_int;
     while i < N4 + 1 as libc::c_int >> 1 as libc::c_int {
         let mut re: libc::c_float = 0.;

@@ -74,14 +74,14 @@ pub mod define_h {
     #[c2rust::src_loc = "82:9"]
     pub const STEREO_INTERP_LEN_MS: libc::c_int = 8 as libc::c_int;
 }
-pub use self::types_h::{__int16_t, __int32_t, __uint32_t, __int64_t};
+pub use self::define_h::STEREO_INTERP_LEN_MS;
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
 pub use self::stdint_uintn_h::uint32_t;
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32, opus_int64};
-pub use self::structs_h::stereo_dec_state;
 use self::string_h::memcpy;
-pub use self::typedef_h::{silk_int16_MIN, silk_int16_MAX};
-pub use self::define_h::STEREO_INTERP_LEN_MS;
+pub use self::structs_h::stereo_dec_state;
+pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
+pub use self::types_h::{__int16_t, __int32_t, __int64_t, __uint32_t};
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_stereo_MS_to_LR(
@@ -130,33 +130,41 @@ pub unsafe extern "C" fn silk_stereo_MS_to_LR(
     delta0_Q13 = if 16 as libc::c_int == 1 as libc::c_int {
         ((*pred_Q13.offset(0 as libc::c_int as isize)
             - (*state).pred_prev_Q13[0 as libc::c_int as usize] as libc::c_int)
-            as opus_int16 as opus_int32 * denom_Q16 as opus_int16 as opus_int32
+            as opus_int16 as opus_int32
+            * denom_Q16 as opus_int16 as opus_int32
             >> 1 as libc::c_int)
             + ((*pred_Q13.offset(0 as libc::c_int as isize)
                 - (*state).pred_prev_Q13[0 as libc::c_int as usize] as libc::c_int)
-                as opus_int16 as opus_int32 * denom_Q16 as opus_int16 as opus_int32
+                as opus_int16 as opus_int32
+                * denom_Q16 as opus_int16 as opus_int32
                 & 1 as libc::c_int)
     } else {
         ((*pred_Q13.offset(0 as libc::c_int as isize)
             - (*state).pred_prev_Q13[0 as libc::c_int as usize] as libc::c_int)
-            as opus_int16 as opus_int32 * denom_Q16 as opus_int16 as opus_int32
-            >> 16 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+            as opus_int16 as opus_int32
+            * denom_Q16 as opus_int16 as opus_int32
+            >> 16 as libc::c_int - 1 as libc::c_int)
+            + 1 as libc::c_int
             >> 1 as libc::c_int
     };
     delta1_Q13 = if 16 as libc::c_int == 1 as libc::c_int {
         ((*pred_Q13.offset(1 as libc::c_int as isize)
             - (*state).pred_prev_Q13[1 as libc::c_int as usize] as libc::c_int)
-            as opus_int16 as opus_int32 * denom_Q16 as opus_int16 as opus_int32
+            as opus_int16 as opus_int32
+            * denom_Q16 as opus_int16 as opus_int32
             >> 1 as libc::c_int)
             + ((*pred_Q13.offset(1 as libc::c_int as isize)
                 - (*state).pred_prev_Q13[1 as libc::c_int as usize] as libc::c_int)
-                as opus_int16 as opus_int32 * denom_Q16 as opus_int16 as opus_int32
+                as opus_int16 as opus_int32
+                * denom_Q16 as opus_int16 as opus_int32
                 & 1 as libc::c_int)
     } else {
         ((*pred_Q13.offset(1 as libc::c_int as isize)
             - (*state).pred_prev_Q13[1 as libc::c_int as usize] as libc::c_int)
-            as opus_int16 as opus_int32 * denom_Q16 as opus_int16 as opus_int32
-            >> 16 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+            as opus_int16 as opus_int32
+            * denom_Q16 as opus_int16 as opus_int32
+            >> 16 as libc::c_int - 1 as libc::c_int)
+            + 1 as libc::c_int
             >> 1 as libc::c_int
     };
     n = 0 as libc::c_int;
@@ -165,42 +173,36 @@ pub unsafe extern "C" fn silk_stereo_MS_to_LR(
         pred1_Q13 += delta1_Q13;
         sum = (((*x1.offset(n as isize) as libc::c_int
             + *x1.offset((n + 2 as libc::c_int) as isize) as libc::c_int
-            + ((*x1.offset((n + 1 as libc::c_int) as isize) as opus_uint32)
-                << 1 as libc::c_int) as opus_int32) as opus_uint32) << 9 as libc::c_int)
+            + ((*x1.offset((n + 1 as libc::c_int) as isize) as opus_uint32) << 1 as libc::c_int)
+                as opus_int32) as opus_uint32)
+            << 9 as libc::c_int) as opus_int32;
+        sum = (((*x2.offset((n + 1 as libc::c_int) as isize) as opus_int32 as opus_uint32)
+            << 8 as libc::c_int) as opus_int32 as libc::c_long
+            + (sum as libc::c_long * pred0_Q13 as opus_int16 as opus_int64 >> 16 as libc::c_int))
             as opus_int32;
-        sum = (((*x2.offset((n + 1 as libc::c_int) as isize) as opus_int32
-            as opus_uint32) << 8 as libc::c_int) as opus_int32 as libc::c_long
-            + (sum as libc::c_long * pred0_Q13 as opus_int16 as opus_int64
-                >> 16 as libc::c_int)) as opus_int32;
         sum = (sum as libc::c_long
-            + (((*x1.offset((n + 1 as libc::c_int) as isize) as opus_int32
-                as opus_uint32) << 11 as libc::c_int) as opus_int32 as libc::c_long
-                * pred1_Q13 as opus_int16 as opus_int64 >> 16 as libc::c_int))
-            as opus_int32;
-        *x2
-            .offset(
-                (n + 1 as libc::c_int) as isize,
-            ) = (if (if 8 as libc::c_int == 1 as libc::c_int {
+            + (((*x1.offset((n + 1 as libc::c_int) as isize) as opus_int32 as opus_uint32)
+                << 11 as libc::c_int) as opus_int32 as libc::c_long
+                * pred1_Q13 as opus_int16 as opus_int64
+                >> 16 as libc::c_int)) as opus_int32;
+        *x2.offset((n + 1 as libc::c_int) as isize) = (if (if 8 as libc::c_int == 1 as libc::c_int {
             (sum >> 1 as libc::c_int) + (sum & 1 as libc::c_int)
         } else {
-            (sum >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
-                >> 1 as libc::c_int
+            (sum >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int >> 1 as libc::c_int
         }) > silk_int16_MAX
         {
             silk_int16_MAX
         } else if (if 8 as libc::c_int == 1 as libc::c_int {
             (sum >> 1 as libc::c_int) + (sum & 1 as libc::c_int)
         } else {
-            (sum >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
-                >> 1 as libc::c_int
+            (sum >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int >> 1 as libc::c_int
         }) < silk_int16_MIN
         {
             silk_int16_MIN
         } else if 8 as libc::c_int == 1 as libc::c_int {
             (sum >> 1 as libc::c_int) + (sum & 1 as libc::c_int)
         } else {
-            (sum >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
-                >> 1 as libc::c_int
+            (sum >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int >> 1 as libc::c_int
         }) as opus_int16;
         n += 1;
     }
@@ -210,71 +212,57 @@ pub unsafe extern "C" fn silk_stereo_MS_to_LR(
     while n < frame_length {
         sum = (((*x1.offset(n as isize) as libc::c_int
             + *x1.offset((n + 2 as libc::c_int) as isize) as libc::c_int
-            + ((*x1.offset((n + 1 as libc::c_int) as isize) as opus_uint32)
-                << 1 as libc::c_int) as opus_int32) as opus_uint32) << 9 as libc::c_int)
+            + ((*x1.offset((n + 1 as libc::c_int) as isize) as opus_uint32) << 1 as libc::c_int)
+                as opus_int32) as opus_uint32)
+            << 9 as libc::c_int) as opus_int32;
+        sum = (((*x2.offset((n + 1 as libc::c_int) as isize) as opus_int32 as opus_uint32)
+            << 8 as libc::c_int) as opus_int32 as libc::c_long
+            + (sum as libc::c_long * pred0_Q13 as opus_int16 as opus_int64 >> 16 as libc::c_int))
             as opus_int32;
-        sum = (((*x2.offset((n + 1 as libc::c_int) as isize) as opus_int32
-            as opus_uint32) << 8 as libc::c_int) as opus_int32 as libc::c_long
-            + (sum as libc::c_long * pred0_Q13 as opus_int16 as opus_int64
-                >> 16 as libc::c_int)) as opus_int32;
         sum = (sum as libc::c_long
-            + (((*x1.offset((n + 1 as libc::c_int) as isize) as opus_int32
-                as opus_uint32) << 11 as libc::c_int) as opus_int32 as libc::c_long
-                * pred1_Q13 as opus_int16 as opus_int64 >> 16 as libc::c_int))
-            as opus_int32;
-        *x2
-            .offset(
-                (n + 1 as libc::c_int) as isize,
-            ) = (if (if 8 as libc::c_int == 1 as libc::c_int {
+            + (((*x1.offset((n + 1 as libc::c_int) as isize) as opus_int32 as opus_uint32)
+                << 11 as libc::c_int) as opus_int32 as libc::c_long
+                * pred1_Q13 as opus_int16 as opus_int64
+                >> 16 as libc::c_int)) as opus_int32;
+        *x2.offset((n + 1 as libc::c_int) as isize) = (if (if 8 as libc::c_int == 1 as libc::c_int {
             (sum >> 1 as libc::c_int) + (sum & 1 as libc::c_int)
         } else {
-            (sum >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
-                >> 1 as libc::c_int
+            (sum >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int >> 1 as libc::c_int
         }) > silk_int16_MAX
         {
             silk_int16_MAX
         } else if (if 8 as libc::c_int == 1 as libc::c_int {
             (sum >> 1 as libc::c_int) + (sum & 1 as libc::c_int)
         } else {
-            (sum >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
-                >> 1 as libc::c_int
+            (sum >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int >> 1 as libc::c_int
         }) < silk_int16_MIN
         {
             silk_int16_MIN
         } else if 8 as libc::c_int == 1 as libc::c_int {
             (sum >> 1 as libc::c_int) + (sum & 1 as libc::c_int)
         } else {
-            (sum >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
-                >> 1 as libc::c_int
+            (sum >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int >> 1 as libc::c_int
         }) as opus_int16;
         n += 1;
     }
-    (*state)
-        .pred_prev_Q13[0 as libc::c_int
-        as usize] = *pred_Q13.offset(0 as libc::c_int as isize) as opus_int16;
-    (*state)
-        .pred_prev_Q13[1 as libc::c_int
-        as usize] = *pred_Q13.offset(1 as libc::c_int as isize) as opus_int16;
+    (*state).pred_prev_Q13[0 as libc::c_int as usize] =
+        *pred_Q13.offset(0 as libc::c_int as isize) as opus_int16;
+    (*state).pred_prev_Q13[1 as libc::c_int as usize] =
+        *pred_Q13.offset(1 as libc::c_int as isize) as opus_int16;
     n = 0 as libc::c_int;
     while n < frame_length {
         sum = *x1.offset((n + 1 as libc::c_int) as isize) as libc::c_int
             + *x2.offset((n + 1 as libc::c_int) as isize) as opus_int32;
         diff = *x1.offset((n + 1 as libc::c_int) as isize) as libc::c_int
             - *x2.offset((n + 1 as libc::c_int) as isize) as opus_int32;
-        *x1
-            .offset(
-                (n + 1 as libc::c_int) as isize,
-            ) = (if sum > silk_int16_MAX {
+        *x1.offset((n + 1 as libc::c_int) as isize) = (if sum > silk_int16_MAX {
             silk_int16_MAX
         } else if sum < silk_int16_MIN {
             silk_int16_MIN
         } else {
             sum
         }) as opus_int16;
-        *x2
-            .offset(
-                (n + 1 as libc::c_int) as isize,
-            ) = (if diff > silk_int16_MAX {
+        *x2.offset((n + 1 as libc::c_int) as isize) = (if diff > silk_int16_MAX {
             silk_int16_MAX
         } else if diff < silk_int16_MIN {
             silk_int16_MIN

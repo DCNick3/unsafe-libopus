@@ -46,14 +46,13 @@ pub mod typedef_h {
     #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
 }
-pub use self::types_h::{__int16_t, __int32_t, __uint32_t, __int64_t};
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
 pub use self::stdint_uintn_h::uint32_t;
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32, opus_int64};
-pub use self::typedef_h::{silk_int16_MIN, silk_int16_MAX};
+pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
+pub use self::types_h::{__int16_t, __int32_t, __int64_t, __uint32_t};
 #[c2rust::src_loc = "35:19"]
-static mut A_fb1_20: opus_int16 = ((5394 as libc::c_int) << 1 as libc::c_int)
-    as opus_int16;
+static mut A_fb1_20: opus_int16 = ((5394 as libc::c_int) << 1 as libc::c_int) as opus_int16;
 #[c2rust::src_loc = "36:19"]
 static mut A_fb1_21: opus_int16 = -(24290 as libc::c_int) as opus_int16;
 #[no_mangle]
@@ -74,25 +73,21 @@ pub unsafe extern "C" fn silk_ana_filt_bank_1(
     let mut out_2: opus_int32 = 0;
     k = 0 as libc::c_int;
     while k < N2 {
-        in32 = ((*in_0.offset((2 as libc::c_int * k) as isize) as opus_int32
-            as opus_uint32) << 10 as libc::c_int) as opus_int32;
+        in32 = ((*in_0.offset((2 as libc::c_int * k) as isize) as opus_int32 as opus_uint32)
+            << 10 as libc::c_int) as opus_int32;
         Y = in32 - *S.offset(0 as libc::c_int as isize);
-        X = (Y as libc::c_long
-            + (Y as libc::c_long * A_fb1_21 as opus_int64 >> 16 as libc::c_int))
+        X = (Y as libc::c_long + (Y as libc::c_long * A_fb1_21 as opus_int64 >> 16 as libc::c_int))
             as opus_int32;
         out_1 = *S.offset(0 as libc::c_int as isize) + X;
         *S.offset(0 as libc::c_int as isize) = in32 + X;
-        in32 = ((*in_0.offset((2 as libc::c_int * k + 1 as libc::c_int) as isize)
-            as opus_int32 as opus_uint32) << 10 as libc::c_int) as opus_int32;
+        in32 = ((*in_0.offset((2 as libc::c_int * k + 1 as libc::c_int) as isize) as opus_int32
+            as opus_uint32)
+            << 10 as libc::c_int) as opus_int32;
         Y = in32 - *S.offset(1 as libc::c_int as isize);
-        X = (Y as libc::c_long * A_fb1_20 as opus_int64 >> 16 as libc::c_int)
-            as opus_int32;
+        X = (Y as libc::c_long * A_fb1_20 as opus_int64 >> 16 as libc::c_int) as opus_int32;
         out_2 = *S.offset(1 as libc::c_int as isize) + X;
         *S.offset(1 as libc::c_int as isize) = in32 + X;
-        *outL
-            .offset(
-                k as isize,
-            ) = (if (if 11 as libc::c_int == 1 as libc::c_int {
+        *outL.offset(k as isize) = (if (if 11 as libc::c_int == 1 as libc::c_int {
             (out_2 + out_1 >> 1 as libc::c_int) + (out_2 + out_1 & 1 as libc::c_int)
         } else {
             (out_2 + out_1 >> 11 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
@@ -114,10 +109,7 @@ pub unsafe extern "C" fn silk_ana_filt_bank_1(
             (out_2 + out_1 >> 11 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                 >> 1 as libc::c_int
         }) as opus_int16;
-        *outH
-            .offset(
-                k as isize,
-            ) = (if (if 11 as libc::c_int == 1 as libc::c_int {
+        *outH.offset(k as isize) = (if (if 11 as libc::c_int == 1 as libc::c_int {
             (out_2 - out_1 >> 1 as libc::c_int) + (out_2 - out_1 & 1 as libc::c_int)
         } else {
             (out_2 - out_1 >> 11 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int

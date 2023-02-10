@@ -69,8 +69,8 @@ pub mod struct_FILE_h {
     }
     #[c2rust::src_loc = "43:1"]
     pub type _IO_lock_t = ();
-    use super::types_h::{__off_t, __off64_t};
     use super::stddef_h::size_t;
+    use super::types_h::{__off64_t, __off_t};
     extern "C" {
         #[c2rust::src_loc = "38:8"]
         pub type _IO_wide_data;
@@ -101,8 +101,7 @@ pub mod arch_h {
     ) -> ! {
         fprintf(
             stderr,
-            b"Fatal (internal) error in %s, line %d: %s\n\0" as *const u8
-                as *const libc::c_char,
+            b"Fatal (internal) error in %s, line %d: %s\n\0" as *const u8 as *const libc::c_char,
             file,
             line,
             str,
@@ -187,9 +186,9 @@ pub mod modes_h {
         pub bits: *const libc::c_uchar,
         pub caps: *const libc::c_uchar,
     }
-    use super::opus_types_h::{opus_int32, opus_int16};
     use super::arch_h::opus_val16;
     use super::mdct_h::mdct_lookup;
+    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/usr/include/stdio.h:36"]
 pub mod stdio_h {
@@ -219,18 +218,16 @@ pub mod stdlib_h {
         pub fn abort() -> !;
     }
 }
-pub use self::types_h::{__int16_t, __int32_t, __off_t, __off64_t};
-pub use self::stdint_intn_h::{int16_t, int32_t};
-pub use self::opus_types_h::{opus_int16, opus_int32};
-pub use self::stddef_h::size_t;
-pub use self::struct_FILE_h::{
-    _IO_FILE, _IO_lock_t, _IO_wide_data, _IO_codecvt, _IO_marker,
-};
-pub use self::FILE_h::FILE;
-pub use self::arch_h::{opus_val16, opus_val32, celt_fatal};
-pub use self::kiss_fft_h::{kiss_twiddle_cpx, arch_fft_state, kiss_fft_state};
+pub use self::arch_h::{celt_fatal, opus_val16, opus_val32};
+pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::mdct_h::mdct_lookup;
 pub use self::modes_h::{OpusCustomMode, PulseCache};
+pub use self::opus_types_h::{opus_int16, opus_int32};
+pub use self::stddef_h::size_t;
+pub use self::stdint_intn_h::{int16_t, int32_t};
+pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
+pub use self::types_h::{__int16_t, __int32_t, __off64_t, __off_t};
+pub use self::FILE_h::FILE;
 
 use self::string_h::memmove;
 
@@ -290,10 +287,8 @@ unsafe extern "C" fn comb_filter_const_c(
     i = 0 as libc::c_int;
     while i < N {
         x0 = *x.offset((i - T + 2 as libc::c_int) as isize);
-        *y
-            .offset(
-                i as isize,
-            ) = *x.offset(i as isize) + g10 * x2 + g11 * (x1 + x3) + g12 * (x0 + x4);
+        *y.offset(i as isize) =
+            *x.offset(i as isize) + g10 * x2 + g11 * (x1 + x3) + g12 * (x0 + x4);
         *y.offset(i as isize) = *y.offset(i as isize);
         x4 = x3;
         x3 = x2;
@@ -335,8 +330,7 @@ pub unsafe extern "C" fn comb_filter(
         [0.4638671875f32, 0.2680664062f32, 0.0f32],
         [0.7998046875f32, 0.1000976562f32, 0.0f32],
     ];
-    if g0 == 0 as libc::c_int as libc::c_float && g1 == 0 as libc::c_int as libc::c_float
-    {
+    if g0 == 0 as libc::c_int as libc::c_float && g1 == 0 as libc::c_int as libc::c_float {
         if x != y {
             memmove(
                 y as *mut libc::c_void,
@@ -344,15 +338,23 @@ pub unsafe extern "C" fn comb_filter(
                 (N as libc::c_ulong)
                     .wrapping_mul(::core::mem::size_of::<opus_val32>() as libc::c_ulong)
                     .wrapping_add(
-                        (0 as libc::c_int as libc::c_long
-                            * y.offset_from(x) as libc::c_long) as libc::c_ulong,
+                        (0 as libc::c_int as libc::c_long * y.offset_from(x) as libc::c_long)
+                            as libc::c_ulong,
                     ),
             );
         }
         return;
     }
-    T0 = if T0 > 15 as libc::c_int { T0 } else { 15 as libc::c_int };
-    T1 = if T1 > 15 as libc::c_int { T1 } else { 15 as libc::c_int };
+    T0 = if T0 > 15 as libc::c_int {
+        T0
+    } else {
+        15 as libc::c_int
+    };
+    T1 = if T1 > 15 as libc::c_int {
+        T1
+    } else {
+        15 as libc::c_int
+    };
     g00 = g0 * gains[tapset0 as usize][0 as libc::c_int as usize];
     g01 = g0 * gains[tapset0 as usize][1 as libc::c_int as usize];
     g02 = g0 * gains[tapset0 as usize][2 as libc::c_int as usize];
@@ -371,17 +373,19 @@ pub unsafe extern "C" fn comb_filter(
         let mut f: opus_val16 = 0.;
         x0 = *x.offset((i - T1 + 2 as libc::c_int) as isize);
         f = *window.offset(i as isize) * *window.offset(i as isize);
-        *y
-            .offset(
-                i as isize,
-            ) = *x.offset(i as isize) + (1.0f32 - f) * g00 * *x.offset((i - T0) as isize)
-            + (1.0f32 - f) * g01
+        *y.offset(i as isize) = *x.offset(i as isize)
+            + (1.0f32 - f) * g00 * *x.offset((i - T0) as isize)
+            + (1.0f32 - f)
+                * g01
                 * (*x.offset((i - T0 + 1 as libc::c_int) as isize)
                     + *x.offset((i - T0 - 1 as libc::c_int) as isize))
-            + (1.0f32 - f) * g02
+            + (1.0f32 - f)
+                * g02
                 * (*x.offset((i - T0 + 2 as libc::c_int) as isize)
-                    + *x.offset((i - T0 - 2 as libc::c_int) as isize)) + f * g10 * x2
-            + f * g11 * (x1 + x3) + f * g12 * (x0 + x4);
+                    + *x.offset((i - T0 - 2 as libc::c_int) as isize))
+            + f * g10 * x2
+            + f * g11 * (x1 + x3)
+            + f * g12 * (x0 + x4);
         *y.offset(i as isize) = *y.offset(i as isize);
         x4 = x3;
         x3 = x2;
@@ -398,10 +402,9 @@ pub unsafe extern "C" fn comb_filter(
                     .wrapping_mul(::core::mem::size_of::<opus_val32>() as libc::c_ulong)
                     .wrapping_add(
                         (0 as libc::c_int as libc::c_long
-                            * y
-                                .offset(overlap as isize)
-                                .offset_from(x.offset(overlap as isize)) as libc::c_long)
-                            as libc::c_ulong,
+                            * y.offset(overlap as isize)
+                                .offset_from(x.offset(overlap as isize))
+                                as libc::c_long) as libc::c_ulong,
                     ),
             );
         }
@@ -474,15 +477,15 @@ pub unsafe extern "C" fn init_caps(
     while i < (*m).nbEBands {
         let mut N: libc::c_int = 0;
         N = (*((*m).eBands).offset((i + 1 as libc::c_int) as isize) as libc::c_int
-            - *((*m).eBands).offset(i as isize) as libc::c_int) << LM;
-        *cap
-            .offset(
-                i as isize,
-            ) = (*((*m).cache.caps)
-            .offset(
-                ((*m).nbEBands * (2 as libc::c_int * LM + C - 1 as libc::c_int) + i)
-                    as isize,
-            ) as libc::c_int + 64 as libc::c_int) * C * N >> 2 as libc::c_int;
+            - *((*m).eBands).offset(i as isize) as libc::c_int)
+            << LM;
+        *cap.offset(i as isize) = (*((*m).cache.caps)
+            .offset(((*m).nbEBands * (2 as libc::c_int * LM + C - 1 as libc::c_int) + i) as isize)
+            as libc::c_int
+            + 64 as libc::c_int)
+            * C
+            * N
+            >> 2 as libc::c_int;
         i += 1;
     }
 }
@@ -500,9 +503,9 @@ pub unsafe extern "C" fn opus_strerror(error: libc::c_int) -> *const libc::c_cha
         b"memory allocation failed\0" as *const u8 as *const libc::c_char,
     ];
     if error > 0 as libc::c_int || error < -(7 as libc::c_int) {
-        return b"unknown error\0" as *const u8 as *const libc::c_char
+        return b"unknown error\0" as *const u8 as *const libc::c_char;
     } else {
-        return error_strings[-error as usize]
+        return error_strings[-error as usize];
     };
 }
 #[no_mangle]

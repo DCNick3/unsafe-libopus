@@ -18,7 +18,7 @@ pub mod stdint_intn_h {
     pub type int16_t = __int16_t;
     #[c2rust::src_loc = "26:1"]
     pub type int32_t = __int32_t;
-    use super::types_h::{__int8_t, __int16_t, __int32_t};
+    use super::types_h::{__int16_t, __int32_t, __int8_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
 pub mod stdint_uintn_h {
@@ -36,7 +36,7 @@ pub mod opus_types_h {
     pub type opus_int16 = int16_t;
     #[c2rust::src_loc = "55:4"]
     pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::{int8_t, int16_t, int32_t};
+    use super::stdint_intn_h::{int16_t, int32_t, int8_t};
     use super::stdint_uintn_h::uint8_t;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:33"]
@@ -67,7 +67,7 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int32, opus_int16};
+    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:33"]
 pub mod structs_h {
@@ -227,7 +227,7 @@ pub mod structs_h {
         pub indices_LBRR: [SideInfoIndices; 3],
         pub pulses_LBRR: [[opus_int8; 320]; 3],
     }
-    use super::opus_types_h::{opus_int16, opus_int32, opus_uint8, opus_int8};
+    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/float.h:32"]
@@ -271,10 +271,8 @@ pub mod SigProc_FLP_h {
             D: libc::c_int,
         ) -> libc::c_float;
         #[c2rust::src_loc = "134:1"]
-        pub fn silk_energy_FLP(
-            data: *const libc::c_float,
-            dataSize: libc::c_int,
-        ) -> libc::c_double;
+        pub fn silk_energy_FLP(data: *const libc::c_float, dataSize: libc::c_int)
+            -> libc::c_double;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:33"]
@@ -323,25 +321,25 @@ pub mod internal {
     #[c2rust::src_loc = "133:9"]
     pub const __FLT_MAX__: libc::c_float = 3.40282347e+38f32;
 }
-pub use self::types_h::{__int8_t, __uint8_t, __int16_t, __int32_t};
-pub use self::stdint_intn_h::{int8_t, int16_t, int32_t};
-pub use self::stdint_uintn_h::uint8_t;
-pub use self::opus_types_h::{opus_int8, opus_uint8, opus_int16, opus_int32};
-pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
-};
-pub use self::structs_h::{
-    silk_nsq_state, silk_VAD_state, silk_LP_state, silk_NLSF_CB_struct, SideInfoIndices,
-    silk_encoder_state,
-};
-pub use self::float_h::FLT_MAX;
-pub use self::typedef_h::silk_float_MAX;
-pub use self::define_h::MAX_NB_SUBFR;
 use self::arch_h::celt_fatal;
-use self::SigProc_FLP_h::{silk_burg_modified_FLP, silk_energy_FLP};
-use self::main_h::silk_interpolate;
-use self::main_FLP_h::{silk_A2NLSF_FLP, silk_LPC_analysis_filter_FLP, silk_NLSF2A_FLP};
+pub use self::define_h::MAX_NB_SUBFR;
+pub use self::float_h::FLT_MAX;
 pub use self::internal::__FLT_MAX__;
+use self::main_FLP_h::{silk_A2NLSF_FLP, silk_LPC_analysis_filter_FLP, silk_NLSF2A_FLP};
+use self::main_h::silk_interpolate;
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
+pub use self::resampler_structs_h::{
+    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
+};
+pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
+pub use self::stdint_uintn_h::uint8_t;
+pub use self::structs_h::{
+    silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
+    SideInfoIndices,
+};
+pub use self::typedef_h::silk_float_MAX;
+pub use self::types_h::{__int16_t, __int32_t, __int8_t, __uint8_t};
+use self::SigProc_FLP_h::{silk_burg_modified_FLP, silk_energy_FLP};
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn silk_find_LPC_FLP(
@@ -369,18 +367,18 @@ pub unsafe extern "C" fn silk_find_LPC_FLP(
         (*psEncC).nb_subfr,
         (*psEncC).predictLPCOrder,
     );
-    if (*psEncC).useInterpolatedNLSFs != 0 && (*psEncC).first_frame_after_reset == 0
+    if (*psEncC).useInterpolatedNLSFs != 0
+        && (*psEncC).first_frame_after_reset == 0
         && (*psEncC).nb_subfr == MAX_NB_SUBFR
     {
-        res_nrg
-            -= silk_burg_modified_FLP(
-                a_tmp.as_mut_ptr(),
-                x.offset((MAX_NB_SUBFR / 2 as libc::c_int * subfr_length) as isize),
-                minInvGain,
-                subfr_length,
-                MAX_NB_SUBFR / 2 as libc::c_int,
-                (*psEncC).predictLPCOrder,
-            );
+        res_nrg -= silk_burg_modified_FLP(
+            a_tmp.as_mut_ptr(),
+            x.offset((MAX_NB_SUBFR / 2 as libc::c_int * subfr_length) as isize),
+            minInvGain,
+            subfr_length,
+            MAX_NB_SUBFR / 2 as libc::c_int,
+            (*psEncC).predictLPCOrder,
+        );
         silk_A2NLSF_FLP(NLSF_Q15, a_tmp.as_mut_ptr(), (*psEncC).predictLPCOrder);
         res_nrg_2nd = silk_float_MAX;
         k = 3 as libc::c_int;
@@ -406,16 +404,17 @@ pub unsafe extern "C" fn silk_find_LPC_FLP(
                 (*psEncC).predictLPCOrder,
             );
             res_nrg_interp = (silk_energy_FLP(
-                LPC_res.as_mut_ptr().offset((*psEncC).predictLPCOrder as isize),
+                LPC_res
+                    .as_mut_ptr()
+                    .offset((*psEncC).predictLPCOrder as isize),
                 subfr_length - (*psEncC).predictLPCOrder,
-            )
-                + silk_energy_FLP(
-                    LPC_res
-                        .as_mut_ptr()
-                        .offset((*psEncC).predictLPCOrder as isize)
-                        .offset(subfr_length as isize),
-                    subfr_length - (*psEncC).predictLPCOrder,
-                )) as libc::c_float;
+            ) + silk_energy_FLP(
+                LPC_res
+                    .as_mut_ptr()
+                    .offset((*psEncC).predictLPCOrder as isize)
+                    .offset(subfr_length as isize),
+                subfr_length - (*psEncC).predictLPCOrder,
+            )) as libc::c_float;
             if res_nrg_interp < res_nrg {
                 res_nrg = res_nrg_interp;
                 (*psEncC).indices.NLSFInterpCoef_Q2 = k as opus_int8;
@@ -430,7 +429,8 @@ pub unsafe extern "C" fn silk_find_LPC_FLP(
         silk_A2NLSF_FLP(NLSF_Q15, a.as_mut_ptr(), (*psEncC).predictLPCOrder);
     }
     if !((*psEncC).indices.NLSFInterpCoef_Q2 as libc::c_int == 4 as libc::c_int
-        || (*psEncC).useInterpolatedNLSFs != 0 && (*psEncC).first_frame_after_reset == 0
+        || (*psEncC).useInterpolatedNLSFs != 0
+            && (*psEncC).first_frame_after_reset == 0
             && (*psEncC).nb_subfr == 4 as libc::c_int)
     {
         celt_fatal(

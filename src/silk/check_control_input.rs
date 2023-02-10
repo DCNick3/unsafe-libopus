@@ -68,8 +68,7 @@ pub mod errors_h {
     #[c2rust::src_loc = "61:9"]
     pub const SILK_ENC_INVALID_COMPLEXITY_SETTING: libc::c_int = -(106 as libc::c_int);
     #[c2rust::src_loc = "76:9"]
-    pub const SILK_ENC_INVALID_NUMBER_OF_CHANNELS_ERROR: libc::c_int = -(111
-        as libc::c_int);
+    pub const SILK_ENC_INVALID_NUMBER_OF_CHANNELS_ERROR: libc::c_int = -(111 as libc::c_int);
     #[c2rust::src_loc = "64:9"]
     pub const SILK_ENC_INVALID_INBAND_FEC_SETTING: libc::c_int = -(107 as libc::c_int);
     #[c2rust::src_loc = "70:9"]
@@ -88,19 +87,17 @@ pub mod define_h {
     #[c2rust::src_loc = "40:9"]
     pub const ENCODER_NUM_CHANNELS: libc::c_int = 2 as libc::c_int;
 }
-pub use self::types_h::__int32_t;
-pub use self::stdint_intn_h::int32_t;
-pub use self::opus_types_h::opus_int32;
-pub use self::control_h::silk_EncControlStruct;
 use self::arch_h::celt_fatal;
-pub use self::errors_h::{
-    SILK_NO_ERROR, SILK_ENC_INVALID_COMPLEXITY_SETTING,
-    SILK_ENC_INVALID_NUMBER_OF_CHANNELS_ERROR, SILK_ENC_INVALID_INBAND_FEC_SETTING,
-    SILK_ENC_INVALID_CBR_SETTING, SILK_ENC_INVALID_DTX_SETTING,
-    SILK_ENC_INVALID_LOSS_RATE, SILK_ENC_PACKET_SIZE_NOT_SUPPORTED,
-    SILK_ENC_FS_NOT_SUPPORTED,
-};
+pub use self::control_h::silk_EncControlStruct;
 pub use self::define_h::ENCODER_NUM_CHANNELS;
+pub use self::errors_h::{
+    SILK_ENC_FS_NOT_SUPPORTED, SILK_ENC_INVALID_CBR_SETTING, SILK_ENC_INVALID_COMPLEXITY_SETTING,
+    SILK_ENC_INVALID_DTX_SETTING, SILK_ENC_INVALID_INBAND_FEC_SETTING, SILK_ENC_INVALID_LOSS_RATE,
+    SILK_ENC_INVALID_NUMBER_OF_CHANNELS_ERROR, SILK_ENC_PACKET_SIZE_NOT_SUPPORTED, SILK_NO_ERROR,
+};
+pub use self::opus_types_h::opus_int32;
+pub use self::stdint_intn_h::int32_t;
+pub use self::types_h::__int32_t;
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn check_control_input(
@@ -108,8 +105,7 @@ pub unsafe extern "C" fn check_control_input(
 ) -> libc::c_int {
     if encControl.is_null() {
         celt_fatal(
-            b"assertion failed: encControl != NULL\0" as *const u8
-                as *const libc::c_char,
+            b"assertion failed: encControl != NULL\0" as *const u8 as *const libc::c_char,
             b"silk/check_control_input.c\0" as *const u8 as *const libc::c_char,
             41 as libc::c_int,
         );
@@ -169,8 +165,7 @@ pub unsafe extern "C" fn check_control_input(
         }
         return SILK_ENC_INVALID_LOSS_RATE;
     }
-    if (*encControl).useDTX < 0 as libc::c_int || (*encControl).useDTX > 1 as libc::c_int
-    {
+    if (*encControl).useDTX < 0 as libc::c_int || (*encControl).useDTX > 1 as libc::c_int {
         if 0 as libc::c_int == 0 {
             celt_fatal(
                 b"assertion failed: 0\0" as *const u8 as *const libc::c_char,
@@ -180,8 +175,7 @@ pub unsafe extern "C" fn check_control_input(
         }
         return SILK_ENC_INVALID_DTX_SETTING;
     }
-    if (*encControl).useCBR < 0 as libc::c_int || (*encControl).useCBR > 1 as libc::c_int
-    {
+    if (*encControl).useCBR < 0 as libc::c_int || (*encControl).useCBR > 1 as libc::c_int {
         if 0 as libc::c_int == 0 {
             celt_fatal(
                 b"assertion failed: 0\0" as *const u8 as *const libc::c_char,
@@ -237,9 +231,7 @@ pub unsafe extern "C" fn check_control_input(
         }
         return SILK_ENC_INVALID_NUMBER_OF_CHANNELS_ERROR;
     }
-    if (*encControl).complexity < 0 as libc::c_int
-        || (*encControl).complexity > 10 as libc::c_int
-    {
+    if (*encControl).complexity < 0 as libc::c_int || (*encControl).complexity > 10 as libc::c_int {
         if 0 as libc::c_int == 0 {
             celt_fatal(
                 b"assertion failed: 0\0" as *const u8 as *const libc::c_char,

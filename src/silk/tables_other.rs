@@ -30,8 +30,8 @@ pub mod opus_types_h {
     pub type opus_int16 = int16_t;
     #[c2rust::src_loc = "55:4"]
     pub type opus_int32 = int32_t;
-    use super::stdint_uintn_h::uint8_t;
     use super::stdint_intn_h::{int16_t, int32_t};
+    use super::stdint_uintn_h::uint8_t;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
 pub mod define_h {
@@ -44,11 +44,11 @@ pub mod define_h {
     #[c2rust::src_loc = "131:9"]
     pub const OFFSET_VH_Q10: libc::c_int = 100 as libc::c_int;
 }
-pub use self::types_h::{__uint8_t, __int16_t, __int32_t};
+pub use self::define_h::{OFFSET_UVH_Q10, OFFSET_UVL_Q10, OFFSET_VH_Q10, OFFSET_VL_Q10};
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint8};
 pub use self::stdint_intn_h::{int16_t, int32_t};
 pub use self::stdint_uintn_h::uint8_t;
-pub use self::opus_types_h::{opus_uint8, opus_int16, opus_int32};
-pub use self::define_h::{OFFSET_UVL_Q10, OFFSET_UVH_Q10, OFFSET_VL_Q10, OFFSET_VH_Q10};
+pub use self::types_h::{__int16_t, __int32_t, __uint8_t};
 #[no_mangle]
 #[c2rust::src_loc = "42:18"]
 pub static mut silk_stereo_pred_quant_Q13: [opus_int16; 16] = [
@@ -123,7 +123,10 @@ static mut silk_LBRR_flags_3_iCDF: [opus_uint8; 7] = [
 #[no_mangle]
 #[c2rust::src_loc = "58:26"]
 pub static mut silk_LBRR_flags_iCDF_ptr: [*const opus_uint8; 2] = unsafe {
-    [silk_LBRR_flags_2_iCDF.as_ptr(), silk_LBRR_flags_3_iCDF.as_ptr()]
+    [
+        silk_LBRR_flags_2_iCDF.as_ptr(),
+        silk_LBRR_flags_3_iCDF.as_ptr(),
+    ]
 };
 #[no_mangle]
 #[c2rust::src_loc = "64:18"]
@@ -234,11 +237,31 @@ pub static mut silk_NLSF_EXT_iCDF: [opus_uint8; 7] = [
 #[no_mangle]
 #[c2rust::src_loc = "102:18"]
 pub static mut silk_Transition_LP_B_Q28: [[opus_int32; 3]; 5] = [
-    [250767114 as libc::c_int, 501534038 as libc::c_int, 250767114 as libc::c_int],
-    [209867381 as libc::c_int, 419732057 as libc::c_int, 209867381 as libc::c_int],
-    [170987846 as libc::c_int, 341967853 as libc::c_int, 170987846 as libc::c_int],
-    [131531482 as libc::c_int, 263046905 as libc::c_int, 131531482 as libc::c_int],
-    [89306658 as libc::c_int, 178584282 as libc::c_int, 89306658 as libc::c_int],
+    [
+        250767114 as libc::c_int,
+        501534038 as libc::c_int,
+        250767114 as libc::c_int,
+    ],
+    [
+        209867381 as libc::c_int,
+        419732057 as libc::c_int,
+        209867381 as libc::c_int,
+    ],
+    [
+        170987846 as libc::c_int,
+        341967853 as libc::c_int,
+        170987846 as libc::c_int,
+    ],
+    [
+        131531482 as libc::c_int,
+        263046905 as libc::c_int,
+        131531482 as libc::c_int,
+    ],
+    [
+        89306658 as libc::c_int,
+        178584282 as libc::c_int,
+        89306658 as libc::c_int,
+    ],
 ];
 #[no_mangle]
 #[c2rust::src_loc = "112:18"]

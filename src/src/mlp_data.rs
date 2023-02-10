@@ -40,10 +40,10 @@ pub mod mlp_h {
     }
     use super::opus_types_h::opus_int8;
 }
-pub use self::types_h::__int8_t;
-pub use self::stdint_intn_h::int8_t;
-pub use self::opus_types_h::opus_int8;
 pub use self::mlp_h::{DenseLayer, GRULayer};
+pub use self::opus_types_h::opus_int8;
+pub use self::stdint_intn_h::int8_t;
+pub use self::types_h::__int8_t;
 #[c2rust::src_loc = "9:24"]
 static mut layer0_weights: [opus_int8; 800] = [
     -(30 as libc::c_int) as opus_int8,

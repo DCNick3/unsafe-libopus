@@ -44,11 +44,7 @@ pub mod SigProc_FIX_h {
     use super::opus_types_h::opus_int32;
     extern "C" {
         #[c2rust::src_loc = "140:1"]
-        pub fn silk_bwexpander_32(
-            ar: *mut opus_int32,
-            d: libc::c_int,
-            chirp_Q16: opus_int32,
-        );
+        pub fn silk_bwexpander_32(ar: *mut opus_int32, d: libc::c_int, chirp_Q16: opus_int32);
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
@@ -58,12 +54,12 @@ pub mod typedef_h {
     #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
 }
-pub use self::types_h::{__int16_t, __int32_t, __uint32_t, __int64_t};
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
 pub use self::stdint_uintn_h::uint32_t;
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32, opus_int64};
+pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
+pub use self::types_h::{__int16_t, __int32_t, __int64_t, __uint32_t};
 use self::SigProc_FIX_h::silk_bwexpander_32;
-pub use self::typedef_h::{silk_int16_MIN, silk_int16_MAX};
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_LPC_fit(
@@ -98,8 +94,7 @@ pub unsafe extern "C" fn silk_LPC_fit(
         maxabs = if QIN - QOUT == 1 as libc::c_int {
             (maxabs >> 1 as libc::c_int) + (maxabs & 1 as libc::c_int)
         } else {
-            (maxabs >> QIN - QOUT - 1 as libc::c_int) + 1 as libc::c_int
-                >> 1 as libc::c_int
+            (maxabs >> QIN - QOUT - 1 as libc::c_int) + 1 as libc::c_int >> 1 as libc::c_int
         };
         if !(maxabs > silk_int16_MAX) {
             break;
@@ -113,22 +108,20 @@ pub unsafe extern "C" fn silk_LPC_fit(
             * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int) as libc::c_double
             + 0.5f64) as opus_int32
             - (((maxabs - 0x7fff as libc::c_int) as opus_uint32) << 14 as libc::c_int)
-                as opus_int32 / (maxabs * (idx + 1 as libc::c_int) >> 2 as libc::c_int);
+                as opus_int32
+                / (maxabs * (idx + 1 as libc::c_int) >> 2 as libc::c_int);
         silk_bwexpander_32(a_QIN, d, chirp_Q16);
         i += 1;
     }
     if i == 10 as libc::c_int {
         k = 0 as libc::c_int;
         while k < d {
-            *a_QOUT
-                .offset(
-                    k as isize,
-                ) = (if (if QIN - QOUT == 1 as libc::c_int {
+            *a_QOUT.offset(k as isize) = (if (if QIN - QOUT == 1 as libc::c_int {
                 (*a_QIN.offset(k as isize) >> 1 as libc::c_int)
                     + (*a_QIN.offset(k as isize) & 1 as libc::c_int)
             } else {
-                (*a_QIN.offset(k as isize) >> QIN - QOUT - 1 as libc::c_int)
-                    + 1 as libc::c_int >> 1 as libc::c_int
+                (*a_QIN.offset(k as isize) >> QIN - QOUT - 1 as libc::c_int) + 1 as libc::c_int
+                    >> 1 as libc::c_int
             }) > silk_int16_MAX
             {
                 silk_int16_MAX
@@ -136,8 +129,8 @@ pub unsafe extern "C" fn silk_LPC_fit(
                 (*a_QIN.offset(k as isize) >> 1 as libc::c_int)
                     + (*a_QIN.offset(k as isize) & 1 as libc::c_int)
             } else {
-                (*a_QIN.offset(k as isize) >> QIN - QOUT - 1 as libc::c_int)
-                    + 1 as libc::c_int >> 1 as libc::c_int
+                (*a_QIN.offset(k as isize) >> QIN - QOUT - 1 as libc::c_int) + 1 as libc::c_int
+                    >> 1 as libc::c_int
             }) < silk_int16_MIN
             {
                 silk_int16_MIN
@@ -145,28 +138,22 @@ pub unsafe extern "C" fn silk_LPC_fit(
                 (*a_QIN.offset(k as isize) >> 1 as libc::c_int)
                     + (*a_QIN.offset(k as isize) & 1 as libc::c_int)
             } else {
-                (*a_QIN.offset(k as isize) >> QIN - QOUT - 1 as libc::c_int)
-                    + 1 as libc::c_int >> 1 as libc::c_int
+                (*a_QIN.offset(k as isize) >> QIN - QOUT - 1 as libc::c_int) + 1 as libc::c_int
+                    >> 1 as libc::c_int
             }) as opus_int16;
-            *a_QIN
-                .offset(
-                    k as isize,
-                ) = ((*a_QOUT.offset(k as isize) as opus_int32 as opus_uint32)
+            *a_QIN.offset(k as isize) = ((*a_QOUT.offset(k as isize) as opus_int32 as opus_uint32)
                 << QIN - QOUT) as opus_int32;
             k += 1;
         }
     } else {
         k = 0 as libc::c_int;
         while k < d {
-            *a_QOUT
-                .offset(
-                    k as isize,
-                ) = (if QIN - QOUT == 1 as libc::c_int {
+            *a_QOUT.offset(k as isize) = (if QIN - QOUT == 1 as libc::c_int {
                 (*a_QIN.offset(k as isize) >> 1 as libc::c_int)
                     + (*a_QIN.offset(k as isize) & 1 as libc::c_int)
             } else {
-                (*a_QIN.offset(k as isize) >> QIN - QOUT - 1 as libc::c_int)
-                    + 1 as libc::c_int >> 1 as libc::c_int
+                (*a_QIN.offset(k as isize) >> QIN - QOUT - 1 as libc::c_int) + 1 as libc::c_int
+                    >> 1 as libc::c_int
             }) as opus_int16;
             k += 1;
         }

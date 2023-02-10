@@ -24,7 +24,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint8_t, __uint32_t};
+    use super::types_h::{__uint32_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
 pub mod opus_types_h {
@@ -36,8 +36,8 @@ pub mod opus_types_h {
     pub type opus_int32 = int32_t;
     #[c2rust::src_loc = "56:4"]
     pub type opus_uint32 = uint32_t;
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
     use super::stdint_intn_h::{int16_t, int32_t};
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:32"]
 pub mod entcode_h {
@@ -79,11 +79,7 @@ pub mod arch_h {
 pub mod string_h {
     extern "C" {
         #[c2rust::src_loc = "61:14"]
-        pub fn memset(
-            _: *mut libc::c_void,
-            _: libc::c_int,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
+        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entdec.h:32"]
@@ -141,17 +137,17 @@ pub mod define_h {
     #[c2rust::src_loc = "176:9"]
     pub const SILK_MAX_PULSES: libc::c_int = 16 as libc::c_int;
 }
-pub use self::types_h::{__uint8_t, __int16_t, __int32_t, __uint32_t};
-pub use self::stdint_intn_h::{int16_t, int32_t};
-pub use self::stdint_uintn_h::{uint8_t, uint32_t};
-pub use self::opus_types_h::{opus_uint8, opus_int16, opus_int32, opus_uint32};
-pub use self::entcode_h::{ec_window, ec_ctx, ec_dec};
 use self::arch_h::celt_fatal;
-use self::string_h::memset;
+pub use self::define_h::{N_RATE_LEVELS, SHELL_CODEC_FRAME_LENGTH, SILK_MAX_PULSES};
+pub use self::entcode_h::{ec_ctx, ec_dec, ec_window};
 use self::entdec_h::ec_dec_icdf;
-use self::tables_h::{silk_pulses_per_block_iCDF, silk_rate_levels_iCDF, silk_lsb_iCDF};
 use self::main_h::{silk_decode_signs, silk_shell_decoder};
-pub use self::define_h::{SHELL_CODEC_FRAME_LENGTH, N_RATE_LEVELS, SILK_MAX_PULSES};
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32, opus_uint8};
+pub use self::stdint_intn_h::{int16_t, int32_t};
+pub use self::stdint_uintn_h::{uint32_t, uint8_t};
+use self::string_h::memset;
+use self::tables_h::{silk_lsb_iCDF, silk_pulses_per_block_iCDF, silk_rate_levels_iCDF};
+pub use self::types_h::{__int16_t, __int32_t, __uint32_t, __uint8_t};
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn silk_decode_pulses(
@@ -181,8 +177,7 @@ pub unsafe extern "C" fn silk_decode_pulses(
     if iter * SHELL_CODEC_FRAME_LENGTH < frame_length {
         if !(frame_length == 12 as libc::c_int * 10 as libc::c_int) {
             celt_fatal(
-                b"assertion failed: frame_length == 12 * 10\0" as *const u8
-                    as *const libc::c_char,
+                b"assertion failed: frame_length == 12 * 10\0" as *const u8 as *const libc::c_char,
                 b"silk/decode_pulses.c\0" as *const u8 as *const libc::c_char,
                 59 as libc::c_int,
             );
@@ -193,23 +188,14 @@ pub unsafe extern "C" fn silk_decode_pulses(
     i = 0 as libc::c_int;
     while i < iter {
         nLshifts[i as usize] = 0 as libc::c_int;
-        sum_pulses[i
-            as usize] = ec_dec_icdf(
-            psRangeDec,
-            cdf_ptr,
-            8 as libc::c_int as libc::c_uint,
-        );
+        sum_pulses[i as usize] = ec_dec_icdf(psRangeDec, cdf_ptr, 8 as libc::c_int as libc::c_uint);
         while sum_pulses[i as usize] == SILK_MAX_PULSES + 1 as libc::c_int {
             nLshifts[i as usize] += 1;
-            sum_pulses[i
-                as usize] = ec_dec_icdf(
+            sum_pulses[i as usize] = ec_dec_icdf(
                 psRangeDec,
                 (silk_pulses_per_block_iCDF[(N_RATE_LEVELS - 1 as libc::c_int) as usize])
                     .as_ptr()
-                    .offset(
-                        (nLshifts[i as usize] == 10 as libc::c_int) as libc::c_int
-                            as isize,
-                    ),
+                    .offset((nLshifts[i as usize] == 10 as libc::c_int) as libc::c_int as isize),
                 8 as libc::c_int as libc::c_uint,
             );
         }
@@ -219,21 +205,19 @@ pub unsafe extern "C" fn silk_decode_pulses(
     while i < iter {
         if sum_pulses[i as usize] > 0 as libc::c_int {
             silk_shell_decoder(
-                &mut *pulses
-                    .offset(
-                        (i as opus_int16 as opus_int32
-                            * 16 as libc::c_int as opus_int16 as opus_int32) as isize,
-                    ),
+                &mut *pulses.offset(
+                    (i as opus_int16 as opus_int32 * 16 as libc::c_int as opus_int16 as opus_int32)
+                        as isize,
+                ),
                 psRangeDec,
                 sum_pulses[i as usize],
             );
         } else {
             memset(
-                &mut *pulses
-                    .offset(
-                        (i as opus_int16 as opus_int32
-                            * 16 as libc::c_int as opus_int16 as opus_int32) as isize,
-                    ) as *mut opus_int16 as *mut libc::c_void,
+                &mut *pulses.offset(
+                    (i as opus_int16 as opus_int32 * 16 as libc::c_int as opus_int16 as opus_int32)
+                        as isize,
+                ) as *mut opus_int16 as *mut libc::c_void,
                 0 as libc::c_int,
                 (16 as libc::c_int as libc::c_ulong)
                     .wrapping_mul(::core::mem::size_of::<opus_int16>() as libc::c_ulong),
@@ -245,23 +229,21 @@ pub unsafe extern "C" fn silk_decode_pulses(
     while i < iter {
         if nLshifts[i as usize] > 0 as libc::c_int {
             nLS = nLshifts[i as usize];
-            pulses_ptr = &mut *pulses
-                .offset(
-                    (i as opus_int16 as opus_int32
-                        * 16 as libc::c_int as opus_int16 as opus_int32) as isize,
-                ) as *mut opus_int16;
+            pulses_ptr = &mut *pulses.offset(
+                (i as opus_int16 as opus_int32 * 16 as libc::c_int as opus_int16 as opus_int32)
+                    as isize,
+            ) as *mut opus_int16;
             k = 0 as libc::c_int;
             while k < SHELL_CODEC_FRAME_LENGTH {
                 abs_q = *pulses_ptr.offset(k as isize) as libc::c_int;
                 j = 0 as libc::c_int;
                 while j < nLS {
                     abs_q = ((abs_q as opus_uint32) << 1 as libc::c_int) as opus_int32;
-                    abs_q
-                        += ec_dec_icdf(
-                            psRangeDec,
-                            silk_lsb_iCDF.as_ptr(),
-                            8 as libc::c_int as libc::c_uint,
-                        );
+                    abs_q += ec_dec_icdf(
+                        psRangeDec,
+                        silk_lsb_iCDF.as_ptr(),
+                        8 as libc::c_int as libc::c_uint,
+                    );
                     j += 1;
                 }
                 *pulses_ptr.offset(k as isize) = abs_q as opus_int16;

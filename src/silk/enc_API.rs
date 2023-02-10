@@ -24,7 +24,7 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     #[c2rust::src_loc = "27:1"]
     pub type int64_t = __int64_t;
-    use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
+    use super::types_h::{__int16_t, __int32_t, __int64_t, __int8_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:31"]
 pub mod stdint_uintn_h {
@@ -32,7 +32,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint8_t, __uint32_t};
+    use super::types_h::{__uint32_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:31"]
 pub mod opus_types_h {
@@ -48,8 +48,8 @@ pub mod opus_types_h {
     pub type opus_uint32 = uint32_t;
     #[c2rust::src_loc = "57:4"]
     pub type opus_int64 = int64_t;
-    use super::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
+    use super::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/control.h:32"]
 pub mod control_h {
@@ -113,8 +113,8 @@ pub mod entcode_h {
     pub unsafe extern "C" fn ec_tell(mut _this: *mut ec_ctx) -> libc::c_int {
         return (*_this).nbits_total - (EC_CLZ0 - ((*_this).rng).leading_zeros() as i32);
     }
-    use super::opus_types_h::opus_uint32;
     use super::ecintrin_h::EC_CLZ0;
+    use super::opus_types_h::opus_uint32;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:41"]
 pub mod structs_FLP_h {
@@ -150,8 +150,8 @@ pub mod structs_FLP_h {
         pub HarmShapeGain_smth: libc::c_float,
         pub Tilt_smth: libc::c_float,
     }
-    use super::structs_h::{stereo_enc_state, silk_encoder_state};
     use super::opus_types_h::{opus_int32, opus_int8};
+    use super::structs_h::{silk_encoder_state, stereo_enc_state};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:36"]
 pub mod structs_h {
@@ -356,7 +356,7 @@ pub mod resampler_structs_h {
         pub i32_0: [opus_int32; 36],
         pub i16_0: [opus_int16; 36],
     }
-    use super::opus_types_h::{opus_int32, opus_int16};
+    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/errors.h:31"]
 pub mod errors_h {
@@ -398,8 +398,8 @@ pub mod limits_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:32"]
 pub mod ecintrin_h {
     #[c2rust::src_loc = "69:11"]
-    pub const EC_CLZ0: libc::c_int = ::core::mem::size_of::<libc::c_uint>()
-        as libc::c_ulong as libc::c_int * CHAR_BIT;
+    pub const EC_CLZ0: libc::c_int =
+        ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:32"]
@@ -430,11 +430,7 @@ pub mod internal {
 pub mod string_h {
     extern "C" {
         #[c2rust::src_loc = "61:14"]
-        pub fn memset(
-            _: *mut libc::c_void,
-            _: libc::c_int,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
+        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
         #[c2rust::src_loc = "43:14"]
         pub fn memcpy(
             _: *mut libc::c_void,
@@ -445,8 +441,8 @@ pub mod string_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:36"]
 pub mod SigProc_FIX_h {
-    use super::resampler_structs_h::silk_resampler_state_struct;
     use super::opus_types_h::{opus_int16, opus_int32};
+    use super::resampler_structs_h::silk_resampler_state_struct;
     extern "C" {
         #[c2rust::src_loc = "72:1"]
         pub fn silk_resampler(
@@ -460,14 +456,12 @@ pub mod SigProc_FIX_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:41"]
 pub mod main_h {
     use super::control_h::silk_EncControlStruct;
-    use super::structs_h::{silk_encoder_state, stereo_enc_state};
     use super::entcode_h::ec_enc;
-    use super::opus_types_h::{opus_int8, opus_int16, opus_int32};
+    use super::opus_types_h::{opus_int16, opus_int32, opus_int8};
+    use super::structs_h::{silk_encoder_state, stereo_enc_state};
     extern "C" {
         #[c2rust::src_loc = "135:1"]
-        pub fn check_control_input(
-            encControl: *mut silk_EncControlStruct,
-        ) -> libc::c_int;
+        pub fn check_control_input(encControl: *mut silk_EncControlStruct) -> libc::c_int;
         #[c2rust::src_loc = "468:1"]
         pub fn silk_encode_indices(
             psEncC: *mut silk_encoder_state,
@@ -501,10 +495,7 @@ pub mod main_h {
         #[c2rust::src_loc = "91:1"]
         pub fn silk_stereo_encode_pred(psRangeEnc: *mut ec_enc, ix: *mut [opus_int8; 3]);
         #[c2rust::src_loc = "97:1"]
-        pub fn silk_stereo_encode_mid_only(
-            psRangeEnc: *mut ec_enc,
-            mid_only_flag: opus_int8,
-        );
+        pub fn silk_stereo_encode_mid_only(psRangeEnc: *mut ec_enc, mid_only_flag: opus_int8);
         #[c2rust::src_loc = "146:1"]
         pub fn silk_control_SNR(
             psEncC: *mut silk_encoder_state,
@@ -528,10 +519,10 @@ pub mod main_FLP_h {
         libc::c_int,
         libc::c_int,
     ) -> libc::c_int = silk_encode_frame_FLP;
-    use super::structs_FLP_h::silk_encoder_state_FLP;
     use super::control_h::silk_EncControlStruct;
-    use super::opus_types_h::opus_int32;
     use super::entcode_h::ec_enc;
+    use super::opus_types_h::opus_int32;
+    use super::structs_FLP_h::silk_encoder_state_FLP;
     extern "C" {
         #[c2rust::src_loc = "80:1"]
         pub fn silk_control_encoder(
@@ -544,10 +535,7 @@ pub mod main_FLP_h {
         #[c2rust::src_loc = "53:1"]
         pub fn silk_HP_variable_cutoff(state_Fxx: *mut silk_encoder_state_FLP);
         #[c2rust::src_loc = "58:1"]
-        pub fn silk_encode_do_VAD_FLP(
-            psEnc: *mut silk_encoder_state_FLP,
-            activity: libc::c_int,
-        );
+        pub fn silk_encode_do_VAD_FLP(psEnc: *mut silk_encoder_state_FLP, activity: libc::c_int);
         #[c2rust::src_loc = "64:1"]
         pub fn silk_encode_frame_FLP(
             psEnc: *mut silk_encoder_state_FLP,
@@ -566,7 +554,7 @@ pub mod main_FLP_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:41"]
 pub mod tables_h {
-    use super::opus_types_h::{opus_uint8, opus_int16};
+    use super::opus_types_h::{opus_int16, opus_uint8};
     extern "C" {
         #[c2rust::src_loc = "93:34"]
         pub static silk_LBRR_flags_iCDF_ptr: [*const opus_uint8; 2];
@@ -574,56 +562,48 @@ pub mod tables_h {
         pub static silk_Quantization_Offsets_Q10: [[opus_int16; 2]; 2];
     }
 }
-pub use self::types_h::{
-    __int8_t, __uint8_t, __int16_t, __int32_t, __uint32_t, __int64_t,
-};
-pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
-pub use self::stdint_uintn_h::{uint8_t, uint32_t};
-pub use self::opus_types_h::{
-    opus_int8, opus_uint8, opus_int16, opus_int32, opus_uint32, opus_int64,
-};
+use self::arch_h::celt_fatal;
 pub use self::control_h::silk_EncControlStruct;
-pub use self::entcode_h::{ec_window, ec_ctx, ec_enc, ec_tell};
-pub use self::structs_FLP_h::{
-    silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP,
+pub use self::define_h::{
+    CODE_CONDITIONALLY, CODE_INDEPENDENTLY, CODE_INDEPENDENTLY_NO_LTP_SCALING,
+    ENCODER_NUM_CHANNELS, TYPE_NO_VOICE_ACTIVITY,
 };
-pub use self::structs_h::{
-    stereo_enc_state, silk_encoder_state, SideInfoIndices, silk_NLSF_CB_struct,
-    silk_nsq_state, silk_VAD_state, silk_LP_state,
+pub use self::ecintrin_h::EC_CLZ0;
+pub use self::entcode_h::{ec_ctx, ec_enc, ec_tell, ec_window};
+use self::entenc_h::{ec_enc_icdf, ec_enc_patch_initial_bits};
+pub use self::errors_h::{SILK_ENC_INPUT_INVALID_NO_OF_SAMPLES, SILK_NO_ERROR};
+pub use self::internal::__CHAR_BIT__;
+pub use self::limits_h::CHAR_BIT;
+pub use self::main_FLP_h::{
+    silk_HP_variable_cutoff, silk_control_encoder, silk_encode_do_VAD_FLP, silk_encode_do_VAD_Fxx,
+    silk_encode_frame_FLP, silk_encode_frame_Fxx, silk_init_encoder,
+};
+use self::main_h::{
+    check_control_input, silk_control_SNR, silk_encode_indices, silk_encode_pulses,
+    silk_stereo_LR_to_MS, silk_stereo_encode_mid_only, silk_stereo_encode_pred,
+};
+pub use self::opus_types_h::{
+    opus_int16, opus_int32, opus_int64, opus_int8, opus_uint32, opus_uint8,
 };
 pub use self::resampler_structs_h::{
-    silk_resampler_state_struct, _silk_resampler_state_struct, C2RustUnnamed,
+    silk_resampler_state_struct, C2RustUnnamed, _silk_resampler_state_struct,
 };
-pub use self::errors_h::{SILK_ENC_INPUT_INVALID_NO_OF_SAMPLES, SILK_NO_ERROR};
-pub use self::define_h::{
-    CODE_CONDITIONALLY, CODE_INDEPENDENTLY_NO_LTP_SCALING, ENCODER_NUM_CHANNELS,
-    TYPE_NO_VOICE_ACTIVITY, CODE_INDEPENDENTLY,
-};
-use self::arch_h::celt_fatal;
-pub use self::limits_h::CHAR_BIT;
-pub use self::ecintrin_h::EC_CLZ0;
-use self::entenc_h::{ec_enc_icdf, ec_enc_patch_initial_bits};
-pub use self::internal::__CHAR_BIT__;
-use self::string_h::{memset, memcpy};
-use self::SigProc_FIX_h::silk_resampler;
-use self::main_h::{
-    check_control_input, silk_encode_indices, silk_encode_pulses, silk_stereo_LR_to_MS,
-    silk_stereo_encode_pred, silk_stereo_encode_mid_only, silk_control_SNR,
-};
-pub use self::main_FLP_h::{
-    silk_encode_do_VAD_Fxx, silk_encode_frame_Fxx, silk_control_encoder,
-    silk_HP_variable_cutoff, silk_encode_do_VAD_FLP, silk_encode_frame_FLP,
-    silk_init_encoder,
+pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+pub use self::stdint_uintn_h::{uint32_t, uint8_t};
+use self::string_h::{memcpy, memset};
+pub use self::structs_FLP_h::{silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP};
+pub use self::structs_h::{
+    silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
+    stereo_enc_state, SideInfoIndices,
 };
 use self::tables_h::{silk_LBRR_flags_iCDF_ptr, silk_Quantization_Offsets_Q10};
+pub use self::types_h::{__int16_t, __int32_t, __int64_t, __int8_t, __uint32_t, __uint8_t};
+use self::SigProc_FIX_h::silk_resampler;
 #[no_mangle]
 #[c2rust::src_loc = "56:1"]
-pub unsafe extern "C" fn silk_Get_Encoder_Size(
-    encSizeBytes: *mut libc::c_int,
-) -> libc::c_int {
+pub unsafe extern "C" fn silk_Get_Encoder_Size(encSizeBytes: *mut libc::c_int) -> libc::c_int {
     let ret: libc::c_int = SILK_NO_ERROR;
-    *encSizeBytes = ::core::mem::size_of::<silk_encoder>() as libc::c_ulong
-        as libc::c_int;
+    *encSizeBytes = ::core::mem::size_of::<silk_encoder>() as libc::c_ulong as libc::c_int;
     return ret;
 }
 #[no_mangle]
@@ -644,11 +624,10 @@ pub unsafe extern "C" fn silk_InitEncoder(
     );
     n = 0 as libc::c_int;
     while n < ENCODER_NUM_CHANNELS {
-        ret
-            += silk_init_encoder(
-                &mut *((*psEnc).state_Fxx).as_mut_ptr().offset(n as isize),
-                arch,
-            );
+        ret += silk_init_encoder(
+            &mut *((*psEnc).state_Fxx).as_mut_ptr().offset(n as isize),
+            arch,
+        );
         if ret != 0 {
             if 0 as libc::c_int == 0 {
                 celt_fatal(
@@ -685,49 +664,45 @@ unsafe extern "C" fn silk_QueryEncoder(
     state_Fxx = ((*psEnc).state_Fxx).as_mut_ptr();
     (*encStatus).nChannelsAPI = (*psEnc).nChannelsAPI;
     (*encStatus).nChannelsInternal = (*psEnc).nChannelsInternal;
-    (*encStatus)
-        .API_sampleRate = (*state_Fxx.offset(0 as libc::c_int as isize)).sCmn.API_fs_Hz;
-    (*encStatus)
-        .maxInternalSampleRate = (*state_Fxx.offset(0 as libc::c_int as isize))
+    (*encStatus).API_sampleRate = (*state_Fxx.offset(0 as libc::c_int as isize))
+        .sCmn
+        .API_fs_Hz;
+    (*encStatus).maxInternalSampleRate = (*state_Fxx.offset(0 as libc::c_int as isize))
         .sCmn
         .maxInternal_fs_Hz;
-    (*encStatus)
-        .minInternalSampleRate = (*state_Fxx.offset(0 as libc::c_int as isize))
+    (*encStatus).minInternalSampleRate = (*state_Fxx.offset(0 as libc::c_int as isize))
         .sCmn
         .minInternal_fs_Hz;
-    (*encStatus)
-        .desiredInternalSampleRate = (*state_Fxx.offset(0 as libc::c_int as isize))
+    (*encStatus).desiredInternalSampleRate = (*state_Fxx.offset(0 as libc::c_int as isize))
         .sCmn
         .desiredInternal_fs_Hz;
-    (*encStatus)
-        .payloadSize_ms = (*state_Fxx.offset(0 as libc::c_int as isize))
+    (*encStatus).payloadSize_ms = (*state_Fxx.offset(0 as libc::c_int as isize))
         .sCmn
         .PacketSize_ms;
-    (*encStatus)
-        .bitRate = (*state_Fxx.offset(0 as libc::c_int as isize)).sCmn.TargetRate_bps;
-    (*encStatus)
-        .packetLossPercentage = (*state_Fxx.offset(0 as libc::c_int as isize))
+    (*encStatus).bitRate = (*state_Fxx.offset(0 as libc::c_int as isize))
+        .sCmn
+        .TargetRate_bps;
+    (*encStatus).packetLossPercentage = (*state_Fxx.offset(0 as libc::c_int as isize))
         .sCmn
         .PacketLoss_perc;
-    (*encStatus)
-        .complexity = (*state_Fxx.offset(0 as libc::c_int as isize)).sCmn.Complexity;
-    (*encStatus)
-        .useInBandFEC = (*state_Fxx.offset(0 as libc::c_int as isize)).sCmn.useInBandFEC;
+    (*encStatus).complexity = (*state_Fxx.offset(0 as libc::c_int as isize))
+        .sCmn
+        .Complexity;
+    (*encStatus).useInBandFEC = (*state_Fxx.offset(0 as libc::c_int as isize))
+        .sCmn
+        .useInBandFEC;
     (*encStatus).useDTX = (*state_Fxx.offset(0 as libc::c_int as isize)).sCmn.useDTX;
     (*encStatus).useCBR = (*state_Fxx.offset(0 as libc::c_int as isize)).sCmn.useCBR;
-    (*encStatus)
-        .internalSampleRate = (*state_Fxx.offset(0 as libc::c_int as isize)).sCmn.fs_kHz
-        as opus_int16 as opus_int32 * 1000 as libc::c_int as opus_int16 as opus_int32;
-    (*encStatus)
-        .allowBandwidthSwitch = (*state_Fxx.offset(0 as libc::c_int as isize))
+    (*encStatus).internalSampleRate = (*state_Fxx.offset(0 as libc::c_int as isize)).sCmn.fs_kHz
+        as opus_int16 as opus_int32
+        * 1000 as libc::c_int as opus_int16 as opus_int32;
+    (*encStatus).allowBandwidthSwitch = (*state_Fxx.offset(0 as libc::c_int as isize))
         .sCmn
         .allow_bandwidth_switch;
-    (*encStatus)
-        .inWBmodeWithoutVariableLP = ((*state_Fxx.offset(0 as libc::c_int as isize))
-        .sCmn
-        .fs_kHz == 16 as libc::c_int
-        && (*state_Fxx.offset(0 as libc::c_int as isize)).sCmn.sLP.mode
-            == 0 as libc::c_int) as libc::c_int;
+    (*encStatus).inWBmodeWithoutVariableLP =
+        ((*state_Fxx.offset(0 as libc::c_int as isize)).sCmn.fs_kHz == 16 as libc::c_int
+            && (*state_Fxx.offset(0 as libc::c_int as isize)).sCmn.sLP.mode == 0 as libc::c_int)
+            as libc::c_int;
     return ret;
 }
 #[no_mangle]
@@ -765,21 +740,19 @@ pub unsafe extern "C" fn silk_Encode(
     let mut curr_block: libc::c_int = 0;
     let mut tot_blocks: libc::c_int = 0;
     if (*encControl).reducedDependency != 0 {
-        (*psEnc)
-            .state_Fxx[0 as libc::c_int as usize]
+        (*psEnc).state_Fxx[0 as libc::c_int as usize]
             .sCmn
             .first_frame_after_reset = 1 as libc::c_int;
-        (*psEnc)
-            .state_Fxx[1 as libc::c_int as usize]
+        (*psEnc).state_Fxx[1 as libc::c_int as usize]
             .sCmn
             .first_frame_after_reset = 1 as libc::c_int;
     }
-    (*psEnc).state_Fxx[1 as libc::c_int as usize].sCmn.nFramesEncoded = 0 as libc::c_int;
-    (*psEnc)
-        .state_Fxx[0 as libc::c_int as usize]
+    (*psEnc).state_Fxx[1 as libc::c_int as usize]
         .sCmn
-        .nFramesEncoded = (*psEnc)
-        .state_Fxx[1 as libc::c_int as usize]
+        .nFramesEncoded = 0 as libc::c_int;
+    (*psEnc).state_Fxx[0 as libc::c_int as usize]
+        .sCmn
+        .nFramesEncoded = (*psEnc).state_Fxx[1 as libc::c_int as usize]
         .sCmn
         .nFramesEncoded;
     ret = check_control_input(encControl);
@@ -795,13 +768,12 @@ pub unsafe extern "C" fn silk_Encode(
     }
     (*encControl).switchReady = 0 as libc::c_int;
     if (*encControl).nChannelsInternal > (*psEnc).nChannelsInternal {
-        ret
-            += silk_init_encoder(
-                &mut *((*psEnc).state_Fxx)
-                    .as_mut_ptr()
-                    .offset(1 as libc::c_int as isize),
-                (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.arch,
-            );
+        ret += silk_init_encoder(
+            &mut *((*psEnc).state_Fxx)
+                .as_mut_ptr()
+                .offset(1 as libc::c_int as isize),
+            (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.arch,
+        );
         memset(
             ((*psEnc).sStereo.pred_prev_Q13).as_mut_ptr() as *mut libc::c_void,
             0 as libc::c_int,
@@ -817,24 +789,23 @@ pub unsafe extern "C" fn silk_Encode(
         (*psEnc).sStereo.mid_side_amp_Q0[2 as libc::c_int as usize] = 0 as libc::c_int;
         (*psEnc).sStereo.mid_side_amp_Q0[3 as libc::c_int as usize] = 1 as libc::c_int;
         (*psEnc).sStereo.width_prev_Q14 = 0 as libc::c_int as opus_int16;
-        (*psEnc)
-            .sStereo
-            .smth_width_Q14 = ((1 as libc::c_int as libc::c_long
-            * ((1 as libc::c_int as opus_int64) << 14 as libc::c_int)) as libc::c_double
+        (*psEnc).sStereo.smth_width_Q14 = ((1 as libc::c_int as libc::c_long
+            * ((1 as libc::c_int as opus_int64) << 14 as libc::c_int))
+            as libc::c_double
             + 0.5f64) as opus_int32 as opus_int16;
         if (*psEnc).nChannelsAPI == 2 as libc::c_int {
             memcpy(
                 &mut (*((*psEnc).state_Fxx)
                     .as_mut_ptr()
                     .offset(1 as libc::c_int as isize))
-                    .sCmn
-                    .resampler_state as *mut silk_resampler_state_struct
+                .sCmn
+                .resampler_state as *mut silk_resampler_state_struct
                     as *mut libc::c_void,
                 &mut (*((*psEnc).state_Fxx)
                     .as_mut_ptr()
                     .offset(0 as libc::c_int as isize))
-                    .sCmn
-                    .resampler_state as *mut silk_resampler_state_struct
+                .sCmn
+                .resampler_state as *mut silk_resampler_state_struct
                     as *const libc::c_void,
                 ::core::mem::size_of::<silk_resampler_state_struct>() as libc::c_ulong,
             );
@@ -842,20 +813,23 @@ pub unsafe extern "C" fn silk_Encode(
                 &mut (*((*psEnc).state_Fxx)
                     .as_mut_ptr()
                     .offset(1 as libc::c_int as isize))
-                    .sCmn
-                    .In_HP_State as *mut [opus_int32; 2] as *mut libc::c_void,
+                .sCmn
+                .In_HP_State as *mut [opus_int32; 2] as *mut libc::c_void,
                 &mut (*((*psEnc).state_Fxx)
                     .as_mut_ptr()
                     .offset(0 as libc::c_int as isize))
-                    .sCmn
-                    .In_HP_State as *mut [opus_int32; 2] as *const libc::c_void,
+                .sCmn
+                .In_HP_State as *mut [opus_int32; 2] as *const libc::c_void,
                 ::core::mem::size_of::<[opus_int32; 2]>() as libc::c_ulong,
             );
         }
     }
     transition = ((*encControl).payloadSize_ms
-        != (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.PacketSize_ms
-        || (*psEnc).nChannelsInternal != (*encControl).nChannelsInternal) as libc::c_int;
+        != (*psEnc).state_Fxx[0 as libc::c_int as usize]
+            .sCmn
+            .PacketSize_ms
+        || (*psEnc).nChannelsInternal != (*encControl).nChannelsInternal)
+        as libc::c_int;
     (*psEnc).nChannelsAPI = (*encControl).nChannelsAPI;
     (*psEnc).nChannelsInternal = (*encControl).nChannelsInternal;
     nBlocksOf10ms = 100 as libc::c_int * nSamplesIn / (*encControl).API_sampleRate;
@@ -884,11 +858,7 @@ pub unsafe extern "C" fn silk_Encode(
         }
         if prefillFlag == 2 as libc::c_int {
             save_LP = (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.sLP;
-            save_LP
-                .saved_fs_kHz = (*psEnc)
-                .state_Fxx[0 as libc::c_int as usize]
-                .sCmn
-                .fs_kHz;
+            save_LP.saved_fs_kHz = (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.fs_kHz;
         }
         n = 0 as libc::c_int;
         while n < (*encControl).nChannelsInternal {
@@ -914,16 +884,15 @@ pub unsafe extern "C" fn silk_Encode(
         (*encControl).complexity = 0 as libc::c_int;
         n = 0 as libc::c_int;
         while n < (*encControl).nChannelsInternal {
-            (*psEnc)
-                .state_Fxx[n as usize]
+            (*psEnc).state_Fxx[n as usize]
                 .sCmn
                 .controlled_since_last_payload = 0 as libc::c_int;
             (*psEnc).state_Fxx[n as usize].sCmn.prefillFlag = 1 as libc::c_int;
             n += 1;
         }
     } else {
-        if nBlocksOf10ms * (*encControl).API_sampleRate
-            != 100 as libc::c_int * nSamplesIn || nSamplesIn < 0 as libc::c_int
+        if nBlocksOf10ms * (*encControl).API_sampleRate != 100 as libc::c_int * nSamplesIn
+            || nSamplesIn < 0 as libc::c_int
         {
             if 0 as libc::c_int == 0 {
                 celt_fatal(
@@ -964,23 +933,18 @@ pub unsafe extern "C" fn silk_Encode(
         if ret != 0 as libc::c_int {
             return ret;
         }
-        if (*psEnc).state_Fxx[n as usize].sCmn.first_frame_after_reset != 0
-            || transition != 0
-        {
+        if (*psEnc).state_Fxx[n as usize].sCmn.first_frame_after_reset != 0 || transition != 0 {
             i = 0 as libc::c_int;
-            while i < (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.nFramesPerPacket
-            {
-                (*psEnc)
-                    .state_Fxx[n as usize]
+            while i
+                < (*psEnc).state_Fxx[0 as libc::c_int as usize]
                     .sCmn
-                    .LBRR_flags[i as usize] = 0 as libc::c_int;
+                    .nFramesPerPacket
+            {
+                (*psEnc).state_Fxx[n as usize].sCmn.LBRR_flags[i as usize] = 0 as libc::c_int;
                 i += 1;
             }
         }
-        (*psEnc)
-            .state_Fxx[n as usize]
-            .sCmn
-            .inDTX = (*psEnc).state_Fxx[n as usize].sCmn.useDTX;
+        (*psEnc).state_Fxx[n as usize].sCmn.inDTX = (*psEnc).state_Fxx[n as usize].sCmn.useDTX;
         n += 1;
     }
     if !((*encControl).nChannelsInternal == 1 as libc::c_int
@@ -994,20 +958,21 @@ pub unsafe extern "C" fn silk_Encode(
             262 as libc::c_int,
         );
     }
-    nSamplesToBufferMax = 10 as libc::c_int * nBlocksOf10ms
+    nSamplesToBufferMax = 10 as libc::c_int
+        * nBlocksOf10ms
         * (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.fs_kHz;
     nSamplesFromInputMax = nSamplesToBufferMax
         * (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.API_fs_Hz
-        / ((*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.fs_kHz
-            * 1000 as libc::c_int);
+        / ((*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.fs_kHz * 1000 as libc::c_int);
     let vla = nSamplesFromInputMax as usize;
-    let mut buf: Vec::<opus_int16> = ::std::vec::from_elem(0, vla);
+    let mut buf: Vec<opus_int16> = ::std::vec::from_elem(0, vla);
     loop {
-        nSamplesToBuffer = (*psEnc)
-            .state_Fxx[0 as libc::c_int as usize]
+        nSamplesToBuffer = (*psEnc).state_Fxx[0 as libc::c_int as usize]
             .sCmn
             .frame_length
-            - (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.inputBufIx;
+            - (*psEnc).state_Fxx[0 as libc::c_int as usize]
+                .sCmn
+                .inputBufIx;
         nSamplesToBuffer = if nSamplesToBuffer < nSamplesToBufferMax {
             nSamplesToBuffer
         } else {
@@ -1015,132 +980,120 @@ pub unsafe extern "C" fn silk_Encode(
         };
         nSamplesFromInput = nSamplesToBuffer
             * (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.API_fs_Hz
-            / ((*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.fs_kHz
-                * 1000 as libc::c_int);
+            / ((*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.fs_kHz * 1000 as libc::c_int);
         if (*encControl).nChannelsAPI == 2 as libc::c_int
             && (*encControl).nChannelsInternal == 2 as libc::c_int
         {
-            let id: libc::c_int = (*psEnc)
-                .state_Fxx[0 as libc::c_int as usize]
+            let id: libc::c_int = (*psEnc).state_Fxx[0 as libc::c_int as usize]
                 .sCmn
                 .nFramesEncoded;
             n = 0 as libc::c_int;
             while n < nSamplesFromInput {
-                *buf
-                    .as_mut_ptr()
-                    .offset(
-                        n as isize,
-                    ) = *samplesIn.offset((2 as libc::c_int * n) as isize);
+                *buf.as_mut_ptr().offset(n as isize) =
+                    *samplesIn.offset((2 as libc::c_int * n) as isize);
                 n += 1;
             }
-            if (*psEnc).nPrevChannelsInternal == 1 as libc::c_int
-                && id == 0 as libc::c_int
-            {
+            if (*psEnc).nPrevChannelsInternal == 1 as libc::c_int && id == 0 as libc::c_int {
                 memcpy(
                     &mut (*((*psEnc).state_Fxx)
                         .as_mut_ptr()
                         .offset(1 as libc::c_int as isize))
-                        .sCmn
-                        .resampler_state as *mut silk_resampler_state_struct
+                    .sCmn
+                    .resampler_state as *mut silk_resampler_state_struct
                         as *mut libc::c_void,
                     &mut (*((*psEnc).state_Fxx)
                         .as_mut_ptr()
                         .offset(0 as libc::c_int as isize))
-                        .sCmn
-                        .resampler_state as *mut silk_resampler_state_struct
+                    .sCmn
+                    .resampler_state as *mut silk_resampler_state_struct
                         as *const libc::c_void,
-                    ::core::mem::size_of::<silk_resampler_state_struct>()
-                        as libc::c_ulong,
+                    ::core::mem::size_of::<silk_resampler_state_struct>() as libc::c_ulong,
                 );
             }
-            ret
-                += silk_resampler(
-                    &mut (*((*psEnc).state_Fxx)
-                        .as_mut_ptr()
-                        .offset(0 as libc::c_int as isize))
+            ret += silk_resampler(
+                &mut (*((*psEnc).state_Fxx)
+                    .as_mut_ptr()
+                    .offset(0 as libc::c_int as isize))
+                .sCmn
+                .resampler_state,
+                &mut *((*((*psEnc).state_Fxx)
+                    .as_mut_ptr()
+                    .offset(0 as libc::c_int as isize))
+                .sCmn
+                .inputBuf)
+                    .as_mut_ptr()
+                    .offset(
+                        ((*((*psEnc).state_Fxx)
+                            .as_mut_ptr()
+                            .offset(0 as libc::c_int as isize))
                         .sCmn
-                        .resampler_state,
-                    &mut *((*((*psEnc).state_Fxx)
-                        .as_mut_ptr()
-                        .offset(0 as libc::c_int as isize))
-                        .sCmn
-                        .inputBuf)
-                        .as_mut_ptr()
-                        .offset(
-                            ((*((*psEnc).state_Fxx)
-                                .as_mut_ptr()
-                                .offset(0 as libc::c_int as isize))
-                                .sCmn
-                                .inputBufIx + 2 as libc::c_int) as isize,
-                        ),
-                    buf.as_mut_ptr() as *const opus_int16,
-                    nSamplesFromInput,
-                );
-            (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.inputBufIx
-                += nSamplesToBuffer;
-            nSamplesToBuffer = (*psEnc)
-                .state_Fxx[1 as libc::c_int as usize]
+                        .inputBufIx
+                            + 2 as libc::c_int) as isize,
+                    ),
+                buf.as_mut_ptr() as *const opus_int16,
+                nSamplesFromInput,
+            );
+            (*psEnc).state_Fxx[0 as libc::c_int as usize]
+                .sCmn
+                .inputBufIx += nSamplesToBuffer;
+            nSamplesToBuffer = (*psEnc).state_Fxx[1 as libc::c_int as usize]
                 .sCmn
                 .frame_length
-                - (*psEnc).state_Fxx[1 as libc::c_int as usize].sCmn.inputBufIx;
+                - (*psEnc).state_Fxx[1 as libc::c_int as usize]
+                    .sCmn
+                    .inputBufIx;
             nSamplesToBuffer = if nSamplesToBuffer
-                < 10 as libc::c_int * nBlocksOf10ms
+                < 10 as libc::c_int
+                    * nBlocksOf10ms
                     * (*psEnc).state_Fxx[1 as libc::c_int as usize].sCmn.fs_kHz
             {
                 nSamplesToBuffer
             } else {
-                10 as libc::c_int * nBlocksOf10ms
+                10 as libc::c_int
+                    * nBlocksOf10ms
                     * (*psEnc).state_Fxx[1 as libc::c_int as usize].sCmn.fs_kHz
             };
             n = 0 as libc::c_int;
             while n < nSamplesFromInput {
-                *buf
-                    .as_mut_ptr()
-                    .offset(
-                        n as isize,
-                    ) = *samplesIn
-                    .offset((2 as libc::c_int * n + 1 as libc::c_int) as isize);
+                *buf.as_mut_ptr().offset(n as isize) =
+                    *samplesIn.offset((2 as libc::c_int * n + 1 as libc::c_int) as isize);
                 n += 1;
             }
-            ret
-                += silk_resampler(
-                    &mut (*((*psEnc).state_Fxx)
-                        .as_mut_ptr()
-                        .offset(1 as libc::c_int as isize))
+            ret += silk_resampler(
+                &mut (*((*psEnc).state_Fxx)
+                    .as_mut_ptr()
+                    .offset(1 as libc::c_int as isize))
+                .sCmn
+                .resampler_state,
+                &mut *((*((*psEnc).state_Fxx)
+                    .as_mut_ptr()
+                    .offset(1 as libc::c_int as isize))
+                .sCmn
+                .inputBuf)
+                    .as_mut_ptr()
+                    .offset(
+                        ((*((*psEnc).state_Fxx)
+                            .as_mut_ptr()
+                            .offset(1 as libc::c_int as isize))
                         .sCmn
-                        .resampler_state,
-                    &mut *((*((*psEnc).state_Fxx)
-                        .as_mut_ptr()
-                        .offset(1 as libc::c_int as isize))
-                        .sCmn
-                        .inputBuf)
-                        .as_mut_ptr()
-                        .offset(
-                            ((*((*psEnc).state_Fxx)
-                                .as_mut_ptr()
-                                .offset(1 as libc::c_int as isize))
-                                .sCmn
-                                .inputBufIx + 2 as libc::c_int) as isize,
-                        ),
-                    buf.as_mut_ptr() as *const opus_int16,
-                    nSamplesFromInput,
-                );
-            (*psEnc).state_Fxx[1 as libc::c_int as usize].sCmn.inputBufIx
-                += nSamplesToBuffer;
+                        .inputBufIx
+                            + 2 as libc::c_int) as isize,
+                    ),
+                buf.as_mut_ptr() as *const opus_int16,
+                nSamplesFromInput,
+            );
+            (*psEnc).state_Fxx[1 as libc::c_int as usize]
+                .sCmn
+                .inputBufIx += nSamplesToBuffer;
         } else if (*encControl).nChannelsAPI == 2 as libc::c_int
             && (*encControl).nChannelsInternal == 1 as libc::c_int
         {
             n = 0 as libc::c_int;
             while n < nSamplesFromInput {
                 sum = *samplesIn.offset((2 as libc::c_int * n) as isize) as libc::c_int
-                    + *samplesIn
-                        .offset((2 as libc::c_int * n + 1 as libc::c_int) as isize)
+                    + *samplesIn.offset((2 as libc::c_int * n + 1 as libc::c_int) as isize)
                         as libc::c_int;
-                *buf
-                    .as_mut_ptr()
-                    .offset(
-                        n as isize,
-                    ) = (if 1 as libc::c_int == 1 as libc::c_int {
+                *buf.as_mut_ptr().offset(n as isize) = (if 1 as libc::c_int == 1 as libc::c_int {
                     (sum >> 1 as libc::c_int) + (sum & 1 as libc::c_int)
                 } else {
                     (sum >> 1 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
@@ -1148,86 +1101,91 @@ pub unsafe extern "C" fn silk_Encode(
                 }) as opus_int16;
                 n += 1;
             }
-            ret
-                += silk_resampler(
+            ret += silk_resampler(
+                &mut (*((*psEnc).state_Fxx)
+                    .as_mut_ptr()
+                    .offset(0 as libc::c_int as isize))
+                .sCmn
+                .resampler_state,
+                &mut *((*((*psEnc).state_Fxx)
+                    .as_mut_ptr()
+                    .offset(0 as libc::c_int as isize))
+                .sCmn
+                .inputBuf)
+                    .as_mut_ptr()
+                    .offset(
+                        ((*((*psEnc).state_Fxx)
+                            .as_mut_ptr()
+                            .offset(0 as libc::c_int as isize))
+                        .sCmn
+                        .inputBufIx
+                            + 2 as libc::c_int) as isize,
+                    ),
+                buf.as_mut_ptr() as *const opus_int16,
+                nSamplesFromInput,
+            );
+            if (*psEnc).nPrevChannelsInternal == 2 as libc::c_int
+                && (*psEnc).state_Fxx[0 as libc::c_int as usize]
+                    .sCmn
+                    .nFramesEncoded
+                    == 0 as libc::c_int
+            {
+                ret += silk_resampler(
                     &mut (*((*psEnc).state_Fxx)
                         .as_mut_ptr()
-                        .offset(0 as libc::c_int as isize))
-                        .sCmn
-                        .resampler_state,
+                        .offset(1 as libc::c_int as isize))
+                    .sCmn
+                    .resampler_state,
                     &mut *((*((*psEnc).state_Fxx)
                         .as_mut_ptr()
-                        .offset(0 as libc::c_int as isize))
-                        .sCmn
-                        .inputBuf)
+                        .offset(1 as libc::c_int as isize))
+                    .sCmn
+                    .inputBuf)
                         .as_mut_ptr()
                         .offset(
                             ((*((*psEnc).state_Fxx)
                                 .as_mut_ptr()
-                                .offset(0 as libc::c_int as isize))
-                                .sCmn
-                                .inputBufIx + 2 as libc::c_int) as isize,
+                                .offset(1 as libc::c_int as isize))
+                            .sCmn
+                            .inputBufIx
+                                + 2 as libc::c_int) as isize,
                         ),
                     buf.as_mut_ptr() as *const opus_int16,
                     nSamplesFromInput,
                 );
-            if (*psEnc).nPrevChannelsInternal == 2 as libc::c_int
-                && (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.nFramesEncoded
-                    == 0 as libc::c_int
-            {
-                ret
-                    += silk_resampler(
-                        &mut (*((*psEnc).state_Fxx)
-                            .as_mut_ptr()
-                            .offset(1 as libc::c_int as isize))
-                            .sCmn
-                            .resampler_state,
-                        &mut *((*((*psEnc).state_Fxx)
-                            .as_mut_ptr()
-                            .offset(1 as libc::c_int as isize))
-                            .sCmn
-                            .inputBuf)
-                            .as_mut_ptr()
-                            .offset(
-                                ((*((*psEnc).state_Fxx)
-                                    .as_mut_ptr()
-                                    .offset(1 as libc::c_int as isize))
-                                    .sCmn
-                                    .inputBufIx + 2 as libc::c_int) as isize,
-                            ),
-                        buf.as_mut_ptr() as *const opus_int16,
-                        nSamplesFromInput,
-                    );
                 n = 0 as libc::c_int;
-                while n < (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.frame_length
+                while n
+                    < (*psEnc).state_Fxx[0 as libc::c_int as usize]
+                        .sCmn
+                        .frame_length
                 {
-                    (*psEnc)
-                        .state_Fxx[0 as libc::c_int as usize]
+                    (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.inputBuf[((*psEnc).state_Fxx
+                        [0 as libc::c_int as usize]
                         .sCmn
-                        .inputBuf[((*psEnc)
-                        .state_Fxx[0 as libc::c_int as usize]
-                        .sCmn
-                        .inputBufIx + n + 2 as libc::c_int)
-                        as usize] = ((*psEnc)
-                        .state_Fxx[0 as libc::c_int as usize]
-                        .sCmn
-                        .inputBuf[((*psEnc)
-                        .state_Fxx[0 as libc::c_int as usize]
-                        .sCmn
-                        .inputBufIx + n + 2 as libc::c_int) as usize] as libc::c_int
-                        + (*psEnc)
+                        .inputBufIx
+                        + n
+                        + 2 as libc::c_int)
+                        as usize] = ((*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.inputBuf
+                        [((*psEnc).state_Fxx[0 as libc::c_int as usize]
+                            .sCmn
+                            .inputBufIx
+                            + n
+                            + 2 as libc::c_int) as usize]
+                        as libc::c_int
+                        + (*psEnc).state_Fxx[1 as libc::c_int as usize].sCmn.inputBuf[((*psEnc)
                             .state_Fxx[1 as libc::c_int as usize]
                             .sCmn
-                            .inputBuf[((*psEnc)
-                            .state_Fxx[1 as libc::c_int as usize]
-                            .sCmn
-                            .inputBufIx + n + 2 as libc::c_int) as usize] as libc::c_int
+                            .inputBufIx
+                            + n
+                            + 2 as libc::c_int)
+                            as usize] as libc::c_int
                         >> 1 as libc::c_int) as opus_int16;
                     n += 1;
                 }
             }
-            (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.inputBufIx
-                += nSamplesToBuffer;
+            (*psEnc).state_Fxx[0 as libc::c_int as usize]
+                .sCmn
+                .inputBufIx += nSamplesToBuffer;
         } else {
             if !((*encControl).nChannelsAPI == 1 as libc::c_int
                 && (*encControl).nChannelsInternal == 1 as libc::c_int)
@@ -1245,43 +1203,51 @@ pub unsafe extern "C" fn silk_Encode(
                 (nSamplesFromInput as libc::c_ulong)
                     .wrapping_mul(::core::mem::size_of::<opus_int16>() as libc::c_ulong),
             );
-            ret
-                += silk_resampler(
-                    &mut (*((*psEnc).state_Fxx)
-                        .as_mut_ptr()
-                        .offset(0 as libc::c_int as isize))
+            ret += silk_resampler(
+                &mut (*((*psEnc).state_Fxx)
+                    .as_mut_ptr()
+                    .offset(0 as libc::c_int as isize))
+                .sCmn
+                .resampler_state,
+                &mut *((*((*psEnc).state_Fxx)
+                    .as_mut_ptr()
+                    .offset(0 as libc::c_int as isize))
+                .sCmn
+                .inputBuf)
+                    .as_mut_ptr()
+                    .offset(
+                        ((*((*psEnc).state_Fxx)
+                            .as_mut_ptr()
+                            .offset(0 as libc::c_int as isize))
                         .sCmn
-                        .resampler_state,
-                    &mut *((*((*psEnc).state_Fxx)
-                        .as_mut_ptr()
-                        .offset(0 as libc::c_int as isize))
-                        .sCmn
-                        .inputBuf)
-                        .as_mut_ptr()
-                        .offset(
-                            ((*((*psEnc).state_Fxx)
-                                .as_mut_ptr()
-                                .offset(0 as libc::c_int as isize))
-                                .sCmn
-                                .inputBufIx + 2 as libc::c_int) as isize,
-                        ),
-                    buf.as_mut_ptr() as *const opus_int16,
-                    nSamplesFromInput,
-                );
-            (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.inputBufIx
-                += nSamplesToBuffer;
+                        .inputBufIx
+                            + 2 as libc::c_int) as isize,
+                    ),
+                buf.as_mut_ptr() as *const opus_int16,
+                nSamplesFromInput,
+            );
+            (*psEnc).state_Fxx[0 as libc::c_int as usize]
+                .sCmn
+                .inputBufIx += nSamplesToBuffer;
         }
-        samplesIn = samplesIn
-            .offset((nSamplesFromInput * (*encControl).nChannelsAPI) as isize);
+        samplesIn = samplesIn.offset((nSamplesFromInput * (*encControl).nChannelsAPI) as isize);
         nSamplesIn -= nSamplesFromInput;
         (*psEnc).allowBandwidthSwitch = 0 as libc::c_int;
-        if !((*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.inputBufIx
-            >= (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.frame_length)
+        if !((*psEnc).state_Fxx[0 as libc::c_int as usize]
+            .sCmn
+            .inputBufIx
+            >= (*psEnc).state_Fxx[0 as libc::c_int as usize]
+                .sCmn
+                .frame_length)
         {
             break;
         }
-        if !((*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.inputBufIx
-            == (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.frame_length)
+        if !((*psEnc).state_Fxx[0 as libc::c_int as usize]
+            .sCmn
+            .inputBufIx
+            == (*psEnc).state_Fxx[0 as libc::c_int as usize]
+                .sCmn
+                .frame_length)
         {
             celt_fatal(
                 b"assertion failed: psEnc->state_Fxx[ 0 ].sCmn.inputBufIx == psEnc->state_Fxx[ 0 ].sCmn.frame_length\0"
@@ -1291,8 +1257,12 @@ pub unsafe extern "C" fn silk_Encode(
             );
         }
         if !((*encControl).nChannelsInternal == 1 as libc::c_int
-            || (*psEnc).state_Fxx[1 as libc::c_int as usize].sCmn.inputBufIx
-                == (*psEnc).state_Fxx[1 as libc::c_int as usize].sCmn.frame_length)
+            || (*psEnc).state_Fxx[1 as libc::c_int as usize]
+                .sCmn
+                .inputBufIx
+                == (*psEnc).state_Fxx[1 as libc::c_int as usize]
+                    .sCmn
+                    .frame_length)
         {
             celt_fatal(
                 b"assertion failed: encControl->nChannelsInternal == 1 || psEnc->state_Fxx[ 1 ].sCmn.inputBufIx == psEnc->state_Fxx[ 1 ].sCmn.frame_length\0"
@@ -1301,21 +1271,24 @@ pub unsafe extern "C" fn silk_Encode(
                 337 as libc::c_int,
             );
         }
-        if (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.nFramesEncoded
-            == 0 as libc::c_int && prefillFlag == 0
+        if (*psEnc).state_Fxx[0 as libc::c_int as usize]
+            .sCmn
+            .nFramesEncoded
+            == 0 as libc::c_int
+            && prefillFlag == 0
         {
             let mut iCDF: [opus_uint8; 2] = [
                 0 as libc::c_int as opus_uint8,
                 0 as libc::c_int as opus_uint8,
             ];
-            iCDF[0 as libc::c_int
-                as usize] = (256 as libc::c_int
+            iCDF[0 as libc::c_int as usize] = (256 as libc::c_int
                 - (256 as libc::c_int
-                    >> ((*psEnc)
-                        .state_Fxx[0 as libc::c_int as usize]
+                    >> ((*psEnc).state_Fxx[0 as libc::c_int as usize]
                         .sCmn
-                        .nFramesPerPacket + 1 as libc::c_int)
-                        * (*encControl).nChannelsInternal)) as opus_uint8;
+                        .nFramesPerPacket
+                        + 1 as libc::c_int)
+                        * (*encControl).nChannelsInternal))
+                as opus_uint8;
             ec_enc_icdf(
                 psRangeEnc,
                 0 as libc::c_int,
@@ -1327,37 +1300,37 @@ pub unsafe extern "C" fn silk_Encode(
                 LBRR_symbol = 0 as libc::c_int;
                 i = 0 as libc::c_int;
                 while i < (*psEnc).state_Fxx[n as usize].sCmn.nFramesPerPacket {
-                    LBRR_symbol
-                        |= (((*psEnc).state_Fxx[n as usize].sCmn.LBRR_flags[i as usize]
-                            as opus_uint32) << i) as opus_int32;
+                    LBRR_symbol |= (((*psEnc).state_Fxx[n as usize].sCmn.LBRR_flags[i as usize]
+                        as opus_uint32)
+                        << i) as opus_int32;
                     i += 1;
                 }
-                (*psEnc)
-                    .state_Fxx[n as usize]
-                    .sCmn
-                    .LBRR_flag = (if LBRR_symbol > 0 as libc::c_int {
+                (*psEnc).state_Fxx[n as usize].sCmn.LBRR_flag = (if LBRR_symbol > 0 as libc::c_int {
                     1 as libc::c_int
                 } else {
                     0 as libc::c_int
                 }) as opus_int8;
                 if LBRR_symbol != 0
-                    && (*psEnc).state_Fxx[n as usize].sCmn.nFramesPerPacket
-                        > 1 as libc::c_int
+                    && (*psEnc).state_Fxx[n as usize].sCmn.nFramesPerPacket > 1 as libc::c_int
                 {
                     ec_enc_icdf(
                         psRangeEnc,
                         LBRR_symbol - 1 as libc::c_int,
-                        silk_LBRR_flags_iCDF_ptr[((*psEnc)
-                            .state_Fxx[n as usize]
+                        silk_LBRR_flags_iCDF_ptr[((*psEnc).state_Fxx[n as usize]
                             .sCmn
-                            .nFramesPerPacket - 2 as libc::c_int) as usize],
+                            .nFramesPerPacket
+                            - 2 as libc::c_int)
+                            as usize],
                         8 as libc::c_int as libc::c_uint,
                     );
                 }
                 n += 1;
             }
             i = 0 as libc::c_int;
-            while i < (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.nFramesPerPacket
+            while i
+                < (*psEnc).state_Fxx[0 as libc::c_int as usize]
+                    .sCmn
+                    .nFramesPerPacket
             {
                 n = 0 as libc::c_int;
                 while n < (*encControl).nChannelsInternal {
@@ -1370,10 +1343,10 @@ pub unsafe extern "C" fn silk_Encode(
                                 psRangeEnc,
                                 ((*psEnc).sStereo.predIx[i as usize]).as_mut_ptr(),
                             );
-                            if (*psEnc)
-                                .state_Fxx[1 as libc::c_int as usize]
+                            if (*psEnc).state_Fxx[1 as libc::c_int as usize]
                                 .sCmn
-                                .LBRR_flags[i as usize] == 0 as libc::c_int
+                                .LBRR_flags[i as usize]
+                                == 0 as libc::c_int
                             {
                                 silk_stereo_encode_mid_only(
                                     psRangeEnc,
@@ -1382,18 +1355,16 @@ pub unsafe extern "C" fn silk_Encode(
                             }
                         }
                         if i > 0 as libc::c_int
-                            && (*psEnc)
-                                .state_Fxx[n as usize]
-                                .sCmn
-                                .LBRR_flags[(i - 1 as libc::c_int) as usize] != 0
+                            && (*psEnc).state_Fxx[n as usize].sCmn.LBRR_flags
+                                [(i - 1 as libc::c_int) as usize]
+                                != 0
                         {
                             condCoding = CODE_CONDITIONALLY;
                         } else {
                             condCoding = CODE_INDEPENDENTLY;
                         }
                         silk_encode_indices(
-                            &mut (*((*psEnc).state_Fxx).as_mut_ptr().offset(n as isize))
-                                .sCmn,
+                            &mut (*((*psEnc).state_Fxx).as_mut_ptr().offset(n as isize)).sCmn,
                             psRangeEnc,
                             i,
                             1 as libc::c_int,
@@ -1401,15 +1372,9 @@ pub unsafe extern "C" fn silk_Encode(
                         );
                         silk_encode_pulses(
                             psRangeEnc,
-                            (*psEnc)
-                                .state_Fxx[n as usize]
-                                .sCmn
-                                .indices_LBRR[i as usize]
-                                .signalType as libc::c_int,
-                            (*psEnc)
-                                .state_Fxx[n as usize]
-                                .sCmn
-                                .indices_LBRR[i as usize]
+                            (*psEnc).state_Fxx[n as usize].sCmn.indices_LBRR[i as usize].signalType
+                                as libc::c_int,
+                            (*psEnc).state_Fxx[n as usize].sCmn.indices_LBRR[i as usize]
                                 .quantOffsetType as libc::c_int,
                             ((*psEnc).state_Fxx[n as usize].sCmn.pulses_LBRR[i as usize])
                                 .as_mut_ptr(),
@@ -1433,30 +1398,34 @@ pub unsafe extern "C" fn silk_Encode(
             (*psEnc).nBitsUsedLBRR = ec_tell(psRangeEnc);
         }
         silk_HP_variable_cutoff(((*psEnc).state_Fxx).as_mut_ptr());
-        nBits = (*encControl).bitRate * (*encControl).payloadSize_ms
-            / 1000 as libc::c_int;
+        nBits = (*encControl).bitRate * (*encControl).payloadSize_ms / 1000 as libc::c_int;
         if prefillFlag == 0 {
             nBits -= (*psEnc).nBitsUsedLBRR;
         }
         nBits = nBits
-            / (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.nFramesPerPacket;
+            / (*psEnc).state_Fxx[0 as libc::c_int as usize]
+                .sCmn
+                .nFramesPerPacket;
         if (*encControl).payloadSize_ms == 10 as libc::c_int {
-            TargetRate_bps = nBits as opus_int16 as opus_int32
-                * 100 as libc::c_int as opus_int16 as opus_int32;
+            TargetRate_bps =
+                nBits as opus_int16 as opus_int32 * 100 as libc::c_int as opus_int16 as opus_int32;
         } else {
-            TargetRate_bps = nBits as opus_int16 as opus_int32
-                * 50 as libc::c_int as opus_int16 as opus_int32;
+            TargetRate_bps =
+                nBits as opus_int16 as opus_int32 * 50 as libc::c_int as opus_int16 as opus_int32;
         }
-        TargetRate_bps
-            -= (*psEnc).nBitsExceeded * 1000 as libc::c_int / 500 as libc::c_int;
+        TargetRate_bps -= (*psEnc).nBitsExceeded * 1000 as libc::c_int / 500 as libc::c_int;
         if prefillFlag == 0
-            && (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.nFramesEncoded
+            && (*psEnc).state_Fxx[0 as libc::c_int as usize]
+                .sCmn
+                .nFramesEncoded
                 > 0 as libc::c_int
         {
             let bitsBalance: opus_int32 = ec_tell(psRangeEnc)
                 - (*psEnc).nBitsUsedLBRR
                 - nBits
-                    * (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.nFramesEncoded;
+                    * (*psEnc).state_Fxx[0 as libc::c_int as usize]
+                        .sCmn
+                        .nFramesEncoded;
             TargetRate_bps -= bitsBalance * 1000 as libc::c_int / 500 as libc::c_int;
         }
         TargetRate_bps = if (*encControl).bitRate > 5000 as libc::c_int {
@@ -1480,53 +1449,51 @@ pub unsafe extern "C" fn silk_Encode(
                 &mut *((*((*psEnc).state_Fxx)
                     .as_mut_ptr()
                     .offset(0 as libc::c_int as isize))
-                    .sCmn
-                    .inputBuf)
+                .sCmn
+                .inputBuf)
                     .as_mut_ptr()
                     .offset(2 as libc::c_int as isize),
                 &mut *((*((*psEnc).state_Fxx)
                     .as_mut_ptr()
                     .offset(1 as libc::c_int as isize))
-                    .sCmn
-                    .inputBuf)
+                .sCmn
+                .inputBuf)
                     .as_mut_ptr()
                     .offset(2 as libc::c_int as isize),
-                ((*psEnc)
-                    .sStereo
-                    .predIx[(*psEnc)
-                    .state_Fxx[0 as libc::c_int as usize]
+                ((*psEnc).sStereo.predIx[(*psEnc).state_Fxx[0 as libc::c_int as usize]
                     .sCmn
                     .nFramesEncoded as usize])
                     .as_mut_ptr(),
-                &mut *((*psEnc).sStereo.mid_only_flags)
-                    .as_mut_ptr()
-                    .offset(
-                        (*((*psEnc).state_Fxx)
-                            .as_mut_ptr()
-                            .offset(0 as libc::c_int as isize))
-                            .sCmn
-                            .nFramesEncoded as isize,
-                    ),
+                &mut *((*psEnc).sStereo.mid_only_flags).as_mut_ptr().offset(
+                    (*((*psEnc).state_Fxx)
+                        .as_mut_ptr()
+                        .offset(0 as libc::c_int as isize))
+                    .sCmn
+                    .nFramesEncoded as isize,
+                ),
                 MStargetRates_bps.as_mut_ptr(),
                 TargetRate_bps,
-                (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.speech_activity_Q8,
+                (*psEnc).state_Fxx[0 as libc::c_int as usize]
+                    .sCmn
+                    .speech_activity_Q8,
                 (*encControl).toMono,
                 (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.fs_kHz,
-                (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.frame_length,
+                (*psEnc).state_Fxx[0 as libc::c_int as usize]
+                    .sCmn
+                    .frame_length,
             );
-            if (*psEnc)
-                .sStereo
-                .mid_only_flags[(*psEnc)
-                .state_Fxx[0 as libc::c_int as usize]
+            if (*psEnc).sStereo.mid_only_flags[(*psEnc).state_Fxx[0 as libc::c_int as usize]
                 .sCmn
-                .nFramesEncoded as usize] as libc::c_int == 0 as libc::c_int
+                .nFramesEncoded as usize] as libc::c_int
+                == 0 as libc::c_int
             {
                 if (*psEnc).prev_decode_only_middle == 1 as libc::c_int {
                     memset(
                         &mut (*((*psEnc).state_Fxx)
                             .as_mut_ptr()
                             .offset(1 as libc::c_int as isize))
-                            .sShape as *mut silk_shape_state_FLP as *mut libc::c_void,
+                        .sShape as *mut silk_shape_state_FLP
+                            as *mut libc::c_void,
                         0 as libc::c_int,
                         ::core::mem::size_of::<silk_shape_state_FLP>() as libc::c_ulong,
                     );
@@ -1534,14 +1501,13 @@ pub unsafe extern "C" fn silk_Encode(
                         &mut (*((*psEnc).state_Fxx)
                             .as_mut_ptr()
                             .offset(1 as libc::c_int as isize))
-                            .sCmn
-                            .sNSQ as *mut silk_nsq_state as *mut libc::c_void,
+                        .sCmn
+                        .sNSQ as *mut silk_nsq_state as *mut libc::c_void,
                         0 as libc::c_int,
                         ::core::mem::size_of::<silk_nsq_state>() as libc::c_ulong,
                     );
                     memset(
-                        ((*psEnc)
-                            .state_Fxx[1 as libc::c_int as usize]
+                        ((*psEnc).state_Fxx[1 as libc::c_int as usize]
                             .sCmn
                             .prev_NLSFq_Q15)
                             .as_mut_ptr() as *mut libc::c_void,
@@ -1552,36 +1518,29 @@ pub unsafe extern "C" fn silk_Encode(
                         &mut (*((*psEnc).state_Fxx)
                             .as_mut_ptr()
                             .offset(1 as libc::c_int as isize))
-                            .sCmn
-                            .sLP
-                            .In_LP_State as *mut [opus_int32; 2] as *mut libc::c_void,
+                        .sCmn
+                        .sLP
+                        .In_LP_State as *mut [opus_int32; 2]
+                            as *mut libc::c_void,
                         0 as libc::c_int,
                         ::core::mem::size_of::<[opus_int32; 2]>() as libc::c_ulong,
                     );
-                    (*psEnc)
-                        .state_Fxx[1 as libc::c_int as usize]
-                        .sCmn
-                        .prevLag = 100 as libc::c_int;
-                    (*psEnc)
-                        .state_Fxx[1 as libc::c_int as usize]
+                    (*psEnc).state_Fxx[1 as libc::c_int as usize].sCmn.prevLag = 100 as libc::c_int;
+                    (*psEnc).state_Fxx[1 as libc::c_int as usize]
                         .sCmn
                         .sNSQ
                         .lagPrev = 100 as libc::c_int;
-                    (*psEnc)
-                        .state_Fxx[1 as libc::c_int as usize]
+                    (*psEnc).state_Fxx[1 as libc::c_int as usize]
                         .sShape
                         .LastGainIndex = 10 as libc::c_int as opus_int8;
-                    (*psEnc)
-                        .state_Fxx[1 as libc::c_int as usize]
+                    (*psEnc).state_Fxx[1 as libc::c_int as usize]
                         .sCmn
                         .prevSignalType = TYPE_NO_VOICE_ACTIVITY as opus_int8;
-                    (*psEnc)
-                        .state_Fxx[1 as libc::c_int as usize]
+                    (*psEnc).state_Fxx[1 as libc::c_int as usize]
                         .sCmn
                         .sNSQ
                         .prev_gain_Q16 = 65536 as libc::c_int;
-                    (*psEnc)
-                        .state_Fxx[1 as libc::c_int as usize]
+                    (*psEnc).state_Fxx[1 as libc::c_int as usize]
                         .sCmn
                         .first_frame_after_reset = 1 as libc::c_int;
                 }
@@ -1592,48 +1551,41 @@ pub unsafe extern "C" fn silk_Encode(
                     activity,
                 );
             } else {
-                (*psEnc)
-                    .state_Fxx[1 as libc::c_int as usize]
+                (*psEnc).state_Fxx[1 as libc::c_int as usize].sCmn.VAD_flags[(*psEnc).state_Fxx
+                    [0 as libc::c_int as usize]
                     .sCmn
-                    .VAD_flags[(*psEnc)
-                    .state_Fxx[0 as libc::c_int as usize]
-                    .sCmn
-                    .nFramesEncoded as usize] = 0 as libc::c_int as opus_int8;
+                    .nFramesEncoded
+                    as usize] = 0 as libc::c_int as opus_int8;
             }
             if prefillFlag == 0 {
                 silk_stereo_encode_pred(
                     psRangeEnc,
-                    ((*psEnc)
-                        .sStereo
-                        .predIx[(*psEnc)
-                        .state_Fxx[0 as libc::c_int as usize]
+                    ((*psEnc).sStereo.predIx[(*psEnc).state_Fxx[0 as libc::c_int as usize]
                         .sCmn
                         .nFramesEncoded as usize])
                         .as_mut_ptr(),
                 );
-                if (*psEnc)
-                    .state_Fxx[1 as libc::c_int as usize]
+                if (*psEnc).state_Fxx[1 as libc::c_int as usize].sCmn.VAD_flags[(*psEnc).state_Fxx
+                    [0 as libc::c_int as usize]
                     .sCmn
-                    .VAD_flags[(*psEnc)
-                    .state_Fxx[0 as libc::c_int as usize]
-                    .sCmn
-                    .nFramesEncoded as usize] as libc::c_int == 0 as libc::c_int
+                    .nFramesEncoded
+                    as usize] as libc::c_int
+                    == 0 as libc::c_int
                 {
                     silk_stereo_encode_mid_only(
                         psRangeEnc,
-                        (*psEnc)
-                            .sStereo
-                            .mid_only_flags[(*psEnc)
-                            .state_Fxx[0 as libc::c_int as usize]
+                        (*psEnc).sStereo.mid_only_flags[(*psEnc).state_Fxx
+                            [0 as libc::c_int as usize]
                             .sCmn
-                            .nFramesEncoded as usize],
+                            .nFramesEncoded
+                            as usize],
                     );
                 }
             }
         } else {
             memcpy(
-                ((*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.inputBuf)
-                    .as_mut_ptr() as *mut libc::c_void,
+                ((*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.inputBuf).as_mut_ptr()
+                    as *mut libc::c_void,
                 ((*psEnc).sStereo.sMid).as_mut_ptr() as *const libc::c_void,
                 (2 as libc::c_int as libc::c_ulong)
                     .wrapping_mul(::core::mem::size_of::<opus_int16>() as libc::c_ulong),
@@ -1643,22 +1595,24 @@ pub unsafe extern "C" fn silk_Encode(
                 &mut *((*((*psEnc).state_Fxx)
                     .as_mut_ptr()
                     .offset(0 as libc::c_int as isize))
-                    .sCmn
-                    .inputBuf)
+                .sCmn
+                .inputBuf)
                     .as_mut_ptr()
                     .offset(
                         (*((*psEnc).state_Fxx)
                             .as_mut_ptr()
                             .offset(0 as libc::c_int as isize))
-                            .sCmn
-                            .frame_length as isize,
+                        .sCmn
+                        .frame_length as isize,
                     ) as *mut opus_int16 as *const libc::c_void,
                 (2 as libc::c_int as libc::c_ulong)
                     .wrapping_mul(::core::mem::size_of::<opus_int16>() as libc::c_ulong),
             );
         }
         silk_encode_do_VAD_FLP(
-            &mut *((*psEnc).state_Fxx).as_mut_ptr().offset(0 as libc::c_int as isize),
+            &mut *((*psEnc).state_Fxx)
+                .as_mut_ptr()
+                .offset(0 as libc::c_int as isize),
             activity,
         );
         n = 0 as libc::c_int;
@@ -1675,8 +1629,8 @@ pub unsafe extern "C" fn silk_Encode(
                     maxBits = maxBits * 3 as libc::c_int / 4 as libc::c_int;
                 }
             }
-            useCBR = ((*encControl).useCBR != 0
-                && curr_block == tot_blocks - 1 as libc::c_int) as libc::c_int;
+            useCBR = ((*encControl).useCBR != 0 && curr_block == tot_blocks - 1 as libc::c_int)
+                as libc::c_int;
             if (*encControl).nChannelsInternal == 1 as libc::c_int {
                 channelRate_bps = TargetRate_bps;
             } else {
@@ -1694,7 +1648,10 @@ pub unsafe extern "C" fn silk_Encode(
                     &mut (*((*psEnc).state_Fxx).as_mut_ptr().offset(n as isize)).sCmn,
                     channelRate_bps,
                 );
-                if (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.nFramesEncoded - n
+                if (*psEnc).state_Fxx[0 as libc::c_int as usize]
+                    .sCmn
+                    .nFramesEncoded
+                    - n
                     <= 0 as libc::c_int
                 {
                     condCoding_0 = CODE_INDEPENDENTLY;
@@ -1713,24 +1670,25 @@ pub unsafe extern "C" fn silk_Encode(
                 );
                 let _ = ret != 0 as libc::c_int;
             }
-            (*psEnc)
-                .state_Fxx[n as usize]
+            (*psEnc).state_Fxx[n as usize]
                 .sCmn
                 .controlled_since_last_payload = 0 as libc::c_int;
             (*psEnc).state_Fxx[n as usize].sCmn.inputBufIx = 0 as libc::c_int;
             (*psEnc).state_Fxx[n as usize].sCmn.nFramesEncoded += 1;
             n += 1;
         }
-        (*psEnc)
-            .prev_decode_only_middle = (*psEnc)
-            .sStereo
-            .mid_only_flags[((*psEnc)
-            .state_Fxx[0 as libc::c_int as usize]
-            .sCmn
-            .nFramesEncoded - 1 as libc::c_int) as usize] as libc::c_int;
+        (*psEnc).prev_decode_only_middle =
+            (*psEnc).sStereo.mid_only_flags[((*psEnc).state_Fxx[0 as libc::c_int as usize]
+                .sCmn
+                .nFramesEncoded
+                - 1 as libc::c_int) as usize] as libc::c_int;
         if *nBytesOut > 0 as libc::c_int
-            && (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.nFramesEncoded
-                == (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.nFramesPerPacket
+            && (*psEnc).state_Fxx[0 as libc::c_int as usize]
+                .sCmn
+                .nFramesEncoded
+                == (*psEnc).state_Fxx[0 as libc::c_int as usize]
+                    .sCmn
+                    .nFramesPerPacket
         {
             flags = 0 as libc::c_int;
             n = 0 as libc::c_int;
@@ -1738,9 +1696,8 @@ pub unsafe extern "C" fn silk_Encode(
                 i = 0 as libc::c_int;
                 while i < (*psEnc).state_Fxx[n as usize].sCmn.nFramesPerPacket {
                     flags = ((flags as opus_uint32) << 1 as libc::c_int) as opus_int32;
-                    flags
-                        |= (*psEnc).state_Fxx[n as usize].sCmn.VAD_flags[i as usize]
-                            as libc::c_int;
+                    flags |=
+                        (*psEnc).state_Fxx[n as usize].sCmn.VAD_flags[i as usize] as libc::c_int;
                     i += 1;
                 }
                 flags = ((flags as opus_uint32) << 1 as libc::c_int) as opus_int32;
@@ -1751,9 +1708,11 @@ pub unsafe extern "C" fn silk_Encode(
                 ec_enc_patch_initial_bits(
                     psRangeEnc,
                     flags as libc::c_uint,
-                    (((*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.nFramesPerPacket
-                        + 1 as libc::c_int) * (*encControl).nChannelsInternal)
-                        as libc::c_uint,
+                    (((*psEnc).state_Fxx[0 as libc::c_int as usize]
+                        .sCmn
+                        .nFramesPerPacket
+                        + 1 as libc::c_int)
+                        * (*encControl).nChannelsInternal) as libc::c_uint,
                 );
             }
             if (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.inDTX != 0
@@ -1763,11 +1722,9 @@ pub unsafe extern "C" fn silk_Encode(
                 *nBytesOut = 0 as libc::c_int;
             }
             (*psEnc).nBitsExceeded += *nBytesOut * 8 as libc::c_int;
-            (*psEnc).nBitsExceeded
-                -= (*encControl).bitRate * (*encControl).payloadSize_ms
-                    / 1000 as libc::c_int;
-            (*psEnc)
-                .nBitsExceeded = if 0 as libc::c_int > 10000 as libc::c_int {
+            (*psEnc).nBitsExceeded -=
+                (*encControl).bitRate * (*encControl).payloadSize_ms / 1000 as libc::c_int;
+            (*psEnc).nBitsExceeded = if 0 as libc::c_int > 10000 as libc::c_int {
                 if (*psEnc).nBitsExceeded > 0 as libc::c_int {
                     0 as libc::c_int
                 } else if (*psEnc).nBitsExceeded < 10000 as libc::c_int {
@@ -1783,17 +1740,19 @@ pub unsafe extern "C" fn silk_Encode(
                 (*psEnc).nBitsExceeded
             };
             speech_act_thr_for_switch_Q8 = (((0.05f32
-                * ((1 as libc::c_int as opus_int64) << 8 as libc::c_int)
-                    as libc::c_float) as libc::c_double + 0.5f64) as opus_int32
-                as libc::c_long
+                * ((1 as libc::c_int as opus_int64) << 8 as libc::c_int) as libc::c_float)
+                as libc::c_double
+                + 0.5f64) as opus_int32 as libc::c_long
                 + ((((1 as libc::c_int as libc::c_float - 0.05f32)
                     / 5000 as libc::c_int as libc::c_float
-                    * ((1 as libc::c_int as opus_int64)
-                        << 16 as libc::c_int + 8 as libc::c_int) as libc::c_float)
-                    as libc::c_double + 0.5f64) as opus_int32 as libc::c_long
+                    * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int + 8 as libc::c_int)
+                        as libc::c_float) as libc::c_double
+                    + 0.5f64) as opus_int32 as libc::c_long
                     * (*psEnc).timeSinceSwitchAllowed_ms as opus_int16 as opus_int64
                     >> 16 as libc::c_int)) as opus_int32;
-            if (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.speech_activity_Q8
+            if (*psEnc).state_Fxx[0 as libc::c_int as usize]
+                .sCmn
+                .speech_activity_Q8
                 < speech_act_thr_for_switch_Q8
             {
                 (*psEnc).allowBandwidthSwitch = 1 as libc::c_int;
@@ -1810,18 +1769,14 @@ pub unsafe extern "C" fn silk_Encode(
     }
     (*psEnc).nPrevChannelsInternal = (*encControl).nChannelsInternal;
     (*encControl).allowBandwidthSwitch = (*psEnc).allowBandwidthSwitch;
-    (*encControl)
-        .inWBmodeWithoutVariableLP = ((*psEnc)
-        .state_Fxx[0 as libc::c_int as usize]
-        .sCmn
-        .fs_kHz == 16 as libc::c_int
-        && (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.sLP.mode
-            == 0 as libc::c_int) as libc::c_int;
-    (*encControl)
-        .internalSampleRate = (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.fs_kHz
-        as opus_int16 as opus_int32 * 1000 as libc::c_int as opus_int16 as opus_int32;
-    (*encControl)
-        .stereoWidth_Q14 = if (*encControl).toMono != 0 {
+    (*encControl).inWBmodeWithoutVariableLP =
+        ((*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.fs_kHz == 16 as libc::c_int
+            && (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.sLP.mode == 0 as libc::c_int)
+            as libc::c_int;
+    (*encControl).internalSampleRate = (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.fs_kHz
+        as opus_int16 as opus_int32
+        * 1000 as libc::c_int as opus_int16 as opus_int32;
+    (*encControl).stereoWidth_Q14 = if (*encControl).toMono != 0 {
         0 as libc::c_int
     } else {
         (*psEnc).sStereo.smth_width_Q14 as libc::c_int
@@ -1831,28 +1786,23 @@ pub unsafe extern "C" fn silk_Encode(
         (*encControl).complexity = tmp_complexity;
         n = 0 as libc::c_int;
         while n < (*encControl).nChannelsInternal {
-            (*psEnc)
-                .state_Fxx[n as usize]
+            (*psEnc).state_Fxx[n as usize]
                 .sCmn
                 .controlled_since_last_payload = 0 as libc::c_int;
             (*psEnc).state_Fxx[n as usize].sCmn.prefillFlag = 0 as libc::c_int;
             n += 1;
         }
     }
-    (*encControl)
-        .signalType = (*psEnc)
-        .state_Fxx[0 as libc::c_int as usize]
+    (*encControl).signalType = (*psEnc).state_Fxx[0 as libc::c_int as usize]
         .sCmn
         .indices
         .signalType as libc::c_int;
-    (*encControl)
-        .offset = silk_Quantization_Offsets_Q10[((*psEnc)
-        .state_Fxx[0 as libc::c_int as usize]
+    (*encControl).offset = silk_Quantization_Offsets_Q10[((*psEnc).state_Fxx
+        [0 as libc::c_int as usize]
         .sCmn
         .indices
-        .signalType as libc::c_int >> 1 as libc::c_int)
-        as usize][(*psEnc)
-        .state_Fxx[0 as libc::c_int as usize]
+        .signalType as libc::c_int
+        >> 1 as libc::c_int) as usize][(*psEnc).state_Fxx[0 as libc::c_int as usize]
         .sCmn
         .indices
         .quantOffsetType as usize] as libc::c_int;

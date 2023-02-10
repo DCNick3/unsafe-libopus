@@ -41,9 +41,8 @@ pub unsafe extern "C" fn silk_LTP_analysis_filter_FLP(
             *LTP_res_ptr.offset(i as isize) = *x_ptr.offset(i as isize);
             j = 0 as libc::c_int;
             while j < LTP_ORDER {
-                *LTP_res_ptr.offset(i as isize)
-                    -= Btmp[j as usize]
-                        * *x_lag_ptr.offset((LTP_ORDER / 2 as libc::c_int - j) as isize);
+                *LTP_res_ptr.offset(i as isize) -= Btmp[j as usize]
+                    * *x_lag_ptr.offset((LTP_ORDER / 2 as libc::c_int - j) as isize);
                 j += 1;
             }
             *LTP_res_ptr.offset(i as isize) *= inv_gain;

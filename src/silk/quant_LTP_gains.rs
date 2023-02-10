@@ -24,7 +24,7 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     #[c2rust::src_loc = "27:1"]
     pub type int64_t = __int64_t;
-    use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
+    use super::types_h::{__int16_t, __int32_t, __int64_t, __int8_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
 pub mod stdint_uintn_h {
@@ -32,7 +32,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint8_t, __uint32_t};
+    use super::types_h::{__uint32_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
 pub mod opus_types_h {
@@ -48,8 +48,8 @@ pub mod opus_types_h {
     pub type opus_uint32 = uint32_t;
     #[c2rust::src_loc = "57:4"]
     pub type opus_int64 = int64_t;
-    use super::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
+    use super::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/usr/include/string.h:32"]
 pub mod string_h {
@@ -74,7 +74,7 @@ pub mod SigProc_FIX_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
 pub mod tables_h {
-    use super::opus_types_h::{opus_uint8, opus_int8};
+    use super::opus_types_h::{opus_int8, opus_uint8};
     extern "C" {
         #[c2rust::src_loc = "78:34"]
         pub static silk_LTP_gain_BITS_Q5_ptrs: [*const opus_uint8; 3];
@@ -98,7 +98,7 @@ pub mod typedef_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
-    use super::opus_types_h::{opus_int8, opus_int32, opus_uint8};
+    use super::opus_types_h::{opus_int32, opus_int8, opus_uint8};
     extern "C" {
         #[c2rust::src_loc = "225:1"]
         pub fn silk_VQ_WMat_EC_c(
@@ -117,23 +117,20 @@ pub mod main_h {
         );
     }
 }
-pub use self::types_h::{
-    __int8_t, __uint8_t, __int16_t, __int32_t, __uint32_t, __int64_t,
-};
-pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
-pub use self::stdint_uintn_h::{uint8_t, uint32_t};
-pub use self::opus_types_h::{
-    opus_int8, opus_uint8, opus_int16, opus_int32, opus_uint32, opus_int64,
-};
-use self::string_h::memcpy;
-use self::SigProc_FIX_h::{silk_lin2log, silk_log2lin};
-use self::tables_h::{
-    silk_LTP_gain_BITS_Q5_ptrs, silk_LTP_vq_ptrs_Q7, silk_LTP_vq_gain_ptrs_Q7,
-    silk_LTP_vq_sizes,
-};
 pub use self::define_h::LTP_ORDER;
-pub use self::typedef_h::silk_int32_MAX;
 use self::main_h::silk_VQ_WMat_EC_c;
+pub use self::opus_types_h::{
+    opus_int16, opus_int32, opus_int64, opus_int8, opus_uint32, opus_uint8,
+};
+pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+pub use self::stdint_uintn_h::{uint32_t, uint8_t};
+use self::string_h::memcpy;
+use self::tables_h::{
+    silk_LTP_gain_BITS_Q5_ptrs, silk_LTP_vq_gain_ptrs_Q7, silk_LTP_vq_ptrs_Q7, silk_LTP_vq_sizes,
+};
+pub use self::typedef_h::silk_int32_MAX;
+pub use self::types_h::{__int16_t, __int32_t, __int64_t, __int8_t, __uint32_t, __uint8_t};
+use self::SigProc_FIX_h::{silk_lin2log, silk_log2lin};
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_quant_LTP_gains(
@@ -186,11 +183,13 @@ pub unsafe extern "C" fn silk_quant_LTP_gains(
         while j < nb_subfr {
             max_gain_Q7 = silk_log2lin(
                 (250.0f32 as libc::c_double / 6.0f64
-                    * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int)
-                        as libc::c_double + 0.5f64) as opus_int32 - sum_log_gain_tmp_Q7
+                    * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int) as libc::c_double
+                    + 0.5f64) as opus_int32
+                    - sum_log_gain_tmp_Q7
                     + ((7 as libc::c_int as libc::c_long
                         * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int))
-                        as libc::c_double + 0.5f64) as opus_int32,
+                        as libc::c_double
+                        + 0.5f64) as opus_int32,
             ) - gain_safety;
             silk_VQ_WMat_EC_c(
                 &mut *temp_idx.as_mut_ptr().offset(j as isize),
@@ -208,7 +207,8 @@ pub unsafe extern "C" fn silk_quant_LTP_gains(
             );
             res_nrg_Q15 = if (res_nrg_Q15 as opus_uint32)
                 .wrapping_add(res_nrg_Q15_subfr as opus_uint32)
-                & 0x80000000 as libc::c_uint != 0
+                & 0x80000000 as libc::c_uint
+                != 0
             {
                 silk_int32_MAX
             } else {
@@ -216,7 +216,8 @@ pub unsafe extern "C" fn silk_quant_LTP_gains(
             };
             rate_dist_Q7 = if (rate_dist_Q7 as opus_uint32)
                 .wrapping_add(rate_dist_Q7_subfr as opus_uint32)
-                & 0x80000000 as libc::c_uint != 0
+                & 0x80000000 as libc::c_uint
+                != 0
             {
                 silk_int32_MAX
             } else {
@@ -226,14 +227,16 @@ pub unsafe extern "C" fn silk_quant_LTP_gains(
                 > sum_log_gain_tmp_Q7 + silk_lin2log(gain_safety + gain_Q7)
                     - ((7 as libc::c_int as libc::c_long
                         * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int))
-                        as libc::c_double + 0.5f64) as opus_int32
+                        as libc::c_double
+                        + 0.5f64) as opus_int32
             {
                 0 as libc::c_int
             } else {
                 sum_log_gain_tmp_Q7 + silk_lin2log(gain_safety + gain_Q7)
                     - ((7 as libc::c_int as libc::c_long
                         * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int))
-                        as libc::c_double + 0.5f64) as opus_int32
+                        as libc::c_double
+                        + 0.5f64) as opus_int32
             };
             XX_Q17_ptr = XX_Q17_ptr.offset((LTP_ORDER * LTP_ORDER) as isize);
             xX_Q17_ptr = xX_Q17_ptr.offset(LTP_ORDER as isize);
@@ -257,14 +260,11 @@ pub unsafe extern "C" fn silk_quant_LTP_gains(
     while j < nb_subfr {
         k = 0 as libc::c_int;
         while k < LTP_ORDER {
-            *B_Q14
-                .offset(
-                    (j * LTP_ORDER + k) as isize,
-                ) = ((*cbk_ptr_Q7
-                .offset(
-                    (*cbk_index.offset(j as isize) as libc::c_int * 5 as libc::c_int + k)
-                        as isize,
-                ) as opus_uint32) << 7 as libc::c_int) as opus_int32 as opus_int16;
+            *B_Q14.offset((j * LTP_ORDER + k) as isize) =
+                ((*cbk_ptr_Q7.offset(
+                    (*cbk_index.offset(j as isize) as libc::c_int * 5 as libc::c_int + k) as isize,
+                ) as opus_uint32)
+                    << 7 as libc::c_int) as opus_int32 as opus_int16;
             k += 1;
         }
         j += 1;
@@ -276,6 +276,6 @@ pub unsafe extern "C" fn silk_quant_LTP_gains(
     }
     *sum_log_gain_Q7 = best_sum_log_gain_Q7;
     *pred_gain_dB_Q7 = -(3 as libc::c_int) as opus_int16 as opus_int32
-        * (silk_lin2log(res_nrg_Q15) - ((15 as libc::c_int) << 7 as libc::c_int))
-            as opus_int16 as opus_int32;
+        * (silk_lin2log(res_nrg_Q15) - ((15 as libc::c_int) << 7 as libc::c_int)) as opus_int16
+            as opus_int32;
 }

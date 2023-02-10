@@ -24,7 +24,7 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     #[c2rust::src_loc = "27:1"]
     pub type int64_t = __int64_t;
-    use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
+    use super::types_h::{__int16_t, __int32_t, __int64_t, __int8_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
 pub mod stdint_uintn_h {
@@ -32,7 +32,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint8_t, __uint32_t};
+    use super::types_h::{__uint32_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
 pub mod opus_types_h {
@@ -48,8 +48,8 @@ pub mod opus_types_h {
     pub type opus_uint32 = uint32_t;
     #[c2rust::src_loc = "57:4"]
     pub type opus_int64 = int64_t;
-    use super::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
+    use super::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:32"]
 pub mod resampler_structs_h {
@@ -79,7 +79,7 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int32, opus_int16};
+    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
 pub mod structs_h {
@@ -239,7 +239,7 @@ pub mod structs_h {
         pub indices_LBRR: [SideInfoIndices; 3],
         pub pulses_LBRR: [[opus_int8; 320]; 3],
     }
-    use super::opus_types_h::{opus_int16, opus_int32, opus_uint8, opus_int8};
+    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
@@ -257,11 +257,7 @@ pub mod arch_h {
 pub mod string_h {
     extern "C" {
         #[c2rust::src_loc = "61:14"]
-        pub fn memset(
-            _: *mut libc::c_void,
-            _: libc::c_int,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
+        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     }
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:32"]
@@ -273,8 +269,8 @@ pub mod limits_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:32"]
 pub mod ecintrin_h {
     #[c2rust::src_loc = "69:11"]
-    pub const EC_CLZ0: libc::c_int = ::core::mem::size_of::<libc::c_uint>()
-        as libc::c_ulong as libc::c_int * CHAR_BIT;
+    pub const EC_CLZ0: libc::c_int =
+        ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/macros.h:32"]
@@ -288,52 +284,40 @@ pub mod macros_h {
             32 as libc::c_int
         };
     }
-    use super::opus_types_h::opus_int32;
     use super::ecintrin_h::EC_CLZ0;
+    use super::opus_types_h::opus_int32;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
 pub mod SigProc_FIX_h {
     #[inline]
     #[c2rust::src_loc = "398:1"]
-    pub unsafe extern "C" fn silk_ROR32(
-        a32: opus_int32,
-        rot: libc::c_int,
-    ) -> opus_int32 {
+    pub unsafe extern "C" fn silk_ROR32(a32: opus_int32, rot: libc::c_int) -> opus_int32 {
         let x: opus_uint32 = a32 as opus_uint32;
         let r: opus_uint32 = rot as opus_uint32;
         let m: opus_uint32 = -rot as opus_uint32;
         if rot == 0 as libc::c_int {
-            return a32
+            return a32;
         } else if rot < 0 as libc::c_int {
             return (x << m | x >> (32 as libc::c_int as libc::c_uint).wrapping_sub(m))
-                as opus_int32
+                as opus_int32;
         } else {
             return (x << (32 as libc::c_int as libc::c_uint).wrapping_sub(r) | x >> r)
-                as opus_int32
+                as opus_int32;
         };
     }
     #[inline]
     #[c2rust::src_loc = "546:1"]
-    pub unsafe extern "C" fn silk_min_int(
-        a: libc::c_int,
-        b: libc::c_int,
-    ) -> libc::c_int {
+    pub unsafe extern "C" fn silk_min_int(a: libc::c_int, b: libc::c_int) -> libc::c_int {
         return if a < b { a } else { b };
     }
     #[inline]
     #[c2rust::src_loc = "564:1"]
-    pub unsafe extern "C" fn silk_max_int(
-        a: libc::c_int,
-        b: libc::c_int,
-    ) -> libc::c_int {
+    pub unsafe extern "C" fn silk_max_int(a: libc::c_int, b: libc::c_int) -> libc::c_int {
         return if a > b { a } else { b };
     }
     #[inline]
     #[c2rust::src_loc = "572:1"]
-    pub unsafe extern "C" fn silk_max_32(
-        a: opus_int32,
-        b: opus_int32,
-    ) -> opus_int32 {
+    pub unsafe extern "C" fn silk_max_32(a: opus_int32, b: opus_int32) -> opus_int32 {
         return if a > b { a } else { b };
     }
     use super::opus_types_h::{opus_int16, opus_int32, opus_uint32};
@@ -384,12 +368,13 @@ pub mod Inlines_h {
         y = (y as libc::c_long
             + (y as libc::c_long
                 * (213 as libc::c_int as opus_int16 as opus_int32
-                    * frac_Q7 as opus_int16 as opus_int32) as opus_int16 as opus_int64
+                    * frac_Q7 as opus_int16 as opus_int32) as opus_int16
+                    as opus_int64
                 >> 16 as libc::c_int)) as opus_int32;
         return y;
     }
-    use super::opus_types_h::{opus_int32, opus_int16, opus_int64};
     use super::macros_h::silk_CLZ32;
+    use super::opus_types_h::{opus_int16, opus_int32, opus_int64};
     use super::SigProc_FIX_h::silk_ROR32;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
@@ -403,8 +388,8 @@ pub mod define_h {
     #[c2rust::src_loc = "187:9"]
     pub const VAD_INTERNAL_SUBFRAMES_LOG2: libc::c_int = 2 as libc::c_int;
     #[c2rust::src_loc = "188:9"]
-    pub const VAD_INTERNAL_SUBFRAMES: libc::c_int = (1 as libc::c_int)
-        << VAD_INTERNAL_SUBFRAMES_LOG2;
+    pub const VAD_INTERNAL_SUBFRAMES: libc::c_int =
+        (1 as libc::c_int) << VAD_INTERNAL_SUBFRAMES_LOG2;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
@@ -418,42 +403,38 @@ pub mod internal {
     #[c2rust::src_loc = "36:9"]
     pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
 }
-pub use self::types_h::{
-    __int8_t, __uint8_t, __int16_t, __int32_t, __uint32_t, __int64_t,
+use self::arch_h::celt_fatal;
+pub use self::define_h::{
+    VAD_INTERNAL_SUBFRAMES, VAD_INTERNAL_SUBFRAMES_LOG2, VAD_NEGATIVE_OFFSET_Q5,
+    VAD_NOISE_LEVEL_SMOOTH_COEF_Q16, VAD_N_BANDS,
 };
-pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
-pub use self::stdint_uintn_h::{uint8_t, uint32_t};
+pub use self::ecintrin_h::EC_CLZ0;
+pub use self::internal::__CHAR_BIT__;
+pub use self::limits_h::CHAR_BIT;
+pub use self::macros_h::silk_CLZ32;
 pub use self::opus_types_h::{
-    opus_int8, opus_uint8, opus_int16, opus_int32, opus_uint32, opus_int64,
+    opus_int16, opus_int32, opus_int64, opus_int8, opus_uint32, opus_uint8,
 };
 pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
+    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
-pub use self::structs_h::{
-    silk_nsq_state, silk_VAD_state, silk_LP_state, silk_NLSF_CB_struct, SideInfoIndices,
-    silk_encoder_state,
-};
-use self::arch_h::celt_fatal;
+pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+pub use self::stdint_uintn_h::{uint32_t, uint8_t};
 use self::string_h::memset;
-pub use self::limits_h::CHAR_BIT;
-pub use self::ecintrin_h::EC_CLZ0;
-pub use self::macros_h::silk_CLZ32;
-pub use self::SigProc_FIX_h::{
-    silk_ROR32, silk_min_int, silk_max_int, silk_max_32, silk_ana_filt_bank_1,
-    silk_lin2log, silk_sigm_Q15,
+pub use self::structs_h::{
+    silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
+    SideInfoIndices,
 };
+pub use self::typedef_h::{silk_int32_MAX, silk_uint8_MAX};
+pub use self::types_h::{__int16_t, __int32_t, __int64_t, __int8_t, __uint32_t, __uint8_t};
 pub use self::Inlines_h::{silk_CLZ_FRAC, silk_SQRT_APPROX};
-pub use self::define_h::{
-    VAD_N_BANDS, VAD_NEGATIVE_OFFSET_Q5, VAD_NOISE_LEVEL_SMOOTH_COEF_Q16,
-    VAD_INTERNAL_SUBFRAMES_LOG2, VAD_INTERNAL_SUBFRAMES,
+pub use self::SigProc_FIX_h::{
+    silk_ROR32, silk_ana_filt_bank_1, silk_lin2log, silk_max_32, silk_max_int, silk_min_int,
+    silk_sigm_Q15,
 };
-pub use self::typedef_h::{silk_uint8_MAX, silk_int32_MAX};
-pub use self::internal::__CHAR_BIT__;
 #[no_mangle]
 #[c2rust::src_loc = "46:1"]
-pub unsafe extern "C" fn silk_VAD_Init(
-    mut psSilk_VAD: *mut silk_VAD_state,
-) -> libc::c_int {
+pub unsafe extern "C" fn silk_VAD_Init(mut psSilk_VAD: *mut silk_VAD_state) -> libc::c_int {
     let mut b: libc::c_int = 0;
     let ret: libc::c_int = 0 as libc::c_int;
     memset(
@@ -463,29 +444,21 @@ pub unsafe extern "C" fn silk_VAD_Init(
     );
     b = 0 as libc::c_int;
     while b < VAD_N_BANDS {
-        (*psSilk_VAD)
-            .NoiseLevelBias[b
-            as usize] = silk_max_32(
-            50 as libc::c_int / (b + 1 as libc::c_int),
-            1 as libc::c_int,
-        );
+        (*psSilk_VAD).NoiseLevelBias[b as usize] =
+            silk_max_32(50 as libc::c_int / (b + 1 as libc::c_int), 1 as libc::c_int);
         b += 1;
     }
     b = 0 as libc::c_int;
     while b < VAD_N_BANDS {
-        (*psSilk_VAD)
-            .NL[b
-            as usize] = 100 as libc::c_int * (*psSilk_VAD).NoiseLevelBias[b as usize];
-        (*psSilk_VAD)
-            .inv_NL[b
-            as usize] = 0x7fffffff as libc::c_int / (*psSilk_VAD).NL[b as usize];
+        (*psSilk_VAD).NL[b as usize] =
+            100 as libc::c_int * (*psSilk_VAD).NoiseLevelBias[b as usize];
+        (*psSilk_VAD).inv_NL[b as usize] = 0x7fffffff as libc::c_int / (*psSilk_VAD).NL[b as usize];
         b += 1;
     }
     (*psSilk_VAD).counter = 15 as libc::c_int;
     b = 0 as libc::c_int;
     while b < VAD_N_BANDS {
-        (*psSilk_VAD)
-            .NrgRatioSmth_Q8[b as usize] = 100 as libc::c_int * 256 as libc::c_int;
+        (*psSilk_VAD).NrgRatioSmth_Q8[b as usize] = 100 as libc::c_int * 256 as libc::c_int;
         b += 1;
     }
     return ret;
@@ -525,9 +498,7 @@ pub unsafe extern "C" fn silk_VAD_GetSA_Q8_c(
     let mut X_offset: [libc::c_int; 4] = [0; 4];
     let ret: libc::c_int = 0 as libc::c_int;
     let mut psSilk_VAD: *mut silk_VAD_state = &mut (*psEncC).sVAD;
-    if !(5 as libc::c_int * 4 as libc::c_int * 16 as libc::c_int
-        >= (*psEncC).frame_length)
-    {
+    if !(5 as libc::c_int * 4 as libc::c_int * 16 as libc::c_int >= (*psEncC).frame_length) {
         celt_fatal(
             b"assertion failed: MAX_FRAME_LENGTH >= psEncC->frame_length\0" as *const u8
                 as *const libc::c_char,
@@ -537,14 +508,12 @@ pub unsafe extern "C" fn silk_VAD_GetSA_Q8_c(
     }
     if !((*psEncC).frame_length <= 512 as libc::c_int) {
         celt_fatal(
-            b"assertion failed: psEncC->frame_length <= 512\0" as *const u8
-                as *const libc::c_char,
+            b"assertion failed: psEncC->frame_length <= 512\0" as *const u8 as *const libc::c_char,
             b"silk/VAD.c\0" as *const u8 as *const libc::c_char,
             105 as libc::c_int,
         );
     }
-    if !((*psEncC).frame_length
-        == 8 as libc::c_int * ((*psEncC).frame_length >> 3 as libc::c_int))
+    if !((*psEncC).frame_length == 8 as libc::c_int * ((*psEncC).frame_length >> 3 as libc::c_int))
     {
         celt_fatal(
             b"assertion failed: psEncC->frame_length == 8 * silk_RSHIFT( psEncC->frame_length, 3 )\0"
@@ -558,15 +527,17 @@ pub unsafe extern "C" fn silk_VAD_GetSA_Q8_c(
     decimated_framelength = (*psEncC).frame_length >> 3 as libc::c_int;
     X_offset[0 as libc::c_int as usize] = 0 as libc::c_int;
     X_offset[1 as libc::c_int as usize] = decimated_framelength + decimated_framelength2;
-    X_offset[2 as libc::c_int
-        as usize] = X_offset[1 as libc::c_int as usize] + decimated_framelength;
-    X_offset[3 as libc::c_int
-        as usize] = X_offset[2 as libc::c_int as usize] + decimated_framelength2;
+    X_offset[2 as libc::c_int as usize] =
+        X_offset[1 as libc::c_int as usize] + decimated_framelength;
+    X_offset[3 as libc::c_int as usize] =
+        X_offset[2 as libc::c_int as usize] + decimated_framelength2;
     let vla = (X_offset[3 as libc::c_int as usize] + decimated_framelength1) as usize;
-    let mut X: Vec::<opus_int16> = ::std::vec::from_elem(0, vla);
+    let mut X: Vec<opus_int16> = ::std::vec::from_elem(0, vla);
     silk_ana_filt_bank_1(
         pIn,
-        &mut *((*psSilk_VAD).AnaState).as_mut_ptr().offset(0 as libc::c_int as isize),
+        &mut *((*psSilk_VAD).AnaState)
+            .as_mut_ptr()
+            .offset(0 as libc::c_int as isize),
         X.as_mut_ptr(),
         &mut *X
             .as_mut_ptr()
@@ -575,7 +546,9 @@ pub unsafe extern "C" fn silk_VAD_GetSA_Q8_c(
     );
     silk_ana_filt_bank_1(
         X.as_mut_ptr(),
-        &mut *((*psSilk_VAD).AnaState1).as_mut_ptr().offset(0 as libc::c_int as isize),
+        &mut *((*psSilk_VAD).AnaState1)
+            .as_mut_ptr()
+            .offset(0 as libc::c_int as isize),
         X.as_mut_ptr(),
         &mut *X
             .as_mut_ptr()
@@ -584,30 +557,28 @@ pub unsafe extern "C" fn silk_VAD_GetSA_Q8_c(
     );
     silk_ana_filt_bank_1(
         X.as_mut_ptr(),
-        &mut *((*psSilk_VAD).AnaState2).as_mut_ptr().offset(0 as libc::c_int as isize),
+        &mut *((*psSilk_VAD).AnaState2)
+            .as_mut_ptr()
+            .offset(0 as libc::c_int as isize),
         X.as_mut_ptr(),
         &mut *X
             .as_mut_ptr()
             .offset(*X_offset.as_mut_ptr().offset(1 as libc::c_int as isize) as isize),
         decimated_framelength2,
     );
-    *X
-        .as_mut_ptr()
-        .offset(
-            (decimated_framelength - 1 as libc::c_int) as isize,
-        ) = (*X.as_mut_ptr().offset((decimated_framelength - 1 as libc::c_int) as isize)
-        as libc::c_int >> 1 as libc::c_int) as opus_int16;
+    *X.as_mut_ptr()
+        .offset((decimated_framelength - 1 as libc::c_int) as isize) =
+        (*X.as_mut_ptr()
+            .offset((decimated_framelength - 1 as libc::c_int) as isize) as libc::c_int
+            >> 1 as libc::c_int) as opus_int16;
     HPstateTmp = *X
         .as_mut_ptr()
         .offset((decimated_framelength - 1 as libc::c_int) as isize);
     i = decimated_framelength - 1 as libc::c_int;
     while i > 0 as libc::c_int {
-        *X
-            .as_mut_ptr()
-            .offset(
-                (i - 1 as libc::c_int) as isize,
-            ) = (*X.as_mut_ptr().offset((i - 1 as libc::c_int) as isize) as libc::c_int
-            >> 1 as libc::c_int) as opus_int16;
+        *X.as_mut_ptr().offset((i - 1 as libc::c_int) as isize) =
+            (*X.as_mut_ptr().offset((i - 1 as libc::c_int) as isize) as libc::c_int
+                >> 1 as libc::c_int) as opus_int16;
         let ref mut fresh0 = *X.as_mut_ptr().offset(i as isize);
         *fresh0 = (*fresh0 as libc::c_int
             - *X.as_mut_ptr().offset((i - 1 as libc::c_int) as isize) as libc::c_int)
@@ -615,8 +586,7 @@ pub unsafe extern "C" fn silk_VAD_GetSA_Q8_c(
         i -= 1;
     }
     let ref mut fresh1 = *X.as_mut_ptr().offset(0 as libc::c_int as isize);
-    *fresh1 = (*fresh1 as libc::c_int - (*psSilk_VAD).HPstate as libc::c_int)
-        as opus_int16;
+    *fresh1 = (*fresh1 as libc::c_int - (*psSilk_VAD).HPstate as libc::c_int) as opus_int16;
     (*psSilk_VAD).HPstate = HPstateTmp;
     b = 0 as libc::c_int;
     while b < VAD_N_BANDS {
@@ -633,16 +603,16 @@ pub unsafe extern "C" fn silk_VAD_GetSA_Q8_c(
                 x_tmp = *X
                     .as_mut_ptr()
                     .offset((X_offset[b as usize] + i + dec_subframe_offset) as isize)
-                    as libc::c_int >> 3 as libc::c_int;
+                    as libc::c_int
+                    >> 3 as libc::c_int;
                 sumSquared = sumSquared
-                    + x_tmp as opus_int16 as opus_int32
-                        * x_tmp as opus_int16 as opus_int32;
+                    + x_tmp as opus_int16 as opus_int32 * x_tmp as opus_int16 as opus_int32;
                 i += 1;
             }
             if s < VAD_INTERNAL_SUBFRAMES - 1 as libc::c_int {
-                Xnrg[b
-                    as usize] = if (Xnrg[b as usize] as opus_uint32)
-                    .wrapping_add(sumSquared as opus_uint32) & 0x80000000 as libc::c_uint
+                Xnrg[b as usize] = if (Xnrg[b as usize] as opus_uint32)
+                    .wrapping_add(sumSquared as opus_uint32)
+                    & 0x80000000 as libc::c_uint
                     != 0
                 {
                     silk_int32_MAX
@@ -650,10 +620,10 @@ pub unsafe extern "C" fn silk_VAD_GetSA_Q8_c(
                     Xnrg[b as usize] + sumSquared
                 };
             } else {
-                Xnrg[b
-                    as usize] = if (Xnrg[b as usize] as opus_uint32)
+                Xnrg[b as usize] = if (Xnrg[b as usize] as opus_uint32)
                     .wrapping_add((sumSquared >> 1 as libc::c_int) as opus_uint32)
-                    & 0x80000000 as libc::c_uint != 0
+                    & 0x80000000 as libc::c_uint
+                    != 0
                 {
                     silk_int32_MAX
                 } else {
@@ -680,51 +650,45 @@ pub unsafe extern "C" fn silk_VAD_GetSA_Q8_c(
             if Xnrg[b as usize] as libc::c_uint & 0xff800000 as libc::c_uint
                 == 0 as libc::c_int as libc::c_uint
             {
-                NrgToNoiseRatio_Q8[b
-                    as usize] = ((Xnrg[b as usize] as opus_uint32) << 8 as libc::c_int)
-                    as opus_int32 / ((*psSilk_VAD).NL[b as usize] + 1 as libc::c_int);
+                NrgToNoiseRatio_Q8[b as usize] =
+                    ((Xnrg[b as usize] as opus_uint32) << 8 as libc::c_int) as opus_int32
+                        / ((*psSilk_VAD).NL[b as usize] + 1 as libc::c_int);
             } else {
-                NrgToNoiseRatio_Q8[b
-                    as usize] = Xnrg[b as usize]
-                    / (((*psSilk_VAD).NL[b as usize] >> 8 as libc::c_int)
-                        + 1 as libc::c_int);
+                NrgToNoiseRatio_Q8[b as usize] = Xnrg[b as usize]
+                    / (((*psSilk_VAD).NL[b as usize] >> 8 as libc::c_int) + 1 as libc::c_int);
             }
             SNR_Q7 = silk_lin2log(NrgToNoiseRatio_Q8[b as usize])
                 - 8 as libc::c_int * 128 as libc::c_int;
             sumSquared = sumSquared
-                + SNR_Q7 as opus_int16 as opus_int32
-                    * SNR_Q7 as opus_int16 as opus_int32;
+                + SNR_Q7 as opus_int16 as opus_int32 * SNR_Q7 as opus_int16 as opus_int32;
             if speech_nrg < (1 as libc::c_int) << 20 as libc::c_int {
-                SNR_Q7 = (((silk_SQRT_APPROX(speech_nrg) as opus_uint32)
-                    << 6 as libc::c_int) as opus_int32 as libc::c_long
-                    * SNR_Q7 as opus_int16 as opus_int64 >> 16 as libc::c_int)
-                    as opus_int32;
+                SNR_Q7 = (((silk_SQRT_APPROX(speech_nrg) as opus_uint32) << 6 as libc::c_int)
+                    as opus_int32 as libc::c_long
+                    * SNR_Q7 as opus_int16 as opus_int64
+                    >> 16 as libc::c_int) as opus_int32;
             }
             input_tilt = (input_tilt as libc::c_long
-                + (tiltWeights[b as usize] as libc::c_long
-                    * SNR_Q7 as opus_int16 as opus_int64 >> 16 as libc::c_int))
-                as opus_int32;
+                + (tiltWeights[b as usize] as libc::c_long * SNR_Q7 as opus_int16 as opus_int64
+                    >> 16 as libc::c_int)) as opus_int32;
         } else {
             NrgToNoiseRatio_Q8[b as usize] = 256 as libc::c_int;
         }
         b += 1;
     }
     sumSquared = sumSquared / 4 as libc::c_int;
-    pSNR_dB_Q7 = (3 as libc::c_int * silk_SQRT_APPROX(sumSquared)) as opus_int16
-        as libc::c_int;
+    pSNR_dB_Q7 = (3 as libc::c_int * silk_SQRT_APPROX(sumSquared)) as opus_int16 as libc::c_int;
     SA_Q15 = silk_sigm_Q15(
         (45000 as libc::c_int as libc::c_long * pSNR_dB_Q7 as opus_int16 as opus_int64
-            >> 16 as libc::c_int) as opus_int32 - VAD_NEGATIVE_OFFSET_Q5,
+            >> 16 as libc::c_int) as opus_int32
+            - VAD_NEGATIVE_OFFSET_Q5,
     );
-    (*psEncC)
-        .input_tilt_Q15 = (((silk_sigm_Q15(input_tilt) - 16384 as libc::c_int)
-        as opus_uint32) << 1 as libc::c_int) as opus_int32;
+    (*psEncC).input_tilt_Q15 = (((silk_sigm_Q15(input_tilt) - 16384 as libc::c_int) as opus_uint32)
+        << 1 as libc::c_int) as opus_int32;
     speech_nrg = 0 as libc::c_int;
     b = 0 as libc::c_int;
     while b < VAD_N_BANDS {
-        speech_nrg
-            += (b + 1 as libc::c_int)
-                * (Xnrg[b as usize] - (*psSilk_VAD).NL[b as usize] >> 4 as libc::c_int);
+        speech_nrg += (b + 1 as libc::c_int)
+            * (Xnrg[b as usize] - (*psSilk_VAD).NL[b as usize] >> 4 as libc::c_int);
         b += 1;
     }
     if (*psEncC).frame_length == 20 as libc::c_int * (*psEncC).fs_kHz {
@@ -736,34 +700,30 @@ pub unsafe extern "C" fn silk_VAD_GetSA_Q8_c(
         speech_nrg = ((speech_nrg as opus_uint32) << 16 as libc::c_int) as opus_int32;
         speech_nrg = silk_SQRT_APPROX(speech_nrg);
         SA_Q15 = ((32768 as libc::c_int + speech_nrg) as libc::c_long
-            * SA_Q15 as opus_int16 as opus_int64 >> 16 as libc::c_int) as opus_int32;
+            * SA_Q15 as opus_int16 as opus_int64
+            >> 16 as libc::c_int) as opus_int32;
     }
-    (*psEncC)
-        .speech_activity_Q8 = silk_min_int(SA_Q15 >> 7 as libc::c_int, silk_uint8_MAX);
+    (*psEncC).speech_activity_Q8 = silk_min_int(SA_Q15 >> 7 as libc::c_int, silk_uint8_MAX);
     smooth_coef_Q16 = (4096 as libc::c_int as libc::c_long
-        * (SA_Q15 as libc::c_long * SA_Q15 as opus_int16 as opus_int64
-            >> 16 as libc::c_int) as opus_int32 as opus_int16 as opus_int64
+        * (SA_Q15 as libc::c_long * SA_Q15 as opus_int16 as opus_int64 >> 16 as libc::c_int)
+            as opus_int32 as opus_int16 as opus_int64
         >> 16 as libc::c_int) as opus_int32;
     if (*psEncC).frame_length == 10 as libc::c_int * (*psEncC).fs_kHz {
         smooth_coef_Q16 >>= 1 as libc::c_int;
     }
     b = 0 as libc::c_int;
     while b < VAD_N_BANDS {
-        (*psSilk_VAD)
-            .NrgRatioSmth_Q8[b
-            as usize] = ((*psSilk_VAD).NrgRatioSmth_Q8[b as usize] as libc::c_long
-            + ((NrgToNoiseRatio_Q8[b as usize]
-                - (*psSilk_VAD).NrgRatioSmth_Q8[b as usize]) as libc::c_long
-                * smooth_coef_Q16 as opus_int16 as opus_int64 >> 16 as libc::c_int))
-            as opus_int32;
+        (*psSilk_VAD).NrgRatioSmth_Q8[b as usize] =
+            ((*psSilk_VAD).NrgRatioSmth_Q8[b as usize] as libc::c_long
+                + ((NrgToNoiseRatio_Q8[b as usize] - (*psSilk_VAD).NrgRatioSmth_Q8[b as usize])
+                    as libc::c_long
+                    * smooth_coef_Q16 as opus_int16 as opus_int64
+                    >> 16 as libc::c_int)) as opus_int32;
         SNR_Q7 = 3 as libc::c_int
             * (silk_lin2log((*psSilk_VAD).NrgRatioSmth_Q8[b as usize])
                 - 8 as libc::c_int * 128 as libc::c_int);
-        (*psEncC)
-            .input_quality_bands_Q15[b
-            as usize] = silk_sigm_Q15(
-            SNR_Q7 - 16 as libc::c_int * 128 as libc::c_int >> 4 as libc::c_int,
-        );
+        (*psEncC).input_quality_bands_Q15[b as usize] =
+            silk_sigm_Q15(SNR_Q7 - 16 as libc::c_int * 128 as libc::c_int >> 4 as libc::c_int);
         b += 1;
     }
     return ret;
@@ -792,7 +752,8 @@ unsafe extern "C" fn silk_VAD_GetNoiseLevels(
         nl = (*psSilk_VAD).NL[k as usize];
         nrg = if (*pX.offset(k as isize) as opus_uint32)
             .wrapping_add((*psSilk_VAD).NoiseLevelBias[k as usize] as opus_uint32)
-            & 0x80000000 as libc::c_uint != 0
+            & 0x80000000 as libc::c_uint
+            != 0
         {
             silk_int32_MAX
         } else {
@@ -804,19 +765,22 @@ unsafe extern "C" fn silk_VAD_GetNoiseLevels(
         } else if nrg < nl {
             coef = VAD_NOISE_LEVEL_SMOOTH_COEF_Q16;
         } else {
-            coef = ((inv_nrg as opus_int64 * nl as libc::c_long >> 16 as libc::c_int)
-                as opus_int32 as libc::c_long
+            coef = ((inv_nrg as opus_int64 * nl as libc::c_long >> 16 as libc::c_int) as opus_int32
+                as libc::c_long
                 * ((1024 as libc::c_int) << 1 as libc::c_int) as opus_int16 as opus_int64
                 >> 16 as libc::c_int) as opus_int32;
         }
         coef = silk_max_int(coef, min_coef);
-        (*psSilk_VAD)
-            .inv_NL[k
-            as usize] = ((*psSilk_VAD).inv_NL[k as usize] as libc::c_long
+        (*psSilk_VAD).inv_NL[k as usize] = ((*psSilk_VAD).inv_NL[k as usize] as libc::c_long
             + ((inv_nrg - (*psSilk_VAD).inv_NL[k as usize]) as libc::c_long
-                * coef as opus_int16 as opus_int64 >> 16 as libc::c_int)) as opus_int32;
+                * coef as opus_int16 as opus_int64
+                >> 16 as libc::c_int)) as opus_int32;
         nl = 0x7fffffff as libc::c_int / (*psSilk_VAD).inv_NL[k as usize];
-        nl = if nl < 0xffffff as libc::c_int { nl } else { 0xffffff as libc::c_int };
+        nl = if nl < 0xffffff as libc::c_int {
+            nl
+        } else {
+            0xffffff as libc::c_int
+        };
         (*psSilk_VAD).NL[k as usize] = nl;
         k += 1;
     }

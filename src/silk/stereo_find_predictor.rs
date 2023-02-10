@@ -60,7 +60,8 @@ pub mod Inlines_h {
         y = (y as libc::c_long
             + (y as libc::c_long
                 * (213 as libc::c_int as opus_int16 as opus_int32
-                    * frac_Q7 as opus_int16 as opus_int32) as opus_int16 as opus_int64
+                    * frac_Q7 as opus_int16 as opus_int32) as opus_int16
+                    as opus_int64
                 >> 16 as libc::c_int)) as opus_int32;
         return y;
     }
@@ -89,25 +90,21 @@ pub mod Inlines_h {
         let mut a32_nrm: opus_int32 = 0;
         let mut b32_nrm: opus_int32 = 0;
         let mut result: opus_int32 = 0;
-        a_headrm = silk_CLZ32(if a32 > 0 as libc::c_int { a32 } else { -a32 })
-            - 1 as libc::c_int;
+        a_headrm = silk_CLZ32(if a32 > 0 as libc::c_int { a32 } else { -a32 }) - 1 as libc::c_int;
         a32_nrm = ((a32 as opus_uint32) << a_headrm) as opus_int32;
-        b_headrm = silk_CLZ32(if b32 > 0 as libc::c_int { b32 } else { -b32 })
-            - 1 as libc::c_int;
+        b_headrm = silk_CLZ32(if b32 > 0 as libc::c_int { b32 } else { -b32 }) - 1 as libc::c_int;
         b32_nrm = ((b32 as opus_uint32) << b_headrm) as opus_int32;
-        b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int)
-            / (b32_nrm >> 16 as libc::c_int);
+        b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int) / (b32_nrm >> 16 as libc::c_int);
         result = (a32_nrm as libc::c_long * b32_inv as opus_int16 as opus_int64
             >> 16 as libc::c_int) as opus_int32;
-        a32_nrm = (a32_nrm as opus_uint32)
-            .wrapping_sub(
-                (((b32_nrm as opus_int64 * result as libc::c_long >> 32 as libc::c_int)
-                    as opus_int32 as opus_uint32) << 3 as libc::c_int) as opus_int32
-                    as opus_uint32,
-            ) as opus_int32;
+        a32_nrm = (a32_nrm as opus_uint32).wrapping_sub(
+            (((b32_nrm as opus_int64 * result as libc::c_long >> 32 as libc::c_int) as opus_int32
+                as opus_uint32)
+                << 3 as libc::c_int) as opus_int32 as opus_uint32,
+        ) as opus_int32;
         result = (result as libc::c_long
-            + (a32_nrm as libc::c_long * b32_inv as opus_int16 as opus_int64
-                >> 16 as libc::c_int)) as opus_int32;
+            + (a32_nrm as libc::c_long * b32_inv as opus_int16 as opus_int64 >> 16 as libc::c_int))
+            as opus_int32;
         lshift = 29 as libc::c_int + a_headrm - b_headrm - Qres;
         if lshift < 0 as libc::c_int {
             return (((if 0x80000000 as libc::c_uint as opus_int32 >> -lshift
@@ -132,15 +129,16 @@ pub mod Inlines_h {
                         result
                     }
                 }
-            }) as opus_uint32) << -lshift) as opus_int32
+            }) as opus_uint32)
+                << -lshift) as opus_int32;
         } else if lshift < 32 as libc::c_int {
-            return result >> lshift
+            return result >> lshift;
         } else {
-            return 0 as libc::c_int
+            return 0 as libc::c_int;
         };
     }
-    use super::opus_types_h::{opus_int32, opus_int16, opus_int64, opus_uint32};
     use super::macros_h::silk_CLZ32;
+    use super::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
     use super::SigProc_FIX_h::silk_ROR32;
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:32"]
@@ -152,8 +150,8 @@ pub mod limits_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:32"]
 pub mod ecintrin_h {
     #[c2rust::src_loc = "69:11"]
-    pub const EC_CLZ0: libc::c_int = ::core::mem::size_of::<libc::c_uint>()
-        as libc::c_ulong as libc::c_int * CHAR_BIT;
+    pub const EC_CLZ0: libc::c_int =
+        ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/macros.h:32"]
@@ -167,39 +165,33 @@ pub mod macros_h {
             32 as libc::c_int
         };
     }
-    use super::opus_types_h::opus_int32;
     use super::ecintrin_h::EC_CLZ0;
+    use super::opus_types_h::opus_int32;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
 pub mod SigProc_FIX_h {
     #[inline]
     #[c2rust::src_loc = "398:1"]
-    pub unsafe extern "C" fn silk_ROR32(
-        a32: opus_int32,
-        rot: libc::c_int,
-    ) -> opus_int32 {
+    pub unsafe extern "C" fn silk_ROR32(a32: opus_int32, rot: libc::c_int) -> opus_int32 {
         let x: opus_uint32 = a32 as opus_uint32;
         let r: opus_uint32 = rot as opus_uint32;
         let m: opus_uint32 = -rot as opus_uint32;
         if rot == 0 as libc::c_int {
-            return a32
+            return a32;
         } else if rot < 0 as libc::c_int {
             return (x << m | x >> (32 as libc::c_int as libc::c_uint).wrapping_sub(m))
-                as opus_int32
+                as opus_int32;
         } else {
             return (x << (32 as libc::c_int as libc::c_uint).wrapping_sub(r) | x >> r)
-                as opus_int32
+                as opus_int32;
         };
     }
     #[inline]
     #[c2rust::src_loc = "564:1"]
-    pub unsafe extern "C" fn silk_max_int(
-        a: libc::c_int,
-        b: libc::c_int,
-    ) -> libc::c_int {
+    pub unsafe extern "C" fn silk_max_int(a: libc::c_int, b: libc::c_int) -> libc::c_int {
         return if a > b { a } else { b };
     }
-    use super::opus_types_h::{opus_int32, opus_int16, opus_uint32};
+    use super::opus_types_h::{opus_int16, opus_int32, opus_uint32};
     extern "C" {
         #[c2rust::src_loc = "193:1"]
         pub fn silk_sum_sqr_shift(
@@ -222,18 +214,18 @@ pub mod internal {
     #[c2rust::src_loc = "36:9"]
     pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
 }
-pub use self::types_h::{__int16_t, __int32_t, __uint32_t, __int64_t};
+pub use self::ecintrin_h::EC_CLZ0;
+pub use self::internal::__CHAR_BIT__;
+pub use self::limits_h::CHAR_BIT;
+pub use self::macros_h::silk_CLZ32;
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
 pub use self::stdint_uintn_h::uint32_t;
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32, opus_int64};
-pub use self::Inlines_h::{silk_SQRT_APPROX, silk_CLZ_FRAC, silk_DIV32_varQ};
-pub use self::limits_h::CHAR_BIT;
-pub use self::ecintrin_h::EC_CLZ0;
-pub use self::macros_h::silk_CLZ32;
+pub use self::types_h::{__int16_t, __int32_t, __int64_t, __uint32_t};
+pub use self::Inlines_h::{silk_CLZ_FRAC, silk_DIV32_varQ, silk_SQRT_APPROX};
 pub use self::SigProc_FIX_h::{
-    silk_ROR32, silk_max_int, silk_sum_sqr_shift, silk_inner_prod_aligned_scale,
+    silk_ROR32, silk_inner_prod_aligned_scale, silk_max_int, silk_sum_sqr_shift,
 };
-pub use self::internal::__CHAR_BIT__;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_stereo_find_predictor(
@@ -261,54 +253,55 @@ pub unsafe extern "C" fn silk_stereo_find_predictor(
     nrgx = silk_max_int(nrgx, 1 as libc::c_int);
     corr = silk_inner_prod_aligned_scale(x, y, scale, length);
     pred_Q13 = silk_DIV32_varQ(corr, nrgx, 13 as libc::c_int);
-    pred_Q13 = if -((1 as libc::c_int) << 14 as libc::c_int)
-        > (1 as libc::c_int) << 14 as libc::c_int
-    {
-        if pred_Q13 > -((1 as libc::c_int) << 14 as libc::c_int) {
-            -((1 as libc::c_int) << 14 as libc::c_int)
-        } else if pred_Q13 < (1 as libc::c_int) << 14 as libc::c_int {
+    pred_Q13 =
+        if -((1 as libc::c_int) << 14 as libc::c_int) > (1 as libc::c_int) << 14 as libc::c_int {
+            if pred_Q13 > -((1 as libc::c_int) << 14 as libc::c_int) {
+                -((1 as libc::c_int) << 14 as libc::c_int)
+            } else if pred_Q13 < (1 as libc::c_int) << 14 as libc::c_int {
+                (1 as libc::c_int) << 14 as libc::c_int
+            } else {
+                pred_Q13
+            }
+        } else if pred_Q13 > (1 as libc::c_int) << 14 as libc::c_int {
             (1 as libc::c_int) << 14 as libc::c_int
+        } else if pred_Q13 < -((1 as libc::c_int) << 14 as libc::c_int) {
+            -((1 as libc::c_int) << 14 as libc::c_int)
         } else {
             pred_Q13
-        }
-    } else if pred_Q13 > (1 as libc::c_int) << 14 as libc::c_int {
-        (1 as libc::c_int) << 14 as libc::c_int
-    } else if pred_Q13 < -((1 as libc::c_int) << 14 as libc::c_int) {
-        -((1 as libc::c_int) << 14 as libc::c_int)
-    } else {
-        pred_Q13
-    };
+        };
     pred2_Q10 = (pred_Q13 as libc::c_long * pred_Q13 as opus_int16 as opus_int64
         >> 16 as libc::c_int) as opus_int32;
     smooth_coef_Q16 = silk_max_int(
         smooth_coef_Q16,
-        if pred2_Q10 > 0 as libc::c_int { pred2_Q10 } else { -pred2_Q10 },
+        if pred2_Q10 > 0 as libc::c_int {
+            pred2_Q10
+        } else {
+            -pred2_Q10
+        },
     );
     scale = scale >> 1 as libc::c_int;
-    *mid_res_amp_Q0
-        .offset(
-            0 as libc::c_int as isize,
-        ) = (*mid_res_amp_Q0.offset(0 as libc::c_int as isize) as libc::c_long
-        + ((((silk_SQRT_APPROX(nrgx) as opus_uint32) << scale) as opus_int32
-            - *mid_res_amp_Q0.offset(0 as libc::c_int as isize)) as libc::c_long
-            * smooth_coef_Q16 as opus_int16 as opus_int64 >> 16 as libc::c_int))
-        as opus_int32;
+    *mid_res_amp_Q0.offset(0 as libc::c_int as isize) =
+        (*mid_res_amp_Q0.offset(0 as libc::c_int as isize) as libc::c_long
+            + ((((silk_SQRT_APPROX(nrgx) as opus_uint32) << scale) as opus_int32
+                - *mid_res_amp_Q0.offset(0 as libc::c_int as isize))
+                as libc::c_long
+                * smooth_coef_Q16 as opus_int16 as opus_int64
+                >> 16 as libc::c_int)) as opus_int32;
     nrgy = nrgy
-        - (((corr as libc::c_long * pred_Q13 as opus_int16 as opus_int64
-            >> 16 as libc::c_int) as opus_int32 as opus_uint32)
+        - (((corr as libc::c_long * pred_Q13 as opus_int16 as opus_int64 >> 16 as libc::c_int)
+            as opus_int32 as opus_uint32)
             << 3 as libc::c_int + 1 as libc::c_int) as opus_int32;
     nrgy = nrgy
-        + (((nrgx as libc::c_long * pred2_Q10 as opus_int16 as opus_int64
-            >> 16 as libc::c_int) as opus_int32 as opus_uint32) << 6 as libc::c_int)
-            as opus_int32;
-    *mid_res_amp_Q0
-        .offset(
-            1 as libc::c_int as isize,
-        ) = (*mid_res_amp_Q0.offset(1 as libc::c_int as isize) as libc::c_long
-        + ((((silk_SQRT_APPROX(nrgy) as opus_uint32) << scale) as opus_int32
-            - *mid_res_amp_Q0.offset(1 as libc::c_int as isize)) as libc::c_long
-            * smooth_coef_Q16 as opus_int16 as opus_int64 >> 16 as libc::c_int))
-        as opus_int32;
+        + (((nrgx as libc::c_long * pred2_Q10 as opus_int16 as opus_int64 >> 16 as libc::c_int)
+            as opus_int32 as opus_uint32)
+            << 6 as libc::c_int) as opus_int32;
+    *mid_res_amp_Q0.offset(1 as libc::c_int as isize) =
+        (*mid_res_amp_Q0.offset(1 as libc::c_int as isize) as libc::c_long
+            + ((((silk_SQRT_APPROX(nrgy) as opus_uint32) << scale) as opus_int32
+                - *mid_res_amp_Q0.offset(1 as libc::c_int as isize))
+                as libc::c_long
+                * smooth_coef_Q16 as opus_int16 as opus_int64
+                >> 16 as libc::c_int)) as opus_int32;
     *ratio_Q14 = silk_DIV32_varQ(
         *mid_res_amp_Q0.offset(1 as libc::c_int as isize),
         if *mid_res_amp_Q0.offset(0 as libc::c_int as isize) > 1 as libc::c_int {

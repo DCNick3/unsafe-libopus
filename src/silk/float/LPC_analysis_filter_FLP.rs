@@ -14,11 +14,7 @@ pub mod arch_h {
 pub mod string_h {
     extern "C" {
         #[c2rust::src_loc = "61:14"]
-        pub fn memset(
-            _: *mut libc::c_void,
-            _: libc::c_int,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
+        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     }
 }
 use self::arch_h::celt_fatal;
@@ -229,8 +225,7 @@ pub unsafe extern "C" fn silk_LPC_analysis_filter_FLP(
     if !(Order <= length) {
         celt_fatal(
             b"assertion failed: Order <= length\0" as *const u8 as *const libc::c_char,
-            b"silk/float/LPC_analysis_filter_FLP.c\0" as *const u8
-                as *const libc::c_char,
+            b"silk/float/LPC_analysis_filter_FLP.c\0" as *const u8 as *const libc::c_char,
             218 as libc::c_int,
         );
     }
@@ -254,8 +249,7 @@ pub unsafe extern "C" fn silk_LPC_analysis_filter_FLP(
             if 0 as libc::c_int == 0 {
                 celt_fatal(
                     b"assertion failed: 0\0" as *const u8 as *const libc::c_char,
-                    b"silk/float/LPC_analysis_filter_FLP.c\0" as *const u8
-                        as *const libc::c_char,
+                    b"silk/float/LPC_analysis_filter_FLP.c\0" as *const u8 as *const libc::c_char,
                     242 as libc::c_int,
                 );
             }

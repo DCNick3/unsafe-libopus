@@ -9,10 +9,8 @@ pub mod SigProc_FLP_h {
             dataSize: libc::c_int,
         );
         #[c2rust::src_loc = "134:1"]
-        pub fn silk_energy_FLP(
-            data: *const libc::c_float,
-            dataSize: libc::c_int,
-        ) -> libc::c_double;
+        pub fn silk_energy_FLP(data: *const libc::c_float, dataSize: libc::c_int)
+            -> libc::c_double;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
@@ -40,9 +38,9 @@ pub mod main_FLP_h {
         );
     }
 }
-use self::SigProc_FLP_h::{silk_scale_vector_FLP, silk_energy_FLP};
 pub use self::define_h::LTP_ORDER;
 use self::main_FLP_h::{silk_corrMatrix_FLP, silk_corrVector_FLP};
+use self::SigProc_FLP_h::{silk_energy_FLP, silk_scale_vector_FLP};
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_find_LTP_FLP(
@@ -63,24 +61,26 @@ pub unsafe extern "C" fn silk_find_LTP_FLP(
     XX_ptr = XX;
     k = 0 as libc::c_int;
     while k < nb_subfr {
-        lag_ptr = r_ptr
-            .offset(
-                -((*lag.offset(k as isize) + LTP_ORDER / 2 as libc::c_int) as isize),
-            );
+        lag_ptr =
+            r_ptr.offset(-((*lag.offset(k as isize) + LTP_ORDER / 2 as libc::c_int) as isize));
         silk_corrMatrix_FLP(lag_ptr, subfr_length, LTP_ORDER, XX_ptr);
         silk_corrVector_FLP(lag_ptr, r_ptr, subfr_length, LTP_ORDER, xX_ptr);
         xx = silk_energy_FLP(r_ptr, subfr_length + LTP_ORDER) as libc::c_float;
         temp = 1.0f32
             / (if xx
-                > 0.03f32 * 0.5f32
+                > 0.03f32
+                    * 0.5f32
                     * (*XX_ptr.offset(0 as libc::c_int as isize)
-                        + *XX_ptr.offset(24 as libc::c_int as isize)) + 1.0f32
+                        + *XX_ptr.offset(24 as libc::c_int as isize))
+                    + 1.0f32
             {
                 xx
             } else {
-                0.03f32 * 0.5f32
+                0.03f32
+                    * 0.5f32
                     * (*XX_ptr.offset(0 as libc::c_int as isize)
-                        + *XX_ptr.offset(24 as libc::c_int as isize)) + 1.0f32
+                        + *XX_ptr.offset(24 as libc::c_int as isize))
+                    + 1.0f32
             });
         silk_scale_vector_FLP(XX_ptr, temp, LTP_ORDER * LTP_ORDER);
         silk_scale_vector_FLP(xX_ptr, temp, LTP_ORDER);

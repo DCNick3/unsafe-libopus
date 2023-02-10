@@ -24,7 +24,7 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     #[c2rust::src_loc = "27:1"]
     pub type int64_t = __int64_t;
-    use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
+    use super::types_h::{__int16_t, __int32_t, __int64_t, __int8_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
 pub mod stdint_uintn_h {
@@ -32,7 +32,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint8_t, __uint32_t};
+    use super::types_h::{__uint32_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
 pub mod opus_types_h {
@@ -48,8 +48,8 @@ pub mod opus_types_h {
     pub type opus_uint32 = uint32_t;
     #[c2rust::src_loc = "57:4"]
     pub type opus_int64 = int64_t;
-    use super::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
+    use super::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:32"]
 pub mod resampler_structs_h {
@@ -79,7 +79,7 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int32, opus_int16};
+    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
 pub mod structs_h {
@@ -192,7 +192,7 @@ pub mod structs_h {
         pub LTPCoef_Q14: [opus_int16; 20],
         pub LTP_scale_Q14: libc::c_int,
     }
-    use super::opus_types_h::{opus_int16, opus_uint8, opus_int8, opus_int32};
+    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
@@ -210,11 +210,7 @@ pub mod arch_h {
 pub mod string_h {
     extern "C" {
         #[c2rust::src_loc = "61:14"]
-        pub fn memset(
-            _: *mut libc::c_void,
-            _: libc::c_int,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
+        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
         #[c2rust::src_loc = "43:14"]
         pub fn memcpy(
             _: *mut libc::c_void,
@@ -267,8 +263,8 @@ pub mod limits_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:32"]
 pub mod ecintrin_h {
     #[c2rust::src_loc = "69:11"]
-    pub const EC_CLZ0: libc::c_int = ::core::mem::size_of::<libc::c_uint>()
-        as libc::c_ulong as libc::c_int * CHAR_BIT;
+    pub const EC_CLZ0: libc::c_int =
+        ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/macros.h:32"]
@@ -282,60 +278,45 @@ pub mod macros_h {
             32 as libc::c_int
         };
     }
-    use super::opus_types_h::opus_int32;
     use super::ecintrin_h::EC_CLZ0;
+    use super::opus_types_h::opus_int32;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
 pub mod SigProc_FIX_h {
     #[inline]
     #[c2rust::src_loc = "398:1"]
-    pub unsafe extern "C" fn silk_ROR32(
-        a32: opus_int32,
-        rot: libc::c_int,
-    ) -> opus_int32 {
+    pub unsafe extern "C" fn silk_ROR32(a32: opus_int32, rot: libc::c_int) -> opus_int32 {
         let x: opus_uint32 = a32 as opus_uint32;
         let r: opus_uint32 = rot as opus_uint32;
         let m: opus_uint32 = -rot as opus_uint32;
         if rot == 0 as libc::c_int {
-            return a32
+            return a32;
         } else if rot < 0 as libc::c_int {
             return (x << m | x >> (32 as libc::c_int as libc::c_uint).wrapping_sub(m))
-                as opus_int32
+                as opus_int32;
         } else {
             return (x << (32 as libc::c_int as libc::c_uint).wrapping_sub(r) | x >> r)
-                as opus_int32
+                as opus_int32;
         };
     }
     #[inline]
     #[c2rust::src_loc = "546:1"]
-    pub unsafe extern "C" fn silk_min_int(
-        a: libc::c_int,
-        b: libc::c_int,
-    ) -> libc::c_int {
+    pub unsafe extern "C" fn silk_min_int(a: libc::c_int, b: libc::c_int) -> libc::c_int {
         return if a < b { a } else { b };
     }
     #[inline]
     #[c2rust::src_loc = "554:1"]
-    pub unsafe extern "C" fn silk_min_32(
-        a: opus_int32,
-        b: opus_int32,
-    ) -> opus_int32 {
+    pub unsafe extern "C" fn silk_min_32(a: opus_int32, b: opus_int32) -> opus_int32 {
         return if a < b { a } else { b };
     }
     #[inline]
     #[c2rust::src_loc = "564:1"]
-    pub unsafe extern "C" fn silk_max_int(
-        a: libc::c_int,
-        b: libc::c_int,
-    ) -> libc::c_int {
+    pub unsafe extern "C" fn silk_max_int(a: libc::c_int, b: libc::c_int) -> libc::c_int {
         return if a > b { a } else { b };
     }
     #[inline]
     #[c2rust::src_loc = "568:1"]
-    pub unsafe extern "C" fn silk_max_16(
-        a: opus_int16,
-        b: opus_int16,
-    ) -> opus_int16 {
+    pub unsafe extern "C" fn silk_max_16(a: opus_int16, b: opus_int16) -> opus_int16 {
         return (if a as libc::c_int > b as libc::c_int {
             a as libc::c_int
         } else {
@@ -344,10 +325,7 @@ pub mod SigProc_FIX_h {
     }
     #[inline]
     #[c2rust::src_loc = "572:1"]
-    pub unsafe extern "C" fn silk_max_32(
-        a: opus_int32,
-        b: opus_int32,
-    ) -> opus_int32 {
+    pub unsafe extern "C" fn silk_max_32(a: opus_int32, b: opus_int32) -> opus_int32 {
         return if a > b { a } else { b };
     }
     use super::opus_types_h::{opus_int16, opus_int32, opus_uint32};
@@ -362,11 +340,7 @@ pub mod SigProc_FIX_h {
             arch: libc::c_int,
         );
         #[c2rust::src_loc = "133:1"]
-        pub fn silk_bwexpander(
-            ar: *mut opus_int16,
-            d: libc::c_int,
-            chirp_Q16: opus_int32,
-        );
+        pub fn silk_bwexpander(ar: *mut opus_int16, d: libc::c_int, chirp_Q16: opus_int32);
         #[c2rust::src_loc = "148:1"]
         pub fn silk_LPC_inverse_pred_gain_c(
             A_Q12: *const opus_int16,
@@ -413,32 +387,28 @@ pub mod Inlines_h {
         y = (y as libc::c_long
             + (y as libc::c_long
                 * (213 as libc::c_int as opus_int16 as opus_int32
-                    * frac_Q7 as opus_int16 as opus_int32) as opus_int16 as opus_int64
+                    * frac_Q7 as opus_int16 as opus_int32) as opus_int16
+                    as opus_int64
                 >> 16 as libc::c_int)) as opus_int32;
         return y;
     }
     #[inline]
     #[c2rust::src_loc = "143:1"]
-    pub unsafe extern "C" fn silk_INVERSE32_varQ(
-        b32: opus_int32,
-        Qres: libc::c_int,
-    ) -> opus_int32 {
+    pub unsafe extern "C" fn silk_INVERSE32_varQ(b32: opus_int32, Qres: libc::c_int) -> opus_int32 {
         let mut b_headrm: libc::c_int = 0;
         let mut lshift: libc::c_int = 0;
         let mut b32_inv: opus_int32 = 0;
         let mut b32_nrm: opus_int32 = 0;
         let mut err_Q32: opus_int32 = 0;
         let mut result: opus_int32 = 0;
-        b_headrm = silk_CLZ32(if b32 > 0 as libc::c_int { b32 } else { -b32 })
-            - 1 as libc::c_int;
+        b_headrm = silk_CLZ32(if b32 > 0 as libc::c_int { b32 } else { -b32 }) - 1 as libc::c_int;
         b32_nrm = ((b32 as opus_uint32) << b_headrm) as opus_int32;
-        b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int)
-            / (b32_nrm >> 16 as libc::c_int);
+        b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int) / (b32_nrm >> 16 as libc::c_int);
         result = ((b32_inv as opus_uint32) << 16 as libc::c_int) as opus_int32;
         err_Q32 = (((((1 as libc::c_int) << 29 as libc::c_int)
-            - (b32_nrm as libc::c_long * b32_inv as opus_int16 as opus_int64
-                >> 16 as libc::c_int) as opus_int32) as opus_uint32) << 3 as libc::c_int)
-            as opus_int32;
+            - (b32_nrm as libc::c_long * b32_inv as opus_int16 as opus_int64 >> 16 as libc::c_int)
+                as opus_int32) as opus_uint32)
+            << 3 as libc::c_int) as opus_int32;
         result = (result as libc::c_long
             + (err_Q32 as opus_int64 * b32_inv as libc::c_long >> 16 as libc::c_int))
             as opus_int32;
@@ -466,15 +436,16 @@ pub mod Inlines_h {
                         result
                     }
                 }
-            }) as opus_uint32) << -lshift) as opus_int32
+            }) as opus_uint32)
+                << -lshift) as opus_int32;
         } else if lshift < 32 as libc::c_int {
-            return result >> lshift
+            return result >> lshift;
         } else {
-            return 0 as libc::c_int
+            return 0 as libc::c_int;
         };
     }
-    use super::opus_types_h::{opus_int32, opus_int16, opus_int64, opus_uint32};
     use super::macros_h::silk_CLZ32;
+    use super::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
     use super::SigProc_FIX_h::silk_ROR32;
 }
 #[c2rust::header_src = "internal:0"]
@@ -482,42 +453,37 @@ pub mod internal {
     #[c2rust::src_loc = "36:9"]
     pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
 }
-pub use self::types_h::{
-    __int8_t, __uint8_t, __int16_t, __int32_t, __uint32_t, __int64_t,
+use self::arch_h::celt_fatal;
+pub use self::define_h::{
+    LTP_ORDER, MAX_LPC_ORDER, MAX_NB_SUBFR, TYPE_NO_VOICE_ACTIVITY, TYPE_VOICED,
 };
-pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
-pub use self::stdint_uintn_h::{uint8_t, uint32_t};
+pub use self::ecintrin_h::EC_CLZ0;
+pub use self::internal::__CHAR_BIT__;
+pub use self::limits_h::CHAR_BIT;
+pub use self::macros_h::silk_CLZ32;
 pub use self::opus_types_h::{
-    opus_int8, opus_uint8, opus_int16, opus_int32, opus_uint32, opus_int64,
+    opus_int16, opus_int32, opus_int64, opus_int8, opus_uint32, opus_uint8,
 };
 pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
+    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
+pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+pub use self::stdint_uintn_h::{uint32_t, uint8_t};
+use self::string_h::{memcpy, memset};
 pub use self::structs_h::{
-    silk_NLSF_CB_struct, SideInfoIndices, silk_PLC_struct, silk_CNG_struct,
-    silk_decoder_state, silk_decoder_control,
+    silk_CNG_struct, silk_NLSF_CB_struct, silk_PLC_struct, silk_decoder_control,
+    silk_decoder_state, SideInfoIndices,
 };
-use self::arch_h::celt_fatal;
-use self::string_h::{memset, memcpy};
+pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN, silk_int32_MAX, silk_int32_MIN};
+pub use self::types_h::{__int16_t, __int32_t, __int64_t, __int8_t, __uint32_t, __uint8_t};
+pub use self::Inlines_h::{silk_CLZ_FRAC, silk_INVERSE32_varQ, silk_SQRT_APPROX};
 pub use self::PLC_h::{
-    RAND_BUF_MASK, RAND_BUF_SIZE, V_PITCH_GAIN_START_MIN_Q14, V_PITCH_GAIN_START_MAX_Q14,
+    RAND_BUF_MASK, RAND_BUF_SIZE, V_PITCH_GAIN_START_MAX_Q14, V_PITCH_GAIN_START_MIN_Q14,
 };
-pub use self::define_h::{
-    TYPE_NO_VOICE_ACTIVITY, MAX_LPC_ORDER, MAX_NB_SUBFR, TYPE_VOICED, LTP_ORDER,
-};
-pub use self::typedef_h::{
-    silk_int32_MIN, silk_int32_MAX, silk_int16_MAX, silk_int16_MIN,
-};
-pub use self::limits_h::CHAR_BIT;
-pub use self::ecintrin_h::EC_CLZ0;
-pub use self::macros_h::silk_CLZ32;
 pub use self::SigProc_FIX_h::{
-    silk_ROR32, silk_min_int, silk_min_32, silk_max_int, silk_max_16, silk_max_32,
-    silk_LPC_analysis_filter, silk_bwexpander, silk_LPC_inverse_pred_gain_c,
-    silk_sum_sqr_shift,
+    silk_LPC_analysis_filter, silk_LPC_inverse_pred_gain_c, silk_ROR32, silk_bwexpander,
+    silk_max_16, silk_max_32, silk_max_int, silk_min_32, silk_min_int, silk_sum_sqr_shift,
 };
-pub use self::Inlines_h::{silk_CLZ_FRAC, silk_SQRT_APPROX, silk_INVERSE32_varQ};
-pub use self::internal::__CHAR_BIT__;
 #[c2rust::src_loc = "36:9"]
 pub const NB_ATT: libc::c_int = 2 as libc::c_int;
 #[c2rust::src_loc = "37:25"]
@@ -538,21 +504,15 @@ static mut PLC_RAND_ATTENUATE_UV_Q15: [opus_int16; 2] = [
 #[no_mangle]
 #[c2rust::src_loc = "54:1"]
 pub unsafe extern "C" fn silk_PLC_Reset(mut psDec: *mut silk_decoder_state) {
-    (*psDec)
-        .sPLC
-        .pitchL_Q8 = (((*psDec).frame_length as opus_uint32)
+    (*psDec).sPLC.pitchL_Q8 = (((*psDec).frame_length as opus_uint32)
         << 8 as libc::c_int - 1 as libc::c_int) as opus_int32;
-    (*psDec)
-        .sPLC
-        .prevGain_Q16[0 as libc::c_int
-        as usize] = ((1 as libc::c_int as libc::c_long
-        * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int)) as libc::c_double
+    (*psDec).sPLC.prevGain_Q16[0 as libc::c_int as usize] = ((1 as libc::c_int as libc::c_long
+        * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int))
+        as libc::c_double
         + 0.5f64) as opus_int32;
-    (*psDec)
-        .sPLC
-        .prevGain_Q16[1 as libc::c_int
-        as usize] = ((1 as libc::c_int as libc::c_long
-        * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int)) as libc::c_double
+    (*psDec).sPLC.prevGain_Q16[1 as libc::c_int as usize] = ((1 as libc::c_int as libc::c_long
+        * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int))
+        as libc::c_double
         + 0.5f64) as opus_int32;
     (*psDec).sPLC.subfr_length = 20 as libc::c_int;
     (*psDec).sPLC.nb_subfr = 2 as libc::c_int;
@@ -602,32 +562,27 @@ unsafe extern "C" fn silk_PLC_update(
             temp_LTP_Gain_Q14 = 0 as libc::c_int;
             i = 0 as libc::c_int;
             while i < LTP_ORDER {
-                temp_LTP_Gain_Q14
-                    += (*psDecCtrl)
-                        .LTPCoef_Q14[(((*psDec).nb_subfr - 1 as libc::c_int - j)
-                        * LTP_ORDER + i) as usize] as libc::c_int;
+                temp_LTP_Gain_Q14 += (*psDecCtrl).LTPCoef_Q14
+                    [(((*psDec).nb_subfr - 1 as libc::c_int - j) * LTP_ORDER + i) as usize]
+                    as libc::c_int;
                 i += 1;
             }
             if temp_LTP_Gain_Q14 > LTP_Gain_Q14 {
                 LTP_Gain_Q14 = temp_LTP_Gain_Q14;
                 memcpy(
                     ((*psPLC).LTPCoef_Q14).as_mut_ptr() as *mut libc::c_void,
-                    &mut *((*psDecCtrl).LTPCoef_Q14)
-                        .as_mut_ptr()
-                        .offset(
-                            (((*psDec).nb_subfr - 1 as libc::c_int - j) as opus_int16
-                                as opus_int32
-                                * 5 as libc::c_int as opus_int16 as opus_int32) as isize,
-                        ) as *mut opus_int16 as *const libc::c_void,
+                    &mut *((*psDecCtrl).LTPCoef_Q14).as_mut_ptr().offset(
+                        (((*psDec).nb_subfr - 1 as libc::c_int - j) as opus_int16 as opus_int32
+                            * 5 as libc::c_int as opus_int16 as opus_int32)
+                            as isize,
+                    ) as *mut opus_int16 as *const libc::c_void,
                     (5 as libc::c_int as libc::c_ulong)
-                        .wrapping_mul(
-                            ::core::mem::size_of::<opus_int16>() as libc::c_ulong,
-                        ),
+                        .wrapping_mul(::core::mem::size_of::<opus_int16>() as libc::c_ulong),
                 );
-                (*psPLC)
-                    .pitchL_Q8 = (((*psDecCtrl)
-                    .pitchL[((*psDec).nb_subfr - 1 as libc::c_int - j) as usize]
-                    as opus_uint32) << 8 as libc::c_int) as opus_int32;
+                (*psPLC).pitchL_Q8 = (((*psDecCtrl).pitchL
+                    [((*psDec).nb_subfr - 1 as libc::c_int - j) as usize]
+                    as opus_uint32)
+                    << 8 as libc::c_int) as opus_int32;
             }
             j += 1;
         }
@@ -637,14 +592,11 @@ unsafe extern "C" fn silk_PLC_update(
             (5 as libc::c_int as libc::c_ulong)
                 .wrapping_mul(::core::mem::size_of::<opus_int16>() as libc::c_ulong),
         );
-        (*psPLC)
-            .LTPCoef_Q14[(LTP_ORDER / 2 as libc::c_int)
-            as usize] = LTP_Gain_Q14 as opus_int16;
+        (*psPLC).LTPCoef_Q14[(LTP_ORDER / 2 as libc::c_int) as usize] = LTP_Gain_Q14 as opus_int16;
         if LTP_Gain_Q14 < V_PITCH_GAIN_START_MIN_Q14 {
             let mut scale_Q10: libc::c_int = 0;
             let mut tmp: opus_int32 = 0;
-            tmp = ((11469 as libc::c_int as opus_uint32) << 10 as libc::c_int)
-                as opus_int32;
+            tmp = ((11469 as libc::c_int as opus_uint32) << 10 as libc::c_int) as opus_int32;
             scale_Q10 = tmp
                 / (if LTP_Gain_Q14 > 1 as libc::c_int {
                     LTP_Gain_Q14
@@ -653,18 +605,16 @@ unsafe extern "C" fn silk_PLC_update(
                 });
             i = 0 as libc::c_int;
             while i < LTP_ORDER {
-                (*psPLC)
-                    .LTPCoef_Q14[i
-                    as usize] = ((*psPLC).LTPCoef_Q14[i as usize] as opus_int32
-                    * scale_Q10 as opus_int16 as opus_int32 >> 10 as libc::c_int)
+                (*psPLC).LTPCoef_Q14[i as usize] = ((*psPLC).LTPCoef_Q14[i as usize] as opus_int32
+                    * scale_Q10 as opus_int16 as opus_int32
+                    >> 10 as libc::c_int)
                     as opus_int16;
                 i += 1;
             }
         } else if LTP_Gain_Q14 > V_PITCH_GAIN_START_MAX_Q14 {
             let mut scale_Q14: libc::c_int = 0;
             let mut tmp_0: opus_int32 = 0;
-            tmp_0 = ((15565 as libc::c_int as opus_uint32) << 14 as libc::c_int)
-                as opus_int32;
+            tmp_0 = ((15565 as libc::c_int as opus_uint32) << 14 as libc::c_int) as opus_int32;
             scale_Q14 = tmp_0
                 / (if LTP_Gain_Q14 > 1 as libc::c_int {
                     LTP_Gain_Q14
@@ -673,18 +623,17 @@ unsafe extern "C" fn silk_PLC_update(
                 });
             i = 0 as libc::c_int;
             while i < LTP_ORDER {
-                (*psPLC)
-                    .LTPCoef_Q14[i
-                    as usize] = ((*psPLC).LTPCoef_Q14[i as usize] as opus_int32
-                    * scale_Q14 as opus_int16 as opus_int32 >> 14 as libc::c_int)
+                (*psPLC).LTPCoef_Q14[i as usize] = ((*psPLC).LTPCoef_Q14[i as usize] as opus_int32
+                    * scale_Q14 as opus_int16 as opus_int32
+                    >> 14 as libc::c_int)
                     as opus_int16;
                 i += 1;
             }
         }
     } else {
-        (*psPLC)
-            .pitchL_Q8 = ((((*psDec).fs_kHz as opus_int16 as opus_int32
-            * 18 as libc::c_int as opus_int16 as opus_int32) as opus_uint32)
+        (*psPLC).pitchL_Q8 = ((((*psDec).fs_kHz as opus_int16 as opus_int32
+            * 18 as libc::c_int as opus_int16 as opus_int32)
+            as opus_uint32)
             << 8 as libc::c_int) as opus_int32;
         memset(
             ((*psPLC).LTPCoef_Q14).as_mut_ptr() as *mut libc::c_void,
@@ -695,8 +644,7 @@ unsafe extern "C" fn silk_PLC_update(
     }
     memcpy(
         ((*psPLC).prevLPC_Q12).as_mut_ptr() as *mut libc::c_void,
-        ((*psDecCtrl).PredCoef_Q12[1 as libc::c_int as usize]).as_mut_ptr()
-            as *const libc::c_void,
+        ((*psDecCtrl).PredCoef_Q12[1 as libc::c_int as usize]).as_mut_ptr() as *const libc::c_void,
         ((*psDec).LPC_order as libc::c_ulong)
             .wrapping_mul(::core::mem::size_of::<opus_int16>() as libc::c_ulong),
     );
@@ -729,33 +677,37 @@ unsafe extern "C" fn silk_PLC_energy(
     let mut k: libc::c_int = 0;
     let mut exc_buf_ptr: *mut opus_int16 = 0 as *mut opus_int16;
     let vla = (2 as libc::c_int * subfr_length) as usize;
-    let mut exc_buf: Vec::<opus_int16> = ::std::vec::from_elem(0, vla);
+    let mut exc_buf: Vec<opus_int16> = ::std::vec::from_elem(0, vla);
     exc_buf_ptr = exc_buf.as_mut_ptr();
     k = 0 as libc::c_int;
     while k < 2 as libc::c_int {
         i = 0 as libc::c_int;
         while i < subfr_length {
-            *exc_buf_ptr
-                .offset(
-                    i as isize,
-                ) = (if (*exc_Q14
+            *exc_buf_ptr.offset(i as isize) = (if (*exc_Q14
                 .offset((i + (k + nb_subfr - 2 as libc::c_int) * subfr_length) as isize)
-                as opus_int64 * *prevGain_Q10.offset(k as isize) as libc::c_long
-                >> 16 as libc::c_int) as opus_int32 >> 8 as libc::c_int > silk_int16_MAX
+                as opus_int64
+                * *prevGain_Q10.offset(k as isize) as libc::c_long
+                >> 16 as libc::c_int)
+                as opus_int32
+                >> 8 as libc::c_int
+                > silk_int16_MAX
             {
                 silk_int16_MAX
             } else if ((*exc_Q14
                 .offset((i + (k + nb_subfr - 2 as libc::c_int) * subfr_length) as isize)
-                as opus_int64 * *prevGain_Q10.offset(k as isize) as libc::c_long
-                >> 16 as libc::c_int) as opus_int32 >> 8 as libc::c_int) < silk_int16_MIN
+                as opus_int64
+                * *prevGain_Q10.offset(k as isize) as libc::c_long
+                >> 16 as libc::c_int) as opus_int32
+                >> 8 as libc::c_int)
+                < silk_int16_MIN
             {
                 silk_int16_MIN
             } else {
-                (*exc_Q14
-                    .offset(
-                        (i + (k + nb_subfr - 2 as libc::c_int) * subfr_length) as isize,
-                    ) as opus_int64 * *prevGain_Q10.offset(k as isize) as libc::c_long
-                    >> 16 as libc::c_int) as opus_int32 >> 8 as libc::c_int
+                (*exc_Q14.offset((i + (k + nb_subfr - 2 as libc::c_int) * subfr_length) as isize)
+                    as opus_int64
+                    * *prevGain_Q10.offset(k as isize) as libc::c_long
+                    >> 16 as libc::c_int) as opus_int32
+                    >> 8 as libc::c_int
             }) as opus_int16;
             i += 1;
         }
@@ -803,13 +755,13 @@ unsafe extern "C" fn silk_PLC_conceal(
     let mut psPLC: *mut silk_PLC_struct = &mut (*psDec).sPLC;
     let mut prevGain_Q10: [opus_int32; 2] = [0; 2];
     let vla = ((*psDec).ltp_mem_length + (*psDec).frame_length) as usize;
-    let mut sLTP_Q14: Vec::<opus_int32> = ::std::vec::from_elem(0, vla);
+    let mut sLTP_Q14: Vec<opus_int32> = ::std::vec::from_elem(0, vla);
     let vla_0 = (*psDec).ltp_mem_length as usize;
-    let mut sLTP: Vec::<opus_int16> = ::std::vec::from_elem(0, vla_0);
-    prevGain_Q10[0 as libc::c_int
-        as usize] = (*psPLC).prevGain_Q16[0 as libc::c_int as usize] >> 6 as libc::c_int;
-    prevGain_Q10[1 as libc::c_int
-        as usize] = (*psPLC).prevGain_Q16[1 as libc::c_int as usize] >> 6 as libc::c_int;
+    let mut sLTP: Vec<opus_int16> = ::std::vec::from_elem(0, vla_0);
+    prevGain_Q10[0 as libc::c_int as usize] =
+        (*psPLC).prevGain_Q16[0 as libc::c_int as usize] >> 6 as libc::c_int;
+    prevGain_Q10[1 as libc::c_int as usize] =
+        (*psPLC).prevGain_Q16[1 as libc::c_int as usize] >> 6 as libc::c_int;
     if (*psDec).first_frame_after_reset != 0 {
         memset(
             ((*psPLC).prevLPC_Q12).as_mut_ptr() as *mut libc::c_void,
@@ -828,55 +780,35 @@ unsafe extern "C" fn silk_PLC_conceal(
         (*psDec).nb_subfr,
     );
     if energy1 >> shift2 < energy2 >> shift1 {
-        rand_ptr = &mut *((*psDec).exc_Q14)
-            .as_mut_ptr()
-            .offset(
-                (silk_max_int
-                    as unsafe extern "C" fn(
-                        libc::c_int,
-                        libc::c_int,
-                    ) -> libc::c_int)(
-                    0 as libc::c_int,
-                    ((*psPLC).nb_subfr - 1 as libc::c_int) * (*psPLC).subfr_length
-                        - RAND_BUF_SIZE,
-                ) as isize,
-            ) as *mut opus_int32;
+        rand_ptr = &mut *((*psDec).exc_Q14).as_mut_ptr().offset((silk_max_int
+            as unsafe extern "C" fn(libc::c_int, libc::c_int) -> libc::c_int)(
+            0 as libc::c_int,
+            ((*psPLC).nb_subfr - 1 as libc::c_int) * (*psPLC).subfr_length - RAND_BUF_SIZE,
+        ) as isize) as *mut opus_int32;
     } else {
-        rand_ptr = &mut *((*psDec).exc_Q14)
-            .as_mut_ptr()
-            .offset(
-                (silk_max_int
-                    as unsafe extern "C" fn(
-                        libc::c_int,
-                        libc::c_int,
-                    ) -> libc::c_int)(
-                    0 as libc::c_int,
-                    (*psPLC).nb_subfr * (*psPLC).subfr_length - RAND_BUF_SIZE,
-                ) as isize,
-            ) as *mut opus_int32;
+        rand_ptr = &mut *((*psDec).exc_Q14).as_mut_ptr().offset((silk_max_int
+            as unsafe extern "C" fn(libc::c_int, libc::c_int) -> libc::c_int)(
+            0 as libc::c_int,
+            (*psPLC).nb_subfr * (*psPLC).subfr_length - RAND_BUF_SIZE,
+        ) as isize) as *mut opus_int32;
     }
     B_Q14 = ((*psPLC).LTPCoef_Q14).as_mut_ptr();
     rand_scale_Q14 = (*psPLC).randScale_Q14;
-    harm_Gain_Q15 = HARM_ATT_Q15[silk_min_int(
-        NB_ATT - 1 as libc::c_int,
-        (*psDec).lossCnt,
-    ) as usize] as opus_int32;
+    harm_Gain_Q15 = HARM_ATT_Q15[silk_min_int(NB_ATT - 1 as libc::c_int, (*psDec).lossCnt) as usize]
+        as opus_int32;
     if (*psDec).prevSignalType == TYPE_VOICED {
-        rand_Gain_Q15 = PLC_RAND_ATTENUATE_V_Q15[silk_min_int(
-            NB_ATT - 1 as libc::c_int,
-            (*psDec).lossCnt,
-        ) as usize] as opus_int32;
+        rand_Gain_Q15 = PLC_RAND_ATTENUATE_V_Q15
+            [silk_min_int(NB_ATT - 1 as libc::c_int, (*psDec).lossCnt) as usize]
+            as opus_int32;
     } else {
-        rand_Gain_Q15 = PLC_RAND_ATTENUATE_UV_Q15[silk_min_int(
-            NB_ATT - 1 as libc::c_int,
-            (*psDec).lossCnt,
-        ) as usize] as opus_int32;
+        rand_Gain_Q15 = PLC_RAND_ATTENUATE_UV_Q15
+            [silk_min_int(NB_ATT - 1 as libc::c_int, (*psDec).lossCnt) as usize]
+            as opus_int32;
     }
     silk_bwexpander(
         ((*psPLC).prevLPC_Q12).as_mut_ptr(),
         (*psDec).LPC_order,
-        (0.99f64
-            * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int) as libc::c_double
+        (0.99f64 * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int) as libc::c_double
             + 0.5f64) as opus_int32,
     );
     memcpy(
@@ -891,16 +823,14 @@ unsafe extern "C" fn silk_PLC_conceal(
             i = 0 as libc::c_int;
             while i < LTP_ORDER {
                 rand_scale_Q14 = (rand_scale_Q14 as libc::c_int
-                    - *B_Q14.offset(i as isize) as libc::c_int) as opus_int16;
+                    - *B_Q14.offset(i as isize) as libc::c_int)
+                    as opus_int16;
                 i += 1;
             }
-            rand_scale_Q14 = silk_max_16(
-                3277 as libc::c_int as opus_int16,
-                rand_scale_Q14,
-            );
+            rand_scale_Q14 = silk_max_16(3277 as libc::c_int as opus_int16, rand_scale_Q14);
             rand_scale_Q14 = (rand_scale_Q14 as opus_int32
-                * (*psPLC).prevLTP_scale_Q14 as opus_int32 >> 14 as libc::c_int)
-                as opus_int16;
+                * (*psPLC).prevLTP_scale_Q14 as opus_int32
+                >> 14 as libc::c_int) as opus_int16;
         } else {
             let mut invGain_Q30: opus_int32 = 0;
             let mut down_scale_Q30: opus_int32 = 0;
@@ -916,24 +846,22 @@ unsafe extern "C" fn silk_PLC_conceal(
                 (1 as libc::c_int) << 30 as libc::c_int >> 8 as libc::c_int,
                 down_scale_Q30,
             );
-            down_scale_Q30 = ((down_scale_Q30 as opus_uint32) << 3 as libc::c_int)
-                as opus_int32;
+            down_scale_Q30 = ((down_scale_Q30 as opus_uint32) << 3 as libc::c_int) as opus_int32;
             rand_Gain_Q15 = (down_scale_Q30 as libc::c_long
-                * rand_Gain_Q15 as opus_int16 as opus_int64 >> 16 as libc::c_int)
-                as opus_int32 >> 14 as libc::c_int;
+                * rand_Gain_Q15 as opus_int16 as opus_int64
+                >> 16 as libc::c_int) as opus_int32
+                >> 14 as libc::c_int;
         }
     }
     rand_seed = (*psPLC).rand_seed;
     lag = if 8 as libc::c_int == 1 as libc::c_int {
-        ((*psPLC).pitchL_Q8 >> 1 as libc::c_int)
-            + ((*psPLC).pitchL_Q8 & 1 as libc::c_int)
+        ((*psPLC).pitchL_Q8 >> 1 as libc::c_int) + ((*psPLC).pitchL_Q8 & 1 as libc::c_int)
     } else {
         ((*psPLC).pitchL_Q8 >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
             >> 1 as libc::c_int
     };
     sLTP_buf_idx = (*psDec).ltp_mem_length;
-    idx = (*psDec).ltp_mem_length - lag - (*psDec).LPC_order
-        - LTP_ORDER / 2 as libc::c_int;
+    idx = (*psDec).ltp_mem_length - lag - (*psDec).LPC_order - LTP_ORDER / 2 as libc::c_int;
     if !(idx > 0 as libc::c_int) {
         celt_fatal(
             b"assertion failed: idx > 0\0" as *const u8 as *const libc::c_char,
@@ -960,13 +888,9 @@ unsafe extern "C" fn silk_PLC_conceal(
     };
     i = idx + (*psDec).LPC_order;
     while i < (*psDec).ltp_mem_length {
-        *sLTP_Q14
-            .as_mut_ptr()
-            .offset(
-                i as isize,
-            ) = (inv_gain_Q30 as libc::c_long
-            * *sLTP.as_mut_ptr().offset(i as isize) as opus_int64 >> 16 as libc::c_int)
-            as opus_int32;
+        *sLTP_Q14.as_mut_ptr().offset(i as isize) = (inv_gain_Q30 as libc::c_long
+            * *sLTP.as_mut_ptr().offset(i as isize) as opus_int64
+            >> 16 as libc::c_int) as opus_int32;
         i += 1;
     }
     k = 0 as libc::c_int;
@@ -999,62 +923,52 @@ unsafe extern "C" fn silk_PLC_conceal(
                     * *B_Q14.offset(4 as libc::c_int as isize) as opus_int64
                     >> 16 as libc::c_int)) as opus_int32;
             pred_lag_ptr = pred_lag_ptr.offset(1);
-            rand_seed = (907633515 as libc::c_int as opus_uint32)
-                .wrapping_add(
-                    (rand_seed as opus_uint32)
-                        .wrapping_mul(196314165 as libc::c_int as opus_uint32),
-                ) as opus_int32;
+            rand_seed = (907633515 as libc::c_int as opus_uint32).wrapping_add(
+                (rand_seed as opus_uint32).wrapping_mul(196314165 as libc::c_int as opus_uint32),
+            ) as opus_int32;
             idx = rand_seed >> 25 as libc::c_int & RAND_BUF_MASK;
-            *sLTP_Q14
-                .as_mut_ptr()
-                .offset(
-                    sLTP_buf_idx as isize,
-                ) = (((LTP_pred_Q12 as libc::c_long
-                + (*rand_ptr.offset(idx as isize) as libc::c_long
-                    * rand_scale_Q14 as opus_int64 >> 16 as libc::c_int)) as opus_int32
-                as opus_uint32) << 2 as libc::c_int) as opus_int32;
+            *sLTP_Q14.as_mut_ptr().offset(sLTP_buf_idx as isize) =
+                (((LTP_pred_Q12 as libc::c_long
+                    + (*rand_ptr.offset(idx as isize) as libc::c_long
+                        * rand_scale_Q14 as opus_int64
+                        >> 16 as libc::c_int)) as opus_int32 as opus_uint32)
+                    << 2 as libc::c_int) as opus_int32;
             sLTP_buf_idx += 1;
             i += 1;
         }
         j = 0 as libc::c_int;
         while j < LTP_ORDER {
-            *B_Q14
-                .offset(
-                    j as isize,
-                ) = (harm_Gain_Q15 as opus_int16 as opus_int32
-                * *B_Q14.offset(j as isize) as opus_int32 >> 15 as libc::c_int)
-                as opus_int16;
+            *B_Q14.offset(j as isize) = (harm_Gain_Q15 as opus_int16 as opus_int32
+                * *B_Q14.offset(j as isize) as opus_int32
+                >> 15 as libc::c_int) as opus_int16;
             j += 1;
         }
         if (*psDec).indices.signalType as libc::c_int != TYPE_NO_VOICE_ACTIVITY {
             rand_scale_Q14 = (rand_scale_Q14 as opus_int32
-                * rand_Gain_Q15 as opus_int16 as opus_int32 >> 15 as libc::c_int)
-                as opus_int16;
+                * rand_Gain_Q15 as opus_int16 as opus_int32
+                >> 15 as libc::c_int) as opus_int16;
         }
-        (*psPLC)
-            .pitchL_Q8 = ((*psPLC).pitchL_Q8 as libc::c_long
-            + ((*psPLC).pitchL_Q8 as libc::c_long
-                * 655 as libc::c_int as opus_int16 as opus_int64 >> 16 as libc::c_int))
-            as opus_int32;
-        (*psPLC)
-            .pitchL_Q8 = silk_min_32(
+        (*psPLC).pitchL_Q8 = ((*psPLC).pitchL_Q8 as libc::c_long
+            + ((*psPLC).pitchL_Q8 as libc::c_long * 655 as libc::c_int as opus_int16 as opus_int64
+                >> 16 as libc::c_int)) as opus_int32;
+        (*psPLC).pitchL_Q8 = silk_min_32(
             (*psPLC).pitchL_Q8,
             (((18 as libc::c_int as opus_int16 as opus_int32
                 * (*psDec).fs_kHz as opus_int16 as opus_int32) as opus_uint32)
                 << 8 as libc::c_int) as opus_int32,
         );
         lag = if 8 as libc::c_int == 1 as libc::c_int {
-            ((*psPLC).pitchL_Q8 >> 1 as libc::c_int)
-                + ((*psPLC).pitchL_Q8 & 1 as libc::c_int)
+            ((*psPLC).pitchL_Q8 >> 1 as libc::c_int) + ((*psPLC).pitchL_Q8 & 1 as libc::c_int)
         } else {
-            ((*psPLC).pitchL_Q8 >> 8 as libc::c_int - 1 as libc::c_int)
-                + 1 as libc::c_int >> 1 as libc::c_int
+            ((*psPLC).pitchL_Q8 >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+                >> 1 as libc::c_int
         };
         k += 1;
     }
     sLPC_Q14_ptr = &mut *sLTP_Q14
         .as_mut_ptr()
-        .offset(((*psDec).ltp_mem_length - MAX_LPC_ORDER) as isize) as *mut opus_int32;
+        .offset(((*psDec).ltp_mem_length - MAX_LPC_ORDER) as isize)
+        as *mut opus_int32;
     memcpy(
         sLPC_Q14_ptr as *mut libc::c_void,
         ((*psDec).sLPC_Q14_buf).as_mut_ptr() as *const libc::c_void,
@@ -1063,8 +977,7 @@ unsafe extern "C" fn silk_PLC_conceal(
     );
     if !((*psDec).LPC_order >= 10 as libc::c_int) {
         celt_fatal(
-            b"assertion failed: psDec->LPC_order >= 10\0" as *const u8
-                as *const libc::c_char,
+            b"assertion failed: psDec->LPC_order >= 10\0" as *const u8 as *const libc::c_char,
             b"silk/PLC.c\0" as *const u8 as *const libc::c_char,
             350 as libc::c_int,
         );
@@ -1074,69 +987,74 @@ unsafe extern "C" fn silk_PLC_conceal(
         LPC_pred_Q10 = (*psDec).LPC_order >> 1 as libc::c_int;
         LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
             + (*sLPC_Q14_ptr.offset((16 as libc::c_int + i - 1 as libc::c_int) as isize)
-                as libc::c_long * A_Q12[0 as libc::c_int as usize] as opus_int64
+                as libc::c_long
+                * A_Q12[0 as libc::c_int as usize] as opus_int64
                 >> 16 as libc::c_int)) as opus_int32;
         LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
             + (*sLPC_Q14_ptr.offset((16 as libc::c_int + i - 2 as libc::c_int) as isize)
-                as libc::c_long * A_Q12[1 as libc::c_int as usize] as opus_int64
+                as libc::c_long
+                * A_Q12[1 as libc::c_int as usize] as opus_int64
                 >> 16 as libc::c_int)) as opus_int32;
         LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
             + (*sLPC_Q14_ptr.offset((16 as libc::c_int + i - 3 as libc::c_int) as isize)
-                as libc::c_long * A_Q12[2 as libc::c_int as usize] as opus_int64
+                as libc::c_long
+                * A_Q12[2 as libc::c_int as usize] as opus_int64
                 >> 16 as libc::c_int)) as opus_int32;
         LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
             + (*sLPC_Q14_ptr.offset((16 as libc::c_int + i - 4 as libc::c_int) as isize)
-                as libc::c_long * A_Q12[3 as libc::c_int as usize] as opus_int64
+                as libc::c_long
+                * A_Q12[3 as libc::c_int as usize] as opus_int64
                 >> 16 as libc::c_int)) as opus_int32;
         LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
             + (*sLPC_Q14_ptr.offset((16 as libc::c_int + i - 5 as libc::c_int) as isize)
-                as libc::c_long * A_Q12[4 as libc::c_int as usize] as opus_int64
+                as libc::c_long
+                * A_Q12[4 as libc::c_int as usize] as opus_int64
                 >> 16 as libc::c_int)) as opus_int32;
         LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
             + (*sLPC_Q14_ptr.offset((16 as libc::c_int + i - 6 as libc::c_int) as isize)
-                as libc::c_long * A_Q12[5 as libc::c_int as usize] as opus_int64
+                as libc::c_long
+                * A_Q12[5 as libc::c_int as usize] as opus_int64
                 >> 16 as libc::c_int)) as opus_int32;
         LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
             + (*sLPC_Q14_ptr.offset((16 as libc::c_int + i - 7 as libc::c_int) as isize)
-                as libc::c_long * A_Q12[6 as libc::c_int as usize] as opus_int64
+                as libc::c_long
+                * A_Q12[6 as libc::c_int as usize] as opus_int64
                 >> 16 as libc::c_int)) as opus_int32;
         LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
             + (*sLPC_Q14_ptr.offset((16 as libc::c_int + i - 8 as libc::c_int) as isize)
-                as libc::c_long * A_Q12[7 as libc::c_int as usize] as opus_int64
+                as libc::c_long
+                * A_Q12[7 as libc::c_int as usize] as opus_int64
                 >> 16 as libc::c_int)) as opus_int32;
         LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
             + (*sLPC_Q14_ptr.offset((16 as libc::c_int + i - 9 as libc::c_int) as isize)
-                as libc::c_long * A_Q12[8 as libc::c_int as usize] as opus_int64
+                as libc::c_long
+                * A_Q12[8 as libc::c_int as usize] as opus_int64
                 >> 16 as libc::c_int)) as opus_int32;
         LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
             + (*sLPC_Q14_ptr.offset((16 as libc::c_int + i - 10 as libc::c_int) as isize)
-                as libc::c_long * A_Q12[9 as libc::c_int as usize] as opus_int64
+                as libc::c_long
+                * A_Q12[9 as libc::c_int as usize] as opus_int64
                 >> 16 as libc::c_int)) as opus_int32;
         j = 10 as libc::c_int;
         while j < (*psDec).LPC_order {
             LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
-                + (*sLPC_Q14_ptr
-                    .offset((16 as libc::c_int + i - j - 1 as libc::c_int) as isize)
-                    as libc::c_long * A_Q12[j as usize] as opus_int64
+                + (*sLPC_Q14_ptr.offset((16 as libc::c_int + i - j - 1 as libc::c_int) as isize)
+                    as libc::c_long
+                    * A_Q12[j as usize] as opus_int64
                     >> 16 as libc::c_int)) as opus_int32;
             j += 1;
         }
-        *sLPC_Q14_ptr
-            .offset(
-                (MAX_LPC_ORDER + i) as isize,
-            ) = if (*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize)
+        *sLPC_Q14_ptr.offset((MAX_LPC_ORDER + i) as isize) = if (*sLPC_Q14_ptr
+            .offset((16 as libc::c_int + i) as isize)
             as opus_uint32)
             .wrapping_add(
                 (((if 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                     > 0x7fffffff as libc::c_int >> 4 as libc::c_int
                 {
-                    if LPC_pred_Q10
-                        > 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
-                    {
+                    if LPC_pred_Q10 > 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int {
                         0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                     } else {
-                        if LPC_pred_Q10 < 0x7fffffff as libc::c_int >> 4 as libc::c_int
-                        {
+                        if LPC_pred_Q10 < 0x7fffffff as libc::c_int >> 4 as libc::c_int {
                             0x7fffffff as libc::c_int >> 4 as libc::c_int
                         } else {
                             LPC_pred_Q10
@@ -1147,28 +1065,27 @@ unsafe extern "C" fn silk_PLC_conceal(
                         0x7fffffff as libc::c_int >> 4 as libc::c_int
                     } else {
                         if LPC_pred_Q10
-                            < 0x80000000 as libc::c_uint as opus_int32
-                                >> 4 as libc::c_int
+                            < 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                         {
                             0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                         } else {
                             LPC_pred_Q10
                         }
                     }
-                }) as opus_uint32) << 4 as libc::c_int) as opus_int32 as opus_uint32,
-            ) & 0x80000000 as libc::c_uint == 0 as libc::c_int as libc::c_uint
+                }) as opus_uint32)
+                    << 4 as libc::c_int) as opus_int32 as opus_uint32,
+            )
+            & 0x80000000 as libc::c_uint
+            == 0 as libc::c_int as libc::c_uint
         {
             if (*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize)
                 & (((if 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                     > 0x7fffffff as libc::c_int >> 4 as libc::c_int
                 {
-                    if LPC_pred_Q10
-                        > 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
-                    {
+                    if LPC_pred_Q10 > 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int {
                         0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                     } else {
-                        if LPC_pred_Q10 < 0x7fffffff as libc::c_int >> 4 as libc::c_int
-                        {
+                        if LPC_pred_Q10 < 0x7fffffff as libc::c_int >> 4 as libc::c_int {
                             0x7fffffff as libc::c_int >> 4 as libc::c_int
                         } else {
                             LPC_pred_Q10
@@ -1179,16 +1096,17 @@ unsafe extern "C" fn silk_PLC_conceal(
                         0x7fffffff as libc::c_int >> 4 as libc::c_int
                     } else {
                         if LPC_pred_Q10
-                            < 0x80000000 as libc::c_uint as opus_int32
-                                >> 4 as libc::c_int
+                            < 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                         {
                             0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                         } else {
                             LPC_pred_Q10
                         }
                     }
-                }) as opus_uint32) << 4 as libc::c_int) as opus_int32) as libc::c_uint
-                & 0x80000000 as libc::c_uint != 0 as libc::c_int as libc::c_uint
+                }) as opus_uint32)
+                    << 4 as libc::c_int) as opus_int32) as libc::c_uint
+                & 0x80000000 as libc::c_uint
+                != 0 as libc::c_int as libc::c_uint
             {
                 silk_int32_MIN as opus_int32
             } else {
@@ -1197,42 +1115,36 @@ unsafe extern "C" fn silk_PLC_conceal(
                         > 0x7fffffff as libc::c_int >> 4 as libc::c_int
                     {
                         if LPC_pred_Q10
-                            > 0x80000000 as libc::c_uint as opus_int32
-                                >> 4 as libc::c_int
+                            > 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                         {
                             0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                         } else {
-                            if LPC_pred_Q10
-                                < 0x7fffffff as libc::c_int >> 4 as libc::c_int
-                            {
+                            if LPC_pred_Q10 < 0x7fffffff as libc::c_int >> 4 as libc::c_int {
                                 0x7fffffff as libc::c_int >> 4 as libc::c_int
                             } else {
                                 LPC_pred_Q10
                             }
                         }
                     } else {
-                        if LPC_pred_Q10 > 0x7fffffff as libc::c_int >> 4 as libc::c_int
-                        {
+                        if LPC_pred_Q10 > 0x7fffffff as libc::c_int >> 4 as libc::c_int {
                             0x7fffffff as libc::c_int >> 4 as libc::c_int
                         } else {
                             if LPC_pred_Q10
-                                < 0x80000000 as libc::c_uint as opus_int32
-                                    >> 4 as libc::c_int
+                                < 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                             {
                                 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                             } else {
                                 LPC_pred_Q10
                             }
                         }
-                    }) as opus_uint32) << 4 as libc::c_int) as opus_int32
+                    }) as opus_uint32)
+                        << 4 as libc::c_int) as opus_int32
             }
         } else if (*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize)
             | (((if 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                 > 0x7fffffff as libc::c_int >> 4 as libc::c_int
             {
-                if LPC_pred_Q10
-                    > 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
-                {
+                if LPC_pred_Q10 > 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int {
                     0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                 } else {
                     if LPC_pred_Q10 < 0x7fffffff as libc::c_int >> 4 as libc::c_int {
@@ -1245,16 +1157,16 @@ unsafe extern "C" fn silk_PLC_conceal(
                 if LPC_pred_Q10 > 0x7fffffff as libc::c_int >> 4 as libc::c_int {
                     0x7fffffff as libc::c_int >> 4 as libc::c_int
                 } else {
-                    if LPC_pred_Q10
-                        < 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
-                    {
+                    if LPC_pred_Q10 < 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int {
                         0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                     } else {
                         LPC_pred_Q10
                     }
                 }
-            }) as opus_uint32) << 4 as libc::c_int) as opus_int32) as libc::c_uint
-            & 0x80000000 as libc::c_uint == 0 as libc::c_int as libc::c_uint
+            }) as opus_uint32)
+                << 4 as libc::c_int) as opus_int32) as libc::c_uint
+            & 0x80000000 as libc::c_uint
+            == 0 as libc::c_int as libc::c_uint
         {
             silk_int32_MAX
         } else {
@@ -1262,13 +1174,10 @@ unsafe extern "C" fn silk_PLC_conceal(
                 + (((if 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                     > 0x7fffffff as libc::c_int >> 4 as libc::c_int
                 {
-                    if LPC_pred_Q10
-                        > 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
-                    {
+                    if LPC_pred_Q10 > 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int {
                         0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                     } else {
-                        if LPC_pred_Q10 < 0x7fffffff as libc::c_int >> 4 as libc::c_int
-                        {
+                        if LPC_pred_Q10 < 0x7fffffff as libc::c_int >> 4 as libc::c_int {
                             0x7fffffff as libc::c_int >> 4 as libc::c_int
                         } else {
                             LPC_pred_Q10
@@ -1279,31 +1188,31 @@ unsafe extern "C" fn silk_PLC_conceal(
                         0x7fffffff as libc::c_int >> 4 as libc::c_int
                     } else {
                         if LPC_pred_Q10
-                            < 0x80000000 as libc::c_uint as opus_int32
-                                >> 4 as libc::c_int
+                            < 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                         {
                             0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                         } else {
                             LPC_pred_Q10
                         }
                     }
-                }) as opus_uint32) << 4 as libc::c_int) as opus_int32
+                }) as opus_uint32)
+                    << 4 as libc::c_int) as opus_int32
         };
-        *frame
-            .offset(
-                i as isize,
-            ) = (if (if (if 8 as libc::c_int == 1 as libc::c_int {
+        *frame.offset(i as isize) = (if (if (if 8 as libc::c_int == 1 as libc::c_int {
             ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                 * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
-                >> 16 as libc::c_int) as opus_int32 >> 1 as libc::c_int)
+                >> 16 as libc::c_int) as opus_int32
+                >> 1 as libc::c_int)
                 + ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                     * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
-                    >> 16 as libc::c_int) as opus_int32 & 1 as libc::c_int)
+                    >> 16 as libc::c_int) as opus_int32
+                    & 1 as libc::c_int)
         } else {
             ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                 * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
                 >> 16 as libc::c_int) as opus_int32
-                >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+                >> 8 as libc::c_int - 1 as libc::c_int)
+                + 1 as libc::c_int
                 >> 1 as libc::c_int
         }) > 0x7fff as libc::c_int
         {
@@ -1312,36 +1221,38 @@ unsafe extern "C" fn silk_PLC_conceal(
             if (if 8 as libc::c_int == 1 as libc::c_int {
                 ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                     * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
-                    >> 16 as libc::c_int) as opus_int32 >> 1 as libc::c_int)
-                    + ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize)
-                        as opus_int64
+                    >> 16 as libc::c_int) as opus_int32
+                    >> 1 as libc::c_int)
+                    + ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                         * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
-                        >> 16 as libc::c_int) as opus_int32 & 1 as libc::c_int)
+                        >> 16 as libc::c_int) as opus_int32
+                        & 1 as libc::c_int)
             } else {
                 ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                     * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
                     >> 16 as libc::c_int) as opus_int32
-                    >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+                    >> 8 as libc::c_int - 1 as libc::c_int)
+                    + 1 as libc::c_int
                     >> 1 as libc::c_int
             }) < 0x8000 as libc::c_int as opus_int16 as libc::c_int
             {
                 0x8000 as libc::c_int as opus_int16 as libc::c_int
             } else {
                 if 8 as libc::c_int == 1 as libc::c_int {
-                    ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize)
-                        as opus_int64
-                        * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
-                        >> 16 as libc::c_int) as opus_int32 >> 1 as libc::c_int)
-                        + ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize)
-                            as opus_int64
-                            * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
-                            >> 16 as libc::c_int) as opus_int32 & 1 as libc::c_int)
-                } else {
-                    ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize)
-                        as opus_int64
+                    ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                         * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
                         >> 16 as libc::c_int) as opus_int32
-                        >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+                        >> 1 as libc::c_int)
+                        + ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
+                            * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
+                            >> 16 as libc::c_int) as opus_int32
+                            & 1 as libc::c_int)
+                } else {
+                    ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
+                        * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
+                        >> 16 as libc::c_int) as opus_int32
+                        >> 8 as libc::c_int - 1 as libc::c_int)
+                        + 1 as libc::c_int
                         >> 1 as libc::c_int
                 }
             }
@@ -1351,15 +1262,18 @@ unsafe extern "C" fn silk_PLC_conceal(
         } else if (if (if 8 as libc::c_int == 1 as libc::c_int {
             ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                 * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
-                >> 16 as libc::c_int) as opus_int32 >> 1 as libc::c_int)
+                >> 16 as libc::c_int) as opus_int32
+                >> 1 as libc::c_int)
                 + ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                     * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
-                    >> 16 as libc::c_int) as opus_int32 & 1 as libc::c_int)
+                    >> 16 as libc::c_int) as opus_int32
+                    & 1 as libc::c_int)
         } else {
             ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                 * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
                 >> 16 as libc::c_int) as opus_int32
-                >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+                >> 8 as libc::c_int - 1 as libc::c_int)
+                + 1 as libc::c_int
                 >> 1 as libc::c_int
         }) > 0x7fff as libc::c_int
         {
@@ -1368,36 +1282,38 @@ unsafe extern "C" fn silk_PLC_conceal(
             if (if 8 as libc::c_int == 1 as libc::c_int {
                 ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                     * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
-                    >> 16 as libc::c_int) as opus_int32 >> 1 as libc::c_int)
-                    + ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize)
-                        as opus_int64
+                    >> 16 as libc::c_int) as opus_int32
+                    >> 1 as libc::c_int)
+                    + ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                         * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
-                        >> 16 as libc::c_int) as opus_int32 & 1 as libc::c_int)
+                        >> 16 as libc::c_int) as opus_int32
+                        & 1 as libc::c_int)
             } else {
                 ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                     * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
                     >> 16 as libc::c_int) as opus_int32
-                    >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+                    >> 8 as libc::c_int - 1 as libc::c_int)
+                    + 1 as libc::c_int
                     >> 1 as libc::c_int
             }) < 0x8000 as libc::c_int as opus_int16 as libc::c_int
             {
                 0x8000 as libc::c_int as opus_int16 as libc::c_int
             } else {
                 if 8 as libc::c_int == 1 as libc::c_int {
-                    ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize)
-                        as opus_int64
-                        * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
-                        >> 16 as libc::c_int) as opus_int32 >> 1 as libc::c_int)
-                        + ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize)
-                            as opus_int64
-                            * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
-                            >> 16 as libc::c_int) as opus_int32 & 1 as libc::c_int)
-                } else {
-                    ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize)
-                        as opus_int64
+                    ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                         * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
                         >> 16 as libc::c_int) as opus_int32
-                        >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+                        >> 1 as libc::c_int)
+                        + ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
+                            * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
+                            >> 16 as libc::c_int) as opus_int32
+                            & 1 as libc::c_int)
+                } else {
+                    ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
+                        * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
+                        >> 16 as libc::c_int) as opus_int32
+                        >> 8 as libc::c_int - 1 as libc::c_int)
+                        + 1 as libc::c_int
                         >> 1 as libc::c_int
                 }
             }
@@ -1407,15 +1323,18 @@ unsafe extern "C" fn silk_PLC_conceal(
         } else if (if 8 as libc::c_int == 1 as libc::c_int {
             ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                 * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
-                >> 16 as libc::c_int) as opus_int32 >> 1 as libc::c_int)
+                >> 16 as libc::c_int) as opus_int32
+                >> 1 as libc::c_int)
                 + ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                     * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
-                    >> 16 as libc::c_int) as opus_int32 & 1 as libc::c_int)
+                    >> 16 as libc::c_int) as opus_int32
+                    & 1 as libc::c_int)
         } else {
             ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                 * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
                 >> 16 as libc::c_int) as opus_int32
-                >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+                >> 8 as libc::c_int - 1 as libc::c_int)
+                + 1 as libc::c_int
                 >> 1 as libc::c_int
         }) > 0x7fff as libc::c_int
         {
@@ -1423,15 +1342,18 @@ unsafe extern "C" fn silk_PLC_conceal(
         } else if (if 8 as libc::c_int == 1 as libc::c_int {
             ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                 * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
-                >> 16 as libc::c_int) as opus_int32 >> 1 as libc::c_int)
+                >> 16 as libc::c_int) as opus_int32
+                >> 1 as libc::c_int)
                 + ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                     * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
-                    >> 16 as libc::c_int) as opus_int32 & 1 as libc::c_int)
+                    >> 16 as libc::c_int) as opus_int32
+                    & 1 as libc::c_int)
         } else {
             ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                 * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
                 >> 16 as libc::c_int) as opus_int32
-                >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+                >> 8 as libc::c_int - 1 as libc::c_int)
+                + 1 as libc::c_int
                 >> 1 as libc::c_int
         }) < 0x8000 as libc::c_int as opus_int16 as libc::c_int
         {
@@ -1439,15 +1361,18 @@ unsafe extern "C" fn silk_PLC_conceal(
         } else if 8 as libc::c_int == 1 as libc::c_int {
             ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                 * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
-                >> 16 as libc::c_int) as opus_int32 >> 1 as libc::c_int)
+                >> 16 as libc::c_int) as opus_int32
+                >> 1 as libc::c_int)
                 + ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                     * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
-                    >> 16 as libc::c_int) as opus_int32 & 1 as libc::c_int)
+                    >> 16 as libc::c_int) as opus_int32
+                    & 1 as libc::c_int)
         } else {
             ((*sLPC_Q14_ptr.offset((16 as libc::c_int + i) as isize) as opus_int64
                 * prevGain_Q10[1 as libc::c_int as usize] as libc::c_long
                 >> 16 as libc::c_int) as opus_int32
-                >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+                >> 8 as libc::c_int - 1 as libc::c_int)
+                + 1 as libc::c_int
                 >> 1 as libc::c_int
         }) as opus_int16;
         i += 1;
@@ -1496,9 +1421,8 @@ pub unsafe extern "C" fn silk_PLC_glue_frames(
                 length,
             );
             if energy_shift > (*psPLC).conc_energy_shift {
-                (*psPLC)
-                    .conc_energy = (*psPLC).conc_energy
-                    >> energy_shift - (*psPLC).conc_energy_shift;
+                (*psPLC).conc_energy =
+                    (*psPLC).conc_energy >> energy_shift - (*psPLC).conc_energy_shift;
             } else if energy_shift < (*psPLC).conc_energy_shift {
                 energy = energy >> (*psPLC).conc_energy_shift - energy_shift;
             }
@@ -1509,9 +1433,7 @@ pub unsafe extern "C" fn silk_PLC_glue_frames(
                 let mut slope_Q16: opus_int32 = 0;
                 LZ = silk_CLZ32((*psPLC).conc_energy);
                 LZ = LZ - 1 as libc::c_int;
-                (*psPLC)
-                    .conc_energy = (((*psPLC).conc_energy as opus_uint32) << LZ)
-                    as opus_int32;
+                (*psPLC).conc_energy = (((*psPLC).conc_energy as opus_uint32) << LZ) as opus_int32;
                 energy = energy >> silk_max_32(24 as libc::c_int - LZ, 0 as libc::c_int);
                 frac_Q24 = (*psPLC).conc_energy
                     / (if energy > 1 as libc::c_int {
@@ -1519,19 +1441,15 @@ pub unsafe extern "C" fn silk_PLC_glue_frames(
                     } else {
                         1 as libc::c_int
                     });
-                gain_Q16 = ((silk_SQRT_APPROX(frac_Q24) as opus_uint32)
-                    << 4 as libc::c_int) as opus_int32;
-                slope_Q16 = (((1 as libc::c_int) << 16 as libc::c_int) - gain_Q16)
-                    / length;
-                slope_Q16 = ((slope_Q16 as opus_uint32) << 2 as libc::c_int)
-                    as opus_int32;
+                gain_Q16 =
+                    ((silk_SQRT_APPROX(frac_Q24) as opus_uint32) << 4 as libc::c_int) as opus_int32;
+                slope_Q16 = (((1 as libc::c_int) << 16 as libc::c_int) - gain_Q16) / length;
+                slope_Q16 = ((slope_Q16 as opus_uint32) << 2 as libc::c_int) as opus_int32;
                 i = 0 as libc::c_int;
                 while i < length {
-                    *frame
-                        .offset(
-                            i as isize,
-                        ) = (gain_Q16 as libc::c_long
-                        * *frame.offset(i as isize) as opus_int64 >> 16 as libc::c_int)
+                    *frame.offset(i as isize) = (gain_Q16 as libc::c_long
+                        * *frame.offset(i as isize) as opus_int64
+                        >> 16 as libc::c_int)
                         as opus_int32 as opus_int16;
                     gain_Q16 += slope_Q16;
                     if gain_Q16 > (1 as libc::c_int) << 16 as libc::c_int {

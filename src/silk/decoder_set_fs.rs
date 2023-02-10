@@ -18,7 +18,7 @@ pub mod stdint_intn_h {
     pub type int16_t = __int16_t;
     #[c2rust::src_loc = "26:1"]
     pub type int32_t = __int32_t;
-    use super::types_h::{__int8_t, __int16_t, __int32_t};
+    use super::types_h::{__int16_t, __int32_t, __int8_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
 pub mod stdint_uintn_h {
@@ -36,7 +36,7 @@ pub mod opus_types_h {
     pub type opus_int16 = int16_t;
     #[c2rust::src_loc = "55:4"]
     pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::{int8_t, int16_t, int32_t};
+    use super::stdint_intn_h::{int16_t, int32_t, int8_t};
     use super::stdint_uintn_h::uint8_t;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:32"]
@@ -67,7 +67,7 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int32, opus_int16};
+    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
 pub mod structs_h {
@@ -170,7 +170,7 @@ pub mod structs_h {
         pub arch: libc::c_int,
         pub sPLC: silk_PLC_struct,
     }
-    use super::opus_types_h::{opus_int16, opus_uint8, opus_int8, opus_int32};
+    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
@@ -188,17 +188,13 @@ pub mod arch_h {
 pub mod string_h {
     extern "C" {
         #[c2rust::src_loc = "61:14"]
-        pub fn memset(
-            _: *mut libc::c_void,
-            _: libc::c_int,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
+        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
 pub mod SigProc_FIX_h {
-    use super::resampler_structs_h::silk_resampler_state_struct;
     use super::opus_types_h::opus_int32;
+    use super::resampler_structs_h::silk_resampler_state_struct;
     extern "C" {
         #[c2rust::src_loc = "62:1"]
         pub fn silk_resampler_init(
@@ -211,7 +207,7 @@ pub mod SigProc_FIX_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
 pub mod tables_h {
-    use super::opus_types_h::{opus_uint8};
+    use super::opus_types_h::opus_uint8;
     use super::structs_h::silk_NLSF_CB_struct;
     extern "C" {
         #[c2rust::src_loc = "45:26"]
@@ -245,28 +241,25 @@ pub mod define_h {
     #[c2rust::src_loc = "90:9"]
     pub const MAX_NB_SUBFR: libc::c_int = 4 as libc::c_int;
 }
-pub use self::types_h::{__int8_t, __uint8_t, __int16_t, __int32_t};
-pub use self::stdint_intn_h::{int8_t, int16_t, int32_t};
-pub use self::stdint_uintn_h::uint8_t;
-pub use self::opus_types_h::{opus_int8, opus_uint8, opus_int16, opus_int32};
-pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
-};
-pub use self::structs_h::{
-    silk_NLSF_CB_struct, SideInfoIndices, silk_PLC_struct, silk_CNG_struct,
-    silk_decoder_state,
-};
 use self::arch_h::celt_fatal;
+pub use self::define_h::{MAX_LPC_ORDER, MAX_NB_SUBFR, MIN_LPC_ORDER, TYPE_NO_VOICE_ACTIVITY};
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
+pub use self::resampler_structs_h::{
+    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
+};
+pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
+pub use self::stdint_uintn_h::uint8_t;
 use self::string_h::memset;
-use self::SigProc_FIX_h::silk_resampler_init;
+pub use self::structs_h::{
+    silk_CNG_struct, silk_NLSF_CB_struct, silk_PLC_struct, silk_decoder_state, SideInfoIndices,
+};
 use self::tables_h::{
-    silk_pitch_contour_iCDF, silk_pitch_contour_NB_iCDF, silk_pitch_contour_10_ms_iCDF,
-    silk_pitch_contour_10_ms_NB_iCDF, silk_uniform4_iCDF, silk_uniform6_iCDF,
-    silk_uniform8_iCDF, silk_NLSF_CB_WB, silk_NLSF_CB_NB_MB,
+    silk_NLSF_CB_NB_MB, silk_NLSF_CB_WB, silk_pitch_contour_10_ms_NB_iCDF,
+    silk_pitch_contour_10_ms_iCDF, silk_pitch_contour_NB_iCDF, silk_pitch_contour_iCDF,
+    silk_uniform4_iCDF, silk_uniform6_iCDF, silk_uniform8_iCDF,
 };
-pub use self::define_h::{
-    TYPE_NO_VOICE_ACTIVITY, MAX_LPC_ORDER, MIN_LPC_ORDER, MAX_NB_SUBFR,
-};
+pub use self::types_h::{__int16_t, __int32_t, __int8_t, __uint8_t};
+use self::SigProc_FIX_h::silk_resampler_init;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_decoder_set_fs(
@@ -276,12 +269,10 @@ pub unsafe extern "C" fn silk_decoder_set_fs(
 ) -> libc::c_int {
     let mut frame_length: libc::c_int = 0;
     let mut ret: libc::c_int = 0 as libc::c_int;
-    if !(fs_kHz == 8 as libc::c_int || fs_kHz == 12 as libc::c_int
-        || fs_kHz == 16 as libc::c_int)
-    {
+    if !(fs_kHz == 8 as libc::c_int || fs_kHz == 12 as libc::c_int || fs_kHz == 16 as libc::c_int) {
         celt_fatal(
-            b"assertion failed: fs_kHz == 8 || fs_kHz == 12 || fs_kHz == 16\0"
-                as *const u8 as *const libc::c_char,
+            b"assertion failed: fs_kHz == 8 || fs_kHz == 12 || fs_kHz == 16\0" as *const u8
+                as *const libc::c_char,
             b"silk/decoder_set_fs.c\0" as *const u8 as *const libc::c_char,
             43 as libc::c_int,
         );
@@ -296,20 +287,17 @@ pub unsafe extern "C" fn silk_decoder_set_fs(
             44 as libc::c_int,
         );
     }
-    (*psDec)
-        .subfr_length = 5 as libc::c_int as opus_int16 as opus_int32
-        * fs_kHz as opus_int16 as opus_int32;
+    (*psDec).subfr_length =
+        5 as libc::c_int as opus_int16 as opus_int32 * fs_kHz as opus_int16 as opus_int32;
     frame_length = (*psDec).nb_subfr as opus_int16 as opus_int32
         * (*psDec).subfr_length as opus_int16 as opus_int32;
     if (*psDec).fs_kHz != fs_kHz || (*psDec).fs_API_hz != fs_API_Hz {
-        ret
-            += silk_resampler_init(
-                &mut (*psDec).resampler_state,
-                fs_kHz as opus_int16 as opus_int32
-                    * 1000 as libc::c_int as opus_int16 as opus_int32,
-                fs_API_Hz,
-                0 as libc::c_int,
-            );
+        ret += silk_resampler_init(
+            &mut (*psDec).resampler_state,
+            fs_kHz as opus_int16 as opus_int32 * 1000 as libc::c_int as opus_int16 as opus_int32,
+            fs_API_Hz,
+            0 as libc::c_int,
+        );
         (*psDec).fs_API_hz = fs_API_Hz;
     }
     if (*psDec).fs_kHz != fs_kHz || frame_length != (*psDec).frame_length {
@@ -325,9 +313,8 @@ pub unsafe extern "C" fn silk_decoder_set_fs(
             (*psDec).pitch_contour_iCDF = silk_pitch_contour_10_ms_iCDF.as_ptr();
         }
         if (*psDec).fs_kHz != fs_kHz {
-            (*psDec)
-                .ltp_mem_length = 20 as libc::c_int as opus_int16 as opus_int32
-                * fs_kHz as opus_int16 as opus_int32;
+            (*psDec).ltp_mem_length =
+                20 as libc::c_int as opus_int16 as opus_int32 * fs_kHz as opus_int16 as opus_int32;
             if fs_kHz == 8 as libc::c_int || fs_kHz == 12 as libc::c_int {
                 (*psDec).LPC_order = MIN_LPC_ORDER;
                 (*psDec).psNLSF_CB = &silk_NLSF_CB_NB_MB;
@@ -367,8 +354,7 @@ pub unsafe extern "C" fn silk_decoder_set_fs(
         (*psDec).frame_length = frame_length;
     }
     if !((*psDec).frame_length > 0 as libc::c_int
-        && (*psDec).frame_length
-            <= 5 as libc::c_int * 4 as libc::c_int * 16 as libc::c_int)
+        && (*psDec).frame_length <= 5 as libc::c_int * 4 as libc::c_int * 16 as libc::c_int)
     {
         celt_fatal(
             b"assertion failed: psDec->frame_length > 0 && psDec->frame_length <= MAX_FRAME_LENGTH\0"

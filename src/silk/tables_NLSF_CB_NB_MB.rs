@@ -36,8 +36,8 @@ pub mod opus_types_h {
     pub type opus_int32 = int32_t;
     #[c2rust::src_loc = "57:4"]
     pub type opus_int64 = int64_t;
-    use super::stdint_uintn_h::uint8_t;
     use super::stdint_intn_h::{int16_t, int32_t, int64_t};
+    use super::stdint_uintn_h::uint8_t;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
 pub mod structs_h {
@@ -60,11 +60,11 @@ pub mod structs_h {
     }
     use super::opus_types_h::{opus_int16, opus_uint8};
 }
-pub use self::types_h::{__uint8_t, __int16_t, __int32_t, __int64_t};
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint8};
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
 pub use self::stdint_uintn_h::uint8_t;
-pub use self::opus_types_h::{opus_uint8, opus_int16, opus_int32, opus_int64};
 pub use self::structs_h::silk_NLSF_CB_struct;
+pub use self::types_h::{__int16_t, __int32_t, __int64_t, __uint8_t};
 #[c2rust::src_loc = "34:25"]
 static mut silk_NLSF_CB1_NB_MB_Q8: [opus_uint8; 320] = [
     12 as libc::c_int as opus_uint8,
@@ -1134,11 +1134,11 @@ pub static mut silk_NLSF_CB_NB_MB: silk_NLSF_CB_struct = unsafe {
             nVectors: 32 as libc::c_int as opus_int16,
             order: 10 as libc::c_int as opus_int16,
             quantStepSize_Q16: (0.18f64
-                * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int)
-                    as libc::c_double + 0.5f64) as opus_int32 as opus_int16,
+                * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int) as libc::c_double
+                + 0.5f64) as opus_int32 as opus_int16,
             invQuantStepSize_Q6: (1.0f64 / 0.18f64
-                * ((1 as libc::c_int as opus_int64) << 6 as libc::c_int)
-                    as libc::c_double + 0.5f64) as opus_int32 as opus_int16,
+                * ((1 as libc::c_int as opus_int64) << 6 as libc::c_int) as libc::c_double
+                + 0.5f64) as opus_int32 as opus_int16,
             CB1_NLSF_Q8: silk_NLSF_CB1_NB_MB_Q8.as_ptr(),
             CB1_Wght_Q9: silk_NLSF_CB1_Wght_Q9.as_ptr(),
             CB1_iCDF: silk_NLSF_CB1_iCDF_NB_MB.as_ptr(),

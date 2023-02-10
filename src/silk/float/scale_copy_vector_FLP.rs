@@ -12,22 +12,14 @@ pub unsafe extern "C" fn silk_scale_copy_vector_FLP(
     dataSize4 = dataSize & 0xfffc as libc::c_int;
     i = 0 as libc::c_int;
     while i < dataSize4 {
-        *data_out
-            .offset(
-                (i + 0 as libc::c_int) as isize,
-            ) = gain * *data_in.offset((i + 0 as libc::c_int) as isize);
-        *data_out
-            .offset(
-                (i + 1 as libc::c_int) as isize,
-            ) = gain * *data_in.offset((i + 1 as libc::c_int) as isize);
-        *data_out
-            .offset(
-                (i + 2 as libc::c_int) as isize,
-            ) = gain * *data_in.offset((i + 2 as libc::c_int) as isize);
-        *data_out
-            .offset(
-                (i + 3 as libc::c_int) as isize,
-            ) = gain * *data_in.offset((i + 3 as libc::c_int) as isize);
+        *data_out.offset((i + 0 as libc::c_int) as isize) =
+            gain * *data_in.offset((i + 0 as libc::c_int) as isize);
+        *data_out.offset((i + 1 as libc::c_int) as isize) =
+            gain * *data_in.offset((i + 1 as libc::c_int) as isize);
+        *data_out.offset((i + 2 as libc::c_int) as isize) =
+            gain * *data_in.offset((i + 2 as libc::c_int) as isize);
+        *data_out.offset((i + 3 as libc::c_int) as isize) =
+            gain * *data_in.offset((i + 3 as libc::c_int) as isize);
         i += 4 as libc::c_int;
     }
     while i < dataSize {

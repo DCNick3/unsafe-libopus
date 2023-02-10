@@ -44,9 +44,9 @@ pub mod entcode_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:32"]
 pub mod ecintrin_h {
     #[c2rust::src_loc = "69:11"]
-    pub const EC_CLZ0: libc::c_int = ::core::mem::size_of::<libc::c_uint>()
-        as libc::c_ulong as libc::c_int * CHAR_BIT;
-    
+    pub const EC_CLZ0: libc::c_int =
+        ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
+
     use super::limits_h::CHAR_BIT;
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:32"]
@@ -60,13 +60,13 @@ pub mod internal {
     #[c2rust::src_loc = "36:9"]
     pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
 }
-pub use self::types_h::__uint32_t;
-pub use self::stdint_uintn_h::uint32_t;
-pub use self::opus_types_h::opus_uint32;
-pub use self::entcode_h::{ec_window, ec_ctx, BITRES};
 pub use self::ecintrin_h::EC_CLZ0;
-pub use self::limits_h::CHAR_BIT;
+pub use self::entcode_h::{ec_ctx, ec_window, BITRES};
 pub use self::internal::__CHAR_BIT__;
+pub use self::limits_h::CHAR_BIT;
+pub use self::opus_types_h::opus_uint32;
+pub use self::stdint_uintn_h::uint32_t;
+pub use self::types_h::__uint32_t;
 #[no_mangle]
 #[c2rust::src_loc = "69:1"]
 pub unsafe extern "C" fn ec_tell_frac(mut _this: *mut ec_ctx) -> opus_uint32 {

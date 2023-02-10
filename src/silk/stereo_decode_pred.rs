@@ -28,7 +28,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint8_t, __uint32_t};
+    use super::types_h::{__uint32_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
 pub mod opus_types_h {
@@ -42,8 +42,8 @@ pub mod opus_types_h {
     pub type opus_uint32 = uint32_t;
     #[c2rust::src_loc = "57:4"]
     pub type opus_int64 = int64_t;
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
     use super::stdint_intn_h::{int16_t, int32_t, int64_t};
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:32"]
 pub mod entcode_h {
@@ -84,7 +84,7 @@ pub mod entdec_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
 pub mod tables_h {
-    use super::opus_types_h::{opus_uint8, opus_int16};
+    use super::opus_types_h::{opus_int16, opus_uint8};
     extern "C" {
         #[c2rust::src_loc = "68:26"]
         pub static silk_uniform3_iCDF: [opus_uint8; 3];
@@ -98,18 +98,16 @@ pub mod tables_h {
         pub static silk_stereo_only_code_mid_iCDF: [opus_uint8; 2];
     }
 }
-pub use self::types_h::{__uint8_t, __int16_t, __int32_t, __uint32_t, __int64_t};
-pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
-pub use self::stdint_uintn_h::{uint8_t, uint32_t};
-pub use self::opus_types_h::{
-    opus_uint8, opus_int16, opus_int32, opus_uint32, opus_int64,
-};
-pub use self::entcode_h::{ec_window, ec_ctx, ec_dec};
+pub use self::entcode_h::{ec_ctx, ec_dec, ec_window};
 use self::entdec_h::ec_dec_icdf;
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32, opus_uint8};
+pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
+pub use self::stdint_uintn_h::{uint32_t, uint8_t};
 use self::tables_h::{
-    silk_uniform3_iCDF, silk_uniform5_iCDF, silk_stereo_pred_quant_Q13,
-    silk_stereo_pred_joint_iCDF, silk_stereo_only_code_mid_iCDF,
+    silk_stereo_only_code_mid_iCDF, silk_stereo_pred_joint_iCDF, silk_stereo_pred_quant_Q13,
+    silk_uniform3_iCDF, silk_uniform5_iCDF,
 };
+pub use self::types_h::{__int16_t, __int32_t, __int64_t, __uint32_t, __uint8_t};
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_stereo_decode_pred(
@@ -126,22 +124,16 @@ pub unsafe extern "C" fn silk_stereo_decode_pred(
         8 as libc::c_int as libc::c_uint,
     );
     ix[0 as libc::c_int as usize][2 as libc::c_int as usize] = n / 5 as libc::c_int;
-    ix[1 as libc::c_int
-        as usize][2 as libc::c_int
-        as usize] = n
-        - 5 as libc::c_int * ix[0 as libc::c_int as usize][2 as libc::c_int as usize];
+    ix[1 as libc::c_int as usize][2 as libc::c_int as usize] =
+        n - 5 as libc::c_int * ix[0 as libc::c_int as usize][2 as libc::c_int as usize];
     n = 0 as libc::c_int;
     while n < 2 as libc::c_int {
-        ix[n
-            as usize][0 as libc::c_int
-            as usize] = ec_dec_icdf(
+        ix[n as usize][0 as libc::c_int as usize] = ec_dec_icdf(
             psRangeDec,
             silk_uniform3_iCDF.as_ptr(),
             8 as libc::c_int as libc::c_uint,
         );
-        ix[n
-            as usize][1 as libc::c_int
-            as usize] = ec_dec_icdf(
+        ix[n as usize][1 as libc::c_int as usize] = ec_dec_icdf(
             psRangeDec,
             silk_uniform5_iCDF.as_ptr(),
             8 as libc::c_int as libc::c_uint,
@@ -150,24 +142,22 @@ pub unsafe extern "C" fn silk_stereo_decode_pred(
     }
     n = 0 as libc::c_int;
     while n < 2 as libc::c_int {
-        ix[n as usize][0 as libc::c_int as usize]
-            += 3 as libc::c_int * ix[n as usize][2 as libc::c_int as usize];
-        low_Q13 = silk_stereo_pred_quant_Q13[ix[n as usize][0 as libc::c_int as usize]
-            as usize] as opus_int32;
-        step_Q13 = ((silk_stereo_pred_quant_Q13[(ix[n
-            as usize][0 as libc::c_int as usize] + 1 as libc::c_int) as usize]
-            as libc::c_int - low_Q13) as libc::c_long
+        ix[n as usize][0 as libc::c_int as usize] +=
+            3 as libc::c_int * ix[n as usize][2 as libc::c_int as usize];
+        low_Q13 = silk_stereo_pred_quant_Q13[ix[n as usize][0 as libc::c_int as usize] as usize]
+            as opus_int32;
+        step_Q13 = ((silk_stereo_pred_quant_Q13
+            [(ix[n as usize][0 as libc::c_int as usize] + 1 as libc::c_int) as usize]
+            as libc::c_int
+            - low_Q13) as libc::c_long
             * (0.5f64 / 5 as libc::c_int as libc::c_double
-                * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int)
-                    as libc::c_double + 0.5f64) as opus_int32 as opus_int16 as opus_int64
+                * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int) as libc::c_double
+                + 0.5f64) as opus_int32 as opus_int16 as opus_int64
             >> 16 as libc::c_int) as opus_int32;
-        *pred_Q13
-            .offset(
-                n as isize,
-            ) = low_Q13
+        *pred_Q13.offset(n as isize) = low_Q13
             + step_Q13 as opus_int16 as opus_int32
-                * (2 as libc::c_int * ix[n as usize][1 as libc::c_int as usize]
-                    + 1 as libc::c_int) as opus_int16 as opus_int32;
+                * (2 as libc::c_int * ix[n as usize][1 as libc::c_int as usize] + 1 as libc::c_int)
+                    as opus_int16 as opus_int32;
         n += 1;
     }
     let ref mut fresh0 = *pred_Q13.offset(0 as libc::c_int as isize);

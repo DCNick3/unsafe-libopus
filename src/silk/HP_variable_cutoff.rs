@@ -24,7 +24,7 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     #[c2rust::src_loc = "27:1"]
     pub type int64_t = __int64_t;
-    use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
+    use super::types_h::{__int16_t, __int32_t, __int64_t, __int8_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:34"]
 pub mod stdint_uintn_h {
@@ -32,7 +32,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint8_t, __uint32_t};
+    use super::types_h::{__uint32_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:34"]
 pub mod opus_types_h {
@@ -48,8 +48,8 @@ pub mod opus_types_h {
     pub type opus_uint32 = uint32_t;
     #[c2rust::src_loc = "57:4"]
     pub type opus_int64 = int64_t;
-    use super::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
+    use super::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:34"]
 pub mod resampler_structs_h {
@@ -79,7 +79,7 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int32, opus_int16};
+    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:34"]
 pub mod structs_h {
@@ -239,7 +239,7 @@ pub mod structs_h {
         pub indices_LBRR: [SideInfoIndices; 3],
         pub pulses_LBRR: [[opus_int8; 320]; 3],
     }
-    use super::opus_types_h::{opus_int16, opus_int32, opus_uint8, opus_int8};
+    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:34"]
@@ -277,123 +277,121 @@ pub mod define_h {
     #[c2rust::src_loc = "72:9"]
     pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
 }
-pub use self::types_h::{
-    __int8_t, __uint8_t, __int16_t, __int32_t, __uint32_t, __int64_t,
-};
-pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
-pub use self::stdint_uintn_h::{uint8_t, uint32_t};
+pub use self::define_h::TYPE_VOICED;
 pub use self::opus_types_h::{
-    opus_int8, opus_uint8, opus_int16, opus_int32, opus_uint32, opus_int64,
+    opus_int16, opus_int32, opus_int64, opus_int8, opus_uint32, opus_uint8,
 };
 pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
+    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
+pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+pub use self::stdint_uintn_h::{uint32_t, uint8_t};
+pub use self::structs_FLP_h::{silk_encoder_state_FLP, silk_shape_state_FLP};
 pub use self::structs_h::{
-    silk_nsq_state, silk_VAD_state, silk_LP_state, silk_NLSF_CB_struct, SideInfoIndices,
-    silk_encoder_state,
+    silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
+    SideInfoIndices,
 };
-pub use self::structs_FLP_h::{silk_shape_state_FLP, silk_encoder_state_FLP};
+pub use self::types_h::{__int16_t, __int32_t, __int64_t, __int8_t, __uint32_t, __uint8_t};
 use self::SigProc_FIX_h::silk_lin2log;
-pub use self::define_h::TYPE_VOICED;
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]
-pub unsafe extern "C" fn silk_HP_variable_cutoff(
-    state_Fxx: *mut silk_encoder_state_FLP,
-) {
+pub unsafe extern "C" fn silk_HP_variable_cutoff(state_Fxx: *mut silk_encoder_state_FLP) {
     let mut quality_Q15: libc::c_int = 0;
     let mut pitch_freq_Hz_Q16: opus_int32 = 0;
     let mut pitch_freq_log_Q7: opus_int32 = 0;
     let mut delta_freq_Q7: opus_int32 = 0;
-    let mut psEncC1: *mut silk_encoder_state = &mut (*state_Fxx
-        .offset(0 as libc::c_int as isize))
-        .sCmn;
+    let mut psEncC1: *mut silk_encoder_state =
+        &mut (*state_Fxx.offset(0 as libc::c_int as isize)).sCmn;
     if (*psEncC1).prevSignalType as libc::c_int == TYPE_VOICED {
         pitch_freq_Hz_Q16 = ((((*psEncC1).fs_kHz * 1000 as libc::c_int) as opus_uint32)
-            << 16 as libc::c_int) as opus_int32 / (*psEncC1).prevLag;
-        pitch_freq_log_Q7 = silk_lin2log(pitch_freq_Hz_Q16)
-            - ((16 as libc::c_int) << 7 as libc::c_int);
+            << 16 as libc::c_int) as opus_int32
+            / (*psEncC1).prevLag;
+        pitch_freq_log_Q7 =
+            silk_lin2log(pitch_freq_Hz_Q16) - ((16 as libc::c_int) << 7 as libc::c_int);
         quality_Q15 = (*psEncC1).input_quality_bands_Q15[0 as libc::c_int as usize];
         pitch_freq_log_Q7 = (pitch_freq_log_Q7 as libc::c_long
-            + ((((-quality_Q15 as opus_uint32) << 2 as libc::c_int) as opus_int32
-                as libc::c_long * quality_Q15 as opus_int16 as opus_int64
+            + ((((-quality_Q15 as opus_uint32) << 2 as libc::c_int) as opus_int32 as libc::c_long
+                * quality_Q15 as opus_int16 as opus_int64
                 >> 16 as libc::c_int) as opus_int32 as libc::c_long
                 * (pitch_freq_log_Q7
                     - (silk_lin2log(
                         ((60 as libc::c_int as libc::c_long
                             * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int))
-                            as libc::c_double + 0.5f64) as opus_int32,
+                            as libc::c_double
+                            + 0.5f64) as opus_int32,
                     ) - ((16 as libc::c_int) << 7 as libc::c_int))) as opus_int16
-                    as opus_int64 >> 16 as libc::c_int)) as opus_int32;
-        delta_freq_Q7 = pitch_freq_log_Q7
-            - ((*psEncC1).variable_HP_smth1_Q15 >> 8 as libc::c_int);
+                    as opus_int64
+                >> 16 as libc::c_int)) as opus_int32;
+        delta_freq_Q7 = pitch_freq_log_Q7 - ((*psEncC1).variable_HP_smth1_Q15 >> 8 as libc::c_int);
         if delta_freq_Q7 < 0 as libc::c_int {
             delta_freq_Q7 = delta_freq_Q7 * 3 as libc::c_int;
         }
         delta_freq_Q7 = if -(((0.4f32
             * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int) as libc::c_float)
-            as libc::c_double + 0.5f64) as opus_int32)
-            > ((0.4f32
-                * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int)
-                    as libc::c_float) as libc::c_double + 0.5f64) as opus_int32
+            as libc::c_double
+            + 0.5f64) as opus_int32)
+            > ((0.4f32 * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int) as libc::c_float)
+                as libc::c_double
+                + 0.5f64) as opus_int32
         {
             if delta_freq_Q7
                 > -(((0.4f32
-                    * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int)
-                        as libc::c_float) as libc::c_double + 0.5f64) as opus_int32)
+                    * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int) as libc::c_float)
+                    as libc::c_double
+                    + 0.5f64) as opus_int32)
             {
                 -(((0.4f32
-                    * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int)
-                        as libc::c_float) as libc::c_double + 0.5f64) as opus_int32)
+                    * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int) as libc::c_float)
+                    as libc::c_double
+                    + 0.5f64) as opus_int32)
             } else if delta_freq_Q7
                 < ((0.4f32
-                    * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int)
-                        as libc::c_float) as libc::c_double + 0.5f64) as opus_int32
+                    * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int) as libc::c_float)
+                    as libc::c_double
+                    + 0.5f64) as opus_int32
             {
-                ((0.4f32
-                    * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int)
-                        as libc::c_float) as libc::c_double + 0.5f64) as opus_int32
+                ((0.4f32 * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int) as libc::c_float)
+                    as libc::c_double
+                    + 0.5f64) as opus_int32
             } else {
                 delta_freq_Q7
             }
         } else if delta_freq_Q7
-            > ((0.4f32
-                * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int)
-                    as libc::c_float) as libc::c_double + 0.5f64) as opus_int32
+            > ((0.4f32 * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int) as libc::c_float)
+                as libc::c_double
+                + 0.5f64) as opus_int32
         {
-            ((0.4f32
-                * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int)
-                    as libc::c_float) as libc::c_double + 0.5f64) as opus_int32
+            ((0.4f32 * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int) as libc::c_float)
+                as libc::c_double
+                + 0.5f64) as opus_int32
         } else if delta_freq_Q7
-            < -(((0.4f32
-                * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int)
-                    as libc::c_float) as libc::c_double + 0.5f64) as opus_int32)
+            < -(((0.4f32 * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int) as libc::c_float)
+                as libc::c_double
+                + 0.5f64) as opus_int32)
         {
-            -(((0.4f32
-                * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int)
-                    as libc::c_float) as libc::c_double + 0.5f64) as opus_int32)
+            -(((0.4f32 * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int) as libc::c_float)
+                as libc::c_double
+                + 0.5f64) as opus_int32)
         } else {
             delta_freq_Q7
         };
-        (*psEncC1)
-            .variable_HP_smth1_Q15 = ((*psEncC1).variable_HP_smth1_Q15 as libc::c_long
+        (*psEncC1).variable_HP_smth1_Q15 = ((*psEncC1).variable_HP_smth1_Q15 as libc::c_long
             + (((*psEncC1).speech_activity_Q8 as opus_int16 as opus_int32
                 * delta_freq_Q7 as opus_int16 as opus_int32) as libc::c_long
                 * ((0.1f32
-                    * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int)
-                        as libc::c_float) as libc::c_double + 0.5f64) as opus_int32
-                    as opus_int16 as opus_int64 >> 16 as libc::c_int)) as opus_int32;
-        (*psEncC1)
-            .variable_HP_smth1_Q15 = if ((silk_lin2log(60 as libc::c_int) as opus_uint32)
+                    * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int) as libc::c_float)
+                    as libc::c_double
+                    + 0.5f64) as opus_int32 as opus_int16 as opus_int64
+                >> 16 as libc::c_int)) as opus_int32;
+        (*psEncC1).variable_HP_smth1_Q15 = if ((silk_lin2log(60 as libc::c_int) as opus_uint32)
             << 8 as libc::c_int) as opus_int32
-            > ((silk_lin2log(100 as libc::c_int) as opus_uint32) << 8 as libc::c_int)
-                as opus_int32
+            > ((silk_lin2log(100 as libc::c_int) as opus_uint32) << 8 as libc::c_int) as opus_int32
         {
             if (*psEncC1).variable_HP_smth1_Q15
                 > ((silk_lin2log(60 as libc::c_int) as opus_uint32) << 8 as libc::c_int)
                     as opus_int32
             {
-                ((silk_lin2log(60 as libc::c_int) as opus_uint32) << 8 as libc::c_int)
-                    as opus_int32
+                ((silk_lin2log(60 as libc::c_int) as opus_uint32) << 8 as libc::c_int) as opus_int32
             } else if (*psEncC1).variable_HP_smth1_Q15
                 < ((silk_lin2log(100 as libc::c_int) as opus_uint32) << 8 as libc::c_int)
                     as opus_int32
@@ -404,17 +402,13 @@ pub unsafe extern "C" fn silk_HP_variable_cutoff(
                 (*psEncC1).variable_HP_smth1_Q15
             }
         } else if (*psEncC1).variable_HP_smth1_Q15
-            > ((silk_lin2log(100 as libc::c_int) as opus_uint32) << 8 as libc::c_int)
-                as opus_int32
+            > ((silk_lin2log(100 as libc::c_int) as opus_uint32) << 8 as libc::c_int) as opus_int32
         {
-            ((silk_lin2log(100 as libc::c_int) as opus_uint32) << 8 as libc::c_int)
-                as opus_int32
+            ((silk_lin2log(100 as libc::c_int) as opus_uint32) << 8 as libc::c_int) as opus_int32
         } else if (*psEncC1).variable_HP_smth1_Q15
-            < ((silk_lin2log(60 as libc::c_int) as opus_uint32) << 8 as libc::c_int)
-                as opus_int32
+            < ((silk_lin2log(60 as libc::c_int) as opus_uint32) << 8 as libc::c_int) as opus_int32
         {
-            ((silk_lin2log(60 as libc::c_int) as opus_uint32) << 8 as libc::c_int)
-                as opus_int32
+            ((silk_lin2log(60 as libc::c_int) as opus_uint32) << 8 as libc::c_int) as opus_int32
         } else {
             (*psEncC1).variable_HP_smth1_Q15
         };
