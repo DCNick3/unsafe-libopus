@@ -383,8 +383,6 @@ pub mod mathcalls_h {
     extern "C" {
         #[c2rust::src_loc = "104:17"]
         pub fn log(_: libc::c_double) -> libc::c_double;
-        #[c2rust::src_loc = "143:13"]
-        pub fn sqrt(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "165:14"]
         pub fn floor(_: libc::c_double) -> libc::c_double;
     }
@@ -713,7 +711,7 @@ use self::entenc_h::{
 pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::limits_h::CHAR_BIT;
-use self::mathcalls_h::{floor, log, sqrt};
+use self::mathcalls_h::{floor, log};
 pub use self::mathops_h::celt_maxabs16;
 pub use self::mdct_h::{clt_mdct_forward_c, mdct_lookup};
 pub use self::modes_h::{OpusCustomMode, PulseCache};
@@ -1088,8 +1086,7 @@ unsafe extern "C" fn transient_analysis(
             maxE = if maxE > mem0 { maxE } else { mem0 };
             i -= 1;
         }
-        mean = sqrt((mean * maxE) as libc::c_double * 0.5f64 * len2 as libc::c_double)
-            as libc::c_float;
+        mean = ((mean * maxE) * 0.5f32 * len2 as f32).sqrt();
         norm = len2 as libc::c_float / (1e-15f32 + mean);
         unmask = 0 as libc::c_int;
         if *tmp.as_mut_ptr().offset(0 as libc::c_int as isize)
@@ -1164,35 +1161,32 @@ unsafe extern "C" fn transient_analysis(
         *weak_transient = 1 as libc::c_int;
     }
     tf_max = if 0 as libc::c_int as libc::c_float
-        > sqrt((27 as libc::c_int * mask_metric) as libc::c_double) as libc::c_float
-            - 42 as libc::c_int as libc::c_float
+        > ((27 * mask_metric) as f32).sqrt() - 42 as libc::c_int as libc::c_float
     {
         0 as libc::c_int as libc::c_float
     } else {
-        sqrt((27 as libc::c_int * mask_metric) as libc::c_double) as libc::c_float
-            - 42 as libc::c_int as libc::c_float
+        ((27 * mask_metric) as f32).sqrt() - 42 as libc::c_int as libc::c_float
     };
-    *tf_estimate = sqrt(
-        if 0 as libc::c_int as libc::c_double
-            > (0.0069f64 as opus_val32
-                * (if (163 as libc::c_int as libc::c_float) < tf_max {
-                    163 as libc::c_int as libc::c_float
-                } else {
-                    tf_max
-                })) as libc::c_double
-                - 0.139f64
-        {
-            0 as libc::c_int as libc::c_double
-        } else {
-            (0.0069f64 as opus_val32
-                * (if (163 as libc::c_int as libc::c_float) < tf_max {
-                    163 as libc::c_int as libc::c_float
-                } else {
-                    tf_max
-                })) as libc::c_double
-                - 0.139f64
-        },
-    ) as libc::c_float;
+    *tf_estimate = (if 0 as libc::c_int as libc::c_double
+        > (0.0069f64 as opus_val32
+            * (if (163 as libc::c_int as libc::c_float) < tf_max {
+                163 as libc::c_int as libc::c_float
+            } else {
+                tf_max
+            })) as libc::c_double
+            - 0.139f64
+    {
+        0 as libc::c_int as libc::c_double
+    } else {
+        (0.0069f64 as opus_val32
+            * (if (163 as libc::c_int as libc::c_float) < tf_max {
+                163 as libc::c_int as libc::c_float
+            } else {
+                tf_max
+            })) as libc::c_double
+            - 0.139f64
+    })
+    .sqrt() as f32;
     return is_transient;
 }
 #[c2rust::src_loc = "412:1"]

@@ -263,13 +263,6 @@ pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
     pub const NULL: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:38"]
-pub mod mathcalls_h {
-    extern "C" {
-        #[c2rust::src_loc = "143:13"]
-        pub fn sqrt(_: libc::c_double) -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entdec.h:40"]
 pub mod entdec_h {
     use super::entcode_h::ec_dec;
@@ -619,7 +612,6 @@ use self::entdec_h::{ec_dec_bit_logp, ec_dec_bits, ec_dec_icdf, ec_dec_init, ec_
 pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::limits_h::CHAR_BIT;
-use self::mathcalls_h::sqrt;
 pub use self::mdct_h::{clt_mdct_backward_c, mdct_lookup};
 pub use self::modes_h::{OpusCustomMode, PulseCache, MAX_PERIOD};
 use self::opus_custom_h::opus_custom_mode_create;
@@ -1587,7 +1579,7 @@ unsafe extern "C" fn celt_decode_lost(
                 i += 1;
             }
             E1 = if E1 < E2 { E1 } else { E2 };
-            decay_0 = sqrt((E1 / E2) as libc::c_double) as libc::c_float;
+            decay_0 = (E1 / E2).sqrt();
             memmove(
                 buf as *mut libc::c_void,
                 buf.offset(N as isize) as *const libc::c_void,
@@ -1653,11 +1645,7 @@ unsafe extern "C" fn celt_decode_lost(
                     i += 1;
                 }
             } else if S1 < S2 {
-                let ratio: opus_val16 = sqrt(
-                    ((S1 + 1 as libc::c_int as libc::c_float)
-                        / (S2 + 1 as libc::c_int as libc::c_float))
-                        as libc::c_double,
-                ) as libc::c_float;
+                let ratio: opus_val16 = ((S1 + 1 as f32) / (S2 + 1 as f32)).sqrt();
                 i = 0 as libc::c_int;
                 while i < overlap {
                     let tmp_g: opus_val16 = Q15ONE - *window.offset(i as isize) * (1.0f32 - ratio);

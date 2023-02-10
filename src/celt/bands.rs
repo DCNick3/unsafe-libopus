@@ -168,13 +168,6 @@ pub mod entcode_h {
         pub fn ec_tell_frac(_this: *mut ec_ctx) -> u32;
     }
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:34"]
-pub mod mathcalls_h {
-    extern "C" {
-        #[c2rust::src_loc = "143:13"]
-        pub fn sqrt(_: libc::c_double) -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:35"]
 pub mod limits_h {
     #[c2rust::src_loc = "63:9"]
@@ -464,7 +457,6 @@ use self::entenc_h::{ec_enc_bit_logp, ec_enc_bits, ec_enc_uint, ec_encode};
 pub use self::internal::__CHAR_BIT__;
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::limits_h::CHAR_BIT;
-use self::mathcalls_h::sqrt;
 use self::mathops_h::isqrt32;
 pub use self::mdct_h::mdct_lookup;
 pub use self::modes_h::{OpusCustomMode, PulseCache};
@@ -629,8 +621,7 @@ pub unsafe extern "C" fn compute_band_energies(
                         - *eBands.offset(i as isize) as libc::c_int)
                         << LM,
                 );
-            *bandE.offset((i + c * (*m).nbEBands) as isize) =
-                sqrt(sum as libc::c_double) as libc::c_float;
+            *bandE.offset((i + c * (*m).nbEBands) as isize) = sum.sqrt();
             i += 1;
         }
         c += 1;
@@ -791,7 +782,7 @@ pub unsafe extern "C" fn anti_collapse(
                 - *((*m).eBands).offset(i as isize) as libc::c_int) as u32,
         ) >> LM) as libc::c_int;
         thresh = 0.5f32 * (std::f32::consts::LN_2 * (-0.125f32 * depth as libc::c_float)).exp();
-        sqrt_1 = 1.0f32 / sqrt((N0 << LM) as libc::c_double) as libc::c_float;
+        sqrt_1 = 1.0f32 / ((N0 << LM) as f32).sqrt();
         c = 0 as libc::c_int;
         loop {
             let mut X: *mut celt_norm = 0 as *mut celt_norm;
@@ -893,8 +884,7 @@ unsafe extern "C" fn intensity_stereo(
     let mut norm: opus_val16 = 0.;
     left = *bandE.offset(i as isize);
     right = *bandE.offset((i + (*m).nbEBands) as isize);
-    norm =
-        EPSILON + sqrt((1e-15f32 + left * left + right * right) as libc::c_double) as libc::c_float;
+    norm = EPSILON + (1e-15f32 + left * left + right * right).sqrt();
     a1 = left / norm;
     a2 = right / norm;
     j = 0 as libc::c_int;
@@ -957,9 +947,9 @@ unsafe extern "C" fn stereo_merge(
         return;
     }
     t = El;
-    lgain = 1.0f32 / sqrt(t as libc::c_double) as libc::c_float;
+    lgain = 1.0f32 / t.sqrt();
     t = Er;
-    rgain = 1.0f32 / sqrt(t as libc::c_double) as libc::c_float;
+    rgain = 1.0f32 / t.sqrt();
     j = 0 as libc::c_int;
     while j < N {
         let mut r: celt_norm = 0.;
@@ -2030,7 +2020,7 @@ unsafe extern "C" fn quant_band(
         if !lowband_out.is_null() {
             let mut j: libc::c_int = 0;
             let mut n: opus_val16 = 0.;
-            n = sqrt(N0 as libc::c_double) as libc::c_float;
+            n = (N0 as f32).sqrt();
             j = 0 as libc::c_int;
             while j < N0 {
                 *lowband_out.offset(j as isize) = n * *X.offset(j as isize);

@@ -177,13 +177,6 @@ pub mod stdlib_h {
         pub fn abs(_: libc::c_int) -> libc::c_int;
     }
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:35"]
-pub mod mathcalls_h {
-    extern "C" {
-        #[c2rust::src_loc = "143:13"]
-        pub fn sqrt(_: libc::c_double) -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/usr/include/string.h:36"]
 pub mod string_h {
     extern "C" {
@@ -200,7 +193,6 @@ pub mod opus_defines_h {
         pub fn opus_get_version_string() -> *const libc::c_char;
     }
 }
-use self::mathcalls_h::sqrt;
 use self::opus_defines_h::{opus_get_version_string, opus_strerror};
 pub use self::stddef_h::size_t;
 use self::stdio_h::{fclose, fopen, fprintf, fread, fseek, ftell, fwrite, printf, stderr};
@@ -2471,7 +2463,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                                 stderr,
                                                                                 b"bitrate standard deviation:  %7.3f kb/s\n\0" as *const u8
                                                                                     as *const libc::c_char,
-                                                                                1e-3f64 * sqrt(var) * sampling_rate as libc::c_double
+                                                                                1e-3f64 * var.sqrt() * sampling_rate as libc::c_double
                                                                                     / frame_size as libc::c_double,
                                                                             );
                                                                         } else {

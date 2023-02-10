@@ -10,13 +10,6 @@ pub mod arch_h {
         ) -> !;
     }
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:32"]
-pub mod mathcalls_h {
-    extern "C" {
-        #[c2rust::src_loc = "143:13"]
-        pub fn sqrt(_: libc::c_double) -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/usr/include/string.h:32"]
 pub mod string_h {
     extern "C" {
@@ -50,7 +43,6 @@ pub mod tuning_parameters_h {
     pub const FIND_LPC_COND_FAC: libc::c_float = 1e-5f32;
 }
 use self::arch_h::celt_fatal;
-use self::mathcalls_h::sqrt;
 use self::string_h::{memcpy, memset};
 pub use self::tuning_parameters_h::FIND_LPC_COND_FAC;
 use self::SigProc_FLP_h::{silk_energy_FLP, silk_inner_product_FLP};
@@ -176,7 +168,7 @@ pub unsafe extern "C" fn silk_burg_modified_FLP(
         rc = -2.0f64 * num / (nrg_f + nrg_b);
         tmp1 = invGain * (1.0f64 - rc * rc);
         if tmp1 <= minInvGain as libc::c_double {
-            rc = sqrt(1.0f64 - minInvGain as libc::c_double / invGain);
+            rc = (1.0f64 - minInvGain as f64 / invGain).sqrt();
             if num > 0 as libc::c_int as libc::c_double {
                 rc = -rc;
             }

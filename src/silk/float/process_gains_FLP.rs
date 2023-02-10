@@ -264,8 +264,6 @@ pub mod mathcalls_h {
     extern "C" {
         #[c2rust::src_loc = "140:17"]
         pub fn pow(_: libc::c_double, _: libc::c_double) -> libc::c_double;
-        #[c2rust::src_loc = "143:13"]
-        pub fn sqrt(_: libc::c_double) -> libc::c_double;
     }
 }
 #[c2rust::header_src = "/usr/include/string.h:32"]
@@ -331,7 +329,7 @@ pub mod tuning_parameters_h {
 }
 pub use self::define_h::{CODE_CONDITIONALLY, TYPE_VOICED};
 use self::main_h::silk_gains_quant;
-use self::mathcalls_h::{pow, sqrt};
+use self::mathcalls_h::pow;
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
@@ -384,9 +382,7 @@ pub unsafe extern "C" fn silk_process_gains_FLP(
     k = 0 as libc::c_int;
     while k < (*psEnc).sCmn.nb_subfr {
         gain = (*psEncCtrl).Gains[k as usize];
-        gain =
-            sqrt((gain * gain + (*psEncCtrl).ResNrg[k as usize] * InvMaxSqrVal) as libc::c_double)
-                as libc::c_float;
+        gain = (gain * gain + (*psEncCtrl).ResNrg[k as usize] * InvMaxSqrVal).sqrt();
         (*psEncCtrl).Gains[k as usize] = if gain < 32767.0f32 { gain } else { 32767.0f32 };
         k += 1;
     }

@@ -65,8 +65,6 @@ pub mod mathcalls_h {
     extern "C" {
         #[c2rust::src_loc = "62:17"]
         pub fn cos(_: libc::c_double) -> libc::c_double;
-        #[c2rust::src_loc = "143:13"]
-        pub fn sqrt(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "165:14"]
         pub fn floor(_: libc::c_double) -> libc::c_double;
     }
@@ -167,7 +165,7 @@ pub use self::arch_h::{celt_fatal, celt_norm, opus_val16, opus_val32, EPSILON};
 pub use self::bands_h::SPREAD_NONE;
 use self::cwrs_h::{decode_pulses, encode_pulses};
 pub use self::entcode_h::{celt_udiv, ec_ctx, ec_dec, ec_enc, ec_window};
-use self::mathcalls_h::{cos, floor, sqrt};
+use self::mathcalls_h::{cos, floor};
 pub use self::mathops_h::{cA, cB, cC, cE, fast_atan2f, PI};
 pub use self::pitch_h::celt_inner_prod_c;
 pub use self::stdint_uintn_h::uint32_t;
@@ -274,7 +272,7 @@ unsafe extern "C" fn normalise_residual(
     let mut t: opus_val32 = 0.;
     let mut g: opus_val16 = 0.;
     t = Ryy;
-    g = 1.0f32 / sqrt(t as libc::c_double) as libc::c_float * gain;
+    g = 1.0f32 / t.sqrt() * gain;
     i = 0 as libc::c_int;
     loop {
         *X.offset(i as isize) = g * *iy.offset(i as isize) as opus_val32;
@@ -543,7 +541,7 @@ pub unsafe extern "C" fn renormalise_vector(
     let mut xptr: *mut celt_norm = 0 as *mut celt_norm;
     E = EPSILON + celt_inner_prod_c(X, X, N);
     t = E;
-    g = 1.0f32 / sqrt(t as libc::c_double) as libc::c_float * gain;
+    g = 1.0f32 / t.sqrt() * gain;
     xptr = X;
     i = 0 as libc::c_int;
     while i < N {
@@ -584,8 +582,8 @@ pub unsafe extern "C" fn stereo_itheta(
         Emid += celt_inner_prod_c(X, X, N);
         Eside += celt_inner_prod_c(Y, Y, N);
     }
-    mid = sqrt(Emid as libc::c_double) as libc::c_float;
-    side = sqrt(Eside as libc::c_double) as libc::c_float;
+    mid = Emid.sqrt();
+    side = Eside.sqrt();
     itheta = floor(
         (0.5f32 + 16384 as libc::c_int as libc::c_float * 0.63662f32 * fast_atan2f(side, mid))
             as libc::c_double,

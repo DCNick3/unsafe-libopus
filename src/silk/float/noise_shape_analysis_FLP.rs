@@ -266,8 +266,6 @@ pub mod mathcalls_h {
         pub fn log10(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "140:17"]
         pub fn pow(_: libc::c_double, _: libc::c_double) -> libc::c_double;
-        #[c2rust::src_loc = "143:13"]
-        pub fn sqrt(_: libc::c_double) -> libc::c_double;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/main_FLP.h:32"]
@@ -379,7 +377,7 @@ pub mod tuning_parameters_h {
 }
 pub use self::define_h::{MAX_SHAPE_LPC_ORDER, MIN_QGAIN_DB, TYPE_VOICED, USE_HARM_SHAPING};
 use self::main_FLP_h::{silk_apply_sine_window_FLP, silk_warped_autocorrelation_FLP};
-use self::mathcalls_h::{pow, sqrt};
+use self::mathcalls_h::pow;
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
@@ -671,7 +669,7 @@ pub unsafe extern "C" fn silk_noise_shape_analysis_FLP(
             rc.as_mut_ptr(),
             (*psEnc).sCmn.shapingLPCOrder,
         );
-        (*psEncCtrl).Gains[k as usize] = sqrt(nrg as libc::c_double) as libc::c_float;
+        (*psEncCtrl).Gains[k as usize] = (nrg).sqrt();
         if (*psEnc).sCmn.warping_Q16 > 0 as libc::c_int {
             (*psEncCtrl).Gains[k as usize] *= warped_gain(
                 &mut *((*psEncCtrl).AR)
@@ -760,7 +758,7 @@ pub unsafe extern "C" fn silk_noise_shape_analysis_FLP(
         HarmShapeGain = HARMONIC_SHAPING;
         HarmShapeGain += HIGH_RATE_OR_LOW_QUALITY_HARMONIC_SHAPING
             * (1.0f32 - (1.0f32 - (*psEncCtrl).coding_quality) * (*psEncCtrl).input_quality);
-        HarmShapeGain *= sqrt((*psEnc).LTPCorr as libc::c_double) as libc::c_float;
+        HarmShapeGain *= ((*psEnc).LTPCorr).sqrt();
     } else {
         HarmShapeGain = 0.0f32;
     }

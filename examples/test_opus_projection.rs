@@ -293,15 +293,6 @@ pub mod test_opus_common_h {
     use super::stdlib_h::abort;
     use libopus_unsafe::opus_get_version_string;
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:41"]
-pub mod mathcalls_h {
-    extern "C" {
-        #[c2rust::src_loc = "143:13"]
-        pub fn sqrt(_: libc::c_double) -> libc::c_double;
-        #[c2rust::src_loc = "165:14"]
-        pub fn floor(_: libc::c_double) -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/os_support.h:41"]
 pub mod os_support_h {
     #[inline]
@@ -327,7 +318,6 @@ pub use self::mapping_matrix_h::{
     mapping_matrix_multiply_channel_in_short, mapping_matrix_multiply_channel_out_float,
     mapping_matrix_multiply_channel_out_short, MappingMatrix,
 };
-use self::mathcalls_h::{floor, sqrt};
 pub use self::os_support_h::{opus_alloc, opus_free};
 pub use self::stddef_h::size_t;
 use self::stdio_h::{fprintf, stderr};
@@ -662,8 +652,7 @@ pub unsafe extern "C" fn test_creation_arguments(
     let mut st_dec: *mut OpusProjectionDecoder = std::ptr::null_mut::<OpusProjectionDecoder>();
     let Fs: i32 = 48000 as libc::c_int;
     let application: libc::c_int = 2049 as libc::c_int;
-    let mut order_plus_one: libc::c_int =
-        floor(sqrt(channels as libc::c_float as libc::c_double)) as libc::c_int;
+    let mut order_plus_one: libc::c_int = (channels as f32).sqrt().floor() as libc::c_int;
     let mut nondiegetic_channels: libc::c_int = channels - order_plus_one * order_plus_one;
     let mut is_channels_valid: libc::c_int = 0 as libc::c_int;
     let mut is_projection_valid: libc::c_int = 0 as libc::c_int;

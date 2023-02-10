@@ -29,13 +29,6 @@ pub mod arch_h {
         ) -> !;
     }
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:38"]
-pub mod mathcalls_h {
-    extern "C" {
-        #[c2rust::src_loc = "143:13"]
-        pub fn sqrt(_: libc::c_double) -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:38"]
 pub mod entcode_h {
     #[inline]
@@ -273,7 +266,6 @@ pub mod celt_lpc_h {
 pub use self::arch_h::{celt_fatal, celt_sig, opus_val16, opus_val32, Q15ONE};
 use self::celt_lpc_h::{_celt_autocorr, _celt_lpc};
 pub use self::entcode_h::celt_udiv;
-use self::mathcalls_h::sqrt;
 pub use self::pitch_h::{celt_inner_prod_c, celt_pitch_xcorr, dual_inner_prod_c, xcorr_kernel_c};
 pub use self::stddef_h::NULL;
 pub use self::stdint_uintn_h::uint32_t;
@@ -619,8 +611,7 @@ unsafe extern "C" fn compute_pitch_gain(
     xx: opus_val32,
     yy: opus_val32,
 ) -> opus_val16 {
-    return xy
-        / sqrt((1 as libc::c_int as libc::c_float + xx * yy) as libc::c_double) as libc::c_float;
+    return xy / (1 as libc::c_int as libc::c_float + xx * yy).sqrt();
 }
 #[c2rust::src_loc = "430:18"]
 static mut second_check: [libc::c_int; 16] = [

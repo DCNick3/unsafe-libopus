@@ -839,8 +839,6 @@ pub mod opus_defines_h {
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:33"]
 pub mod mathcalls_h {
     extern "C" {
-        #[c2rust::src_loc = "143:13"]
-        pub fn sqrt(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "165:14"]
         pub fn floor(_: libc::c_double) -> libc::c_double;
     }
@@ -1056,7 +1054,7 @@ use self::entenc_h::{ec_enc_bit_logp, ec_enc_done, ec_enc_init, ec_enc_shrink, e
 pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::limits_h::CHAR_BIT;
-use self::mathcalls_h::{floor, sqrt};
+use self::mathcalls_h::floor;
 pub use self::mdct_h::mdct_lookup;
 pub use self::modes_h::{OpusCustomMode, PulseCache};
 use self::opus_custom_h::{opus_custom_encoder_ctl, OpusCustomEncoder};
@@ -1927,10 +1925,10 @@ pub unsafe extern "C" fn compute_stereo_width(
         let mut corr: opus_val16 = 0.;
         let mut ldiff: opus_val16 = 0.;
         let mut width: opus_val16 = 0.;
-        sqrt_xx = sqrt((*mem).XX as libc::c_double) as libc::c_float;
-        sqrt_yy = sqrt((*mem).YY as libc::c_double) as libc::c_float;
-        qrrt_xx = sqrt(sqrt_xx as libc::c_double) as libc::c_float;
-        qrrt_yy = sqrt(sqrt_yy as libc::c_double) as libc::c_float;
+        sqrt_xx = ((*mem).XX).sqrt();
+        sqrt_yy = ((*mem).YY).sqrt();
+        qrrt_xx = (sqrt_xx).sqrt();
+        qrrt_yy = (sqrt_yy).sqrt();
         (*mem).XY = if (*mem).XY < sqrt_xx * sqrt_yy {
             (*mem).XY
         } else {
@@ -1938,7 +1936,7 @@ pub unsafe extern "C" fn compute_stereo_width(
         };
         corr = (*mem).XY / (1e-15f32 + sqrt_xx * sqrt_yy);
         ldiff = 1.0f32 * (qrrt_xx - qrrt_yy).abs() / (EPSILON + qrrt_xx + qrrt_yy);
-        width = sqrt((1.0f32 - corr * corr) as libc::c_double) as libc::c_float * ldiff;
+        width = (1.0f32 - corr * corr).sqrt() * ldiff;
         (*mem).smoothed_width += (width - (*mem).smoothed_width) / frame_rate as libc::c_float;
         (*mem).max_follower = if (*mem).max_follower - 0.02f32 / frame_rate as libc::c_float
             > (*mem).smoothed_width

@@ -291,8 +291,6 @@ pub mod mathcalls_h {
         pub fn log(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "107:17"]
         pub fn log10(_: libc::c_double) -> libc::c_double;
-        #[c2rust::src_loc = "143:13"]
-        pub fn sqrt(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "165:14"]
         pub fn floor(_: libc::c_double) -> libc::c_double;
     }
@@ -390,7 +388,7 @@ pub use self::kiss_fft_h::{
     arch_fft_state, kiss_fft_cpx, kiss_fft_state, kiss_twiddle_cpx, opus_fft_c,
 };
 pub use self::math_h::M_PI;
-use self::mathcalls_h::{floor, log, log10, sqrt};
+use self::mathcalls_h::{floor, log, log10};
 pub use self::mathops_h::{cA, cB, cC, cE, fast_atan2f, PI};
 pub use self::mdct_h::mdct_lookup;
 pub use self::mlp_h::{compute_dense, compute_gru, layer0, layer1, layer2, DenseLayer, GRULayer};
@@ -1509,7 +1507,7 @@ unsafe extern "C" fn tonality_analysis(
         }
         (*tonal).E[(*tonal).E_count as usize][b as usize] = E_0;
         frame_noisiness += nE / (1e-15f32 + E_0);
-        frame_loudness += sqrt((E_0 + 1e-10f32) as libc::c_double) as libc::c_float;
+        frame_loudness += (E_0 + 1e-10f32).sqrt();
         logE[b as usize] = log((E_0 + 1e-10f32) as libc::c_double) as libc::c_float;
         band_log2[(b + 1 as libc::c_int) as usize] =
             0.5f32 * 1.442695f32 * log((E_0 + 1e-10f32) as libc::c_double) as libc::c_float;
@@ -1556,18 +1554,14 @@ unsafe extern "C" fn tonality_analysis(
         L1 = L2;
         i = 0 as libc::c_int;
         while i < NB_FRAMES {
-            L1 += sqrt((*tonal).E[i as usize][b as usize] as libc::c_double) as libc::c_float;
+            L1 += ((*tonal).E[i as usize][b as usize]).sqrt();
             L2 += (*tonal).E[i as usize][b as usize];
             i += 1;
         }
-        stationarity = if 0.99f32
-            < L1 / sqrt(1e-15f64 + (8 as libc::c_int as libc::c_float * L2) as libc::c_double)
-                as libc::c_float
-        {
+        stationarity = if 0.99f32 < L1 / (1e-15 + (8 as libc::c_int as libc::c_float * L2)).sqrt() {
             0.99f32
         } else {
-            L1 / sqrt(1e-15f64 + (8 as libc::c_int as libc::c_float * L2) as libc::c_double)
-                as libc::c_float
+            L1 / (1e-15 + (8 as libc::c_int as libc::c_float * L2)).sqrt()
         };
         stationarity *= stationarity;
         stationarity *= stationarity;
@@ -1694,10 +1688,8 @@ unsafe extern "C" fn tonality_analysis(
         spec_variability += mindist;
         i += 1;
     }
-    spec_variability = sqrt(
-        (spec_variability / NB_FRAMES as libc::c_float / NB_TBANDS as libc::c_float)
-            as libc::c_double,
-    ) as libc::c_float;
+    spec_variability =
+        (spec_variability / NB_FRAMES as libc::c_float / NB_TBANDS as libc::c_float).sqrt();
     bandwidth_mask = 0 as libc::c_int as libc::c_float;
     bandwidth = 0 as libc::c_int;
     maxE = 0 as libc::c_int as libc::c_float;
@@ -1942,8 +1934,7 @@ unsafe extern "C" fn tonality_analysis(
     i = 0 as libc::c_int;
     while i < 9 as libc::c_int {
         features[(11 as libc::c_int + i) as usize] =
-            sqrt((*tonal).std[i as usize] as libc::c_double) as libc::c_float
-                - std_feature_bias[i as usize];
+            ((*tonal).std[i as usize]).sqrt() - std_feature_bias[i as usize];
         i += 1;
     }
     features[18 as libc::c_int as usize] = spec_variability - 0.78f32;
