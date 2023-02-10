@@ -65,8 +65,6 @@ pub mod mathcalls_h {
     extern "C" {
         #[c2rust::src_loc = "62:17"]
         pub fn cos(_: libc::c_double) -> libc::c_double;
-        #[c2rust::src_loc = "165:14"]
-        pub fn floor(_: libc::c_double) -> libc::c_double;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.h:33"]
@@ -165,7 +163,7 @@ pub use self::arch_h::{celt_fatal, celt_norm, opus_val16, opus_val32, EPSILON};
 pub use self::bands_h::SPREAD_NONE;
 use self::cwrs_h::{decode_pulses, encode_pulses};
 pub use self::entcode_h::{celt_udiv, ec_ctx, ec_dec, ec_enc, ec_window};
-use self::mathcalls_h::{cos, floor};
+use self::mathcalls_h::cos;
 pub use self::mathops_h::{cA, cB, cC, cE, fast_atan2f, PI};
 pub use self::pitch_h::celt_inner_prod_c;
 pub use self::stdint_uintn_h::uint32_t;
@@ -377,8 +375,7 @@ pub unsafe extern "C" fn op_pvq_search_c(
         rcp = (K as libc::c_float + 0.8f32) * (1.0f32 / sum);
         j = 0 as libc::c_int;
         loop {
-            *iy.offset(j as isize) =
-                floor((rcp * *X.offset(j as isize)) as libc::c_double) as libc::c_int;
+            *iy.offset(j as isize) = (rcp * *X.offset(j as isize)).floor() as libc::c_int;
             *y.as_mut_ptr().offset(j as isize) = *iy.offset(j as isize) as celt_norm;
             yy = yy + *y.as_mut_ptr().offset(j as isize) * *y.as_mut_ptr().offset(j as isize);
             xy = xy + *X.offset(j as isize) * *y.as_mut_ptr().offset(j as isize);
@@ -584,9 +581,7 @@ pub unsafe extern "C" fn stereo_itheta(
     }
     mid = Emid.sqrt();
     side = Eside.sqrt();
-    itheta = floor(
-        (0.5f32 + 16384 as libc::c_int as libc::c_float * 0.63662f32 * fast_atan2f(side, mid))
-            as libc::c_double,
-    ) as libc::c_int;
+    itheta = (0.5f32 + 16384 as libc::c_int as libc::c_float * 0.63662f32 * fast_atan2f(side, mid))
+        .floor() as libc::c_int;
     return itheta;
 }

@@ -462,8 +462,6 @@ pub mod mathcalls_h {
     extern "C" {
         #[c2rust::src_loc = "104:17"]
         pub fn log(_: libc::c_double) -> libc::c_double;
-        #[c2rust::src_loc = "165:14"]
-        pub fn floor(_: libc::c_double) -> libc::c_double;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/celt.h:34"]
@@ -579,7 +577,7 @@ pub use self::celt_h::{
 };
 pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
-use self::mathcalls_h::{floor, log};
+use self::mathcalls_h::log;
 pub use self::mdct_h::{clt_mdct_forward_c, mdct_lookup};
 pub use self::modes_h::{OpusCustomMode, PulseCache};
 pub use self::opus_defines_h::{
@@ -925,7 +923,7 @@ unsafe extern "C" fn logSum(a: opus_val16, b: opus_val16) -> opus_val16 {
     if !(diff < 8.0f32) {
         return max;
     }
-    low = floor((2 as libc::c_int as libc::c_float * diff) as libc::c_double) as libc::c_int;
+    low = (2 as libc::c_int as libc::c_float * diff).floor() as libc::c_int;
     frac = 2 as libc::c_int as libc::c_float * diff - low as libc::c_float;
     return max
         + diff_table[low as usize]

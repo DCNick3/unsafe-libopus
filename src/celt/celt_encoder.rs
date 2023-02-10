@@ -383,8 +383,6 @@ pub mod mathcalls_h {
     extern "C" {
         #[c2rust::src_loc = "104:17"]
         pub fn log(_: libc::c_double) -> libc::c_double;
-        #[c2rust::src_loc = "165:14"]
-        pub fn floor(_: libc::c_double) -> libc::c_double;
     }
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:40"]
@@ -711,7 +709,7 @@ use self::entenc_h::{
 pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::limits_h::CHAR_BIT;
-use self::mathcalls_h::{floor, log};
+use self::mathcalls_h::log;
 pub use self::mathops_h::celt_maxabs16;
 pub use self::mdct_h::{clt_mdct_forward_c, mdct_lookup};
 pub use self::modes_h::{OpusCustomMode, PulseCache};
@@ -1108,41 +1106,21 @@ unsafe extern "C" fn transient_analysis(
         i = 12 as libc::c_int;
         while i < len2 - 5 as libc::c_int {
             let mut id: libc::c_int = 0;
-            id = (if 0 as libc::c_int as libc::c_double
-                > (if (127 as libc::c_int as libc::c_double)
-                    < floor(
-                        (64 as libc::c_int as libc::c_float
-                            * norm
-                            * (*tmp.as_mut_ptr().offset(i as isize) + 1e-15f32))
-                            as libc::c_double,
-                    )
+            id = (if 0.0
+                > (if 127.0
+                    < (64.0 * norm * (*tmp.as_mut_ptr().offset(i as isize) + 1e-15f32)).floor()
                 {
-                    127 as libc::c_int as libc::c_double
+                    127.0
                 } else {
-                    floor(
-                        (64 as libc::c_int as libc::c_float
-                            * norm
-                            * (*tmp.as_mut_ptr().offset(i as isize) + 1e-15f32))
-                            as libc::c_double,
-                    )
+                    (64.0 * norm * (*tmp.as_mut_ptr().offset(i as isize) + 1e-15f32)).floor()
                 }) {
-                0 as libc::c_int as libc::c_double
-            } else if (127 as libc::c_int as libc::c_double)
-                < floor(
-                    (64 as libc::c_int as libc::c_float
-                        * norm
-                        * (*tmp.as_mut_ptr().offset(i as isize) + 1e-15f32))
-                        as libc::c_double,
-                )
+                0.0
+            } else if 127.0
+                < (64.0 * norm * (*tmp.as_mut_ptr().offset(i as isize) + 1e-15f32)).floor()
             {
-                127 as libc::c_int as libc::c_double
+                127.0
             } else {
-                floor(
-                    (64 as libc::c_int as libc::c_float
-                        * norm
-                        * (*tmp.as_mut_ptr().offset(i as isize) + 1e-15f32))
-                        as libc::c_double,
-                )
+                (64.0 * norm * (*tmp.as_mut_ptr().offset(i as isize) + 1e-15f32)).floor()
             }) as libc::c_int;
             unmask += inv_table[id as usize] as libc::c_int;
             i += 4 as libc::c_int;
@@ -1948,7 +1926,7 @@ unsafe extern "C" fn alloc_trim_analysis(
             2.0f32 * ((*analysis).tonality_slope + 0.05f32)
         };
     }
-    trim_index = floor((0.5f32 + trim) as libc::c_double) as libc::c_int;
+    trim_index = (0.5f32 + trim).floor() as libc::c_int;
     trim_index = if 0 as libc::c_int
         > (if (10 as libc::c_int) < trim_index {
             10 as libc::c_int
@@ -2215,16 +2193,16 @@ unsafe extern "C" fn dynalloc_analysis(
                 *mask.as_mut_ptr().offset(i as isize)
             });
         let shift: libc::c_int = if (5 as libc::c_int)
-            < (if 0 as libc::c_int > -(floor((0.5f32 + smr) as libc::c_double) as libc::c_int) {
+            < (if 0 as libc::c_int > -((0.5f32 + smr).floor() as libc::c_int) {
                 0 as libc::c_int
             } else {
-                -(floor((0.5f32 + smr) as libc::c_double) as libc::c_int)
+                -((0.5f32 + smr).floor() as libc::c_int)
             }) {
             5 as libc::c_int
-        } else if 0 as libc::c_int > -(floor((0.5f32 + smr) as libc::c_double) as libc::c_int) {
+        } else if 0 as libc::c_int > -((0.5f32 + smr).floor() as libc::c_int) {
             0 as libc::c_int
         } else {
-            -(floor((0.5f32 + smr) as libc::c_double) as libc::c_int)
+            -((0.5f32 + smr).floor() as libc::c_int)
         };
         *spread_weight.offset(i as isize) = 32 as libc::c_int >> shift;
         i += 1;
@@ -2392,17 +2370,16 @@ unsafe extern "C" fn dynalloc_analysis(
         }
         i = start;
         while i < end {
-            *importance.offset(i as isize) = floor(
-                (0.5f32
-                    + 13 as libc::c_int as libc::c_float
-                        * (std::f32::consts::LN_2
-                            * (if *follower.as_mut_ptr().offset(i as isize) < 4.0f32 {
-                                *follower.as_mut_ptr().offset(i as isize)
-                            } else {
-                                4.0f32
-                            }))
-                        .exp()) as libc::c_double,
-            ) as libc::c_int;
+            *importance.offset(i as isize) = (0.5f32
+                + 13.0
+                    * (std::f32::consts::LN_2
+                        * (if *follower.as_mut_ptr().offset(i as isize) < 4.0f32 {
+                            *follower.as_mut_ptr().offset(i as isize)
+                        } else {
+                            4.0f32
+                        }))
+                    .exp())
+            .floor() as libc::c_int;
             i += 1;
         }
         if (vbr == 0 || constrained_vbr != 0) && isTransient == 0 {
@@ -2641,11 +2618,9 @@ unsafe extern "C" fn run_prefilter(
         if ((gain1 - (*st).prefilter_gain).abs()) < 0.1f32 {
             gain1 = (*st).prefilter_gain;
         }
-        qg = floor(
-            (0.5f32
-                + gain1 * 32 as libc::c_int as libc::c_float / 3 as libc::c_int as libc::c_float)
-                as libc::c_double,
-        ) as libc::c_int
+        qg = (0.5f32
+            + gain1 * 32 as libc::c_int as libc::c_float / 3 as libc::c_int as libc::c_float)
+            .floor() as libc::c_int
             - 1 as libc::c_int;
         qg = if 0 as libc::c_int
             > (if (7 as libc::c_int) < qg {

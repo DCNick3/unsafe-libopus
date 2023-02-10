@@ -291,8 +291,6 @@ pub mod mathcalls_h {
         pub fn log(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "107:17"]
         pub fn log10(_: libc::c_double) -> libc::c_double;
-        #[c2rust::src_loc = "165:14"]
-        pub fn floor(_: libc::c_double) -> libc::c_double;
     }
 }
 #[c2rust::header_src = "/usr/include/string.h:36"]
@@ -388,7 +386,7 @@ pub use self::kiss_fft_h::{
     arch_fft_state, kiss_fft_cpx, kiss_fft_state, kiss_twiddle_cpx, opus_fft_c,
 };
 pub use self::math_h::M_PI;
-use self::mathcalls_h::{floor, log, log10};
+use self::mathcalls_h::{log, log10};
 pub use self::mathops_h::{cA, cB, cC, cE, fast_atan2f, PI};
 pub use self::mdct_h::mdct_lookup;
 pub use self::mlp_h::{compute_dense, compute_gru, layer0, layer1, layer2, DenseLayer, GRULayer};
@@ -1652,13 +1650,12 @@ unsafe extern "C" fn tonality_analysis(
         } else {
             band_log2[b as usize] - (leakage_from[b as usize] + 2.5f32)
         });
-        (*info).leak_boost[b as usize] = (if (255 as libc::c_int)
-            < floor(0.5f64 + (64.0f32 * boost) as libc::c_double) as libc::c_int
-        {
-            255 as libc::c_int
-        } else {
-            floor(0.5f64 + (64.0f32 * boost) as libc::c_double) as libc::c_int
-        }) as libc::c_uchar;
+        (*info).leak_boost[b as usize] =
+            (if (255 as libc::c_int) < (0.5 + (64.0 * boost)).floor() as libc::c_int {
+                255 as libc::c_int
+            } else {
+                (0.5 + (64.0 * boost)).floor() as libc::c_int
+            }) as libc::c_uchar;
         b += 1;
     }
     while b < LEAK_BANDS {

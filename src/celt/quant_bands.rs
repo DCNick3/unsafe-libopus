@@ -160,8 +160,6 @@ pub mod mathcalls_h {
     extern "C" {
         #[c2rust::src_loc = "104:17"]
         pub fn log(_: libc::c_double) -> libc::c_double;
-        #[c2rust::src_loc = "165:14"]
-        pub fn floor(_: libc::c_double) -> libc::c_double;
     }
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:33"]
@@ -273,7 +271,7 @@ pub use self::internal::__CHAR_BIT__;
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 use self::laplace_h::{ec_laplace_decode, ec_laplace_encode};
 pub use self::limits_h::CHAR_BIT;
-use self::mathcalls_h::{floor, log};
+use self::mathcalls_h::log;
 pub use self::mdct_h::mdct_lookup;
 pub use self::modes_h::{OpusCustomMode, PulseCache};
 pub use self::rate_h::MAX_FINE_BITS;
@@ -787,7 +785,7 @@ unsafe extern "C" fn quant_coarse_energy_impl(
                 *oldEBands.offset((i + c * (*m).nbEBands) as isize)
             };
             f = x - coef * oldE - prev[c as usize];
-            qi = floor((0.5f32 + f) as libc::c_double) as libc::c_int;
+            qi = (0.5f32 + f).floor() as libc::c_int;
             decay_bound = (if -28.0f32 > *oldEBands.offset((i + c * (*m).nbEBands) as isize) {
                 -28.0f32
             } else {
@@ -1138,11 +1136,9 @@ pub unsafe extern "C" fn quant_fine_energy(
             loop {
                 let mut q2: libc::c_int = 0;
                 let mut offset: opus_val16 = 0.;
-                q2 = floor(
-                    ((*error.offset((i + c * (*m).nbEBands) as isize) + 0.5f32)
-                        * frac as libc::c_int as libc::c_float)
-                        as libc::c_double,
-                ) as libc::c_int;
+                q2 = ((*error.offset((i + c * (*m).nbEBands) as isize) + 0.5f32)
+                    * frac as libc::c_int as libc::c_float)
+                    .floor() as libc::c_int;
                 if q2 > frac as libc::c_int - 1 as libc::c_int {
                     q2 = frac as libc::c_int - 1 as libc::c_int;
                 }

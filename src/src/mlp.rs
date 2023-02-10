@@ -35,13 +35,6 @@ pub mod mlp_h {
     #[c2rust::src_loc = "32:9"]
     pub const WEIGHTS_SCALE: libc::c_float = 1.0f32 / 128 as libc::c_int as libc::c_float;
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:32"]
-pub mod mathcalls_h {
-    extern "C" {
-        #[c2rust::src_loc = "165:14"]
-        pub fn floor(_: libc::c_double) -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/tansig_table.h:36"]
 pub mod tansig_table_h {
     #[c2rust::src_loc = "3:20"]
@@ -249,7 +242,6 @@ pub mod tansig_table_h {
         1.000000f32,
     ];
 }
-use self::mathcalls_h::floor;
 pub use self::mlp_h::{DenseLayer, GRULayer, WEIGHTS_SCALE};
 pub use self::stdint_intn_h::int8_t;
 pub use self::tansig_table_h::tansig_table;
@@ -274,7 +266,7 @@ unsafe extern "C" fn tansig_approx(mut x: libc::c_float) -> libc::c_float {
         x = -x;
         sign = -(1 as libc::c_int) as libc::c_float;
     }
-    i = floor((0.5f32 + 25 as libc::c_int as libc::c_float * x) as libc::c_double) as libc::c_int;
+    i = (0.5f32 + 25.0 * x).floor() as libc::c_int;
     x -= 0.04f32 * i as libc::c_float;
     y = tansig_table[i as usize];
     dy = 1 as libc::c_int as libc::c_float - y * y;

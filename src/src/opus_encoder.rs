@@ -836,13 +836,6 @@ pub mod opus_defines_h {
     #[c2rust::src_loc = "46:9"]
     pub const OPUS_OK: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:33"]
-pub mod mathcalls_h {
-    extern "C" {
-        #[c2rust::src_loc = "165:14"]
-        pub fn floor(_: libc::c_double) -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:33"]
 pub mod entenc_h {
     use super::entcode_h::ec_enc;
@@ -1054,7 +1047,6 @@ use self::entenc_h::{ec_enc_bit_logp, ec_enc_done, ec_enc_init, ec_enc_shrink, e
 pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::limits_h::CHAR_BIT;
-use self::mathcalls_h::floor;
 pub use self::mdct_h::mdct_lookup;
 pub use self::modes_h::{OpusCustomMode, PulseCache};
 use self::opus_custom_h::{opus_custom_encoder_ctl, OpusCustomEncoder};
@@ -2513,12 +2505,7 @@ pub unsafe extern "C" fn opus_encode_native(
             } else {
                 prob = analysis_info.music_prob_min;
             }
-            (*st).voice_ratio = floor(
-                0.5f64
-                    + (100 as libc::c_int as libc::c_float
-                        * (1 as libc::c_int as libc::c_float - prob))
-                        as libc::c_double,
-            ) as libc::c_int;
+            (*st).voice_ratio = (0.5 + (100.0 * (1.0 - prob))).floor() as libc::c_int;
         }
         analysis_bandwidth = analysis_info.bandwidth;
         if analysis_bandwidth <= 12 as libc::c_int {
