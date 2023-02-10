@@ -1,4 +1,19 @@
+#![allow(dead_code)]
+#![allow(mutable_transmutes)]
+#![allow(non_camel_case_types)]
+#![allow(non_snake_case)]
+#![allow(non_upper_case_globals)]
+#![allow(unused_assignments)]
+#![allow(unused_mut)]
+#![feature(c_variadic)]
+#![feature(extern_types)]
+#![feature(label_break_value)]
+#![feature(register_tool)]
+#![feature(stdsimd)]
+#![register_tool(c2rust)]
+
 use ::libc;
+
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:32"]
 pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]
@@ -107,50 +122,50 @@ pub mod opus_types_h {
     use super::stdint_intn_h::{int16_t, int32_t};
     use super::stdint_uintn_h::uint32_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus.h:45"]
-pub mod opus_h {
-    use super::opus_types_h::{opus_int16, opus_int32};
-    extern "C" {
-        #[c2rust::src_loc = "399:16"]
-        pub type OpusDecoder;
-        #[c2rust::src_loc = "406:1"]
-        pub fn opus_decoder_get_size(channels: libc::c_int) -> libc::c_int;
-        #[c2rust::src_loc = "423:1"]
-        pub fn opus_decoder_create(
-            Fs: opus_int32,
-            channels: libc::c_int,
-            error: *mut libc::c_int,
-        ) -> *mut OpusDecoder;
-        #[c2rust::src_loc = "462:1"]
-        pub fn opus_decode(
-            st: *mut OpusDecoder,
-            data: *const libc::c_uchar,
-            len: opus_int32,
-            pcm: *mut opus_int16,
-            frame_size: libc::c_int,
-            decode_fec: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "507:1"]
-        pub fn opus_decoder_ctl(st: *mut OpusDecoder, request: libc::c_int, _: ...) -> libc::c_int;
-        #[c2rust::src_loc = "512:1"]
-        pub fn opus_decoder_destroy(st: *mut OpusDecoder);
-        #[c2rust::src_loc = "563:1"]
-        pub fn opus_packet_get_nb_channels(data: *const libc::c_uchar) -> libc::c_int;
-        #[c2rust::src_loc = "594:1"]
-        pub fn opus_decoder_get_nb_samples(
-            dec: *const OpusDecoder,
-            packet: *const libc::c_uchar,
-            len: opus_int32,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "606:1"]
-        pub fn opus_pcm_soft_clip(
-            pcm: *mut libc::c_float,
-            frame_size: libc::c_int,
-            channels: libc::c_int,
-            softclip_mem: *mut libc::c_float,
-        );
-    }
-}
+// #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus.h:45"]
+// pub mod opus_h {
+//     use super::opus_types_h::{opus_int16, opus_int32};
+//     extern "C" {
+//         #[c2rust::src_loc = "399:16"]
+//         pub type OpusDecoder;
+//         #[c2rust::src_loc = "406:1"]
+//         pub fn opus_decoder_get_size(channels: libc::c_int) -> libc::c_int;
+//         #[c2rust::src_loc = "423:1"]
+//         pub fn opus_decoder_create(
+//             Fs: opus_int32,
+//             channels: libc::c_int,
+//             error: *mut libc::c_int,
+//         ) -> *mut OpusDecoder;
+//         #[c2rust::src_loc = "462:1"]
+//         pub fn opus_decode(
+//             st: *mut OpusDecoder,
+//             data: *const libc::c_uchar,
+//             len: opus_int32,
+//             pcm: *mut opus_int16,
+//             frame_size: libc::c_int,
+//             decode_fec: libc::c_int,
+//         ) -> libc::c_int;
+//         #[c2rust::src_loc = "507:1"]
+//         pub fn opus_decoder_ctl(st: *mut OpusDecoder, request: libc::c_int, _: ...) -> libc::c_int;
+//         #[c2rust::src_loc = "512:1"]
+//         pub fn opus_decoder_destroy(st: *mut OpusDecoder);
+//         #[c2rust::src_loc = "563:1"]
+//         pub fn opus_packet_get_nb_channels(data: *const libc::c_uchar) -> libc::c_int;
+//         #[c2rust::src_loc = "594:1"]
+//         pub fn opus_decoder_get_nb_samples(
+//             dec: *const OpusDecoder,
+//             packet: *const libc::c_uchar,
+//             len: opus_int32,
+//         ) -> libc::c_int;
+//         #[c2rust::src_loc = "606:1"]
+//         pub fn opus_pcm_soft_clip(
+//             pcm: *mut libc::c_float,
+//             frame_size: libc::c_int,
+//             channels: libc::c_int,
+//             softclip_mem: *mut libc::c_float,
+//         );
+//     }
+// }
 #[c2rust::header_src = "/usr/include/stdio.h:32"]
 pub mod stdio_h {
     use super::FILE_h::FILE;
@@ -222,13 +237,6 @@ pub mod unistd_h {
     extern "C" {
         #[c2rust::src_loc = "650:1"]
         pub fn getpid() -> __pid_t;
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:45"]
-pub mod opus_defines_h {
-    extern "C" {
-        #[c2rust::src_loc = "792:1"]
-        pub fn opus_get_version_string() -> *const libc::c_char;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/tests/test_opus_common.h:46"]
@@ -342,32 +350,28 @@ pub mod test_opus_common_h {
         );
         abort();
     }
-    use super::opus_defines_h::opus_get_version_string;
+
     use super::opus_types_h::opus_uint32;
     use super::stdio_h::{fprintf, stderr};
     use super::stdlib_h::{abort, free, malloc};
     use super::string_h::memset;
+    use libopus_unsafe::celt::celt::opus_get_version_string;
 }
-use self::opus_defines_h::opus_get_version_string;
-use self::opus_h::{
-    opus_decode, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy,
-    opus_decoder_get_nb_samples, opus_decoder_get_size, opus_packet_get_nb_channels,
-    opus_pcm_soft_clip, OpusDecoder,
-};
 pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32};
-pub use self::stddef_h::size_t;
-pub use self::stdint_intn_h::{int16_t, int32_t};
-pub use self::stdint_uintn_h::uint32_t;
 use self::stdio_h::{fprintf, printf, stderr, stdout};
-pub use self::stdlib_h::{abort, atoi, free, getenv, malloc, rand, strtol};
+pub use self::stdlib_h::{atoi, free, getenv, malloc, rand};
 use self::string_h::{memcpy, memset};
-pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
-pub use self::test_opus_common_h::{deb2_impl, debruijn2, Rw, Rz, _test_failed, fast_rand, iseed};
+pub use self::test_opus_common_h::{debruijn2, Rw, Rz, _test_failed, fast_rand, iseed};
 use self::time_h::time;
 pub use self::time_t_h::time_t;
-pub use self::types_h::{__int16_t, __int32_t, __off64_t, __off_t, __pid_t, __time_t, __uint32_t};
 use self::unistd_h::getpid;
-pub use self::FILE_h::FILE;
+
+use libopus_unsafe::celt::celt::opus_get_version_string;
+use libopus_unsafe::src::opus::opus_pcm_soft_clip;
+use libopus_unsafe::src::opus_decoder::{
+    opus_decode, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy,
+    opus_decoder_get_nb_samples, opus_decoder_get_size, opus_packet_get_nb_channels, OpusDecoder,
+};
 #[no_mangle]
 #[c2rust::src_loc = "51:1"]
 pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c_int {
