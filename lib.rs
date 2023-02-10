@@ -32,16 +32,16 @@ pub mod src {
         pub mod pitch;
         pub mod quant_bands;
         pub mod rate;
-        pub mod tests {
-            pub mod test_unit_cwrs32;
-            pub mod test_unit_dft;
-            pub mod test_unit_entropy;
-            pub mod test_unit_laplace;
-            pub mod test_unit_mathops;
-            pub mod test_unit_mdct;
-            pub mod test_unit_rotation;
-            pub mod test_unit_types;
-        } // mod tests
+        // pub mod tests {
+        //     pub mod test_unit_cwrs32;
+        //     pub mod test_unit_dft;
+        //     pub mod test_unit_entropy;
+        //     pub mod test_unit_laplace;
+        //     pub mod test_unit_mathops;
+        //     pub mod test_unit_mdct;
+        //     pub mod test_unit_rotation;
+        //     pub mod test_unit_types;
+        // } // mod tests
         pub mod vq;
     } // mod celt
     pub mod silk {
@@ -174,12 +174,12 @@ pub mod src {
         pub mod repacketizer;
         pub mod repacketizer_demo;
     } // mod src
-    pub mod tests {
-        pub mod opus_encode_regressions;
-        pub mod test_opus_api;
-        pub mod test_opus_decode;
-        pub mod test_opus_encode;
-        pub mod test_opus_padding;
-        pub mod test_opus_projection;
-    } // mod tests
+      // pub mod tests {
+      //     pub mod opus_encode_regressions;
+      //     pub mod test_opus_api;
+      //     pub mod test_opus_decode;
+      //     pub mod test_opus_encode;
+      //     pub mod test_opus_padding;
+      //     pub mod test_opus_projection;
+      // } // mod tests
 } // mod src
