@@ -5,70 +5,92 @@ pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = libc::c_float;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:34"]
-pub mod entcode_h {
-    #[c2rust::src_loc = "45:1"]
-    pub type ec_window = u32;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "62:8"]
-    pub struct ec_ctx {
-        pub buf: *mut libc::c_uchar,
-        pub storage: u32,
-        pub end_offs: u32,
-        pub end_window: ec_window,
-        pub nend_bits: libc::c_int,
-        pub nbits_total: libc::c_int,
-        pub offs: u32,
-        pub rng: u32,
-        pub val: u32,
-        pub ext: u32,
-        pub rem: libc::c_int,
-        pub error: libc::c_int,
-    }
-    #[c2rust::src_loc = "47:1"]
-    pub type ec_enc = ec_ctx;
-    #[c2rust::src_loc = "48:1"]
-    pub type ec_dec = ec_ctx;
-    #[inline]
-    #[c2rust::src_loc = "124:1"]
-    pub unsafe extern "C" fn celt_udiv(n: u32, d: u32) -> u32 {
-        return n.wrapping_div(d);
-    }
-    #[c2rust::src_loc = "57:10"]
-    pub const BITRES: libc::c_int = 3 as libc::c_int;
+#[c2rust::src_loc = "39:9"]
+pub const FINE_OFFSET: libc::c_int = 21 as libc::c_int;
+#[c2rust::src_loc = "37:9"]
+pub const MAX_FINE_BITS: libc::c_int = 8 as libc::c_int;
+#[inline]
+#[c2rust::src_loc = "48:1"]
+pub unsafe extern "C" fn get_pulses(i: libc::c_int) -> libc::c_int {
+    return if i < 8 as libc::c_int {
+        i
+    } else {
+        8 as libc::c_int + (i & 7 as libc::c_int) << (i >> 3 as libc::c_int) - 1 as libc::c_int
+    };
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:34"]
-pub mod entenc_h {
-    use super::entcode_h::ec_enc;
-    extern "C" {
-        #[c2rust::src_loc = "56:1"]
-        pub fn ec_enc_bit_logp(_this: *mut ec_enc, _val: libc::c_int, _logp: libc::c_uint);
-        #[c2rust::src_loc = "71:1"]
-        pub fn ec_enc_uint(_this: *mut ec_enc, _fl: u32, _ft: u32);
+#[inline]
+#[c2rust::src_loc = "53:1"]
+pub unsafe extern "C" fn bits2pulses(
+    m: *const OpusCustomMode,
+    band: libc::c_int,
+    mut LM: libc::c_int,
+    mut bits: libc::c_int,
+) -> libc::c_int {
+    let mut i: libc::c_int = 0;
+    let mut lo: libc::c_int = 0;
+    let mut hi: libc::c_int = 0;
+    let mut cache: *const libc::c_uchar = 0 as *const libc::c_uchar;
+    LM += 1;
+    cache = ((*m).cache.bits).offset(
+        *((*m).cache.index).offset((LM * (*m).nbEBands + band) as isize) as libc::c_int as isize,
+    );
+    lo = 0 as libc::c_int;
+    hi = *cache.offset(0 as libc::c_int as isize) as libc::c_int;
+    bits -= 1;
+    i = 0 as libc::c_int;
+    while i < LOG_MAX_PSEUDO {
+        let mid: libc::c_int = lo + hi + 1 as libc::c_int >> 1 as libc::c_int;
+        if *cache.offset(mid as isize) as libc::c_int >= bits {
+            hi = mid;
+        } else {
+            lo = mid;
+        }
+        i += 1;
     }
+    if bits
+        - (if lo == 0 as libc::c_int {
+            -(1 as libc::c_int)
+        } else {
+            *cache.offset(lo as isize) as libc::c_int
+        })
+        <= *cache.offset(hi as isize) as libc::c_int - bits
+    {
+        return lo;
+    } else {
+        return hi;
+    };
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entdec.h:34"]
-pub mod entdec_h {
-    use super::entcode_h::ec_dec;
-    extern "C" {
-        #[c2rust::src_loc = "72:1"]
-        pub fn ec_dec_bit_logp(_this: *mut ec_dec, _logp: libc::c_uint) -> libc::c_int;
-        #[c2rust::src_loc = "90:1"]
-        pub fn ec_dec_uint(_this: *mut ec_dec, _ft: u32) -> u32;
-    }
+#[c2rust::src_loc = "33:9"]
+pub const LOG_MAX_PSEUDO: libc::c_int = 6 as libc::c_int;
+#[inline]
+#[c2rust::src_loc = "80:1"]
+pub unsafe extern "C" fn pulses2bits(
+    m: *const OpusCustomMode,
+    band: libc::c_int,
+    mut LM: libc::c_int,
+    pulses: libc::c_int,
+) -> libc::c_int {
+    let mut cache: *const libc::c_uchar = 0 as *const libc::c_uchar;
+    LM += 1;
+    cache = ((*m).cache.bits).offset(
+        *((*m).cache.index).offset((LM * (*m).nbEBands + band) as isize) as libc::c_int as isize,
+    );
+    return if pulses == 0 as libc::c_int {
+        0 as libc::c_int
+    } else {
+        *cache.offset(pulses as isize) as libc::c_int + 1 as libc::c_int
+    };
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/rate.h:40"]
-pub mod rate_h {
-    #[c2rust::src_loc = "39:9"]
-    pub const FINE_OFFSET: libc::c_int = 21 as libc::c_int;
-}
+#[c2rust::src_loc = "41:9"]
+pub const QTHETA_OFFSET_TWOPHASE: libc::c_int = 16 as libc::c_int;
+#[c2rust::src_loc = "40:9"]
+pub const QTHETA_OFFSET: libc::c_int = 4 as libc::c_int;
+
 pub use self::arch_h::opus_val16;
-pub use self::entcode_h::{celt_udiv, ec_ctx, ec_dec, ec_enc, ec_window, BITRES};
-use self::entdec_h::{ec_dec_bit_logp, ec_dec_uint};
-use self::entenc_h::{ec_enc_bit_logp, ec_enc_uint};
-pub use self::rate_h::FINE_OFFSET;
 use crate::celt::celt::celt_fatal;
+use crate::celt::entcode::{celt_udiv, ec_ctx, BITRES};
+use crate::celt::entdec::{ec_dec_bit_logp, ec_dec_uint};
+use crate::celt::entenc::{ec_enc_bit_logp, ec_enc_uint};
 use crate::celt::modes::OpusCustomMode;
 
 #[c2rust::src_loc = "42:28"]

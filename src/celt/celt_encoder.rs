@@ -131,48 +131,6 @@ pub mod celt_h {
         );
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:40"]
-pub mod entcode_h {
-    #[c2rust::src_loc = "45:1"]
-    pub type ec_window = u32;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "62:8"]
-    pub struct ec_ctx {
-        pub buf: *mut libc::c_uchar,
-        pub storage: u32,
-        pub end_offs: u32,
-        pub end_window: ec_window,
-        pub nend_bits: libc::c_int,
-        pub nbits_total: libc::c_int,
-        pub offs: u32,
-        pub rng: u32,
-        pub val: u32,
-        pub ext: u32,
-        pub rem: libc::c_int,
-        pub error: libc::c_int,
-    }
-    #[c2rust::src_loc = "47:1"]
-    pub type ec_enc = ec_ctx;
-    #[inline]
-    #[c2rust::src_loc = "101:1"]
-    pub unsafe extern "C" fn ec_get_error(mut _this: *mut ec_ctx) -> libc::c_int {
-        return (*_this).error;
-    }
-    #[inline]
-    #[c2rust::src_loc = "111:1"]
-    pub unsafe extern "C" fn ec_tell(mut _this: *mut ec_ctx) -> libc::c_int {
-        return (*_this).nbits_total - (EC_CLZ0 - ((*_this).rng).leading_zeros() as i32);
-    }
-    #[c2rust::src_loc = "57:10"]
-    pub const BITRES: libc::c_int = 3 as libc::c_int;
-
-    use super::ecintrin_h::EC_CLZ0;
-    extern "C" {
-        #[c2rust::src_loc = "121:1"]
-        pub fn ec_tell_frac(_this: *mut ec_ctx) -> u32;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:36"]
 pub mod opus_defines_h {
     #[c2rust::src_loc = "60:9"]
@@ -235,31 +193,6 @@ pub mod ecintrin_h {
         ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:40"]
-pub mod entenc_h {
-    use super::entcode_h::ec_enc;
-    extern "C" {
-        #[c2rust::src_loc = "36:1"]
-        pub fn ec_enc_init(_this: *mut ec_enc, _buf: *mut libc::c_uchar, _size: u32);
-        #[c2rust::src_loc = "56:1"]
-        pub fn ec_enc_bit_logp(_this: *mut ec_enc, _val: libc::c_int, _logp: libc::c_uint);
-        #[c2rust::src_loc = "65:1"]
-        pub fn ec_enc_icdf(
-            _this: *mut ec_enc,
-            _s: libc::c_int,
-            _icdf: *const libc::c_uchar,
-            _ftb: libc::c_uint,
-        );
-        #[c2rust::src_loc = "71:1"]
-        pub fn ec_enc_uint(_this: *mut ec_enc, _fl: u32, _ft: u32);
-        #[c2rust::src_loc = "77:1"]
-        pub fn ec_enc_bits(_this: *mut ec_enc, _fl: u32, _ftb: libc::c_uint);
-        #[c2rust::src_loc = "103:1"]
-        pub fn ec_enc_shrink(_this: *mut ec_enc, _size: u32);
-        #[c2rust::src_loc = "108:1"]
-        pub fn ec_enc_done(_this: *mut ec_enc);
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/pitch.h:41"]
 pub mod pitch_h {
     #[inline]
@@ -320,7 +253,7 @@ pub mod bands_h {
     pub const SPREAD_NORMAL: libc::c_int = 2 as libc::c_int;
 
     use super::arch_h::{celt_ener, celt_norm, celt_sig, opus_val16};
-    use super::entcode_h::ec_ctx;
+    use crate::celt::entcode::ec_ctx;
     use crate::celt::modes::OpusCustomMode;
     extern "C" {
         #[c2rust::src_loc = "121:1"]
@@ -395,39 +328,10 @@ pub mod bands_h {
         );
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/rate.h:42"]
-pub mod rate_h {
-    use super::entcode_h::ec_ctx;
-    use crate::celt::modes::OpusCustomMode;
-    extern "C" {
-        #[c2rust::src_loc = "98:1"]
-        pub fn clt_compute_allocation(
-            m: *const OpusCustomMode,
-            start: libc::c_int,
-            end: libc::c_int,
-            offsets: *const libc::c_int,
-            cap: *const libc::c_int,
-            alloc_trim: libc::c_int,
-            intensity: *mut libc::c_int,
-            dual_stereo: *mut libc::c_int,
-            total: i32,
-            balance: *mut i32,
-            pulses: *mut libc::c_int,
-            ebits: *mut libc::c_int,
-            fine_priority: *mut libc::c_int,
-            C: libc::c_int,
-            LM: libc::c_int,
-            ec: *mut ec_ctx,
-            encode: libc::c_int,
-            prev: libc::c_int,
-            signalBandwidth: libc::c_int,
-        ) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/quant_bands.h:45"]
 pub mod quant_bands_h {
     use super::arch_h::{celt_ener, opus_val16, opus_val32};
-    use super::entcode_h::ec_enc;
+    use crate::celt::entenc::ec_enc;
     use crate::celt::modes::OpusCustomMode;
     extern "C" {
         #[c2rust::src_loc = "50:1"]
@@ -528,10 +432,6 @@ pub use self::celt_h::{
     COMBFILTER_MAXPERIOD, COMBFILTER_MINPERIOD, OPUS_SET_ENERGY_MASK_REQUEST, OPUS_SET_LFE_REQUEST,
 };
 pub use self::ecintrin_h::EC_CLZ0;
-pub use self::entcode_h::{ec_ctx, ec_enc, ec_get_error, ec_tell, ec_tell_frac, ec_window, BITRES};
-use self::entenc_h::{
-    ec_enc_bit_logp, ec_enc_bits, ec_enc_done, ec_enc_icdf, ec_enc_init, ec_enc_shrink, ec_enc_uint,
-};
 pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
 pub use self::limits_h::CHAR_BIT;
 pub use self::mathops_h::celt_maxabs16;
@@ -547,12 +447,17 @@ pub use self::pitch_h::{celt_inner_prod_c, pitch_downsample, pitch_search, remov
 use self::quant_bands_h::{
     amp2Log2, eMeans, quant_coarse_energy, quant_energy_finalise, quant_fine_energy,
 };
-use self::rate_h::clt_compute_allocation;
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::NULL;
 use crate::celt::celt::celt_fatal;
+use crate::celt::entcode::{ec_get_error, ec_tell, ec_tell_frac, BITRES};
+use crate::celt::entenc::{
+    ec_enc, ec_enc_bit_logp, ec_enc_bits, ec_enc_done, ec_enc_icdf, ec_enc_init, ec_enc_shrink,
+    ec_enc_uint,
+};
 use crate::celt::mdct::clt_mdct_forward_c;
 use crate::celt::modes::{opus_custom_mode_create, OpusCustomMode};
+use crate::celt::rate::clt_compute_allocation;
 
 use self::stdlib_h::abs;
 

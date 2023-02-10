@@ -1,41 +1,9 @@
 use crate::celt::celt::celt_fatal;
+use crate::celt::entcode::{celt_udiv, ec_ctx, ec_window, EC_UINT_BITS, EC_WINDOW_SIZE};
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:33"]
-pub mod entcode_h {
-    #[c2rust::src_loc = "45:1"]
-    pub type ec_window = u32;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "62:8"]
-    pub struct ec_ctx {
-        pub buf: *mut libc::c_uchar,
-        pub storage: u32,
-        pub end_offs: u32,
-        pub end_window: ec_window,
-        pub nend_bits: libc::c_int,
-        pub nbits_total: libc::c_int,
-        pub offs: u32,
-        pub rng: u32,
-        pub val: u32,
-        pub ext: u32,
-        pub rem: libc::c_int,
-        pub error: libc::c_int,
-    }
-    #[c2rust::src_loc = "47:1"]
-    pub type ec_enc = ec_ctx;
-    #[c2rust::src_loc = "53:10"]
-    pub const EC_UINT_BITS: libc::c_int = 8 as libc::c_int;
-    #[inline]
-    #[c2rust::src_loc = "124:1"]
-    pub unsafe extern "C" fn celt_udiv(n: u32, d: u32) -> u32 {
-        return n.wrapping_div(d);
-    }
-    #[c2rust::src_loc = "50:10"]
-    pub const EC_WINDOW_SIZE: libc::c_int =
-        ::core::mem::size_of::<ec_window>() as libc::c_ulong as libc::c_int * CHAR_BIT;
-    use super::limits_h::CHAR_BIT;
-}
+#[c2rust::src_loc = "47:1"]
+pub type ec_enc = ec_ctx;
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:33"]
 pub mod limits_h {
     #[c2rust::src_loc = "63:9"]
@@ -72,7 +40,6 @@ pub mod internal {
 }
 
 pub use self::ecintrin_h::EC_CLZ0;
-pub use self::entcode_h::{celt_udiv, ec_ctx, ec_enc, ec_window, EC_UINT_BITS, EC_WINDOW_SIZE};
 pub use self::internal::__CHAR_BIT__;
 pub use self::limits_h::CHAR_BIT;
 pub use self::mfrngcod_h::{

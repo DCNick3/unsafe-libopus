@@ -114,89 +114,6 @@ pub mod entdec_h {
         pub fn ec_dec_bits(_this: *mut ec_dec, _ftb: libc::c_uint) -> u32;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/rate.h:35"]
-pub mod rate_h {
-    use crate::celt::modes::OpusCustomMode;
-
-    #[inline]
-    #[c2rust::src_loc = "48:1"]
-    pub unsafe extern "C" fn get_pulses(i: libc::c_int) -> libc::c_int {
-        return if i < 8 as libc::c_int {
-            i
-        } else {
-            8 as libc::c_int + (i & 7 as libc::c_int) << (i >> 3 as libc::c_int) - 1 as libc::c_int
-        };
-    }
-    #[inline]
-    #[c2rust::src_loc = "53:1"]
-    pub unsafe extern "C" fn bits2pulses(
-        m: *const OpusCustomMode,
-        band: libc::c_int,
-        mut LM: libc::c_int,
-        mut bits: libc::c_int,
-    ) -> libc::c_int {
-        let mut i: libc::c_int = 0;
-        let mut lo: libc::c_int = 0;
-        let mut hi: libc::c_int = 0;
-        let mut cache: *const libc::c_uchar = 0 as *const libc::c_uchar;
-        LM += 1;
-        cache = ((*m).cache.bits).offset(
-            *((*m).cache.index).offset((LM * (*m).nbEBands + band) as isize) as libc::c_int
-                as isize,
-        );
-        lo = 0 as libc::c_int;
-        hi = *cache.offset(0 as libc::c_int as isize) as libc::c_int;
-        bits -= 1;
-        i = 0 as libc::c_int;
-        while i < LOG_MAX_PSEUDO {
-            let mid: libc::c_int = lo + hi + 1 as libc::c_int >> 1 as libc::c_int;
-            if *cache.offset(mid as isize) as libc::c_int >= bits {
-                hi = mid;
-            } else {
-                lo = mid;
-            }
-            i += 1;
-        }
-        if bits
-            - (if lo == 0 as libc::c_int {
-                -(1 as libc::c_int)
-            } else {
-                *cache.offset(lo as isize) as libc::c_int
-            })
-            <= *cache.offset(hi as isize) as libc::c_int - bits
-        {
-            return lo;
-        } else {
-            return hi;
-        };
-    }
-    #[c2rust::src_loc = "33:9"]
-    pub const LOG_MAX_PSEUDO: libc::c_int = 6 as libc::c_int;
-    #[inline]
-    #[c2rust::src_loc = "80:1"]
-    pub unsafe extern "C" fn pulses2bits(
-        m: *const OpusCustomMode,
-        band: libc::c_int,
-        mut LM: libc::c_int,
-        pulses: libc::c_int,
-    ) -> libc::c_int {
-        let mut cache: *const libc::c_uchar = 0 as *const libc::c_uchar;
-        LM += 1;
-        cache = ((*m).cache.bits).offset(
-            *((*m).cache.index).offset((LM * (*m).nbEBands + band) as isize) as libc::c_int
-                as isize,
-        );
-        return if pulses == 0 as libc::c_int {
-            0 as libc::c_int
-        } else {
-            *cache.offset(pulses as isize) as libc::c_int + 1 as libc::c_int
-        };
-    }
-    #[c2rust::src_loc = "41:9"]
-    pub const QTHETA_OFFSET_TWOPHASE: libc::c_int = 16 as libc::c_int;
-    #[c2rust::src_loc = "40:9"]
-    pub const QTHETA_OFFSET: libc::c_int = 4 as libc::c_int;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/bands.h:35"]
 pub mod bands_h {
     #[c2rust::src_loc = "68:9"]
@@ -339,13 +256,13 @@ pub use self::limits_h::CHAR_BIT;
 use self::mathops_h::isqrt32;
 pub use self::pitch_h::{celt_inner_prod_c, dual_inner_prod_c};
 use self::quant_bands_h::eMeans;
-pub use self::rate_h::{
-    bits2pulses, get_pulses, pulses2bits, LOG_MAX_PSEUDO, QTHETA_OFFSET, QTHETA_OFFSET_TWOPHASE,
-};
 pub use self::stack_alloc_h::ALLOC_NONE;
 pub use self::stddef_h::NULL;
 use crate::celt::celt::celt_fatal;
 use crate::celt::modes::OpusCustomMode;
+use crate::celt::rate::{
+    bits2pulses, get_pulses, pulses2bits, QTHETA_OFFSET, QTHETA_OFFSET_TWOPHASE,
+};
 
 use self::vq_h::{alg_quant, alg_unquant, renormalise_vector, stereo_itheta};
 use crate::externs::{memcpy, memset};

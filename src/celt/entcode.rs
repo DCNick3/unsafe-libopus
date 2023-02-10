@@ -1,28 +1,60 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:32"]
-pub mod entcode_h {
-    #[c2rust::src_loc = "45:1"]
-    pub type ec_window = u32;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "62:8"]
-    pub struct ec_ctx {
-        pub buf: *mut libc::c_uchar,
-        pub storage: u32,
-        pub end_offs: u32,
-        pub end_window: ec_window,
-        pub nend_bits: libc::c_int,
-        pub nbits_total: libc::c_int,
-        pub offs: u32,
-        pub rng: u32,
-        pub val: u32,
-        pub ext: u32,
-        pub rem: libc::c_int,
-        pub error: libc::c_int,
-    }
-    #[c2rust::src_loc = "57:10"]
-    pub const BITRES: libc::c_int = 3 as libc::c_int;
+
+#[c2rust::src_loc = "45:1"]
+pub type ec_window = u32;
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "62:8"]
+pub struct ec_ctx {
+    pub buf: *mut libc::c_uchar,
+    pub storage: u32,
+    pub end_offs: u32,
+    pub end_window: ec_window,
+    pub nend_bits: libc::c_int,
+    pub nbits_total: libc::c_int,
+    pub offs: u32,
+    pub rng: u32,
+    pub val: u32,
+    pub ext: u32,
+    pub rem: libc::c_int,
+    pub error: libc::c_int,
 }
+
+#[c2rust::src_loc = "53:10"]
+pub const EC_UINT_BITS: libc::c_int = 8 as libc::c_int;
+#[c2rust::src_loc = "50:10"]
+pub const EC_WINDOW_SIZE: libc::c_int =
+    ::core::mem::size_of::<ec_window>() as libc::c_ulong as libc::c_int * CHAR_BIT;
+#[c2rust::src_loc = "57:10"]
+pub const BITRES: libc::c_int = 3 as libc::c_int;
+
+#[inline]
+#[c2rust::src_loc = "101:1"]
+pub unsafe extern "C" fn ec_get_error(mut _this: *mut ec_ctx) -> libc::c_int {
+    return (*_this).error;
+}
+#[inline]
+#[c2rust::src_loc = "93:1"]
+pub unsafe extern "C" fn ec_range_bytes(mut _this: *mut ec_ctx) -> u32 {
+    return (*_this).offs;
+}
+#[inline]
+#[c2rust::src_loc = "97:1"]
+pub unsafe extern "C" fn ec_get_buffer(mut _this: *mut ec_ctx) -> *mut libc::c_uchar {
+    return (*_this).buf;
+}
+#[inline]
+#[c2rust::src_loc = "111:1"]
+pub unsafe extern "C" fn ec_tell(mut _this: *mut ec_ctx) -> libc::c_int {
+    return (*_this).nbits_total - (EC_CLZ0 - ((*_this).rng).leading_zeros() as i32);
+}
+
+#[inline]
+#[c2rust::src_loc = "124:1"]
+pub unsafe extern "C" fn celt_udiv(n: u32, d: u32) -> u32 {
+    return n.wrapping_div(d);
+}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:32"]
 pub mod ecintrin_h {
     #[c2rust::src_loc = "69:11"]
@@ -43,7 +75,6 @@ pub mod internal {
     pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
 }
 pub use self::ecintrin_h::EC_CLZ0;
-pub use self::entcode_h::{ec_ctx, ec_window, BITRES};
 pub use self::internal::__CHAR_BIT__;
 pub use self::limits_h::CHAR_BIT;
 

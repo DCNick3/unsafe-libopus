@@ -1,4 +1,5 @@
 use crate::celt::modes::OpusCustomMode;
+use crate::celt::rate::MAX_FINE_BITS;
 use ::libc;
 
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
@@ -134,11 +135,6 @@ pub mod stack_alloc_h {
     #[c2rust::src_loc = "99:9"]
     pub const ALLOC_NONE: libc::c_int = 1 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/rate.h:40"]
-pub mod rate_h {
-    #[c2rust::src_loc = "37:9"]
-    pub const MAX_FINE_BITS: libc::c_int = 8 as libc::c_int;
-}
 pub use self::arch_h::{celt_ener, opus_val16, opus_val32};
 pub use self::ecintrin_h::EC_CLZ0;
 pub use self::entcode_h::{
@@ -149,7 +145,6 @@ use self::entenc_h::{ec_enc_bit_logp, ec_enc_bits, ec_enc_icdf};
 pub use self::internal::__CHAR_BIT__;
 use self::laplace_h::{ec_laplace_decode, ec_laplace_encode};
 pub use self::limits_h::CHAR_BIT;
-pub use self::rate_h::MAX_FINE_BITS;
 pub use self::stack_alloc_h::ALLOC_NONE;
 
 use crate::externs::memcpy;
