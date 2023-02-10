@@ -162,7 +162,6 @@ mod src {
     pub mod mlp;
     pub mod mlp_data;
     pub mod opus;
-    // pub mod opus_compare;
     pub mod opus_decoder;
     pub mod opus_encoder;
     pub mod opus_multistream;

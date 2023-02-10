@@ -1,31 +1,26 @@
-use crate::externs::{free, malloc, realloc};
+#![allow(dead_code)]
+#![allow(mutable_transmutes)]
+#![allow(non_camel_case_types)]
+#![allow(non_snake_case)]
+#![allow(non_upper_case_globals)]
+#![allow(unused_assignments)]
+#![allow(unused_mut)]
+#![feature(c_variadic)]
+#![feature(extern_types)]
+#![feature(label_break_value)]
+#![feature(register_tool)]
+#![feature(stdsimd)]
+#![register_tool(c2rust)]
+
 use ::libc;
+use libc::{fclose, fopen, fprintf, fread, FILE};
+use libc_stdhandle::stderr;
+use libopus_unsafe::externs::{free, malloc, realloc, strcmp};
 
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:28"]
 pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]
     pub type size_t = libc::c_ulong;
-}
-#[c2rust::header_src = "/usr/include/stdio.h:28"]
-pub mod stdio_h {
-    use super::FILE_h::FILE;
-    extern "C" {
-        #[c2rust::src_loc = "145:14"]
-        pub static mut stderr: *mut FILE;
-        #[c2rust::src_loc = "178:1"]
-        pub fn fclose(__stream: *mut FILE) -> libc::c_int;
-        #[c2rust::src_loc = "258:14"]
-        pub fn fopen(_: *const libc::c_char, _: *const libc::c_char) -> *mut FILE;
-        #[c2rust::src_loc = "350:12"]
-        pub fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
-        #[c2rust::src_loc = "675:15"]
-        pub fn fread(
-            _: *mut libc::c_void,
-            _: libc::c_ulong,
-            _: libc::c_ulong,
-            _: *mut FILE,
-        ) -> libc::c_ulong;
-    }
 }
 #[c2rust::header_src = "/usr/include/stdlib.h:29"]
 pub mod stdlib_h {
@@ -50,10 +45,8 @@ pub mod stdlib_h {
     }
 }
 pub use self::stddef_h::size_t;
-use self::stdio_h::{fclose, fopen, fprintf, fread, stderr};
-pub use self::stdlib_h::{atoi, exit, strtol};
+pub use self::stdlib_h::{atoi, exit};
 
-use crate::externs::strcmp;
 #[c2rust::src_loc = "38:1"]
 unsafe extern "C" fn check_alloc(mut _ptr: *mut libc::c_void) -> *mut libc::c_void {
     if _ptr.is_null() {
@@ -94,10 +87,10 @@ unsafe extern "C" fn read_pcm16(
     loop {
         nread = fread(
             buf.as_mut_ptr() as *mut libc::c_void,
-            (2 as libc::c_int * _nchannels) as libc::c_ulong,
-            (1024 as libc::c_int / (2 as libc::c_int * _nchannels)) as libc::c_ulong,
+            (2 as libc::c_int * _nchannels) as _,
+            (1024 as libc::c_int / (2 as libc::c_int * _nchannels)) as _,
             _fin,
-        );
+        ) as _;
         if nread <= 0 as libc::c_int as libc::c_ulong {
             break;
         }
