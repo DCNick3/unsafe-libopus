@@ -155,8 +155,8 @@ pub mod opus_private_h {
             request: libc::c_int,
             ap: ::core::ffi::VaList,
         ) -> libc::c_int;
-        #[c2rust::src_loc = "136:1"]
-        pub fn downmix_float(
+        #[c2rust::src_loc = "137:1"]
+        pub fn downmix_int(
             _x: *const libc::c_void,
             sub: *mut opus_val32,
             subframe: libc::c_int,
@@ -165,8 +165,8 @@ pub mod opus_private_h {
             c2: libc::c_int,
             C: libc::c_int,
         );
-        #[c2rust::src_loc = "137:1"]
-        pub fn downmix_int(
+        #[c2rust::src_loc = "136:1"]
+        pub fn downmix_float(
             _x: *const libc::c_void,
             sub: *mut opus_val32,
             subframe: libc::c_int,

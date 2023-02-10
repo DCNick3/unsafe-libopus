@@ -5,6 +5,14 @@ pub mod arch_h {
     pub type opus_val16 = libc::c_float;
     #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = libc::c_float;
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
 }
 #[c2rust::header_src = "/usr/include/string.h:34"]
 pub mod string_h {
@@ -28,6 +36,13 @@ pub mod pitch_h {
         let mut y_1: opus_val16 = 0.;
         let mut y_2: opus_val16 = 0.;
         let mut y_3: opus_val16 = 0.;
+        if !(len >= 3 as libc::c_int) {
+            celt_fatal(
+                b"assertion failed: len>=3\0" as *const u8 as *const libc::c_char,
+                b"./celt/pitch.h\0" as *const u8 as *const libc::c_char,
+                69 as libc::c_int,
+            );
+        }
         y_3 = 0 as libc::c_int as opus_val16;
         let fresh0 = y;
         y = y.offset(1);
@@ -152,7 +167,7 @@ pub mod pitch_h {
                 *sum.offset(3 as libc::c_int as isize) + tmp_2 * y_1;
         }
     }
-    use super::arch_h::{opus_val16, opus_val32};
+    use super::arch_h::{celt_fatal, opus_val16, opus_val32};
     extern "C" {
         #[c2rust::src_loc = "183:1"]
         pub fn celt_pitch_xcorr_c(
@@ -165,7 +180,7 @@ pub mod pitch_h {
         );
     }
 }
-pub use self::arch_h::{opus_val16, opus_val32};
+pub use self::arch_h::{celt_fatal, opus_val16, opus_val32};
 pub use self::pitch_h::{celt_pitch_xcorr_c, xcorr_kernel_c};
 use self::string_h::memset;
 #[no_mangle]
@@ -227,6 +242,13 @@ pub unsafe extern "C" fn celt_fir_c(
 ) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
+    if !(x != y as *const opus_val16) {
+        celt_fatal(
+            b"assertion failed: x != y\0" as *const u8 as *const libc::c_char,
+            b"celt/celt_lpc.c\0" as *const u8 as *const libc::c_char,
+            102 as libc::c_int,
+        );
+    }
     let vla = ord as usize;
     let mut rnum: Vec<opus_val16> = ::std::vec::from_elem(0., vla);
     i = 0 as libc::c_int;
@@ -278,6 +300,13 @@ pub unsafe extern "C" fn celt_iir(
 ) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
+    if !(ord & 3 as libc::c_int == 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: (ord&3)==0\0" as *const u8 as *const libc::c_char,
+            b"celt/celt_lpc.c\0" as *const u8 as *const libc::c_char,
+            160 as libc::c_int,
+        );
+    }
     let vla = ord as usize;
     let mut rden: Vec<opus_val16> = ::std::vec::from_elem(0., vla);
     let vla_0 = (N + ord) as usize;
@@ -374,6 +403,20 @@ pub unsafe extern "C" fn _celt_autocorr(
     let mut xptr: *const opus_val16 = 0 as *const opus_val16;
     let vla = n as usize;
     let mut xx: Vec<opus_val16> = ::std::vec::from_elem(0., vla);
+    if !(n > 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: n>0\0" as *const u8 as *const libc::c_char,
+            b"celt/celt_lpc.c\0" as *const u8 as *const libc::c_char,
+            228 as libc::c_int,
+        );
+    }
+    if !(overlap >= 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: overlap>=0\0" as *const u8 as *const libc::c_char,
+            b"celt/celt_lpc.c\0" as *const u8 as *const libc::c_char,
+            229 as libc::c_int,
+        );
+    }
     if overlap == 0 as libc::c_int {
         xptr = x;
     } else {

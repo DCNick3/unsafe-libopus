@@ -1,4 +1,16 @@
 use ::libc;
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
+use self::arch_h::celt_fatal;
 #[no_mangle]
 #[c2rust::src_loc = "38:1"]
 pub unsafe extern "C" fn silk_apply_sine_window_FLP(
@@ -12,6 +24,21 @@ pub unsafe extern "C" fn silk_apply_sine_window_FLP(
     let mut c: libc::c_float = 0.;
     let mut S0: libc::c_float = 0.;
     let mut S1: libc::c_float = 0.;
+    if !(win_type == 1 as libc::c_int || win_type == 2 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: win_type == 1 || win_type == 2\0" as *const u8
+                as *const libc::c_char,
+            b"silk/float/apply_sine_window_FLP.c\0" as *const u8 as *const libc::c_char,
+            48 as libc::c_int,
+        );
+    }
+    if !(length & 3 as libc::c_int == 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: ( length & 3 ) == 0\0" as *const u8 as *const libc::c_char,
+            b"silk/float/apply_sine_window_FLP.c\0" as *const u8 as *const libc::c_char,
+            51 as libc::c_int,
+        );
+    }
     freq = 3.1415926536f32 / (length + 1 as libc::c_int) as libc::c_float;
     c = 2.0f32 - freq * freq;
     if win_type < 2 as libc::c_int {

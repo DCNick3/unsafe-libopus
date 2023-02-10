@@ -64,6 +64,17 @@ pub mod entcode_h {
     pub type ec_enc = ec_ctx;
     use super::opus_types_h::opus_uint32;
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/usr/include/string.h:32"]
 pub mod string_h {
     extern "C" {
@@ -120,6 +131,7 @@ pub mod main_h {
         pub fn silk_shell_encoder(psRangeEnc: *mut ec_enc, pulses0: *const libc::c_int);
     }
 }
+use self::arch_h::celt_fatal;
 pub use self::entcode_h::{ec_ctx, ec_enc, ec_window};
 use self::entenc_h::ec_enc_icdf;
 use self::main_h::{silk_encode_signs, silk_shell_encoder};
@@ -187,6 +199,13 @@ pub unsafe extern "C" fn silk_encode_pulses(
     );
     iter = frame_length >> 4 as libc::c_int;
     if (iter * 16 as libc::c_int) < frame_length {
+        if !(frame_length == 12 as libc::c_int * 10 as libc::c_int) {
+            celt_fatal(
+                b"assertion failed: frame_length == 12 * 10\0" as *const u8 as *const libc::c_char,
+                b"silk/encode_pulses.c\0" as *const u8 as *const libc::c_char,
+                89 as libc::c_int,
+            );
+        }
         iter += 1;
         memset(
             &mut *pulses.offset(frame_length as isize) as *mut opus_int8 as *mut libc::c_void,

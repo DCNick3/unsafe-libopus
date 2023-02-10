@@ -294,77 +294,6 @@ pub mod structs_FLP_h {
     use super::opus_types_h::{opus_int32, opus_int8};
     use super::structs_h::silk_encoder_state;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
-pub mod main_h {
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int8};
-    use super::structs_h::{silk_encoder_state, silk_nsq_state, SideInfoIndices};
-    extern "C" {
-        #[c2rust::src_loc = "331:1"]
-        pub fn silk_process_NLSFs(
-            psEncC: *mut silk_encoder_state,
-            PredCoef_Q12: *mut [opus_int16; 16],
-            pNLSF_Q15: *mut opus_int16,
-            prev_NLSFq_Q15: *const opus_int16,
-        );
-        #[c2rust::src_loc = "275:1"]
-        pub fn silk_NSQ_del_dec_c(
-            psEncC: *const silk_encoder_state,
-            NSQ: *mut silk_nsq_state,
-            psIndices: *mut SideInfoIndices,
-            x16: *const opus_int16,
-            pulses: *mut opus_int8,
-            PredCoef_Q12: *const opus_int16,
-            LTPCoef_Q14: *const opus_int16,
-            AR_Q13: *const opus_int16,
-            HarmShapeGain_Q14: *const libc::c_int,
-            Tilt_Q14: *const libc::c_int,
-            LF_shp_Q14: *const opus_int32,
-            Gains_Q16: *const opus_int32,
-            pitchL: *const libc::c_int,
-            Lambda_Q10: libc::c_int,
-            LTP_scale_Q14: libc::c_int,
-        );
-        #[c2rust::src_loc = "249:1"]
-        pub fn silk_NSQ_c(
-            psEncC: *const silk_encoder_state,
-            NSQ: *mut silk_nsq_state,
-            psIndices: *mut SideInfoIndices,
-            x16: *const opus_int16,
-            pulses: *mut opus_int8,
-            PredCoef_Q12: *const opus_int16,
-            LTPCoef_Q14: *const opus_int16,
-            AR_Q13: *const opus_int16,
-            HarmShapeGain_Q14: *const libc::c_int,
-            Tilt_Q14: *const libc::c_int,
-            LF_shp_Q14: *const opus_int32,
-            Gains_Q16: *const opus_int32,
-            pitchL: *const libc::c_int,
-            Lambda_Q10: libc::c_int,
-            LTP_scale_Q14: libc::c_int,
-        );
-        #[c2rust::src_loc = "211:1"]
-        pub fn silk_quant_LTP_gains(
-            B_Q14: *mut opus_int16,
-            cbk_index: *mut opus_int8,
-            periodicity_index: *mut opus_int8,
-            sum_gain_dB_Q7: *mut opus_int32,
-            pred_gain_dB_Q7: *mut libc::c_int,
-            XX_Q17: *const opus_int32,
-            xX_Q17: *const opus_int32,
-            subfr_len: libc::c_int,
-            nb_subfr: libc::c_int,
-            arch: libc::c_int,
-        );
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
-pub mod tables_h {
-    use super::opus_types_h::opus_int16;
-    extern "C" {
-        #[c2rust::src_loc = "84:26"]
-        pub static silk_LTPScales_table_Q14: [opus_int16; 3];
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
 pub mod SigProc_FIX_h {
     use super::opus_types_h::{opus_int16, opus_int32};
@@ -399,6 +328,77 @@ pub mod SigProc_FLP_h {
     }
     use super::float_cast_h::float2int;
     use super::opus_types_h::opus_int32;
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
+pub mod tables_h {
+    use super::opus_types_h::opus_int16;
+    extern "C" {
+        #[c2rust::src_loc = "84:26"]
+        pub static silk_LTPScales_table_Q14: [opus_int16; 3];
+    }
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
+pub mod main_h {
+    use super::opus_types_h::{opus_int16, opus_int32, opus_int8};
+    use super::structs_h::{silk_encoder_state, silk_nsq_state, SideInfoIndices};
+    extern "C" {
+        #[c2rust::src_loc = "211:1"]
+        pub fn silk_quant_LTP_gains(
+            B_Q14: *mut opus_int16,
+            cbk_index: *mut opus_int8,
+            periodicity_index: *mut opus_int8,
+            sum_gain_dB_Q7: *mut opus_int32,
+            pred_gain_dB_Q7: *mut libc::c_int,
+            XX_Q17: *const opus_int32,
+            xX_Q17: *const opus_int32,
+            subfr_len: libc::c_int,
+            nb_subfr: libc::c_int,
+            arch: libc::c_int,
+        );
+        #[c2rust::src_loc = "249:1"]
+        pub fn silk_NSQ_c(
+            psEncC: *const silk_encoder_state,
+            NSQ: *mut silk_nsq_state,
+            psIndices: *mut SideInfoIndices,
+            x16: *const opus_int16,
+            pulses: *mut opus_int8,
+            PredCoef_Q12: *const opus_int16,
+            LTPCoef_Q14: *const opus_int16,
+            AR_Q13: *const opus_int16,
+            HarmShapeGain_Q14: *const libc::c_int,
+            Tilt_Q14: *const libc::c_int,
+            LF_shp_Q14: *const opus_int32,
+            Gains_Q16: *const opus_int32,
+            pitchL: *const libc::c_int,
+            Lambda_Q10: libc::c_int,
+            LTP_scale_Q14: libc::c_int,
+        );
+        #[c2rust::src_loc = "275:1"]
+        pub fn silk_NSQ_del_dec_c(
+            psEncC: *const silk_encoder_state,
+            NSQ: *mut silk_nsq_state,
+            psIndices: *mut SideInfoIndices,
+            x16: *const opus_int16,
+            pulses: *mut opus_int8,
+            PredCoef_Q12: *const opus_int16,
+            LTPCoef_Q14: *const opus_int16,
+            AR_Q13: *const opus_int16,
+            HarmShapeGain_Q14: *const libc::c_int,
+            Tilt_Q14: *const libc::c_int,
+            LF_shp_Q14: *const opus_int32,
+            Gains_Q16: *const opus_int32,
+            pitchL: *const libc::c_int,
+            Lambda_Q10: libc::c_int,
+            LTP_scale_Q14: libc::c_int,
+        );
+        #[c2rust::src_loc = "331:1"]
+        pub fn silk_process_NLSFs(
+            psEncC: *mut silk_encoder_state,
+            PredCoef_Q12: *mut [opus_int16; 16],
+            pNLSF_Q15: *mut opus_int16,
+            prev_NLSFq_Q15: *const opus_int16,
+        );
+    }
 }
 pub use self::float_cast_h::float2int;
 use self::main_h::{silk_NSQ_c, silk_NSQ_del_dec_c, silk_process_NLSFs, silk_quant_LTP_gains};

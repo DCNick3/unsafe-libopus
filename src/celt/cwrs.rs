@@ -31,6 +31,14 @@ pub mod opus_types_h {
 pub mod arch_h {
     #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = libc::c_float;
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:35"]
 pub mod entcode_h {
@@ -66,15 +74,6 @@ pub mod stdlib_h {
         pub fn abs(_: libc::c_int) -> libc::c_int;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entdec.h:35"]
-pub mod entdec_h {
-    use super::entcode_h::ec_dec;
-    use super::opus_types_h::opus_uint32;
-    extern "C" {
-        #[c2rust::src_loc = "90:1"]
-        pub fn ec_dec_uint(_this: *mut ec_dec, _ft: opus_uint32) -> opus_uint32;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:35"]
 pub mod entenc_h {
     use super::entcode_h::ec_enc;
@@ -84,7 +83,16 @@ pub mod entenc_h {
         pub fn ec_enc_uint(_this: *mut ec_enc, _fl: opus_uint32, _ft: opus_uint32);
     }
 }
-pub use self::arch_h::opus_val32;
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entdec.h:35"]
+pub mod entdec_h {
+    use super::entcode_h::ec_dec;
+    use super::opus_types_h::opus_uint32;
+    extern "C" {
+        #[c2rust::src_loc = "90:1"]
+        pub fn ec_dec_uint(_this: *mut ec_dec, _ft: opus_uint32) -> opus_uint32;
+    }
+}
+pub use self::arch_h::{celt_fatal, opus_val32};
 pub use self::entcode_h::{ec_ctx, ec_dec, ec_enc, ec_window};
 use self::entdec_h::ec_dec_uint;
 use self::entenc_h::ec_enc_uint;
@@ -1375,6 +1383,13 @@ unsafe extern "C" fn icwrs(mut _n: libc::c_int, mut _y: *const libc::c_int) -> o
     let mut i: opus_uint32 = 0;
     let mut j: libc::c_int = 0;
     let mut k: libc::c_int = 0;
+    if !(_n >= 2 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: _n>=2\0" as *const u8 as *const libc::c_char,
+            b"celt/cwrs.c\0" as *const u8 as *const libc::c_char,
+            444 as libc::c_int,
+        );
+    }
     j = _n - 1 as libc::c_int;
     i = (*_y.offset(j as isize) < 0 as libc::c_int) as libc::c_int as opus_uint32;
     k = abs(*_y.offset(j as isize));
@@ -1415,6 +1430,13 @@ pub unsafe extern "C" fn encode_pulses(
     mut _k: libc::c_int,
     mut _enc: *mut ec_enc,
 ) {
+    if !(_k > 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: _k>0\0" as *const u8 as *const libc::c_char,
+            b"celt/cwrs.c\0" as *const u8 as *const libc::c_char,
+            459 as libc::c_int,
+        );
+    }
     ec_enc_uint(
         _enc,
         icwrs(_n, _y),
@@ -1448,6 +1470,20 @@ unsafe extern "C" fn cwrsi(
     let mut k0: libc::c_int = 0;
     let mut val: opus_int16 = 0;
     let mut yy: opus_val32 = 0 as libc::c_int as opus_val32;
+    if !(_k > 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: _k>0\0" as *const u8 as *const libc::c_char,
+            b"celt/cwrs.c\0" as *const u8 as *const libc::c_char,
+            469 as libc::c_int,
+        );
+    }
+    if !(_n > 1 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: _n>1\0" as *const u8 as *const libc::c_char,
+            b"celt/cwrs.c\0" as *const u8 as *const libc::c_char,
+            470 as libc::c_int,
+        );
+    }
     while _n > 2 as libc::c_int {
         let mut q: opus_uint32 = 0;
         if _k >= _n {

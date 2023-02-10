@@ -275,6 +275,17 @@ pub mod structs_FLP_h {
     use super::opus_types_h::{opus_int32, opus_int8};
     use super::structs_h::silk_encoder_state;
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/usr/include/string.h:33"]
 pub mod string_h {
     extern "C" {
@@ -346,6 +357,7 @@ pub mod SigProc_FLP_h {
         ) -> libc::c_int;
     }
 }
+use self::arch_h::celt_fatal;
 use self::main_FLP_h::{silk_LPC_analysis_filter_FLP, silk_apply_sine_window_FLP};
 pub use self::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
 pub use self::resampler_structs_h::{
@@ -386,6 +398,14 @@ pub unsafe extern "C" fn silk_find_pitch_lags_FLP(
     let mut Wsig: [libc::c_float; 384] = [0.; 384];
     let mut Wsig_ptr: *mut libc::c_float = 0 as *mut libc::c_float;
     buf_len = (*psEnc).sCmn.la_pitch + (*psEnc).sCmn.frame_length + (*psEnc).sCmn.ltp_mem_length;
+    if !(buf_len >= (*psEnc).sCmn.pitch_LPC_win_length) {
+        celt_fatal(
+            b"assertion failed: buf_len >= psEnc->sCmn.pitch_LPC_win_length\0" as *const u8
+                as *const libc::c_char,
+            b"silk/float/find_pitch_lags_FLP.c\0" as *const u8 as *const libc::c_char,
+            59 as libc::c_int,
+        );
+    }
     x_buf = x.offset(-((*psEnc).sCmn.ltp_mem_length as isize));
     x_buf_ptr = x_buf
         .offset(buf_len as isize)

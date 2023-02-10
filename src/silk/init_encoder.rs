@@ -264,14 +264,6 @@ pub mod structs_FLP_h {
     use super::opus_types_h::opus_int8;
     use super::structs_h::silk_encoder_state;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:34"]
-pub mod main_h {
-    use super::structs_h::silk_VAD_state;
-    extern "C" {
-        #[c2rust::src_loc = "304:1"]
-        pub fn silk_VAD_Init(psSilk_VAD: *mut silk_VAD_state) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:34"]
 pub mod SigProc_FIX_h {
     use super::opus_types_h::opus_int32;
@@ -285,6 +277,14 @@ pub mod string_h {
     extern "C" {
         #[c2rust::src_loc = "61:14"]
         pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
+    }
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:34"]
+pub mod main_h {
+    use super::structs_h::silk_VAD_state;
+    extern "C" {
+        #[c2rust::src_loc = "304:1"]
+        pub fn silk_VAD_Init(psSilk_VAD: *mut silk_VAD_state) -> libc::c_int;
     }
 }
 use self::main_h::silk_VAD_Init;

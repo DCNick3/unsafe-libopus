@@ -261,6 +261,17 @@ pub mod structs_h {
     use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:32"]
 pub mod entenc_h {
     use super::entcode_h::ec_enc;
@@ -320,6 +331,7 @@ pub mod main_h {
         );
     }
 }
+use self::arch_h::celt_fatal;
 pub use self::entcode_h::{ec_ctx, ec_enc, ec_window};
 use self::entenc_h::ec_enc_icdf;
 use self::main_h::silk_NLSF_unpack;
@@ -366,6 +378,22 @@ pub unsafe extern "C" fn silk_encode_indices(
     }
     typeOffset = 2 as libc::c_int * (*psIndices).signalType as libc::c_int
         + (*psIndices).quantOffsetType as libc::c_int;
+    if !(typeOffset >= 0 as libc::c_int && typeOffset < 6 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: typeOffset >= 0 && typeOffset < 6\0" as *const u8
+                as *const libc::c_char,
+            b"silk/encode_indices.c\0" as *const u8 as *const libc::c_char,
+            59 as libc::c_int,
+        );
+    }
+    if !(encode_LBRR == 0 as libc::c_int || typeOffset >= 2 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: encode_LBRR == 0 || typeOffset >= 2\0" as *const u8
+                as *const libc::c_char,
+            b"silk/encode_indices.c\0" as *const u8 as *const libc::c_char,
+            60 as libc::c_int,
+        );
+    }
     if encode_LBRR != 0 || typeOffset >= 2 as libc::c_int {
         ec_enc_icdf(
             psRangeEnc,
@@ -427,6 +455,14 @@ pub unsafe extern "C" fn silk_encode_indices(
         (*psEncC).psNLSF_CB,
         (*psIndices).NLSFIndices[0 as libc::c_int as usize] as libc::c_int,
     );
+    if !((*(*psEncC).psNLSF_CB).order as libc::c_int == (*psEncC).predictLPCOrder) {
+        celt_fatal(
+            b"assertion failed: psEncC->psNLSF_CB->order == psEncC->predictLPCOrder\0" as *const u8
+                as *const libc::c_char,
+            b"silk/encode_indices.c\0" as *const u8 as *const libc::c_char,
+            93 as libc::c_int,
+        );
+    }
     i = 0 as libc::c_int;
     while i < (*(*psEncC).psNLSF_CB).order as libc::c_int {
         if (*psIndices).NLSFIndices[(i + 1 as libc::c_int) as usize] as libc::c_int

@@ -39,6 +39,17 @@ pub mod opus_types_h {
     use super::stdint_intn_h::{int16_t, int32_t, int64_t};
     use super::stdint_uintn_h::uint32_t;
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_rom.h:33"]
 pub mod resampler_rom_h {
     #[c2rust::src_loc = "45:25"]
@@ -48,6 +59,7 @@ pub mod resampler_rom_h {
         (39809 as libc::c_int - 65536 as libc::c_int) as opus_int16;
     use super::opus_types_h::opus_int16;
 }
+use self::arch_h::celt_fatal;
 pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
 pub use self::resampler_rom_h::{silk_resampler_down2_0, silk_resampler_down2_1};
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
@@ -67,6 +79,20 @@ pub unsafe extern "C" fn silk_resampler_down2(
     let mut out32: opus_int32 = 0;
     let mut Y: opus_int32 = 0;
     let mut X: opus_int32 = 0;
+    if !(silk_resampler_down2_0 as libc::c_int > 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: silk_resampler_down2_0 > 0\0" as *const u8 as *const libc::c_char,
+            b"silk/resampler_down2.c\0" as *const u8 as *const libc::c_char,
+            46 as libc::c_int,
+        );
+    }
+    if !((silk_resampler_down2_1 as libc::c_int) < 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: silk_resampler_down2_1 < 0\0" as *const u8 as *const libc::c_char,
+            b"silk/resampler_down2.c\0" as *const u8 as *const libc::c_char,
+            47 as libc::c_int,
+        );
+    }
     k = 0 as libc::c_int;
     while k < len2 {
         in32 = ((*in_0.offset((2 as libc::c_int * k) as isize) as opus_int32 as opus_uint32)

@@ -78,6 +78,17 @@ pub mod structs_h {
     }
     use super::opus_types_h::{opus_int16, opus_uint8};
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/usr/include/string.h:32"]
 pub mod string_h {
     extern "C" {
@@ -88,6 +99,22 @@ pub mod string_h {
             _: libc::c_ulong,
         ) -> *mut libc::c_void;
     }
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/macros.h:32"]
+pub mod macros_h {
+    #[inline]
+    #[c2rust::src_loc = "120:1"]
+    pub unsafe extern "C" fn silk_CLZ32(mut in32: opus_int32) -> opus_int32 {
+        return if in32 != 0 {
+            32 as libc::c_int
+                - (::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int
+                    * 8 as libc::c_int
+                    - (in32 as libc::c_uint).leading_zeros() as i32)
+        } else {
+            32 as libc::c_int
+        };
+    }
+    use super::opus_types_h::opus_int32;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
 pub mod SigProc_FIX_h {
@@ -107,6 +134,48 @@ pub mod SigProc_FIX_h {
             NLSF_Q15: *mut opus_int16,
             NDeltaMin_Q15: *const opus_int16,
             L: libc::c_int,
+        );
+    }
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
+pub mod main_h {
+    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
+    use super::structs_h::silk_NLSF_CB_struct;
+    extern "C" {
+        #[c2rust::src_loc = "383:1"]
+        pub fn silk_NLSF_decode(
+            pNLSF_Q15: *mut opus_int16,
+            NLSFIndices: *mut opus_int8,
+            psNLSF_CB: *const silk_NLSF_CB_struct,
+        );
+        #[c2rust::src_loc = "359:1"]
+        pub fn silk_NLSF_del_dec_quant(
+            indices: *mut opus_int8,
+            x_Q10: *const opus_int16,
+            w_Q5: *const opus_int16,
+            pred_coef_Q8: *const opus_uint8,
+            ec_ix: *const opus_int16,
+            ec_rates_Q5: *const opus_uint8,
+            quant_step_size_Q16: libc::c_int,
+            inv_quant_step_size_Q6: opus_int16,
+            mu_Q20: opus_int32,
+            order: opus_int16,
+        ) -> opus_int32;
+        #[c2rust::src_loc = "373:1"]
+        pub fn silk_NLSF_unpack(
+            ec_ix: *mut opus_int16,
+            pred_Q8: *mut opus_uint8,
+            psNLSF_CB: *const silk_NLSF_CB_struct,
+            CB1_index: libc::c_int,
+        );
+        #[c2rust::src_loc = "349:1"]
+        pub fn silk_NLSF_VQ(
+            err_Q26: *mut opus_int32,
+            in_Q15: *const opus_int16,
+            pCB_Q8: *const opus_uint8,
+            pWght_Q9: *const opus_int16,
+            K: libc::c_int,
+            LPC_order: libc::c_int,
         );
     }
 }
@@ -176,64 +245,7 @@ pub mod Inlines_h {
     use super::macros_h::silk_CLZ32;
     use super::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
-pub mod main_h {
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
-    use super::structs_h::silk_NLSF_CB_struct;
-    extern "C" {
-        #[c2rust::src_loc = "383:1"]
-        pub fn silk_NLSF_decode(
-            pNLSF_Q15: *mut opus_int16,
-            NLSFIndices: *mut opus_int8,
-            psNLSF_CB: *const silk_NLSF_CB_struct,
-        );
-        #[c2rust::src_loc = "359:1"]
-        pub fn silk_NLSF_del_dec_quant(
-            indices: *mut opus_int8,
-            x_Q10: *const opus_int16,
-            w_Q5: *const opus_int16,
-            pred_coef_Q8: *const opus_uint8,
-            ec_ix: *const opus_int16,
-            ec_rates_Q5: *const opus_uint8,
-            quant_step_size_Q16: libc::c_int,
-            inv_quant_step_size_Q6: opus_int16,
-            mu_Q20: opus_int32,
-            order: opus_int16,
-        ) -> opus_int32;
-        #[c2rust::src_loc = "373:1"]
-        pub fn silk_NLSF_unpack(
-            ec_ix: *mut opus_int16,
-            pred_Q8: *mut opus_uint8,
-            psNLSF_CB: *const silk_NLSF_CB_struct,
-            CB1_index: libc::c_int,
-        );
-        #[c2rust::src_loc = "349:1"]
-        pub fn silk_NLSF_VQ(
-            err_Q26: *mut opus_int32,
-            in_Q15: *const opus_int16,
-            pCB_Q8: *const opus_uint8,
-            pWght_Q9: *const opus_int16,
-            K: libc::c_int,
-            LPC_order: libc::c_int,
-        );
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/macros.h:32"]
-pub mod macros_h {
-    #[inline]
-    #[c2rust::src_loc = "120:1"]
-    pub unsafe extern "C" fn silk_CLZ32(mut in32: opus_int32) -> opus_int32 {
-        return if in32 != 0 {
-            32 as libc::c_int
-                - (::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int
-                    * 8 as libc::c_int
-                    - (in32 as libc::c_uint).leading_zeros() as i32)
-        } else {
-            32 as libc::c_int
-        };
-    }
-    use super::opus_types_h::opus_int32;
-}
+use self::arch_h::celt_fatal;
 pub use self::macros_h::silk_CLZ32;
 use self::main_h::{silk_NLSF_VQ, silk_NLSF_decode, silk_NLSF_del_dec_quant, silk_NLSF_unpack};
 pub use self::opus_types_h::{
@@ -275,6 +287,14 @@ pub unsafe extern "C" fn silk_NLSF_encode(
     let mut pCB_element: *const opus_uint8 = 0 as *const opus_uint8;
     let mut iCDF_ptr: *const opus_uint8 = 0 as *const opus_uint8;
     let mut pCB_Wght_Q9: *const opus_int16 = 0 as *const opus_int16;
+    if !(signalType >= 0 as libc::c_int && signalType <= 2 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: signalType >= 0 && signalType <= 2\0" as *const u8
+                as *const libc::c_char,
+            b"silk/NLSF_encode.c\0" as *const u8 as *const libc::c_char,
+            63 as libc::c_int,
+        );
+    }
     silk_NLSF_stabilize(
         pNLSF_Q15,
         (*psNLSF_CB).deltaMin_Q15,

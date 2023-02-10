@@ -39,6 +39,18 @@ pub mod opus_types_h {
     use super::stdint_intn_h::{int16_t, int32_t};
     use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
+use self::arch_h::celt_fatal;
 pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32, opus_uint8};
 pub use self::stdint_intn_h::{int16_t, int32_t};
 pub use self::stdint_uintn_h::{uint32_t, uint8_t};
@@ -61,6 +73,13 @@ pub unsafe extern "C" fn silk_NLSF_VQ(
     let mut pred_Q24: opus_int32 = 0;
     let mut w_Q9_ptr: *const opus_int16 = 0 as *const opus_int16;
     let mut cb_Q8_ptr: *const opus_uint8 = 0 as *const opus_uint8;
+    if !(LPC_order & 1 as libc::c_int == 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: ( LPC_order & 1 ) == 0\0" as *const u8 as *const libc::c_char,
+            b"silk/NLSF_VQ.c\0" as *const u8 as *const libc::c_char,
+            49 as libc::c_int,
+        );
+    }
     cb_Q8_ptr = pCB_Q8;
     w_Q9_ptr = pWght_Q9;
     i = 0 as libc::c_int;

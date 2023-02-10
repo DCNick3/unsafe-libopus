@@ -902,9 +902,11 @@ pub unsafe extern "C" fn test_dec_api() -> opus_int32 {
         packet[0 as libc::c_int as usize] = i as libc::c_uchar;
         bw = packet[0 as libc::c_int as usize] as libc::c_int >> 4 as libc::c_int;
         bw = 1101 as libc::c_int
-            + (((((bw & 7 as libc::c_int) * 9 as libc::c_int) & (63 as libc::c_int - (bw & 8 as libc::c_int)))
+            + (((((bw & 7 as libc::c_int) * 9 as libc::c_int)
+                & (63 as libc::c_int - (bw & 8 as libc::c_int)))
                 + 2 as libc::c_int
-                + 12 as libc::c_int * (bw & 8 as libc::c_int != 0 as libc::c_int) as libc::c_int) >> 4 as libc::c_int);
+                + 12 as libc::c_int * (bw & 8 as libc::c_int != 0 as libc::c_int) as libc::c_int)
+                >> 4 as libc::c_int);
         if bw != opus_packet_get_bandwidth(packet.as_mut_ptr()) {
             _test_failed(
                 b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -925,8 +927,10 @@ pub unsafe extern "C" fn test_dec_api() -> opus_int32 {
         let mut rate: libc::c_int = 0;
         packet[0 as libc::c_int as usize] = i as libc::c_uchar;
         fp3s = packet[0 as libc::c_int as usize] as libc::c_int >> 3 as libc::c_int;
-        fp3s = (((((3 as libc::c_int - (fp3s & 3 as libc::c_int)) * 13 as libc::c_int) & 119 as libc::c_int)
-            + 9 as libc::c_int) >> 2 as libc::c_int)
+        fp3s = (((((3 as libc::c_int - (fp3s & 3 as libc::c_int)) * 13 as libc::c_int)
+            & 119 as libc::c_int)
+            + 9 as libc::c_int)
+            >> 2 as libc::c_int)
             * ((fp3s > 13 as libc::c_int) as libc::c_int
                 * (3 as libc::c_int
                     - (fp3s & 3 as libc::c_int == 3 as libc::c_int) as libc::c_int)
@@ -3164,7 +3168,12 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
                     );
                 }
                 cfgs += 1;
-                enc = opus_encoder_create(fs, c, 2048 as libc::c_int, std::ptr::null_mut::<libc::c_int>());
+                enc = opus_encoder_create(
+                    fs,
+                    c,
+                    2048 as libc::c_int,
+                    std::ptr::null_mut::<libc::c_int>(),
+                );
                 if !enc.is_null() {
                     _test_failed(
                         b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -5086,7 +5095,8 @@ pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
     while j < 32 as libc::c_int {
         let mut maxi: libc::c_int = 0;
         *packet.offset(0 as libc::c_int as isize) =
-            (((j << 1 as libc::c_int) + (j & 1 as libc::c_int)) << 2 as libc::c_int) as libc::c_uchar;
+            (((j << 1 as libc::c_int) + (j & 1 as libc::c_int)) << 2 as libc::c_int)
+                as libc::c_uchar;
         maxi = 960 as libc::c_int / opus_packet_get_samples_per_frame(packet, 8000 as libc::c_int);
         i = 1 as libc::c_int;
         while i <= maxi {
@@ -5549,7 +5559,8 @@ pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
         let mut sum: libc::c_int = 0;
         let mut rcnt_0: libc::c_int = 0;
         *packet.offset(0 as libc::c_int as isize) =
-            (((j << 1 as libc::c_int) + (j & 1 as libc::c_int)) << 2 as libc::c_int) as libc::c_uchar;
+            (((j << 1 as libc::c_int) + (j & 1 as libc::c_int)) << 2 as libc::c_int)
+                as libc::c_uchar;
         maxi_0 =
             960 as libc::c_int / opus_packet_get_samples_per_frame(packet, 8000 as libc::c_int);
         sum = 0 as libc::c_int;

@@ -46,6 +46,18 @@ pub mod entcode_h {
     }
     use super::opus_types_h::opus_uint32;
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:34"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
+use self::arch_h::celt_fatal;
 pub use self::entcode_h::{celt_udiv, ec_ctx, ec_dec, ec_window};
 pub use self::opus_types_h::opus_uint32;
 pub use self::stdint_uintn_h::uint32_t;
@@ -229,6 +241,13 @@ pub unsafe extern "C" fn ec_dec_uint(mut _this: *mut ec_dec, mut _ft: opus_uint3
     let mut ft: libc::c_uint = 0;
     let mut s: libc::c_uint = 0;
     let mut ftb: libc::c_int = 0;
+    if !(_ft > 1 as libc::c_int as libc::c_uint) {
+        celt_fatal(
+            b"assertion failed: _ft>1\0" as *const u8 as *const libc::c_char,
+            b"celt/entdec.c\0" as *const u8 as *const libc::c_char,
+            203 as libc::c_int,
+        );
+    }
     _ft = _ft.wrapping_sub(1);
     ftb = ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * 8 as libc::c_int
         - _ft.leading_zeros() as i32;

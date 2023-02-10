@@ -242,6 +242,17 @@ pub mod structs_h {
     use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/usr/include/string.h:32"]
 pub mod string_h {
     extern "C" {
@@ -297,6 +308,7 @@ pub mod main_h {
         ) -> opus_int32;
     }
 }
+use self::arch_h::celt_fatal;
 use self::main_h::{silk_NLSF_encode, silk_interpolate};
 pub use self::opus_types_h::{
     opus_int16, opus_int32, opus_int64, opus_int8, opus_uint32, opus_uint8,
@@ -328,6 +340,17 @@ pub unsafe extern "C" fn silk_process_NLSFs(
     let mut pNLSF0_temp_Q15: [opus_int16; 16] = [0; 16];
     let mut pNLSFW_QW: [opus_int16; 16] = [0; 16];
     let mut pNLSFW0_temp_QW: [opus_int16; 16] = [0; 16];
+    if !((*psEncC).useInterpolatedNLSFs == 1 as libc::c_int
+        || (*psEncC).indices.NLSFInterpCoef_Q2 as libc::c_int
+            == (1 as libc::c_int) << 2 as libc::c_int)
+    {
+        celt_fatal(
+            b"assertion failed: psEncC->useInterpolatedNLSFs == 1 || psEncC->indices.NLSFInterpCoef_Q2 == ( 1 << 2 )\0"
+                as *const u8 as *const libc::c_char,
+            b"silk/process_NLSFs.c\0" as *const u8 as *const libc::c_char,
+            51 as libc::c_int,
+        );
+    }
     NLSF_mu_Q20 = ((0.003f64
         * ((1 as libc::c_int as opus_int64) << 20 as libc::c_int) as libc::c_double
         + 0.5f64) as opus_int32 as libc::c_long
@@ -337,6 +360,13 @@ pub unsafe extern "C" fn silk_process_NLSFs(
             >> 16 as libc::c_int)) as opus_int32;
     if (*psEncC).nb_subfr == 2 as libc::c_int {
         NLSF_mu_Q20 = NLSF_mu_Q20 + (NLSF_mu_Q20 >> 1 as libc::c_int);
+    }
+    if !(NLSF_mu_Q20 > 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: NLSF_mu_Q20 > 0\0" as *const u8 as *const libc::c_char,
+            b"silk/process_NLSFs.c\0" as *const u8 as *const libc::c_char,
+            63 as libc::c_int,
+        );
     }
     silk_NLSF_VQ_weights_laroia(
         pNLSFW_QW.as_mut_ptr(),
@@ -401,6 +431,14 @@ pub unsafe extern "C" fn silk_process_NLSFs(
             (*psEncC).arch,
         );
     } else {
+        if !((*psEncC).predictLPCOrder <= 16 as libc::c_int) {
+            celt_fatal(
+                b"assertion failed: psEncC->predictLPCOrder <= MAX_LPC_ORDER\0" as *const u8
+                    as *const libc::c_char,
+                b"silk/process_NLSFs.c\0" as *const u8 as *const libc::c_char,
+                104 as libc::c_int,
+            );
+        }
         memcpy(
             (*PredCoef_Q12.offset(0 as libc::c_int as isize)).as_mut_ptr() as *mut libc::c_void,
             (*PredCoef_Q12.offset(1 as libc::c_int as isize)).as_mut_ptr() as *const libc::c_void,

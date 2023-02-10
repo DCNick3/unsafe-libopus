@@ -22,6 +22,18 @@ pub mod opus_types_h {
     pub type opus_int32 = int32_t;
     use super::stdint_intn_h::{int16_t, int32_t};
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:38"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
+use self::arch_h::celt_fatal;
 pub use self::opus_types_h::{opus_int16, opus_int32};
 pub use self::stdint_intn_h::{int16_t, int32_t};
 pub use self::types_h::{__int16_t, __int32_t};
@@ -36,6 +48,27 @@ pub unsafe extern "C" fn silk_insertion_sort_increasing(
     let mut value: opus_int32 = 0;
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
+    if !(K > 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: K > 0\0" as *const u8 as *const libc::c_char,
+            b"silk/sort.c\0" as *const u8 as *const libc::c_char,
+            51 as libc::c_int,
+        );
+    }
+    if !(L > 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: L > 0\0" as *const u8 as *const libc::c_char,
+            b"silk/sort.c\0" as *const u8 as *const libc::c_char,
+            52 as libc::c_int,
+        );
+    }
+    if !(L >= K) {
+        celt_fatal(
+            b"assertion failed: L >= K\0" as *const u8 as *const libc::c_char,
+            b"silk/sort.c\0" as *const u8 as *const libc::c_char,
+            53 as libc::c_int,
+        );
+    }
     i = 0 as libc::c_int;
     while i < K {
         *idx.offset(i as isize) = i;
@@ -79,6 +112,13 @@ pub unsafe extern "C" fn silk_insertion_sort_increasing_all_values_int16(
     let mut value: libc::c_int = 0;
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
+    if !(L > 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: L > 0\0" as *const u8 as *const libc::c_char,
+            b"silk/sort.c\0" as *const u8 as *const libc::c_char,
+            144 as libc::c_int,
+        );
+    }
     i = 1 as libc::c_int;
     while i < L {
         value = *a.offset(i as isize) as libc::c_int;

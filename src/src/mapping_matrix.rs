@@ -28,6 +28,14 @@ pub mod arch_h {
     pub type opus_val16 = libc::c_float;
     #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = libc::c_float;
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:33"]
 pub mod xmmintrin_h {
@@ -103,7 +111,7 @@ pub mod float_cast_h {
     use super::opus_types_h::{opus_int16, opus_int32};
     use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
 }
-pub use self::arch_h::{opus_val16, opus_val32};
+pub use self::arch_h::{celt_fatal, opus_val16, opus_val32};
 pub use self::float_cast_h::{float2int, FLOAT2INT16};
 pub use self::mapping_matrix_h::MappingMatrix;
 pub use self::opus_private_h::{align, foo, C2RustUnnamed};
@@ -150,6 +158,20 @@ pub unsafe extern "C" fn mapping_matrix_init(
 ) {
     let mut i: libc::c_int = 0;
     let mut ptr: *mut opus_int16 = 0 as *mut opus_int16;
+    if !(align(data_size)
+        == align(
+            ((rows * cols) as libc::c_ulong)
+                .wrapping_mul(::core::mem::size_of::<opus_int16>() as libc::c_ulong)
+                as libc::c_int,
+        ))
+    {
+        celt_fatal(
+            b"assertion failed: align(data_size) == align(rows * cols * sizeof(opus_int16))\0"
+                as *const u8 as *const libc::c_char,
+            b"src/mapping_matrix.c\0" as *const u8 as *const libc::c_char,
+            72 as libc::c_int,
+        );
+    }
     (*matrix).rows = rows;
     (*matrix).cols = cols;
     (*matrix).gain = gain;
@@ -174,6 +196,14 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_in_float(
     let mut matrix_data: *mut opus_int16 = 0 as *mut opus_int16;
     let mut i: libc::c_int = 0;
     let mut col: libc::c_int = 0;
+    if !(input_rows <= (*matrix).cols && output_rows <= (*matrix).rows) {
+        celt_fatal(
+            b"assertion failed: input_rows <= matrix->cols && output_rows <= matrix->rows\0"
+                as *const u8 as *const libc::c_char,
+            b"src/mapping_matrix.c\0" as *const u8 as *const libc::c_char,
+            98 as libc::c_int,
+        );
+    }
     matrix_data = mapping_matrix_get_data(matrix);
     i = 0 as libc::c_int;
     while i < frame_size {
@@ -205,6 +235,14 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_out_float(
     let mut i: libc::c_int = 0;
     let mut row: libc::c_int = 0;
     let mut input_sample: libc::c_float = 0.;
+    if !(input_rows <= (*matrix).cols && output_rows <= (*matrix).rows) {
+        celt_fatal(
+            b"assertion failed: input_rows <= matrix->cols && output_rows <= matrix->rows\0"
+                as *const u8 as *const libc::c_char,
+            b"src/mapping_matrix.c\0" as *const u8 as *const libc::c_char,
+            134 as libc::c_int,
+        );
+    }
     matrix_data = mapping_matrix_get_data(matrix);
     i = 0 as libc::c_int;
     while i < frame_size {
@@ -235,6 +273,14 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_in_short(
     let mut matrix_data: *mut opus_int16 = 0 as *mut opus_int16;
     let mut i: libc::c_int = 0;
     let mut col: libc::c_int = 0;
+    if !(input_rows <= (*matrix).cols && output_rows <= (*matrix).rows) {
+        celt_fatal(
+            b"assertion failed: input_rows <= matrix->cols && output_rows <= matrix->rows\0"
+                as *const u8 as *const libc::c_char,
+            b"src/mapping_matrix.c\0" as *const u8 as *const libc::c_char,
+            169 as libc::c_int,
+        );
+    }
     matrix_data = mapping_matrix_get_data(matrix);
     i = 0 as libc::c_int;
     while i < frame_size {
@@ -267,6 +313,14 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_out_short(
     let mut i: libc::c_int = 0;
     let mut row: libc::c_int = 0;
     let mut input_sample: opus_int32 = 0;
+    if !(input_rows <= (*matrix).cols && output_rows <= (*matrix).rows) {
+        celt_fatal(
+            b"assertion failed: input_rows <= matrix->cols && output_rows <= matrix->rows\0"
+                as *const u8 as *const libc::c_char,
+            b"src/mapping_matrix.c\0" as *const u8 as *const libc::c_char,
+            210 as libc::c_int,
+        );
+    }
     matrix_data = mapping_matrix_get_data(matrix);
     i = 0 as libc::c_int;
     while i < frame_size {

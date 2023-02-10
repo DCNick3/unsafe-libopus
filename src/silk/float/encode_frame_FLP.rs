@@ -340,6 +340,17 @@ pub mod SigProc_FIX_h {
         pub fn silk_log2lin(inLog_Q7: opus_int32) -> opus_int32;
     }
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/usr/include/string.h:33"]
 pub mod string_h {
     extern "C" {
@@ -474,6 +485,7 @@ pub mod main_h {
         );
     }
 }
+use self::arch_h::celt_fatal;
 pub use self::entcode_h::{ec_ctx, ec_enc, ec_tell, ec_window};
 use self::main_FLP_h::{
     silk_NSQ_wrapper_FLP, silk_find_pitch_lags_FLP, silk_find_pred_coefs_FLP,
@@ -842,6 +854,14 @@ pub unsafe extern "C" fn silk_encode_frame_FLP(
                         &mut sRangeEnc_copy2 as *mut ec_enc as *const libc::c_void,
                         ::core::mem::size_of::<ec_enc>() as libc::c_ulong,
                     );
+                    if !(sRangeEnc_copy2.offs <= 1275 as libc::c_int as libc::c_uint) {
+                        celt_fatal(
+                            b"assertion failed: sRangeEnc_copy2.offs <= 1275\0" as *const u8
+                                as *const libc::c_char,
+                            b"silk/float/encode_frame_FLP.c\0" as *const u8 as *const libc::c_char,
+                            251 as libc::c_int,
+                        );
+                    }
                     memcpy(
                         (*psRangeEnc).buf as *mut libc::c_void,
                         ec_buf_copy.as_mut_ptr() as *const libc::c_void,
@@ -886,6 +906,15 @@ pub unsafe extern "C" fn silk_encode_frame_FLP(
                             psRangeEnc as *const libc::c_void,
                             ::core::mem::size_of::<ec_enc>() as libc::c_ulong,
                         );
+                        if !((*psRangeEnc).offs <= 1275 as libc::c_int as libc::c_uint) {
+                            celt_fatal(
+                                b"assertion failed: psRangeEnc->offs <= 1275\0" as *const u8
+                                    as *const libc::c_char,
+                                b"silk/float/encode_frame_FLP.c\0" as *const u8
+                                    as *const libc::c_char,
+                                281 as libc::c_int,
+                            );
+                        }
                         memcpy(
                             ec_buf_copy.as_mut_ptr() as *mut libc::c_void,
                             (*psRangeEnc).buf as *const libc::c_void,

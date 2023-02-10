@@ -1,4 +1,15 @@
 use ::libc;
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:32"]
 pub mod mathcalls_h {
     extern "C" {
@@ -33,6 +44,7 @@ pub mod SigProc_FLP_h {
             -> libc::c_double;
     }
 }
+use self::arch_h::celt_fatal;
 use self::mathcalls_h::sqrt;
 use self::string_h::{memcpy, memset};
 use self::SigProc_FLP_h::{silk_energy_FLP, silk_inner_product_FLP};
@@ -65,6 +77,14 @@ pub unsafe extern "C" fn silk_burg_modified_FLP(
     let mut CAf: [libc::c_double; 25] = [0.; 25];
     let mut CAb: [libc::c_double; 25] = [0.; 25];
     let mut Af: [libc::c_double; 24] = [0.; 24];
+    if !(subfr_length * nb_subfr <= 384 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: subfr_length * nb_subfr <= MAX_FRAME_SIZE\0" as *const u8
+                as *const libc::c_char,
+            b"silk/float/burg_modified_FLP.c\0" as *const u8 as *const libc::c_char,
+            55 as libc::c_int,
+        );
+    }
     C0 = silk_energy_FLP(x, nb_subfr * subfr_length);
     memset(
         C_first_row.as_mut_ptr() as *mut libc::c_void,

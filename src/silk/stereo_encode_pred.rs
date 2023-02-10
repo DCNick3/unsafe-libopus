@@ -58,6 +58,17 @@ pub mod entcode_h {
     pub type ec_enc = ec_ctx;
     use super::opus_types_h::opus_uint32;
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:32"]
 pub mod entenc_h {
     use super::entcode_h::ec_enc;
@@ -85,6 +96,7 @@ pub mod tables_h {
         pub static silk_stereo_only_code_mid_iCDF: [opus_uint8; 2];
     }
 }
+use self::arch_h::celt_fatal;
 pub use self::entcode_h::{ec_ctx, ec_enc, ec_window};
 use self::entenc_h::ec_enc_icdf;
 pub use self::opus_types_h::{opus_int8, opus_uint32, opus_uint8};
@@ -105,6 +117,13 @@ pub unsafe extern "C" fn silk_stereo_encode_pred(
     n = 5 as libc::c_int
         * (*ix.offset(0 as libc::c_int as isize))[2 as libc::c_int as usize] as libc::c_int
         + (*ix.offset(1 as libc::c_int as isize))[2 as libc::c_int as usize] as libc::c_int;
+    if !(n < 25 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: n < 25\0" as *const u8 as *const libc::c_char,
+            b"silk/stereo_encode_pred.c\0" as *const u8 as *const libc::c_char,
+            44 as libc::c_int,
+        );
+    }
     ec_enc_icdf(
         psRangeEnc,
         n,
@@ -113,6 +132,25 @@ pub unsafe extern "C" fn silk_stereo_encode_pred(
     );
     n = 0 as libc::c_int;
     while n < 2 as libc::c_int {
+        if !(((*ix.offset(n as isize))[0 as libc::c_int as usize] as libc::c_int)
+            < 3 as libc::c_int)
+        {
+            celt_fatal(
+                b"assertion failed: ix[ n ][ 0 ] < 3\0" as *const u8 as *const libc::c_char,
+                b"silk/stereo_encode_pred.c\0" as *const u8 as *const libc::c_char,
+                47 as libc::c_int,
+            );
+        }
+        if !(((*ix.offset(n as isize))[1 as libc::c_int as usize] as libc::c_int)
+            < 5 as libc::c_int)
+        {
+            celt_fatal(
+                b"assertion failed: ix[ n ][ 1 ] < STEREO_QUANT_SUB_STEPS\0" as *const u8
+                    as *const libc::c_char,
+                b"silk/stereo_encode_pred.c\0" as *const u8 as *const libc::c_char,
+                48 as libc::c_int,
+            );
+        }
         ec_enc_icdf(
             psRangeEnc,
             (*ix.offset(n as isize))[0 as libc::c_int as usize] as libc::c_int,

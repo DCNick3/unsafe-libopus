@@ -1,4 +1,16 @@
 use ::libc;
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
+use self::arch_h::celt_fatal;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_warped_autocorrelation_FLP(
@@ -66,6 +78,13 @@ pub unsafe extern "C" fn silk_warped_autocorrelation_FLP(
         0.,
         0.,
     ];
+    if !(order & 1 as libc::c_int == 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: ( order & 1 ) == 0\0" as *const u8 as *const libc::c_char,
+            b"silk/float/warped_autocorrelation_FLP.c\0" as *const u8 as *const libc::c_char,
+            49 as libc::c_int,
+        );
+    }
     n = 0 as libc::c_int;
     while n < length {
         tmp1 = *input.offset(n as isize) as libc::c_double;

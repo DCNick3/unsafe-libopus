@@ -204,6 +204,17 @@ pub mod structs_h {
     use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entdec.h:32"]
 pub mod entdec_h {
     use super::entcode_h::ec_dec;
@@ -262,6 +273,7 @@ pub mod main_h {
         );
     }
 }
+use self::arch_h::celt_fatal;
 pub use self::entcode_h::{ec_ctx, ec_dec, ec_window};
 use self::entdec_h::ec_dec_icdf;
 use self::main_h::silk_NLSF_unpack;
@@ -357,6 +369,14 @@ pub unsafe extern "C" fn silk_decode_indices(
         (*psDec).psNLSF_CB,
         (*psDec).indices.NLSFIndices[0 as libc::c_int as usize] as libc::c_int,
     );
+    if !((*(*psDec).psNLSF_CB).order as libc::c_int == (*psDec).LPC_order) {
+        celt_fatal(
+            b"assertion failed: psDec->psNLSF_CB->order == psDec->LPC_order\0" as *const u8
+                as *const libc::c_char,
+            b"silk/decode_indices.c\0" as *const u8 as *const libc::c_char,
+            82 as libc::c_int,
+        );
+    }
     i = 0 as libc::c_int;
     while i < (*(*psDec).psNLSF_CB).order as libc::c_int {
         Ix = ec_dec_icdf(

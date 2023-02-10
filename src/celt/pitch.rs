@@ -24,6 +24,14 @@ pub mod arch_h {
     pub type opus_val32 = libc::c_float;
     #[c2rust::src_loc = "183:1"]
     pub type celt_sig = libc::c_float;
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
 }
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:38"]
 pub mod mathcalls_h {
@@ -78,6 +86,13 @@ pub mod pitch_h {
         let mut y_1: opus_val16 = 0.;
         let mut y_2: opus_val16 = 0.;
         let mut y_3: opus_val16 = 0.;
+        if !(len >= 3 as libc::c_int) {
+            celt_fatal(
+                b"assertion failed: len>=3\0" as *const u8 as *const libc::c_char,
+                b"./celt/pitch.h\0" as *const u8 as *const libc::c_char,
+                69 as libc::c_int,
+            );
+        }
         y_3 = 0 as libc::c_int as opus_val16;
         let fresh0 = y;
         y = y.offset(1);
@@ -218,7 +233,7 @@ pub mod pitch_h {
         }
         return xy;
     }
-    use super::arch_h::{opus_val16, opus_val32};
+    use super::arch_h::{celt_fatal, opus_val16, opus_val32};
 }
 #[c2rust::header_src = "/usr/include/stdlib.h:38"]
 pub mod stdlib_h {
@@ -245,7 +260,7 @@ pub mod celt_lpc_h {
         ) -> libc::c_int;
     }
 }
-pub use self::arch_h::{celt_sig, opus_val16, opus_val32};
+pub use self::arch_h::{celt_fatal, celt_sig, opus_val16, opus_val32};
 use self::celt_lpc_h::{_celt_autocorr, _celt_lpc};
 pub use self::entcode_h::celt_udiv;
 use self::mathcalls_h::sqrt;
@@ -451,6 +466,13 @@ pub unsafe extern "C" fn celt_pitch_xcorr_c(
     mut arch: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
+    if !(max_pitch > 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: max_pitch>0\0" as *const u8 as *const libc::c_char,
+            b"celt/pitch.c\0" as *const u8 as *const libc::c_char,
+            251 as libc::c_int,
+        );
+    }
     i = 0 as libc::c_int;
     while i < max_pitch - 3 as libc::c_int {
         let mut sum: [opus_val32; 4] = [
@@ -488,6 +510,20 @@ pub unsafe extern "C" fn pitch_search(
     let mut lag: libc::c_int = 0;
     let mut best_pitch: [libc::c_int; 2] = [0 as libc::c_int, 0 as libc::c_int];
     let mut offset: libc::c_int = 0;
+    if !(len > 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: len>0\0" as *const u8 as *const libc::c_char,
+            b"celt/pitch.c\0" as *const u8 as *const libc::c_char,
+            302 as libc::c_int,
+        );
+    }
+    if !(max_pitch > 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: max_pitch>0\0" as *const u8 as *const libc::c_char,
+            b"celt/pitch.c\0" as *const u8 as *const libc::c_char,
+            303 as libc::c_int,
+        );
+    }
     lag = len + max_pitch;
     let vla = (len >> 2 as libc::c_int) as usize;
     let mut x_lp4: Vec<opus_val16> = ::std::vec::from_elem(0., vla);

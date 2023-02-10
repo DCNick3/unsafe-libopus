@@ -116,6 +116,14 @@ pub mod kiss_fft_h {
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = libc::c_float;
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:34"]
 pub mod entcode_h {
@@ -171,7 +179,7 @@ pub mod entdec_h {
         pub fn ec_dec_uint(_this: *mut ec_dec, _ft: opus_uint32) -> opus_uint32;
     }
 }
-pub use self::arch_h::opus_val16;
+pub use self::arch_h::{celt_fatal, opus_val16};
 pub use self::entcode_h::{celt_udiv, ec_ctx, ec_dec, ec_enc, ec_window};
 use self::entdec_h::{ec_dec_bit_logp, ec_dec_uint};
 use self::entenc_h::{ec_enc_bit_logp, ec_enc_uint};
@@ -399,6 +407,13 @@ unsafe extern "C" fn interp_bits2pulses(
             codedBands -= 1;
         }
     }
+    if !(codedBands > start) {
+        celt_fatal(
+            b"assertion failed: codedBands > start\0" as *const u8 as *const libc::c_char,
+            b"celt/rate.c\0" as *const u8 as *const libc::c_char,
+            391 as libc::c_int,
+        );
+    }
     if intensity_rsv > 0 as libc::c_int {
         if encode != 0 {
             *intensity = if *intensity < codedBands {
@@ -474,6 +489,13 @@ unsafe extern "C" fn interp_bits2pulses(
         let mut NClogN: libc::c_int = 0;
         let mut excess: opus_int32 = 0;
         let mut bit: opus_int32 = 0;
+        if !(*bits.offset(j as isize) >= 0 as libc::c_int) {
+            celt_fatal(
+                b"assertion failed: bits[j] >= 0\0" as *const u8 as *const libc::c_char,
+                b"celt/rate.c\0" as *const u8 as *const libc::c_char,
+                442 as libc::c_int,
+            );
+        }
         N0 = *((*m).eBands).offset((j + 1 as libc::c_int) as isize) as libc::c_int
             - *((*m).eBands).offset(j as isize) as libc::c_int;
         N = N0 << LM;
@@ -555,11 +577,33 @@ unsafe extern "C" fn interp_bits2pulses(
             excess -= extra_bits;
         }
         balance = excess;
+        if !(*bits.offset(j as isize) >= 0 as libc::c_int) {
+            celt_fatal(
+                b"assertion failed: bits[j] >= 0\0" as *const u8 as *const libc::c_char,
+                b"celt/rate.c\0" as *const u8 as *const libc::c_char,
+                513 as libc::c_int,
+            );
+        }
+        if !(*ebits.offset(j as isize) >= 0 as libc::c_int) {
+            celt_fatal(
+                b"assertion failed: ebits[j] >= 0\0" as *const u8 as *const libc::c_char,
+                b"celt/rate.c\0" as *const u8 as *const libc::c_char,
+                514 as libc::c_int,
+            );
+        }
         j += 1;
     }
     *_balance = balance;
     while j < end {
         *ebits.offset(j as isize) = *bits.offset(j as isize) >> stereo >> 3 as libc::c_int;
+        if !(C * *ebits.offset(j as isize) << 3 as libc::c_int == *bits.offset(j as isize)) {
+            celt_fatal(
+                b"assertion failed: C*ebits[j]<<BITRES == bits[j]\0" as *const u8
+                    as *const libc::c_char,
+                b"celt/rate.c\0" as *const u8 as *const libc::c_char,
+                524 as libc::c_int,
+            );
+        }
         *bits.offset(j as isize) = 0 as libc::c_int;
         *fine_priority.offset(j as isize) =
             (*ebits.offset(j as isize) < 1 as libc::c_int) as libc::c_int;

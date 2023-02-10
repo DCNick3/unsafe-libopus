@@ -370,7 +370,8 @@ pub unsafe extern "C" fn generate_music(mut buf: *mut libc::c_short, mut len: op
             * (j >> 12 as libc::c_int
                 ^ (j >> 10 as libc::c_int | j >> 12 as libc::c_int)
                     & 26 as libc::c_int
-                    & j >> 7 as libc::c_int)) & 128 as libc::c_int)
+                    & j >> 7 as libc::c_int))
+            & 128 as libc::c_int)
             + 128 as libc::c_int)
             << 15 as libc::c_int;
         v1 = v2;
@@ -510,7 +511,8 @@ pub unsafe extern "C" fn test_encode(
                 break;
             } else {
                 samp_count += frame_size;
-                if samp_count >= 48000 as libc::c_int * 30 as libc::c_int
+                if samp_count
+                    >= 48000 as libc::c_int * 30 as libc::c_int
                         / 3 as libc::c_int
                         / 2 as libc::c_int
                         - 5760 as libc::c_int
@@ -1585,20 +1587,26 @@ pub unsafe extern "C" fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                             411 as libc::c_int,
                         );
                     }
-                    if fast_rand() & 1 as libc::c_int as libc::c_uint != 0 as libc::c_int as libc::c_uint && opus_decoder_ctl(
+                    if fast_rand() & 1 as libc::c_int as libc::c_uint
+                        != 0 as libc::c_int as libc::c_uint
+                        && opus_decoder_ctl(
                             dec_err[(fast_rand() & 1 as libc::c_int as libc::c_uint) as usize],
                             4028 as libc::c_int,
-                        ) != 0 as libc::c_int {
+                        ) != 0 as libc::c_int
+                    {
                         _test_failed(
                             b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                             414 as libc::c_int,
                         );
                     }
                 }
-                if fast_rand() & 127 as libc::c_int as libc::c_uint == 0 as libc::c_int as libc::c_uint && opus_decoder_ctl(
+                if fast_rand() & 127 as libc::c_int as libc::c_uint
+                    == 0 as libc::c_int as libc::c_uint
+                    && opus_decoder_ctl(
                         dec_err[(fast_rand() & 1 as libc::c_int as libc::c_uint) as usize],
                         4028 as libc::c_int,
-                    ) != 0 as libc::c_int {
+                    ) != 0 as libc::c_int
+                {
                     _test_failed(
                         b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                         419 as libc::c_int,
@@ -2146,14 +2154,22 @@ pub unsafe extern "C" fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                             506 as libc::c_int,
                         );
                     }
-                    if fast_rand() & 3 as libc::c_int as libc::c_uint != 0 as libc::c_int as libc::c_uint && opus_multistream_decoder_ctl(MSdec_err, 4028 as libc::c_int) != 0 as libc::c_int {
+                    if fast_rand() & 3 as libc::c_int as libc::c_uint
+                        != 0 as libc::c_int as libc::c_uint
+                        && opus_multistream_decoder_ctl(MSdec_err, 4028 as libc::c_int)
+                            != 0 as libc::c_int
+                    {
                         _test_failed(
                             b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                             509 as libc::c_int,
                         );
                     }
                 }
-                if fast_rand() & 255 as libc::c_int as libc::c_uint == 0 as libc::c_int as libc::c_uint && opus_multistream_decoder_ctl(MSdec_err, 4028 as libc::c_int) != 0 as libc::c_int {
+                if fast_rand() & 255 as libc::c_int as libc::c_uint
+                    == 0 as libc::c_int as libc::c_uint
+                    && opus_multistream_decoder_ctl(MSdec_err, 4028 as libc::c_int)
+                        != 0 as libc::c_int
+                {
                     _test_failed(
                         b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                         514 as libc::c_int,

@@ -5,6 +5,10 @@ pub mod types_h {
     pub type __int16_t = libc::c_short;
     #[c2rust::src_loc = "41:1"]
     pub type __int32_t = libc::c_int;
+    #[c2rust::src_loc = "152:1"]
+    pub type __off_t = libc::c_long;
+    #[c2rust::src_loc = "153:1"]
+    pub type __off64_t = libc::c_long;
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-intn.h:36"]
 pub mod stdint_intn_h {
@@ -22,12 +26,90 @@ pub mod opus_types_h {
     pub type opus_int32 = int32_t;
     use super::stdint_intn_h::{int16_t, int32_t};
 }
+#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:36"]
+pub mod stddef_h {
+    #[c2rust::src_loc = "46:1"]
+    pub type size_t = libc::c_ulong;
+}
+#[c2rust::header_src = "/usr/include/bits/types/struct_FILE.h:36"]
+pub mod struct_FILE_h {
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "49:8"]
+    pub struct _IO_FILE {
+        pub _flags: libc::c_int,
+        pub _IO_read_ptr: *mut libc::c_char,
+        pub _IO_read_end: *mut libc::c_char,
+        pub _IO_read_base: *mut libc::c_char,
+        pub _IO_write_base: *mut libc::c_char,
+        pub _IO_write_ptr: *mut libc::c_char,
+        pub _IO_write_end: *mut libc::c_char,
+        pub _IO_buf_base: *mut libc::c_char,
+        pub _IO_buf_end: *mut libc::c_char,
+        pub _IO_save_base: *mut libc::c_char,
+        pub _IO_backup_base: *mut libc::c_char,
+        pub _IO_save_end: *mut libc::c_char,
+        pub _markers: *mut _IO_marker,
+        pub _chain: *mut _IO_FILE,
+        pub _fileno: libc::c_int,
+        pub _flags2: libc::c_int,
+        pub _old_offset: __off_t,
+        pub _cur_column: libc::c_ushort,
+        pub _vtable_offset: libc::c_schar,
+        pub _shortbuf: [libc::c_char; 1],
+        pub _lock: *mut libc::c_void,
+        pub _offset: __off64_t,
+        pub _codecvt: *mut _IO_codecvt,
+        pub _wide_data: *mut _IO_wide_data,
+        pub _freeres_list: *mut _IO_FILE,
+        pub _freeres_buf: *mut libc::c_void,
+        pub __pad5: size_t,
+        pub _mode: libc::c_int,
+        pub _unused2: [libc::c_char; 20],
+    }
+    #[c2rust::src_loc = "43:1"]
+    pub type _IO_lock_t = ();
+    use super::stddef_h::size_t;
+    use super::types_h::{__off64_t, __off_t};
+    extern "C" {
+        #[c2rust::src_loc = "38:8"]
+        pub type _IO_wide_data;
+        #[c2rust::src_loc = "37:8"]
+        pub type _IO_codecvt;
+        #[c2rust::src_loc = "36:8"]
+        pub type _IO_marker;
+    }
+}
+#[c2rust::header_src = "/usr/include/bits/types/FILE.h:36"]
+pub mod FILE_h {
+    #[c2rust::src_loc = "7:1"]
+    pub type FILE = _IO_FILE;
+    use super::struct_FILE_h::_IO_FILE;
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:37"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = libc::c_float;
     #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = libc::c_float;
+    #[no_mangle]
+    #[c2rust::src_loc = "71:1"]
+    pub unsafe extern "C" fn celt_fatal(
+        mut str: *const libc::c_char,
+        mut file: *const libc::c_char,
+        mut line: libc::c_int,
+    ) -> ! {
+        fprintf(
+            stderr,
+            b"Fatal (internal) error in %s, line %d: %s\n\0" as *const u8 as *const libc::c_char,
+            file,
+            line,
+            str,
+        );
+        abort();
+    }
+    use super::stdio_h::{fprintf, stderr};
+    use super::stdlib_h::abort;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/kiss_fft.h:37"]
 pub mod kiss_fft_h {
@@ -108,6 +190,16 @@ pub mod modes_h {
     use super::mdct_h::mdct_lookup;
     use super::opus_types_h::{opus_int16, opus_int32};
 }
+#[c2rust::header_src = "/usr/include/stdio.h:36"]
+pub mod stdio_h {
+    use super::FILE_h::FILE;
+    extern "C" {
+        #[c2rust::src_loc = "145:14"]
+        pub static mut stderr: *mut FILE;
+        #[c2rust::src_loc = "350:12"]
+        pub fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
+    }
+}
 #[c2rust::header_src = "/usr/include/string.h:36"]
 pub mod string_h {
     extern "C" {
@@ -119,14 +211,26 @@ pub mod string_h {
         ) -> *mut libc::c_void;
     }
 }
-pub use self::arch_h::{opus_val16, opus_val32};
+#[c2rust::header_src = "/usr/include/stdlib.h:36"]
+pub mod stdlib_h {
+    extern "C" {
+        #[c2rust::src_loc = "611:13"]
+        pub fn abort() -> !;
+    }
+}
+pub use self::arch_h::{celt_fatal, opus_val16, opus_val32};
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::mdct_h::mdct_lookup;
 pub use self::modes_h::{OpusCustomMode, PulseCache};
 pub use self::opus_types_h::{opus_int16, opus_int32};
+pub use self::stddef_h::size_t;
 pub use self::stdint_intn_h::{int16_t, int32_t};
+use self::stdio_h::{fprintf, stderr};
+use self::stdlib_h::abort;
 use self::string_h::memmove;
-pub use self::types_h::{__int16_t, __int32_t};
+pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
+pub use self::types_h::{__int16_t, __int32_t, __off64_t, __off_t};
+pub use self::FILE_h::FILE;
 #[no_mangle]
 #[c2rust::src_loc = "62:1"]
 pub unsafe extern "C" fn resampling_factor(mut rate: opus_int32) -> libc::c_int {
@@ -148,6 +252,13 @@ pub unsafe extern "C" fn resampling_factor(mut rate: opus_int32) -> libc::c_int 
             ret = 6 as libc::c_int;
         }
         _ => {
+            if 0 as libc::c_int == 0 {
+                celt_fatal(
+                    b"assertion failed: 0\0" as *const u8 as *const libc::c_char,
+                    b"celt/celt.c\0" as *const u8 as *const libc::c_char,
+                    84 as libc::c_int,
+                );
+            }
             ret = 0 as libc::c_int;
         }
     }

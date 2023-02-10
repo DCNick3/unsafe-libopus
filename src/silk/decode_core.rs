@@ -195,6 +195,17 @@ pub mod structs_h {
     use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/usr/include/string.h:32"]
 pub mod string_h {
     extern "C" {
@@ -365,6 +376,7 @@ pub mod tables_h {
         pub static silk_Quantization_Offsets_Q10: [[opus_int16; 2]; 2];
     }
 }
+use self::arch_h::celt_fatal;
 pub use self::macros_h::silk_CLZ32;
 pub use self::opus_types_h::{
     opus_int16, opus_int32, opus_int64, opus_int8, opus_uint32, opus_uint8,
@@ -520,6 +532,13 @@ pub unsafe extern "C" fn silk_decode_core(
                     - lag
                     - (*psDec).LPC_order
                     - 5 as libc::c_int / 2 as libc::c_int;
+                if !(start_idx > 0 as libc::c_int) {
+                    celt_fatal(
+                        b"assertion failed: start_idx > 0\0" as *const u8 as *const libc::c_char,
+                        b"silk/decode_core.c\0" as *const u8 as *const libc::c_char,
+                        144 as libc::c_int,
+                    );
+                }
                 if k == 2 as libc::c_int {
                     memcpy(
                         &mut *((*psDec).outBuf)
@@ -619,6 +638,15 @@ pub unsafe extern "C" fn silk_decode_core(
         }
         i = 0 as libc::c_int;
         while i < (*psDec).subfr_length {
+            if !((*psDec).LPC_order == 10 as libc::c_int || (*psDec).LPC_order == 16 as libc::c_int)
+            {
+                celt_fatal(
+                    b"assertion failed: psDec->LPC_order == 10 || psDec->LPC_order == 16\0"
+                        as *const u8 as *const libc::c_char,
+                    b"silk/decode_core.c\0" as *const u8 as *const libc::c_char,
+                    199 as libc::c_int,
+                );
+            }
             LPC_pred_Q10 = (*psDec).LPC_order >> 1 as libc::c_int;
             LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
                 + (*sLPC_Q14

@@ -129,6 +129,17 @@ pub mod opus_private_h {
     use super::opus_h::OpusDecoder;
     use super::opus_types_h::{opus_int16, opus_int32};
     extern "C" {
+        #[c2rust::src_loc = "165:1"]
+        pub fn opus_packet_parse_impl(
+            data: *const libc::c_uchar,
+            len: opus_int32,
+            self_delimited: libc::c_int,
+            out_toc: *mut libc::c_uchar,
+            frames: *mut *const libc::c_uchar,
+            size: *mut opus_int16,
+            payload_offset: *mut libc::c_int,
+            packet_offset: *mut opus_int32,
+        ) -> libc::c_int;
         #[c2rust::src_loc = "149:1"]
         pub fn opus_decode_native(
             st: *mut OpusDecoder,
@@ -161,17 +172,6 @@ pub mod opus_private_h {
         ) -> libc::c_int;
         #[c2rust::src_loc = "83:1"]
         pub fn validate_layout(layout: *const ChannelLayout) -> libc::c_int;
-        #[c2rust::src_loc = "165:1"]
-        pub fn opus_packet_parse_impl(
-            data: *const libc::c_uchar,
-            len: opus_int32,
-            self_delimited: libc::c_int,
-            out_toc: *mut libc::c_uchar,
-            frames: *mut *const libc::c_uchar,
-            size: *mut opus_int16,
-            payload_offset: *mut libc::c_int,
-            packet_offset: *mut opus_int32,
-        ) -> libc::c_int;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:34"]
@@ -180,6 +180,14 @@ pub mod arch_h {
     pub type opus_val32 = libc::c_float;
     #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = libc::c_float;
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:34"]
 pub mod stddef_h {
@@ -249,7 +257,7 @@ pub mod os_support_h {
     use super::stddef_h::size_t;
     use super::stdlib_h::{free, malloc};
 }
-pub use self::arch_h::{opus_val16, opus_val32};
+pub use self::arch_h::{celt_fatal, opus_val16, opus_val32};
 pub use self::float_cast_h::{float2int, FLOAT2INT16};
 pub use self::internal::{__builtin_va_list, __va_list_tag};
 use self::opus_h::{
@@ -269,6 +277,10 @@ pub use self::stdint_intn_h::{int16_t, int32_t};
 pub use self::stdint_uintn_h::uint32_t;
 use self::stdlib_h::{free, malloc};
 pub use self::types_h::{__int16_t, __int32_t, __uint32_t};
+#[c2rust::src_loc = "43:1"]
+unsafe extern "C" fn validate_ms_decoder(mut st: *mut OpusMSDecoder) {
+    validate_layout(&mut (*st).layout);
+}
 #[no_mangle]
 #[c2rust::src_loc = "53:1"]
 pub unsafe extern "C" fn opus_multistream_decoder_get_size(
@@ -453,19 +465,25 @@ pub unsafe extern "C" fn opus_multistream_decode_native(
     let mut c: libc::c_int = 0;
     let mut ptr: *mut libc::c_char = 0 as *mut libc::c_char;
     let mut do_plc: libc::c_int = 0 as libc::c_int;
+    validate_ms_decoder(st);
     if frame_size <= 0 as libc::c_int {
         return -(1 as libc::c_int);
     }
-    if opus_multistream_decoder_ctl(
+    if !(opus_multistream_decoder_ctl(
         st,
         4029 as libc::c_int,
         (&mut Fs as *mut opus_int32).offset(
             (&mut Fs as *mut opus_int32).offset_from(&mut Fs as *mut opus_int32) as libc::c_long
                 as isize,
         ),
-    ) != 0 as libc::c_int
+    ) == 0 as libc::c_int)
     {
-        return -(3 as libc::c_int);
+        celt_fatal(
+            b"assertion failed: (opus_multistream_decoder_ctl(st, 4029, ((&Fs) + ((&Fs) - (opus_int32*)(&Fs))))) == OPUS_OK\0"
+                as *const u8 as *const libc::c_char,
+            b"src/opus_multistream_decoder.c\0" as *const u8 as *const libc::c_char,
+            206 as libc::c_int,
+        );
     }
     frame_size = if frame_size < Fs / 25 as libc::c_int * 3 as libc::c_int {
         frame_size
@@ -768,7 +786,7 @@ pub unsafe extern "C" fn opus_multistream_decoder_ctl_va_list(
             let mut value_0: *mut opus_uint32 = ap.arg::<*mut opus_uint32>();
             let mut tmp: opus_uint32 = 0;
             if value_0.is_null() {
-                current_block = 4177471793300891699;
+                current_block = 15933654591644784431;
             } else {
                 *value_0 = 0 as libc::c_int as opus_uint32;
                 s = 0 as libc::c_int;
@@ -815,11 +833,11 @@ pub unsafe extern "C" fn opus_multistream_decoder_ctl_va_list(
             let mut value_1: *mut *mut OpusDecoder = 0 as *mut *mut OpusDecoder;
             stream_id = ap.arg::<opus_int32>();
             if stream_id < 0 as libc::c_int || stream_id >= (*st).layout.nb_streams {
-                current_block = 4177471793300891699;
+                current_block = 15933654591644784431;
             } else {
                 value_1 = ap.arg::<*mut *mut OpusDecoder>();
                 if value_1.is_null() {
-                    current_block = 4177471793300891699;
+                    current_block = 15933654591644784431;
                 } else {
                     s_1 = 0 as libc::c_int;
                     while s_1 < stream_id {
@@ -861,7 +879,7 @@ pub unsafe extern "C" fn opus_multistream_decoder_ctl_va_list(
         }
     }
     match current_block {
-        4177471793300891699 => return -(1 as libc::c_int),
+        15933654591644784431 => return -(1 as libc::c_int),
         _ => return ret,
     };
 }

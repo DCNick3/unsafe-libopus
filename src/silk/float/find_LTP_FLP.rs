@@ -1,4 +1,18 @@
 use ::libc;
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:32"]
+pub mod SigProc_FLP_h {
+    extern "C" {
+        #[c2rust::src_loc = "112:1"]
+        pub fn silk_scale_vector_FLP(
+            data1: *mut libc::c_float,
+            gain: libc::c_float,
+            dataSize: libc::c_int,
+        );
+        #[c2rust::src_loc = "134:1"]
+        pub fn silk_energy_FLP(data: *const libc::c_float, dataSize: libc::c_int)
+            -> libc::c_double;
+    }
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/main_FLP.h:32"]
 pub mod main_FLP_h {
     extern "C" {
@@ -17,20 +31,6 @@ pub mod main_FLP_h {
             Order: libc::c_int,
             Xt: *mut libc::c_float,
         );
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:32"]
-pub mod SigProc_FLP_h {
-    extern "C" {
-        #[c2rust::src_loc = "112:1"]
-        pub fn silk_scale_vector_FLP(
-            data1: *mut libc::c_float,
-            gain: libc::c_float,
-            dataSize: libc::c_int,
-        );
-        #[c2rust::src_loc = "134:1"]
-        pub fn silk_energy_FLP(data: *const libc::c_float, dataSize: libc::c_int)
-            -> libc::c_double;
     }
 }
 use self::main_FLP_h::{silk_corrMatrix_FLP, silk_corrVector_FLP};

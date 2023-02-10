@@ -305,6 +305,17 @@ pub mod structs_FLP_h {
     use super::opus_types_h::opus_int8;
     use super::structs_h::silk_encoder_state;
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:35"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:35"]
 pub mod SigProc_FIX_h {
     #[inline]
@@ -432,6 +443,7 @@ pub mod main_h {
         ) -> libc::c_int;
     }
 }
+use self::arch_h::celt_fatal;
 pub use self::control_h::silk_EncControlStruct;
 pub use self::float_cast_h::float2int;
 use self::main_h::silk_control_audio_bandwidth;
@@ -641,6 +653,22 @@ unsafe extern "C" fn silk_setup_fs(
         (*psEnc).sCmn.PacketSize_ms = PacketSize_ms;
         (*psEnc).sCmn.TargetRate_bps = 0 as libc::c_int;
     }
+    if !(fs_kHz == 8 as libc::c_int || fs_kHz == 12 as libc::c_int || fs_kHz == 16 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: fs_kHz == 8 || fs_kHz == 12 || fs_kHz == 16\0" as *const u8
+                as *const libc::c_char,
+            b"silk/control_codec.c\0" as *const u8 as *const libc::c_char,
+            241 as libc::c_int,
+        );
+    }
+    if !((*psEnc).sCmn.nb_subfr == 2 as libc::c_int || (*psEnc).sCmn.nb_subfr == 4 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: psEnc->sCmn.nb_subfr == 2 || psEnc->sCmn.nb_subfr == 4\0"
+                as *const u8 as *const libc::c_char,
+            b"silk/control_codec.c\0" as *const u8 as *const libc::c_char,
+            242 as libc::c_int,
+        );
+    }
     if (*psEnc).sCmn.fs_kHz != fs_kHz {
         memset(
             &mut (*psEnc).sShape as *mut silk_shape_state_FLP as *mut libc::c_void,
@@ -718,6 +746,14 @@ unsafe extern "C" fn silk_setup_fs(
             (*psEnc).sCmn.pitch_lag_low_bits_iCDF = silk_uniform4_iCDF.as_ptr();
         }
     }
+    if !((*psEnc).sCmn.subfr_length * (*psEnc).sCmn.nb_subfr == (*psEnc).sCmn.frame_length) {
+        celt_fatal(
+            b"assertion failed: ( psEnc->sCmn.subfr_length * psEnc->sCmn.nb_subfr ) == psEnc->sCmn.frame_length\0"
+                as *const u8 as *const libc::c_char,
+            b"silk/control_codec.c\0" as *const u8 as *const libc::c_char,
+            302 as libc::c_int,
+        );
+    }
     return ret;
 }
 #[c2rust::src_loc = "307:1"]
@@ -726,6 +762,14 @@ unsafe extern "C" fn silk_setup_complexity(
     mut Complexity: libc::c_int,
 ) -> libc::c_int {
     let mut ret: libc::c_int = 0 as libc::c_int;
+    if !(Complexity >= 0 as libc::c_int && Complexity <= 10 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: Complexity >= 0 && Complexity <= 10\0" as *const u8
+                as *const libc::c_char,
+            b"silk/control_codec.c\0" as *const u8 as *const libc::c_char,
+            315 as libc::c_int,
+        );
+    }
     if Complexity < 1 as libc::c_int {
         (*psEncC).pitchEstimationComplexity = 0 as libc::c_int;
         (*psEncC).pitchEstimationThreshold_Q16 = (0.8f64
@@ -825,6 +869,53 @@ unsafe extern "C" fn silk_setup_complexity(
     (*psEncC).shapeWinLength =
         5 as libc::c_int * (*psEncC).fs_kHz + 2 as libc::c_int * (*psEncC).la_shape;
     (*psEncC).Complexity = Complexity;
+    if !((*psEncC).pitchEstimationLPCOrder <= 16 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: psEncC->pitchEstimationLPCOrder <= MAX_FIND_PITCH_LPC_ORDER\0"
+                as *const u8 as *const libc::c_char,
+            b"silk/control_codec.c\0" as *const u8 as *const libc::c_char,
+            393 as libc::c_int,
+        );
+    }
+    if !((*psEncC).shapingLPCOrder <= 24 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: psEncC->shapingLPCOrder <= MAX_SHAPE_LPC_ORDER\0" as *const u8
+                as *const libc::c_char,
+            b"silk/control_codec.c\0" as *const u8 as *const libc::c_char,
+            394 as libc::c_int,
+        );
+    }
+    if !((*psEncC).nStatesDelayedDecision <= 4 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: psEncC->nStatesDelayedDecision <= MAX_DEL_DEC_STATES\0" as *const u8
+                as *const libc::c_char,
+            b"silk/control_codec.c\0" as *const u8 as *const libc::c_char,
+            395 as libc::c_int,
+        );
+    }
+    if !((*psEncC).warping_Q16 <= 32767 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: psEncC->warping_Q16 <= 32767\0" as *const u8 as *const libc::c_char,
+            b"silk/control_codec.c\0" as *const u8 as *const libc::c_char,
+            396 as libc::c_int,
+        );
+    }
+    if !((*psEncC).la_shape <= 5 as libc::c_int * 16 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: psEncC->la_shape <= LA_SHAPE_MAX\0" as *const u8
+                as *const libc::c_char,
+            b"silk/control_codec.c\0" as *const u8 as *const libc::c_char,
+            397 as libc::c_int,
+        );
+    }
+    if !((*psEncC).shapeWinLength <= 15 as libc::c_int * 16 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: psEncC->shapeWinLength <= SHAPE_LPC_WIN_MAX\0" as *const u8
+                as *const libc::c_char,
+            b"silk/control_codec.c\0" as *const u8 as *const libc::c_char,
+            398 as libc::c_int,
+        );
+    }
     return ret;
 }
 #[inline]

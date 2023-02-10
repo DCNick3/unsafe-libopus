@@ -25,6 +25,14 @@ pub mod opus_types_h {
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = libc::c_float;
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/kiss_fft.h:38"]
 pub mod kiss_fft_h {
@@ -64,7 +72,7 @@ pub mod kiss_fft_h {
     use super::arch_h::opus_val16;
     use super::opus_types_h::opus_int16;
 }
-pub use self::arch_h::opus_val16;
+pub use self::arch_h::{celt_fatal, opus_val16};
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_cpx, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::opus_types_h::opus_int16;
 pub use self::stddef_h::size_t;
@@ -76,6 +84,13 @@ unsafe extern "C" fn kf_bfly2(mut Fout: *mut kiss_fft_cpx, mut m: libc::c_int, m
     let mut i: libc::c_int = 0;
     let mut tw: opus_val16 = 0.;
     tw = 0.7071067812f32;
+    if !(m == 4 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: m==4\0" as *const u8 as *const libc::c_char,
+            b"celt/kiss_fft.c\0" as *const u8 as *const libc::c_char,
+            76 as libc::c_int,
+        );
+    }
     i = 0 as libc::c_int;
     while i < N {
         let mut t: kiss_fft_cpx = kiss_fft_cpx { r: 0., i: 0. };
@@ -549,6 +564,14 @@ pub unsafe extern "C" fn opus_fft_c(
     let mut i: libc::c_int = 0;
     let mut scale: opus_val16 = 0.;
     scale = (*st).scale;
+    if !(fin != fout as *const kiss_fft_cpx) {
+        celt_fatal(
+            b"assertion failed: fin != fout\nIn-place FFT not supported\0" as *const u8
+                as *const libc::c_char,
+            b"celt/kiss_fft.c\0" as *const u8 as *const libc::c_char,
+            580 as libc::c_int,
+        );
+    }
     i = 0 as libc::c_int;
     while i < (*st).nfft {
         let mut x: kiss_fft_cpx = *fin.offset(i as isize);
@@ -566,6 +589,14 @@ pub unsafe extern "C" fn opus_ifft_c(
     mut fout: *mut kiss_fft_cpx,
 ) {
     let mut i: libc::c_int = 0;
+    if !(fin != fout as *const kiss_fft_cpx) {
+        celt_fatal(
+            b"assertion failed: fin != fout\nIn-place FFT not supported\0" as *const u8
+                as *const libc::c_char,
+            b"celt/kiss_fft.c\0" as *const u8 as *const libc::c_char,
+            595 as libc::c_int,
+        );
+    }
     i = 0 as libc::c_int;
     while i < (*st).nfft {
         *fout.offset(*((*st).bitrev).offset(i as isize) as isize) = *fin.offset(i as isize);

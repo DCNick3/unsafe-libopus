@@ -49,16 +49,28 @@ pub mod entcode_h {
 #[c2rust::header_src = "/usr/include/string.h:31"]
 pub mod string_h {
     extern "C" {
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
         #[c2rust::src_loc = "47:14"]
         pub fn memmove(
             _: *mut libc::c_void,
             _: *const libc::c_void,
             _: libc::c_ulong,
         ) -> *mut libc::c_void;
+        #[c2rust::src_loc = "61:14"]
+        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     }
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
+use self::arch_h::celt_fatal;
 pub use self::entcode_h::{celt_udiv, ec_ctx, ec_enc, ec_window};
 pub use self::opus_types_h::opus_uint32;
 pub use self::stdint_uintn_h::uint32_t;
@@ -261,6 +273,13 @@ pub unsafe extern "C" fn ec_enc_uint(
     let mut ft: libc::c_uint = 0;
     let mut fl: libc::c_uint = 0;
     let mut ftb: libc::c_int = 0;
+    if !(_ft > 1 as libc::c_int as libc::c_uint) {
+        celt_fatal(
+            b"assertion failed: _ft>1\0" as *const u8 as *const libc::c_char,
+            b"celt/entenc.c\0" as *const u8 as *const libc::c_char,
+            180 as libc::c_int,
+        );
+    }
     _ft = _ft.wrapping_sub(1);
     ftb = ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * 8 as libc::c_int
         - _ft.leading_zeros() as i32;
@@ -299,6 +318,13 @@ pub unsafe extern "C" fn ec_enc_bits(
     let mut used: libc::c_int = 0;
     window = (*_this).end_window;
     used = (*_this).nend_bits;
+    if !(_bits > 0 as libc::c_int as libc::c_uint) {
+        celt_fatal(
+            b"assertion failed: _bits>0\0" as *const u8 as *const libc::c_char,
+            b"celt/entenc.c\0" as *const u8 as *const libc::c_char,
+            198 as libc::c_int,
+        );
+    }
     if (used as libc::c_uint).wrapping_add(_bits)
         > (::core::mem::size_of::<ec_window>() as libc::c_ulong as libc::c_int * 8 as libc::c_int)
             as libc::c_uint
@@ -333,6 +359,13 @@ pub unsafe extern "C" fn ec_enc_patch_initial_bits(
 ) {
     let mut shift: libc::c_int = 0;
     let mut mask: libc::c_uint = 0;
+    if !(_nbits <= 8 as libc::c_int as libc::c_uint) {
+        celt_fatal(
+            b"assertion failed: _nbits<=EC_SYM_BITS\0" as *const u8 as *const libc::c_char,
+            b"celt/entenc.c\0" as *const u8 as *const libc::c_char,
+            217 as libc::c_int,
+        );
+    }
     shift = (8 as libc::c_int as libc::c_uint).wrapping_sub(_nbits) as libc::c_int;
     mask = ((((1 as libc::c_int) << _nbits) - 1 as libc::c_int) << shift) as libc::c_uint;
     if (*_this).offs > 0 as libc::c_int as libc::c_uint {
@@ -353,6 +386,14 @@ pub unsafe extern "C" fn ec_enc_patch_initial_bits(
 #[no_mangle]
 #[c2rust::src_loc = "237:1"]
 pub unsafe extern "C" fn ec_enc_shrink(mut _this: *mut ec_enc, mut _size: opus_uint32) {
+    if !(((*_this).offs).wrapping_add((*_this).end_offs) <= _size) {
+        celt_fatal(
+            b"assertion failed: _this->offs+_this->end_offs<=_size\0" as *const u8
+                as *const libc::c_char,
+            b"celt/entenc.c\0" as *const u8 as *const libc::c_char,
+            238 as libc::c_int,
+        );
+    }
     memmove(
         ((*_this).buf)
             .offset(_size as isize)

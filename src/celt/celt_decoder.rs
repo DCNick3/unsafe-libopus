@@ -65,6 +65,14 @@ pub mod arch_h {
     pub type celt_norm = libc::c_float;
     #[c2rust::src_loc = "185:1"]
     pub type celt_ener = libc::c_float;
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/kiss_fft.h:38"]
 pub mod kiss_fft_h {
@@ -235,28 +243,15 @@ pub mod mathcalls_h {
         pub fn sqrt(_: libc::c_double) -> libc::c_double;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_custom.h:40"]
-pub mod opus_custom_h {
-    use super::modes_h::OpusCustomMode;
-    use super::opus_types_h::opus_int32;
-    extern "C" {
-        #[c2rust::src_loc = "121:20"]
-        pub fn opus_custom_mode_create(
-            Fs: opus_int32,
-            frame_size: libc::c_int,
-            error: *mut libc::c_int,
-        ) -> *mut OpusCustomMode;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entdec.h:40"]
 pub mod entdec_h {
     use super::entcode_h::ec_dec;
     use super::opus_types_h::opus_uint32;
     extern "C" {
-        #[c2rust::src_loc = "36:1"]
-        pub fn ec_dec_init(_this: *mut ec_dec, _buf: *mut libc::c_uchar, _storage: opus_uint32);
         #[c2rust::src_loc = "72:1"]
         pub fn ec_dec_bit_logp(_this: *mut ec_dec, _logp: libc::c_uint) -> libc::c_int;
+        #[c2rust::src_loc = "36:1"]
+        pub fn ec_dec_init(_this: *mut ec_dec, _buf: *mut libc::c_uchar, _storage: opus_uint32);
         #[c2rust::src_loc = "82:1"]
         pub fn ec_dec_icdf(
             _this: *mut ec_dec,
@@ -302,6 +297,10 @@ pub mod celt_h {
     use super::modes_h::OpusCustomMode;
     use super::opus_types_h::opus_int32;
     extern "C" {
+        #[c2rust::src_loc = "210:26"]
+        pub static tf_select_table: [[libc::c_schar; 8]; 4];
+        #[c2rust::src_loc = "219:1"]
+        pub fn resampling_factor(rate: opus_int32) -> libc::c_int;
         #[c2rust::src_loc = "238:1"]
         pub fn init_caps(
             m: *const OpusCustomMode,
@@ -324,10 +323,19 @@ pub mod celt_h {
             overlap: libc::c_int,
             arch: libc::c_int,
         );
-        #[c2rust::src_loc = "210:26"]
-        pub static tf_select_table: [[libc::c_schar; 8]; 4];
-        #[c2rust::src_loc = "219:1"]
-        pub fn resampling_factor(rate: opus_int32) -> libc::c_int;
+    }
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_custom.h:40"]
+pub mod opus_custom_h {
+    use super::modes_h::OpusCustomMode;
+    use super::opus_types_h::opus_int32;
+    extern "C" {
+        #[c2rust::src_loc = "121:20"]
+        pub fn opus_custom_mode_create(
+            Fs: opus_int32,
+            frame_size: libc::c_int,
+            error: *mut libc::c_int,
+        ) -> *mut OpusCustomMode;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/pitch.h:41"]
@@ -389,6 +397,8 @@ pub mod bands_h {
             seed: opus_uint32,
             arch: libc::c_int,
         );
+        #[c2rust::src_loc = "119:1"]
+        pub fn celt_lcg_rand(seed: opus_uint32) -> opus_uint32;
         #[c2rust::src_loc = "106:1"]
         pub fn quant_all_bands(
             encode: libc::c_int,
@@ -415,8 +425,6 @@ pub mod bands_h {
             arch: libc::c_int,
             disable_inv: libc::c_int,
         );
-        #[c2rust::src_loc = "119:1"]
-        pub fn celt_lcg_rand(seed: opus_uint32) -> opus_uint32;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/rate.h:42"]
@@ -540,7 +548,7 @@ pub mod vq_h {
         );
     }
 }
-pub use self::arch_h::{celt_ener, celt_norm, celt_sig, opus_val16, opus_val32};
+pub use self::arch_h::{celt_ener, celt_fatal, celt_norm, celt_sig, opus_val16, opus_val32};
 use self::bands_h::{anti_collapse, celt_lcg_rand, denormalise_bands, quant_all_bands};
 pub use self::celt_h::{
     comb_filter, init_caps, resampling_factor, spread_icdf, tapset_icdf, tf_select_table, trim_icdf,
@@ -592,6 +600,173 @@ pub struct OpusCustomDecoder {
     pub postfilter_tapset_old: libc::c_int,
     pub preemph_memD: [celt_sig; 2],
     pub _decode_mem: [celt_sig; 1],
+}
+#[no_mangle]
+#[c2rust::src_loc = "115:1"]
+pub unsafe extern "C" fn validate_celt_decoder(mut st: *mut OpusCustomDecoder) {
+    if !((*st).mode
+        == opus_custom_mode_create(
+            48000 as libc::c_int,
+            960 as libc::c_int,
+            0 as *mut libc::c_int,
+        ) as *const OpusCustomMode)
+    {
+        celt_fatal(
+            b"assertion failed: st->mode == opus_custom_mode_create(48000, 960, NULL)\0"
+                as *const u8 as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            118 as libc::c_int,
+        );
+    }
+    if !((*st).overlap == 120 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: st->overlap == 120\0" as *const u8 as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            119 as libc::c_int,
+        );
+    }
+    if !((*st).channels == 1 as libc::c_int || (*st).channels == 2 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: st->channels == 1 || st->channels == 2\0" as *const u8
+                as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            121 as libc::c_int,
+        );
+    }
+    if !((*st).stream_channels == 1 as libc::c_int || (*st).stream_channels == 2 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: st->stream_channels == 1 || st->stream_channels == 2\0" as *const u8
+                as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            122 as libc::c_int,
+        );
+    }
+    if !((*st).downsample > 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: st->downsample > 0\0" as *const u8 as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            123 as libc::c_int,
+        );
+    }
+    if !((*st).start == 0 as libc::c_int || (*st).start == 17 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: st->start == 0 || st->start == 17\0" as *const u8
+                as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            124 as libc::c_int,
+        );
+    }
+    if !((*st).start < (*st).end) {
+        celt_fatal(
+            b"assertion failed: st->start < st->end\0" as *const u8 as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            125 as libc::c_int,
+        );
+    }
+    if !((*st).end <= 21 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: st->end <= 21\0" as *const u8 as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            126 as libc::c_int,
+        );
+    }
+    if !((*st).arch >= 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: st->arch >= 0\0" as *const u8 as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            128 as libc::c_int,
+        );
+    }
+    if !((*st).arch <= 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: st->arch <= OPUS_ARCHMASK\0" as *const u8 as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            129 as libc::c_int,
+        );
+    }
+    if !((*st).last_pitch_index <= 720 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: st->last_pitch_index <= PLC_PITCH_LAG_MAX\0" as *const u8
+                as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            131 as libc::c_int,
+        );
+    }
+    if !((*st).last_pitch_index >= 100 as libc::c_int || (*st).last_pitch_index == 0 as libc::c_int)
+    {
+        celt_fatal(
+            b"assertion failed: st->last_pitch_index >= PLC_PITCH_LAG_MIN || st->last_pitch_index == 0\0"
+                as *const u8 as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            132 as libc::c_int,
+        );
+    }
+    if !((*st).postfilter_period < 1024 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: st->postfilter_period < MAX_PERIOD\0" as *const u8
+                as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            133 as libc::c_int,
+        );
+    }
+    if !((*st).postfilter_period >= 15 as libc::c_int
+        || (*st).postfilter_period == 0 as libc::c_int)
+    {
+        celt_fatal(
+            b"assertion failed: st->postfilter_period >= COMBFILTER_MINPERIOD || st->postfilter_period == 0\0"
+                as *const u8 as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            134 as libc::c_int,
+        );
+    }
+    if !((*st).postfilter_period_old < 1024 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: st->postfilter_period_old < MAX_PERIOD\0" as *const u8
+                as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            135 as libc::c_int,
+        );
+    }
+    if !((*st).postfilter_period_old >= 15 as libc::c_int
+        || (*st).postfilter_period_old == 0 as libc::c_int)
+    {
+        celt_fatal(
+            b"assertion failed: st->postfilter_period_old >= COMBFILTER_MINPERIOD || st->postfilter_period_old == 0\0"
+                as *const u8 as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            136 as libc::c_int,
+        );
+    }
+    if !((*st).postfilter_tapset <= 2 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: st->postfilter_tapset <= 2\0" as *const u8 as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            137 as libc::c_int,
+        );
+    }
+    if !((*st).postfilter_tapset >= 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: st->postfilter_tapset >= 0\0" as *const u8 as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            138 as libc::c_int,
+        );
+    }
+    if !((*st).postfilter_tapset_old <= 2 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: st->postfilter_tapset_old <= 2\0" as *const u8
+                as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            139 as libc::c_int,
+        );
+    }
+    if !((*st).postfilter_tapset_old >= 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: st->postfilter_tapset_old >= 0\0" as *const u8
+                as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            140 as libc::c_int,
+        );
+    }
 }
 #[no_mangle]
 #[c2rust::src_loc = "144:1"]
@@ -736,6 +911,13 @@ unsafe extern "C" fn deemphasis(
     if downsample == 1 as libc::c_int && C == 2 as libc::c_int && accum == 0 {
         deemphasis_stereo_simple(in_0, pcm, N, *coef.offset(0 as libc::c_int as isize), mem);
         return;
+    }
+    if !(accum == 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: accum==0\0" as *const u8 as *const libc::c_char,
+            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
+            279 as libc::c_int,
+        );
     }
     let vla = N as usize;
     let mut scratch: Vec<celt_sig> = ::std::vec::from_elem(0., vla);
@@ -1519,6 +1701,7 @@ pub unsafe extern "C" fn celt_decode_with_ec(
     let mut nbEBands: libc::c_int = 0;
     let mut overlap: libc::c_int = 0;
     let mut eBands: *const opus_int16 = 0 as *const opus_int16;
+    validate_celt_decoder(st);
     mode = (*st).mode;
     nbEBands = (*mode).nbEBands;
     overlap = (*mode).overlap;

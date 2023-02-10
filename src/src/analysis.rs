@@ -36,6 +36,14 @@ pub mod arch_h {
     pub type opus_val32 = libc::c_float;
     #[c2rust::src_loc = "181:1"]
     pub type opus_val64 = libc::c_float;
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/kiss_fft.h:37"]
 pub mod kiss_fft_h {
@@ -202,22 +210,22 @@ pub mod mlp_h {
     extern "C" {
         #[c2rust::src_loc = "52:25"]
         pub static layer0: DenseLayer;
-        #[c2rust::src_loc = "58:1"]
-        pub fn compute_gru(
-            gru: *const GRULayer,
-            state: *mut libc::c_float,
-            input: *const libc::c_float,
-        );
+        #[c2rust::src_loc = "53:23"]
+        pub static layer1: GRULayer;
+        #[c2rust::src_loc = "54:25"]
+        pub static layer2: DenseLayer;
         #[c2rust::src_loc = "56:1"]
         pub fn compute_dense(
             layer: *const DenseLayer,
             output: *mut libc::c_float,
             input: *const libc::c_float,
         );
-        #[c2rust::src_loc = "54:25"]
-        pub static layer2: DenseLayer;
-        #[c2rust::src_loc = "53:23"]
-        pub static layer1: GRULayer;
+        #[c2rust::src_loc = "58:1"]
+        pub fn compute_gru(
+            gru: *const GRULayer,
+            state: *mut libc::c_float,
+            input: *const libc::c_float,
+        );
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/analysis.h:42"]
@@ -285,6 +293,25 @@ pub mod mathcalls_h {
         pub fn floor(_: libc::c_double) -> libc::c_double;
     }
 }
+#[c2rust::header_src = "/usr/include/string.h:36"]
+pub mod string_h {
+    extern "C" {
+        #[c2rust::src_loc = "43:14"]
+        pub fn memcpy(
+            _: *mut libc::c_void,
+            _: *const libc::c_void,
+            _: libc::c_ulong,
+        ) -> *mut libc::c_void;
+        #[c2rust::src_loc = "47:14"]
+        pub fn memmove(
+            _: *mut libc::c_void,
+            _: *const libc::c_void,
+            _: libc::c_ulong,
+        ) -> *mut libc::c_void;
+        #[c2rust::src_loc = "61:14"]
+        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
+    }
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.h:36"]
 pub mod mathops_h {
     #[inline]
@@ -324,25 +351,6 @@ pub mod mathops_h {
         };
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:36"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-        #[c2rust::src_loc = "47:14"]
-        pub fn memmove(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cpu_support.h:37"]
 pub mod cpu_support_h {
     #[inline]
@@ -362,7 +370,7 @@ pub mod float_cast_h {
     use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
 }
 pub use self::analysis_h::TonalityAnalysisState;
-pub use self::arch_h::{opus_val16, opus_val32, opus_val64};
+pub use self::arch_h::{celt_fatal, opus_val16, opus_val32, opus_val64};
 pub use self::celt_h::AnalysisInfo;
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::float_cast_h::float2int;
@@ -1616,6 +1624,13 @@ unsafe extern "C" fn tonality_analysis(
             leakage_to[b as usize]
         };
         b -= 1;
+    }
+    if !(18 as libc::c_int + 1 as libc::c_int <= 19 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: NB_TBANDS+1 <= LEAK_BANDS\0" as *const u8 as *const libc::c_char,
+            b"src/analysis.c\0" as *const u8 as *const libc::c_char,
+            740 as libc::c_int,
+        );
     }
     b = 0 as libc::c_int;
     while b < 18 as libc::c_int + 1 as libc::c_int {

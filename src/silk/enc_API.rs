@@ -360,6 +360,17 @@ pub mod resampler_structs_h {
     }
     use super::opus_types_h::{opus_int16, opus_int32};
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:32"]
 pub mod entenc_h {
     use super::entcode_h::ec_enc;
@@ -413,6 +424,8 @@ pub mod main_h {
     use super::opus_types_h::{opus_int16, opus_int32, opus_int8};
     use super::structs_h::{silk_encoder_state, stereo_enc_state};
     extern "C" {
+        #[c2rust::src_loc = "135:1"]
+        pub fn check_control_input(encControl: *mut silk_EncControlStruct) -> libc::c_int;
         #[c2rust::src_loc = "468:1"]
         pub fn silk_encode_indices(
             psEncC: *mut silk_encoder_state,
@@ -421,15 +434,14 @@ pub mod main_h {
             encode_LBRR: libc::c_int,
             condCoding: libc::c_int,
         );
-        #[c2rust::src_loc = "146:1"]
-        pub fn silk_control_SNR(
-            psEncC: *mut silk_encoder_state,
-            TargetRate_bps: opus_int32,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "97:1"]
-        pub fn silk_stereo_encode_mid_only(psRangeEnc: *mut ec_enc, mid_only_flag: opus_int8);
-        #[c2rust::src_loc = "91:1"]
-        pub fn silk_stereo_encode_pred(psRangeEnc: *mut ec_enc, ix: *mut [opus_int8; 3]);
+        #[c2rust::src_loc = "156:1"]
+        pub fn silk_encode_pulses(
+            psRangeEnc: *mut ec_enc,
+            signalType: libc::c_int,
+            quantOffsetType: libc::c_int,
+            pulses: *mut opus_int8,
+            frame_length: libc::c_int,
+        );
         #[c2rust::src_loc = "50:1"]
         pub fn silk_stereo_LR_to_MS(
             state: *mut stereo_enc_state,
@@ -444,16 +456,15 @@ pub mod main_h {
             fs_kHz: libc::c_int,
             frame_length: libc::c_int,
         );
-        #[c2rust::src_loc = "156:1"]
-        pub fn silk_encode_pulses(
-            psRangeEnc: *mut ec_enc,
-            signalType: libc::c_int,
-            quantOffsetType: libc::c_int,
-            pulses: *mut opus_int8,
-            frame_length: libc::c_int,
-        );
-        #[c2rust::src_loc = "135:1"]
-        pub fn check_control_input(encControl: *mut silk_EncControlStruct) -> libc::c_int;
+        #[c2rust::src_loc = "91:1"]
+        pub fn silk_stereo_encode_pred(psRangeEnc: *mut ec_enc, ix: *mut [opus_int8; 3]);
+        #[c2rust::src_loc = "97:1"]
+        pub fn silk_stereo_encode_mid_only(psRangeEnc: *mut ec_enc, mid_only_flag: opus_int8);
+        #[c2rust::src_loc = "146:1"]
+        pub fn silk_control_SNR(
+            psEncC: *mut silk_encoder_state,
+            TargetRate_bps: opus_int32,
+        ) -> libc::c_int;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/main_FLP.h:41"]
@@ -463,11 +474,6 @@ pub mod main_FLP_h {
     use super::opus_types_h::opus_int32;
     use super::structs_FLP_h::silk_encoder_state_FLP;
     extern "C" {
-        #[c2rust::src_loc = "74:1"]
-        pub fn silk_init_encoder(
-            psEnc: *mut silk_encoder_state_FLP,
-            arch: libc::c_int,
-        ) -> libc::c_int;
         #[c2rust::src_loc = "80:1"]
         pub fn silk_control_encoder(
             psEnc: *mut silk_encoder_state_FLP,
@@ -476,6 +482,10 @@ pub mod main_FLP_h {
             channelNb: libc::c_int,
             force_fs_kHz: libc::c_int,
         ) -> libc::c_int;
+        #[c2rust::src_loc = "53:1"]
+        pub fn silk_HP_variable_cutoff(state_Fxx: *mut silk_encoder_state_FLP);
+        #[c2rust::src_loc = "58:1"]
+        pub fn silk_encode_do_VAD_FLP(psEnc: *mut silk_encoder_state_FLP, activity: libc::c_int);
         #[c2rust::src_loc = "64:1"]
         pub fn silk_encode_frame_FLP(
             psEnc: *mut silk_encoder_state_FLP,
@@ -485,22 +495,24 @@ pub mod main_FLP_h {
             maxBits: libc::c_int,
             useCBR: libc::c_int,
         ) -> libc::c_int;
-        #[c2rust::src_loc = "58:1"]
-        pub fn silk_encode_do_VAD_FLP(psEnc: *mut silk_encoder_state_FLP, activity: libc::c_int);
-        #[c2rust::src_loc = "53:1"]
-        pub fn silk_HP_variable_cutoff(state_Fxx: *mut silk_encoder_state_FLP);
+        #[c2rust::src_loc = "74:1"]
+        pub fn silk_init_encoder(
+            psEnc: *mut silk_encoder_state_FLP,
+            arch: libc::c_int,
+        ) -> libc::c_int;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:41"]
 pub mod tables_h {
     use super::opus_types_h::{opus_int16, opus_uint8};
     extern "C" {
-        #[c2rust::src_loc = "101:26"]
-        pub static silk_Quantization_Offsets_Q10: [[opus_int16; 2]; 2];
         #[c2rust::src_loc = "93:34"]
         pub static silk_LBRR_flags_iCDF_ptr: [*const opus_uint8; 2];
+        #[c2rust::src_loc = "101:26"]
+        pub static silk_Quantization_Offsets_Q10: [[opus_int16; 2]; 2];
     }
 }
+use self::arch_h::celt_fatal;
 pub use self::control_h::silk_EncControlStruct;
 pub use self::entcode_h::{ec_ctx, ec_enc, ec_tell, ec_window};
 use self::entenc_h::{ec_enc_icdf, ec_enc_patch_initial_bits};
@@ -558,13 +570,29 @@ pub unsafe extern "C" fn silk_InitEncoder(
             &mut *((*psEnc).state_Fxx).as_mut_ptr().offset(n as isize),
             arch,
         );
-        ret != 0;
+        if ret != 0 {
+            if 0 as libc::c_int == 0 {
+                celt_fatal(
+                    b"assertion failed: 0\0" as *const u8 as *const libc::c_char,
+                    b"silk/enc_API.c\0" as *const u8 as *const libc::c_char,
+                    85 as libc::c_int,
+                );
+            }
+        }
         n += 1;
     }
     (*psEnc).nChannelsAPI = 1 as libc::c_int;
     (*psEnc).nChannelsInternal = 1 as libc::c_int;
     ret += silk_QueryEncoder(encState, encStatus);
-    ret != 0;
+    if ret != 0 {
+        if 0 as libc::c_int == 0 {
+            celt_fatal(
+                b"assertion failed: 0\0" as *const u8 as *const libc::c_char,
+                b"silk/enc_API.c\0" as *const u8 as *const libc::c_char,
+                94 as libc::c_int,
+            );
+        }
+    }
     return ret;
 }
 #[c2rust::src_loc = "103:1"]
@@ -671,6 +699,13 @@ pub unsafe extern "C" fn silk_Encode(
         .nFramesEncoded;
     ret = check_control_input(encControl);
     if ret != 0 as libc::c_int {
+        if 0 as libc::c_int == 0 {
+            celt_fatal(
+                b"assertion failed: 0\0" as *const u8 as *const libc::c_char,
+                b"silk/enc_API.c\0" as *const u8 as *const libc::c_char,
+                170 as libc::c_int,
+            );
+        }
         return ret;
     }
     (*encControl).switchReady = 0 as libc::c_int;
@@ -754,6 +789,13 @@ pub unsafe extern "C" fn silk_Encode(
             saved_fs_kHz: 0,
         };
         if nBlocksOf10ms != 1 as libc::c_int {
+            if 0 as libc::c_int == 0 {
+                celt_fatal(
+                    b"assertion failed: 0\0" as *const u8 as *const libc::c_char,
+                    b"silk/enc_API.c\0" as *const u8 as *const libc::c_char,
+                    206 as libc::c_int,
+                );
+            }
             return -(101 as libc::c_int);
         }
         if prefillFlag == 2 as libc::c_int {
@@ -768,6 +810,13 @@ pub unsafe extern "C" fn silk_Encode(
             );
             if prefillFlag == 2 as libc::c_int {
                 (*psEnc).state_Fxx[n as usize].sCmn.sLP = save_LP;
+            }
+            if ret != 0 {
+                celt_fatal(
+                    b"assertion failed: !ret\0" as *const u8 as *const libc::c_char,
+                    b"silk/enc_API.c\0" as *const u8 as *const libc::c_char,
+                    222 as libc::c_int,
+                );
             }
             n += 1;
         }
@@ -787,11 +836,25 @@ pub unsafe extern "C" fn silk_Encode(
         if nBlocksOf10ms * (*encControl).API_sampleRate != 100 as libc::c_int * nSamplesIn
             || nSamplesIn < 0 as libc::c_int
         {
+            if 0 as libc::c_int == 0 {
+                celt_fatal(
+                    b"assertion failed: 0\0" as *const u8 as *const libc::c_char,
+                    b"silk/enc_API.c\0" as *const u8 as *const libc::c_char,
+                    235 as libc::c_int,
+                );
+            }
             return -(101 as libc::c_int);
         }
         if 1000 as libc::c_int * nSamplesIn
             > (*encControl).payloadSize_ms * (*encControl).API_sampleRate
         {
+            if 0 as libc::c_int == 0 {
+                celt_fatal(
+                    b"assertion failed: 0\0" as *const u8 as *const libc::c_char,
+                    b"silk/enc_API.c\0" as *const u8 as *const libc::c_char,
+                    241 as libc::c_int,
+                );
+            }
             return -(101 as libc::c_int);
         }
     }
@@ -825,6 +888,17 @@ pub unsafe extern "C" fn silk_Encode(
         }
         (*psEnc).state_Fxx[n as usize].sCmn.inDTX = (*psEnc).state_Fxx[n as usize].sCmn.useDTX;
         n += 1;
+    }
+    if !((*encControl).nChannelsInternal == 1 as libc::c_int
+        || (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.fs_kHz
+            == (*psEnc).state_Fxx[1 as libc::c_int as usize].sCmn.fs_kHz)
+    {
+        celt_fatal(
+            b"assertion failed: encControl->nChannelsInternal == 1 || psEnc->state_Fxx[ 0 ].sCmn.fs_kHz == psEnc->state_Fxx[ 1 ].sCmn.fs_kHz\0"
+                as *const u8 as *const libc::c_char,
+            b"silk/enc_API.c\0" as *const u8 as *const libc::c_char,
+            262 as libc::c_int,
+        );
     }
     nSamplesToBufferMax = 10 as libc::c_int
         * nBlocksOf10ms
@@ -1055,6 +1129,16 @@ pub unsafe extern "C" fn silk_Encode(
                 .sCmn
                 .inputBufIx += nSamplesToBuffer;
         } else {
+            if !((*encControl).nChannelsAPI == 1 as libc::c_int
+                && (*encControl).nChannelsInternal == 1 as libc::c_int)
+            {
+                celt_fatal(
+                    b"assertion failed: encControl->nChannelsAPI == 1 && encControl->nChannelsInternal == 1\0"
+                        as *const u8 as *const libc::c_char,
+                    b"silk/enc_API.c\0" as *const u8 as *const libc::c_char,
+                    320 as libc::c_int,
+                );
+            }
             memcpy(
                 buf.as_mut_ptr() as *mut libc::c_void,
                 samplesIn as *const libc::c_void,
@@ -1099,6 +1183,35 @@ pub unsafe extern "C" fn silk_Encode(
                 .frame_length)
         {
             break;
+        }
+        if !((*psEnc).state_Fxx[0 as libc::c_int as usize]
+            .sCmn
+            .inputBufIx
+            == (*psEnc).state_Fxx[0 as libc::c_int as usize]
+                .sCmn
+                .frame_length)
+        {
+            celt_fatal(
+                b"assertion failed: psEnc->state_Fxx[ 0 ].sCmn.inputBufIx == psEnc->state_Fxx[ 0 ].sCmn.frame_length\0"
+                    as *const u8 as *const libc::c_char,
+                b"silk/enc_API.c\0" as *const u8 as *const libc::c_char,
+                336 as libc::c_int,
+            );
+        }
+        if !((*encControl).nChannelsInternal == 1 as libc::c_int
+            || (*psEnc).state_Fxx[1 as libc::c_int as usize]
+                .sCmn
+                .inputBufIx
+                == (*psEnc).state_Fxx[1 as libc::c_int as usize]
+                    .sCmn
+                    .frame_length)
+        {
+            celt_fatal(
+                b"assertion failed: encControl->nChannelsInternal == 1 || psEnc->state_Fxx[ 1 ].sCmn.inputBufIx == psEnc->state_Fxx[ 1 ].sCmn.frame_length\0"
+                    as *const u8 as *const libc::c_char,
+                b"silk/enc_API.c\0" as *const u8 as *const libc::c_char,
+                337 as libc::c_int,
+            );
         }
         if (*psEnc).state_Fxx[0 as libc::c_int as usize]
             .sCmn

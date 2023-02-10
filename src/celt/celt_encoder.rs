@@ -65,6 +65,14 @@ pub mod arch_h {
     pub type celt_norm = libc::c_float;
     #[c2rust::src_loc = "185:1"]
     pub type celt_ener = libc::c_float;
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/kiss_fft.h:38"]
 pub mod kiss_fft_h {
@@ -150,19 +158,6 @@ pub mod celt_h {
         pub max_pitch_ratio: libc::c_float,
         pub leak_boost: [libc::c_uchar; 19],
     }
-    #[c2rust::src_loc = "169:28"]
-    pub static mut tapset_icdf: [libc::c_uchar; 3] = [
-        2 as libc::c_int as libc::c_uchar,
-        1 as libc::c_int as libc::c_uchar,
-        0 as libc::c_int as libc::c_uchar,
-    ];
-    #[c2rust::src_loc = "167:28"]
-    pub static mut spread_icdf: [libc::c_uchar; 4] = [
-        25 as libc::c_int as libc::c_uchar,
-        23 as libc::c_int as libc::c_uchar,
-        2 as libc::c_int as libc::c_uchar,
-        0 as libc::c_int as libc::c_uchar,
-    ];
     #[c2rust::src_loc = "165:28"]
     pub static mut trim_icdf: [libc::c_uchar; 11] = [
         126 as libc::c_int as libc::c_uchar,
@@ -177,10 +172,25 @@ pub mod celt_h {
         2 as libc::c_int as libc::c_uchar,
         0 as libc::c_int as libc::c_uchar,
     ];
+    #[c2rust::src_loc = "167:28"]
+    pub static mut spread_icdf: [libc::c_uchar; 4] = [
+        25 as libc::c_int as libc::c_uchar,
+        23 as libc::c_int as libc::c_uchar,
+        2 as libc::c_int as libc::c_uchar,
+        0 as libc::c_int as libc::c_uchar,
+    ];
+    #[c2rust::src_loc = "169:28"]
+    pub static mut tapset_icdf: [libc::c_uchar; 3] = [
+        2 as libc::c_int as libc::c_uchar,
+        1 as libc::c_int as libc::c_uchar,
+        0 as libc::c_int as libc::c_uchar,
+    ];
     use super::arch_h::{opus_val16, opus_val32};
     use super::modes_h::OpusCustomMode;
     use super::opus_types_h::opus_int32;
     extern "C" {
+        #[c2rust::src_loc = "210:26"]
+        pub static tf_select_table: [[libc::c_schar; 8]; 4];
         #[c2rust::src_loc = "219:1"]
         pub fn resampling_factor(rate: opus_int32) -> libc::c_int;
         #[c2rust::src_loc = "224:1"]
@@ -198,8 +208,6 @@ pub mod celt_h {
             overlap: libc::c_int,
             arch: libc::c_int,
         );
-        #[c2rust::src_loc = "210:26"]
-        pub static tf_select_table: [[libc::c_schar; 8]; 4];
         #[c2rust::src_loc = "238:1"]
         pub fn init_caps(
             m: *const OpusCustomMode,
@@ -286,13 +294,6 @@ pub mod entcode_h {
         pub fn ec_tell_frac(_this: *mut ec_ctx) -> opus_uint32;
     }
 }
-#[c2rust::header_src = "/usr/include/stdlib.h:37"]
-pub mod stdlib_h {
-    extern "C" {
-        #[c2rust::src_loc = "861:12"]
-        pub fn abs(_: libc::c_int) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/usr/include/string.h:37"]
 pub mod string_h {
     extern "C" {
@@ -310,6 +311,13 @@ pub mod string_h {
         ) -> *mut libc::c_void;
         #[c2rust::src_loc = "61:14"]
         pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
+    }
+}
+#[c2rust::header_src = "/usr/include/stdlib.h:37"]
+pub mod stdlib_h {
+    extern "C" {
+        #[c2rust::src_loc = "861:12"]
+        pub fn abs(_: libc::c_int) -> libc::c_int;
     }
 }
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:38"]
@@ -423,6 +431,16 @@ pub mod bands_h {
     use super::modes_h::OpusCustomMode;
     use super::opus_types_h::{opus_int32, opus_uint32};
     extern "C" {
+        #[c2rust::src_loc = "121:1"]
+        pub fn hysteresis_decision(
+            val: opus_val16,
+            thresholds: *const opus_val16,
+            hysteresis: *const opus_val16,
+            N: libc::c_int,
+            prev: libc::c_int,
+        ) -> libc::c_int;
+        #[c2rust::src_loc = "81:1"]
+        pub fn haar1(X: *mut celt_norm, N0: libc::c_int, stride: libc::c_int);
         #[c2rust::src_loc = "47:1"]
         pub fn compute_band_energies(
             m: *const OpusCustomMode,
@@ -432,16 +450,6 @@ pub mod bands_h {
             C: libc::c_int,
             LM: libc::c_int,
             arch: libc::c_int,
-        );
-        #[c2rust::src_loc = "57:1"]
-        pub fn normalise_bands(
-            m: *const OpusCustomMode,
-            freq: *const celt_sig,
-            X: *mut celt_norm,
-            bandE: *const celt_ener,
-            end: libc::c_int,
-            C: libc::c_int,
-            M: libc::c_int,
         );
         #[c2rust::src_loc = "73:1"]
         pub fn spreading_decision(
@@ -457,8 +465,6 @@ pub mod bands_h {
             M: libc::c_int,
             spread_weight: *const libc::c_int,
         ) -> libc::c_int;
-        #[c2rust::src_loc = "81:1"]
-        pub fn haar1(X: *mut celt_norm, N0: libc::c_int, stride: libc::c_int);
         #[c2rust::src_loc = "106:1"]
         pub fn quant_all_bands(
             encode: libc::c_int,
@@ -485,14 +491,16 @@ pub mod bands_h {
             arch: libc::c_int,
             disable_inv: libc::c_int,
         );
-        #[c2rust::src_loc = "121:1"]
-        pub fn hysteresis_decision(
-            val: opus_val16,
-            thresholds: *const opus_val16,
-            hysteresis: *const opus_val16,
-            N: libc::c_int,
-            prev: libc::c_int,
-        ) -> libc::c_int;
+        #[c2rust::src_loc = "57:1"]
+        pub fn normalise_bands(
+            m: *const OpusCustomMode,
+            freq: *const celt_sig,
+            X: *mut celt_norm,
+            bandE: *const celt_ener,
+            end: libc::c_int,
+            C: libc::c_int,
+            M: libc::c_int,
+        );
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/rate.h:42"]
@@ -525,6 +533,70 @@ pub mod rate_h {
         ) -> libc::c_int;
     }
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/quant_bands.h:45"]
+pub mod quant_bands_h {
+    use super::arch_h::{celt_ener, opus_val16, opus_val32};
+    use super::entcode_h::ec_enc;
+    use super::modes_h::OpusCustomMode;
+    use super::opus_types_h::opus_uint32;
+    extern "C" {
+        #[c2rust::src_loc = "50:1"]
+        pub fn quant_coarse_energy(
+            m: *const OpusCustomMode,
+            start: libc::c_int,
+            end: libc::c_int,
+            effEnd: libc::c_int,
+            eBands: *const opus_val16,
+            oldEBands: *mut opus_val16,
+            budget: opus_uint32,
+            error: *mut opus_val16,
+            enc: *mut ec_enc,
+            C: libc::c_int,
+            LM: libc::c_int,
+            nbAvailableBytes: libc::c_int,
+            force_intra: libc::c_int,
+            delayedIntra: *mut opus_val32,
+            two_pass: libc::c_int,
+            loss_rate: libc::c_int,
+            lfe: libc::c_int,
+        );
+        #[c2rust::src_loc = "41:25"]
+        pub static eMeans: [opus_val16; 25];
+        #[c2rust::src_loc = "44:1"]
+        pub fn amp2Log2(
+            m: *const OpusCustomMode,
+            effEnd: libc::c_int,
+            end: libc::c_int,
+            bandE: *mut celt_ener,
+            bandLogE: *mut opus_val16,
+            C: libc::c_int,
+        );
+        #[c2rust::src_loc = "56:1"]
+        pub fn quant_fine_energy(
+            m: *const OpusCustomMode,
+            start: libc::c_int,
+            end: libc::c_int,
+            oldEBands: *mut opus_val16,
+            error: *mut opus_val16,
+            fine_quant: *mut libc::c_int,
+            enc: *mut ec_enc,
+            C: libc::c_int,
+        );
+        #[c2rust::src_loc = "58:1"]
+        pub fn quant_energy_finalise(
+            m: *const OpusCustomMode,
+            start: libc::c_int,
+            end: libc::c_int,
+            oldEBands: *mut opus_val16,
+            error: *mut opus_val16,
+            fine_quant: *mut libc::c_int,
+            fine_priority: *mut libc::c_int,
+            bits_left: libc::c_int,
+            enc: *mut ec_enc,
+            C: libc::c_int,
+        );
+    }
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.h:45"]
 pub mod mathops_h {
     #[inline]
@@ -554,71 +626,7 @@ pub mod mathops_h {
     }
     use super::arch_h::{opus_val16, opus_val32};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/quant_bands.h:45"]
-pub mod quant_bands_h {
-    use super::arch_h::{celt_ener, opus_val16, opus_val32};
-    use super::entcode_h::ec_enc;
-    use super::modes_h::OpusCustomMode;
-    use super::opus_types_h::opus_uint32;
-    extern "C" {
-        #[c2rust::src_loc = "56:1"]
-        pub fn quant_fine_energy(
-            m: *const OpusCustomMode,
-            start: libc::c_int,
-            end: libc::c_int,
-            oldEBands: *mut opus_val16,
-            error: *mut opus_val16,
-            fine_quant: *mut libc::c_int,
-            enc: *mut ec_enc,
-            C: libc::c_int,
-        );
-        #[c2rust::src_loc = "58:1"]
-        pub fn quant_energy_finalise(
-            m: *const OpusCustomMode,
-            start: libc::c_int,
-            end: libc::c_int,
-            oldEBands: *mut opus_val16,
-            error: *mut opus_val16,
-            fine_quant: *mut libc::c_int,
-            fine_priority: *mut libc::c_int,
-            bits_left: libc::c_int,
-            enc: *mut ec_enc,
-            C: libc::c_int,
-        );
-        #[c2rust::src_loc = "41:25"]
-        pub static eMeans: [opus_val16; 25];
-        #[c2rust::src_loc = "44:1"]
-        pub fn amp2Log2(
-            m: *const OpusCustomMode,
-            effEnd: libc::c_int,
-            end: libc::c_int,
-            bandE: *mut celt_ener,
-            bandLogE: *mut opus_val16,
-            C: libc::c_int,
-        );
-        #[c2rust::src_loc = "50:1"]
-        pub fn quant_coarse_energy(
-            m: *const OpusCustomMode,
-            start: libc::c_int,
-            end: libc::c_int,
-            effEnd: libc::c_int,
-            eBands: *const opus_val16,
-            oldEBands: *mut opus_val16,
-            budget: opus_uint32,
-            error: *mut opus_val16,
-            enc: *mut ec_enc,
-            C: libc::c_int,
-            LM: libc::c_int,
-            nbAvailableBytes: libc::c_int,
-            force_intra: libc::c_int,
-            delayedIntra: *mut opus_val32,
-            two_pass: libc::c_int,
-            loss_rate: libc::c_int,
-            lfe: libc::c_int,
-        );
-    }
-}
-pub use self::arch_h::{celt_ener, celt_norm, celt_sig, opus_val16, opus_val32};
+pub use self::arch_h::{celt_ener, celt_fatal, celt_norm, celt_sig, opus_val16, opus_val32};
 use self::bands_h::{
     compute_band_energies, haar1, hysteresis_decision, normalise_bands, quant_all_bands,
     spreading_decision,
@@ -1004,6 +1012,22 @@ unsafe extern "C" fn transient_analysis(
             as libc::c_float;
         norm = len2 as libc::c_float / (1e-15f32 + mean);
         unmask = 0 as libc::c_int;
+        if *tmp.as_mut_ptr().offset(0 as libc::c_int as isize)
+            != *tmp.as_mut_ptr().offset(0 as libc::c_int as isize)
+        {
+            celt_fatal(
+                b"assertion failed: !celt_isnan(tmp[0])\0" as *const u8 as *const libc::c_char,
+                b"celt/celt_encoder.c\0" as *const u8 as *const libc::c_char,
+                369 as libc::c_int,
+            );
+        }
+        if norm != norm {
+            celt_fatal(
+                b"assertion failed: !celt_isnan(norm)\0" as *const u8 as *const libc::c_char,
+                b"celt/celt_encoder.c\0" as *const u8 as *const libc::c_char,
+                370 as libc::c_int,
+            );
+        }
         i = 12 as libc::c_int;
         while i < len2 - 5 as libc::c_int {
             let mut id: libc::c_int = 0;
@@ -2972,6 +2996,13 @@ pub unsafe extern "C" fn celt_encode_with_ec(
         tell = ec_tell(enc);
         nbFilledBytes = tell + 4 as libc::c_int >> 3 as libc::c_int;
     }
+    if !((*st).signalling == 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: st->signalling==0\0" as *const u8 as *const libc::c_char,
+            b"celt/celt_encoder.c\0" as *const u8 as *const libc::c_char,
+            1547 as libc::c_int,
+        );
+    }
     nbCompressedBytes = if nbCompressedBytes < 1275 as libc::c_int {
         nbCompressedBytes
     } else {
@@ -3285,6 +3316,18 @@ pub unsafe extern "C" fn celt_encode_with_ec(
         (*st).upsample,
         (*st).arch,
     );
+    if !(!(*freq.as_mut_ptr().offset(0 as libc::c_int as isize)
+        != *freq.as_mut_ptr().offset(0 as libc::c_int as isize))
+        && (C == 1 as libc::c_int
+            || !(*freq.as_mut_ptr().offset(N as isize) != *freq.as_mut_ptr().offset(N as isize))))
+    {
+        celt_fatal(
+            b"assertion failed: !celt_isnan(freq[0]) && (C==1 || !celt_isnan(freq[N]))\0"
+                as *const u8 as *const libc::c_char,
+            b"celt/celt_encoder.c\0" as *const u8 as *const libc::c_char,
+            1729 as libc::c_int,
+        );
+    }
     if CC == 2 as libc::c_int && C == 1 as libc::c_int {
         tf_chan = 0 as libc::c_int;
     }
@@ -3375,6 +3418,13 @@ pub unsafe extern "C" fn celt_encode_with_ec(
                 i += 1;
             }
             c += 1;
+        }
+        if !(count > 0 as libc::c_int) {
+            celt_fatal(
+                b"assertion failed: count>0\0" as *const u8 as *const libc::c_char,
+                b"celt/celt_encoder.c\0" as *const u8 as *const libc::c_char,
+                1770 as libc::c_int,
+            );
         }
         mask_avg = mask_avg / count as opus_val16;
         mask_avg += 0.2f32;

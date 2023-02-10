@@ -1,4 +1,15 @@
 use ::libc;
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/main_FLP.h:32"]
 pub mod main_FLP_h {
     extern "C" {
@@ -20,6 +31,7 @@ pub mod SigProc_FLP_h {
             -> libc::c_double;
     }
 }
+use self::arch_h::celt_fatal;
 use self::main_FLP_h::silk_LPC_analysis_filter_FLP;
 use self::SigProc_FLP_h::silk_energy_FLP;
 #[no_mangle]
@@ -37,6 +49,13 @@ pub unsafe extern "C" fn silk_residual_energy_covar_FLP(
     let mut tmp: libc::c_float = 0.;
     let mut nrg: libc::c_float = 0.0f32;
     let mut regularization: libc::c_float = 0.;
+    if !(D >= 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: D >= 0\0" as *const u8 as *const libc::c_char,
+            b"silk/float/residual_energy_FLP.c\0" as *const u8 as *const libc::c_char,
+            50 as libc::c_int,
+        );
+    }
     regularization = 1e-8f32
         * (*wXX.offset(0 as libc::c_int as isize)
             + *wXX.offset((D * D - 1 as libc::c_int) as isize));

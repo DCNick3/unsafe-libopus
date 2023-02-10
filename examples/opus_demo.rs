@@ -777,7 +777,10 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
     let mut frame_size: libc::c_int = 0;
     let mut channels: libc::c_int = 0;
     let mut bitrate_bps: opus_int32 = 0 as libc::c_int;
-    let mut data: [*mut libc::c_uchar; 2] = [std::ptr::null_mut::<libc::c_uchar>(), std::ptr::null_mut::<libc::c_uchar>()];
+    let mut data: [*mut libc::c_uchar; 2] = [
+        std::ptr::null_mut::<libc::c_uchar>(),
+        std::ptr::null_mut::<libc::c_uchar>(),
+    ];
     let mut fbytes: *mut libc::c_uchar = std::ptr::null_mut::<libc::c_uchar>();
     let mut sampling_rate: opus_int32 = 0;
     let mut use_vbr: libc::c_int = 0;
@@ -2428,7 +2431,8 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                         }
                                                                         count += 1;
                                                                         toggle = (toggle
-                                                                            + use_inbandfec) & 1 as libc::c_int;
+                                                                            + use_inbandfec)
+                                                                            & 1 as libc::c_int;
                                                                     }
                                                                 }
                                                                 match current_block {

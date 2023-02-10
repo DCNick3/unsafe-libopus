@@ -214,6 +214,17 @@ pub mod structs_h {
     use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/usr/include/string.h:32"]
 pub mod string_h {
     extern "C" {
@@ -229,6 +240,51 @@ pub mod string_h {
             _: *const libc::c_void,
             _: libc::c_ulong,
         ) -> *mut libc::c_void;
+    }
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
+pub mod main_h {
+    use super::entcode_h::ec_dec;
+    use super::opus_types_h::opus_int16;
+    use super::structs_h::{silk_decoder_control, silk_decoder_state};
+    extern "C" {
+        #[c2rust::src_loc = "417:1"]
+        pub fn silk_decode_indices(
+            psDec: *mut silk_decoder_state,
+            psRangeDec: *mut ec_dec,
+            FrameIndex: libc::c_int,
+            decode_LBRR: libc::c_int,
+            condCoding: libc::c_int,
+        );
+        #[c2rust::src_loc = "442:1"]
+        pub fn silk_decode_pulses(
+            psRangeDec: *mut ec_dec,
+            pulses: *mut opus_int16,
+            signalType: libc::c_int,
+            quantOffsetType: libc::c_int,
+            frame_length: libc::c_int,
+        );
+        #[c2rust::src_loc = "426:1"]
+        pub fn silk_decode_parameters(
+            psDec: *mut silk_decoder_state,
+            psDecCtrl: *mut silk_decoder_control,
+            condCoding: libc::c_int,
+        );
+        #[c2rust::src_loc = "433:1"]
+        pub fn silk_decode_core(
+            psDec: *mut silk_decoder_state,
+            psDecCtrl: *mut silk_decoder_control,
+            xq: *mut opus_int16,
+            pulses: *const opus_int16,
+            arch: libc::c_int,
+        );
+        #[c2rust::src_loc = "460:1"]
+        pub fn silk_CNG(
+            psDec: *mut silk_decoder_state,
+            psDecCtrl: *mut silk_decoder_control,
+            frame: *mut opus_int16,
+            length: libc::c_int,
+        );
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/PLC.h:32"]
@@ -252,51 +308,7 @@ pub mod PLC_h {
         );
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
-pub mod main_h {
-    use super::entcode_h::ec_dec;
-    use super::opus_types_h::opus_int16;
-    use super::structs_h::{silk_decoder_control, silk_decoder_state};
-    extern "C" {
-        #[c2rust::src_loc = "460:1"]
-        pub fn silk_CNG(
-            psDec: *mut silk_decoder_state,
-            psDecCtrl: *mut silk_decoder_control,
-            frame: *mut opus_int16,
-            length: libc::c_int,
-        );
-        #[c2rust::src_loc = "433:1"]
-        pub fn silk_decode_core(
-            psDec: *mut silk_decoder_state,
-            psDecCtrl: *mut silk_decoder_control,
-            xq: *mut opus_int16,
-            pulses: *const opus_int16,
-            arch: libc::c_int,
-        );
-        #[c2rust::src_loc = "426:1"]
-        pub fn silk_decode_parameters(
-            psDec: *mut silk_decoder_state,
-            psDecCtrl: *mut silk_decoder_control,
-            condCoding: libc::c_int,
-        );
-        #[c2rust::src_loc = "442:1"]
-        pub fn silk_decode_pulses(
-            psRangeDec: *mut ec_dec,
-            pulses: *mut opus_int16,
-            signalType: libc::c_int,
-            quantOffsetType: libc::c_int,
-            frame_length: libc::c_int,
-        );
-        #[c2rust::src_loc = "417:1"]
-        pub fn silk_decode_indices(
-            psDec: *mut silk_decoder_state,
-            psRangeDec: *mut ec_dec,
-            FrameIndex: libc::c_int,
-            decode_LBRR: libc::c_int,
-            condCoding: libc::c_int,
-        );
-    }
-}
+use self::arch_h::celt_fatal;
 pub use self::entcode_h::{ec_ctx, ec_dec, ec_window};
 use self::main_h::{
     silk_CNG, silk_decode_core, silk_decode_indices, silk_decode_parameters, silk_decode_pulses,
@@ -337,6 +349,14 @@ pub unsafe extern "C" fn silk_decode_frame(
         LTP_scale_Q14: 0,
     }; 1];
     (*psDecCtrl.as_mut_ptr()).LTP_scale_Q14 = 0 as libc::c_int;
+    if !(L > 0 as libc::c_int && L <= 5 as libc::c_int * 4 as libc::c_int * 16 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: L > 0 && L <= MAX_FRAME_LENGTH\0" as *const u8
+                as *const libc::c_char,
+            b"silk/decode_frame.c\0" as *const u8 as *const libc::c_char,
+            58 as libc::c_int,
+        );
+    }
     if lostFlag == 0 as libc::c_int
         || lostFlag == 2 as libc::c_int
             && (*psDec).LBRR_flags[(*psDec).nFramesDecoded as usize] == 1 as libc::c_int
@@ -369,10 +389,28 @@ pub unsafe extern "C" fn silk_decode_frame(
         silk_PLC(psDec, psDecCtrl.as_mut_ptr(), pOut, 0 as libc::c_int, arch);
         (*psDec).lossCnt = 0 as libc::c_int;
         (*psDec).prevSignalType = (*psDec).indices.signalType as libc::c_int;
+        if !((*psDec).prevSignalType >= 0 as libc::c_int
+            && (*psDec).prevSignalType <= 2 as libc::c_int)
+        {
+            celt_fatal(
+                b"assertion failed: psDec->prevSignalType >= 0 && psDec->prevSignalType <= 2\0"
+                    as *const u8 as *const libc::c_char,
+                b"silk/decode_frame.c\0" as *const u8 as *const libc::c_char,
+                94 as libc::c_int,
+            );
+        }
         (*psDec).first_frame_after_reset = 0 as libc::c_int;
     } else {
         (*psDec).indices.signalType = (*psDec).prevSignalType as opus_int8;
         silk_PLC(psDec, psDecCtrl.as_mut_ptr(), pOut, 1 as libc::c_int, arch);
+    }
+    if !((*psDec).ltp_mem_length >= (*psDec).frame_length) {
+        celt_fatal(
+            b"assertion failed: psDec->ltp_mem_length >= psDec->frame_length\0" as *const u8
+                as *const libc::c_char,
+            b"silk/decode_frame.c\0" as *const u8 as *const libc::c_char,
+            107 as libc::c_int,
+        );
     }
     mv_len = (*psDec).ltp_mem_length - (*psDec).frame_length;
     memmove(

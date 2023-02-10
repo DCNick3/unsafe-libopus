@@ -195,6 +195,17 @@ pub mod structs_h {
     use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/usr/include/string.h:32"]
 pub mod string_h {
     extern "C" {
@@ -391,6 +402,7 @@ pub mod Inlines_h {
     use super::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
     use super::SigProc_FIX_h::silk_ROR32;
 }
+use self::arch_h::celt_fatal;
 pub use self::macros_h::silk_CLZ32;
 pub use self::opus_types_h::{
     opus_int16, opus_int32, opus_int64, opus_int8, opus_uint32, opus_uint8,
@@ -789,6 +801,13 @@ unsafe extern "C" fn silk_PLC_conceal(
     };
     sLTP_buf_idx = (*psDec).ltp_mem_length;
     idx = (*psDec).ltp_mem_length - lag - (*psDec).LPC_order - 5 as libc::c_int / 2 as libc::c_int;
+    if !(idx > 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: idx > 0\0" as *const u8 as *const libc::c_char,
+            b"silk/PLC.c\0" as *const u8 as *const libc::c_char,
+            294 as libc::c_int,
+        );
+    }
     silk_LPC_analysis_filter(
         &mut *sLTP.as_mut_ptr().offset(idx as isize),
         &mut *((*psDec).outBuf).as_mut_ptr().offset(idx as isize),
@@ -895,6 +914,13 @@ unsafe extern "C" fn silk_PLC_conceal(
         (16 as libc::c_int as libc::c_ulong)
             .wrapping_mul(::core::mem::size_of::<opus_int32>() as libc::c_ulong),
     );
+    if !((*psDec).LPC_order >= 10 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: psDec->LPC_order >= 10\0" as *const u8 as *const libc::c_char,
+            b"silk/PLC.c\0" as *const u8 as *const libc::c_char,
+            350 as libc::c_int,
+        );
+    }
     i = 0 as libc::c_int;
     while i < (*psDec).frame_length {
         LPC_pred_Q10 = (*psDec).LPC_order >> 1 as libc::c_int;

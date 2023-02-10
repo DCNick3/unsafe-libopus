@@ -241,6 +241,17 @@ pub mod entdec_h {
         pub fn ec_dec_bit_logp(_this: *mut ec_dec, _logp: libc::c_uint) -> libc::c_int;
     }
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:31"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
     use super::entcode_h::ec_dec;
@@ -276,16 +287,6 @@ pub mod main_h {
             fs_kHz: libc::c_int,
             fs_API_Hz: opus_int32,
         ) -> libc::c_int;
-        #[c2rust::src_loc = "406:1"]
-        pub fn silk_decode_frame(
-            psDec: *mut silk_decoder_state,
-            psRangeDec: *mut ec_dec,
-            pOut: *mut opus_int16,
-            pN: *mut opus_int32,
-            lostFlag: libc::c_int,
-            condCoding: libc::c_int,
-            arch: libc::c_int,
-        ) -> libc::c_int;
         #[c2rust::src_loc = "65:1"]
         pub fn silk_stereo_MS_to_LR(
             state: *mut stereo_dec_state,
@@ -297,6 +298,16 @@ pub mod main_h {
         );
         #[c2rust::src_loc = "392:1"]
         pub fn silk_init_decoder(psDec: *mut silk_decoder_state) -> libc::c_int;
+        #[c2rust::src_loc = "406:1"]
+        pub fn silk_decode_frame(
+            psDec: *mut silk_decoder_state,
+            psRangeDec: *mut ec_dec,
+            pOut: *mut opus_int16,
+            pN: *mut opus_int32,
+            lostFlag: libc::c_int,
+            condCoding: libc::c_int,
+            arch: libc::c_int,
+        ) -> libc::c_int;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
@@ -334,6 +345,7 @@ pub mod SigProc_FIX_h {
         ) -> libc::c_int;
     }
 }
+use self::arch_h::celt_fatal;
 pub use self::control_h::silk_DecControlStruct;
 pub use self::entcode_h::{ec_ctx, ec_dec, ec_window};
 use self::entdec_h::{ec_dec_bit_logp, ec_dec_icdf};
@@ -419,6 +431,16 @@ pub unsafe extern "C" fn silk_Decode(
     let mut has_side: libc::c_int = 0;
     let mut stereo_to_mono: libc::c_int = 0;
     let mut delay_stack_alloc: libc::c_int = 0;
+    if !((*decControl).nChannelsInternal == 1 as libc::c_int
+        || (*decControl).nChannelsInternal == 2 as libc::c_int)
+    {
+        celt_fatal(
+            b"assertion failed: decControl->nChannelsInternal == 1 || decControl->nChannelsInternal == 2\0"
+                as *const u8 as *const libc::c_char,
+            b"silk/dec_API.c\0" as *const u8 as *const libc::c_char,
+            107 as libc::c_int,
+        );
+    }
     if newPacketFlag != 0 {
         n = 0 as libc::c_int;
         while n < (*decControl).nChannelsInternal {
@@ -454,6 +476,13 @@ pub unsafe extern "C" fn silk_Decode(
                 (*channel_state.offset(n as isize)).nFramesPerPacket = 3 as libc::c_int;
                 (*channel_state.offset(n as isize)).nb_subfr = 4 as libc::c_int;
             } else {
+                if 0 as libc::c_int == 0 {
+                    celt_fatal(
+                        b"assertion failed: 0\0" as *const u8 as *const libc::c_char,
+                        b"silk/dec_API.c\0" as *const u8 as *const libc::c_char,
+                        146 as libc::c_int,
+                    );
+                }
                 return -(203 as libc::c_int);
             }
             fs_kHz_dec = ((*decControl).internalSampleRate >> 10 as libc::c_int) + 1 as libc::c_int;
@@ -461,6 +490,13 @@ pub unsafe extern "C" fn silk_Decode(
                 && fs_kHz_dec != 12 as libc::c_int
                 && fs_kHz_dec != 16 as libc::c_int
             {
+                if 0 as libc::c_int == 0 {
+                    celt_fatal(
+                        b"assertion failed: 0\0" as *const u8 as *const libc::c_char,
+                        b"silk/dec_API.c\0" as *const u8 as *const libc::c_char,
+                        152 as libc::c_int,
+                    );
+                }
                 return -(200 as libc::c_int);
             }
             ret += silk_decoder_set_fs(

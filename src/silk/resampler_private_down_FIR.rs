@@ -69,6 +69,17 @@ pub mod resampler_structs_h {
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
     use super::opus_types_h::{opus_int16, opus_int32};
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/usr/include/string.h:32"]
 pub mod string_h {
     extern "C" {
@@ -94,6 +105,7 @@ pub mod resampler_private_h {
         );
     }
 }
+use self::arch_h::celt_fatal;
 pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
 use self::resampler_private_h::silk_resampler_private_AR2;
 pub use self::resampler_structs_h::{
@@ -473,7 +485,15 @@ unsafe extern "C" fn silk_resampler_private_down_FIR_INTERPOL(
                 index_Q16 += index_increment_Q16;
             }
         }
-        _ => {}
+        _ => {
+            if 0 as libc::c_int == 0 {
+                celt_fatal(
+                    b"assertion failed: 0\0" as *const u8 as *const libc::c_char,
+                    b"silk/resampler_private_down_FIR.c\0" as *const u8 as *const libc::c_char,
+                    139 as libc::c_int,
+                );
+            }
+        }
     }
     return out;
 }

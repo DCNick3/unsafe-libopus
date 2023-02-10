@@ -242,6 +242,17 @@ pub mod structs_h {
     use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/usr/include/string.h:32"]
 pub mod string_h {
     extern "C" {
@@ -355,6 +366,7 @@ pub mod Inlines_h {
     use super::opus_types_h::{opus_int16, opus_int32, opus_int64};
     use super::SigProc_FIX_h::silk_ROR32;
 }
+use self::arch_h::celt_fatal;
 pub use self::macros_h::silk_CLZ32;
 pub use self::opus_types_h::{
     opus_int16, opus_int32, opus_int64, opus_int8, opus_uint32, opus_uint8,
@@ -441,6 +453,30 @@ pub unsafe extern "C" fn silk_VAD_GetSA_Q8_c(
     let mut X_offset: [libc::c_int; 4] = [0; 4];
     let mut ret: libc::c_int = 0 as libc::c_int;
     let mut psSilk_VAD: *mut silk_VAD_state = &mut (*psEncC).sVAD;
+    if !(5 as libc::c_int * 4 as libc::c_int * 16 as libc::c_int >= (*psEncC).frame_length) {
+        celt_fatal(
+            b"assertion failed: MAX_FRAME_LENGTH >= psEncC->frame_length\0" as *const u8
+                as *const libc::c_char,
+            b"silk/VAD.c\0" as *const u8 as *const libc::c_char,
+            104 as libc::c_int,
+        );
+    }
+    if !((*psEncC).frame_length <= 512 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: psEncC->frame_length <= 512\0" as *const u8 as *const libc::c_char,
+            b"silk/VAD.c\0" as *const u8 as *const libc::c_char,
+            105 as libc::c_int,
+        );
+    }
+    if !((*psEncC).frame_length == 8 as libc::c_int * ((*psEncC).frame_length >> 3 as libc::c_int))
+    {
+        celt_fatal(
+            b"assertion failed: psEncC->frame_length == 8 * silk_RSHIFT( psEncC->frame_length, 3 )\0"
+                as *const u8 as *const libc::c_char,
+            b"silk/VAD.c\0" as *const u8 as *const libc::c_char,
+            106 as libc::c_int,
+        );
+    }
     decimated_framelength1 = (*psEncC).frame_length >> 1 as libc::c_int;
     decimated_framelength2 = (*psEncC).frame_length >> 2 as libc::c_int;
     decimated_framelength = (*psEncC).frame_length >> 3 as libc::c_int;

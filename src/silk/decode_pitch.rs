@@ -28,6 +28,17 @@ pub mod opus_types_h {
     pub type opus_int32 = int32_t;
     use super::stdint_intn_h::{int16_t, int32_t, int8_t};
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:35"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/pitch_est_defines.h:36"]
 pub mod pitch_est_defines_h {
     use super::opus_types_h::opus_int8;
@@ -42,6 +53,7 @@ pub mod pitch_est_defines_h {
         pub static silk_CB_lags_stage3_10_ms: [[opus_int8; 12]; 2];
     }
 }
+use self::arch_h::celt_fatal;
 pub use self::opus_types_h::{opus_int16, opus_int32, opus_int8};
 use self::pitch_est_defines_h::{
     silk_CB_lags_stage2, silk_CB_lags_stage2_10_ms, silk_CB_lags_stage3, silk_CB_lags_stage3_10_ms,
@@ -72,6 +84,14 @@ pub unsafe extern "C" fn silk_decode_pitch(
             .offset(0 as libc::c_int as isize) as *const opus_int8;
             cbk_size = 11 as libc::c_int;
         } else {
+            if !(nb_subfr == 4 as libc::c_int >> 1 as libc::c_int) {
+                celt_fatal(
+                    b"assertion failed: nb_subfr == PE_MAX_NB_SUBFR >> 1\0" as *const u8
+                        as *const libc::c_char,
+                    b"silk/decode_pitch.c\0" as *const u8 as *const libc::c_char,
+                    54 as libc::c_int,
+                );
+            }
             Lag_CB_ptr = &*(*silk_CB_lags_stage2_10_ms
                 .as_ptr()
                 .offset(0 as libc::c_int as isize))
@@ -87,6 +107,14 @@ pub unsafe extern "C" fn silk_decode_pitch(
         .offset(0 as libc::c_int as isize) as *const opus_int8;
         cbk_size = 34 as libc::c_int;
     } else {
+        if !(nb_subfr == 4 as libc::c_int >> 1 as libc::c_int) {
+            celt_fatal(
+                b"assertion failed: nb_subfr == PE_MAX_NB_SUBFR >> 1\0" as *const u8
+                    as *const libc::c_char,
+                b"silk/decode_pitch.c\0" as *const u8 as *const libc::c_char,
+                63 as libc::c_int,
+            );
+        }
         Lag_CB_ptr = &*(*silk_CB_lags_stage3_10_ms
             .as_ptr()
             .offset(0 as libc::c_int as isize))

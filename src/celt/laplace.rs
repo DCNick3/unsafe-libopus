@@ -82,6 +82,18 @@ pub mod entenc_h {
         );
     }
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
+use self::arch_h::celt_fatal;
 pub use self::entcode_h::{ec_ctx, ec_dec, ec_enc, ec_window};
 use self::entdec_h::{ec_dec_update, ec_decode_bin};
 use self::entenc_h::ec_encode_bin;
@@ -158,6 +170,20 @@ pub unsafe extern "C" fn ec_laplace_encode(
             fs = fs.wrapping_add(((1 as libc::c_int) << 0 as libc::c_int) as libc::c_uint);
             fl = fl.wrapping_add(fs & !s as libc::c_uint);
         }
+        if !(fl.wrapping_add(fs) <= 32768 as libc::c_int as libc::c_uint) {
+            celt_fatal(
+                b"assertion failed: fl+fs<=32768\0" as *const u8 as *const libc::c_char,
+                b"celt/laplace.c\0" as *const u8 as *const libc::c_char,
+                88 as libc::c_int,
+            );
+        }
+        if !(fs > 0 as libc::c_int as libc::c_uint) {
+            celt_fatal(
+                b"assertion failed: fs>0\0" as *const u8 as *const libc::c_char,
+                b"celt/laplace.c\0" as *const u8 as *const libc::c_char,
+                89 as libc::c_int,
+            );
+        }
     }
     ec_encode_bin(
         enc,
@@ -210,6 +236,40 @@ pub unsafe extern "C" fn ec_laplace_decode(
         } else {
             fl = fl.wrapping_add(fs);
         }
+    }
+    if !(fl < 32768 as libc::c_int as libc::c_uint) {
+        celt_fatal(
+            b"assertion failed: fl<32768\0" as *const u8 as *const libc::c_char,
+            b"celt/laplace.c\0" as *const u8 as *const libc::c_char,
+            128 as libc::c_int,
+        );
+    }
+    if !(fs > 0 as libc::c_int as libc::c_uint) {
+        celt_fatal(
+            b"assertion failed: fs>0\0" as *const u8 as *const libc::c_char,
+            b"celt/laplace.c\0" as *const u8 as *const libc::c_char,
+            129 as libc::c_int,
+        );
+    }
+    if !(fl <= fm) {
+        celt_fatal(
+            b"assertion failed: fl<=fm\0" as *const u8 as *const libc::c_char,
+            b"celt/laplace.c\0" as *const u8 as *const libc::c_char,
+            130 as libc::c_int,
+        );
+    }
+    if !(fm
+        < (if fl.wrapping_add(fs) < 32768 as libc::c_int as libc::c_uint {
+            fl.wrapping_add(fs)
+        } else {
+            32768 as libc::c_int as libc::c_uint
+        }))
+    {
+        celt_fatal(
+            b"assertion failed: fm<IMIN(fl+fs,32768)\0" as *const u8 as *const libc::c_char,
+            b"celt/laplace.c\0" as *const u8 as *const libc::c_char,
+            131 as libc::c_int,
+        );
     }
     ec_dec_update(
         dec,

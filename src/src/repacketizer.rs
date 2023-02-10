@@ -72,6 +72,17 @@ pub mod opus_h {
         ) -> libc::c_int;
     }
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/os_support.h:34"]
 pub mod os_support_h {
     #[inline]
@@ -107,6 +118,7 @@ pub mod stdlib_h {
         pub fn free(_: *mut libc::c_void);
     }
 }
+use self::arch_h::celt_fatal;
 use self::opus_h::{opus_packet_get_nb_frames, opus_packet_get_samples_per_frame};
 pub use self::opus_private_h::{encode_size, opus_packet_parse_impl, OpusRepacketizer};
 pub use self::opus_types_h::{opus_int16, opus_int32};
@@ -523,6 +535,13 @@ pub unsafe extern "C" fn opus_packet_unpad(
         0 as libc::c_int,
         0 as libc::c_int,
     );
+    if !(ret > 0 as libc::c_int && ret <= len) {
+        celt_fatal(
+            b"assertion failed: ret > 0 && ret <= len\0" as *const u8 as *const libc::c_char,
+            b"src/repacketizer.c\0" as *const u8 as *const libc::c_char,
+            274 as libc::c_int,
+        );
+    }
     return ret;
 }
 #[no_mangle]

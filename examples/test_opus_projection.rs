@@ -402,7 +402,6 @@ pub unsafe extern "C" fn assert_is_equal_short(
 #[c2rust::src_loc = "82:1"]
 pub unsafe extern "C" fn test_simple_matrix() {
     let simple_matrix_params: MappingMatrix = {
-        
         MappingMatrix {
             rows: 4 as libc::c_int,
             cols: 3 as libc::c_int,
@@ -820,7 +819,8 @@ pub unsafe extern "C" fn generate_music(
                 * (j >> 12 as libc::c_int
                     ^ (j >> 10 as libc::c_int | j >> 12 as libc::c_int)
                         & 26 as libc::c_int
-                        & j >> 7 as libc::c_int)) & 128 as libc::c_int)
+                        & j >> 7 as libc::c_int))
+                & 128 as libc::c_int)
                 + 128 as libc::c_int)
                 << 15 as libc::c_int;
             r = fast_rand();
@@ -829,11 +829,13 @@ pub unsafe extern "C" fn generate_music(
             v = (v as libc::c_uint).wrapping_sub(r >> 16 as libc::c_int) as opus_int32
                 as opus_int32;
             *b.offset(k as isize) = v - *a.offset(k as isize)
-                + ((*b.offset(k as isize) * 61 as libc::c_int + 32 as libc::c_int) >> 6 as libc::c_int);
+                + ((*b.offset(k as isize) * 61 as libc::c_int + 32 as libc::c_int)
+                    >> 6 as libc::c_int);
             *a.offset(k as isize) = v;
             *c.offset(k as isize) = (30 as libc::c_int
                 * (*c.offset(k as isize) + *b.offset(k as isize) + *d.offset(k as isize))
-                + 32 as libc::c_int) >> 6 as libc::c_int;
+                + 32 as libc::c_int)
+                >> 6 as libc::c_int;
             *d.offset(k as isize) = *b.offset(k as isize);
             v = (*c.offset(k as isize) + 128 as libc::c_int) >> 8 as libc::c_int;
             *buf.offset((i * channels + k) as isize) = (if v > 32767 as libc::c_int {

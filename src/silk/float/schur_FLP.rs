@@ -1,4 +1,16 @@
 use ::libc;
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
+use self::arch_h::celt_fatal;
 #[no_mangle]
 #[c2rust::src_loc = "34:1"]
 pub unsafe extern "C" fn silk_schur_FLP(
@@ -12,6 +24,14 @@ pub unsafe extern "C" fn silk_schur_FLP(
     let mut Ctmp1: libc::c_double = 0.;
     let mut Ctmp2: libc::c_double = 0.;
     let mut rc_tmp: libc::c_double = 0.;
+    if !(order >= 0 as libc::c_int && order <= 24 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: order >= 0 && order <= SILK_MAX_ORDER_LPC\0" as *const u8
+                as *const libc::c_char,
+            b"silk/float/schur_FLP.c\0" as *const u8 as *const libc::c_char,
+            44 as libc::c_int,
+        );
+    }
     k = 0 as libc::c_int;
     loop {
         C[k as usize][1 as libc::c_int as usize] = *auto_corr.offset(k as isize) as libc::c_double;

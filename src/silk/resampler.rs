@@ -75,6 +75,17 @@ pub mod resampler_structs_h {
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
     use super::opus_types_h::{opus_int16, opus_int32};
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:50"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/usr/include/string.h:50"]
 pub mod string_h {
     extern "C" {
@@ -133,6 +144,7 @@ pub mod resampler_private_h {
         );
     }
 }
+use self::arch_h::celt_fatal;
 pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_int8, opus_uint32};
 use self::resampler_private_h::{
     silk_resampler_private_IIR_FIR, silk_resampler_private_down_FIR,
@@ -225,6 +237,13 @@ pub unsafe extern "C" fn silk_resampler_init(
                 && Fs_Hz_out != 12000 as libc::c_int
                 && Fs_Hz_out != 16000 as libc::c_int
         {
+            if 0 as libc::c_int == 0 {
+                celt_fatal(
+                    b"assertion failed: 0\0" as *const u8 as *const libc::c_char,
+                    b"silk/resampler.c\0" as *const u8 as *const libc::c_char,
+                    94 as libc::c_int,
+                );
+            }
             return -(1 as libc::c_int);
         }
         (*S).inputDelay = delay_matrix_enc[(((Fs_Hz_in >> 12 as libc::c_int)
@@ -244,6 +263,13 @@ pub unsafe extern "C" fn silk_resampler_init(
                 && Fs_Hz_out != 24000 as libc::c_int
                 && Fs_Hz_out != 48000 as libc::c_int
         {
+            if 0 as libc::c_int == 0 {
+                celt_fatal(
+                    b"assertion failed: 0\0" as *const u8 as *const libc::c_char,
+                    b"silk/resampler.c\0" as *const u8 as *const libc::c_char,
+                    101 as libc::c_int,
+                );
+            }
             return -(1 as libc::c_int);
         }
         (*S).inputDelay = delay_matrix_dec[(((Fs_Hz_in >> 12 as libc::c_int)
@@ -292,6 +318,13 @@ pub unsafe extern "C" fn silk_resampler_init(
             (*S).FIR_Order = 36 as libc::c_int;
             (*S).Coefs = silk_Resampler_1_6_COEFS.as_ptr();
         } else {
+            if 0 as libc::c_int == 0 {
+                celt_fatal(
+                    b"assertion failed: 0\0" as *const u8 as *const libc::c_char,
+                    b"silk/resampler.c\0" as *const u8 as *const libc::c_char,
+                    154 as libc::c_int,
+                );
+            }
             return -(1 as libc::c_int);
         }
     } else {
@@ -317,6 +350,21 @@ pub unsafe extern "C" fn silk_resampler(
     mut inLen: opus_int32,
 ) -> libc::c_int {
     let mut nSamples: libc::c_int = 0;
+    if !(inLen >= (*S).Fs_in_kHz) {
+        celt_fatal(
+            b"assertion failed: inLen >= S->Fs_in_kHz\0" as *const u8 as *const libc::c_char,
+            b"silk/resampler.c\0" as *const u8 as *const libc::c_char,
+            184 as libc::c_int,
+        );
+    }
+    if !((*S).inputDelay <= (*S).Fs_in_kHz) {
+        celt_fatal(
+            b"assertion failed: S->inputDelay <= S->Fs_in_kHz\0" as *const u8
+                as *const libc::c_char,
+            b"silk/resampler.c\0" as *const u8 as *const libc::c_char,
+            186 as libc::c_int,
+        );
+    }
     nSamples = (*S).Fs_in_kHz - (*S).inputDelay;
     memcpy(
         &mut *((*S).delayBuf)

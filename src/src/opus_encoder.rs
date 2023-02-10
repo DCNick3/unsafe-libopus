@@ -169,6 +169,14 @@ pub mod arch_h {
     pub type opus_val16 = libc::c_float;
     #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = libc::c_float;
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:33"]
 pub mod stddef_h {
@@ -239,8 +247,6 @@ pub mod celt_h {
     use super::opus_custom_h::OpusCustomEncoder;
     use super::opus_types_h::opus_int32;
     extern "C" {
-        #[c2rust::src_loc = "136:1"]
-        pub fn celt_encoder_get_size(channels: libc::c_int) -> libc::c_int;
         #[c2rust::src_loc = "140:1"]
         pub fn celt_encoder_init(
             st: *mut OpusCustomEncoder,
@@ -257,6 +263,8 @@ pub mod celt_h {
             nbCompressedBytes: libc::c_int,
             enc: *mut ec_enc,
         ) -> libc::c_int;
+        #[c2rust::src_loc = "136:1"]
+        pub fn celt_encoder_get_size(channels: libc::c_int) -> libc::c_int;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/control.h:36"]
@@ -345,8 +353,8 @@ pub mod analysis_h {
     use super::opus_private_h::downmix_func;
     use super::opus_types_h::opus_int32;
     extern "C" {
-        #[c2rust::src_loc = "89:1"]
-        pub fn tonality_analysis_init(analysis: *mut TonalityAnalysisState, Fs: opus_int32);
+        #[c2rust::src_loc = "95:1"]
+        pub fn tonality_analysis_reset(analysis: *mut TonalityAnalysisState);
         #[c2rust::src_loc = "99:1"]
         pub fn run_analysis(
             analysis: *mut TonalityAnalysisState,
@@ -362,8 +370,8 @@ pub mod analysis_h {
             downmix: downmix_func,
             analysis_info: *mut AnalysisInfo,
         );
-        #[c2rust::src_loc = "95:1"]
-        pub fn tonality_analysis_reset(analysis: *mut TonalityAnalysisState);
+        #[c2rust::src_loc = "89:1"]
+        pub fn tonality_analysis_init(analysis: *mut TonalityAnalysisState, Fs: opus_int32);
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/opus_private.h:42"]
@@ -679,10 +687,10 @@ pub mod mathcalls_h {
         pub fn exp(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "143:13"]
         pub fn sqrt(_: libc::c_double) -> libc::c_double;
-        #[c2rust::src_loc = "165:14"]
-        pub fn floor(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "162:14"]
         pub fn fabs(_: libc::c_double) -> libc::c_double;
+        #[c2rust::src_loc = "165:14"]
+        pub fn floor(_: libc::c_double) -> libc::c_double;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:33"]
@@ -749,11 +757,6 @@ pub mod API_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/float_cast.h:38"]
 pub mod float_cast_h {
     #[inline]
-    #[c2rust::src_loc = "68:1"]
-    pub unsafe extern "C" fn float2int(mut x: libc::c_float) -> opus_int32 {
-        return _mm_cvt_ss2si(_mm_set_ss(x));
-    }
-    #[inline]
     #[c2rust::src_loc = "137:1"]
     pub unsafe extern "C" fn FLOAT2INT16(mut x: libc::c_float) -> opus_int16 {
         x = x * 32768.0f32;
@@ -768,6 +771,11 @@ pub mod float_cast_h {
             32767 as libc::c_int as libc::c_float
         };
         return float2int(x) as opus_int16;
+    }
+    #[inline]
+    #[c2rust::src_loc = "68:1"]
+    pub unsafe extern "C" fn float2int(mut x: libc::c_float) -> opus_int32 {
+        return _mm_cvt_ss2si(_mm_set_ss(x));
     }
     use super::opus_types_h::{opus_int16, opus_int32};
     use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
@@ -813,25 +821,6 @@ pub mod pitch_h {
     }
     use super::arch_h::{opus_val16, opus_val32};
 }
-#[c2rust::header_src = "/usr/include/string.h:43"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-        #[c2rust::src_loc = "47:14"]
-        pub fn memmove(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/os_support.h:43"]
 pub mod os_support_h {
     #[inline]
@@ -846,6 +835,25 @@ pub mod os_support_h {
     }
     use super::stddef_h::size_t;
     use super::stdlib_h::{free, malloc};
+}
+#[c2rust::header_src = "/usr/include/string.h:43"]
+pub mod string_h {
+    extern "C" {
+        #[c2rust::src_loc = "43:14"]
+        pub fn memcpy(
+            _: *mut libc::c_void,
+            _: *const libc::c_void,
+            _: libc::c_ulong,
+        ) -> *mut libc::c_void;
+        #[c2rust::src_loc = "61:14"]
+        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
+        #[c2rust::src_loc = "47:14"]
+        pub fn memmove(
+            _: *mut libc::c_void,
+            _: *const libc::c_void,
+            _: libc::c_ulong,
+        ) -> *mut libc::c_void;
+    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.h:46"]
 pub mod mathops_h {
@@ -889,7 +897,7 @@ pub mod SigProc_FIX_h {
 pub use self::analysis_h::{
     run_analysis, tonality_analysis_init, tonality_analysis_reset, TonalityAnalysisState,
 };
-pub use self::arch_h::{opus_val16, opus_val32};
+pub use self::arch_h::{celt_fatal, opus_val16, opus_val32};
 pub use self::celt_h::{
     celt_encode_with_ec, celt_encoder_get_size, celt_encoder_init, AnalysisInfo, SILKInfo,
 };
@@ -3025,6 +3033,14 @@ pub unsafe extern "C" fn opus_encode_native(
         } else if curr_bandwidth == 1102 as libc::c_int {
             (*st).silk_mode.desiredInternalSampleRate = 12000 as libc::c_int;
         } else {
+            if !((*st).mode == 1001 as libc::c_int || curr_bandwidth == 1103 as libc::c_int) {
+                celt_fatal(
+                    b"assertion failed: st->mode == MODE_HYBRID || curr_bandwidth == OPUS_BANDWIDTH_WIDEBAND\0"
+                        as *const u8 as *const libc::c_char,
+                    b"src/opus_encoder.c\0" as *const u8 as *const libc::c_char,
+                    1755 as libc::c_int,
+                );
+            }
             (*st).silk_mode.desiredInternalSampleRate = 16000 as libc::c_int;
         }
         if (*st).mode == 1001 as libc::c_int {
@@ -3159,6 +3175,13 @@ pub unsafe extern "C" fn opus_encode_native(
             } else if (*st).silk_mode.internalSampleRate == 16000 as libc::c_int {
                 curr_bandwidth = 1103 as libc::c_int;
             }
+        } else if !((*st).silk_mode.internalSampleRate == 16000 as libc::c_int) {
+            celt_fatal(
+                b"assertion failed: st->silk_mode.internalSampleRate == 16000\0" as *const u8
+                    as *const libc::c_char,
+                b"src/opus_encoder.c\0" as *const u8 as *const libc::c_char,
+                1863 as libc::c_int,
+            );
         }
         (*st).silk_mode.opusCanSwitch =
             ((*st).silk_mode.switchReady != 0 && (*st).nonfinal_frame == 0) as libc::c_int;

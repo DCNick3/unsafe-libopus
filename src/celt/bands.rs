@@ -45,6 +45,14 @@ pub mod arch_h {
     pub type celt_norm = libc::c_float;
     #[c2rust::src_loc = "185:1"]
     pub type celt_ener = libc::c_float;
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/modes.h:35"]
 pub mod modes_h {
@@ -409,7 +417,7 @@ pub mod pitch_h {
     }
     use super::arch_h::{opus_val16, opus_val32};
 }
-pub use self::arch_h::{celt_ener, celt_norm, celt_sig, opus_val16, opus_val32};
+pub use self::arch_h::{celt_ener, celt_fatal, celt_norm, celt_sig, opus_val16, opus_val32};
 pub use self::entcode_h::{celt_sudiv, celt_udiv, ec_ctx, ec_dec, ec_enc, ec_tell_frac, ec_window};
 use self::entdec_h::{ec_dec_bit_logp, ec_dec_bits, ec_dec_uint, ec_dec_update, ec_decode};
 use self::entenc_h::{ec_enc_bit_logp, ec_enc_bits, ec_enc_uint, ec_encode};
@@ -696,6 +704,13 @@ pub unsafe extern "C" fn denormalise_bands(
         }
         i += 1;
     }
+    if !(start <= end) {
+        celt_fatal(
+            b"assertion failed: start <= end\0" as *const u8 as *const libc::c_char,
+            b"celt/bands.c\0" as *const u8 as *const libc::c_char,
+            263 as libc::c_int,
+        );
+    }
     memset(
         &mut *freq.offset(bound as isize) as *mut celt_sig as *mut libc::c_void,
         0 as libc::c_int,
@@ -948,6 +963,13 @@ pub unsafe extern "C" fn spreading_decision(
     let mut eBands: *const opus_int16 = (*m).eBands;
     let mut decision: libc::c_int = 0;
     let mut hf_sum: libc::c_int = 0 as libc::c_int;
+    if !(end > 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: end>0\0" as *const u8 as *const libc::c_char,
+            b"celt/bands.c\0" as *const u8 as *const libc::c_char,
+            489 as libc::c_int,
+        );
+    }
     N0 = M * (*m).shortMdctSize;
     if M * (*eBands.offset(end as isize) as libc::c_int
         - *eBands.offset((end - 1 as libc::c_int) as isize) as libc::c_int)
@@ -1030,6 +1052,20 @@ pub unsafe extern "C" fn spreading_decision(
             *tapset_decision = 0 as libc::c_int;
         }
     }
+    if !(nbBands > 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: nbBands>0\0" as *const u8 as *const libc::c_char,
+            b"celt/bands.c\0" as *const u8 as *const libc::c_char,
+            545 as libc::c_int,
+        );
+    }
+    if !(sum >= 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: sum>=0\0" as *const u8 as *const libc::c_char,
+            b"celt/bands.c\0" as *const u8 as *const libc::c_char,
+            546 as libc::c_int,
+        );
+    }
     sum = celt_udiv(
         (sum << 8 as libc::c_int) as opus_uint32,
         nbBands as opus_uint32,
@@ -1097,6 +1133,13 @@ unsafe extern "C" fn deinterleave_hadamard(
     N = N0 * stride;
     let vla = N as usize;
     let mut tmp: Vec<celt_norm> = ::std::vec::from_elem(0., vla);
+    if !(stride > 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: stride>0\0" as *const u8 as *const libc::c_char,
+            b"celt/bands.c\0" as *const u8 as *const libc::c_char,
+            591 as libc::c_int,
+        );
+    }
     if hadamard != 0 {
         let mut ordery: *const libc::c_int = ordery_table
             .as_ptr()
@@ -1255,6 +1298,13 @@ unsafe extern "C" fn compute_qn(
         qn = exp2_table8[(qb & 0x7 as libc::c_int) as usize] as libc::c_int
             >> 14 as libc::c_int - (qb >> 3 as libc::c_int);
         qn = (qn + 1 as libc::c_int >> 1 as libc::c_int) << 1 as libc::c_int;
+    }
+    if !(qn <= 256 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: qn <= 256\0" as *const u8 as *const libc::c_char,
+            b"celt/bands.c\0" as *const u8 as *const libc::c_char,
+            669 as libc::c_int,
+        );
     }
     return qn;
 }
@@ -1477,6 +1527,13 @@ unsafe extern "C" fn compute_theta(
                     ft_0 as libc::c_uint,
                 );
             }
+        }
+        if !(itheta >= 0 as libc::c_int) {
+            celt_fatal(
+                b"assertion failed: itheta>=0\0" as *const u8 as *const libc::c_char,
+                b"celt/bands.c\0" as *const u8 as *const libc::c_char,
+                838 as libc::c_int,
+            );
         }
         itheta = celt_udiv(
             (itheta * 16384 as libc::c_int) as opus_uint32,
@@ -2377,6 +2434,13 @@ pub unsafe extern "C" fn quant_all_bands(
         }
         N = M * *eBands.offset((i + 1 as libc::c_int) as isize) as libc::c_int
             - M * *eBands.offset(i as isize) as libc::c_int;
+        if !(N > 0 as libc::c_int) {
+            celt_fatal(
+                b"assertion failed: N > 0\0" as *const u8 as *const libc::c_char,
+                b"celt/bands.c\0" as *const u8 as *const libc::c_char,
+                1495 as libc::c_int,
+            );
+        }
         tell = ec_tell_frac(ec) as opus_int32;
         if i != start {
             balance -= tell;

@@ -64,6 +64,17 @@ pub mod entcode_h {
     pub type ec_dec = ec_ctx;
     use super::opus_types_h::opus_uint32;
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/usr/include/string.h:32"]
 pub mod string_h {
     extern "C" {
@@ -117,6 +128,7 @@ pub mod main_h {
         );
     }
 }
+use self::arch_h::celt_fatal;
 pub use self::entcode_h::{ec_ctx, ec_dec, ec_window};
 use self::entdec_h::ec_dec_icdf;
 use self::main_h::{silk_decode_signs, silk_shell_decoder};
@@ -153,6 +165,13 @@ pub unsafe extern "C" fn silk_decode_pulses(
     );
     iter = frame_length >> 4 as libc::c_int;
     if (iter * 16 as libc::c_int) < frame_length {
+        if !(frame_length == 12 as libc::c_int * 10 as libc::c_int) {
+            celt_fatal(
+                b"assertion failed: frame_length == 12 * 10\0" as *const u8 as *const libc::c_char,
+                b"silk/decode_pulses.c\0" as *const u8 as *const libc::c_char,
+                59 as libc::c_int,
+            );
+        }
         iter += 1;
     }
     cdf_ptr = (silk_pulses_per_block_iCDF[RateLevelIndex as usize]).as_ptr();

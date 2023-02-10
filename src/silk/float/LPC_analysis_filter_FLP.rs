@@ -1,4 +1,15 @@
 use ::libc;
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/usr/include/string.h:33"]
 pub mod string_h {
     extern "C" {
@@ -6,6 +17,7 @@ pub mod string_h {
         pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     }
 }
+use self::arch_h::celt_fatal;
 use self::string_h::memset;
 #[inline]
 #[c2rust::src_loc = "43:1"]
@@ -210,6 +222,13 @@ pub unsafe extern "C" fn silk_LPC_analysis_filter_FLP(
     length: libc::c_int,
     Order: libc::c_int,
 ) {
+    if !(Order <= length) {
+        celt_fatal(
+            b"assertion failed: Order <= length\0" as *const u8 as *const libc::c_char,
+            b"silk/float/LPC_analysis_filter_FLP.c\0" as *const u8 as *const libc::c_char,
+            218 as libc::c_int,
+        );
+    }
     match Order {
         6 => {
             silk_LPC_analysis_filter6_FLP(r_LPC, PredCoef, s, length);
@@ -226,7 +245,15 @@ pub unsafe extern "C" fn silk_LPC_analysis_filter_FLP(
         16 => {
             silk_LPC_analysis_filter16_FLP(r_LPC, PredCoef, s, length);
         }
-        _ => {}
+        _ => {
+            if 0 as libc::c_int == 0 {
+                celt_fatal(
+                    b"assertion failed: 0\0" as *const u8 as *const libc::c_char,
+                    b"silk/float/LPC_analysis_filter_FLP.c\0" as *const u8 as *const libc::c_char,
+                    242 as libc::c_int,
+                );
+            }
+        }
     }
     memset(
         r_LPC as *mut libc::c_void,

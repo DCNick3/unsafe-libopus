@@ -74,13 +74,21 @@ pub mod string_h {
         ) -> *mut libc::c_void;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
-pub mod SigProc_FIX_h {
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/macros.h:32"]
+pub mod macros_h {
     #[inline]
-    #[c2rust::src_loc = "564:1"]
-    pub unsafe extern "C" fn silk_max_int(mut a: libc::c_int, mut b: libc::c_int) -> libc::c_int {
-        return if a > b { a } else { b };
+    #[c2rust::src_loc = "120:1"]
+    pub unsafe extern "C" fn silk_CLZ32(mut in32: opus_int32) -> opus_int32 {
+        return if in32 != 0 {
+            32 as libc::c_int
+                - (::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int
+                    * 8 as libc::c_int
+                    - (in32 as libc::c_uint).leading_zeros() as i32)
+        } else {
+            32 as libc::c_int
+        };
     }
+    use super::opus_types_h::opus_int32;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/Inlines.h:32"]
 pub mod Inlines_h {
@@ -165,21 +173,13 @@ pub mod main_h {
         ) -> opus_int32;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/macros.h:32"]
-pub mod macros_h {
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
+pub mod SigProc_FIX_h {
     #[inline]
-    #[c2rust::src_loc = "120:1"]
-    pub unsafe extern "C" fn silk_CLZ32(mut in32: opus_int32) -> opus_int32 {
-        return if in32 != 0 {
-            32 as libc::c_int
-                - (::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int
-                    * 8 as libc::c_int
-                    - (in32 as libc::c_uint).leading_zeros() as i32)
-        } else {
-            32 as libc::c_int
-        };
+    #[c2rust::src_loc = "564:1"]
+    pub unsafe extern "C" fn silk_max_int(mut a: libc::c_int, mut b: libc::c_int) -> libc::c_int {
+        return if a > b { a } else { b };
     }
-    use super::opus_types_h::opus_int32;
 }
 pub use self::macros_h::silk_CLZ32;
 use self::main_h::{silk_stereo_find_predictor, silk_stereo_quant_pred};

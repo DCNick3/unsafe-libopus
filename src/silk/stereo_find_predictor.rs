@@ -39,76 +39,8 @@ pub mod opus_types_h {
     use super::stdint_intn_h::{int16_t, int32_t, int64_t};
     use super::stdint_uintn_h::uint32_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/macros.h:32"]
-pub mod macros_h {
-    #[inline]
-    #[c2rust::src_loc = "120:1"]
-    pub unsafe extern "C" fn silk_CLZ32(mut in32: opus_int32) -> opus_int32 {
-        return if in32 != 0 {
-            32 as libc::c_int
-                - (::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int
-                    * 8 as libc::c_int
-                    - (in32 as libc::c_uint).leading_zeros() as i32)
-        } else {
-            32 as libc::c_int
-        };
-    }
-    use super::opus_types_h::opus_int32;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
-pub mod SigProc_FIX_h {
-    #[inline]
-    #[c2rust::src_loc = "398:1"]
-    pub unsafe extern "C" fn silk_ROR32(mut a32: opus_int32, mut rot: libc::c_int) -> opus_int32 {
-        let mut x: opus_uint32 = a32 as opus_uint32;
-        let mut r: opus_uint32 = rot as opus_uint32;
-        let mut m: opus_uint32 = -rot as opus_uint32;
-        if rot == 0 as libc::c_int {
-            return a32;
-        } else if rot < 0 as libc::c_int {
-            return (x << m | x >> (32 as libc::c_int as libc::c_uint).wrapping_sub(m))
-                as opus_int32;
-        } else {
-            return (x << (32 as libc::c_int as libc::c_uint).wrapping_sub(r) | x >> r)
-                as opus_int32;
-        };
-    }
-    #[inline]
-    #[c2rust::src_loc = "564:1"]
-    pub unsafe extern "C" fn silk_max_int(mut a: libc::c_int, mut b: libc::c_int) -> libc::c_int {
-        return if a > b { a } else { b };
-    }
-    use super::opus_types_h::{opus_int16, opus_int32, opus_uint32};
-    extern "C" {
-        #[c2rust::src_loc = "193:1"]
-        pub fn silk_sum_sqr_shift(
-            energy: *mut opus_int32,
-            shift: *mut libc::c_int,
-            x: *const opus_int16,
-            len: libc::c_int,
-        );
-        #[c2rust::src_loc = "377:1"]
-        pub fn silk_inner_prod_aligned_scale(
-            inVec1: *const opus_int16,
-            inVec2: *const opus_int16,
-            scale: libc::c_int,
-            len: libc::c_int,
-        ) -> opus_int32;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/Inlines.h:32"]
 pub mod Inlines_h {
-    #[inline]
-    #[c2rust::src_loc = "56:1"]
-    pub unsafe extern "C" fn silk_CLZ_FRAC(
-        mut in_0: opus_int32,
-        mut lz: *mut opus_int32,
-        mut frac_Q7: *mut opus_int32,
-    ) {
-        let mut lzeros: opus_int32 = silk_CLZ32(in_0);
-        *lz = lzeros;
-        *frac_Q7 = silk_ROR32(in_0, 24 as libc::c_int - lzeros) & 0x7f as libc::c_int;
-    }
     #[inline]
     #[c2rust::src_loc = "71:1"]
     pub unsafe extern "C" fn silk_SQRT_APPROX(mut x: opus_int32) -> opus_int32 {
@@ -132,6 +64,17 @@ pub mod Inlines_h {
                     as opus_int64
                 >> 16 as libc::c_int)) as opus_int32;
         return y;
+    }
+    #[inline]
+    #[c2rust::src_loc = "56:1"]
+    pub unsafe extern "C" fn silk_CLZ_FRAC(
+        mut in_0: opus_int32,
+        mut lz: *mut opus_int32,
+        mut frac_Q7: *mut opus_int32,
+    ) {
+        let mut lzeros: opus_int32 = silk_CLZ32(in_0);
+        *lz = lzeros;
+        *frac_Q7 = silk_ROR32(in_0, 24 as libc::c_int - lzeros) & 0x7f as libc::c_int;
     }
     #[inline]
     #[c2rust::src_loc = "97:1"]
@@ -197,6 +140,63 @@ pub mod Inlines_h {
     use super::macros_h::silk_CLZ32;
     use super::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
     use super::SigProc_FIX_h::silk_ROR32;
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/macros.h:32"]
+pub mod macros_h {
+    #[inline]
+    #[c2rust::src_loc = "120:1"]
+    pub unsafe extern "C" fn silk_CLZ32(mut in32: opus_int32) -> opus_int32 {
+        return if in32 != 0 {
+            32 as libc::c_int
+                - (::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int
+                    * 8 as libc::c_int
+                    - (in32 as libc::c_uint).leading_zeros() as i32)
+        } else {
+            32 as libc::c_int
+        };
+    }
+    use super::opus_types_h::opus_int32;
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
+pub mod SigProc_FIX_h {
+    #[inline]
+    #[c2rust::src_loc = "398:1"]
+    pub unsafe extern "C" fn silk_ROR32(mut a32: opus_int32, mut rot: libc::c_int) -> opus_int32 {
+        let mut x: opus_uint32 = a32 as opus_uint32;
+        let mut r: opus_uint32 = rot as opus_uint32;
+        let mut m: opus_uint32 = -rot as opus_uint32;
+        if rot == 0 as libc::c_int {
+            return a32;
+        } else if rot < 0 as libc::c_int {
+            return (x << m | x >> (32 as libc::c_int as libc::c_uint).wrapping_sub(m))
+                as opus_int32;
+        } else {
+            return (x << (32 as libc::c_int as libc::c_uint).wrapping_sub(r) | x >> r)
+                as opus_int32;
+        };
+    }
+    #[inline]
+    #[c2rust::src_loc = "564:1"]
+    pub unsafe extern "C" fn silk_max_int(mut a: libc::c_int, mut b: libc::c_int) -> libc::c_int {
+        return if a > b { a } else { b };
+    }
+    use super::opus_types_h::{opus_int16, opus_int32, opus_uint32};
+    extern "C" {
+        #[c2rust::src_loc = "193:1"]
+        pub fn silk_sum_sqr_shift(
+            energy: *mut opus_int32,
+            shift: *mut libc::c_int,
+            x: *const opus_int16,
+            len: libc::c_int,
+        );
+        #[c2rust::src_loc = "377:1"]
+        pub fn silk_inner_prod_aligned_scale(
+            inVec1: *const opus_int16,
+            inVec2: *const opus_int16,
+            scale: libc::c_int,
+            len: libc::c_int,
+        ) -> opus_int32;
+    }
 }
 pub use self::macros_h::silk_CLZ32;
 pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};

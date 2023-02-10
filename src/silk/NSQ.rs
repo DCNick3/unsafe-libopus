@@ -245,18 +245,29 @@ pub mod structs_h {
 #[c2rust::header_src = "/usr/include/string.h:32"]
 pub mod string_h {
     extern "C" {
-        #[c2rust::src_loc = "47:14"]
-        pub fn memmove(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
         #[c2rust::src_loc = "43:14"]
         pub fn memcpy(
             _: *mut libc::c_void,
             _: *const libc::c_void,
             _: libc::c_ulong,
         ) -> *mut libc::c_void;
+        #[c2rust::src_loc = "47:14"]
+        pub fn memmove(
+            _: *mut libc::c_void,
+            _: *const libc::c_void,
+            _: libc::c_ulong,
+        ) -> *mut libc::c_void;
+    }
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
@@ -539,6 +550,7 @@ pub mod NSQ_h {
     }
     use super::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
 }
+use self::arch_h::celt_fatal;
 pub use self::macros_h::silk_CLZ32;
 pub use self::opus_types_h::{
     opus_int16, opus_int32, opus_int64, opus_int8, opus_uint32, opus_uint8,
@@ -633,6 +645,13 @@ pub unsafe extern "C" fn silk_NSQ_c(
                     - lag
                     - (*psEncC).predictLPCOrder
                     - 5 as libc::c_int / 2 as libc::c_int;
+                if !(start_idx > 0 as libc::c_int) {
+                    celt_fatal(
+                        b"assertion failed: start_idx > 0\0" as *const u8 as *const libc::c_char,
+                        b"silk/NSQ.c\0" as *const u8 as *const libc::c_char,
+                        146 as libc::c_int,
+                    );
+                }
                 silk_LPC_analysis_filter(
                     &mut *sLTP.as_mut_ptr().offset(start_idx as isize),
                     &mut *((*NSQ).xq)
@@ -798,6 +817,14 @@ unsafe extern "C" fn silk_noise_shape_quantizer(
         } else {
             LTP_pred_Q13 = 0 as libc::c_int;
         }
+        if !(shapingLPCOrder & 1 as libc::c_int == 0 as libc::c_int) {
+            celt_fatal(
+                b"assertion failed: ( shapingLPCOrder & 1 ) == 0\0" as *const u8
+                    as *const libc::c_char,
+                b"silk/NSQ.c\0" as *const u8 as *const libc::c_char,
+                250 as libc::c_int,
+            );
+        }
         n_AR_Q12 = silk_NSQ_noise_shape_feedback_loop_c(
             &mut (*NSQ).sDiff_shp_Q14,
             ((*NSQ).sAR2_Q14).as_mut_ptr(),
@@ -815,6 +842,14 @@ unsafe extern "C" fn silk_noise_shape_quantizer(
             + ((*NSQ).sLF_AR_shp_Q14 as libc::c_long
                 * (LF_shp_Q14 as opus_int64 >> 16 as libc::c_int)
                 >> 16 as libc::c_int)) as opus_int32;
+        if !(lag > 0 as libc::c_int || signalType != 2 as libc::c_int) {
+            celt_fatal(
+                b"assertion failed: lag > 0 || signalType != TYPE_VOICED\0" as *const u8
+                    as *const libc::c_char,
+                b"silk/NSQ.c\0" as *const u8 as *const libc::c_char,
+                258 as libc::c_int,
+            );
+        }
         tmp1 = ((LPC_pred_Q10 as opus_uint32) << 2 as libc::c_int) as opus_int32 - n_AR_Q12;
         tmp1 = tmp1 - n_LF_Q12;
         if lag > 0 as libc::c_int {

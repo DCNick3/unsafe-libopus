@@ -173,6 +173,17 @@ pub mod structs_h {
     use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
+pub mod arch_h {
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
+}
 #[c2rust::header_src = "/usr/include/string.h:32"]
 pub mod string_h {
     extern "C" {
@@ -219,6 +230,7 @@ pub mod tables_h {
         pub static silk_NLSF_CB_NB_MB: silk_NLSF_CB_struct;
     }
 }
+use self::arch_h::celt_fatal;
 pub use self::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
@@ -245,6 +257,24 @@ pub unsafe extern "C" fn silk_decoder_set_fs(
 ) -> libc::c_int {
     let mut frame_length: libc::c_int = 0;
     let mut ret: libc::c_int = 0 as libc::c_int;
+    if !(fs_kHz == 8 as libc::c_int || fs_kHz == 12 as libc::c_int || fs_kHz == 16 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: fs_kHz == 8 || fs_kHz == 12 || fs_kHz == 16\0" as *const u8
+                as *const libc::c_char,
+            b"silk/decoder_set_fs.c\0" as *const u8 as *const libc::c_char,
+            43 as libc::c_int,
+        );
+    }
+    if !((*psDec).nb_subfr == 4 as libc::c_int
+        || (*psDec).nb_subfr == 4 as libc::c_int / 2 as libc::c_int)
+    {
+        celt_fatal(
+            b"assertion failed: psDec->nb_subfr == MAX_NB_SUBFR || psDec->nb_subfr == MAX_NB_SUBFR/2\0"
+                as *const u8 as *const libc::c_char,
+            b"silk/decoder_set_fs.c\0" as *const u8 as *const libc::c_char,
+            44 as libc::c_int,
+        );
+    }
     (*psDec).subfr_length =
         5 as libc::c_int as opus_int16 as opus_int32 * fs_kHz as opus_int16 as opus_int32;
     frame_length = (*psDec).nb_subfr as opus_int16 as opus_int32
@@ -286,6 +316,12 @@ pub unsafe extern "C" fn silk_decoder_set_fs(
                 (*psDec).pitch_lag_low_bits_iCDF = silk_uniform6_iCDF.as_ptr();
             } else if fs_kHz == 8 as libc::c_int {
                 (*psDec).pitch_lag_low_bits_iCDF = silk_uniform4_iCDF.as_ptr();
+            } else if 0 as libc::c_int == 0 {
+                celt_fatal(
+                    b"assertion failed: 0\0" as *const u8 as *const libc::c_char,
+                    b"silk/decoder_set_fs.c\0" as *const u8 as *const libc::c_char,
+                    89 as libc::c_int,
+                );
             }
             (*psDec).first_frame_after_reset = 1 as libc::c_int;
             (*psDec).lagPrev = 100 as libc::c_int;
@@ -304,6 +340,16 @@ pub unsafe extern "C" fn silk_decoder_set_fs(
         }
         (*psDec).fs_kHz = fs_kHz;
         (*psDec).frame_length = frame_length;
+    }
+    if !((*psDec).frame_length > 0 as libc::c_int
+        && (*psDec).frame_length <= 5 as libc::c_int * 4 as libc::c_int * 16 as libc::c_int)
+    {
+        celt_fatal(
+            b"assertion failed: psDec->frame_length > 0 && psDec->frame_length <= MAX_FRAME_LENGTH\0"
+                as *const u8 as *const libc::c_char,
+            b"silk/decoder_set_fs.c\0" as *const u8 as *const libc::c_char,
+            104 as libc::c_int,
+        );
     }
     return ret;
 }

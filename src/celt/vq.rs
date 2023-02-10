@@ -24,6 +24,14 @@ pub mod arch_h {
     pub type opus_val32 = libc::c_float;
     #[c2rust::src_loc = "184:1"]
     pub type celt_norm = libc::c_float;
+    extern "C" {
+        #[c2rust::src_loc = "63:1"]
+        pub fn celt_fatal(
+            str: *const libc::c_char,
+            file: *const libc::c_char,
+            line: libc::c_int,
+        ) -> !;
+    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:33"]
 pub mod entcode_h {
@@ -114,13 +122,6 @@ pub mod cwrs_h {
     use super::arch_h::opus_val32;
     use super::entcode_h::{ec_dec, ec_enc};
     extern "C" {
-        #[c2rust::src_loc = "44:1"]
-        pub fn encode_pulses(
-            _y: *const libc::c_int,
-            N: libc::c_int,
-            K: libc::c_int,
-            enc: *mut ec_enc,
-        );
         #[c2rust::src_loc = "46:1"]
         pub fn decode_pulses(
             _y: *mut libc::c_int,
@@ -128,6 +129,13 @@ pub mod cwrs_h {
             K: libc::c_int,
             dec: *mut ec_dec,
         ) -> opus_val32;
+        #[c2rust::src_loc = "44:1"]
+        pub fn encode_pulses(
+            _y: *const libc::c_int,
+            N: libc::c_int,
+            K: libc::c_int,
+            enc: *mut ec_enc,
+        );
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/pitch.h:40"]
@@ -150,7 +158,7 @@ pub mod pitch_h {
     }
     use super::arch_h::{opus_val16, opus_val32};
 }
-pub use self::arch_h::{celt_norm, opus_val16, opus_val32};
+pub use self::arch_h::{celt_fatal, celt_norm, opus_val16, opus_val32};
 use self::cwrs_h::{decode_pulses, encode_pulses};
 pub use self::entcode_h::{celt_udiv, ec_ctx, ec_dec, ec_enc, ec_window};
 use self::mathcalls_h::{cos, fabs, floor, sqrt};
@@ -450,6 +458,22 @@ pub unsafe extern "C" fn alg_quant(
 ) -> libc::c_uint {
     let mut yy: opus_val16 = 0.;
     let mut collapse_mask: libc::c_uint = 0;
+    if !(K > 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: K>0\nalg_quant() needs at least one pulse\0" as *const u8
+                as *const libc::c_char,
+            b"celt/vq.c\0" as *const u8 as *const libc::c_char,
+            338 as libc::c_int,
+        );
+    }
+    if !(N > 1 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: N>1\nalg_quant() needs at least two dimensions\0" as *const u8
+                as *const libc::c_char,
+            b"celt/vq.c\0" as *const u8 as *const libc::c_char,
+            339 as libc::c_int,
+        );
+    }
     let vla = (N + 3 as libc::c_int) as usize;
     let mut iy: Vec<libc::c_int> = ::std::vec::from_elem(0, vla);
     exp_rotation(X, N, 1 as libc::c_int, B, K, spread);
@@ -475,6 +499,22 @@ pub unsafe extern "C" fn alg_unquant(
 ) -> libc::c_uint {
     let mut Ryy: opus_val32 = 0.;
     let mut collapse_mask: libc::c_uint = 0;
+    if !(K > 0 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: K>0\nalg_unquant() needs at least one pulse\0" as *const u8
+                as *const libc::c_char,
+            b"celt/vq.c\0" as *const u8 as *const libc::c_char,
+            371 as libc::c_int,
+        );
+    }
+    if !(N > 1 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: N>1\nalg_unquant() needs at least two dimensions\0" as *const u8
+                as *const libc::c_char,
+            b"celt/vq.c\0" as *const u8 as *const libc::c_char,
+            372 as libc::c_int,
+        );
+    }
     let vla = N as usize;
     let mut iy: Vec<libc::c_int> = ::std::vec::from_elem(0, vla);
     Ryy = decode_pulses(iy.as_mut_ptr(), N, K, dec);
