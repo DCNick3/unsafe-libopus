@@ -262,8 +262,6 @@ pub mod structs_FLP_h {
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:32"]
 pub mod mathcalls_h {
     extern "C" {
-        #[c2rust::src_loc = "95:17"]
-        pub fn exp(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "140:17"]
         pub fn pow(_: libc::c_double, _: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "143:13"]
@@ -286,9 +284,8 @@ pub mod SigProc_FLP_h {
     #[inline]
     #[c2rust::src_loc = "150:1"]
     pub unsafe extern "C" fn silk_sigmoid(x: libc::c_float) -> libc::c_float {
-        return (1.0f64 / (1.0f64 + exp(-x as libc::c_double))) as libc::c_float;
+        return (1.0f64 / (1.0f64 + (-x as f64).exp())) as libc::c_float;
     }
-    use super::mathcalls_h::exp;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
 pub mod tables_h {

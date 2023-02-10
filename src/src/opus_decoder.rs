@@ -260,13 +260,6 @@ pub mod xmmintrin_h {
     #[cfg(target_arch = "x86_64")]
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:41"]
-pub mod mathcalls_h {
-    extern "C" {
-        #[c2rust::src_loc = "95:17"]
-        pub fn exp(_: libc::c_double) -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:41"]
 pub mod opus_defines_h {
     #[c2rust::src_loc = "139:9"]
@@ -475,7 +468,6 @@ use self::entdec_h::{ec_dec_bit_logp, ec_dec_init, ec_dec_uint};
 pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::limits_h::CHAR_BIT;
-use self::mathcalls_h::exp;
 pub use self::mdct_h::mdct_lookup;
 pub use self::modes_h::{OpusCustomMode, PulseCache};
 use self::opus_custom_h::{opus_custom_decoder_ctl, OpusCustomDecoder};
@@ -1364,9 +1356,7 @@ unsafe extern "C" fn opus_decode_frame(
     }
     if (*st).decode_gain != 0 {
         let mut gain: opus_val32 = 0.;
-        gain = exp(0.6931471805599453094f64
-            * (6.48814081e-4f32 * (*st).decode_gain as libc::c_float) as libc::c_double)
-            as libc::c_float;
+        gain = (std::f32::consts::LN_2 * (6.48814081e-4f32 * (*st).decode_gain as f32)).exp();
         i = 0 as libc::c_int;
         while i < frame_size * (*st).channels {
             let mut x: opus_val32 = 0.;

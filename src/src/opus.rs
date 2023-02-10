@@ -21,19 +21,11 @@ pub mod opus_defines_h {
     #[c2rust::src_loc = "48:9"]
     pub const OPUS_BAD_ARG: libc::c_int = -(1 as libc::c_int);
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:33"]
-pub mod mathcalls_h {
-    extern "C" {
-        #[c2rust::src_loc = "162:14"]
-        pub fn fabs(_: libc::c_double) -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:33"]
 pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
     pub const NULL: libc::c_int = 0 as libc::c_int;
 }
-use self::mathcalls_h::fabs;
 pub use self::opus_defines_h::{OPUS_BAD_ARG, OPUS_INVALID_PACKET};
 pub use self::stddef_h::NULL;
 pub use self::stdint_intn_h::{int16_t, int32_t};
@@ -108,7 +100,7 @@ pub unsafe extern "C" fn opus_pcm_soft_clip(
                 peak_pos = i;
                 end = i;
                 start = end;
-                maxval = fabs(*x.offset((i * C) as isize) as libc::c_double) as libc::c_float;
+                maxval = (*x.offset((i * C) as isize)).abs();
                 while start > 0 as libc::c_int
                     && *x.offset((i * C) as isize)
                         * *x.offset(((start - 1 as libc::c_int) * C) as isize)
@@ -120,11 +112,8 @@ pub unsafe extern "C" fn opus_pcm_soft_clip(
                     && *x.offset((i * C) as isize) * *x.offset((end * C) as isize)
                         >= 0 as libc::c_int as libc::c_float
                 {
-                    if fabs(*x.offset((end * C) as isize) as libc::c_double) as libc::c_float
-                        > maxval
-                    {
-                        maxval =
-                            fabs(*x.offset((end * C) as isize) as libc::c_double) as libc::c_float;
+                    if (*x.offset((end * C) as isize)).abs() > maxval {
+                        maxval = (*x.offset((end * C) as isize)).abs();
                         peak_pos = end;
                     }
                     end += 1;

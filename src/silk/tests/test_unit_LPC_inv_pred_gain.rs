@@ -122,7 +122,6 @@ pub mod SigProc_FIX_h {
     }
 }
 pub use self::cpu_support_h::opus_select_arch;
-use self::mathcalls_h::fabs;
 pub use self::stddef_h::size_t;
 pub use self::stdint_intn_h::{int16_t, int32_t};
 use self::stdio_h::{fprintf, printf, stderr};
@@ -206,7 +205,7 @@ pub unsafe extern "C" fn check_stability(A_Q12: *mut i16, order: libc::c_int) ->
             let mut amp: libc::c_double = 0 as libc::c_int as libc::c_double;
             j = 0 as libc::c_int;
             while j < order {
-                amp += fabs(y[j as usize]);
+                amp += y[j as usize].abs();
                 j += 1;
             }
             if amp < 0.00001f64 {

@@ -67,8 +67,6 @@ pub mod mathcalls_h {
         pub fn cos(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "143:13"]
         pub fn sqrt(_: libc::c_double) -> libc::c_double;
-        #[c2rust::src_loc = "162:14"]
-        pub fn fabs(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "165:14"]
         pub fn floor(_: libc::c_double) -> libc::c_double;
     }
@@ -169,7 +167,7 @@ pub use self::arch_h::{celt_fatal, celt_norm, opus_val16, opus_val32, EPSILON};
 pub use self::bands_h::SPREAD_NONE;
 use self::cwrs_h::{decode_pulses, encode_pulses};
 pub use self::entcode_h::{celt_udiv, ec_ctx, ec_dec, ec_enc, ec_window};
-use self::mathcalls_h::{cos, fabs, floor, sqrt};
+use self::mathcalls_h::{cos, floor, sqrt};
 pub use self::mathops_h::{cA, cB, cC, cE, fast_atan2f, PI};
 pub use self::pitch_h::celt_inner_prod_c;
 pub use self::stdint_uintn_h::uint32_t;
@@ -345,7 +343,7 @@ pub unsafe extern "C" fn op_pvq_search_c(
     loop {
         *signx.as_mut_ptr().offset(j as isize) =
             (*X.offset(j as isize) < 0 as libc::c_int as libc::c_float) as libc::c_int;
-        *X.offset(j as isize) = fabs(*X.offset(j as isize) as libc::c_double) as libc::c_float;
+        *X.offset(j as isize) = (*X.offset(j as isize)).abs();
         *iy.offset(j as isize) = 0 as libc::c_int;
         *y.as_mut_ptr().offset(j as isize) = 0 as libc::c_int as celt_norm;
         j += 1;

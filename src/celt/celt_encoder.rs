@@ -381,14 +381,10 @@ pub mod stddef_h {
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:38"]
 pub mod mathcalls_h {
     extern "C" {
-        #[c2rust::src_loc = "95:17"]
-        pub fn exp(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "104:17"]
         pub fn log(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "143:13"]
         pub fn sqrt(_: libc::c_double) -> libc::c_double;
-        #[c2rust::src_loc = "162:14"]
-        pub fn fabs(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "165:14"]
         pub fn floor(_: libc::c_double) -> libc::c_double;
     }
@@ -717,7 +713,7 @@ use self::entenc_h::{
 pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::limits_h::CHAR_BIT;
-use self::mathcalls_h::{exp, fabs, floor, log, sqrt};
+use self::mathcalls_h::{floor, log, sqrt};
 pub use self::mathops_h::celt_maxabs16;
 pub use self::mdct_h::{clt_mdct_forward_c, mdct_lookup};
 pub use self::modes_h::{OpusCustomMode, PulseCache};
@@ -1470,7 +1466,7 @@ unsafe extern "C" fn l1_metric(
     L1 = 0 as libc::c_int as opus_val32;
     i = 0 as libc::c_int;
     while i < N {
-        L1 += fabs(*tmp.offset(i as isize) as libc::c_double) as libc::c_float;
+        L1 += (*tmp.offset(i as isize)).abs();
         i += 1;
     }
     L1 = L1 + LM as libc::c_float * bias * L1;
@@ -1864,10 +1860,10 @@ unsafe extern "C" fn alloc_trim_analysis(
             i += 1;
         }
         sum = 1.0f32 / 8 as libc::c_int as libc::c_float * sum;
-        sum = if 1.0f32 < fabs(sum as libc::c_double) as libc::c_float {
+        sum = if 1.0f32 < (sum).abs() {
             1.0f32
         } else {
-            fabs(sum as libc::c_double) as libc::c_float
+            (sum).abs()
         };
         minXC = sum;
         i = 8 as libc::c_int;
@@ -1882,17 +1878,17 @@ unsafe extern "C" fn alloc_trim_analysis(
                     - *((*m).eBands).offset(i as isize) as libc::c_int)
                     << LM,
             );
-            minXC = if minXC < fabs(partial_0 as libc::c_double) as libc::c_float {
+            minXC = if minXC < (partial_0).abs() {
                 minXC
             } else {
-                fabs(partial_0 as libc::c_double) as libc::c_float
+                (partial_0).abs()
             };
             i += 1;
         }
-        minXC = if 1.0f32 < fabs(minXC as libc::c_double) as libc::c_float {
+        minXC = if 1.0f32 < (minXC).abs() {
             1.0f32
         } else {
-            fabs(minXC as libc::c_double) as libc::c_float
+            (minXC).abs()
         };
         logXC = (1.442695040888963387f64 * log((1.001f32 - sum * sum) as libc::c_double))
             as libc::c_float;
@@ -1997,12 +1993,8 @@ unsafe extern "C" fn stereo_analysis(
             R = *X.offset((N0 + j) as isize);
             M = L + R;
             S = L - R;
-            sumLR = sumLR
-                + (fabs(L as libc::c_double) as libc::c_float
-                    + fabs(R as libc::c_double) as libc::c_float);
-            sumMS = sumMS
-                + (fabs(M as libc::c_double) as libc::c_float
-                    + fabs(S as libc::c_double) as libc::c_float);
+            sumLR = sumLR + ((L).abs() + (R).abs());
+            sumMS = sumMS + ((M).abs() + (S).abs());
             j += 1;
         }
         i += 1;
@@ -2409,13 +2401,13 @@ unsafe extern "C" fn dynalloc_analysis(
             *importance.offset(i as isize) = floor(
                 (0.5f32
                     + 13 as libc::c_int as libc::c_float
-                        * exp(0.6931471805599453094f64
+                        * (std::f32::consts::LN_2
                             * (if *follower.as_mut_ptr().offset(i as isize) < 4.0f32 {
                                 *follower.as_mut_ptr().offset(i as isize)
                             } else {
                                 4.0f32
-                            }) as libc::c_double) as libc::c_float)
-                    as libc::c_double,
+                            }))
+                        .exp()) as libc::c_double,
             ) as libc::c_int;
             i += 1;
         }
@@ -2652,7 +2644,7 @@ unsafe extern "C" fn run_prefilter(
         pf_on = 0 as libc::c_int;
         qg = 0 as libc::c_int;
     } else {
-        if (fabs((gain1 - (*st).prefilter_gain) as libc::c_double) as libc::c_float) < 0.1f32 {
+        if ((gain1 - (*st).prefilter_gain).abs()) < 0.1f32 {
             gain1 = (*st).prefilter_gain;
         }
         qg = floor(
@@ -3791,11 +3783,9 @@ pub unsafe extern "C" fn celt_encode_with_ec(
     loop {
         i = start;
         while i < end {
-            if (fabs(
-                (*bandLogE.as_mut_ptr().offset((i + c * nbEBands) as isize)
-                    - *oldBandE.offset((i + c * nbEBands) as isize))
-                    as libc::c_double,
-            ) as libc::c_float)
+            if (*bandLogE.as_mut_ptr().offset((i + c * nbEBands) as isize)
+                - *oldBandE.offset((i + c * nbEBands) as isize))
+            .abs()
                 < 2.0f32
             {
                 let ref mut fresh4 = *bandLogE.as_mut_ptr().offset((i + c * nbEBands) as isize);

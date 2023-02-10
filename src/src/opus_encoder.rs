@@ -839,12 +839,8 @@ pub mod opus_defines_h {
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:33"]
 pub mod mathcalls_h {
     extern "C" {
-        #[c2rust::src_loc = "95:17"]
-        pub fn exp(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "143:13"]
         pub fn sqrt(_: libc::c_double) -> libc::c_double;
-        #[c2rust::src_loc = "162:14"]
-        pub fn fabs(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "165:14"]
         pub fn floor(_: libc::c_double) -> libc::c_double;
     }
@@ -1060,7 +1056,7 @@ use self::entenc_h::{ec_enc_bit_logp, ec_enc_done, ec_enc_init, ec_enc_shrink, e
 pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::limits_h::CHAR_BIT;
-use self::mathcalls_h::{exp, fabs, floor, sqrt};
+use self::mathcalls_h::{floor, sqrt};
 pub use self::mdct_h::mdct_lookup;
 pub use self::modes_h::{OpusCustomMode, PulseCache};
 use self::opus_custom_h::{opus_custom_encoder_ctl, OpusCustomEncoder};
@@ -1941,8 +1937,7 @@ pub unsafe extern "C" fn compute_stereo_width(
             sqrt_xx * sqrt_yy
         };
         corr = (*mem).XY / (1e-15f32 + sqrt_xx * sqrt_yy);
-        ldiff = 1.0f32 * fabs((qrrt_xx - qrrt_yy) as libc::c_double) as libc::c_float
-            / (EPSILON + qrrt_xx + qrrt_yy);
+        ldiff = 1.0f32 * (qrrt_xx - qrrt_yy).abs() / (EPSILON + qrrt_xx + qrrt_yy);
         width = sqrt((1.0f32 - corr * corr) as libc::c_double) as libc::c_float * ldiff;
         (*mem).smoothed_width += (width - (*mem).smoothed_width) / frame_rate as libc::c_float;
         (*mem).max_follower = if (*mem).max_follower - 0.02f32 / frame_rate as libc::c_float
@@ -3138,10 +3133,7 @@ pub unsafe extern "C" fn opus_encode_native(
             if ((*st).energy_masking).is_null() {
                 celt_rate = total_bitRate - (*st).silk_mode.bitRate;
                 HB_gain = Q15ONE
-                    - exp(0.6931471805599453094f64
-                        * (-celt_rate as libc::c_float
-                            * (1.0f32 / 1024 as libc::c_int as libc::c_float))
-                            as libc::c_double) as libc::c_float;
+                    - (std::f32::consts::LN_2 * (-celt_rate as f32 * (1.0f32 / 1024f32))).exp();
             }
         } else {
             (*st).silk_mode.bitRate = total_bitRate;

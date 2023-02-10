@@ -171,8 +171,6 @@ pub mod entcode_h {
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:34"]
 pub mod mathcalls_h {
     extern "C" {
-        #[c2rust::src_loc = "95:17"]
-        pub fn exp(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "143:13"]
         pub fn sqrt(_: libc::c_double) -> libc::c_double;
     }
@@ -466,7 +464,7 @@ use self::entenc_h::{ec_enc_bit_logp, ec_enc_bits, ec_enc_uint, ec_encode};
 pub use self::internal::__CHAR_BIT__;
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::limits_h::CHAR_BIT;
-use self::mathcalls_h::{exp, sqrt};
+use self::mathcalls_h::sqrt;
 use self::mathops_h::isqrt32;
 pub use self::mdct_h::mdct_lookup;
 pub use self::modes_h::{OpusCustomMode, PulseCache};
@@ -728,10 +726,8 @@ pub unsafe extern "C" fn denormalise_bands(
         j = M * *eBands.offset(i as isize) as libc::c_int;
         band_end = M * *eBands.offset((i + 1 as libc::c_int) as isize) as libc::c_int;
         lg = *bandLogE.offset(i as isize) + eMeans[i as usize];
-        g =
-            exp(0.6931471805599453094f64
-                * (if 32.0f32 < lg { 32.0f32 } else { lg }) as libc::c_double)
-                as libc::c_float;
+        g = (std::f32::consts::LN_2 * (if 32.0 < lg { 32.0f32 } else { lg })).exp()
+            as libc::c_float;
         loop {
             let fresh1 = x;
             x = x.offset(1);
@@ -794,9 +790,7 @@ pub unsafe extern "C" fn anti_collapse(
             (*((*m).eBands).offset((i + 1 as libc::c_int) as isize) as libc::c_int
                 - *((*m).eBands).offset(i as isize) as libc::c_int) as u32,
         ) >> LM) as libc::c_int;
-        thresh = 0.5f32
-            * exp(0.6931471805599453094f64 * (-0.125f32 * depth as libc::c_float) as libc::c_double)
-                as libc::c_float;
+        thresh = 0.5f32 * (std::f32::consts::LN_2 * (-0.125f32 * depth as libc::c_float)).exp();
         sqrt_1 = 1.0f32 / sqrt((N0 << LM) as libc::c_double) as libc::c_float;
         c = 0 as libc::c_int;
         loop {
@@ -827,7 +821,7 @@ pub unsafe extern "C" fn anti_collapse(
             } else {
                 Ediff
             };
-            r = 2.0f32 * exp(0.6931471805599453094f64 * -Ediff as libc::c_double) as libc::c_float;
+            r = 2.0f32 * (std::f32::consts::LN_2 * -Ediff).exp();
             if LM == 3 as libc::c_int {
                 r *= 1.41421356f32;
             }

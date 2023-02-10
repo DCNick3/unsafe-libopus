@@ -293,8 +293,6 @@ pub mod mathcalls_h {
         pub fn log10(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "143:13"]
         pub fn sqrt(_: libc::c_double) -> libc::c_double;
-        #[c2rust::src_loc = "162:14"]
-        pub fn fabs(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "165:14"]
         pub fn floor(_: libc::c_double) -> libc::c_double;
     }
@@ -392,7 +390,7 @@ pub use self::kiss_fft_h::{
     arch_fft_state, kiss_fft_cpx, kiss_fft_state, kiss_twiddle_cpx, opus_fft_c,
 };
 pub use self::math_h::M_PI;
-use self::mathcalls_h::{fabs, floor, log, log10, sqrt};
+use self::mathcalls_h::{floor, log, log10, sqrt};
 pub use self::mathops_h::{cA, cB, cC, cE, fast_atan2f, PI};
 pub use self::mdct_h::mdct_lookup;
 pub use self::mlp_h::{compute_dense, compute_gru, layer0, layer1, layer2, DenseLayer, GRULayer};
@@ -1405,11 +1403,11 @@ unsafe extern "C" fn tonality_analysis(
         d_angle2 = angle2 - angle;
         d2_angle2 = d_angle2 - d_angle;
         mod1 = d2_angle - float2int(d2_angle) as libc::c_float;
-        noisiness[i as usize] = fabs(mod1 as libc::c_double) as libc::c_float;
+        noisiness[i as usize] = (mod1).abs();
         mod1 *= mod1;
         mod1 *= mod1;
         mod2 = d2_angle2 - float2int(d2_angle2) as libc::c_float;
-        noisiness[i as usize] += fabs(mod2 as libc::c_double) as libc::c_float;
+        noisiness[i as usize] += (mod2).abs();
         mod2 *= mod2;
         mod2 *= mod2;
         avg_mod =
