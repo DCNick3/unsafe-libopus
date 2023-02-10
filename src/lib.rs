@@ -170,7 +170,6 @@ mod src {
     pub mod opus_projection_decoder;
     pub mod opus_projection_encoder;
     pub mod repacketizer;
-    pub mod repacketizer_demo;
 } // mod src
 
 // TODO: copy over the docs

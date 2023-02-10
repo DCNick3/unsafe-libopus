@@ -1,3 +1,17 @@
+#![allow(dead_code)]
+#![allow(mutable_transmutes)]
+#![allow(non_camel_case_types)]
+#![allow(non_snake_case)]
+#![allow(non_upper_case_globals)]
+#![allow(unused_assignments)]
+#![allow(unused_mut)]
+#![feature(c_variadic)]
+#![feature(extern_types)]
+#![feature(label_break_value)]
+#![feature(register_tool)]
+#![feature(stdsimd)]
+#![register_tool(c2rust)]
+
 use ::libc;
 #[c2rust::header_src = "/usr/include/bits/types.h:32"]
 pub mod types_h {
@@ -30,40 +44,6 @@ pub mod opus_types_h {
     pub type opus_uint32 = uint32_t;
     use super::stdint_intn_h::int32_t;
     use super::stdint_uintn_h::uint32_t;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus.h:32"]
-pub mod opus_h {
-    use super::opus_types_h::opus_int32;
-    extern "C" {
-        #[c2rust::src_loc = "754:16"]
-        pub type OpusRepacketizer;
-        #[c2rust::src_loc = "778:1"]
-        pub fn opus_repacketizer_init(rp: *mut OpusRepacketizer) -> *mut OpusRepacketizer;
-        #[c2rust::src_loc = "783:1"]
-        pub fn opus_repacketizer_create() -> *mut OpusRepacketizer;
-        #[c2rust::src_loc = "838:1"]
-        pub fn opus_repacketizer_cat(
-            rp: *mut OpusRepacketizer,
-            data: *const libc::c_uchar,
-            len: opus_int32,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "872:1"]
-        pub fn opus_repacketizer_out_range(
-            rp: *mut OpusRepacketizer,
-            begin: libc::c_int,
-            end: libc::c_int,
-            data: *mut libc::c_uchar,
-            maxlen: opus_int32,
-        ) -> opus_int32;
-        #[c2rust::src_loc = "884:1"]
-        pub fn opus_repacketizer_get_nb_frames(rp: *mut OpusRepacketizer) -> libc::c_int;
-        #[c2rust::src_loc = "915:1"]
-        pub fn opus_repacketizer_out(
-            rp: *mut OpusRepacketizer,
-            data: *mut libc::c_uchar,
-            maxlen: opus_int32,
-        ) -> opus_int32;
-    }
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:33"]
 pub mod stddef_h {
@@ -125,13 +105,6 @@ pub mod FILE_h {
     pub type FILE = _IO_FILE;
     use super::struct_FILE_h::_IO_FILE;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:32"]
-pub mod opus_defines_h {
-    extern "C" {
-        #[c2rust::src_loc = "782:1"]
-        pub fn opus_strerror(error: libc::c_int) -> *const libc::c_char;
-    }
-}
 #[c2rust::header_src = "/usr/include/stdio.h:33"]
 pub mod stdio_h {
     use super::FILE_h::FILE;
@@ -189,21 +162,16 @@ pub mod string_h {
         pub fn strcmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
     }
 }
-use self::opus_defines_h::opus_strerror;
-use self::opus_h::{
-    opus_repacketizer_cat, opus_repacketizer_create, opus_repacketizer_get_nb_frames,
-    opus_repacketizer_init, opus_repacketizer_out, opus_repacketizer_out_range, OpusRepacketizer,
-};
-pub use self::opus_types_h::{opus_int32, opus_uint32};
-pub use self::stddef_h::size_t;
-pub use self::stdint_intn_h::int32_t;
-pub use self::stdint_uintn_h::uint32_t;
+pub use self::opus_types_h::opus_uint32;
 use self::stdio_h::{fclose, feof, fopen, fprintf, fread, fwrite, stderr};
-pub use self::stdlib_h::{atoi, strtol};
+pub use self::stdlib_h::atoi;
 use self::string_h::strcmp;
-pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
-pub use self::types_h::{__int32_t, __off64_t, __off_t, __uint32_t};
 pub use self::FILE_h::FILE;
+use libopus_unsafe::{
+    opus_repacketizer_cat, opus_repacketizer_create, opus_repacketizer_get_nb_frames,
+    opus_repacketizer_init, opus_repacketizer_out, opus_repacketizer_out_range, opus_strerror,
+    OpusRepacketizer,
+};
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn usage(mut argv0: *mut libc::c_char) {
