@@ -284,15 +284,6 @@ pub mod math_h {
     #[c2rust::src_loc = "1151:10"]
     pub const M_PI: libc::c_double = 3.14159265358979323846f64;
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:36"]
-pub mod mathcalls_h {
-    extern "C" {
-        #[c2rust::src_loc = "104:17"]
-        pub fn log(_: libc::c_double) -> libc::c_double;
-        #[c2rust::src_loc = "107:17"]
-        pub fn log10(_: libc::c_double) -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/usr/include/string.h:36"]
 pub mod string_h {
     extern "C" {
@@ -386,7 +377,6 @@ pub use self::kiss_fft_h::{
     arch_fft_state, kiss_fft_cpx, kiss_fft_state, kiss_twiddle_cpx, opus_fft_c,
 };
 pub use self::math_h::M_PI;
-use self::mathcalls_h::{log, log10};
 pub use self::mathops_h::{cA, cB, cC, cE, fast_atan2f, PI};
 pub use self::mdct_h::mdct_lookup;
 pub use self::mlp_h::{compute_dense, compute_gru, layer0, layer1, layer2, DenseLayer, GRULayer};
@@ -1472,8 +1462,7 @@ unsafe extern "C" fn tonality_analysis(
         i += 1;
     }
     E = E;
-    band_log2[0 as libc::c_int as usize] =
-        0.5f32 * 1.442695f32 * log((E + 1e-10f32) as libc::c_double) as libc::c_float;
+    band_log2[0 as libc::c_int as usize] = 0.5f32 * std::f32::consts::LOG2_E * (E + 1e-10f32).ln();
     b = 0 as libc::c_int;
     while b < NB_TBANDS {
         let mut E_0: libc::c_float = 0 as libc::c_int as libc::c_float;
@@ -1506,9 +1495,9 @@ unsafe extern "C" fn tonality_analysis(
         (*tonal).E[(*tonal).E_count as usize][b as usize] = E_0;
         frame_noisiness += nE / (1e-15f32 + E_0);
         frame_loudness += (E_0 + 1e-10f32).sqrt();
-        logE[b as usize] = log((E_0 + 1e-10f32) as libc::c_double) as libc::c_float;
+        logE[b as usize] = (E_0 + 1e-10f32).ln();
         band_log2[(b + 1 as libc::c_int) as usize] =
-            0.5f32 * 1.442695f32 * log((E_0 + 1e-10f32) as libc::c_double) as libc::c_float;
+            0.5f32 * std::f32::consts::LOG2_E * (E_0 + 1e-10f32).ln();
         (*tonal).logE[(*tonal).E_count as usize][b as usize] = logE[b as usize];
         if (*tonal).count == 0 as libc::c_int {
             (*tonal).lowE[b as usize] = logE[b as usize];
@@ -1811,8 +1800,7 @@ unsafe extern "C" fn tonality_analysis(
     if (*tonal).count <= 2 as libc::c_int {
         bandwidth = 20 as libc::c_int;
     }
-    frame_loudness = 20 as libc::c_int as libc::c_float
-        * log10(frame_loudness as libc::c_double) as libc::c_float;
+    frame_loudness = 20 as libc::c_int as libc::c_float * frame_loudness.log10();
     (*tonal).Etracker = if (*tonal).Etracker - 0.003f32 > frame_loudness {
         (*tonal).Etracker - 0.003f32
     } else {

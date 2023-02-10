@@ -114,12 +114,6 @@ pub mod stdlib_h {
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:30"]
 pub mod mathcalls_h {
     extern "C" {
-        #[c2rust::src_loc = "62:17"]
-        pub fn cos(_: libc::c_double) -> libc::c_double;
-        #[c2rust::src_loc = "64:17"]
-        pub fn sin(_: libc::c_double) -> libc::c_double;
-        #[c2rust::src_loc = "104:17"]
-        pub fn log(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "140:17"]
         pub fn pow(_: libc::c_double, _: libc::c_double) -> libc::c_double;
     }
@@ -131,7 +125,7 @@ pub mod string_h {
         pub fn strcmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
     }
 }
-use self::mathcalls_h::{cos, log, pow, sin};
+use self::mathcalls_h::pow;
 pub use self::stddef_h::size_t;
 use self::stdio_h::{fclose, fopen, fprintf, fread, stderr};
 pub use self::stdlib_h::{atoi, exit, strtol};
@@ -270,26 +264,17 @@ unsafe extern "C" fn band_energy(
     xj = 0 as libc::c_int;
     while xj < _window_sz {
         *window.offset(xj as isize) = 0.5f32
-            - 0.5f32
-                * cos((2 as libc::c_int as libc::c_float * 3.14159265f32
-                    / (_window_sz - 1 as libc::c_int) as libc::c_float
-                    * xj as libc::c_float) as libc::c_double) as libc::c_float;
+            - 0.5f32 * (2.0 * std::f32::consts::PI / (_window_sz - 1) as f32 * xj as f32).cos();
         xj += 1;
     }
     xj = 0 as libc::c_int;
     while xj < _window_sz {
-        *c.offset(xj as isize) = cos((2 as libc::c_int as libc::c_float * 3.14159265f32
-            / _window_sz as libc::c_float
-            * xj as libc::c_float) as libc::c_double)
-            as libc::c_float;
+        *c.offset(xj as isize) = (2.0 * std::f32::consts::PI / _window_sz as f32 * xj as f32).cos();
         xj += 1;
     }
     xj = 0 as libc::c_int;
     while xj < _window_sz {
-        *s.offset(xj as isize) = sin((2 as libc::c_int as libc::c_float * 3.14159265f32
-            / _window_sz as libc::c_float
-            * xj as libc::c_float) as libc::c_double)
-            as libc::c_float;
+        *s.offset(xj as isize) = (2.0 * std::f32::consts::PI / _window_sz as f32 * xj as f32).sin();
         xj += 1;
     }
     xi = 0 as libc::c_int as size_t;
@@ -827,10 +812,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *const libc::c_char) ->
                             .wrapping_mul(nchannels as libc::c_ulong)
                             .wrapping_add(ci as libc::c_ulong) as isize,
                     );
-                    im = (re as libc::c_double
-                        - log(re as libc::c_double)
-                        - 1 as libc::c_int as libc::c_double)
-                        as libc::c_float;
+                    im = re - re.ln() - 1.0;
                     if xj >= 79 as libc::c_int && xj <= 81 as libc::c_int {
                         im *= 0.1f32;
                     }
@@ -859,10 +841,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *const libc::c_char) ->
         err / nframes as libc::c_double,
         1.0f64 / 16 as libc::c_int as libc::c_double,
     );
-    Q = (100 as libc::c_int as libc::c_double
-        * (1 as libc::c_int as libc::c_double
-            - 0.5f64 * log(1 as libc::c_int as libc::c_double + err) / log(1.13f64)))
-        as libc::c_float;
+    Q = (100.0 * (1.0 - 0.5 * (1.0 + err).ln() / 1.13f64.ln())) as f32;
     if Q < 0 as libc::c_int as libc::c_float {
         fprintf(
             stderr,

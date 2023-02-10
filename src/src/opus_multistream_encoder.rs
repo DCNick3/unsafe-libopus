@@ -457,13 +457,6 @@ pub mod opus_defines_h {
     #[c2rust::src_loc = "52:9"]
     pub const OPUS_INTERNAL_ERROR: libc::c_int = -(3 as libc::c_int);
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:34"]
-pub mod mathcalls_h {
-    extern "C" {
-        #[c2rust::src_loc = "104:17"]
-        pub fn log(_: libc::c_double) -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/celt.h:34"]
 pub mod celt_h {
     #[c2rust::src_loc = "110:9"]
@@ -577,7 +570,6 @@ pub use self::celt_h::{
 };
 pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
-use self::mathcalls_h::log;
 pub use self::mdct_h::{clt_mdct_forward_c, mdct_lookup};
 pub use self::modes_h::{OpusCustomMode, PulseCache};
 pub use self::opus_defines_h::{
@@ -1184,10 +1176,7 @@ pub unsafe extern "C" fn surround_analysis(
         };
         i += 1;
     }
-    channel_offset = 0.5f32
-        * (1.442695040888963387f64
-            * log((2.0f32 / (channels - 1 as libc::c_int) as libc::c_float) as libc::c_double))
-            as libc::c_float;
+    channel_offset = 0.5f32 * (std::f32::consts::LOG2_E * (2.0f32 / (channels - 1) as f32).ln());
     c = 0 as libc::c_int;
     while c < 3 as libc::c_int {
         i = 0 as libc::c_int;

@@ -155,13 +155,6 @@ pub mod entcode_h {
         pub fn ec_tell_frac(_this: *mut ec_ctx) -> u32;
     }
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:33"]
-pub mod mathcalls_h {
-    extern "C" {
-        #[c2rust::src_loc = "104:17"]
-        pub fn log(_: libc::c_double) -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:33"]
 pub mod limits_h {
     #[c2rust::src_loc = "63:9"]
@@ -271,7 +264,6 @@ pub use self::internal::__CHAR_BIT__;
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 use self::laplace_h::{ec_laplace_decode, ec_laplace_encode};
 pub use self::limits_h::CHAR_BIT;
-use self::mathcalls_h::log;
 pub use self::mdct_h::mdct_lookup;
 pub use self::modes_h::{OpusCustomMode, PulseCache};
 pub use self::rate_h::MAX_FINE_BITS;
@@ -1412,9 +1404,8 @@ pub unsafe extern "C" fn amp2Log2(
     loop {
         i = 0 as libc::c_int;
         while i < effEnd {
-            *bandLogE.offset((i + c * (*m).nbEBands) as isize) = (1.442695040888963387f64
-                * log(*bandE.offset((i + c * (*m).nbEBands) as isize) as libc::c_double))
-                as libc::c_float
+            *bandLogE.offset((i + c * (*m).nbEBands) as isize) = (std::f32::consts::LOG2_E
+                * (*bandE.offset((i + c * (*m).nbEBands) as isize)).ln())
                 - eMeans[i as usize];
             i += 1;
         }

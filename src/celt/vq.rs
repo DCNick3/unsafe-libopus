@@ -60,13 +60,6 @@ pub mod entcode_h {
         return n.wrapping_div(d);
     }
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:33"]
-pub mod mathcalls_h {
-    extern "C" {
-        #[c2rust::src_loc = "62:17"]
-        pub fn cos(_: libc::c_double) -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.h:33"]
 pub mod mathops_h {
     #[c2rust::src_loc = "50:9"]
@@ -163,7 +156,6 @@ pub use self::arch_h::{celt_fatal, celt_norm, opus_val16, opus_val32, EPSILON};
 pub use self::bands_h::SPREAD_NONE;
 use self::cwrs_h::{decode_pulses, encode_pulses};
 pub use self::entcode_h::{celt_udiv, ec_ctx, ec_dec, ec_enc, ec_window};
-use self::mathcalls_h::cos;
 pub use self::mathops_h::{cA, cB, cC, cE, fast_atan2f, PI};
 pub use self::pitch_h::celt_inner_prod_c;
 pub use self::stdint_uintn_h::uint32_t;
@@ -233,8 +225,8 @@ pub unsafe extern "C" fn exp_rotation(
     factor = SPREAD_FACTOR[(spread - 1 as libc::c_int) as usize];
     gain = 1.0f32 * len as opus_val32 / (len + factor * K) as opus_val32;
     theta = 0.5f32 * (gain * gain);
-    c = cos((0.5f32 * PI * theta) as libc::c_double) as libc::c_float;
-    s = cos((0.5f32 * PI * (1.0f32 - theta)) as libc::c_double) as libc::c_float;
+    c = (0.5f32 * PI * theta).cos();
+    s = (0.5f32 * PI * (1.0f32 - theta)).cos();
     if len >= 8 as libc::c_int * stride {
         stride2 = 1 as libc::c_int;
         while (stride2 * stride2 + stride2) * stride + (stride >> 2 as libc::c_int) < len {

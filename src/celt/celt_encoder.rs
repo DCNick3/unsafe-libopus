@@ -378,13 +378,6 @@ pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
     pub const NULL: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:38"]
-pub mod mathcalls_h {
-    extern "C" {
-        #[c2rust::src_loc = "104:17"]
-        pub fn log(_: libc::c_double) -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:40"]
 pub mod limits_h {
     #[c2rust::src_loc = "63:9"]
@@ -709,7 +702,6 @@ use self::entenc_h::{
 pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::limits_h::CHAR_BIT;
-use self::mathcalls_h::log;
 pub use self::mathops_h::celt_maxabs16;
 pub use self::mdct_h::{clt_mdct_forward_c, mdct_lookup};
 pub use self::modes_h::{OpusCustomMode, PulseCache};
@@ -1862,16 +1854,11 @@ unsafe extern "C" fn alloc_trim_analysis(
         } else {
             (minXC).abs()
         };
-        logXC = (1.442695040888963387f64 * log((1.001f32 - sum * sum) as libc::c_double))
-            as libc::c_float;
-        logXC2 = if 0.5f32 * logXC
-            > (1.442695040888963387f64 * log((1.001f32 - minXC * minXC) as libc::c_double))
-                as libc::c_float
-        {
+        logXC = std::f32::consts::LOG2_E * (1.001f32 - sum * sum).ln();
+        logXC2 = if 0.5f32 * logXC > std::f32::consts::LOG2_E * (1.001f32 - minXC * minXC).ln() {
             0.5f32 * logXC
         } else {
-            (1.442695040888963387f64 * log((1.001f32 - minXC * minXC) as libc::c_double))
-                as libc::c_float
+            std::f32::consts::LOG2_E * (1.001f32 - minXC * minXC).ln()
         };
         trim += if -4.0f32 > 0.75f32 * logXC {
             -4.0f32
