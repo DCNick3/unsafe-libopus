@@ -9,20 +9,6 @@ pub mod arch_h {
     pub type opus_val64 = libc::c_float;
 }
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:39"]
-pub mod mdct_h {
-    use crate::celt::kiss_fft::kiss_fft_state;
-
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "49:9"]
-    pub struct mdct_lookup {
-        pub n: libc::c_int,
-        pub maxshift: libc::c_int,
-        pub kfft: [*const kiss_fft_state; 4],
-        pub trig: *const libc::c_float,
-    }
-}
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "55:9"]
@@ -229,7 +215,6 @@ pub use self::cpu_support_h::opus_select_arch;
 pub use self::float_cast_h::float2int;
 pub use self::math_h::M_PI;
 pub use self::mathops_h::{cA, cB, cC, cE, fast_atan2f, PI};
-pub use self::mdct_h::mdct_lookup;
 pub use self::mlp_h::{compute_dense, compute_gru, layer0, layer1, layer2, DenseLayer, GRULayer};
 pub use self::stddef_h::NULL;
 use crate::celt::celt::celt_fatal;

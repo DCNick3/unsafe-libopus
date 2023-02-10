@@ -92,7 +92,7 @@ pub mod modes_h {
         pub caps: *const libc::c_uchar,
     }
     use super::arch_h::opus_val16;
-    use super::mdct_h::mdct_lookup;
+    use crate::celt::mdct::mdct_lookup;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:37"]
 pub mod mdct_h {
@@ -177,10 +177,10 @@ pub use self::kiss_fft_h::{
     arch_fft_state, kiss_fft_cpx, kiss_fft_state, kiss_twiddle_cpx, opus_fft_c, opus_ifft_c,
 };
 use self::mathcalls_h::{cos, log10, sin};
-pub use self::mdct_h::mdct_lookup;
 pub use self::modes_h::{OpusCustomMode, PulseCache};
 use self::opus_custom_h::opus_custom_mode_create;
 pub use self::stddef_h::size_t;
+use crate::celt::mdct::mdct_lookup;
 
 use self::stdio_h::printf;
 pub use self::stdlib_h::{atoi, free, malloc, rand, strtol};

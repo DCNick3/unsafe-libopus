@@ -36,20 +36,6 @@ pub mod opus_custom_h {
         ) -> libc::c_int;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:35"]
-pub mod mdct_h {
-    use crate::celt::kiss_fft::kiss_fft_state;
-
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "49:9"]
-    pub struct mdct_lookup {
-        pub n: libc::c_int,
-        pub maxshift: libc::c_int,
-        pub kfft: [*const kiss_fft_state; 4],
-        pub trig: *const libc::c_float,
-    }
-}
 
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
 pub mod arch_h {
@@ -785,7 +771,6 @@ pub use self::entcode_h::{ec_ctx, ec_enc, ec_tell, ec_window};
 use self::entenc_h::{ec_enc_bit_logp, ec_enc_done, ec_enc_init, ec_enc_shrink, ec_enc_uint};
 pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
 pub use self::limits_h::CHAR_BIT;
-pub use self::mdct_h::mdct_lookup;
 use self::opus_custom_h::{opus_custom_encoder_ctl, OpusCustomEncoder};
 pub use self::opus_defines_h::{
     OPUS_ALLOC_FAIL, OPUS_APPLICATION_AUDIO, OPUS_APPLICATION_RESTRICTED_LOWDELAY,

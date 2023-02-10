@@ -31,22 +31,9 @@ pub mod modes_h {
         pub caps: *const libc::c_uchar,
     }
     use super::arch_h::opus_val16;
-    use super::mdct_h::mdct_lookup;
+    use crate::celt::mdct::mdct_lookup;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:34"]
-pub mod mdct_h {
-    use crate::celt::kiss_fft::kiss_fft_state;
 
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "49:9"]
-    pub struct mdct_lookup {
-        pub n: libc::c_int,
-        pub maxshift: libc::c_int,
-        pub kfft: [*const kiss_fft_state; 4],
-        pub trig: *const libc::c_float,
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:34"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
@@ -114,7 +101,6 @@ pub use self::arch_h::opus_val16;
 pub use self::entcode_h::{celt_udiv, ec_ctx, ec_dec, ec_enc, ec_window, BITRES};
 use self::entdec_h::{ec_dec_bit_logp, ec_dec_uint};
 use self::entenc_h::{ec_enc_bit_logp, ec_enc_uint};
-pub use self::mdct_h::mdct_lookup;
 pub use self::modes_h::{OpusCustomMode, PulseCache};
 pub use self::rate_h::FINE_OFFSET;
 use crate::celt::celt::celt_fatal;

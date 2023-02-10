@@ -109,7 +109,7 @@ pub mod modes_h {
         pub caps: *const libc::c_uchar,
     }
     use super::arch_h::opus_val16;
-    use super::mdct_h::mdct_lookup;
+    use crate::celt::mdct::mdct_lookup;
 }
 #[c2rust::header_src = "/usr/include/stdio.h:32"]
 pub mod stdio_h {

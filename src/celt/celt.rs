@@ -27,20 +27,6 @@ pub mod arch_h {
     }
 }
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:37"]
-pub mod mdct_h {
-    use crate::celt::kiss_fft::kiss_fft_state;
-
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "49:9"]
-    pub struct mdct_lookup {
-        pub n: libc::c_int,
-        pub maxshift: libc::c_int,
-        pub kfft: [*const kiss_fft_state; 4],
-        pub trig: *const libc::c_float,
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/modes.h:40"]
 pub mod modes_h {
     #[derive(Copy, Clone)]
@@ -73,10 +59,9 @@ pub mod modes_h {
         pub caps: *const libc::c_uchar,
     }
     use super::arch_h::opus_val16;
-    use super::mdct_h::mdct_lookup;
+    use crate::celt::mdct::mdct_lookup;
 }
 pub use self::arch_h::{celt_fatal, opus_val16, opus_val32};
-pub use self::mdct_h::mdct_lookup;
 pub use self::modes_h::{OpusCustomMode, PulseCache};
 pub use self::stddef_h::size_t;
 

@@ -49,23 +49,11 @@ pub mod modes_h {
         pub bits: *const libc::c_uchar,
         pub caps: *const libc::c_uchar,
     }
-    use super::arch_h::opus_val16;
-    use super::mdct_h::mdct_lookup;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:35"]
-pub mod mdct_h {
-    use crate::celt::kiss_fft::kiss_fft_state;
 
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "49:9"]
-    pub struct mdct_lookup {
-        pub n: libc::c_int,
-        pub maxshift: libc::c_int,
-        pub kfft: [*const kiss_fft_state; 4],
-        pub trig: *const libc::c_float,
-    }
+    use super::arch_h::opus_val16;
+    use crate::celt::mdct::mdct_lookup;
 }
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:35"]
 pub mod entcode_h {
     #[c2rust::src_loc = "45:1"]
@@ -383,7 +371,6 @@ use self::entenc_h::{ec_enc_bit_logp, ec_enc_bits, ec_enc_uint, ec_encode};
 pub use self::internal::__CHAR_BIT__;
 pub use self::limits_h::CHAR_BIT;
 use self::mathops_h::isqrt32;
-pub use self::mdct_h::mdct_lookup;
 pub use self::modes_h::{OpusCustomMode, PulseCache};
 pub use self::pitch_h::{celt_inner_prod_c, dual_inner_prod_c};
 use self::quant_bands_h::eMeans;

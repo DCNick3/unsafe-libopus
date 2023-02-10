@@ -40,34 +40,7 @@ pub mod arch_h {
     #[c2rust::src_loc = "57:9"]
     pub const CELT_SIG_SCALE: libc::c_float = 32768.0f32;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:38"]
-pub mod mdct_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "49:9"]
-    pub struct mdct_lookup {
-        pub n: libc::c_int,
-        pub maxshift: libc::c_int,
-        pub kfft: [*const kiss_fft_state; 4],
-        pub trig: *const libc::c_float,
-    }
 
-    use super::arch_h::opus_val16;
-    use crate::celt::kiss_fft::kiss_fft_state;
-    extern "C" {
-        #[c2rust::src_loc = "72:1"]
-        pub fn clt_mdct_backward_c(
-            l: *const mdct_lookup,
-            in_0: *mut libc::c_float,
-            out: *mut libc::c_float,
-            window: *const opus_val16,
-            overlap: libc::c_int,
-            shift: libc::c_int,
-            stride: libc::c_int,
-            arch: libc::c_int,
-        );
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/modes.h:41"]
 pub mod modes_h {
     #[derive(Copy, Clone)]
@@ -101,8 +74,9 @@ pub mod modes_h {
     }
     #[c2rust::src_loc = "40:9"]
     pub const MAX_PERIOD: libc::c_int = 1024 as libc::c_int;
+
     use super::arch_h::opus_val16;
-    use super::mdct_h::mdct_lookup;
+    use crate::celt::mdct::mdct_lookup;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:40"]
 pub mod entcode_h {
@@ -531,7 +505,6 @@ pub use self::entcode_h::{ec_ctx, ec_dec, ec_get_error, ec_tell, ec_tell_frac, e
 use self::entdec_h::{ec_dec_bit_logp, ec_dec_bits, ec_dec_icdf, ec_dec_init, ec_dec_uint};
 pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
 pub use self::limits_h::CHAR_BIT;
-pub use self::mdct_h::{clt_mdct_backward_c, mdct_lookup};
 pub use self::modes_h::{OpusCustomMode, PulseCache, MAX_PERIOD};
 use self::opus_custom_h::opus_custom_mode_create;
 pub use self::opus_defines_h::{
@@ -545,6 +518,7 @@ use self::rate_h::clt_compute_allocation;
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::NULL;
 use crate::celt::celt::celt_fatal;
+use crate::celt::mdct::clt_mdct_backward_c;
 
 use self::vq_h::renormalise_vector;
 use crate::externs::{memcpy, memmove, memset};

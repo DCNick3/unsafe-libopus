@@ -203,36 +203,9 @@ pub mod modes_h {
         pub caps: *const libc::c_uchar,
     }
     use super::arch_h::opus_val16;
-    use super::mdct_h::mdct_lookup;
+    use crate::celt::mdct::mdct_lookup;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:40"]
-pub mod mdct_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "49:9"]
-    pub struct mdct_lookup {
-        pub n: libc::c_int,
-        pub maxshift: libc::c_int,
-        pub kfft: [*const kiss_fft_state; 4],
-        pub trig: *const libc::c_float,
-    }
 
-    use super::arch_h::opus_val16;
-    use crate::celt::kiss_fft::kiss_fft_state;
-    extern "C" {
-        #[c2rust::src_loc = "65:1"]
-        pub fn clt_mdct_forward_c(
-            l: *const mdct_lookup,
-            in_0: *mut libc::c_float,
-            out: *mut libc::c_float,
-            window: *const opus_val16,
-            overlap: libc::c_int,
-            shift: libc::c_int,
-            stride: libc::c_int,
-            arch: libc::c_int,
-        );
-    }
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stdarg.h:34"]
 pub mod stdarg_h {
     #[c2rust::src_loc = "14:1"]
@@ -434,7 +407,6 @@ pub use self::celt_h::{
     OPUS_SET_LFE_REQUEST,
 };
 pub use self::internal::{__builtin_va_list, __va_list_tag};
-pub use self::mdct_h::{clt_mdct_forward_c, mdct_lookup};
 pub use self::modes_h::{OpusCustomMode, PulseCache};
 pub use self::opus_defines_h::{
     OPUS_ALLOC_FAIL, OPUS_AUTO, OPUS_BAD_ARG, OPUS_BITRATE_MAX, OPUS_BUFFER_TOO_SMALL,
@@ -471,6 +443,7 @@ pub use self::cpu_support_h::opus_select_arch;
 use self::mathops_h::isqrt32;
 pub use self::pitch_h::celt_inner_prod_c;
 use self::quant_bands_h::amp2Log2;
+use crate::celt::mdct::clt_mdct_forward_c;
 use crate::externs::{memcpy, memset};
 use crate::src::analysis::downmix_func;
 use crate::{

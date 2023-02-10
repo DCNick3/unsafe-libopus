@@ -68,22 +68,9 @@ pub mod modes_h {
         pub caps: *const libc::c_uchar,
     }
     use super::arch_h::opus_val16;
-    use super::mdct_h::mdct_lookup;
+    use crate::celt::mdct::mdct_lookup;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:44"]
-pub mod mdct_h {
-    use crate::celt::kiss_fft::kiss_fft_state;
 
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "49:9"]
-    pub struct mdct_lookup {
-        pub n: libc::c_int,
-        pub maxshift: libc::c_int,
-        pub kfft: [*const kiss_fft_state; 4],
-        pub trig: *const libc::c_float,
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:41"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
@@ -383,7 +370,6 @@ pub use self::entcode_h::{ec_ctx, ec_dec, ec_tell, ec_window};
 use self::entdec_h::{ec_dec_bit_logp, ec_dec_init, ec_dec_uint};
 pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
 pub use self::limits_h::CHAR_BIT;
-pub use self::mdct_h::mdct_lookup;
 pub use self::modes_h::{OpusCustomMode, PulseCache};
 use self::opus_custom_h::{opus_custom_decoder_ctl, OpusCustomDecoder};
 pub use self::opus_defines_h::{

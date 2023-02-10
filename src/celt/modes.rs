@@ -29,20 +29,7 @@ pub struct PulseCache {
     pub bits: *const libc::c_uchar,
     pub caps: *const libc::c_uchar,
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:35"]
-pub mod mdct_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "49:9"]
-    pub struct mdct_lookup {
-        pub n: libc::c_int,
-        pub maxshift: libc::c_int,
-        pub kfft: [*const kiss_fft_state; 4],
-        pub trig: *const libc::c_float,
-    }
 
-    use crate::celt::kiss_fft::kiss_fft_state;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:34"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
@@ -7140,14 +7127,13 @@ pub mod static_modes_float_h {
         unsafe { [&mode48000_960_120 as *const OpusCustomMode] };
 
     use super::arch_h::opus_val16;
-    use super::mdct_h::mdct_lookup;
     use super::stddef_h::NULL;
     use super::{band_allocation, eband5ms};
     use crate::celt::kiss_fft::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
+    use crate::celt::mdct::mdct_lookup;
     use crate::celt::modes::{OpusCustomMode, PulseCache};
 }
 pub use self::arch_h::opus_val16;
-pub use self::mdct_h::mdct_lookup;
 pub use self::opus_defines_h::{OPUS_BAD_ARG, OPUS_OK};
 pub use self::static_modes_float_h::{
     cache_bits50, cache_caps50, cache_index50, fft_bitrev120, fft_bitrev240, fft_bitrev480,
@@ -7156,6 +7142,7 @@ pub use self::static_modes_float_h::{
     static_mode_list, window120, TOTAL_MODES,
 };
 pub use self::stddef_h::NULL;
+use crate::celt::mdct::mdct_lookup;
 
 #[c2rust::src_loc = "42:25"]
 static mut eband5ms: [i16; 22] = [

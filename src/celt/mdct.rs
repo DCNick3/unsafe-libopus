@@ -6,22 +6,17 @@ pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = libc::c_float;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:48"]
-pub mod mdct_h {
-    use crate::celt::kiss_fft::kiss_fft_state;
 
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "49:9"]
-    pub struct mdct_lookup {
-        pub n: libc::c_int,
-        pub maxshift: libc::c_int,
-        pub kfft: [*const kiss_fft_state; 4],
-        pub trig: *const libc::c_float,
-    }
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "49:9"]
+pub struct mdct_lookup {
+    pub n: libc::c_int,
+    pub maxshift: libc::c_int,
+    pub kfft: [*const kiss_fft_state; 4],
+    pub trig: *const libc::c_float,
 }
 pub use self::arch_h::opus_val16;
-pub use self::mdct_h::mdct_lookup;
 
 #[no_mangle]
 #[c2rust::src_loc = "119:1"]

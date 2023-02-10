@@ -40,22 +40,9 @@ pub mod modes_h {
         pub caps: *const libc::c_uchar,
     }
     use super::arch_h::opus_val16;
-    use super::mdct_h::mdct_lookup;
+    use crate::celt::mdct::mdct_lookup;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:33"]
-pub mod mdct_h {
-    use crate::celt::kiss_fft::kiss_fft_state;
 
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "49:9"]
-    pub struct mdct_lookup {
-        pub n: libc::c_int,
-        pub maxshift: libc::c_int,
-        pub kfft: [*const kiss_fft_state; 4],
-        pub trig: *const libc::c_float,
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:33"]
 pub mod entcode_h {
     #[c2rust::src_loc = "45:1"]
@@ -194,7 +181,6 @@ use self::entenc_h::{ec_enc_bit_logp, ec_enc_bits, ec_enc_icdf};
 pub use self::internal::__CHAR_BIT__;
 use self::laplace_h::{ec_laplace_decode, ec_laplace_encode};
 pub use self::limits_h::CHAR_BIT;
-pub use self::mdct_h::mdct_lookup;
 pub use self::modes_h::{OpusCustomMode, PulseCache};
 pub use self::rate_h::MAX_FINE_BITS;
 pub use self::stack_alloc_h::ALLOC_NONE;
