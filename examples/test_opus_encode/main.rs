@@ -140,10 +140,6 @@ pub mod stdlib_h {
             _: *mut *mut libc::c_char,
             _: libc::c_int,
         ) -> libc::c_long;
-        #[c2rust::src_loc = "553:14"]
-        pub fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
-        #[c2rust::src_loc = "568:13"]
-        pub fn free(_: *mut libc::c_void);
         #[c2rust::src_loc = "611:13"]
         pub fn abort() -> !;
         #[c2rust::src_loc = "654:1"]
@@ -294,17 +290,19 @@ pub mod test_opus_common_h {
     }
 
     use super::stdio_h::{fprintf, stderr};
-    use super::stdlib_h::{abort, free, malloc};
+    use super::stdlib_h::abort;
     use super::string_h::memset;
+    use libopus_unsafe::externs::{free, malloc};
     use libopus_unsafe::opus_get_version_string;
 }
 use self::stdio_h::{fprintf, stderr, stdout};
-pub use self::stdlib_h::{atoi, free, getenv, malloc, strtol};
+pub use self::stdlib_h::{atoi, getenv, strtol};
 use self::string_h::{memcpy, memset, strcmp};
 pub use self::test_opus_common_h::{debruijn2, Rw, Rz, _test_failed, fast_rand, iseed};
 use self::time_h::time;
 pub use self::time_t_h::time_t;
 use self::unistd_h::getpid;
+use libopus_unsafe::externs::{free, malloc};
 use libopus_unsafe::{
     opus_decode, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy,
     opus_decoder_get_size, opus_encode, opus_encoder_create, opus_encoder_ctl,

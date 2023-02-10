@@ -1,4 +1,6 @@
+use crate::externs::{free, malloc};
 use ::libc;
+
 #[c2rust::header_src = "internal:0"]
 pub mod internal {
     #[c2rust::src_loc = "0:0"]
@@ -877,15 +879,6 @@ pub mod limits_h {
     pub const CHAR_BIT: libc::c_int = __CHAR_BIT__;
     use super::internal::__CHAR_BIT__;
 }
-#[c2rust::header_src = "/usr/include/stdlib.h:35"]
-pub mod stdlib_h {
-    extern "C" {
-        #[c2rust::src_loc = "553:14"]
-        pub fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
-        #[c2rust::src_loc = "568:13"]
-        pub fn free(_: *mut libc::c_void);
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cpu_support.h:35"]
 pub mod cpu_support_h {
     #[inline]
@@ -981,21 +974,6 @@ pub mod pitch_h {
         return xy;
     }
     use super::arch_h::{opus_val16, opus_val32};
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/os_support.h:43"]
-pub mod os_support_h {
-    #[inline]
-    #[c2rust::src_loc = "64:1"]
-    pub unsafe extern "C" fn opus_free(ptr: *mut libc::c_void) {
-        free(ptr);
-    }
-    #[inline]
-    #[c2rust::src_loc = "47:1"]
-    pub unsafe extern "C" fn opus_alloc(size: size_t) -> *mut libc::c_void {
-        return malloc(size);
-    }
-    use super::stddef_h::size_t;
-    use super::stdlib_h::{free, malloc};
 }
 #[c2rust::header_src = "/usr/include/string.h:43"]
 pub mod string_h {
@@ -1135,7 +1113,6 @@ pub use self::define_h::{
 pub use self::float_cast_h::{float2int, FLOAT2INT16};
 pub use self::mathops_h::celt_maxabs16;
 use self::opus_h::{opus_packet_pad, opus_repacketizer_cat, opus_repacketizer_init};
-pub use self::os_support_h::{opus_alloc, opus_free};
 pub use self::pitch_h::celt_inner_prod_c;
 use self::string_h::{memcpy, memmove, memset};
 use self::API_h::{silk_Encode, silk_Get_Encoder_Size, silk_InitEncoder};
@@ -1704,7 +1681,7 @@ pub unsafe extern "C" fn opus_encoder_create(
         }
         return NULL as *mut OpusEncoder;
     }
-    st = opus_alloc(opus_encoder_get_size(channels) as size_t) as *mut OpusEncoder;
+    st = malloc(opus_encoder_get_size(channels) as size_t) as *mut OpusEncoder;
     if st.is_null() {
         if !error.is_null() {
             *error = OPUS_ALLOC_FAIL;
@@ -1716,7 +1693,7 @@ pub unsafe extern "C" fn opus_encoder_create(
         *error = ret;
     }
     if ret != OPUS_OK {
-        opus_free(st as *mut libc::c_void);
+        free(st as *mut libc::c_void);
         st = NULL as *mut OpusEncoder;
     }
     return st;
@@ -4527,5 +4504,5 @@ pub unsafe extern "C" fn opus_encoder_ctl(
 #[no_mangle]
 #[c2rust::src_loc = "2780:1"]
 pub unsafe extern "C" fn opus_encoder_destroy(st: *mut OpusEncoder) {
-    opus_free(st as *mut libc::c_void);
+    free(st as *mut libc::c_void);
 }

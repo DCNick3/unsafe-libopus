@@ -1,4 +1,6 @@
+use crate::externs::{free, malloc};
 use ::libc;
+
 #[c2rust::header_src = "internal:0"]
 pub mod internal {
     #[c2rust::src_loc = "0:0"]
@@ -489,15 +491,6 @@ pub mod celt_h {
         );
     }
 }
-#[c2rust::header_src = "/usr/include/stdlib.h:37"]
-pub mod stdlib_h {
-    extern "C" {
-        #[c2rust::src_loc = "568:13"]
-        pub fn free(_: *mut libc::c_void);
-        #[c2rust::src_loc = "553:14"]
-        pub fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/usr/include/string.h:38"]
 pub mod string_h {
     extern "C" {
@@ -510,21 +503,6 @@ pub mod string_h {
         #[c2rust::src_loc = "61:14"]
         pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/os_support.h:38"]
-pub mod os_support_h {
-    #[inline]
-    #[c2rust::src_loc = "64:1"]
-    pub unsafe extern "C" fn opus_free(ptr: *mut libc::c_void) {
-        free(ptr);
-    }
-    #[inline]
-    #[c2rust::src_loc = "47:1"]
-    pub unsafe extern "C" fn opus_alloc(size: size_t) -> *mut libc::c_void {
-        return malloc(size);
-    }
-    use super::stddef_h::size_t;
-    use super::stdlib_h::{free, malloc};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.h:39"]
 pub mod mathops_h {
@@ -643,7 +621,6 @@ pub use self::types_h::{__int16_t, __int32_t, __int64_t, __uint32_t};
 use self::bands_h::compute_band_energies;
 pub use self::cpu_support_h::opus_select_arch;
 use self::mathops_h::isqrt32;
-pub use self::os_support_h::{opus_alloc, opus_free};
 pub use self::pitch_h::celt_inner_prod_c;
 use self::quant_bands_h::amp2Log2;
 use self::string_h::{memcpy, memset};
@@ -1567,7 +1544,7 @@ pub unsafe extern "C" fn opus_multistream_encoder_create(
         }
         return NULL as *mut OpusMSEncoder;
     }
-    st = opus_alloc(opus_multistream_encoder_get_size(streams, coupled_streams) as size_t)
+    st = malloc(opus_multistream_encoder_get_size(streams, coupled_streams) as size_t)
         as *mut OpusMSEncoder;
     if st.is_null() {
         if !error.is_null() {
@@ -1585,7 +1562,7 @@ pub unsafe extern "C" fn opus_multistream_encoder_create(
         application,
     );
     if ret != OPUS_OK {
-        opus_free(st as *mut libc::c_void);
+        free(st as *mut libc::c_void);
         st = NULL as *mut OpusMSEncoder;
     }
     if !error.is_null() {
@@ -1621,7 +1598,7 @@ pub unsafe extern "C" fn opus_multistream_surround_encoder_create(
         }
         return NULL as *mut OpusMSEncoder;
     }
-    st = opus_alloc(size as size_t) as *mut OpusMSEncoder;
+    st = malloc(size as size_t) as *mut OpusMSEncoder;
     if st.is_null() {
         if !error.is_null() {
             *error = OPUS_ALLOC_FAIL;
@@ -1639,7 +1616,7 @@ pub unsafe extern "C" fn opus_multistream_surround_encoder_create(
         application,
     );
     if ret != OPUS_OK {
-        opus_free(st as *mut libc::c_void);
+        free(st as *mut libc::c_void);
         st = NULL as *mut OpusMSEncoder;
     }
     if !error.is_null() {
@@ -2539,5 +2516,5 @@ pub unsafe extern "C" fn opus_multistream_encoder_ctl(
 #[no_mangle]
 #[c2rust::src_loc = "1325:1"]
 pub unsafe extern "C" fn opus_multistream_encoder_destroy(st: *mut OpusMSEncoder) {
-    opus_free(st as *mut libc::c_void);
+    free(st as *mut libc::c_void);
 }

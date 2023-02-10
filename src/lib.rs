@@ -11,6 +11,8 @@
 #![feature(stdsimd)]
 #![register_tool(c2rust)]
 
+pub mod externs;
+
 extern crate libc;
 mod celt {
     pub mod bands;

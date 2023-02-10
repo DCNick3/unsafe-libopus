@@ -190,10 +190,6 @@ pub mod stdio_h {
 #[c2rust::header_src = "/usr/include/stdlib.h:34"]
 pub mod stdlib_h {
     extern "C" {
-        #[c2rust::src_loc = "553:14"]
-        pub fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
-        #[c2rust::src_loc = "568:13"]
-        pub fn free(_: *mut libc::c_void);
         #[c2rust::src_loc = "611:13"]
         pub fn abort() -> !;
         #[c2rust::src_loc = "861:12"]
@@ -318,8 +314,9 @@ pub mod os_support_h {
     pub unsafe extern "C" fn opus_alloc(mut size: size_t) -> *mut libc::c_void {
         malloc(size)
     }
+
     use super::stddef_h::size_t;
-    use super::stdlib_h::{free, malloc};
+    use libopus_unsafe::externs::{free, malloc};
 }
 pub use self::arch_h::opus_val16;
 pub use self::float_cast_h::FLOAT2INT16;
@@ -334,15 +331,17 @@ use self::mathcalls_h::{floor, sqrt};
 pub use self::os_support_h::{opus_alloc, opus_free};
 pub use self::stddef_h::size_t;
 use self::stdio_h::{fprintf, stderr};
-use self::stdlib_h::{abs, free, malloc};
+use self::stdlib_h::abs;
 use self::string_h::memset;
 pub use self::test_opus_common_h::{_test_failed, fast_rand};
+use libopus_unsafe::externs::{free, malloc};
 use libopus_unsafe::{
     opus_projection_ambisonics_encoder_create, opus_projection_decode,
     opus_projection_decoder_create, opus_projection_decoder_destroy, opus_projection_encode,
     opus_projection_encoder_ctl, opus_projection_encoder_destroy, OpusProjectionDecoder,
     OpusProjectionEncoder,
 };
+
 #[no_mangle]
 #[c2rust::src_loc = "55:1"]
 pub unsafe extern "C" fn assert_is_equal(

@@ -113,10 +113,6 @@ pub mod stdio_h {
 #[c2rust::header_src = "/usr/include/stdlib.h:33"]
 pub mod stdlib_h {
     extern "C" {
-        #[c2rust::src_loc = "553:14"]
-        pub fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
-        #[c2rust::src_loc = "568:13"]
-        pub fn free(_: *mut libc::c_void);
         #[c2rust::src_loc = "611:13"]
         pub fn abort() -> !;
     }
@@ -179,12 +175,13 @@ pub mod test_opus_common_h {
     use libopus_unsafe::opus_get_version_string;
 }
 use self::stdio_h::{fprintf, stderr};
-use self::stdlib_h::{free, malloc};
 use self::string_h::memset;
 pub use self::test_opus_common_h::{_test_failed, iseed};
+use libopus_unsafe::externs::{free, malloc};
 use libopus_unsafe::{
     opus_decode, opus_decoder_create, opus_decoder_destroy, opus_get_version_string, OpusDecoder,
 };
+
 #[no_mangle]
 #[c2rust::src_loc = "42:1"]
 pub unsafe extern "C" fn test_overflow() -> libc::c_int {

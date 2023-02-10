@@ -1,4 +1,6 @@
+use crate::externs::{free, malloc};
 use ::libc;
+
 #[c2rust::header_src = "internal:0"]
 pub mod internal {
     #[c2rust::src_loc = "0:0"]
@@ -269,30 +271,6 @@ pub mod mathops_h {
         pub fn isqrt32(_val: u32) -> libc::c_uint;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/os_support.h:32"]
-pub mod os_support_h {
-    #[inline]
-    #[c2rust::src_loc = "64:1"]
-    pub unsafe extern "C" fn opus_free(ptr: *mut libc::c_void) {
-        free(ptr);
-    }
-    #[inline]
-    #[c2rust::src_loc = "47:1"]
-    pub unsafe extern "C" fn opus_alloc(size: size_t) -> *mut libc::c_void {
-        return malloc(size);
-    }
-    use super::stddef_h::size_t;
-    use super::stdlib_h::{free, malloc};
-}
-#[c2rust::header_src = "/usr/include/stdlib.h:32"]
-pub mod stdlib_h {
-    extern "C" {
-        #[c2rust::src_loc = "553:14"]
-        pub fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
-        #[c2rust::src_loc = "568:13"]
-        pub fn free(_: *mut libc::c_void);
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_projection.h:36"]
 pub mod opus_projection_h {
     #[c2rust::src_loc = "48:9"]
@@ -342,7 +320,6 @@ pub use self::opus_private_h::{
     ChannelLayout, MappingType, OpusMSEncoder, MAPPING_TYPE_AMBISONICS, MAPPING_TYPE_NONE,
     MAPPING_TYPE_SURROUND,
 };
-pub use self::os_support_h::{opus_alloc, opus_free};
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 pub use self::stdint_intn_h::{int16_t, int32_t};
@@ -682,7 +659,7 @@ pub unsafe extern "C" fn opus_projection_ambisonics_encoder_create(
         }
         return NULL as *mut OpusProjectionEncoder;
     }
-    st = opus_alloc(size as size_t) as *mut OpusProjectionEncoder;
+    st = malloc(size as size_t) as *mut OpusProjectionEncoder;
     if st.is_null() {
         if !error.is_null() {
             *error = OPUS_ALLOC_FAIL;
@@ -699,7 +676,7 @@ pub unsafe extern "C" fn opus_projection_ambisonics_encoder_create(
         application,
     );
     if ret != OPUS_OK {
-        opus_free(st as *mut libc::c_void);
+        free(st as *mut libc::c_void);
         st = NULL as *mut OpusProjectionEncoder;
     }
     if !error.is_null() {
@@ -798,7 +775,7 @@ pub unsafe extern "C" fn opus_projection_encode_float(
 #[no_mangle]
 #[c2rust::src_loc = "375:1"]
 pub unsafe extern "C" fn opus_projection_encoder_destroy(st: *mut OpusProjectionEncoder) {
-    opus_free(st as *mut libc::c_void);
+    free(st as *mut libc::c_void);
 }
 #[no_mangle]
 #[c2rust::src_loc = "380:1"]

@@ -117,10 +117,6 @@ pub mod stdio_h {
 #[c2rust::header_src = "/usr/include/stdlib.h:49"]
 pub mod stdlib_h {
     extern "C" {
-        #[c2rust::src_loc = "553:14"]
-        pub fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
-        #[c2rust::src_loc = "568:13"]
-        pub fn free(_: *mut libc::c_void);
         #[c2rust::src_loc = "611:13"]
         pub fn abort() -> !;
     }
@@ -201,12 +197,12 @@ pub use self::stddef_h::size_t;
 pub use self::stdint_intn_h::{int16_t, int32_t};
 pub use self::stdint_uintn_h::uint32_t;
 use self::stdio_h::{fprintf, printf, stderr, stdout};
-use self::stdlib_h::{free, malloc};
 use self::string_h::{memcmp, memcpy, memset, strlen};
 pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
 pub use self::test_opus_common_h::{_test_failed, iseed};
 pub use self::types_h::{__int16_t, __int32_t, __off64_t, __off_t, __uint32_t};
 pub use self::FILE_h::FILE;
+use libopus_unsafe::externs::{free, malloc};
 use libopus_unsafe::{
     opus_decode, opus_decode_float, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy,
     opus_decoder_get_nb_samples, opus_decoder_get_size, opus_decoder_init, opus_encode,
@@ -222,6 +218,7 @@ use libopus_unsafe::{
     opus_repacketizer_out, opus_repacketizer_out_range, opus_strerror, OpusDecoder, OpusEncoder,
     OpusMSDecoder, OpusRepacketizer,
 };
+
 #[no_mangle]
 #[c2rust::src_loc = "81:13"]
 pub static mut null_int_ptr: *mut i32 = 0 as *const libc::c_void as *mut libc::c_void as *mut i32;

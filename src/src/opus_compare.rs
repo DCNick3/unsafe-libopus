@@ -1,4 +1,6 @@
+use crate::externs::{free, malloc, realloc};
 use ::libc;
+
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:28"]
 pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]
@@ -105,12 +107,6 @@ pub mod stdlib_h {
             _: *mut *mut libc::c_char,
             _: libc::c_int,
         ) -> libc::c_long;
-        #[c2rust::src_loc = "553:14"]
-        pub fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
-        #[c2rust::src_loc = "564:14"]
-        pub fn realloc(_: *mut libc::c_void, _: libc::c_ulong) -> *mut libc::c_void;
-        #[c2rust::src_loc = "568:13"]
-        pub fn free(_: *mut libc::c_void);
         #[c2rust::src_loc = "637:13"]
         pub fn exit(_: libc::c_int) -> !;
     }
@@ -138,7 +134,7 @@ pub mod string_h {
 use self::mathcalls_h::{cos, log, pow, sin};
 pub use self::stddef_h::size_t;
 use self::stdio_h::{fclose, fopen, fprintf, fread, stderr};
-pub use self::stdlib_h::{atoi, exit, free, malloc, realloc, strtol};
+pub use self::stdlib_h::{atoi, exit, strtol};
 use self::string_h::strcmp;
 pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
 pub use self::types_h::{__off64_t, __off_t};

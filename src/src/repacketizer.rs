@@ -1,4 +1,6 @@
+use crate::externs::{free, malloc};
 use ::libc;
+
 #[c2rust::header_src = "/usr/include/bits/types.h:32"]
 pub mod types_h {
     #[c2rust::src_loc = "39:1"]
@@ -83,21 +85,6 @@ pub mod arch_h {
         ) -> !;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/os_support.h:34"]
-pub mod os_support_h {
-    #[inline]
-    #[c2rust::src_loc = "47:1"]
-    pub unsafe extern "C" fn opus_alloc(size: size_t) -> *mut libc::c_void {
-        return malloc(size);
-    }
-    #[inline]
-    #[c2rust::src_loc = "64:1"]
-    pub unsafe extern "C" fn opus_free(ptr: *mut libc::c_void) {
-        free(ptr);
-    }
-    use super::stddef_h::size_t;
-    use super::stdlib_h::{free, malloc};
-}
 #[c2rust::header_src = "/usr/include/string.h:34"]
 pub mod string_h {
     extern "C" {
@@ -109,20 +96,10 @@ pub mod string_h {
         ) -> *mut libc::c_void;
     }
 }
-#[c2rust::header_src = "/usr/include/stdlib.h:34"]
-pub mod stdlib_h {
-    extern "C" {
-        #[c2rust::src_loc = "553:14"]
-        pub fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
-        #[c2rust::src_loc = "568:13"]
-        pub fn free(_: *mut libc::c_void);
-    }
-}
 use self::arch_h::celt_fatal;
 pub use self::opus_defines_h::{OPUS_BAD_ARG, OPUS_BUFFER_TOO_SMALL, OPUS_INVALID_PACKET, OPUS_OK};
 use self::opus_h::{opus_packet_get_nb_frames, opus_packet_get_samples_per_frame};
 pub use self::opus_private_h::{encode_size, opus_packet_parse_impl, OpusRepacketizer};
-pub use self::os_support_h::{opus_alloc, opus_free};
 pub use self::stddef_h::{size_t, NULL};
 pub use self::stdint_intn_h::{int16_t, int32_t};
 use self::string_h::memmove;
@@ -145,7 +122,7 @@ pub unsafe extern "C" fn opus_repacketizer_init(
 #[c2rust::src_loc = "48:1"]
 pub unsafe extern "C" fn opus_repacketizer_create() -> *mut OpusRepacketizer {
     let mut rp: *mut OpusRepacketizer = 0 as *mut OpusRepacketizer;
-    rp = opus_alloc(opus_repacketizer_get_size() as size_t) as *mut OpusRepacketizer;
+    rp = malloc(opus_repacketizer_get_size() as size_t) as *mut OpusRepacketizer;
     if rp.is_null() {
         return NULL as *mut OpusRepacketizer;
     }
@@ -154,7 +131,7 @@ pub unsafe extern "C" fn opus_repacketizer_create() -> *mut OpusRepacketizer {
 #[no_mangle]
 #[c2rust::src_loc = "56:1"]
 pub unsafe extern "C" fn opus_repacketizer_destroy(rp: *mut OpusRepacketizer) {
-    opus_free(rp as *mut libc::c_void);
+    free(rp as *mut libc::c_void);
 }
 #[c2rust::src_loc = "61:1"]
 unsafe extern "C" fn opus_repacketizer_cat_impl(

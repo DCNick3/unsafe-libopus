@@ -1,4 +1,6 @@
+use crate::externs::{free, malloc};
 use ::libc;
+
 #[c2rust::header_src = "internal:0"]
 pub mod internal {
     #[c2rust::src_loc = "0:0"]
@@ -186,30 +188,6 @@ pub mod string_h {
         pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     }
 }
-#[c2rust::header_src = "/usr/include/stdlib.h:32"]
-pub mod stdlib_h {
-    extern "C" {
-        #[c2rust::src_loc = "553:14"]
-        pub fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
-        #[c2rust::src_loc = "568:13"]
-        pub fn free(_: *mut libc::c_void);
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/os_support.h:32"]
-pub mod os_support_h {
-    #[inline]
-    #[c2rust::src_loc = "47:1"]
-    pub unsafe extern "C" fn opus_alloc(size: size_t) -> *mut libc::c_void {
-        return malloc(size);
-    }
-    #[inline]
-    #[c2rust::src_loc = "64:1"]
-    pub unsafe extern "C" fn opus_free(ptr: *mut libc::c_void) {
-        free(ptr);
-    }
-    use super::stddef_h::size_t;
-    use super::stdlib_h::{free, malloc};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_multistream.h:36"]
 pub mod opus_multistream_h {
     use super::opus_private_h::OpusMSDecoder;
@@ -248,7 +226,6 @@ use self::string_h::memset;
 pub use self::types_h::{__int16_t, __int32_t};
 
 use self::opus_multistream_h::{opus_multistream_decoder_get_size, opus_multistream_decoder_init};
-pub use self::os_support_h::{opus_alloc, opus_free};
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "41:8"]
@@ -442,7 +419,7 @@ pub unsafe extern "C" fn opus_projection_decoder_create(
         }
         return NULL as *mut OpusProjectionDecoder;
     }
-    st = opus_alloc(size as size_t) as *mut OpusProjectionDecoder;
+    st = malloc(size as size_t) as *mut OpusProjectionDecoder;
     if st.is_null() {
         if !error.is_null() {
             *error = OPUS_ALLOC_FAIL;
@@ -459,7 +436,7 @@ pub unsafe extern "C" fn opus_projection_decoder_create(
         demixing_matrix_size,
     );
     if ret != OPUS_OK {
-        opus_free(st as *mut libc::c_void);
+        free(st as *mut libc::c_void);
         st = NULL as *mut OpusProjectionDecoder;
     }
     if !error.is_null() {
@@ -550,5 +527,5 @@ pub unsafe extern "C" fn opus_projection_decoder_ctl(
 #[no_mangle]
 #[c2rust::src_loc = "254:1"]
 pub unsafe extern "C" fn opus_projection_decoder_destroy(st: *mut OpusProjectionDecoder) {
-    opus_free(st as *mut libc::c_void);
+    free(st as *mut libc::c_void);
 }

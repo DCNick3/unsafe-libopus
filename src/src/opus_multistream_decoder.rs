@@ -1,4 +1,6 @@
+use crate::externs::{free, malloc};
 use ::libc;
+
 #[c2rust::header_src = "internal:0"]
 pub mod internal {
     #[c2rust::src_loc = "0:0"]
@@ -238,15 +240,6 @@ pub mod opus_multistream_h {
     #[c2rust::src_loc = "56:9"]
     pub const OPUS_MULTISTREAM_GET_DECODER_STATE_REQUEST: libc::c_int = 5122;
 }
-#[c2rust::header_src = "/usr/include/stdlib.h:37"]
-pub mod stdlib_h {
-    extern "C" {
-        #[c2rust::src_loc = "568:13"]
-        pub fn free(_: *mut libc::c_void);
-        #[c2rust::src_loc = "553:14"]
-        pub fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/float_cast.h:37"]
 pub mod float_cast_h {
     #[inline]
@@ -272,21 +265,6 @@ pub mod float_cast_h {
     }
     use super::arch_h::CELT_SIG_SCALE;
     use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/os_support.h:38"]
-pub mod os_support_h {
-    #[inline]
-    #[c2rust::src_loc = "64:1"]
-    pub unsafe extern "C" fn opus_free(ptr: *mut libc::c_void) {
-        free(ptr);
-    }
-    #[inline]
-    #[c2rust::src_loc = "47:1"]
-    pub unsafe extern "C" fn opus_alloc(size: size_t) -> *mut libc::c_void {
-        return malloc(size);
-    }
-    use super::stddef_h::size_t;
-    use super::stdlib_h::{free, malloc};
 }
 pub use self::arch_h::{celt_fatal, opus_val16, opus_val32, CELT_SIG_SCALE};
 pub use self::internal::{__builtin_va_list, __va_list_tag};
@@ -314,7 +292,6 @@ pub use self::stdint_uintn_h::uint32_t;
 pub use self::types_h::{__int16_t, __int32_t, __uint32_t};
 
 pub use self::float_cast_h::{float2int, FLOAT2INT16};
-pub use self::os_support_h::{opus_alloc, opus_free};
 #[c2rust::src_loc = "43:1"]
 unsafe extern "C" fn validate_ms_decoder(st: *mut OpusMSDecoder) {
     validate_layout(&mut (*st).layout);
@@ -422,7 +399,7 @@ pub unsafe extern "C" fn opus_multistream_decoder_create(
         }
         return NULL as *mut OpusMSDecoder;
     }
-    st = opus_alloc(opus_multistream_decoder_get_size(streams, coupled_streams) as size_t)
+    st = malloc(opus_multistream_decoder_get_size(streams, coupled_streams) as size_t)
         as *mut OpusMSDecoder;
     if st.is_null() {
         if !error.is_null() {
@@ -435,7 +412,7 @@ pub unsafe extern "C" fn opus_multistream_decoder_create(
         *error = ret;
     }
     if ret != OPUS_OK {
-        opus_free(st as *mut libc::c_void);
+        free(st as *mut libc::c_void);
         st = NULL as *mut OpusMSDecoder;
     }
     return st;
@@ -939,5 +916,5 @@ pub unsafe extern "C" fn opus_multistream_decoder_ctl(
 #[no_mangle]
 #[c2rust::src_loc = "546:1"]
 pub unsafe extern "C" fn opus_multistream_decoder_destroy(st: *mut OpusMSDecoder) {
-    opus_free(st as *mut libc::c_void);
+    free(st as *mut libc::c_void);
 }

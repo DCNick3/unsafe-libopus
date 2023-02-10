@@ -173,12 +173,6 @@ pub mod stdlib_h {
         ) -> libc::c_long;
         #[c2rust::src_loc = "454:1"]
         pub fn rand() -> libc::c_int;
-        #[c2rust::src_loc = "553:14"]
-        pub fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
-        #[c2rust::src_loc = "556:14"]
-        pub fn calloc(_: libc::c_ulong, _: libc::c_ulong) -> *mut libc::c_void;
-        #[c2rust::src_loc = "568:13"]
-        pub fn free(_: *mut libc::c_void);
         #[c2rust::src_loc = "861:12"]
         pub fn abs(_: libc::c_int) -> libc::c_int;
     }
@@ -210,14 +204,16 @@ use self::mathcalls_h::sqrt;
 use self::opus_defines_h::{opus_get_version_string, opus_strerror};
 pub use self::stddef_h::size_t;
 use self::stdio_h::{fclose, fopen, fprintf, fread, fseek, ftell, fwrite, printf, stderr};
-pub use self::stdlib_h::{abs, atoi, atol, calloc, free, malloc, rand};
+pub use self::stdlib_h::{abs, atoi, atol, rand};
 use self::string_h::strcmp;
 pub use self::FILE_h::FILE;
+use libopus_unsafe::externs::{calloc, free, malloc};
 use libopus_unsafe::{
     opus_decode, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy, opus_encode,
     opus_encoder_create, opus_encoder_ctl, opus_encoder_destroy, opus_packet_get_nb_frames,
     opus_packet_get_samples_per_frame, OpusDecoder, OpusEncoder,
 };
+
 #[no_mangle]
 #[c2rust::src_loc = "45:1"]
 pub unsafe extern "C" fn print_usage(mut argv: *mut *mut libc::c_char) {
