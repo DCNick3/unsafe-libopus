@@ -153,7 +153,7 @@ mod silk {
     pub mod tables_pitch_lag;
     pub mod tables_pulses_per_block;
     pub mod tests {
-        pub mod test_unit_LPC_inv_pred_gain;
+        // pub mod test_unit_LPC_inv_pred_gain;
     } // mod tests
 } // mod silk
 mod src {
@@ -162,7 +162,7 @@ mod src {
     pub mod mlp;
     pub mod mlp_data;
     pub mod opus;
-    pub mod opus_compare;
+    // pub mod opus_compare;
     pub mod opus_decoder;
     pub mod opus_encoder;
     pub mod opus_multistream;

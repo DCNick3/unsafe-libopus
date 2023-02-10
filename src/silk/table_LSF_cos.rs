@@ -1,17 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:32"]
-pub mod types_h {
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:32"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    use super::types_h::__int16_t;
-}
-pub use self::stdint_intn_h::int16_t;
-pub use self::types_h::__int16_t;
 #[no_mangle]
 #[c2rust::src_loc = "36:18"]
 pub static mut silk_LSFCosTab_FIX_Q12: [i16; 129] = [

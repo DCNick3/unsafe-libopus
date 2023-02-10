@@ -1,17 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:32"]
-pub mod types_h {
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:32"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::__int32_t;
-}
-pub use self::stdint_intn_h::int32_t;
-pub use self::types_h::__int32_t;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_k2a_FLP(A: *mut libc::c_float, rc: *const libc::c_float, order: i32) {

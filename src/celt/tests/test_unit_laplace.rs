@@ -4,84 +4,6 @@ pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]
     pub type size_t = libc::c_ulong;
 }
-#[c2rust::header_src = "/usr/include/bits/types.h:32"]
-pub mod types_h {
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-    #[c2rust::src_loc = "42:1"]
-    pub type __uint32_t = libc::c_uint;
-    #[c2rust::src_loc = "152:1"]
-    pub type __off_t = libc::c_long;
-    #[c2rust::src_loc = "153:1"]
-    pub type __off64_t = libc::c_long;
-}
-#[c2rust::header_src = "/usr/include/bits/types/struct_FILE.h:32"]
-pub mod struct_FILE_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "49:8"]
-    pub struct _IO_FILE {
-        pub _flags: libc::c_int,
-        pub _IO_read_ptr: *mut libc::c_char,
-        pub _IO_read_end: *mut libc::c_char,
-        pub _IO_read_base: *mut libc::c_char,
-        pub _IO_write_base: *mut libc::c_char,
-        pub _IO_write_ptr: *mut libc::c_char,
-        pub _IO_write_end: *mut libc::c_char,
-        pub _IO_buf_base: *mut libc::c_char,
-        pub _IO_buf_end: *mut libc::c_char,
-        pub _IO_save_base: *mut libc::c_char,
-        pub _IO_backup_base: *mut libc::c_char,
-        pub _IO_save_end: *mut libc::c_char,
-        pub _markers: *mut _IO_marker,
-        pub _chain: *mut _IO_FILE,
-        pub _fileno: libc::c_int,
-        pub _flags2: libc::c_int,
-        pub _old_offset: __off_t,
-        pub _cur_column: libc::c_ushort,
-        pub _vtable_offset: libc::c_schar,
-        pub _shortbuf: [libc::c_char; 1],
-        pub _lock: *mut libc::c_void,
-        pub _offset: __off64_t,
-        pub _codecvt: *mut _IO_codecvt,
-        pub _wide_data: *mut _IO_wide_data,
-        pub _freeres_list: *mut _IO_FILE,
-        pub _freeres_buf: *mut libc::c_void,
-        pub __pad5: size_t,
-        pub _mode: libc::c_int,
-        pub _unused2: [libc::c_char; 20],
-    }
-    #[c2rust::src_loc = "43:1"]
-    pub type _IO_lock_t = ();
-    use super::stddef_h::size_t;
-    use super::types_h::{__off64_t, __off_t};
-    extern "C" {
-        #[c2rust::src_loc = "38:8"]
-        pub type _IO_wide_data;
-        #[c2rust::src_loc = "37:8"]
-        pub type _IO_codecvt;
-        #[c2rust::src_loc = "36:8"]
-        pub type _IO_marker;
-    }
-}
-#[c2rust::header_src = "/usr/include/bits/types/FILE.h:32"]
-pub mod FILE_h {
-    #[c2rust::src_loc = "7:1"]
-    pub type FILE = _IO_FILE;
-    use super::struct_FILE_h::_IO_FILE;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:33"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::__int32_t;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:35"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type uint32_t = __uint32_t;
-    use super::types_h::__uint32_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:35"]
 pub mod entcode_h {
     #[c2rust::src_loc = "45:1"]
@@ -978,12 +900,11 @@ pub use self::entenc_c::{
 };
 pub use self::laplace_c::{ec_laplace_decode, ec_laplace_encode, ec_laplace_get_freq1};
 pub use self::stddef_h::size_t;
-pub use self::stdint_intn_h::int32_t;
-pub use self::stdint_uintn_h::uint32_t;
+
 use self::stdio_h::{fprintf, stderr};
 use self::stdlib_h::{free, malloc, rand};
 pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
-pub use self::types_h::{__int32_t, __off64_t, __off_t, __uint32_t};
+
 pub use self::FILE_h::FILE;
 use crate::externs::{memmove, memset};
 #[no_mangle]
@@ -1068,7 +989,7 @@ unsafe fn main_0() -> libc::c_int {
         );
         if d != val[i as usize] {
             fprintf(
-                stderr,
+                stderr(),
                 b"Got %d instead of %d\n\0" as *const u8 as *const libc::c_char,
                 d,
                 val[i as usize],

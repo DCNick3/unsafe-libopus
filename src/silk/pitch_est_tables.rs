@@ -1,15 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:32"]
-pub mod types_h {
-    #[c2rust::src_loc = "37:1"]
-    pub type __int8_t = libc::c_schar;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:32"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "24:1"]
-    pub type int8_t = __int8_t;
-    use super::types_h::__int8_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/pitch_est_defines.h:33"]
 pub mod pitch_est_defines_h {
     #[c2rust::src_loc = "63:9"]
@@ -22,8 +11,7 @@ pub mod pitch_est_defines_h {
 pub use self::pitch_est_defines_h::{
     PE_NB_CBKS_STAGE3_MAX, PE_NB_CBKS_STAGE3_MID, PE_NB_CBKS_STAGE3_MIN,
 };
-pub use self::stdint_intn_h::int8_t;
-pub use self::types_h::__int8_t;
+
 #[no_mangle]
 #[c2rust::src_loc = "35:17"]
 pub static mut silk_CB_lags_stage2_10_ms: [[i8; 3]; 2] = [

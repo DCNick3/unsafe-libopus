@@ -1,15 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:33"]
-pub mod types_h {
-    #[c2rust::src_loc = "42:1"]
-    pub type __uint32_t = libc::c_uint;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:33"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type uint32_t = __uint32_t;
-    use super::types_h::__uint32_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
@@ -158,8 +147,7 @@ use self::cwrs_h::{decode_pulses, encode_pulses};
 pub use self::entcode_h::{celt_udiv, ec_ctx, ec_dec, ec_enc, ec_window};
 pub use self::mathops_h::{cA, cB, cC, cE, fast_atan2f, PI};
 pub use self::pitch_h::celt_inner_prod_c;
-pub use self::stdint_uintn_h::uint32_t;
-pub use self::types_h::__uint32_t;
+
 #[c2rust::src_loc = "47:1"]
 unsafe extern "C" fn exp_rotation1(
     X: *mut celt_norm,

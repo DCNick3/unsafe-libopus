@@ -1,15 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:32"]
-pub mod types_h {
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:32"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::__int32_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/control.h:32"]
 pub mod control_h {
     #[derive(Copy, Clone)]
@@ -88,8 +77,7 @@ pub use self::errors_h::{
     SILK_ENC_INVALID_DTX_SETTING, SILK_ENC_INVALID_INBAND_FEC_SETTING, SILK_ENC_INVALID_LOSS_RATE,
     SILK_ENC_INVALID_NUMBER_OF_CHANNELS_ERROR, SILK_ENC_PACKET_SIZE_NOT_SUPPORTED, SILK_NO_ERROR,
 };
-pub use self::stdint_intn_h::int32_t;
-pub use self::types_h::__int32_t;
+
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn check_control_input(

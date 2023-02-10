@@ -13,136 +13,13 @@
 #![register_tool(c2rust)]
 
 use ::libc;
+use libc::{fclose, fopen, fprintf, fread, fseek, ftell, fwrite, printf, FILE};
+use libc_stdhandle::stderr;
 
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:33"]
 pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]
     pub type size_t = libc::c_ulong;
-}
-#[c2rust::header_src = "/usr/include/bits/types.h:33"]
-pub mod types_h {
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-    #[c2rust::src_loc = "42:1"]
-    pub type __uint32_t = libc::c_uint;
-    #[c2rust::src_loc = "45:1"]
-    pub type __uint64_t = libc::c_ulong;
-    #[c2rust::src_loc = "152:1"]
-    pub type __off_t = libc::c_long;
-    #[c2rust::src_loc = "153:1"]
-    pub type __off64_t = libc::c_long;
-}
-#[c2rust::header_src = "/usr/include/bits/types/struct_FILE.h:33"]
-pub mod struct_FILE_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "49:8"]
-    pub struct _IO_FILE {
-        pub _flags: libc::c_int,
-        pub _IO_read_ptr: *mut libc::c_char,
-        pub _IO_read_end: *mut libc::c_char,
-        pub _IO_read_base: *mut libc::c_char,
-        pub _IO_write_base: *mut libc::c_char,
-        pub _IO_write_ptr: *mut libc::c_char,
-        pub _IO_write_end: *mut libc::c_char,
-        pub _IO_buf_base: *mut libc::c_char,
-        pub _IO_buf_end: *mut libc::c_char,
-        pub _IO_save_base: *mut libc::c_char,
-        pub _IO_backup_base: *mut libc::c_char,
-        pub _IO_save_end: *mut libc::c_char,
-        pub _markers: *mut _IO_marker,
-        pub _chain: *mut _IO_FILE,
-        pub _fileno: libc::c_int,
-        pub _flags2: libc::c_int,
-        pub _old_offset: __off_t,
-        pub _cur_column: libc::c_ushort,
-        pub _vtable_offset: libc::c_schar,
-        pub _shortbuf: [libc::c_char; 1],
-        pub _lock: *mut libc::c_void,
-        pub _offset: __off64_t,
-        pub _codecvt: *mut _IO_codecvt,
-        pub _wide_data: *mut _IO_wide_data,
-        pub _freeres_list: *mut _IO_FILE,
-        pub _freeres_buf: *mut libc::c_void,
-        pub __pad5: size_t,
-        pub _mode: libc::c_int,
-        pub _unused2: [libc::c_char; 20],
-    }
-    #[c2rust::src_loc = "43:1"]
-    pub type _IO_lock_t = ();
-    use super::stddef_h::size_t;
-    use super::types_h::{__off64_t, __off_t};
-    extern "C" {
-        #[c2rust::src_loc = "38:8"]
-        pub type _IO_wide_data;
-        #[c2rust::src_loc = "37:8"]
-        pub type _IO_codecvt;
-        #[c2rust::src_loc = "36:8"]
-        pub type _IO_marker;
-    }
-}
-#[c2rust::header_src = "/usr/include/bits/types/FILE.h:33"]
-pub mod FILE_h {
-    #[c2rust::src_loc = "7:1"]
-    pub type FILE = _IO_FILE;
-    use super::struct_FILE_h::_IO_FILE;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:34"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t};
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:37"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type uint32_t = __uint32_t;
-    #[c2rust::src_loc = "27:1"]
-    pub type uint64_t = __uint64_t;
-    use super::types_h::{__uint32_t, __uint64_t};
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus.h:37"]
-#[c2rust::header_src = "/usr/include/stdio.h:33"]
-pub mod stdio_h {
-    use super::FILE_h::FILE;
-    extern "C" {
-        #[c2rust::src_loc = "145:14"]
-        pub static mut stderr: *mut FILE;
-        #[c2rust::src_loc = "178:1"]
-        pub fn fclose(__stream: *mut FILE) -> libc::c_int;
-        #[c2rust::src_loc = "258:14"]
-        pub fn fopen(_: *const libc::c_char, _: *const libc::c_char) -> *mut FILE;
-        #[c2rust::src_loc = "350:12"]
-        pub fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
-        #[c2rust::src_loc = "356:12"]
-        pub fn printf(_: *const libc::c_char, _: ...) -> libc::c_int;
-        #[c2rust::src_loc = "675:15"]
-        pub fn fread(
-            _: *mut libc::c_void,
-            _: libc::c_ulong,
-            _: libc::c_ulong,
-            _: *mut FILE,
-        ) -> libc::c_ulong;
-        #[c2rust::src_loc = "681:15"]
-        pub fn fwrite(
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-            _: libc::c_ulong,
-            _: *mut FILE,
-        ) -> libc::c_ulong;
-        #[c2rust::src_loc = "713:1"]
-        pub fn fseek(
-            __stream: *mut FILE,
-            __off: libc::c_long,
-            __whence: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "718:1"]
-        pub fn ftell(__stream: *mut FILE) -> libc::c_long;
-    }
 }
 #[c2rust::header_src = "/usr/include/stdlib.h:34"]
 pub mod stdlib_h {
@@ -188,9 +65,7 @@ pub mod opus_defines_h {
 }
 use self::opus_defines_h::{opus_get_version_string, opus_strerror};
 pub use self::stddef_h::size_t;
-use self::stdio_h::{fclose, fopen, fprintf, fread, fseek, ftell, fwrite, printf, stderr};
 pub use self::stdlib_h::{abs, atoi, atol, rand};
-pub use self::FILE_h::FILE;
 use libopus_unsafe::externs::strcmp;
 use libopus_unsafe::externs::{calloc, free, malloc};
 use libopus_unsafe::{
@@ -203,82 +78,85 @@ use libopus_unsafe::{
 #[c2rust::src_loc = "45:1"]
 pub unsafe extern "C" fn print_usage(mut argv: *mut *mut libc::c_char) {
     fprintf(
-        stderr,
+        stderr(),
         b"Usage: %s [-e] <application> <sampling rate (Hz)> <channels (1/2)> <bits per second>  [options] <input> <output>\n\0"
             as *const u8 as *const libc::c_char,
         *argv.offset(0 as libc::c_int as isize),
     );
     fprintf(
-        stderr,
+        stderr(),
         b"       %s -d <sampling rate (Hz)> <channels (1/2)> [options] <input> <output>\n\n\0"
             as *const u8 as *const libc::c_char,
         *argv.offset(0 as libc::c_int as isize),
     );
     fprintf(
-        stderr,
+        stderr(),
         b"application: voip | audio | restricted-lowdelay\n\0" as *const u8 as *const libc::c_char,
     );
-    fprintf(stderr, b"options:\n\0" as *const u8 as *const libc::c_char);
     fprintf(
-        stderr,
+        stderr(),
+        b"options:\n\0" as *const u8 as *const libc::c_char,
+    );
+    fprintf(
+        stderr(),
         b"-e                   : only runs the encoder (output the bit-stream)\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stderr,
+        stderr(),
         b"-d                   : only runs the decoder (reads the bit-stream as input)\n\0"
             as *const u8 as *const libc::c_char,
     );
     fprintf(
-        stderr,
+        stderr(),
         b"-cbr                 : enable constant bitrate; default: variable bitrate\n\0"
             as *const u8 as *const libc::c_char,
     );
     fprintf(
-        stderr,
+        stderr(),
         b"-cvbr                : enable constrained variable bitrate; default: unconstrained\n\0"
             as *const u8 as *const libc::c_char,
     );
     fprintf(
-        stderr,
+        stderr(),
         b"-delayed-decision    : use look-ahead for speech/music detection (experts only); default: disabled\n\0"
             as *const u8 as *const libc::c_char,
     );
     fprintf(
-        stderr,
+        stderr(),
         b"-bandwidth <NB|MB|WB|SWB|FB> : audio bandwidth (from narrowband to fullband); default: sampling rate\n\0"
             as *const u8 as *const libc::c_char,
     );
     fprintf(
-        stderr,
+        stderr(),
         b"-framesize <2.5|5|10|20|40|60|80|100|120> : frame size in ms; default: 20 \n\0"
             as *const u8 as *const libc::c_char,
     );
     fprintf(
-        stderr,
+        stderr(),
         b"-max_payload <bytes> : maximum payload size in bytes, default: 1024\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stderr,
+        stderr(),
         b"-complexity <comp>   : complexity, 0 (lowest) ... 10 (highest); default: 10\n\0"
             as *const u8 as *const libc::c_char,
     );
     fprintf(
-        stderr,
+        stderr(),
         b"-inbandfec           : enable SILK inband FEC\n\0" as *const u8 as *const libc::c_char,
     );
     fprintf(
-        stderr,
+        stderr(),
         b"-forcemono           : force mono encoding, even for stereo input\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stderr,
+        stderr(),
         b"-dtx                 : enable SILK DTX\n\0" as *const u8 as *const libc::c_char,
     );
     fprintf(
-        stderr,
+        stderr(),
         b"-loss <perc>         : simulate packet loss, in percent (0-100); default: 0\n\0"
             as *const u8 as *const libc::c_char,
     );
@@ -809,7 +687,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
         tot_out = 0 as libc::c_int as u64;
         tot_in = tot_out;
         fprintf(
-            stderr,
+            stderr(),
             b"%s\n\0" as *const u8 as *const libc::c_char,
             opus_get_version_string(),
         );
@@ -853,7 +731,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                 ) != 0 as libc::c_int
                 {
                     fprintf(
-                        stderr,
+                        stderr(),
                         b"unknown application: %s\n\0" as *const u8 as *const libc::c_char,
                         *argv.offset(args as isize),
                     );
@@ -884,7 +762,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                         && sampling_rate != 48000 as libc::c_int
                     {
                         fprintf(
-                            stderr,
+                            stderr(),
                             b"Supported sampling rates are 8000, 12000, 16000, 24000 and 48000.\n\0"
                                 as *const u8 as *const libc::c_char,
                         );
@@ -894,7 +772,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                         args += 1;
                         if channels < 1 as libc::c_int || channels > 2 as libc::c_int {
                             fprintf(
-                                stderr,
+                                stderr(),
                                 b"Opus_demo supports only 1 or 2 channels.\n\0" as *const u8
                                     as *const libc::c_char,
                             );
@@ -922,7 +800,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                 {
                                     if decode_only != 0 {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"option %s is only for encoding\n\0" as *const u8
                                                 as *const libc::c_char,
                                             b"-cbr\0" as *const u8 as *const libc::c_char,
@@ -940,7 +818,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                 {
                                     if decode_only != 0 {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"option %s is only for encoding\n\0" as *const u8
                                                 as *const libc::c_char,
                                             b"-bandwidth\0" as *const u8 as *const libc::c_char,
@@ -980,7 +858,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                             bandwidth = 1105 as libc::c_int;
                                         } else {
                                             fprintf(
-                                                stderr,
+                                                stderr(),
                                                 b"Unknown bandwidth %s. Supported are NB, MB, WB, SWB, FB.\n\0"
                                                     as *const u8 as *const libc::c_char,
                                                 *argv.offset((args + 1 as libc::c_int) as isize),
@@ -997,7 +875,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                 {
                                     if decode_only != 0 {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"option %s is only for encoding\n\0" as *const u8
                                                 as *const libc::c_char,
                                             b"-framesize\0" as *const u8 as *const libc::c_char,
@@ -1065,7 +943,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                 / 50 as libc::c_int;
                                         } else {
                                             fprintf(
-                                                stderr,
+                                                stderr(),
                                                 b"Unsupported frame size: %s ms. Supported are 2.5, 5, 10, 20, 40, 60, 80, 100, 120.\n\0"
                                                     as *const u8 as *const libc::c_char,
                                                 *argv.offset((args + 1 as libc::c_int) as isize),
@@ -1082,7 +960,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                 {
                                     if decode_only != 0 {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"option %s is only for encoding\n\0" as *const u8
                                                 as *const libc::c_char,
                                             b"-max_payload\0" as *const u8 as *const libc::c_char,
@@ -1101,7 +979,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                 {
                                     if decode_only != 0 {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"option %s is only for encoding\n\0" as *const u8
                                                 as *const libc::c_char,
                                             b"-complexity\0" as *const u8 as *const libc::c_char,
@@ -1127,7 +1005,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                 {
                                     if decode_only != 0 {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"option %s is only for encoding\n\0" as *const u8
                                                 as *const libc::c_char,
                                             b"-forcemono\0" as *const u8 as *const libc::c_char,
@@ -1145,7 +1023,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                 {
                                     if decode_only != 0 {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"option %s is only for encoding\n\0" as *const u8
                                                 as *const libc::c_char,
                                             b"-cvbr\0" as *const u8 as *const libc::c_char,
@@ -1163,7 +1041,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                 {
                                     if decode_only != 0 {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"option %s is only for encoding\n\0" as *const u8
                                                 as *const libc::c_char,
                                             b"-delayed-decision\0" as *const u8
@@ -1182,7 +1060,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                 {
                                     if decode_only != 0 {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"option %s is only for encoding\n\0" as *const u8
                                                 as *const libc::c_char,
                                             b"-dtx\0" as *const u8 as *const libc::c_char,
@@ -1208,7 +1086,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                 {
                                     if decode_only != 0 {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"option %s is only for encoding\n\0" as *const u8
                                                 as *const libc::c_char,
                                             b"-sweep\0" as *const u8 as *const libc::c_char,
@@ -1227,7 +1105,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                 {
                                     if decode_only != 0 {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"option %s is only for encoding\n\0" as *const u8
                                                 as *const libc::c_char,
                                             b"-random_framesize\0" as *const u8
@@ -1246,7 +1124,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                 {
                                     if decode_only != 0 {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"option %s is only for encoding\n\0" as *const u8
                                                 as *const libc::c_char,
                                             b"-sweep_max\0" as *const u8 as *const libc::c_char,
@@ -1265,7 +1143,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                 {
                                     if decode_only != 0 {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"option %s is only for encoding\n\0" as *const u8
                                                 as *const libc::c_char,
                                             b"-random_fec\0" as *const u8 as *const libc::c_char,
@@ -1283,7 +1161,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                 {
                                     if decode_only != 0 {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"option %s is only for encoding\n\0" as *const u8
                                                 as *const libc::c_char,
                                             b"-silk8k_test\0" as *const u8 as *const libc::c_char,
@@ -1302,7 +1180,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                 {
                                     if decode_only != 0 {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"option %s is only for encoding\n\0" as *const u8
                                                 as *const libc::c_char,
                                             b"-silk12k_test\0" as *const u8 as *const libc::c_char,
@@ -1321,7 +1199,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                 {
                                     if decode_only != 0 {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"option %s is only for encoding\n\0" as *const u8
                                                 as *const libc::c_char,
                                             b"-silk16k_test\0" as *const u8 as *const libc::c_char,
@@ -1340,7 +1218,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                 {
                                     if decode_only != 0 {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"option %s is only for encoding\n\0" as *const u8
                                                 as *const libc::c_char,
                                             b"-hybrid24k_test\0" as *const u8
@@ -1360,7 +1238,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                 {
                                     if decode_only != 0 {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"option %s is only for encoding\n\0" as *const u8
                                                 as *const libc::c_char,
                                             b"-hybrid48k_test\0" as *const u8
@@ -1380,7 +1258,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                 {
                                     if decode_only != 0 {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"option %s is only for encoding\n\0" as *const u8
                                                 as *const libc::c_char,
                                             b"-celt_test\0" as *const u8 as *const libc::c_char,
@@ -1399,7 +1277,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                 {
                                     if decode_only != 0 {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"option %s is only for encoding\n\0" as *const u8
                                                 as *const libc::c_char,
                                             b"-celt_hq_test\0" as *const u8 as *const libc::c_char,
@@ -1432,7 +1310,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                         || max_payload_bytes > 1500 as libc::c_int
                                     {
                                         fprintf(
-                                            stderr,
+                                            stderr(),
                                             b"max_payload_bytes must be between 0 and %d\n\0"
                                                 as *const u8
                                                 as *const libc::c_char,
@@ -1446,7 +1324,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                         );
                                         if fin.is_null() {
                                             fprintf(
-                                                stderr,
+                                                stderr(),
                                                 b"Could not open input file %s\n\0" as *const u8
                                                     as *const libc::c_char,
                                                 *argv.offset((argc - 2 as libc::c_int) as isize),
@@ -1461,7 +1339,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                 );
                                                 size = ftell(fin) as libc::c_int;
                                                 fprintf(
-                                                    stderr,
+                                                    stderr(),
                                                     b"File size is %d bytes\n\0" as *const u8
                                                         as *const libc::c_char,
                                                     size,
@@ -1481,7 +1359,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                     .wrapping_div(nb_modes_in_list as libc::c_ulong)
                                                     as libc::c_int;
                                                 fprintf(
-                                                    stderr,
+                                                    stderr(),
                                                     b"Switching mode every %d samples\n\0"
                                                         as *const u8
                                                         as *const libc::c_char,
@@ -1496,7 +1374,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                             );
                                             if fout.is_null() {
                                                 fprintf(
-                                                    stderr,
+                                                    stderr(),
                                                     b"Could not open output file %s\n\0"
                                                         as *const u8
                                                         as *const libc::c_char,
@@ -1513,7 +1391,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                     );
                                                     if err != 0 as libc::c_int {
                                                         fprintf(
-                                                            stderr,
+                                                            stderr(),
                                                             b"Cannot create encoder: %s\n\0"
                                                                 as *const u8
                                                                 as *const libc::c_char,
@@ -1603,7 +1481,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                             );
                                                             if err != 0 as libc::c_int {
                                                                 fprintf(
-                                                                    stderr,
+                                                                    stderr(),
                                                                     b"Cannot create decoder: %s\n\0"
                                                                         as *const u8
                                                                         as *const libc::c_char,
@@ -1653,7 +1531,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                 }
                                                                 if decode_only != 0 {
                                                                     fprintf(
-                                                                        stderr,
+                                                                        stderr(),
                                                                         b"Decoding with %ld Hz output (%d channels)\n\0"
                                                                             as *const u8 as *const libc::c_char,
                                                                         sampling_rate as libc::c_long,
@@ -1661,7 +1539,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                     );
                                                                 } else {
                                                                     fprintf(
-                                                                        stderr,
+                                                                        stderr(),
                                                                         b"Encoding %ld Hz input at %.3f kb/s in %s with %d-sample frames.\n\0"
                                                                             as *const u8 as *const libc::c_char,
                                                                         sampling_rate as libc::c_long,
@@ -1873,10 +1751,10 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                             4] = [0; 4];
                                                                         num_read = fread(
                                                                             ch.as_mut_ptr() as *mut libc::c_void,
-                                                                            1 as libc::c_int as libc::c_ulong,
-                                                                            4 as libc::c_int as libc::c_ulong,
+                                                                            1,
+                                                                            4,
                                                                             fin,
-                                                                        );
+                                                                        ) as _;
                                                                         if num_read
                                                                             != 4 as libc::c_int
                                                                                 as libc::c_ulong
@@ -1895,7 +1773,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                                 < 0 as libc::c_int
                                                                         {
                                                                             fprintf(
-                                                                                stderr,
+                                                                                stderr(),
                                                                                 b"Invalid payload length: %d\n\0" as *const u8
                                                                                     as *const libc::c_char,
                                                                                 len[toggle as usize],
@@ -1905,10 +1783,10 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                         } else {
                                                                             num_read = fread(
                                                                                 ch.as_mut_ptr() as *mut libc::c_void,
-                                                                                1 as libc::c_int as libc::c_ulong,
-                                                                                4 as libc::c_int as libc::c_ulong,
+                                                                                1,
+                                                                                4,
                                                                                 fin,
-                                                                            );
+                                                                            ) as _;
                                                                             if num_read
                                                                                 != 4 as libc::c_int
                                                                                     as libc::c_ulong
@@ -1923,17 +1801,17 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                                 );
                                                                             num_read = fread(
                                                                                 data[toggle as usize] as *mut libc::c_void,
-                                                                                1 as libc::c_int as libc::c_ulong,
-                                                                                len[toggle as usize] as libc::c_ulong,
+                                                                                1,
+                                                                                len[toggle as usize] as _,
                                                                                 fin,
-                                                                            );
+                                                                            ) as _;
                                                                             if num_read
                                                                                 != len[toggle
                                                                                     as usize]
                                                                                     as size_t
                                                                             {
                                                                                 fprintf(
-                                                                                    stderr,
+                                                                                    stderr(),
                                                                                     b"Ran out of input, expecting %d bytes got %d\n\0"
                                                                                         as *const u8 as *const libc::c_char,
                                                                                     len[toggle as usize],
@@ -1969,11 +1847,11 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                         }
                                                                         num_read = fread(
                                                                             fbytes as *mut libc::c_void,
-                                                                            (::core::mem::size_of::<libc::c_short>() as libc::c_ulong)
-                                                                                .wrapping_mul(channels as libc::c_ulong),
-                                                                            (frame_size - remaining) as libc::c_ulong,
+                                                                            (::core::mem::size_of::<libc::c_short>())
+                                                                                .wrapping_mul(channels as _),
+                                                                            (frame_size - remaining) as _,
                                                                             fin,
-                                                                        );
+                                                                        ) as _;
                                                                         curr_read =
                                                                             num_read as libc::c_int;
                                                                         tot_in = (tot_in as libc::c_ulong)
@@ -2098,7 +1976,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                             < 0 as libc::c_int
                                                                         {
                                                                             fprintf(
-                                                                                stderr,
+                                                                                stderr(),
                                                                                 b"opus_encode() returned %d\n\0" as *const u8
                                                                                     as *const libc::c_char,
                                                                                 len[toggle as usize],
@@ -2125,13 +2003,13 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                         );
                                                                         if fwrite(
                                                                             int_field.as_mut_ptr() as *const libc::c_void,
-                                                                            1 as libc::c_int as libc::c_ulong,
-                                                                            4 as libc::c_int as libc::c_ulong,
+                                                                            1,
+                                                                            4,
                                                                             fout,
-                                                                        ) != 4 as libc::c_int as libc::c_ulong
+                                                                        ) != 4
                                                                         {
                                                                             fprintf(
-                                                                                stderr,
+                                                                                stderr(),
                                                                                 b"Error writing.\n\0" as *const u8 as *const libc::c_char,
                                                                             );
                                                                             current_block = 14460699602747363466;
@@ -2143,26 +2021,26 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                             );
                                                                             if fwrite(
                                                                                 int_field.as_mut_ptr() as *const libc::c_void,
-                                                                                1 as libc::c_int as libc::c_ulong,
-                                                                                4 as libc::c_int as libc::c_ulong,
+                                                                                1,
+                                                                                4,
                                                                                 fout,
-                                                                            ) != 4 as libc::c_int as libc::c_ulong
+                                                                            ) != 4
                                                                             {
                                                                                 fprintf(
-                                                                                    stderr,
+                                                                                    stderr(),
                                                                                     b"Error writing.\n\0" as *const u8 as *const libc::c_char,
                                                                                 );
                                                                                 current_block = 14460699602747363466;
                                                                                 break;
                                                                             } else if fwrite(
                                                                                 data[toggle as usize] as *const libc::c_void,
-                                                                                1 as libc::c_int as libc::c_ulong,
-                                                                                len[toggle as usize] as libc::c_ulong,
+                                                                                1,
+                                                                                len[toggle as usize] as _,
                                                                                 fout,
-                                                                            ) != len[toggle as usize] as libc::c_uint as libc::c_ulong
+                                                                            ) != len[toggle as usize] as _
                                                                             {
                                                                                 fprintf(
-                                                                                    stderr,
+                                                                                    stderr(),
                                                                                     b"Error writing.\n\0" as *const u8 as *const libc::c_char,
                                                                                 );
                                                                                 current_block = 14460699602747363466;
@@ -2274,15 +2152,15 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                                     }
                                                                                     if fwrite(
                                                                                         fbytes as *const libc::c_void,
-                                                                                        (::core::mem::size_of::<libc::c_short>() as libc::c_ulong)
-                                                                                            .wrapping_mul(channels as libc::c_ulong),
-                                                                                        (output_samples - skip) as libc::c_ulong,
+                                                                                        (::core::mem::size_of::<libc::c_short>())
+                                                                                            .wrapping_mul(channels as _),
+                                                                                        (output_samples - skip) as _,
                                                                                         fout,
                                                                                     )
-                                                                                        != (output_samples - skip) as libc::c_uint as libc::c_ulong
+                                                                                        != (output_samples - skip) as _
                                                                                     {
                                                                                         fprintf(
-                                                                                            stderr,
+                                                                                            stderr(),
                                                                                             b"Error writing.\n\0" as *const u8 as *const libc::c_char,
                                                                                         );
                                                                                         current_block = 14460699602747363466;
@@ -2302,7 +2180,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                                 }
                                                                             } else {
                                                                                 fprintf(
-                                                                                    stderr,
+                                                                                    stderr(),
                                                                                     b"error decoding frame: %s\n\0" as *const u8
                                                                                         as *const libc::c_char,
                                                                                     opus_strerror(output_samples),
@@ -2338,7 +2216,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                                     as usize]
                                                                     {
                                                                         fprintf(
-                                                                            stderr,
+                                                                            stderr(),
                                                                             b"Error: Range coder state mismatch between encoder and decoder in frame %ld: 0x%8lx vs 0x%8lx\n\0"
                                                                                 as *const u8 as *const libc::c_char,
                                                                             count as libc::c_long,
@@ -2419,14 +2297,14 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                         {
                                                                             let mut var: libc::c_double = 0.;
                                                                             fprintf(
-                                                                                stderr,
+                                                                                stderr(),
                                                                                 b"average bitrate:             %7.3f kb/s\n\0" as *const u8
                                                                                     as *const libc::c_char,
                                                                                 1e-3f64 * bits * sampling_rate as libc::c_double
                                                                                     / tot_samples,
                                                                             );
                                                                             fprintf(
-                                                                                stderr,
+                                                                                stderr(),
                                                                                 b"maximum bitrate:             %7.3f kb/s\n\0" as *const u8
                                                                                     as *const libc::c_char,
                                                                                 1e-3f64 * bits_max * sampling_rate as libc::c_double
@@ -2434,7 +2312,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                             );
                                                                             if decode_only == 0 {
                                                                                 fprintf(
-                                                                                    stderr,
+                                                                                    stderr(),
                                                                                     b"active bitrate:              %7.3f kb/s\n\0" as *const u8
                                                                                         as *const libc::c_char,
                                                                                     1e-3f64 * bits_act * sampling_rate as libc::c_double
@@ -2453,7 +2331,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                                 var = 0 as libc::c_int as libc::c_double;
                                                                             }
                                                                             fprintf(
-                                                                                stderr,
+                                                                                stderr(),
                                                                                 b"bitrate standard deviation:  %7.3f kb/s\n\0" as *const u8
                                                                                     as *const libc::c_char,
                                                                                 1e-3f64 * var.sqrt() * sampling_rate as libc::c_double
@@ -2461,7 +2339,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                             );
                                                                         } else {
                                                                             fprintf(
-                                                                                stderr,
+                                                                                stderr(),
                                                                                 b"bitrate statistics are undefined\n\0" as *const u8
                                                                                     as *const libc::c_char,
                                                                             );

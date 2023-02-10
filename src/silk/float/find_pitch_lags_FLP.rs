@@ -1,31 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:32"]
-pub mod types_h {
-    #[c2rust::src_loc = "37:1"]
-    pub type __int8_t = libc::c_schar;
-    #[c2rust::src_loc = "38:1"]
-    pub type __uint8_t = libc::c_uchar;
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:32"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "24:1"]
-    pub type int8_t = __int8_t;
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t, __int8_t};
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:33"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "24:1"]
-    pub type uint8_t = __uint8_t;
-    use super::types_h::__uint8_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:33"]
 pub mod resampler_structs_h {
     #[derive(Copy, Clone)]
@@ -349,8 +322,7 @@ use self::main_FLP_h::{silk_LPC_analysis_filter_FLP, silk_apply_sine_window_FLP}
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
-pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
-pub use self::stdint_uintn_h::uint8_t;
+
 pub use self::structs_FLP_h::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
 };
@@ -361,7 +333,7 @@ pub use self::structs_h::{
 pub use self::tuning_parameters_h::{
     FIND_PITCH_BANDWIDTH_EXPANSION, FIND_PITCH_WHITE_NOISE_FRACTION,
 };
-pub use self::types_h::{__int16_t, __int32_t, __int8_t, __uint8_t};
+
 use self::SigProc_FLP_h::{
     silk_autocorrelation_FLP, silk_bwexpander_FLP, silk_k2a_FLP, silk_pitch_analysis_core_FLP,
     silk_schur_FLP,

@@ -1,15 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:7"]
-pub mod types_h {
-    #[c2rust::src_loc = "37:1"]
-    pub type __int8_t = libc::c_schar;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:7"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "24:1"]
-    pub type int8_t = __int8_t;
-    use super::types_h::__int8_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/mlp.h:7"]
 pub mod mlp_h {
     #[derive(Copy, Clone)]
@@ -34,8 +23,7 @@ pub mod mlp_h {
     }
 }
 pub use self::mlp_h::{DenseLayer, GRULayer};
-pub use self::stdint_intn_h::int8_t;
-pub use self::types_h::__int8_t;
+
 #[c2rust::src_loc = "9:24"]
 static mut layer0_weights: [i8; 800] = [
     -(30 as libc::c_int) as i8,

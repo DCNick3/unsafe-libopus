@@ -1,23 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:33"]
-pub mod types_h {
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-    #[c2rust::src_loc = "42:1"]
-    pub type __uint32_t = libc::c_uint;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:33"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::__int32_t;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:33"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type uint32_t = __uint32_t;
-    use super::types_h::__uint32_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:33"]
 pub mod entcode_h {
     #[c2rust::src_loc = "45:1"]
@@ -87,9 +68,7 @@ use self::arch_h::celt_fatal;
 pub use self::entcode_h::{ec_ctx, ec_dec, ec_enc, ec_window};
 use self::entdec_h::{ec_dec_update, ec_decode_bin};
 use self::entenc_h::ec_encode_bin;
-pub use self::stdint_intn_h::int32_t;
-pub use self::stdint_uintn_h::uint32_t;
-pub use self::types_h::{__int32_t, __uint32_t};
+
 #[c2rust::src_loc = "37:9"]
 pub const LAPLACE_LOG_MINP: libc::c_int = 0 as libc::c_int;
 #[c2rust::src_loc = "38:9"]

@@ -1,27 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:33"]
-pub mod types_h {
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-    #[c2rust::src_loc = "42:1"]
-    pub type __uint32_t = libc::c_uint;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:34"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t};
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:34"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type uint32_t = __uint32_t;
-    use super::types_h::__uint32_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/modes.h:34"]
 pub mod modes_h {
     #[derive(Copy, Clone)]
@@ -178,9 +155,7 @@ pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::mdct_h::mdct_lookup;
 pub use self::modes_h::{OpusCustomMode, PulseCache};
 pub use self::rate_h::FINE_OFFSET;
-pub use self::stdint_intn_h::{int16_t, int32_t};
-pub use self::stdint_uintn_h::uint32_t;
-pub use self::types_h::{__int16_t, __int32_t, __uint32_t};
+
 #[c2rust::src_loc = "42:28"]
 static mut LOG2_FRAC_TABLE: [libc::c_uchar; 24] = [
     0 as libc::c_int as libc::c_uchar,

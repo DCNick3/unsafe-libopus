@@ -1,31 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:38"]
-pub mod types_h {
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-    #[c2rust::src_loc = "42:1"]
-    pub type __uint32_t = libc::c_uint;
-    #[c2rust::src_loc = "44:1"]
-    pub type __int64_t = libc::c_long;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:38"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    #[c2rust::src_loc = "27:1"]
-    pub type int64_t = __int64_t;
-    use super::types_h::{__int16_t, __int32_t, __int64_t};
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:38"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type uint32_t = __uint32_t;
-    use super::types_h::__uint32_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:38"]
 pub mod arch_h {
     extern "C" {
@@ -68,10 +41,9 @@ pub mod tables_h {
 }
 use self::arch_h::celt_fatal;
 pub use self::define_h::MAX_LPC_STABILIZE_ITERATIONS;
-pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
-pub use self::stdint_uintn_h::uint32_t;
+
 use self::tables_h::silk_LSFCosTab_FIX_Q12;
-pub use self::types_h::{__int16_t, __int32_t, __int64_t, __uint32_t};
+
 use self::SigProc_FIX_h::{silk_LPC_fit, silk_LPC_inverse_pred_gain_c, silk_bwexpander_32};
 #[c2rust::src_loc = "41:9"]
 pub const QA: libc::c_int = 16 as libc::c_int;

@@ -13,92 +13,13 @@
 #![register_tool(c2rust)]
 
 use ::libc;
+use libc::fprintf;
+use libc_stdhandle::stderr;
+
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:33"]
 pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]
     pub type size_t = libc::c_ulong;
-}
-#[c2rust::header_src = "/usr/include/bits/types.h:33"]
-pub mod types_h {
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-    #[c2rust::src_loc = "42:1"]
-    pub type __uint32_t = libc::c_uint;
-    #[c2rust::src_loc = "152:1"]
-    pub type __off_t = libc::c_long;
-    #[c2rust::src_loc = "153:1"]
-    pub type __off64_t = libc::c_long;
-}
-#[c2rust::header_src = "/usr/include/bits/types/struct_FILE.h:33"]
-pub mod struct_FILE_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "49:8"]
-    pub struct _IO_FILE {
-        pub _flags: libc::c_int,
-        pub _IO_read_ptr: *mut libc::c_char,
-        pub _IO_read_end: *mut libc::c_char,
-        pub _IO_read_base: *mut libc::c_char,
-        pub _IO_write_base: *mut libc::c_char,
-        pub _IO_write_ptr: *mut libc::c_char,
-        pub _IO_write_end: *mut libc::c_char,
-        pub _IO_buf_base: *mut libc::c_char,
-        pub _IO_buf_end: *mut libc::c_char,
-        pub _IO_save_base: *mut libc::c_char,
-        pub _IO_backup_base: *mut libc::c_char,
-        pub _IO_save_end: *mut libc::c_char,
-        pub _markers: *mut _IO_marker,
-        pub _chain: *mut _IO_FILE,
-        pub _fileno: libc::c_int,
-        pub _flags2: libc::c_int,
-        pub _old_offset: __off_t,
-        pub _cur_column: libc::c_ushort,
-        pub _vtable_offset: libc::c_schar,
-        pub _shortbuf: [libc::c_char; 1],
-        pub _lock: *mut libc::c_void,
-        pub _offset: __off64_t,
-        pub _codecvt: *mut _IO_codecvt,
-        pub _wide_data: *mut _IO_wide_data,
-        pub _freeres_list: *mut _IO_FILE,
-        pub _freeres_buf: *mut libc::c_void,
-        pub __pad5: size_t,
-        pub _mode: libc::c_int,
-        pub _unused2: [libc::c_char; 20],
-    }
-    #[c2rust::src_loc = "43:1"]
-    pub type _IO_lock_t = ();
-    use super::stddef_h::size_t;
-    use super::types_h::{__off64_t, __off_t};
-    extern "C" {
-        #[c2rust::src_loc = "38:8"]
-        pub type _IO_wide_data;
-        #[c2rust::src_loc = "37:8"]
-        pub type _IO_codecvt;
-        #[c2rust::src_loc = "36:8"]
-        pub type _IO_marker;
-    }
-}
-#[c2rust::header_src = "/usr/include/bits/types/FILE.h:33"]
-pub mod FILE_h {
-    #[c2rust::src_loc = "7:1"]
-    pub type FILE = _IO_FILE;
-    use super::struct_FILE_h::_IO_FILE;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:34"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t};
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:35"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type uint32_t = __uint32_t;
-    use super::types_h::__uint32_t;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:37"]
 pub mod arch_h {
@@ -177,16 +98,6 @@ pub mod mapping_matrix_h {
         );
     }
 }
-#[c2rust::header_src = "/usr/include/stdio.h:33"]
-pub mod stdio_h {
-    use super::FILE_h::FILE;
-    extern "C" {
-        #[c2rust::src_loc = "145:14"]
-        pub static mut stderr: *mut FILE;
-        #[c2rust::src_loc = "350:12"]
-        pub fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/usr/include/stdlib.h:34"]
 pub mod stdlib_h {
     extern "C" {
@@ -247,26 +158,26 @@ pub mod test_opus_common_h {
         mut line: libc::c_int,
     ) -> ! {
         fprintf(
-            stderr,
+            stderr(),
             b"\n ***************************************************\n\0" as *const u8
                 as *const libc::c_char,
         );
         fprintf(
-            stderr,
+            stderr(),
             b" ***         A fatal error was detected.         ***\n\0" as *const u8
                 as *const libc::c_char,
         );
         fprintf(
-            stderr,
+            stderr(),
             b" ***************************************************\n\0" as *const u8
                 as *const libc::c_char,
         );
         fprintf(
-            stderr,
+            stderr(),
             b"Please report this failure and include\n\0" as *const u8 as *const libc::c_char,
         );
         fprintf(
-            stderr,
+            stderr(),
             b"'make check SEED=%u fails %s at line %d for %s'\n\0" as *const u8
                 as *const libc::c_char,
             iseed,
@@ -275,15 +186,16 @@ pub mod test_opus_common_h {
             opus_get_version_string(),
         );
         fprintf(
-            stderr,
+            stderr(),
             b"and any relevant details about your system.\n\n\0" as *const u8
                 as *const libc::c_char,
         );
         abort();
     }
 
-    use super::stdio_h::{fprintf, stderr};
     use super::stdlib_h::abort;
+    use libc::fprintf;
+    use libc_stdhandle::stderr;
     use libopus_unsafe::opus_get_version_string;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/os_support.h:41"]
@@ -313,7 +225,6 @@ pub use self::mapping_matrix_h::{
 };
 pub use self::os_support_h::{opus_alloc, opus_free};
 pub use self::stddef_h::size_t;
-use self::stdio_h::{fprintf, stderr};
 use self::stdlib_h::abs;
 pub use self::test_opus_common_h::{_test_failed, fast_rand};
 use libopus_unsafe::externs::memset;
@@ -694,19 +605,19 @@ pub unsafe extern "C" fn test_creation_arguments(
         (enc_error == 0 as libc::c_int && dec_error == 0 as libc::c_int) as libc::c_int;
     if is_channels_valid ^ is_projection_valid != 0 {
         fprintf(
-            stderr,
+            stderr(),
             b"Channels: %d, Family: %d\n\0" as *const u8 as *const libc::c_char,
             channels,
             mapping_family,
         );
         fprintf(
-            stderr,
+            stderr(),
             b"Order+1: %d, Non-diegetic Channels: %d\n\0" as *const u8 as *const libc::c_char,
             order_plus_one,
             nondiegetic_channels,
         );
         fprintf(
-            stderr,
+            stderr(),
             b"Streams: %d, Coupled Streams: %d\n\0" as *const u8 as *const libc::c_char,
             streams,
             coupled_streams,
@@ -33622,7 +33533,7 @@ pub unsafe extern "C" fn test_encode_decode(
     );
     if error != 0 as libc::c_int {
         fprintf(
-            stderr,
+            stderr(),
             b"Couldn't create encoder with %d channels and mapping family %d.\n\0" as *const u8
                 as *const libc::c_char,
             channels,
@@ -33658,7 +33569,7 @@ pub unsafe extern "C" fn test_encode_decode(
             opus_free(matrix as *mut libc::c_void);
             if error != 0 as libc::c_int {
                 fprintf(
-                    stderr,
+                    stderr(),
                     b"Couldn't create decoder with %d channels, %d streams and %d coupled streams.\n\0"
                         as *const u8 as *const libc::c_char,
                     channels,
@@ -33676,7 +33587,7 @@ pub unsafe extern "C" fn test_encode_decode(
                 );
                 if len < 0 as libc::c_int || len > 32768 as libc::c_int {
                     fprintf(
-                        stderr,
+                        stderr(),
                         b"opus_encode() returned %d\n\0" as *const u8 as *const libc::c_char,
                         len,
                     );
@@ -33691,7 +33602,7 @@ pub unsafe extern "C" fn test_encode_decode(
                     );
                     if out_samples != 960 as libc::c_int {
                         fprintf(
-                            stderr,
+                            stderr(),
                             b"opus_decode() returned %d\n\0" as *const u8 as *const libc::c_char,
                             out_samples,
                         );
@@ -33728,7 +33639,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
         3 as libc::c_int,
     );
     fprintf(
-        stderr,
+        stderr(),
         b"All projection tests passed.\n\0" as *const u8 as *const libc::c_char,
     );
     0 as libc::c_int

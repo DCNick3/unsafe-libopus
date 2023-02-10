@@ -13,118 +13,13 @@
 #![register_tool(c2rust)]
 
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:32"]
-pub mod types_h {
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-    #[c2rust::src_loc = "42:1"]
-    pub type __uint32_t = libc::c_uint;
-    #[c2rust::src_loc = "152:1"]
-    pub type __off_t = libc::c_long;
-    #[c2rust::src_loc = "153:1"]
-    pub type __off64_t = libc::c_long;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:32"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::__int32_t;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type uint32_t = __uint32_t;
-    use super::types_h::__uint32_t;
-}
+use libc::{fclose, feof, fopen, fprintf, fread, fwrite, FILE};
+use libc_stdhandle::stderr;
+
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:33"]
 pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]
     pub type size_t = libc::c_ulong;
-}
-#[c2rust::header_src = "/usr/include/bits/types/struct_FILE.h:33"]
-pub mod struct_FILE_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "49:8"]
-    pub struct _IO_FILE {
-        pub _flags: libc::c_int,
-        pub _IO_read_ptr: *mut libc::c_char,
-        pub _IO_read_end: *mut libc::c_char,
-        pub _IO_read_base: *mut libc::c_char,
-        pub _IO_write_base: *mut libc::c_char,
-        pub _IO_write_ptr: *mut libc::c_char,
-        pub _IO_write_end: *mut libc::c_char,
-        pub _IO_buf_base: *mut libc::c_char,
-        pub _IO_buf_end: *mut libc::c_char,
-        pub _IO_save_base: *mut libc::c_char,
-        pub _IO_backup_base: *mut libc::c_char,
-        pub _IO_save_end: *mut libc::c_char,
-        pub _markers: *mut _IO_marker,
-        pub _chain: *mut _IO_FILE,
-        pub _fileno: libc::c_int,
-        pub _flags2: libc::c_int,
-        pub _old_offset: __off_t,
-        pub _cur_column: libc::c_ushort,
-        pub _vtable_offset: libc::c_schar,
-        pub _shortbuf: [libc::c_char; 1],
-        pub _lock: *mut libc::c_void,
-        pub _offset: __off64_t,
-        pub _codecvt: *mut _IO_codecvt,
-        pub _wide_data: *mut _IO_wide_data,
-        pub _freeres_list: *mut _IO_FILE,
-        pub _freeres_buf: *mut libc::c_void,
-        pub __pad5: size_t,
-        pub _mode: libc::c_int,
-        pub _unused2: [libc::c_char; 20],
-    }
-    #[c2rust::src_loc = "43:1"]
-    pub type _IO_lock_t = ();
-    use super::stddef_h::size_t;
-    use super::types_h::{__off64_t, __off_t};
-    extern "C" {
-        #[c2rust::src_loc = "38:8"]
-        pub type _IO_wide_data;
-        #[c2rust::src_loc = "37:8"]
-        pub type _IO_codecvt;
-        #[c2rust::src_loc = "36:8"]
-        pub type _IO_marker;
-    }
-}
-#[c2rust::header_src = "/usr/include/bits/types/FILE.h:33"]
-pub mod FILE_h {
-    #[c2rust::src_loc = "7:1"]
-    pub type FILE = _IO_FILE;
-    use super::struct_FILE_h::_IO_FILE;
-}
-#[c2rust::header_src = "/usr/include/stdio.h:33"]
-pub mod stdio_h {
-    use super::FILE_h::FILE;
-    extern "C" {
-        #[c2rust::src_loc = "145:14"]
-        pub static mut stderr: *mut FILE;
-        #[c2rust::src_loc = "178:1"]
-        pub fn fclose(__stream: *mut FILE) -> libc::c_int;
-        #[c2rust::src_loc = "258:14"]
-        pub fn fopen(_: *const libc::c_char, _: *const libc::c_char) -> *mut FILE;
-        #[c2rust::src_loc = "350:12"]
-        pub fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
-        #[c2rust::src_loc = "675:15"]
-        pub fn fread(
-            _: *mut libc::c_void,
-            _: libc::c_ulong,
-            _: libc::c_ulong,
-            _: *mut FILE,
-        ) -> libc::c_ulong;
-        #[c2rust::src_loc = "788:1"]
-        pub fn feof(__stream: *mut FILE) -> libc::c_int;
-        #[c2rust::src_loc = "681:15"]
-        pub fn fwrite(
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-            _: libc::c_ulong,
-            _: *mut FILE,
-        ) -> libc::c_ulong;
-    }
 }
 #[c2rust::header_src = "/usr/include/stdlib.h:34"]
 pub mod stdlib_h {
@@ -146,9 +41,7 @@ pub mod stdlib_h {
         ) -> libc::c_long;
     }
 }
-use self::stdio_h::{fclose, feof, fopen, fprintf, fread, fwrite, stderr};
 pub use self::stdlib_h::atoi;
-pub use self::FILE_h::FILE;
 use libopus_unsafe::externs::strcmp;
 use libopus_unsafe::{
     opus_repacketizer_cat, opus_repacketizer_create, opus_repacketizer_get_nb_frames,
@@ -159,7 +52,7 @@ use libopus_unsafe::{
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn usage(mut argv0: *mut libc::c_char) {
     fprintf(
-        stderr,
+        stderr(),
         b"usage: %s [options] input_file output_file\n\0" as *const u8 as *const libc::c_char,
         argv0,
     );
@@ -208,14 +101,14 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
             merge = atoi(*argv.offset((i + 1 as libc::c_int) as isize));
             if merge < 1 as libc::c_int {
                 fprintf(
-                    stderr,
+                    stderr(),
                     b"-merge parameter must be at least 1.\n\0" as *const u8 as *const libc::c_char,
                 );
                 return 1 as libc::c_int;
             }
             if merge > 48 as libc::c_int {
                 fprintf(
-                    stderr,
+                    stderr(),
                     b"-merge parameter must be less than 48.\n\0" as *const u8
                         as *const libc::c_char,
                 );
@@ -230,7 +123,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
             split = 1 as libc::c_int;
         } else {
             fprintf(
-                stderr,
+                stderr(),
                 b"Unknown option: %s\n\0" as *const u8 as *const libc::c_char,
                 *argv.offset(i as isize),
             );
@@ -245,7 +138,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
     );
     if fin.is_null() {
         fprintf(
-            stderr,
+            stderr(),
             b"Error opening input file: %s\n\0" as *const u8 as *const libc::c_char,
             *argv.offset((argc - 2 as libc::c_int) as isize),
         );
@@ -257,7 +150,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
     );
     if fout.is_null() {
         fprintf(
-            stderr,
+            stderr(),
             b"Error opening output file: %s\n\0" as *const u8 as *const libc::c_char,
             *argv.offset((argc - 1 as libc::c_int) as isize),
         );
@@ -272,19 +165,14 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
         i = 0 as libc::c_int;
         while i < nb_packets {
             let mut ch: [libc::c_uchar; 4] = [0; 4];
-            err = fread(
-                ch.as_mut_ptr() as *mut libc::c_void,
-                1 as libc::c_int as libc::c_ulong,
-                4 as libc::c_int as libc::c_ulong,
-                fin,
-            ) as libc::c_int;
+            err = fread(ch.as_mut_ptr() as *mut libc::c_void, 1, 4, fin) as libc::c_int;
             len[i as usize] = char_to_int(ch.as_mut_ptr()) as libc::c_int;
             if len[i as usize] > 1500 as libc::c_int || len[i as usize] < 0 as libc::c_int {
                 if feof(fin) != 0 {
                     eof = 1 as libc::c_int;
                 } else {
                     fprintf(
-                        stderr,
+                        stderr(),
                         b"Invalid payload length\n\0" as *const u8 as *const libc::c_char,
                     );
                     fclose(fin);
@@ -293,17 +181,12 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                 }
                 break;
             } else {
-                err = fread(
-                    ch.as_mut_ptr() as *mut libc::c_void,
-                    1 as libc::c_int as libc::c_ulong,
-                    4 as libc::c_int as libc::c_ulong,
-                    fin,
-                ) as libc::c_int;
+                err = fread(ch.as_mut_ptr() as *mut libc::c_void, 1, 4, fin) as libc::c_int;
                 rng[i as usize] = char_to_int(ch.as_mut_ptr()) as libc::c_int;
                 err = fread(
                     (packets[i as usize]).as_mut_ptr() as *mut libc::c_void,
-                    1 as libc::c_int as libc::c_ulong,
-                    len[i as usize] as libc::c_ulong,
+                    1,
+                    len[i as usize] as _,
                     fin,
                 ) as libc::c_int;
                 if feof(fin) != 0 {
@@ -317,7 +200,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                     );
                     if err != 0 as libc::c_int {
                         fprintf(
-                            stderr,
+                            stderr(),
                             b"opus_repacketizer_cat() failed: %s\n\0" as *const u8
                                 as *const libc::c_char,
                             opus_strerror(err),
@@ -338,15 +221,9 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
             if err > 0 as libc::c_int {
                 let mut int_field: [libc::c_uchar; 4] = [0; 4];
                 int_to_char(err as u32, int_field.as_mut_ptr());
-                if fwrite(
-                    int_field.as_mut_ptr() as *const libc::c_void,
-                    1 as libc::c_int as libc::c_ulong,
-                    4 as libc::c_int as libc::c_ulong,
-                    fout,
-                ) != 4 as libc::c_int as libc::c_ulong
-                {
+                if fwrite(int_field.as_mut_ptr() as *const libc::c_void, 1, 4, fout) != 4 {
                     fprintf(
-                        stderr,
+                        stderr(),
                         b"Error writing.\n\0" as *const u8 as *const libc::c_char,
                     );
                     return 1 as libc::c_int;
@@ -355,35 +232,29 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                     rng[(nb_packets - 1 as libc::c_int) as usize] as u32,
                     int_field.as_mut_ptr(),
                 );
-                if fwrite(
-                    int_field.as_mut_ptr() as *const libc::c_void,
-                    1 as libc::c_int as libc::c_ulong,
-                    4 as libc::c_int as libc::c_ulong,
-                    fout,
-                ) != 4 as libc::c_int as libc::c_ulong
-                {
+                if fwrite(int_field.as_mut_ptr() as *const libc::c_void, 1, 4, fout) != 4 {
                     fprintf(
-                        stderr,
+                        stderr(),
                         b"Error writing.\n\0" as *const u8 as *const libc::c_char,
                     );
                     return 1 as libc::c_int;
                 }
                 if fwrite(
                     output_packet.as_mut_ptr() as *const libc::c_void,
-                    1 as libc::c_int as libc::c_ulong,
-                    err as libc::c_ulong,
+                    1,
+                    err as _,
                     fout,
-                ) != err as libc::c_uint as libc::c_ulong
+                ) != err as _
                 {
                     fprintf(
-                        stderr,
+                        stderr(),
                         b"Error writing.\n\0" as *const u8 as *const libc::c_char,
                     );
                     return 1 as libc::c_int;
                 }
             } else {
                 fprintf(
-                    stderr,
+                    stderr(),
                     b"opus_repacketizer_out() failed: %s\n\0" as *const u8 as *const libc::c_char,
                     opus_strerror(err),
                 );
@@ -402,15 +273,9 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                 if err > 0 as libc::c_int {
                     let mut int_field_0: [libc::c_uchar; 4] = [0; 4];
                     int_to_char(err as u32, int_field_0.as_mut_ptr());
-                    if fwrite(
-                        int_field_0.as_mut_ptr() as *const libc::c_void,
-                        1 as libc::c_int as libc::c_ulong,
-                        4 as libc::c_int as libc::c_ulong,
-                        fout,
-                    ) != 4 as libc::c_int as libc::c_ulong
-                    {
+                    if fwrite(int_field_0.as_mut_ptr() as *const libc::c_void, 1, 4, fout) != 4 {
                         fprintf(
-                            stderr,
+                            stderr(),
                             b"Error writing.\n\0" as *const u8 as *const libc::c_char,
                         );
                         return 1 as libc::c_int;
@@ -423,35 +288,29 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                     } else {
                         int_to_char(0 as libc::c_int as u32, int_field_0.as_mut_ptr());
                     }
-                    if fwrite(
-                        int_field_0.as_mut_ptr() as *const libc::c_void,
-                        1 as libc::c_int as libc::c_ulong,
-                        4 as libc::c_int as libc::c_ulong,
-                        fout,
-                    ) != 4 as libc::c_int as libc::c_ulong
-                    {
+                    if fwrite(int_field_0.as_mut_ptr() as *const libc::c_void, 1, 4, fout) != 4 {
                         fprintf(
-                            stderr,
+                            stderr(),
                             b"Error writing.\n\0" as *const u8 as *const libc::c_char,
                         );
                         return 1 as libc::c_int;
                     }
                     if fwrite(
                         output_packet.as_mut_ptr() as *const libc::c_void,
-                        1 as libc::c_int as libc::c_ulong,
-                        err as libc::c_ulong,
+                        1,
+                        err as _,
                         fout,
-                    ) != err as libc::c_uint as libc::c_ulong
+                    ) != err as _
                     {
                         fprintf(
-                            stderr,
+                            stderr(),
                             b"Error writing.\n\0" as *const u8 as *const libc::c_char,
                         );
                         return 1 as libc::c_int;
                     }
                 } else {
                     fprintf(
-                        stderr,
+                        stderr(),
                         b"opus_repacketizer_out() failed: %s\n\0" as *const u8
                             as *const libc::c_char,
                         opus_strerror(err),

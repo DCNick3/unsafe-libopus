@@ -1,39 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:32"]
-pub mod types_h {
-    #[c2rust::src_loc = "37:1"]
-    pub type __int8_t = libc::c_schar;
-    #[c2rust::src_loc = "38:1"]
-    pub type __uint8_t = libc::c_uchar;
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-    #[c2rust::src_loc = "42:1"]
-    pub type __uint32_t = libc::c_uint;
-    #[c2rust::src_loc = "44:1"]
-    pub type __int64_t = libc::c_long;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:32"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "24:1"]
-    pub type int8_t = __int8_t;
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    #[c2rust::src_loc = "27:1"]
-    pub type int64_t = __int64_t;
-    use super::types_h::{__int16_t, __int32_t, __int64_t, __int8_t};
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "24:1"]
-    pub type uint8_t = __uint8_t;
-    #[c2rust::src_loc = "26:1"]
-    pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint32_t, __uint8_t};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:32"]
 pub mod resampler_structs_h {
     #[derive(Copy, Clone)]
@@ -551,15 +516,14 @@ pub use self::macros_h::silk_CLZ32;
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
-pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
-pub use self::stdint_uintn_h::{uint32_t, uint8_t};
+
 pub use self::structs_h::{
     silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
     SideInfoIndices,
 };
 use self::tables_h::silk_Quantization_Offsets_Q10;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
-pub use self::types_h::{__int16_t, __int32_t, __int64_t, __int8_t, __uint32_t, __uint8_t};
+
 pub use self::Inlines_h::{silk_DIV32_varQ, silk_INVERSE32_varQ};
 pub use self::NSQ_h::{
     silk_NSQ_noise_shape_feedback_loop_c, silk_noise_shape_quantizer_short_prediction_c,

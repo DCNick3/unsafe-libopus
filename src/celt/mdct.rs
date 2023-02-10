@@ -1,15 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:48"]
-pub mod types_h {
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:48"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    use super::types_h::__int16_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:48"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
@@ -74,8 +63,7 @@ pub use self::kiss_fft_h::{
     arch_fft_state, kiss_fft_cpx, kiss_fft_state, kiss_twiddle_cpx, opus_fft_impl,
 };
 pub use self::mdct_h::mdct_lookup;
-pub use self::stdint_intn_h::int16_t;
-pub use self::types_h::__int16_t;
+
 #[no_mangle]
 #[c2rust::src_loc = "119:1"]
 pub unsafe extern "C" fn clt_mdct_forward_c(

@@ -1,15 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:31"]
-pub mod types_h {
-    #[c2rust::src_loc = "42:1"]
-    pub type __uint32_t = libc::c_uint;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:31"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type uint32_t = __uint32_t;
-    use super::types_h::__uint32_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:33"]
 pub mod entcode_h {
     #[c2rust::src_loc = "45:1"]
@@ -98,8 +87,7 @@ pub use self::limits_h::CHAR_BIT;
 pub use self::mfrngcod_h::{
     EC_CODE_BITS, EC_CODE_BOT, EC_CODE_SHIFT, EC_CODE_TOP, EC_SYM_BITS, EC_SYM_MAX,
 };
-pub use self::stdint_uintn_h::uint32_t;
-pub use self::types_h::__uint32_t;
+
 use crate::externs::{memmove, memset};
 #[c2rust::src_loc = "60:1"]
 unsafe extern "C" fn ec_write_byte(

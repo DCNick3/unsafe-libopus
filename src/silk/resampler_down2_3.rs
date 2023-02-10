@@ -1,23 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:32"]
-pub mod types_h {
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-    #[c2rust::src_loc = "44:1"]
-    pub type __int64_t = libc::c_long;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:32"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    #[c2rust::src_loc = "27:1"]
-    pub type int64_t = __int64_t;
-    use super::types_h::{__int16_t, __int32_t, __int64_t};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
     #[c2rust::src_loc = "45:9"]
@@ -47,9 +28,9 @@ pub mod resampler_private_h {
 }
 use self::resampler_private_h::silk_resampler_private_AR2;
 use self::resampler_rom_h::silk_Resampler_2_3_COEFS_LQ;
-pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
+
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
-pub use self::types_h::{__int16_t, __int32_t, __int64_t};
+
 use crate::externs::memcpy;
 #[c2rust::src_loc = "36:9"]
 pub const ORDER_FIR: libc::c_int = 4 as libc::c_int;

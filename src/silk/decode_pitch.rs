@@ -1,23 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:35"]
-pub mod types_h {
-    #[c2rust::src_loc = "37:1"]
-    pub type __int8_t = libc::c_schar;
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:35"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "24:1"]
-    pub type int8_t = __int8_t;
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t, __int8_t};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:35"]
 pub mod arch_h {
     extern "C" {
@@ -58,8 +39,7 @@ pub use self::pitch_est_defines_h::{
     PE_MAX_NB_SUBFR, PE_NB_CBKS_STAGE2_10MS, PE_NB_CBKS_STAGE2_EXT, PE_NB_CBKS_STAGE3_10MS,
     PE_NB_CBKS_STAGE3_MAX,
 };
-pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
-pub use self::types_h::{__int16_t, __int32_t, __int8_t};
+
 #[no_mangle]
 #[c2rust::src_loc = "38:1"]
 pub unsafe extern "C" fn silk_decode_pitch(

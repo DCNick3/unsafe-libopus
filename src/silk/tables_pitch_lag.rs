@@ -1,17 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:32"]
-pub mod types_h {
-    #[c2rust::src_loc = "38:1"]
-    pub type __uint8_t = libc::c_uchar;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "24:1"]
-    pub type uint8_t = __uint8_t;
-    use super::types_h::__uint8_t;
-}
-pub use self::stdint_uintn_h::uint8_t;
-pub use self::types_h::__uint8_t;
 #[no_mangle]
 #[c2rust::src_loc = "34:18"]
 pub static mut silk_pitch_lag_iCDF: [u8; 32] = [

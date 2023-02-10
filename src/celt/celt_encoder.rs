@@ -15,29 +15,6 @@ pub mod internal {
     #[c2rust::src_loc = "36:9"]
     pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
 }
-#[c2rust::header_src = "/usr/include/bits/types.h:36"]
-pub mod types_h {
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-    #[c2rust::src_loc = "42:1"]
-    pub type __uint32_t = libc::c_uint;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:36"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t};
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:36"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type uint32_t = __uint32_t;
-    use super::types_h::__uint32_t;
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stdarg.h:37"]
 pub mod stdarg_h {
     #[c2rust::src_loc = "14:1"]
@@ -702,10 +679,9 @@ use self::quant_bands_h::{
 use self::rate_h::clt_compute_allocation;
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::NULL;
-pub use self::stdint_intn_h::{int16_t, int32_t};
-pub use self::stdint_uintn_h::uint32_t;
+
 use self::stdlib_h::abs;
-pub use self::types_h::{__int16_t, __int32_t, __uint32_t};
+
 use crate::externs::{memcpy, memmove, memset};
 #[derive(Copy, Clone)]
 #[repr(C)]

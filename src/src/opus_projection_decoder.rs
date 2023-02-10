@@ -15,21 +15,6 @@ pub mod internal {
         pub reg_save_area: *mut libc::c_void,
     }
 }
-#[c2rust::header_src = "/usr/include/bits/types.h:32"]
-pub mod types_h {
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:32"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
@@ -214,8 +199,7 @@ pub use self::opus_private_h::{
 };
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
-pub use self::stdint_intn_h::{int16_t, int32_t};
-pub use self::types_h::{__int16_t, __int32_t};
+
 use crate::externs::memset;
 
 use self::opus_multistream_h::{opus_multistream_decoder_get_size, opus_multistream_decoder_init};

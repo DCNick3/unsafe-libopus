@@ -4,17 +4,6 @@ pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]
     pub type size_t = libc::c_ulong;
 }
-#[c2rust::header_src = "/usr/include/bits/types.h:38"]
-pub mod types_h {
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:38"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    use super::types_h::__int16_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:38"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
@@ -68,8 +57,7 @@ pub mod kiss_fft_h {
 pub use self::arch_h::{celt_fatal, opus_val16};
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_cpx, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::stddef_h::size_t;
-pub use self::stdint_intn_h::int16_t;
-pub use self::types_h::__int16_t;
+
 #[c2rust::src_loc = "48:1"]
 unsafe extern "C" fn kf_bfly2(mut Fout: *mut kiss_fft_cpx, m: libc::c_int, N: libc::c_int) {
     let mut Fout2: *mut kiss_fft_cpx = 0 as *mut kiss_fft_cpx;

@@ -1,31 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:35"]
-pub mod types_h {
-    #[c2rust::src_loc = "37:1"]
-    pub type __int8_t = libc::c_schar;
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-    #[c2rust::src_loc = "42:1"]
-    pub type __uint32_t = libc::c_uint;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:35"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "24:1"]
-    pub type int8_t = __int8_t;
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t, __int8_t};
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:35"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type uint32_t = __uint32_t;
-    use super::types_h::__uint32_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:35"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
@@ -219,9 +192,6 @@ pub mod pitch_h {
     }
 }
 pub use self::arch_h::{celt_fatal, opus_val16, opus_val32};
-pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
-pub use self::stdint_uintn_h::uint32_t;
-pub use self::types_h::{__int16_t, __int32_t, __int8_t, __uint32_t};
 
 pub use self::float_cast_h::float2int;
 pub use self::pitch_est_defines_h::{

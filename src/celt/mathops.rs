@@ -1,15 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:38"]
-pub mod types_h {
-    #[c2rust::src_loc = "42:1"]
-    pub type __uint32_t = libc::c_uint;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:38"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type uint32_t = __uint32_t;
-    use super::types_h::__uint32_t;
-}
 #[c2rust::header_src = "internal:0"]
 pub mod internal {
     #[c2rust::src_loc = "36:9"]
@@ -31,8 +20,7 @@ pub mod ecintrin_h {
 pub use self::ecintrin_h::EC_CLZ0;
 pub use self::internal::__CHAR_BIT__;
 pub use self::limits_h::CHAR_BIT;
-pub use self::stdint_uintn_h::uint32_t;
-pub use self::types_h::__uint32_t;
+
 #[no_mangle]
 #[c2rust::src_loc = "43:1"]
 pub unsafe extern "C" fn isqrt32(mut _val: u32) -> libc::c_uint {

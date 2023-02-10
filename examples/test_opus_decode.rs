@@ -13,160 +13,13 @@
 #![register_tool(c2rust)]
 
 use ::libc;
+use libc::{fprintf, getpid, printf, time, time_t};
+use libc_stdhandle::{stderr, stdout};
 
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:32"]
 pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]
     pub type size_t = libc::c_ulong;
-}
-#[c2rust::header_src = "/usr/include/bits/types.h:32"]
-pub mod types_h {
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-    #[c2rust::src_loc = "42:1"]
-    pub type __uint32_t = libc::c_uint;
-    #[c2rust::src_loc = "152:1"]
-    pub type __off_t = libc::c_long;
-    #[c2rust::src_loc = "153:1"]
-    pub type __off64_t = libc::c_long;
-    #[c2rust::src_loc = "154:1"]
-    pub type __pid_t = libc::c_int;
-    #[c2rust::src_loc = "160:1"]
-    pub type __time_t = libc::c_long;
-}
-#[c2rust::header_src = "/usr/include/bits/types/struct_FILE.h:32"]
-pub mod struct_FILE_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "49:8"]
-    pub struct _IO_FILE {
-        pub _flags: libc::c_int,
-        pub _IO_read_ptr: *mut libc::c_char,
-        pub _IO_read_end: *mut libc::c_char,
-        pub _IO_read_base: *mut libc::c_char,
-        pub _IO_write_base: *mut libc::c_char,
-        pub _IO_write_ptr: *mut libc::c_char,
-        pub _IO_write_end: *mut libc::c_char,
-        pub _IO_buf_base: *mut libc::c_char,
-        pub _IO_buf_end: *mut libc::c_char,
-        pub _IO_save_base: *mut libc::c_char,
-        pub _IO_backup_base: *mut libc::c_char,
-        pub _IO_save_end: *mut libc::c_char,
-        pub _markers: *mut _IO_marker,
-        pub _chain: *mut _IO_FILE,
-        pub _fileno: libc::c_int,
-        pub _flags2: libc::c_int,
-        pub _old_offset: __off_t,
-        pub _cur_column: libc::c_ushort,
-        pub _vtable_offset: libc::c_schar,
-        pub _shortbuf: [libc::c_char; 1],
-        pub _lock: *mut libc::c_void,
-        pub _offset: __off64_t,
-        pub _codecvt: *mut _IO_codecvt,
-        pub _wide_data: *mut _IO_wide_data,
-        pub _freeres_list: *mut _IO_FILE,
-        pub _freeres_buf: *mut libc::c_void,
-        pub __pad5: size_t,
-        pub _mode: libc::c_int,
-        pub _unused2: [libc::c_char; 20],
-    }
-    #[c2rust::src_loc = "43:1"]
-    pub type _IO_lock_t = ();
-    use super::stddef_h::size_t;
-    use super::types_h::{__off64_t, __off_t};
-    extern "C" {
-        #[c2rust::src_loc = "38:8"]
-        pub type _IO_wide_data;
-        #[c2rust::src_loc = "37:8"]
-        pub type _IO_codecvt;
-        #[c2rust::src_loc = "36:8"]
-        pub type _IO_marker;
-    }
-}
-#[c2rust::header_src = "/usr/include/bits/types/FILE.h:32"]
-pub mod FILE_h {
-    #[c2rust::src_loc = "7:1"]
-    pub type FILE = _IO_FILE;
-    use super::struct_FILE_h::_IO_FILE;
-}
-#[c2rust::header_src = "/usr/include/bits/types/time_t.h:33"]
-pub mod time_t_h {
-    #[c2rust::src_loc = "10:1"]
-    pub type time_t = __time_t;
-    use super::types_h::__time_t;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:33"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t};
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:35"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type uint32_t = __uint32_t;
-    use super::types_h::__uint32_t;
-}
-// #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus.h:45"]
-// pub mod opus_h {
-//    //     extern "C" {
-//         #[c2rust::src_loc = "399:16"]
-//         pub type OpusDecoder;
-//         #[c2rust::src_loc = "406:1"]
-//         pub fn opus_decoder_get_size(channels: libc::c_int) -> libc::c_int;
-//         #[c2rust::src_loc = "423:1"]
-//         pub fn opus_decoder_create(
-//             Fs: i32,
-//             channels: libc::c_int,
-//             error: *mut libc::c_int,
-//         ) -> *mut OpusDecoder;
-//         #[c2rust::src_loc = "462:1"]
-//         pub fn opus_decode(
-//             st: *mut OpusDecoder,
-//             data: *const libc::c_uchar,
-//             len: i32,
-//             pcm: *mut i16,
-//             frame_size: libc::c_int,
-//             decode_fec: libc::c_int,
-//         ) -> libc::c_int;
-//         #[c2rust::src_loc = "507:1"]
-//         pub fn opus_decoder_ctl(st: *mut OpusDecoder, request: libc::c_int, _: ...) -> libc::c_int;
-//         #[c2rust::src_loc = "512:1"]
-//         pub fn opus_decoder_destroy(st: *mut OpusDecoder);
-//         #[c2rust::src_loc = "563:1"]
-//         pub fn opus_packet_get_nb_channels(data: *const libc::c_uchar) -> libc::c_int;
-//         #[c2rust::src_loc = "594:1"]
-//         pub fn opus_decoder_get_nb_samples(
-//             dec: *const OpusDecoder,
-//             packet: *const libc::c_uchar,
-//             len: i32,
-//         ) -> libc::c_int;
-//         #[c2rust::src_loc = "606:1"]
-//         pub fn opus_pcm_soft_clip(
-//             pcm: *mut libc::c_float,
-//             frame_size: libc::c_int,
-//             channels: libc::c_int,
-//             softclip_mem: *mut libc::c_float,
-//         );
-//     }
-// }
-#[c2rust::header_src = "/usr/include/stdio.h:32"]
-pub mod stdio_h {
-    use super::FILE_h::FILE;
-    extern "C" {
-        #[c2rust::src_loc = "144:14"]
-        pub static mut stdout: *mut FILE;
-        #[c2rust::src_loc = "145:14"]
-        pub static mut stderr: *mut FILE;
-        #[c2rust::src_loc = "350:12"]
-        pub fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
-        #[c2rust::src_loc = "356:12"]
-        pub fn printf(_: *const libc::c_char, _: ...) -> libc::c_int;
-    }
 }
 #[c2rust::header_src = "/usr/include/stdlib.h:33"]
 pub mod stdlib_h {
@@ -192,22 +45,6 @@ pub mod stdlib_h {
         pub fn abort() -> !;
         #[c2rust::src_loc = "654:1"]
         pub fn getenv(__name: *const libc::c_char) -> *mut libc::c_char;
-    }
-}
-#[c2rust::header_src = "/usr/include/time.h:38"]
-pub mod time_h {
-    use super::time_t_h::time_t;
-    extern "C" {
-        #[c2rust::src_loc = "76:1"]
-        pub fn time(__timer: *mut time_t) -> time_t;
-    }
-}
-#[c2rust::header_src = "/usr/include/unistd.h:40"]
-pub mod unistd_h {
-    use super::types_h::__pid_t;
-    extern "C" {
-        #[c2rust::src_loc = "650:1"]
-        pub fn getpid() -> __pid_t;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/tests/test_opus_common.h:46"]
@@ -287,26 +124,26 @@ pub mod test_opus_common_h {
         mut line: libc::c_int,
     ) -> ! {
         fprintf(
-            stderr,
+            stderr(),
             b"\n ***************************************************\n\0" as *const u8
                 as *const libc::c_char,
         );
         fprintf(
-            stderr,
+            stderr(),
             b" ***         A fatal error was detected.         ***\n\0" as *const u8
                 as *const libc::c_char,
         );
         fprintf(
-            stderr,
+            stderr(),
             b" ***************************************************\n\0" as *const u8
                 as *const libc::c_char,
         );
         fprintf(
-            stderr,
+            stderr(),
             b"Please report this failure and include\n\0" as *const u8 as *const libc::c_char,
         );
         fprintf(
-            stderr,
+            stderr(),
             b"'make check SEED=%u fails %s at line %d for %s'\n\0" as *const u8
                 as *const libc::c_char,
             iseed,
@@ -315,25 +152,22 @@ pub mod test_opus_common_h {
             opus_get_version_string(),
         );
         fprintf(
-            stderr,
+            stderr(),
             b"and any relevant details about your system.\n\n\0" as *const u8
                 as *const libc::c_char,
         );
         abort();
     }
 
-    use super::stdio_h::{fprintf, stderr};
     use super::stdlib_h::abort;
+    use libc::fprintf;
+    use libc_stdhandle::stderr;
     use libopus_unsafe::externs::memset;
     use libopus_unsafe::externs::{free, malloc};
     use libopus_unsafe::opus_get_version_string;
 }
-use self::stdio_h::{fprintf, printf, stderr, stdout};
 pub use self::stdlib_h::{atoi, getenv, rand};
 pub use self::test_opus_common_h::{debruijn2, Rw, Rz, _test_failed, fast_rand, iseed};
-use self::time_h::time;
-pub use self::time_t_h::time_t;
-use self::unistd_h::getpid;
 use libopus_unsafe::externs::{memcpy, memset};
 
 use libopus_unsafe::externs::{free, malloc};
@@ -395,7 +229,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
     outbuf = &mut *outbuf_int.offset((8 as libc::c_int * 2 as libc::c_int) as isize)
         as *mut libc::c_short;
     fprintf(
-        stdout,
+        stdout(),
         b"  Starting %d decoders...\n\0" as *const u8 as *const libc::c_char,
         5 as libc::c_int * 2 as libc::c_int,
     );
@@ -412,7 +246,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
             );
         }
         fprintf(
-            stdout,
+            stdout(),
             b"    opus_decoder_create(%5d,%d) OK. Copy \0" as *const u8 as *const libc::c_char,
             fs,
             c,
@@ -698,7 +532,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
         t += 1;
     }
     fprintf(
-        stdout,
+        stdout(),
         b"  dec[all] initial frame PLC OK.\n\0" as *const u8 as *const libc::c_char,
     );
     i = 0 as libc::c_int;
@@ -885,13 +719,13 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
         i += 1;
     }
     fprintf(
-        stdout,
+        stdout(),
         b"  dec[all] all 2-byte prefix for length 3 and PLC, all modes (64) OK.\n\0" as *const u8
             as *const libc::c_char,
     );
     if no_fuzz != 0 {
         fprintf(
-            stdout,
+            stdout(),
             b"  Skipping many tests which fuzz the decoder as requested.\n\0" as *const u8
                 as *const libc::c_char,
         );
@@ -989,7 +823,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"  dec[%3d] all 3-byte prefix for length 4, mode %2d OK.\n\0" as *const u8
             as *const libc::c_char,
         t,
@@ -1040,7 +874,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"  dec[%3d] all 3-byte prefix for length 4, mode %2d OK.\n\0" as *const u8
             as *const libc::c_char,
         t,
@@ -1110,7 +944,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
         i += 1;
     }
     fprintf(
-        stdout,
+        stdout(),
         b"  dec[all] random packets, all modes (64), every 8th size from from %d bytes to maximum OK.\n\0"
             as *const u8 as *const libc::c_char,
         2 as libc::c_int + skip,
@@ -1246,7 +1080,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
         i += 1;
     }
     fprintf(
-        stdout,
+        stdout(),
         b"  dec[all] random packets, all mode pairs (4096), %d bytes/frame OK.\n\0" as *const u8
             as *const libc::c_char,
         plen + 1 as libc::c_int,
@@ -1295,7 +1129,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
         i += 1;
     }
     fprintf(
-        stdout,
+        stdout(),
         b"  dec[%3d] random packets, all mode pairs (4096)*10, %d bytes/frame OK.\n\0" as *const u8
             as *const libc::c_char,
         t,
@@ -1335,7 +1169,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
         i += 1;
     }
     fprintf(
-        stdout,
+        stdout(),
         b"  dec[%3d] pre-selected random packets OK.\n\0" as *const u8 as *const libc::c_char,
         t,
     );
@@ -1385,7 +1219,7 @@ pub unsafe extern "C" fn test_soft_clip() {
         0 as libc::c_int as libc::c_float,
     ];
     fprintf(
-        stdout,
+        stdout(),
         b"  Testing opus_pcm_soft_clip... \0" as *const u8 as *const libc::c_char,
     );
     i = 0 as libc::c_int;
@@ -1494,7 +1328,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
     let mut env_used: libc::c_int = 0;
     if _argc > 2 as libc::c_int {
         fprintf(
-            stderr,
+            stderr(),
             b"Usage: %s [<seed>]\n\0" as *const u8 as *const libc::c_char,
             *_argv.offset(0 as libc::c_int as isize),
         );
@@ -1521,7 +1355,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
         );
     }
     fprintf(
-        stderr,
+        stderr(),
         b"Testing %s decoder. Random seed: %u (%.4X)\n\0" as *const u8 as *const libc::c_char,
         oversion,
         iseed,
@@ -1529,7 +1363,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
     );
     if env_used != 0 {
         fprintf(
-            stderr,
+            stderr(),
             b"  Random seed set from the environment (SEED=%s).\n\0" as *const u8
                 as *const libc::c_char,
             env_seed,

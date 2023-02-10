@@ -1,23 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:34"]
-pub mod types_h {
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-    #[c2rust::src_loc = "42:1"]
-    pub type __uint32_t = libc::c_uint;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:34"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    use super::types_h::__int16_t;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:34"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type uint32_t = __uint32_t;
-    use super::types_h::__uint32_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:35"]
 pub mod arch_h {
     #[c2rust::src_loc = "180:1"]
@@ -84,10 +65,9 @@ pub use self::arch_h::{celt_fatal, opus_val32};
 pub use self::entcode_h::{ec_ctx, ec_dec, ec_enc, ec_window};
 use self::entdec_h::ec_dec_uint;
 use self::entenc_h::ec_enc_uint;
-pub use self::stdint_intn_h::int16_t;
-pub use self::stdint_uintn_h::uint32_t;
+
 use self::stdlib_h::abs;
-pub use self::types_h::{__int16_t, __uint32_t};
+
 #[c2rust::src_loc = "213:26"]
 static mut CELT_PVQ_U_DATA: [u32; 1272] = [
     1 as libc::c_int as u32,

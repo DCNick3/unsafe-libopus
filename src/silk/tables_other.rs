@@ -1,27 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:32"]
-pub mod types_h {
-    #[c2rust::src_loc = "38:1"]
-    pub type __uint8_t = libc::c_uchar;
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:32"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t};
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "24:1"]
-    pub type uint8_t = __uint8_t;
-    use super::types_h::__uint8_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
 pub mod define_h {
     #[c2rust::src_loc = "132:9"]
@@ -34,9 +11,7 @@ pub mod define_h {
     pub const OFFSET_VH_Q10: libc::c_int = 100 as libc::c_int;
 }
 pub use self::define_h::{OFFSET_UVH_Q10, OFFSET_UVL_Q10, OFFSET_VH_Q10, OFFSET_VL_Q10};
-pub use self::stdint_intn_h::{int16_t, int32_t};
-pub use self::stdint_uintn_h::uint8_t;
-pub use self::types_h::{__int16_t, __int32_t, __uint8_t};
+
 #[no_mangle]
 #[c2rust::src_loc = "42:18"]
 pub static mut silk_stereo_pred_quant_Q13: [i16; 16] = [

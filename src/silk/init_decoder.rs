@@ -1,31 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:32"]
-pub mod types_h {
-    #[c2rust::src_loc = "37:1"]
-    pub type __int8_t = libc::c_schar;
-    #[c2rust::src_loc = "38:1"]
-    pub type __uint8_t = libc::c_uchar;
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:32"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "24:1"]
-    pub type int8_t = __int8_t;
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t, __int8_t};
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "24:1"]
-    pub type uint8_t = __uint8_t;
-    use super::types_h::__uint8_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:32"]
 pub mod resampler_structs_h {
     #[derive(Copy, Clone)]
@@ -187,12 +160,11 @@ use self::main_h::silk_CNG_Reset;
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
-pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
-pub use self::stdint_uintn_h::uint8_t;
+
 pub use self::structs_h::{
     silk_CNG_struct, silk_NLSF_CB_struct, silk_PLC_struct, silk_decoder_state, SideInfoIndices,
 };
-pub use self::types_h::{__int16_t, __int32_t, __int8_t, __uint8_t};
+
 use self::PLC_h::silk_PLC_Reset;
 use crate::externs::memset;
 #[no_mangle]

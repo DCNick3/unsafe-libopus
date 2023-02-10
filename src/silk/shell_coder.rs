@@ -1,27 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:32"]
-pub mod types_h {
-    #[c2rust::src_loc = "38:1"]
-    pub type __uint8_t = libc::c_uchar;
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-    #[c2rust::src_loc = "42:1"]
-    pub type __uint32_t = libc::c_uint;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:32"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    use super::types_h::__int16_t;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "24:1"]
-    pub type uint8_t = __uint8_t;
-    #[c2rust::src_loc = "26:1"]
-    pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint32_t, __uint8_t};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:32"]
 pub mod entcode_h {
     #[c2rust::src_loc = "45:1"]
@@ -91,13 +68,12 @@ pub mod tables_h {
 pub use self::entcode_h::{ec_ctx, ec_dec, ec_enc, ec_window};
 use self::entdec_h::ec_dec_icdf;
 use self::entenc_h::ec_enc_icdf;
-pub use self::stdint_intn_h::int16_t;
-pub use self::stdint_uintn_h::{uint32_t, uint8_t};
+
 use self::tables_h::{
     silk_shell_code_table0, silk_shell_code_table1, silk_shell_code_table2, silk_shell_code_table3,
     silk_shell_code_table_offsets,
 };
-pub use self::types_h::{__int16_t, __uint32_t, __uint8_t};
+
 #[inline]
 #[c2rust::src_loc = "36:1"]
 unsafe extern "C" fn combine_pulses(

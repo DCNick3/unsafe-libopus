@@ -13,106 +13,13 @@
 #![register_tool(c2rust)]
 
 use ::libc;
+use libc::{fprintf, printf};
+use libc_stdhandle::{stderr, stdout};
+
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:48"]
 pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]
     pub type size_t = libc::c_ulong;
-}
-#[c2rust::header_src = "/usr/include/bits/types.h:48"]
-pub mod types_h {
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-    #[c2rust::src_loc = "42:1"]
-    pub type __uint32_t = libc::c_uint;
-    #[c2rust::src_loc = "152:1"]
-    pub type __off_t = libc::c_long;
-    #[c2rust::src_loc = "153:1"]
-    pub type __off64_t = libc::c_long;
-}
-#[c2rust::header_src = "/usr/include/bits/types/struct_FILE.h:48"]
-pub mod struct_FILE_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "49:8"]
-    pub struct _IO_FILE {
-        pub _flags: libc::c_int,
-        pub _IO_read_ptr: *mut libc::c_char,
-        pub _IO_read_end: *mut libc::c_char,
-        pub _IO_read_base: *mut libc::c_char,
-        pub _IO_write_base: *mut libc::c_char,
-        pub _IO_write_ptr: *mut libc::c_char,
-        pub _IO_write_end: *mut libc::c_char,
-        pub _IO_buf_base: *mut libc::c_char,
-        pub _IO_buf_end: *mut libc::c_char,
-        pub _IO_save_base: *mut libc::c_char,
-        pub _IO_backup_base: *mut libc::c_char,
-        pub _IO_save_end: *mut libc::c_char,
-        pub _markers: *mut _IO_marker,
-        pub _chain: *mut _IO_FILE,
-        pub _fileno: libc::c_int,
-        pub _flags2: libc::c_int,
-        pub _old_offset: __off_t,
-        pub _cur_column: libc::c_ushort,
-        pub _vtable_offset: libc::c_schar,
-        pub _shortbuf: [libc::c_char; 1],
-        pub _lock: *mut libc::c_void,
-        pub _offset: __off64_t,
-        pub _codecvt: *mut _IO_codecvt,
-        pub _wide_data: *mut _IO_wide_data,
-        pub _freeres_list: *mut _IO_FILE,
-        pub _freeres_buf: *mut libc::c_void,
-        pub __pad5: size_t,
-        pub _mode: libc::c_int,
-        pub _unused2: [libc::c_char; 20],
-    }
-    #[c2rust::src_loc = "43:1"]
-    pub type _IO_lock_t = ();
-    use super::stddef_h::size_t;
-    use super::types_h::{__off64_t, __off_t};
-    extern "C" {
-        #[c2rust::src_loc = "38:8"]
-        pub type _IO_wide_data;
-        #[c2rust::src_loc = "37:8"]
-        pub type _IO_codecvt;
-        #[c2rust::src_loc = "36:8"]
-        pub type _IO_marker;
-    }
-}
-#[c2rust::header_src = "/usr/include/bits/types/FILE.h:48"]
-pub mod FILE_h {
-    #[c2rust::src_loc = "7:1"]
-    pub type FILE = _IO_FILE;
-    use super::struct_FILE_h::_IO_FILE;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:49"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t};
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:50"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type uint32_t = __uint32_t;
-    use super::types_h::__uint32_t;
-}
-#[c2rust::header_src = "/usr/include/stdio.h:48"]
-pub mod stdio_h {
-    use super::FILE_h::FILE;
-    extern "C" {
-        #[c2rust::src_loc = "144:14"]
-        pub static mut stdout: *mut FILE;
-        #[c2rust::src_loc = "145:14"]
-        pub static mut stderr: *mut FILE;
-        #[c2rust::src_loc = "350:12"]
-        pub fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
-        #[c2rust::src_loc = "356:12"]
-        pub fn printf(_: *const libc::c_char, _: ...) -> libc::c_int;
-    }
 }
 #[c2rust::header_src = "/usr/include/stdlib.h:49"]
 pub mod stdlib_h {
@@ -133,26 +40,26 @@ pub mod test_opus_common_h {
         mut line: libc::c_int,
     ) -> ! {
         fprintf(
-            stderr,
+            stderr(),
             b"\n ***************************************************\n\0" as *const u8
                 as *const libc::c_char,
         );
         fprintf(
-            stderr,
+            stderr(),
             b" ***         A fatal error was detected.         ***\n\0" as *const u8
                 as *const libc::c_char,
         );
         fprintf(
-            stderr,
+            stderr(),
             b" ***************************************************\n\0" as *const u8
                 as *const libc::c_char,
         );
         fprintf(
-            stderr,
+            stderr(),
             b"Please report this failure and include\n\0" as *const u8 as *const libc::c_char,
         );
         fprintf(
-            stderr,
+            stderr(),
             b"'make check SEED=%u fails %s at line %d for %s'\n\0" as *const u8
                 as *const libc::c_char,
             iseed,
@@ -161,25 +68,21 @@ pub mod test_opus_common_h {
             opus_get_version_string(),
         );
         fprintf(
-            stderr,
+            stderr(),
             b"and any relevant details about your system.\n\n\0" as *const u8
                 as *const libc::c_char,
         );
         abort();
     }
 
-    use super::stdio_h::{fprintf, stderr};
     use super::stdlib_h::abort;
+    use libc::fprintf;
+    use libc_stdhandle::stderr;
     use libopus_unsafe::opus_get_version_string;
 }
-pub use self::stddef_h::size_t;
-pub use self::stdint_intn_h::{int16_t, int32_t};
-pub use self::stdint_uintn_h::uint32_t;
-use self::stdio_h::{fprintf, printf, stderr, stdout};
-pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
+
 pub use self::test_opus_common_h::{_test_failed, iseed};
-pub use self::types_h::{__int16_t, __int32_t, __off64_t, __off_t, __uint32_t};
-pub use self::FILE_h::FILE;
+
 use libopus_unsafe::externs::{free, malloc};
 use libopus_unsafe::externs::{memcmp, memcpy, memset, strlen};
 use libopus_unsafe::{
@@ -228,11 +131,11 @@ pub unsafe extern "C" fn test_dec_api() -> i32 {
     let mut err: libc::c_int = 0;
     cfgs = 0 as libc::c_int;
     fprintf(
-        stdout,
+        stdout(),
         b"\n  Decoder basic API tests\n\0" as *const u8 as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"  ---------------------------------------------------\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -249,7 +152,7 @@ pub unsafe extern "C" fn test_dec_api() -> i32 {
             );
         }
         fprintf(
-            stdout,
+            stdout(),
             b"    opus_decoder_get_size(%d)=%d ...............%s OK.\n\0" as *const u8
                 as *const libc::c_char,
             c,
@@ -337,12 +240,12 @@ pub unsafe extern "C" fn test_dec_api() -> i32 {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_decoder_create() ........................ OK.\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_decoder_init() .......................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -372,7 +275,7 @@ pub unsafe extern "C" fn test_dec_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_FINAL_RANGE ......................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -385,7 +288,7 @@ pub unsafe extern "C" fn test_dec_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_UNIMPLEMENTED ........................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -414,7 +317,7 @@ pub unsafe extern "C" fn test_dec_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_BANDWIDTH ........................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -443,7 +346,7 @@ pub unsafe extern "C" fn test_dec_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_SAMPLE_RATE ......................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -534,7 +437,7 @@ pub unsafe extern "C" fn test_dec_api() -> i32 {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_PITCH ............................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -563,7 +466,7 @@ pub unsafe extern "C" fn test_dec_api() -> i32 {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_LAST_PACKET_DURATION ................ OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -630,12 +533,12 @@ pub unsafe extern "C" fn test_dec_api() -> i32 {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_SET_GAIN ................................ OK.\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_GAIN ................................ OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -664,7 +567,7 @@ pub unsafe extern "C" fn test_dec_api() -> i32 {
     }
     free(dec2 as *mut libc::c_void);
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_RESET_STATE ............................. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -774,7 +677,7 @@ pub unsafe extern "C" fn test_dec_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_{packet,decoder}_get_nb_samples() ....... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -836,7 +739,7 @@ pub unsafe extern "C" fn test_dec_api() -> i32 {
         i += 1;
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_packet_get_nb_frames() .................. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -861,7 +764,7 @@ pub unsafe extern "C" fn test_dec_api() -> i32 {
         i += 1;
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_packet_get_bandwidth() .................. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -896,7 +799,7 @@ pub unsafe extern "C" fn test_dec_api() -> i32 {
         i += 1;
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_packet_get_samples_per_frame() .......... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -987,7 +890,7 @@ pub unsafe extern "C" fn test_dec_api() -> i32 {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_decode() ................................ OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -1007,19 +910,19 @@ pub unsafe extern "C" fn test_dec_api() -> i32 {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_decode_float() .......................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
     opus_decoder_destroy(dec);
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"                   All decoder interface tests passed\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"                             (%6d API invocations)\n\0" as *const u8
             as *const libc::c_char,
         cfgs,
@@ -1051,11 +954,11 @@ pub unsafe extern "C" fn test_msdec_api() -> i32 {
     }
     cfgs = 0 as libc::c_int;
     fprintf(
-        stdout,
+        stdout(),
         b"\n  Multistream decoder basic API tests\n\0" as *const u8 as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"  ---------------------------------------------------\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -1076,7 +979,7 @@ pub unsafe extern "C" fn test_msdec_api() -> i32 {
                 );
             }
             fprintf(
-                stdout,
+                stdout(),
                 b"    opus_multistream_decoder_get_size(%2d,%2d)=%d %sOK.\n\0" as *const u8
                     as *const libc::c_char,
                 a,
@@ -1492,12 +1395,12 @@ pub unsafe extern "C" fn test_msdec_api() -> i32 {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_multistream_decoder_create() ............ OK.\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_multistream_decoder_init() .............. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -1516,7 +1419,7 @@ pub unsafe extern "C" fn test_msdec_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_FINAL_RANGE ......................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -1590,7 +1493,7 @@ pub unsafe extern "C" fn test_msdec_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_MULTISTREAM_GET_DECODER_STATE ........... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -1637,7 +1540,7 @@ pub unsafe extern "C" fn test_msdec_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_SET_GAIN ................................ OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -1676,7 +1579,7 @@ pub unsafe extern "C" fn test_msdec_api() -> i32 {
         j += 1;
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_GAIN ................................ OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -1693,7 +1596,7 @@ pub unsafe extern "C" fn test_msdec_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_BANDWIDTH ........................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -1706,7 +1609,7 @@ pub unsafe extern "C" fn test_msdec_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_UNIMPLEMENTED ........................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -1718,7 +1621,7 @@ pub unsafe extern "C" fn test_msdec_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_RESET_STATE ............................. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -1853,7 +1756,7 @@ pub unsafe extern "C" fn test_msdec_api() -> i32 {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_multistream_decode() .................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -1873,19 +1776,19 @@ pub unsafe extern "C" fn test_msdec_api() -> i32 {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_multistream_decode_float() .............. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
     opus_multistream_decoder_destroy(dec);
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"       All multistream decoder interface tests passed\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"                             (%6d API invocations)\n\0" as *const u8
             as *const libc::c_char,
         cfgs,
@@ -1908,11 +1811,11 @@ pub unsafe extern "C" fn test_parse() -> i32 {
     let mut payload_offset: libc::c_int = 0;
     let mut ret: libc::c_int = 0;
     fprintf(
-        stdout,
+        stdout(),
         b"\n  Packet header parsing tests\n\0" as *const u8 as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"  ---------------------------------------------------\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -1978,7 +1881,7 @@ pub unsafe extern "C" fn test_parse() -> i32 {
         i += 1;
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    code 0 (%2d cases) ............................ OK.\n\0" as *const u8
             as *const libc::c_char,
         cfgs,
@@ -2055,7 +1958,7 @@ pub unsafe extern "C" fn test_parse() -> i32 {
         i += 1;
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    code 1 (%6d cases) ........................ OK.\n\0" as *const u8
             as *const libc::c_char,
         cfgs,
@@ -2261,7 +2164,7 @@ pub unsafe extern "C" fn test_parse() -> i32 {
         i += 1;
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    code 2 (%6d cases) ........................ OK.\n\0" as *const u8
             as *const libc::c_char,
         cfgs,
@@ -2294,7 +2197,7 @@ pub unsafe extern "C" fn test_parse() -> i32 {
         i += 1;
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    code 3 m-truncation (%2d cases) ............... OK.\n\0" as *const u8
             as *const libc::c_char,
         cfgs,
@@ -2397,7 +2300,7 @@ pub unsafe extern "C" fn test_parse() -> i32 {
         i += 1;
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    code 3 m=0,49-64 (%2d cases) ................ OK.\n\0" as *const u8
             as *const libc::c_char,
         cfgs,
@@ -2466,7 +2369,7 @@ pub unsafe extern "C" fn test_parse() -> i32 {
         i += 1;
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    code 3 m=1 CBR (%2d cases) ................. OK.\n\0" as *const u8
             as *const libc::c_char,
         cfgs,
@@ -2571,7 +2474,7 @@ pub unsafe extern "C" fn test_parse() -> i32 {
         i += 1;
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    code 3 m=1-48 CBR (%2d cases) .......... OK.\n\0" as *const u8 as *const libc::c_char,
         cfgs,
     );
@@ -2876,7 +2779,7 @@ pub unsafe extern "C" fn test_parse() -> i32 {
         i += 1;
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    code 3 m=1-48 VBR (%2d cases) ............. OK.\n\0" as *const u8
             as *const libc::c_char,
         cfgs,
@@ -2999,24 +2902,24 @@ pub unsafe extern "C" fn test_parse() -> i32 {
         i += 1;
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    code 3 padding (%2d cases) ............... OK.\n\0" as *const u8
             as *const libc::c_char,
         cfgs,
     );
     cfgs_total += cfgs;
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_packet_parse ............................ OK.\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"                      All packet parsing tests passed\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"                          (%d API invocations)\n\0" as *const u8 as *const libc::c_char,
         cfgs_total,
     );
@@ -3037,11 +2940,11 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
     let mut cfgs: libc::c_int = 0;
     cfgs = 0 as libc::c_int;
     fprintf(
-        stdout,
+        stdout(),
         b"\n  Encoder basic API tests\n\0" as *const u8 as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"  ---------------------------------------------------\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -3058,7 +2961,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
             );
         }
         fprintf(
-            stdout,
+            stdout(),
             b"    opus_encoder_get_size(%d)=%d ...............%s OK.\n\0" as *const u8
                 as *const libc::c_char,
             c,
@@ -3251,12 +3154,12 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_encoder_create() ........................ OK.\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_encoder_init() .......................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -3287,7 +3190,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_LOOKAHEAD ........................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -3317,7 +3220,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_SAMPLE_RATE ......................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -3328,7 +3231,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_UNIMPLEMENTED ........................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -3389,7 +3292,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_SET_APPLICATION ......................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -3407,7 +3310,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_APPLICATION ......................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -3494,7 +3397,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_SET_BITRATE ............................. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -3512,7 +3415,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_BITRATE ............................. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -3573,7 +3476,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_SET_FORCE_CHANNELS ...................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -3591,7 +3494,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_FORCE_CHANNELS ...................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -3645,7 +3548,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_SET_BANDWIDTH ........................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -3689,7 +3592,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_BANDWIDTH ........................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -3742,7 +3645,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_SET_MAX_BANDWIDTH ....................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -3778,7 +3681,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_MAX_BANDWIDTH ....................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -3838,7 +3741,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_SET_DTX ................................. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -3856,7 +3759,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_DTX ................................. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -3917,7 +3820,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_SET_COMPLEXITY .......................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -3935,7 +3838,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_COMPLEXITY .......................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -3996,7 +3899,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_SET_INBAND_FEC .......................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4014,7 +3917,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_INBAND_FEC .......................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4075,7 +3978,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_SET_PACKET_LOSS_PERC .................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4093,7 +3996,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_PACKET_LOSS_PERC .................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4154,7 +4057,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_SET_VBR ................................. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4172,7 +4075,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_VBR ................................. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4233,7 +4136,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_SET_VBR_CONSTRAINT ...................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4251,7 +4154,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_VBR_CONSTRAINT ...................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4312,7 +4215,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_SET_SIGNAL .............................. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4330,7 +4233,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_SIGNAL .............................. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4391,7 +4294,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_SET_LSB_DEPTH ........................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4409,7 +4312,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_LSB_DEPTH ........................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4483,7 +4386,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_SET_PREDICTION_DISABLED ................. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4501,7 +4404,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_PREDICTION_DISABLED ................. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4634,7 +4537,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_SET_EXPERT_FRAME_DURATION ............... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4652,7 +4555,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
         );
     }
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_EXPERT_FRAME_DURATION ............... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4685,7 +4588,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_GET_FINAL_RANGE ......................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4697,7 +4600,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    OPUS_RESET_STATE ............................. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4725,7 +4628,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_encode() ................................ OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4753,19 +4656,19 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_encode_float() .......................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
     opus_encoder_destroy(enc);
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"                   All encoder interface tests passed\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"                             (%d API invocations)\n\0" as *const u8
             as *const libc::c_char,
         cfgs,
@@ -4785,11 +4688,11 @@ pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
     let mut po: *mut libc::c_uchar = std::ptr::null_mut::<libc::c_uchar>();
     cfgs = 0 as libc::c_int;
     fprintf(
-        stdout,
+        stdout(),
         b"\n  Repacketizer tests\n\0" as *const u8 as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"  ---------------------------------------------------\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4832,7 +4735,7 @@ pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_repacketizer_get_size()=%d ............. OK.\n\0" as *const u8
             as *const libc::c_char,
         i,
@@ -4848,7 +4751,7 @@ pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
     cfgs += 1;
     free(rp as *mut libc::c_void);
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_repacketizer_init ....................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4861,7 +4764,7 @@ pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_repacketizer_create ..................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -4873,7 +4776,7 @@ pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_repacketizer_get_nb_frames .............. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -5707,37 +5610,37 @@ pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
     }
     cfgs += 1;
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_repacketizer_cat ........................ OK.\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_repacketizer_out ........................ OK.\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_repacketizer_out_range .................. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_packet_pad .............................. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_packet_unpad ............................ OK.\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_multistream_packet_pad .................. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_multistream_packet_unpad ................ OK.\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -5746,12 +5649,12 @@ pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
     free(packet as *mut libc::c_void);
     free(po as *mut libc::c_void);
     fprintf(
-        stdout,
+        stdout(),
         b"                        All repacketizer tests passed\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"                            (%7d API invocations)\n\0" as *const u8
             as *const libc::c_char,
         cfgs,
@@ -5762,41 +5665,41 @@ pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
 #[c2rust::src_loc = "1766:1"]
 pub unsafe extern "C" fn test_malloc_fail() -> libc::c_int {
     fprintf(
-        stdout,
+        stdout(),
         b"\n  malloc() failure tests\n\0" as *const u8 as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"  ---------------------------------------------------\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_decoder_create() ................... SKIPPED.\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_encoder_create() ................... SKIPPED.\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_repacketizer_create() .............. SKIPPED.\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_multistream_decoder_create() ....... SKIPPED.\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"    opus_multistream_encoder_create() ....... SKIPPED.\n\0" as *const u8
             as *const libc::c_char,
     );
     fprintf(
-        stdout,
+        stdout(),
         b"(Test only supported with GLIBC and without valgrind)\n\0" as *const u8
             as *const libc::c_char,
     );
@@ -5808,7 +5711,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
     let mut oversion: *const libc::c_char = std::ptr::null::<libc::c_char>();
     if _argc > 1 as libc::c_int {
         fprintf(
-            stderr,
+            stderr(),
             b"Usage: %s\n\0" as *const u8 as *const libc::c_char,
             *_argv.offset(0 as libc::c_int as isize),
         );
@@ -5823,7 +5726,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
         );
     }
     fprintf(
-        stderr,
+        stderr(),
         b"Testing the %s API deterministically\n\0" as *const u8 as *const libc::c_char,
         oversion,
     );
@@ -5853,7 +5756,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
     total += test_repacketizer_api();
     total += test_malloc_fail();
     fprintf(
-        stderr,
+        stderr(),
         b"\nAll API tests passed.\nThe libopus API was invoked %d times.\n\0" as *const u8
             as *const libc::c_char,
         total,

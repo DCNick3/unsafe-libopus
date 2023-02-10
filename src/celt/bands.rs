@@ -1,27 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:34"]
-pub mod types_h {
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-    #[c2rust::src_loc = "42:1"]
-    pub type __uint32_t = libc::c_uint;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:35"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t};
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:35"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type uint32_t = __uint32_t;
-    use super::types_h::__uint32_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:35"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
@@ -454,9 +431,7 @@ pub use self::rate_h::{
 };
 pub use self::stack_alloc_h::ALLOC_NONE;
 pub use self::stddef_h::NULL;
-pub use self::stdint_intn_h::{int16_t, int32_t};
-pub use self::stdint_uintn_h::uint32_t;
-pub use self::types_h::{__int16_t, __int32_t, __uint32_t};
+
 use self::vq_h::{alg_quant, alg_unquant, renormalise_vector, stereo_itheta};
 use crate::externs::{memcpy, memset};
 #[derive(Copy, Clone)]

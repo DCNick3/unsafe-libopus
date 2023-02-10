@@ -1,15 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:38"]
-pub mod types_h {
-    #[c2rust::src_loc = "42:1"]
-    pub type __uint32_t = libc::c_uint;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:38"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type uint32_t = __uint32_t;
-    use super::types_h::__uint32_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:38"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
@@ -268,9 +257,9 @@ use self::celt_lpc_h::{_celt_autocorr, _celt_lpc};
 pub use self::entcode_h::celt_udiv;
 pub use self::pitch_h::{celt_inner_prod_c, celt_pitch_xcorr, dual_inner_prod_c, xcorr_kernel_c};
 pub use self::stddef_h::NULL;
-pub use self::stdint_uintn_h::uint32_t;
+
 use self::stdlib_h::abs;
-pub use self::types_h::__uint32_t;
+
 #[c2rust::src_loc = "45:1"]
 unsafe extern "C" fn find_best_pitch(
     xcorr: *mut opus_val32,

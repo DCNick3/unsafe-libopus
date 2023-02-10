@@ -1,23 +1,11 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:32"]
-pub mod types_h {
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:32"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::__int32_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:34"]
 pub mod define_h {
     #[c2rust::src_loc = "139:9"]
     pub const MAX_PREDICTION_POWER_GAIN: libc::c_float = 1e4f32;
 }
 pub use self::define_h::MAX_PREDICTION_POWER_GAIN;
-pub use self::stdint_intn_h::int32_t;
-pub use self::types_h::__int32_t;
+
 use crate::externs::memcpy;
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]

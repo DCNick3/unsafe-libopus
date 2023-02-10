@@ -1,82 +1,11 @@
 use ::libc;
+use libc::fprintf;
+use libc_stdhandle::stderr;
+
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:32"]
 pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]
     pub type size_t = libc::c_ulong;
-}
-#[c2rust::header_src = "/usr/include/bits/types.h:32"]
-pub mod types_h {
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-    #[c2rust::src_loc = "152:1"]
-    pub type __off_t = libc::c_long;
-    #[c2rust::src_loc = "153:1"]
-    pub type __off64_t = libc::c_long;
-}
-#[c2rust::header_src = "/usr/include/bits/types/struct_FILE.h:32"]
-pub mod struct_FILE_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "49:8"]
-    pub struct _IO_FILE {
-        pub _flags: libc::c_int,
-        pub _IO_read_ptr: *mut libc::c_char,
-        pub _IO_read_end: *mut libc::c_char,
-        pub _IO_read_base: *mut libc::c_char,
-        pub _IO_write_base: *mut libc::c_char,
-        pub _IO_write_ptr: *mut libc::c_char,
-        pub _IO_write_end: *mut libc::c_char,
-        pub _IO_buf_base: *mut libc::c_char,
-        pub _IO_buf_end: *mut libc::c_char,
-        pub _IO_save_base: *mut libc::c_char,
-        pub _IO_backup_base: *mut libc::c_char,
-        pub _IO_save_end: *mut libc::c_char,
-        pub _markers: *mut _IO_marker,
-        pub _chain: *mut _IO_FILE,
-        pub _fileno: libc::c_int,
-        pub _flags2: libc::c_int,
-        pub _old_offset: __off_t,
-        pub _cur_column: libc::c_ushort,
-        pub _vtable_offset: libc::c_schar,
-        pub _shortbuf: [libc::c_char; 1],
-        pub _lock: *mut libc::c_void,
-        pub _offset: __off64_t,
-        pub _codecvt: *mut _IO_codecvt,
-        pub _wide_data: *mut _IO_wide_data,
-        pub _freeres_list: *mut _IO_FILE,
-        pub _freeres_buf: *mut libc::c_void,
-        pub __pad5: size_t,
-        pub _mode: libc::c_int,
-        pub _unused2: [libc::c_char; 20],
-    }
-    #[c2rust::src_loc = "43:1"]
-    pub type _IO_lock_t = ();
-    use super::stddef_h::size_t;
-    use super::types_h::{__off64_t, __off_t};
-    extern "C" {
-        #[c2rust::src_loc = "38:8"]
-        pub type _IO_wide_data;
-        #[c2rust::src_loc = "37:8"]
-        pub type _IO_codecvt;
-        #[c2rust::src_loc = "36:8"]
-        pub type _IO_marker;
-    }
-}
-#[c2rust::header_src = "/usr/include/bits/types/FILE.h:32"]
-pub mod FILE_h {
-    #[c2rust::src_loc = "7:1"]
-    pub type FILE = _IO_FILE;
-    use super::struct_FILE_h::_IO_FILE;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:33"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus.h:39"]
 pub mod opus_h {
@@ -148,16 +77,6 @@ pub mod opus_multistream_h {
         ) -> libc::c_int;
     }
 }
-#[c2rust::header_src = "/usr/include/stdio.h:32"]
-pub mod stdio_h {
-    use super::FILE_h::FILE;
-    extern "C" {
-        #[c2rust::src_loc = "145:14"]
-        pub static mut stderr: *mut FILE;
-        #[c2rust::src_loc = "350:12"]
-        pub fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/usr/include/assert.h:38"]
 pub mod assert_h {
     extern "C" {
@@ -178,12 +97,7 @@ use self::opus_multistream_h::{
     opus_multistream_encode, opus_multistream_encoder_create, opus_multistream_encoder_ctl,
     opus_multistream_encoder_destroy, opus_multistream_surround_encoder_create, OpusMSEncoder,
 };
-pub use self::stddef_h::size_t;
-pub use self::stdint_intn_h::{int16_t, int32_t};
-use self::stdio_h::{fprintf, stderr};
-pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
-pub use self::types_h::{__int16_t, __int32_t, __off64_t, __off_t};
-pub use self::FILE_h::FILE;
+
 #[c2rust::src_loc = "44:1"]
 unsafe extern "C" fn celt_ec_internal_error() -> libc::c_int {
     let mut enc: *mut OpusMSEncoder = std::ptr::null_mut::<OpusMSEncoder>();
@@ -27693,7 +27607,7 @@ unsafe extern "C" fn silk_gain_assert() -> libc::c_int {
 #[c2rust::src_loc = "1025:1"]
 pub unsafe extern "C" fn regression_test() {
     fprintf(
-        stderr,
+        stderr(),
         b"Running simple tests for bugs that have been fixed previously\n\0" as *const u8
             as *const libc::c_char,
     );

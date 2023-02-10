@@ -6,68 +6,6 @@ pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]
     pub type size_t = libc::c_ulong;
 }
-#[c2rust::header_src = "/usr/include/bits/types.h:28"]
-pub mod types_h {
-    #[c2rust::src_loc = "152:1"]
-    pub type __off_t = libc::c_long;
-    #[c2rust::src_loc = "153:1"]
-    pub type __off64_t = libc::c_long;
-}
-#[c2rust::header_src = "/usr/include/bits/types/struct_FILE.h:28"]
-pub mod struct_FILE_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "49:8"]
-    pub struct _IO_FILE {
-        pub _flags: libc::c_int,
-        pub _IO_read_ptr: *mut libc::c_char,
-        pub _IO_read_end: *mut libc::c_char,
-        pub _IO_read_base: *mut libc::c_char,
-        pub _IO_write_base: *mut libc::c_char,
-        pub _IO_write_ptr: *mut libc::c_char,
-        pub _IO_write_end: *mut libc::c_char,
-        pub _IO_buf_base: *mut libc::c_char,
-        pub _IO_buf_end: *mut libc::c_char,
-        pub _IO_save_base: *mut libc::c_char,
-        pub _IO_backup_base: *mut libc::c_char,
-        pub _IO_save_end: *mut libc::c_char,
-        pub _markers: *mut _IO_marker,
-        pub _chain: *mut _IO_FILE,
-        pub _fileno: libc::c_int,
-        pub _flags2: libc::c_int,
-        pub _old_offset: __off_t,
-        pub _cur_column: libc::c_ushort,
-        pub _vtable_offset: libc::c_schar,
-        pub _shortbuf: [libc::c_char; 1],
-        pub _lock: *mut libc::c_void,
-        pub _offset: __off64_t,
-        pub _codecvt: *mut _IO_codecvt,
-        pub _wide_data: *mut _IO_wide_data,
-        pub _freeres_list: *mut _IO_FILE,
-        pub _freeres_buf: *mut libc::c_void,
-        pub __pad5: size_t,
-        pub _mode: libc::c_int,
-        pub _unused2: [libc::c_char; 20],
-    }
-    #[c2rust::src_loc = "43:1"]
-    pub type _IO_lock_t = ();
-    use super::stddef_h::size_t;
-    use super::types_h::{__off64_t, __off_t};
-    extern "C" {
-        #[c2rust::src_loc = "38:8"]
-        pub type _IO_wide_data;
-        #[c2rust::src_loc = "37:8"]
-        pub type _IO_codecvt;
-        #[c2rust::src_loc = "36:8"]
-        pub type _IO_marker;
-    }
-}
-#[c2rust::header_src = "/usr/include/bits/types/FILE.h:28"]
-pub mod FILE_h {
-    #[c2rust::src_loc = "7:1"]
-    pub type FILE = _IO_FILE;
-    use super::struct_FILE_h::_IO_FILE;
-}
 #[c2rust::header_src = "/usr/include/stdio.h:28"]
 pub mod stdio_h {
     use super::FILE_h::FILE;
@@ -114,15 +52,13 @@ pub mod stdlib_h {
 pub use self::stddef_h::size_t;
 use self::stdio_h::{fclose, fopen, fprintf, fread, stderr};
 pub use self::stdlib_h::{atoi, exit, strtol};
-pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
-pub use self::types_h::{__off64_t, __off_t};
-pub use self::FILE_h::FILE;
+
 use crate::externs::strcmp;
 #[c2rust::src_loc = "38:1"]
 unsafe extern "C" fn check_alloc(mut _ptr: *mut libc::c_void) -> *mut libc::c_void {
     if _ptr.is_null() {
         fprintf(
-            stderr,
+            stderr(),
             b"Out of memory.\n\0" as *const u8 as *const libc::c_char,
         );
         exit(1 as libc::c_int);
@@ -401,7 +337,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *const libc::c_char) ->
     let mut max_compare: libc::c_int = 0;
     if _argc < 3 as libc::c_int || _argc > 6 as libc::c_int {
         fprintf(
-            stderr,
+            stderr(),
             b"Usage: %s [-s] [-r rate2] <file1.sw> <file2.sw>\n\0" as *const u8
                 as *const libc::c_char,
             *_argv.offset(0 as libc::c_int as isize),
@@ -434,7 +370,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *const libc::c_char) ->
             && rate != 48000 as libc::c_int as libc::c_uint
         {
             fprintf(
-                stderr,
+                stderr(),
                 b"Sampling rate must be 8000, 12000, 16000, 24000, or 48000\n\0" as *const u8
                     as *const libc::c_char,
             );
@@ -465,7 +401,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *const libc::c_char) ->
     );
     if fin1.is_null() {
         fprintf(
-            stderr,
+            stderr(),
             b"Error opening '%s'.\n\0" as *const u8 as *const libc::c_char,
             *_argv.offset(1 as libc::c_int as isize),
         );
@@ -477,7 +413,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *const libc::c_char) ->
     );
     if fin2.is_null() {
         fprintf(
-            stderr,
+            stderr(),
             b"Error opening '%s'.\n\0" as *const u8 as *const libc::c_char,
             *_argv.offset(2 as libc::c_int as isize),
         );
@@ -504,7 +440,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *const libc::c_char) ->
     fclose(fin2);
     if xlength != ylength.wrapping_mul(downsample as libc::c_ulong) {
         fprintf(
-            stderr,
+            stderr(),
             b"Sample counts do not match (%lu!=%lu).\n\0" as *const u8 as *const libc::c_char,
             xlength,
             ylength.wrapping_mul(downsample as libc::c_ulong),
@@ -513,7 +449,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *const libc::c_char) ->
     }
     if xlength < 480 as libc::c_int as libc::c_ulong {
         fprintf(
-            stderr,
+            stderr(),
             b"Insufficient sample data (%lu<%i).\n\0" as *const u8 as *const libc::c_char,
             xlength,
             480 as libc::c_int,
@@ -826,22 +762,22 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *const libc::c_char) ->
     Q = (100.0 * (1.0 - 0.5 * (1.0 + err).ln() / 1.13f64.ln())) as f32;
     if Q < 0 as libc::c_int as libc::c_float {
         fprintf(
-            stderr,
+            stderr(),
             b"Test vector FAILS\n\0" as *const u8 as *const libc::c_char,
         );
         fprintf(
-            stderr,
+            stderr(),
             b"Internal weighted error is %f\n\0" as *const u8 as *const libc::c_char,
             err,
         );
         return 1 as libc::c_int;
     } else {
         fprintf(
-            stderr,
+            stderr(),
             b"Test vector PASSES\n\0" as *const u8 as *const libc::c_char,
         );
         fprintf(
-            stderr,
+            stderr(),
             b"Opus quality metric: %.1f %% (internal weighted error is %f)\n\0" as *const u8
                 as *const libc::c_char,
             Q as libc::c_double,

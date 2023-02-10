@@ -1,21 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/usr/include/bits/types.h:34"]
-pub mod types_h {
-    #[c2rust::src_loc = "39:1"]
-    pub type __int16_t = libc::c_short;
-    #[c2rust::src_loc = "41:1"]
-    pub type __int32_t = libc::c_int;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:34"]
-pub mod stdint_intn_h {
-    #[c2rust::src_loc = "25:1"]
-    pub type int16_t = __int16_t;
-    #[c2rust::src_loc = "26:1"]
-    pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t};
-}
-pub use self::stdint_intn_h::{int16_t, int32_t};
-pub use self::types_h::{__int16_t, __int32_t};
 #[c2rust::src_loc = "37:25"]
 static mut sigm_LUT_slope_Q10: [i32; 6] = [
     237 as libc::c_int,

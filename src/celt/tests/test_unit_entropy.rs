@@ -4,83 +4,10 @@ pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]
     pub type size_t = libc::c_ulong;
 }
-#[c2rust::header_src = "/usr/include/bits/types.h:33"]
-pub mod types_h {
-    #[c2rust::src_loc = "42:1"]
-    pub type __uint32_t = libc::c_uint;
-    #[c2rust::src_loc = "152:1"]
-    pub type __off_t = libc::c_long;
-    #[c2rust::src_loc = "153:1"]
-    pub type __off64_t = libc::c_long;
-    #[c2rust::src_loc = "160:1"]
-    pub type __time_t = libc::c_long;
-}
 #[c2rust::header_src = "/usr/include/bits/types/time_t.h:33"]
 pub mod time_t_h {
     #[c2rust::src_loc = "10:1"]
     pub type time_t = __time_t;
-    use super::types_h::__time_t;
-}
-#[c2rust::header_src = "/usr/include/bits/types/struct_FILE.h:34"]
-pub mod struct_FILE_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "49:8"]
-    pub struct _IO_FILE {
-        pub _flags: libc::c_int,
-        pub _IO_read_ptr: *mut libc::c_char,
-        pub _IO_read_end: *mut libc::c_char,
-        pub _IO_read_base: *mut libc::c_char,
-        pub _IO_write_base: *mut libc::c_char,
-        pub _IO_write_ptr: *mut libc::c_char,
-        pub _IO_write_end: *mut libc::c_char,
-        pub _IO_buf_base: *mut libc::c_char,
-        pub _IO_buf_end: *mut libc::c_char,
-        pub _IO_save_base: *mut libc::c_char,
-        pub _IO_backup_base: *mut libc::c_char,
-        pub _IO_save_end: *mut libc::c_char,
-        pub _markers: *mut _IO_marker,
-        pub _chain: *mut _IO_FILE,
-        pub _fileno: libc::c_int,
-        pub _flags2: libc::c_int,
-        pub _old_offset: __off_t,
-        pub _cur_column: libc::c_ushort,
-        pub _vtable_offset: libc::c_schar,
-        pub _shortbuf: [libc::c_char; 1],
-        pub _lock: *mut libc::c_void,
-        pub _offset: __off64_t,
-        pub _codecvt: *mut _IO_codecvt,
-        pub _wide_data: *mut _IO_wide_data,
-        pub _freeres_list: *mut _IO_FILE,
-        pub _freeres_buf: *mut libc::c_void,
-        pub __pad5: size_t,
-        pub _mode: libc::c_int,
-        pub _unused2: [libc::c_char; 20],
-    }
-    #[c2rust::src_loc = "43:1"]
-    pub type _IO_lock_t = ();
-    use super::stddef_h::size_t;
-    use super::types_h::{__off64_t, __off_t};
-    extern "C" {
-        #[c2rust::src_loc = "38:8"]
-        pub type _IO_wide_data;
-        #[c2rust::src_loc = "37:8"]
-        pub type _IO_codecvt;
-        #[c2rust::src_loc = "36:8"]
-        pub type _IO_marker;
-    }
-}
-#[c2rust::header_src = "/usr/include/bits/types/FILE.h:34"]
-pub mod FILE_h {
-    #[c2rust::src_loc = "7:1"]
-    pub type FILE = _IO_FILE;
-    use super::struct_FILE_h::_IO_FILE;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:38"]
-pub mod stdint_uintn_h {
-    #[c2rust::src_loc = "26:1"]
-    pub type uint32_t = __uint32_t;
-    use super::types_h::__uint32_t;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:38"]
 pub mod entcode_h {
@@ -871,13 +798,13 @@ pub use self::entenc_c::{
 };
 use self::mathcalls_h::{ldexp, log};
 pub use self::stddef_h::size_t;
-pub use self::stdint_uintn_h::uint32_t;
+
 use self::stdio_h::{fprintf, stderr};
 pub use self::stdlib_h::{atoi, free, getenv, malloc, rand, srand, strtol};
 pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
 use self::time_h::time;
 pub use self::time_t_h::time_t;
-pub use self::types_h::{__off64_t, __off_t, __time_t, __uint32_t};
+
 pub use self::FILE_h::FILE;
 use crate::externs::{memmove, memset};
 #[c2rust::src_loc = "53:1"]
@@ -926,7 +853,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
     entropy = 0 as libc::c_int as libc::c_double;
     if _argc > 2 as libc::c_int {
         fprintf(
-            stderr,
+            stderr(),
             b"Usage: %s [<seed>]\n\0" as *const u8 as *const libc::c_char,
             *_argv.offset(0 as libc::c_int as isize),
         );
@@ -962,7 +889,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
             nbits2 = ec_tell(&mut enc) as libc::c_long;
             if nbits2 - nbits != ftb as libc::c_long {
                 fprintf(
-                    stderr,
+                    stderr(),
                     b"Used %li bits to encode %i bits directly.\n\0" as *const u8
                         as *const libc::c_char,
                     nbits2 - nbits,
@@ -977,7 +904,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
     nbits = ec_tell_frac(&mut enc) as libc::c_long;
     ec_enc_done(&mut enc);
     fprintf(
-        stderr,
+        stderr(),
         b"Encoded %0.2lf bits of entropy to %0.2lf bits (%0.3lf%% wasted).\n\0" as *const u8
             as *const libc::c_char,
         entropy,
@@ -987,7 +914,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
             / nbits as libc::c_double,
     );
     fprintf(
-        stderr,
+        stderr(),
         b"Packed to %li bytes.\n\0" as *const u8 as *const libc::c_char,
         ec_range_bytes(&mut enc) as libc::c_long,
     );
@@ -999,7 +926,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
             sym = ec_dec_uint(&mut dec, ft as u32);
             if sym != i as libc::c_uint {
                 fprintf(
-                    stderr,
+                    stderr(),
                     b"Decoded %i instead of %i with ft of %i.\n\0" as *const u8
                         as *const libc::c_char,
                     sym,
@@ -1019,7 +946,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
             sym = ec_dec_bits(&mut dec, ftb as libc::c_uint);
             if sym != i as libc::c_uint {
                 fprintf(
-                    stderr,
+                    stderr(),
                     b"Decoded %i instead of %i with ftb of %i.\n\0" as *const u8
                         as *const libc::c_char,
                     sym,
@@ -1035,7 +962,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
     nbits2 = ec_tell_frac(&mut dec) as libc::c_long;
     if nbits != nbits2 {
         fprintf(
-            stderr,
+            stderr(),
             b"Reported number of bits used was %0.2lf, should be %0.2lf.\n\0" as *const u8
                 as *const libc::c_char,
             ldexp(nbits2 as libc::c_double, -(3 as libc::c_int)),
@@ -1068,7 +995,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
         || ec_dec_uint(&mut dec, 7 as libc::c_int as u32) != 6 as libc::c_int as libc::c_uint
     {
         fprintf(
-            stderr,
+            stderr(),
             b"Encoder bust overwrote range coder data with raw bits.\n\0" as *const u8
                 as *const libc::c_char,
         );
@@ -1076,7 +1003,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
     }
     srand(seed);
     fprintf(
-        stderr,
+        stderr(),
         b"Testing random streams... Random seed: %u (%.4X)\n\0" as *const u8 as *const libc::c_char,
         seed,
         rand() % 65536 as libc::c_int,
@@ -1138,7 +1065,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
         ec_enc_done(&mut enc);
         if tell_bits != ec_tell(&mut enc) as libc::c_uint {
             fprintf(
-                stderr,
+                stderr(),
                 b"ec_tell() changed after ec_enc_done(): %i instead of %i (Random seed: %u)\n\0"
                     as *const u8 as *const libc::c_char,
                 ec_tell(&mut enc),
@@ -1153,7 +1080,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
             < ec_range_bytes(&mut enc)
         {
             fprintf(
-                stderr,
+                stderr(),
                 b"ec_tell() lied, there's %i bytes instead of %d (Random seed: %u)\n\0" as *const u8
                     as *const libc::c_char,
                 ec_range_bytes(&mut enc),
@@ -1167,7 +1094,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
         ec_dec_init(&mut dec, ptr, 10000 as libc::c_int as u32);
         if ec_tell_frac(&mut dec) != *tell.offset(0 as libc::c_int as isize) {
             fprintf(
-                stderr,
+                stderr(),
                 b"Tell mismatch between encoder and decoder at symbol %i: %i instead of %i (Random seed: %u).\n\0"
                     as *const u8 as *const libc::c_char,
                 0 as libc::c_int,
@@ -1181,7 +1108,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
             sym = ec_dec_uint(&mut dec, ft as u32);
             if sym != *data.offset(j as isize) {
                 fprintf(
-                    stderr,
+                    stderr(),
                     b"Decoded %i instead of %i with ft of %i at position %i of %i (Random seed: %u).\n\0"
                         as *const u8 as *const libc::c_char,
                     sym,
@@ -1195,7 +1122,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
             }
             if ec_tell_frac(&mut dec) != *tell.offset((j + 1 as libc::c_int) as isize) {
                 fprintf(
-                    stderr,
+                    stderr(),
                     b"Tell mismatch between encoder and decoder at symbol %i: %i instead of %i (Random seed: %u).\n\0"
                         as *const u8 as *const libc::c_char,
                     j + 1 as libc::c_int,
@@ -1317,7 +1244,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
             < ec_range_bytes(&mut enc)
         {
             fprintf(
-                stderr,
+                stderr(),
                 b"tell() lied, there's %i bytes instead of %d (Random seed: %u)\n\0" as *const u8
                     as *const libc::c_char,
                 ec_range_bytes(&mut enc),
@@ -1329,7 +1256,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
         ec_dec_init(&mut dec, ptr, 10000 as libc::c_int as u32);
         if ec_tell_frac(&mut dec) != *tell_0.offset(0 as libc::c_int as isize) {
             fprintf(
-                stderr,
+                stderr(),
                 b"Tell mismatch between encoder and decoder at symbol %i: %i instead of %i (Random seed: %u).\n\0"
                     as *const u8 as *const libc::c_char,
                 0 as libc::c_int,
@@ -1404,7 +1331,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
             }
             if sym != *data_0.offset(j_0 as isize) {
                 fprintf(
-                    stderr,
+                    stderr(),
                     b"Decoded %i instead of %i with logp1 of %i at position %i of %i (Random seed: %u).\n\0"
                         as *const u8 as *const libc::c_char,
                     sym,
@@ -1415,7 +1342,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
                     seed,
                 );
                 fprintf(
-                    stderr,
+                    stderr(),
                     b"Encoding method: %i, decoding method: %i\n\0" as *const u8
                         as *const libc::c_char,
                     *enc_method.offset(j_0 as isize),
@@ -1425,7 +1352,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
             }
             if ec_tell_frac(&mut dec) != *tell_0.offset((j_0 + 1 as libc::c_int) as isize) {
                 fprintf(
-                    stderr,
+                    stderr(),
                     b"Tell mismatch between encoder and decoder at symbol %i: %i instead of %i (Random seed: %u).\n\0"
                         as *const u8 as *const libc::c_char,
                     j_0 + 1 as libc::c_int,
@@ -1455,7 +1382,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
     );
     if enc.error != 0 {
         fprintf(
-            stderr,
+            stderr(),
             b"patch_initial_bits failed\0" as *const u8 as *const libc::c_char,
         );
         ret = -(1 as libc::c_int);
@@ -1467,7 +1394,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
     );
     if enc.error == 0 {
         fprintf(
-            stderr,
+            stderr(),
             b"patch_initial_bits didn't fail when it should have\0" as *const u8
                 as *const libc::c_char,
         );
@@ -1478,7 +1405,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
         || *ptr.offset(0 as libc::c_int as isize) as libc::c_int != 192 as libc::c_int
     {
         fprintf(
-            stderr,
+            stderr(),
             b"Got %d when expecting 192 for patch_initial_bits\0" as *const u8
                 as *const libc::c_char,
             *ptr.offset(0 as libc::c_int as isize) as libc::c_int,
@@ -1497,7 +1424,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
     );
     if enc.error != 0 {
         fprintf(
-            stderr,
+            stderr(),
             b"patch_initial_bits failed\0" as *const u8 as *const libc::c_char,
         );
         ret = -(1 as libc::c_int);
@@ -1507,7 +1434,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
         || *ptr.offset(0 as libc::c_int as isize) as libc::c_int != 63 as libc::c_int
     {
         fprintf(
-            stderr,
+            stderr(),
             b"Got %d when expecting 63 for patch_initial_bits\0" as *const u8
                 as *const libc::c_char,
             *ptr.offset(0 as libc::c_int as isize) as libc::c_int,
@@ -1528,7 +1455,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
     ec_enc_done(&mut enc);
     if enc.error == 0 {
         fprintf(
-            stderr,
+            stderr(),
             b"Raw bits overfill didn't fail when it should have\0" as *const u8
                 as *const libc::c_char,
         );
@@ -1547,7 +1474,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
     ec_enc_done(&mut enc);
     if enc.error == 0 {
         fprintf(
-            stderr,
+            stderr(),
             b"17 raw bits encoded in two bytes\0" as *const u8 as *const libc::c_char,
         );
         ret = -(1 as libc::c_int);
