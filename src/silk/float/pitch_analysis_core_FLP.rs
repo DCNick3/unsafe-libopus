@@ -48,13 +48,6 @@ pub mod xmmintrin_h {
     #[cfg(target_arch = "x86_64")]
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:35"]
-pub mod mathcalls_h {
-    extern "C" {
-        #[c2rust::src_loc = "107:17"]
-        pub fn log10(_: libc::c_double) -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:35"]
 pub mod SigProc_FIX_h {
     #[inline]
@@ -120,10 +113,9 @@ pub mod SigProc_FLP_h {
     #[inline]
     #[c2rust::src_loc = "188:1"]
     pub unsafe extern "C" fn silk_log2(x: libc::c_double) -> libc::c_float {
-        return (3.32192809488736f64 * log10(x)) as libc::c_float;
+        return (3.32192809488736f64 * x.log10()) as libc::c_float;
     }
     use super::float_cast_h::float2int;
-    use super::mathcalls_h::log10;
     use super::typedef_h::{silk_int16_MAX, silk_int16_MIN};
     extern "C" {
         #[c2rust::src_loc = "134:1"]

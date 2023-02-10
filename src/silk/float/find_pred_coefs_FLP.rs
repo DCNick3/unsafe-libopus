@@ -270,13 +270,6 @@ pub mod arch_h {
         ) -> !;
     }
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:32"]
-pub mod mathcalls_h {
-    extern "C" {
-        #[c2rust::src_loc = "140:17"]
-        pub fn pow(_: libc::c_double, _: libc::c_double) -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/usr/include/string.h:32"]
 pub mod string_h {
     extern "C" {
@@ -389,7 +382,6 @@ use self::main_FLP_h::{
     silk_LTP_analysis_filter_FLP, silk_LTP_scale_ctrl_FLP, silk_find_LPC_FLP, silk_find_LTP_FLP,
     silk_process_NLSFs_FLP, silk_quant_LTP_gains_FLP, silk_residual_energy_FLP,
 };
-use self::mathcalls_h::pow;
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
@@ -499,11 +491,7 @@ pub unsafe extern "C" fn silk_find_pred_coefs_FLP(
     if (*psEnc).sCmn.first_frame_after_reset != 0 {
         minInvGain = 1.0f32 / MAX_PREDICTION_POWER_GAIN_AFTER_RESET;
     } else {
-        minInvGain = pow(
-            2 as libc::c_int as libc::c_double,
-            ((*psEncCtrl).LTPredCodGain / 3 as libc::c_int as libc::c_float) as libc::c_double,
-        ) as libc::c_float
-            / MAX_PREDICTION_POWER_GAIN;
+        minInvGain = 2.0f32.powf((*psEncCtrl).LTPredCodGain / 3.0) / MAX_PREDICTION_POWER_GAIN;
         minInvGain /= 0.25f32 + 0.75f32 * (*psEncCtrl).coding_quality;
     }
     silk_find_LPC_FLP(

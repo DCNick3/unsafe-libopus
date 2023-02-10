@@ -259,15 +259,6 @@ pub mod structs_FLP_h {
     }
     use super::structs_h::silk_encoder_state;
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:32"]
-pub mod mathcalls_h {
-    extern "C" {
-        #[c2rust::src_loc = "107:17"]
-        pub fn log10(_: libc::c_double) -> libc::c_double;
-        #[c2rust::src_loc = "140:17"]
-        pub fn pow(_: libc::c_double, _: libc::c_double) -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/main_FLP.h:32"]
 pub mod main_FLP_h {
     extern "C" {
@@ -320,9 +311,8 @@ pub mod SigProc_FLP_h {
     #[inline]
     #[c2rust::src_loc = "188:1"]
     pub unsafe extern "C" fn silk_log2(x: libc::c_double) -> libc::c_float {
-        return (3.32192809488736f64 * log10(x)) as libc::c_float;
+        return (3.32192809488736f64 * x.log10()) as libc::c_float;
     }
-    use super::mathcalls_h::log10;
     extern "C" {
         #[c2rust::src_loc = "45:1"]
         pub fn silk_bwexpander_FLP(ar: *mut libc::c_float, d: libc::c_int, chirp: libc::c_float);
@@ -377,7 +367,6 @@ pub mod tuning_parameters_h {
 }
 pub use self::define_h::{MAX_SHAPE_LPC_ORDER, MIN_QGAIN_DB, TYPE_VOICED, USE_HARM_SHAPING};
 use self::main_FLP_h::{silk_apply_sine_window_FLP, silk_warped_autocorrelation_FLP};
-use self::mathcalls_h::pow;
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
@@ -706,14 +695,8 @@ pub unsafe extern "C" fn silk_noise_shape_analysis_FLP(
         }
         k += 1;
     }
-    gain_mult = pow(
-        2.0f32 as libc::c_double,
-        (-0.16f32 * SNR_adj_dB) as libc::c_double,
-    ) as libc::c_float;
-    gain_add = pow(
-        2.0f32 as libc::c_double,
-        (0.16f32 * MIN_QGAIN_DB as libc::c_float) as libc::c_double,
-    ) as libc::c_float;
+    gain_mult = 2.0f32.powf(-0.16f32 * SNR_adj_dB);
+    gain_add = 2.0f32.powf(0.16f32 * MIN_QGAIN_DB as f32);
     k = 0 as libc::c_int;
     while k < (*psEnc).sCmn.nb_subfr {
         (*psEncCtrl).Gains[k as usize] *= gain_mult;

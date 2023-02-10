@@ -111,13 +111,6 @@ pub mod stdlib_h {
         pub fn exit(_: libc::c_int) -> !;
     }
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:30"]
-pub mod mathcalls_h {
-    extern "C" {
-        #[c2rust::src_loc = "140:17"]
-        pub fn pow(_: libc::c_double, _: libc::c_double) -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/usr/include/string.h:31"]
 pub mod string_h {
     extern "C" {
@@ -125,7 +118,6 @@ pub mod string_h {
         pub fn strcmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
     }
 }
-use self::mathcalls_h::pow;
 pub use self::stddef_h::size_t;
 use self::stdio_h::{fclose, fopen, fprintf, fread, stderr};
 pub use self::stdlib_h::{atoi, exit, strtol};
@@ -837,10 +829,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *const libc::c_char) ->
     free(xb as *mut libc::c_void);
     free(X as *mut libc::c_void);
     free(Y as *mut libc::c_void);
-    err = pow(
-        err / nframes as libc::c_double,
-        1.0f64 / 16 as libc::c_int as libc::c_double,
-    );
+    err = (err / nframes as f64).powf(1.0 / 16.0);
     Q = (100.0 * (1.0 - 0.5 * (1.0 + err).ln() / 1.13f64.ln())) as f32;
     if Q < 0 as libc::c_int as libc::c_float {
         fprintf(

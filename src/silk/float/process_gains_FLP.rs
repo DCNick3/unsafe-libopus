@@ -259,13 +259,6 @@ pub mod structs_FLP_h {
     }
     use super::structs_h::silk_encoder_state;
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:32"]
-pub mod mathcalls_h {
-    extern "C" {
-        #[c2rust::src_loc = "140:17"]
-        pub fn pow(_: libc::c_double, _: libc::c_double) -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/usr/include/string.h:32"]
 pub mod string_h {
     extern "C" {
@@ -329,7 +322,6 @@ pub mod tuning_parameters_h {
 }
 pub use self::define_h::{CODE_CONDITIONALLY, TYPE_VOICED};
 use self::main_h::silk_gains_quant;
-use self::mathcalls_h::pow;
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
@@ -372,13 +364,9 @@ pub unsafe extern "C" fn silk_process_gains_FLP(
             k += 1;
         }
     }
-    InvMaxSqrVal = (pow(
-        2.0f32 as libc::c_double,
-        (0.33f32
-            * (21.0f32
-                - (*psEnc).sCmn.SNR_dB_Q7 as libc::c_float
-                    * (1 as libc::c_int as libc::c_float / 128.0f32))) as libc::c_double,
-    ) / (*psEnc).sCmn.subfr_length as libc::c_double) as libc::c_float;
+    InvMaxSqrVal = (2.0f32
+        .powf(0.33f32 * (21.0f32 - (*psEnc).sCmn.SNR_dB_Q7 as f32 * (1.0 / 128.0)))
+        / (*psEnc).sCmn.subfr_length as f32);
     k = 0 as libc::c_int;
     while k < (*psEnc).sCmn.nb_subfr {
         gain = (*psEncCtrl).Gains[k as usize];
