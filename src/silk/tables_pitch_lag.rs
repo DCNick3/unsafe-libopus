@@ -16,9 +16,9 @@ pub mod opus_types_h {
     pub type opus_uint8 = uint8_t;
     use super::stdint_uintn_h::uint8_t;
 }
-pub use self::opus_types_h::opus_uint8;
-pub use self::stdint_uintn_h::uint8_t;
 pub use self::types_h::__uint8_t;
+pub use self::stdint_uintn_h::uint8_t;
+pub use self::opus_types_h::opus_uint8;
 #[no_mangle]
 #[c2rust::src_loc = "34:18"]
 pub static mut silk_pitch_lag_iCDF: [opus_uint8; 32] = [

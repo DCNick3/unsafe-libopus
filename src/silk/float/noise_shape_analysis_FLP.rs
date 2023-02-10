@@ -18,7 +18,7 @@ pub mod stdint_intn_h {
     pub type int16_t = __int16_t;
     #[c2rust::src_loc = "26:1"]
     pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t, __int8_t};
+    use super::types_h::{__int8_t, __int16_t, __int32_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
 pub mod stdint_uintn_h {
@@ -36,7 +36,7 @@ pub mod opus_types_h {
     pub type opus_int16 = int16_t;
     #[c2rust::src_loc = "55:4"]
     pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::{int16_t, int32_t, int8_t};
+    use super::stdint_intn_h::{int8_t, int16_t, int32_t};
     use super::stdint_uintn_h::uint8_t;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:32"]
@@ -67,7 +67,7 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int16, opus_int32};
+    use super::opus_types_h::{opus_int32, opus_int16};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
 pub mod structs_h {
@@ -227,7 +227,7 @@ pub mod structs_h {
         pub indices_LBRR: [SideInfoIndices; 3],
         pub pulses_LBRR: [[opus_int8; 320]; 3],
     }
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
+    use super::opus_types_h::{opus_int16, opus_int32, opus_uint8, opus_int8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:32"]
@@ -272,7 +272,7 @@ pub mod structs_FLP_h {
         pub GainsUnq_Q16: [opus_int32; 4],
         pub lastGainIndexPrev: opus_int8,
     }
-    use super::opus_types_h::{opus_int32, opus_int8};
+    use super::opus_types_h::{opus_int8, opus_int32};
     use super::structs_h::silk_encoder_state;
 }
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:32"]
@@ -310,6 +310,17 @@ pub mod main_FLP_h {
         );
     }
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
+pub mod define_h {
+    #[c2rust::src_loc = "155:9"]
+    pub const MAX_SHAPE_LPC_ORDER: libc::c_int = 24 as libc::c_int;
+    #[c2rust::src_loc = "119:9"]
+    pub const MIN_QGAIN_DB: libc::c_int = 2 as libc::c_int;
+    #[c2rust::src_loc = "152:9"]
+    pub const USE_HARM_SHAPING: libc::c_int = 1 as libc::c_int;
+    #[c2rust::src_loc = "72:9"]
+    pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
+}
 #[c2rust::header_src = "/usr/include/string.h:32"]
 pub mod string_h {
     extern "C" {
@@ -333,11 +344,15 @@ pub mod SigProc_FLP_h {
     pub unsafe extern "C" fn silk_log2(mut x: libc::c_double) -> libc::c_float {
         return (3.32192809488736f64 * log10(x)) as libc::c_float;
     }
-    use super::mathcalls_h::{exp, log10};
     use super::opus_types_h::opus_int32;
+    use super::mathcalls_h::{exp, log10};
     extern "C" {
         #[c2rust::src_loc = "45:1"]
-        pub fn silk_bwexpander_FLP(ar: *mut libc::c_float, d: libc::c_int, chirp: libc::c_float);
+        pub fn silk_bwexpander_FLP(
+            ar: *mut libc::c_float,
+            d: libc::c_int,
+            chirp: libc::c_float,
+        );
         #[c2rust::src_loc = "59:1"]
         pub fn silk_schur_FLP(
             refl_coef: *mut libc::c_float,
@@ -345,7 +360,11 @@ pub mod SigProc_FLP_h {
             order: libc::c_int,
         ) -> libc::c_float;
         #[c2rust::src_loc = "65:1"]
-        pub fn silk_k2a_FLP(A: *mut libc::c_float, rc: *const libc::c_float, order: opus_int32);
+        pub fn silk_k2a_FLP(
+            A: *mut libc::c_float,
+            rc: *const libc::c_float,
+            order: opus_int32,
+        );
         #[c2rust::src_loc = "72:1"]
         pub fn silk_autocorrelation_FLP(
             results: *mut libc::c_float,
@@ -354,30 +373,71 @@ pub mod SigProc_FLP_h {
             correlationCount: libc::c_int,
         );
         #[c2rust::src_loc = "134:1"]
-        pub fn silk_energy_FLP(data: *const libc::c_float, dataSize: libc::c_int)
-            -> libc::c_double;
+        pub fn silk_energy_FLP(
+            data: *const libc::c_float,
+            dataSize: libc::c_int,
+        ) -> libc::c_double;
     }
 }
-use self::main_FLP_h::{silk_apply_sine_window_FLP, silk_warped_autocorrelation_FLP};
-use self::mathcalls_h::{exp, fabs, log10, pow, sqrt};
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
-pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
-};
-pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tuning_parameters.h:33"]
+pub mod tuning_parameters_h {
+    #[c2rust::src_loc = "44:9"]
+    pub const FIND_PITCH_WHITE_NOISE_FRACTION: libc::c_float = 1e-3f32;
+    #[c2rust::src_loc = "90:9"]
+    pub const BG_SNR_DECR_dB: libc::c_float = 2.0f32;
+    #[c2rust::src_loc = "93:9"]
+    pub const HARM_SNR_INCR_dB: libc::c_float = 2.0f32;
+    #[c2rust::src_loc = "99:9"]
+    pub const ENERGY_VARIATION_THRESHOLD_QNT_OFFSET: libc::c_float = 0.6f32;
+    #[c2rust::src_loc = "105:9"]
+    pub const SHAPE_WHITE_NOISE_FRACTION: libc::c_float = 3e-5f32;
+    #[c2rust::src_loc = "108:9"]
+    pub const BANDWIDTH_EXPANSION: libc::c_float = 0.94f32;
+    #[c2rust::src_loc = "111:9"]
+    pub const HARMONIC_SHAPING: libc::c_float = 0.3f32;
+    #[c2rust::src_loc = "114:9"]
+    pub const HIGH_RATE_OR_LOW_QUALITY_HARMONIC_SHAPING: libc::c_float = 0.2f32;
+    #[c2rust::src_loc = "117:9"]
+    pub const HP_NOISE_COEF: libc::c_float = 0.25f32;
+    #[c2rust::src_loc = "120:9"]
+    pub const HARM_HP_NOISE_COEF: libc::c_float = 0.35f32;
+    #[c2rust::src_loc = "129:9"]
+    pub const LOW_FREQ_SHAPING: libc::c_float = 4.0f32;
+    #[c2rust::src_loc = "132:9"]
+    pub const LOW_QUALITY_LOW_FREQ_SHAPING_DECR: libc::c_float = 0.5f32;
+    #[c2rust::src_loc = "135:9"]
+    pub const SUBFR_SMTH_COEF: libc::c_float = 0.4f32;
+}
+pub use self::types_h::{__int8_t, __uint8_t, __int16_t, __int32_t};
+pub use self::stdint_intn_h::{int8_t, int16_t, int32_t};
 pub use self::stdint_uintn_h::uint8_t;
-use self::string_h::memcpy;
-pub use self::structs_FLP_h::{
-    silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
+pub use self::opus_types_h::{opus_int8, opus_uint8, opus_int16, opus_int32};
+pub use self::resampler_structs_h::{
+    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
 };
 pub use self::structs_h::{
-    silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
-    SideInfoIndices,
+    silk_nsq_state, silk_VAD_state, silk_LP_state, silk_NLSF_CB_struct, SideInfoIndices,
+    silk_encoder_state,
 };
-pub use self::types_h::{__int16_t, __int32_t, __int8_t, __uint8_t};
+pub use self::structs_FLP_h::{
+    silk_shape_state_FLP, silk_encoder_state_FLP, silk_encoder_control_FLP,
+};
+use self::mathcalls_h::{exp, log10, pow, sqrt, fabs};
+use self::main_FLP_h::{silk_apply_sine_window_FLP, silk_warped_autocorrelation_FLP};
+pub use self::define_h::{
+    MAX_SHAPE_LPC_ORDER, MIN_QGAIN_DB, USE_HARM_SHAPING, TYPE_VOICED,
+};
+use self::string_h::memcpy;
 pub use self::SigProc_FLP_h::{
-    silk_autocorrelation_FLP, silk_bwexpander_FLP, silk_energy_FLP, silk_k2a_FLP, silk_log2,
-    silk_schur_FLP, silk_sigmoid,
+    silk_sigmoid, silk_log2, silk_bwexpander_FLP, silk_schur_FLP, silk_k2a_FLP,
+    silk_autocorrelation_FLP, silk_energy_FLP,
+};
+pub use self::tuning_parameters_h::{
+    FIND_PITCH_WHITE_NOISE_FRACTION, BG_SNR_DECR_dB, HARM_SNR_INCR_dB,
+    ENERGY_VARIATION_THRESHOLD_QNT_OFFSET, SHAPE_WHITE_NOISE_FRACTION,
+    BANDWIDTH_EXPANSION, HARMONIC_SHAPING, HIGH_RATE_OR_LOW_QUALITY_HARMONIC_SHAPING,
+    HP_NOISE_COEF, HARM_HP_NOISE_COEF, LOW_FREQ_SHAPING,
+    LOW_QUALITY_LOW_FREQ_SHAPING_DECR, SUBFR_SMTH_COEF,
 };
 #[inline]
 #[c2rust::src_loc = "39:1"]
@@ -414,11 +474,12 @@ unsafe extern "C" fn warped_true2monic_coefs(
     let mut gain: libc::c_float = 0.;
     i = order - 1 as libc::c_int;
     while i > 0 as libc::c_int {
-        *coefs.offset((i - 1 as libc::c_int) as isize) -= lambda * *coefs.offset(i as isize);
+        *coefs.offset((i - 1 as libc::c_int) as isize)
+            -= lambda * *coefs.offset(i as isize);
         i -= 1;
     }
-    gain =
-        (1.0f32 - lambda * lambda) / (1.0f32 + lambda * *coefs.offset(0 as libc::c_int as isize));
+    gain = (1.0f32 - lambda * lambda)
+        / (1.0f32 + lambda * *coefs.offset(0 as libc::c_int as isize));
     i = 0 as libc::c_int;
     while i < order {
         *coefs.offset(i as isize) *= gain;
@@ -441,7 +502,8 @@ unsafe extern "C" fn warped_true2monic_coefs(
         }
         i = 1 as libc::c_int;
         while i < order {
-            *coefs.offset((i - 1 as libc::c_int) as isize) += lambda * *coefs.offset(i as isize);
+            *coefs.offset((i - 1 as libc::c_int) as isize)
+                += lambda * *coefs.offset(i as isize);
             i += 1;
         }
         gain = 1.0f32 / gain;
@@ -456,7 +518,8 @@ unsafe extern "C" fn warped_true2monic_coefs(
         silk_bwexpander_FLP(coefs, order, chirp);
         i = order - 1 as libc::c_int;
         while i > 0 as libc::c_int {
-            *coefs.offset((i - 1 as libc::c_int) as isize) -= lambda * *coefs.offset(i as isize);
+            *coefs.offset((i - 1 as libc::c_int) as isize)
+                -= lambda * *coefs.offset(i as isize);
             i -= 1;
         }
         gain = (1.0f32 - lambda * lambda)
@@ -535,32 +598,30 @@ pub unsafe extern "C" fn silk_noise_shape_analysis_FLP(
     let mut x_ptr: *const libc::c_float = 0 as *const libc::c_float;
     let mut pitch_res_ptr: *const libc::c_float = 0 as *const libc::c_float;
     x_ptr = x.offset(-((*psEnc).sCmn.la_shape as isize));
-    SNR_adj_dB =
-        (*psEnc).sCmn.SNR_dB_Q7 as libc::c_float * (1 as libc::c_int as libc::c_float / 128.0f32);
-    (*psEncCtrl).input_quality = 0.5f32
+    SNR_adj_dB = (*psEnc).sCmn.SNR_dB_Q7 as libc::c_float
+        * (1 as libc::c_int as libc::c_float / 128.0f32);
+    (*psEncCtrl)
+        .input_quality = 0.5f32
         * ((*psEnc).sCmn.input_quality_bands_Q15[0 as libc::c_int as usize]
             + (*psEnc).sCmn.input_quality_bands_Q15[1 as libc::c_int as usize])
-            as libc::c_float
-        * (1.0f32 / 32768.0f32);
+            as libc::c_float * (1.0f32 / 32768.0f32);
     (*psEncCtrl).coding_quality = silk_sigmoid(0.25f32 * (SNR_adj_dB - 20.0f32));
     if (*psEnc).sCmn.useCBR == 0 as libc::c_int {
-        b = 1.0f32 - (*psEnc).sCmn.speech_activity_Q8 as libc::c_float * (1.0f32 / 256.0f32);
-        SNR_adj_dB -= 2.0f32
-            * (*psEncCtrl).coding_quality
-            * (0.5f32 + 0.5f32 * (*psEncCtrl).input_quality)
-            * b
-            * b;
+        b = 1.0f32
+            - (*psEnc).sCmn.speech_activity_Q8 as libc::c_float * (1.0f32 / 256.0f32);
+        SNR_adj_dB
+            -= BG_SNR_DECR_dB * (*psEncCtrl).coding_quality
+                * (0.5f32 + 0.5f32 * (*psEncCtrl).input_quality) * b * b;
     }
-    if (*psEnc).sCmn.indices.signalType as libc::c_int == 2 as libc::c_int {
-        SNR_adj_dB += 2.0f32 * (*psEnc).LTPCorr;
+    if (*psEnc).sCmn.indices.signalType as libc::c_int == TYPE_VOICED {
+        SNR_adj_dB += HARM_SNR_INCR_dB * (*psEnc).LTPCorr;
     } else {
-        SNR_adj_dB += (-0.4f32
-            * (*psEnc).sCmn.SNR_dB_Q7 as libc::c_float
-            * (1 as libc::c_int as libc::c_float / 128.0f32)
-            + 6.0f32)
-            * (1.0f32 - (*psEncCtrl).input_quality);
+        SNR_adj_dB
+            += (-0.4f32 * (*psEnc).sCmn.SNR_dB_Q7 as libc::c_float
+                * (1 as libc::c_int as libc::c_float / 128.0f32) + 6.0f32)
+                * (1.0f32 - (*psEncCtrl).input_quality);
     }
-    if (*psEnc).sCmn.indices.signalType as libc::c_int == 2 as libc::c_int {
+    if (*psEnc).sCmn.indices.signalType as libc::c_int == TYPE_VOICED {
         (*psEnc).sCmn.indices.quantOffsetType = 0 as libc::c_int as opus_int8;
     } else {
         nSamples = 2 as libc::c_int * (*psEnc).sCmn.fs_kHz;
@@ -568,29 +629,32 @@ pub unsafe extern "C" fn silk_noise_shape_analysis_FLP(
         log_energy_prev = 0.0f32;
         pitch_res_ptr = pitch_res;
         nSegs = 5 as libc::c_int as opus_int16 as opus_int32
-            * (*psEnc).sCmn.nb_subfr as opus_int16 as opus_int32
-            / 2 as libc::c_int;
+            * (*psEnc).sCmn.nb_subfr as opus_int16 as opus_int32 / 2 as libc::c_int;
         k = 0 as libc::c_int;
         while k < nSegs {
             nrg = nSamples as libc::c_float
                 + silk_energy_FLP(pitch_res_ptr, nSamples) as libc::c_float;
             log_energy = silk_log2(nrg as libc::c_double);
             if k > 0 as libc::c_int {
-                energy_variation +=
-                    fabs((log_energy - log_energy_prev) as libc::c_double) as libc::c_float;
+                energy_variation
+                    += fabs((log_energy - log_energy_prev) as libc::c_double)
+                        as libc::c_float;
             }
             log_energy_prev = log_energy;
             pitch_res_ptr = pitch_res_ptr.offset(nSamples as isize);
             k += 1;
         }
-        if energy_variation > 0.6f32 * (nSegs - 1 as libc::c_int) as libc::c_float {
+        if energy_variation
+            > ENERGY_VARIATION_THRESHOLD_QNT_OFFSET
+                * (nSegs - 1 as libc::c_int) as libc::c_float
+        {
             (*psEnc).sCmn.indices.quantOffsetType = 0 as libc::c_int as opus_int8;
         } else {
             (*psEnc).sCmn.indices.quantOffsetType = 1 as libc::c_int as opus_int8;
         }
     }
-    strength = 1e-3f32 * (*psEncCtrl).predGain;
-    BWExp = 0.94f32 / (1.0f32 + strength * strength);
+    strength = FIND_PITCH_WHITE_NOISE_FRACTION * (*psEncCtrl).predGain;
+    BWExp = BANDWIDTH_EXPANSION / (1.0f32 + strength * strength);
     warping = (*psEnc).sCmn.warping_Q16 as libc::c_float / 65536.0f32
         + 0.01f32 * (*psEncCtrl).coding_quality;
     k = 0 as libc::c_int;
@@ -600,7 +664,12 @@ pub unsafe extern "C" fn silk_noise_shape_analysis_FLP(
         let mut flat_part: libc::c_int = 0;
         flat_part = (*psEnc).sCmn.fs_kHz * 3 as libc::c_int;
         slope_part = ((*psEnc).sCmn.shapeWinLength - flat_part) / 2 as libc::c_int;
-        silk_apply_sine_window_FLP(x_windowed.as_mut_ptr(), x_ptr, 1 as libc::c_int, slope_part);
+        silk_apply_sine_window_FLP(
+            x_windowed.as_mut_ptr(),
+            x_ptr,
+            1 as libc::c_int,
+            slope_part,
+        );
         shift = slope_part;
         memcpy(
             x_windowed.as_mut_ptr().offset(shift as isize) as *mut libc::c_void,
@@ -632,8 +701,9 @@ pub unsafe extern "C" fn silk_noise_shape_analysis_FLP(
                 (*psEnc).sCmn.shapingLPCOrder + 1 as libc::c_int,
             );
         }
-        auto_corr[0 as libc::c_int as usize] +=
-            auto_corr[0 as libc::c_int as usize] * 3e-5f32 + 1.0f32;
+        auto_corr[0 as libc::c_int as usize]
+            += auto_corr[0 as libc::c_int as usize] * SHAPE_WHITE_NOISE_FRACTION
+                + 1.0f32;
         nrg = silk_schur_FLP(
             rc.as_mut_ptr(),
             auto_corr.as_mut_ptr() as *const libc::c_float,
@@ -642,24 +712,25 @@ pub unsafe extern "C" fn silk_noise_shape_analysis_FLP(
         silk_k2a_FLP(
             &mut *((*psEncCtrl).AR)
                 .as_mut_ptr()
-                .offset((k * 24 as libc::c_int) as isize),
+                .offset((k * MAX_SHAPE_LPC_ORDER) as isize),
             rc.as_mut_ptr(),
             (*psEnc).sCmn.shapingLPCOrder,
         );
         (*psEncCtrl).Gains[k as usize] = sqrt(nrg as libc::c_double) as libc::c_float;
         if (*psEnc).sCmn.warping_Q16 > 0 as libc::c_int {
-            (*psEncCtrl).Gains[k as usize] *= warped_gain(
-                &mut *((*psEncCtrl).AR)
-                    .as_mut_ptr()
-                    .offset((k * 24 as libc::c_int) as isize),
-                warping,
-                (*psEnc).sCmn.shapingLPCOrder,
-            );
+            (*psEncCtrl).Gains[k as usize]
+                *= warped_gain(
+                    &mut *((*psEncCtrl).AR)
+                        .as_mut_ptr()
+                        .offset((k * MAX_SHAPE_LPC_ORDER) as isize),
+                    warping,
+                    (*psEnc).sCmn.shapingLPCOrder,
+                );
         }
         silk_bwexpander_FLP(
             &mut *((*psEncCtrl).AR)
                 .as_mut_ptr()
-                .offset((k * 24 as libc::c_int) as isize),
+                .offset((k * MAX_SHAPE_LPC_ORDER) as isize),
             (*psEnc).sCmn.shapingLPCOrder,
             BWExp,
         );
@@ -667,7 +738,7 @@ pub unsafe extern "C" fn silk_noise_shape_analysis_FLP(
             warped_true2monic_coefs(
                 &mut *((*psEncCtrl).AR)
                     .as_mut_ptr()
-                    .offset((k * 24 as libc::c_int) as isize),
+                    .offset((k * MAX_SHAPE_LPC_ORDER) as isize),
                 warping,
                 3.999f32,
                 (*psEnc).sCmn.shapingLPCOrder,
@@ -676,20 +747,18 @@ pub unsafe extern "C" fn silk_noise_shape_analysis_FLP(
             limit_coefs(
                 &mut *((*psEncCtrl).AR)
                     .as_mut_ptr()
-                    .offset((k * 24 as libc::c_int) as isize),
+                    .offset((k * MAX_SHAPE_LPC_ORDER) as isize),
                 3.999f32,
                 (*psEnc).sCmn.shapingLPCOrder,
             );
         }
         k += 1;
     }
-    gain_mult = pow(
-        2.0f32 as libc::c_double,
-        (-0.16f32 * SNR_adj_dB) as libc::c_double,
-    ) as libc::c_float;
+    gain_mult = pow(2.0f32 as libc::c_double, (-0.16f32 * SNR_adj_dB) as libc::c_double)
+        as libc::c_float;
     gain_add = pow(
         2.0f32 as libc::c_double,
-        (0.16f32 * 2 as libc::c_int as libc::c_float) as libc::c_double,
+        (0.16f32 * MIN_QGAIN_DB as libc::c_float) as libc::c_double,
     ) as libc::c_float;
     k = 0 as libc::c_int;
     while k < (*psEnc).sCmn.nb_subfr {
@@ -697,15 +766,13 @@ pub unsafe extern "C" fn silk_noise_shape_analysis_FLP(
         (*psEncCtrl).Gains[k as usize] += gain_add;
         k += 1;
     }
-    strength = 4.0f32
+    strength = LOW_FREQ_SHAPING
         * (1.0f32
-            + 0.5f32
+            + LOW_QUALITY_LOW_FREQ_SHAPING_DECR
                 * ((*psEnc).sCmn.input_quality_bands_Q15[0 as libc::c_int as usize]
-                    as libc::c_float
-                    * (1.0f32 / 32768.0f32)
-                    - 1.0f32));
+                    as libc::c_float * (1.0f32 / 32768.0f32) - 1.0f32));
     strength *= (*psEnc).sCmn.speech_activity_Q8 as libc::c_float * (1.0f32 / 256.0f32);
-    if (*psEnc).sCmn.indices.signalType as libc::c_int == 2 as libc::c_int {
+    if (*psEnc).sCmn.indices.signalType as libc::c_int == TYPE_VOICED {
         k = 0 as libc::c_int;
         while k < (*psEnc).sCmn.nb_subfr {
             b = 0.2f32 / (*psEnc).sCmn.fs_kHz as libc::c_float
@@ -714,38 +781,46 @@ pub unsafe extern "C" fn silk_noise_shape_analysis_FLP(
             (*psEncCtrl).LF_AR_shp[k as usize] = 1.0f32 - b - b * strength;
             k += 1;
         }
-        Tilt = -0.25f32
-            - (1 as libc::c_int as libc::c_float - 0.25f32)
-                * 0.35f32
+        Tilt = -HP_NOISE_COEF
+            - (1 as libc::c_int as libc::c_float - HP_NOISE_COEF) * HARM_HP_NOISE_COEF
                 * (*psEnc).sCmn.speech_activity_Q8 as libc::c_float
                 * (1.0f32 / 256.0f32);
     } else {
         b = 1.3f32 / (*psEnc).sCmn.fs_kHz as libc::c_float;
         (*psEncCtrl).LF_MA_shp[0 as libc::c_int as usize] = -1.0f32 + b;
-        (*psEncCtrl).LF_AR_shp[0 as libc::c_int as usize] = 1.0f32 - b - b * strength * 0.6f32;
+        (*psEncCtrl)
+            .LF_AR_shp[0 as libc::c_int as usize] = 1.0f32 - b - b * strength * 0.6f32;
         k = 1 as libc::c_int;
         while k < (*psEnc).sCmn.nb_subfr {
-            (*psEncCtrl).LF_MA_shp[k as usize] = (*psEncCtrl).LF_MA_shp[0 as libc::c_int as usize];
-            (*psEncCtrl).LF_AR_shp[k as usize] = (*psEncCtrl).LF_AR_shp[0 as libc::c_int as usize];
+            (*psEncCtrl)
+                .LF_MA_shp[k
+                as usize] = (*psEncCtrl).LF_MA_shp[0 as libc::c_int as usize];
+            (*psEncCtrl)
+                .LF_AR_shp[k
+                as usize] = (*psEncCtrl).LF_AR_shp[0 as libc::c_int as usize];
             k += 1;
         }
-        Tilt = -0.25f32;
+        Tilt = -HP_NOISE_COEF;
     }
-    if 1 as libc::c_int != 0 && (*psEnc).sCmn.indices.signalType as libc::c_int == 2 as libc::c_int
+    if USE_HARM_SHAPING != 0
+        && (*psEnc).sCmn.indices.signalType as libc::c_int == TYPE_VOICED
     {
-        HarmShapeGain = 0.3f32;
-        HarmShapeGain +=
-            0.2f32 * (1.0f32 - (1.0f32 - (*psEncCtrl).coding_quality) * (*psEncCtrl).input_quality);
+        HarmShapeGain = HARMONIC_SHAPING;
+        HarmShapeGain
+            += HIGH_RATE_OR_LOW_QUALITY_HARMONIC_SHAPING
+                * (1.0f32
+                    - (1.0f32 - (*psEncCtrl).coding_quality)
+                        * (*psEncCtrl).input_quality);
         HarmShapeGain *= sqrt((*psEnc).LTPCorr as libc::c_double) as libc::c_float;
     } else {
         HarmShapeGain = 0.0f32;
     }
     k = 0 as libc::c_int;
     while k < (*psEnc).sCmn.nb_subfr {
-        (*psShapeSt).HarmShapeGain_smth +=
-            0.4f32 * (HarmShapeGain - (*psShapeSt).HarmShapeGain_smth);
+        (*psShapeSt).HarmShapeGain_smth
+            += SUBFR_SMTH_COEF * (HarmShapeGain - (*psShapeSt).HarmShapeGain_smth);
         (*psEncCtrl).HarmShapeGain[k as usize] = (*psShapeSt).HarmShapeGain_smth;
-        (*psShapeSt).Tilt_smth += 0.4f32 * (Tilt - (*psShapeSt).Tilt_smth);
+        (*psShapeSt).Tilt_smth += SUBFR_SMTH_COEF * (Tilt - (*psShapeSt).Tilt_smth);
         (*psEncCtrl).Tilt[k as usize] = (*psShapeSt).Tilt_smth;
         k += 1;
     }

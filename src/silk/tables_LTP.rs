@@ -27,10 +27,10 @@ pub mod opus_types_h {
     use super::stdint_intn_h::int8_t;
     use super::stdint_uintn_h::uint8_t;
 }
-pub use self::opus_types_h::{opus_int8, opus_uint8};
+pub use self::types_h::{__int8_t, __uint8_t};
 pub use self::stdint_intn_h::int8_t;
 pub use self::stdint_uintn_h::uint8_t;
-pub use self::types_h::{__int8_t, __uint8_t};
+pub use self::opus_types_h::{opus_int8, opus_uint8};
 #[no_mangle]
 #[c2rust::src_loc = "34:18"]
 pub static mut silk_LTP_per_index_iCDF: [opus_uint8; 3] = [
@@ -657,7 +657,8 @@ static mut silk_LTP_gain_vq_2_gain: [opus_uint8; 32] = [
 ];
 #[no_mangle]
 #[c2rust::src_loc = "286:26"]
-pub static mut silk_LTP_vq_gain_ptrs_Q7: [*const opus_uint8; 3] = [0 as *const opus_uint8; 3];
+pub static mut silk_LTP_vq_gain_ptrs_Q7: [*const opus_uint8; 3] = [0
+    as *const opus_uint8; 3];
 #[no_mangle]
 #[c2rust::src_loc = "292:17"]
 pub static mut silk_LTP_vq_sizes: [opus_int8; 3] = [
@@ -667,35 +668,26 @@ pub static mut silk_LTP_vq_sizes: [opus_int8; 3] = [
 ];
 unsafe extern "C" fn run_static_initializers() {
     silk_LTP_vq_ptrs_Q7 = [
-        &*(*silk_LTP_gain_vq_0
+        &*(*silk_LTP_gain_vq_0.as_ptr().offset(0 as libc::c_int as isize))
             .as_ptr()
-            .offset(0 as libc::c_int as isize))
-        .as_ptr()
-        .offset(0 as libc::c_int as isize) as *const opus_int8 as *mut opus_int8
+            .offset(0 as libc::c_int as isize) as *const opus_int8 as *mut opus_int8
             as *const opus_int8,
-        &*(*silk_LTP_gain_vq_1
+        &*(*silk_LTP_gain_vq_1.as_ptr().offset(0 as libc::c_int as isize))
             .as_ptr()
-            .offset(0 as libc::c_int as isize))
-        .as_ptr()
-        .offset(0 as libc::c_int as isize) as *const opus_int8 as *mut opus_int8
+            .offset(0 as libc::c_int as isize) as *const opus_int8 as *mut opus_int8
             as *const opus_int8,
-        &*(*silk_LTP_gain_vq_2
+        &*(*silk_LTP_gain_vq_2.as_ptr().offset(0 as libc::c_int as isize))
             .as_ptr()
-            .offset(0 as libc::c_int as isize))
-        .as_ptr()
-        .offset(0 as libc::c_int as isize) as *const opus_int8 as *mut opus_int8
+            .offset(0 as libc::c_int as isize) as *const opus_int8 as *mut opus_int8
             as *const opus_int8,
     ];
     silk_LTP_vq_gain_ptrs_Q7 = [
-        &*silk_LTP_gain_vq_0_gain
-            .as_ptr()
-            .offset(0 as libc::c_int as isize) as *const opus_uint8,
-        &*silk_LTP_gain_vq_1_gain
-            .as_ptr()
-            .offset(0 as libc::c_int as isize) as *const opus_uint8,
-        &*silk_LTP_gain_vq_2_gain
-            .as_ptr()
-            .offset(0 as libc::c_int as isize) as *const opus_uint8,
+        &*silk_LTP_gain_vq_0_gain.as_ptr().offset(0 as libc::c_int as isize)
+            as *const opus_uint8,
+        &*silk_LTP_gain_vq_1_gain.as_ptr().offset(0 as libc::c_int as isize)
+            as *const opus_uint8,
+        &*silk_LTP_gain_vq_2_gain.as_ptr().offset(0 as libc::c_int as isize)
+            as *const opus_uint8,
     ];
 }
 #[used]

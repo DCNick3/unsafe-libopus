@@ -24,7 +24,7 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     #[c2rust::src_loc = "27:1"]
     pub type int64_t = __int64_t;
-    use super::types_h::{__int16_t, __int32_t, __int64_t, __int8_t};
+    use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:35"]
 pub mod stdint_uintn_h {
@@ -32,7 +32,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint32_t, __uint8_t};
+    use super::types_h::{__uint8_t, __uint32_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:35"]
 pub mod opus_types_h {
@@ -48,8 +48,8 @@ pub mod opus_types_h {
     pub type opus_uint32 = uint32_t;
     #[c2rust::src_loc = "57:4"]
     pub type opus_int64 = int64_t;
-    use super::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
-    use super::stdint_uintn_h::{uint32_t, uint8_t};
+    use super::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
+    use super::stdint_uintn_h::{uint8_t, uint32_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:35"]
 pub mod resampler_structs_h {
@@ -79,14 +79,14 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int16, opus_int32};
+    use super::opus_types_h::{opus_int32, opus_int16};
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:35"]
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]
-    pub use core::arch::x86::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
+    pub use core::arch::x86::{__m128, _mm_cvtss_si32, _mm_cvt_ss2si, _mm_set_ss};
     #[cfg(target_arch = "x86_64")]
-    pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
+    pub use core::arch::x86_64::{__m128, _mm_cvtss_si32, _mm_cvt_ss2si, _mm_set_ss};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:35"]
 pub mod structs_h {
@@ -246,7 +246,7 @@ pub mod structs_h {
         pub indices_LBRR: [SideInfoIndices; 3],
         pub pulses_LBRR: [[opus_int8; 320]; 3],
     }
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
+    use super::opus_types_h::{opus_int16, opus_int32, opus_uint8, opus_int8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/control.h:35"]
@@ -320,16 +320,22 @@ pub mod arch_h {
 pub mod SigProc_FIX_h {
     #[inline]
     #[c2rust::src_loc = "546:1"]
-    pub unsafe extern "C" fn silk_min_int(mut a: libc::c_int, mut b: libc::c_int) -> libc::c_int {
+    pub unsafe extern "C" fn silk_min_int(
+        mut a: libc::c_int,
+        mut b: libc::c_int,
+    ) -> libc::c_int {
         return if a < b { a } else { b };
     }
     #[inline]
     #[c2rust::src_loc = "564:1"]
-    pub unsafe extern "C" fn silk_max_int(mut a: libc::c_int, mut b: libc::c_int) -> libc::c_int {
+    pub unsafe extern "C" fn silk_max_int(
+        mut a: libc::c_int,
+        mut b: libc::c_int,
+    ) -> libc::c_int {
         return if a > b { a } else { b };
     }
-    use super::opus_types_h::{opus_int16, opus_int32};
     use super::resampler_structs_h::silk_resampler_state_struct;
+    use super::opus_types_h::{opus_int32, opus_int16};
     extern "C" {
         #[c2rust::src_loc = "62:1"]
         pub fn silk_resampler_init(
@@ -347,11 +353,39 @@ pub mod SigProc_FIX_h {
         ) -> libc::c_int;
     }
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:35"]
+pub mod define_h {
+    #[c2rust::src_loc = "112:9"]
+    pub const LA_SHAPE_MS: libc::c_int = 5 as libc::c_int;
+    #[c2rust::src_loc = "70:9"]
+    pub const TYPE_NO_VOICE_ACTIVITY: libc::c_int = 0 as libc::c_int;
+    #[c2rust::src_loc = "143:9"]
+    pub const MIN_LPC_ORDER: libc::c_int = 10 as libc::c_int;
+    #[c2rust::src_loc = "142:9"]
+    pub const MAX_LPC_ORDER: libc::c_int = 16 as libc::c_int;
+    #[c2rust::src_loc = "90:9"]
+    pub const MAX_NB_SUBFR: libc::c_int = 4 as libc::c_int;
+    #[c2rust::src_loc = "160:9"]
+    pub const MAX_DEL_DEC_STATES: libc::c_int = 4 as libc::c_int;
+    #[c2rust::src_loc = "94:9"]
+    pub const SUB_FRAME_LENGTH_MS: libc::c_int = 5 as libc::c_int;
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/errors.h:35"]
+pub mod errors_h {
+    #[c2rust::src_loc = "52:9"]
+    pub const SILK_ENC_PACKET_SIZE_NOT_SUPPORTED: libc::c_int = -(103 as libc::c_int);
+    #[c2rust::src_loc = "39:9"]
+    pub const SILK_NO_ERROR: libc::c_int = 0 as libc::c_int;
+}
 #[c2rust::header_src = "/usr/include/string.h:35"]
 pub mod string_h {
     extern "C" {
         #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
+        pub fn memset(
+            _: *mut libc::c_void,
+            _: libc::c_int,
+            _: libc::c_ulong,
+        ) -> *mut libc::c_void;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/float_cast.h:35"]
@@ -376,16 +410,16 @@ pub mod SigProc_FLP_h {
         let mut k: opus_int32 = 0;
         k = length - 1 as libc::c_int;
         while k >= 0 as libc::c_int {
-            *out.offset(k as isize) =
-                (if float2int(*in_0.offset(k as isize)) > 0x7fff as libc::c_int {
-                    0x7fff as libc::c_int
-                } else if float2int(*in_0.offset(k as isize))
-                    < 0x8000 as libc::c_int as opus_int16 as libc::c_int
-                {
-                    0x8000 as libc::c_int as opus_int16 as libc::c_int
-                } else {
-                    float2int(*in_0.offset(k as isize))
-                }) as opus_int16;
+            *out
+                .offset(
+                    k as isize,
+                ) = (if float2int(*in_0.offset(k as isize)) > silk_int16_MAX {
+                silk_int16_MAX
+            } else if float2int(*in_0.offset(k as isize)) < silk_int16_MIN {
+                silk_int16_MIN
+            } else {
+                float2int(*in_0.offset(k as isize))
+            }) as opus_int16;
             k -= 1;
         }
     }
@@ -403,12 +437,20 @@ pub mod SigProc_FLP_h {
             k -= 1;
         }
     }
-    use super::float_cast_h::float2int;
     use super::opus_types_h::{opus_int16, opus_int32};
+    use super::float_cast_h::float2int;
+    use super::typedef_h::{silk_int16_MAX, silk_int16_MIN};
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:35"]
+pub mod typedef_h {
+    #[c2rust::src_loc = "45:9"]
+    pub const silk_int16_MIN: libc::c_int = 0x8000 as libc::c_int;
+    #[c2rust::src_loc = "44:9"]
+    pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:35"]
 pub mod tables_h {
-    use super::opus_types_h::{opus_int16, opus_uint8};
+    use super::opus_types_h::{opus_uint8, opus_int16};
     use super::structs_h::silk_NLSF_CB_struct;
     extern "C" {
         #[c2rust::src_loc = "45:26"]
@@ -433,8 +475,8 @@ pub mod tables_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:35"]
 pub mod main_h {
-    use super::control_h::silk_EncControlStruct;
     use super::structs_h::silk_encoder_state;
+    use super::control_h::silk_EncControlStruct;
     extern "C" {
         #[c2rust::src_loc = "140:1"]
         pub fn silk_control_audio_bandwidth(
@@ -443,32 +485,54 @@ pub mod main_h {
         ) -> libc::c_int;
     }
 }
-use self::arch_h::celt_fatal;
-pub use self::control_h::silk_EncControlStruct;
-pub use self::float_cast_h::float2int;
-use self::main_h::silk_control_audio_bandwidth;
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/pitch_est_defines.h:40"]
+pub mod pitch_est_defines_h {
+    #[c2rust::src_loc = "72:9"]
+    pub const SILK_PE_MIN_COMPLEX: libc::c_int = 0 as libc::c_int;
+    #[c2rust::src_loc = "73:9"]
+    pub const SILK_PE_MID_COMPLEX: libc::c_int = 1 as libc::c_int;
+    #[c2rust::src_loc = "74:9"]
+    pub const SILK_PE_MAX_COMPLEX: libc::c_int = 2 as libc::c_int;
+}
+pub use self::types_h::{
+    __int8_t, __uint8_t, __int16_t, __int32_t, __uint32_t, __int64_t,
+};
+pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
+pub use self::stdint_uintn_h::{uint8_t, uint32_t};
 pub use self::opus_types_h::{
-    opus_int16, opus_int32, opus_int64, opus_int8, opus_uint32, opus_uint8,
+    opus_int8, opus_uint8, opus_int16, opus_int32, opus_uint32, opus_int64,
 };
 pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
+    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
 };
-pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
-pub use self::stdint_uintn_h::{uint32_t, uint8_t};
-use self::string_h::memset;
-pub use self::structs_FLP_h::{silk_encoder_state_FLP, silk_shape_state_FLP};
 pub use self::structs_h::{
-    silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
-    SideInfoIndices,
+    silk_nsq_state, silk_VAD_state, silk_LP_state, silk_NLSF_CB_struct, SideInfoIndices,
+    silk_encoder_state,
 };
-use self::tables_h::{
-    silk_NLSF_CB_NB_MB, silk_NLSF_CB_WB, silk_pitch_contour_10_ms_NB_iCDF,
-    silk_pitch_contour_10_ms_iCDF, silk_pitch_contour_NB_iCDF, silk_pitch_contour_iCDF,
-    silk_uniform4_iCDF, silk_uniform6_iCDF, silk_uniform8_iCDF,
+pub use self::control_h::silk_EncControlStruct;
+pub use self::structs_FLP_h::{silk_shape_state_FLP, silk_encoder_state_FLP};
+use self::arch_h::celt_fatal;
+pub use self::SigProc_FIX_h::{
+    silk_min_int, silk_max_int, silk_resampler_init, silk_resampler,
 };
-pub use self::types_h::{__int16_t, __int32_t, __int64_t, __int8_t, __uint32_t, __uint8_t};
-pub use self::SigProc_FIX_h::{silk_max_int, silk_min_int, silk_resampler, silk_resampler_init};
+pub use self::define_h::{
+    LA_SHAPE_MS, TYPE_NO_VOICE_ACTIVITY, MIN_LPC_ORDER, MAX_LPC_ORDER, MAX_NB_SUBFR,
+    MAX_DEL_DEC_STATES, SUB_FRAME_LENGTH_MS,
+};
+pub use self::errors_h::{SILK_ENC_PACKET_SIZE_NOT_SUPPORTED, SILK_NO_ERROR};
+use self::string_h::memset;
+pub use self::float_cast_h::float2int;
 pub use self::SigProc_FLP_h::{silk_float2short_array, silk_short2float_array};
+pub use self::typedef_h::{silk_int16_MIN, silk_int16_MAX};
+use self::tables_h::{
+    silk_pitch_contour_iCDF, silk_pitch_contour_NB_iCDF, silk_pitch_contour_10_ms_iCDF,
+    silk_pitch_contour_10_ms_NB_iCDF, silk_uniform4_iCDF, silk_uniform6_iCDF,
+    silk_uniform8_iCDF, silk_NLSF_CB_WB, silk_NLSF_CB_NB_MB,
+};
+use self::main_h::silk_control_audio_bandwidth;
+pub use self::pitch_est_defines_h::{
+    SILK_PE_MIN_COMPLEX, SILK_PE_MID_COMPLEX, SILK_PE_MAX_COMPLEX,
+};
 #[no_mangle]
 #[c2rust::src_loc = "65:1"]
 pub unsafe extern "C" fn silk_control_encoder(
@@ -518,23 +582,25 @@ unsafe extern "C" fn silk_setup_resamplers(
     mut psEnc: *mut silk_encoder_state_FLP,
     mut fs_kHz: libc::c_int,
 ) -> libc::c_int {
-    let mut ret: libc::c_int = 0 as libc::c_int;
-    if (*psEnc).sCmn.fs_kHz != fs_kHz || (*psEnc).sCmn.prev_API_fs_Hz != (*psEnc).sCmn.API_fs_Hz {
+    let mut ret: libc::c_int = SILK_NO_ERROR;
+    if (*psEnc).sCmn.fs_kHz != fs_kHz
+        || (*psEnc).sCmn.prev_API_fs_Hz != (*psEnc).sCmn.API_fs_Hz
+    {
         if (*psEnc).sCmn.fs_kHz == 0 as libc::c_int {
-            ret += silk_resampler_init(
-                &mut (*psEnc).sCmn.resampler_state,
-                (*psEnc).sCmn.API_fs_Hz,
-                fs_kHz * 1000 as libc::c_int,
-                1 as libc::c_int,
-            );
+            ret
+                += silk_resampler_init(
+                    &mut (*psEnc).sCmn.resampler_state,
+                    (*psEnc).sCmn.API_fs_Hz,
+                    fs_kHz * 1000 as libc::c_int,
+                    1 as libc::c_int,
+                );
         } else {
             let mut new_buf_samples: opus_int32 = 0;
             let mut api_buf_samples: opus_int32 = 0;
             let mut old_buf_samples: opus_int32 = 0;
             let mut buf_length_ms: opus_int32 = 0;
             buf_length_ms = ((((*psEnc).sCmn.nb_subfr * 5 as libc::c_int) as opus_uint32)
-                << 1 as libc::c_int) as opus_int32
-                + 5 as libc::c_int;
+                << 1 as libc::c_int) as opus_int32 + LA_SHAPE_MS;
             old_buf_samples = buf_length_ms * (*psEnc).sCmn.fs_kHz;
             new_buf_samples = buf_length_ms * fs_kHz;
             let vla = (if old_buf_samples > new_buf_samples {
@@ -542,56 +608,60 @@ unsafe extern "C" fn silk_setup_resamplers(
             } else {
                 new_buf_samples
             }) as usize;
-            let mut x_bufFIX: Vec<opus_int16> = ::std::vec::from_elem(0, vla);
+            let mut x_bufFIX: Vec::<opus_int16> = ::std::vec::from_elem(0, vla);
             silk_float2short_array(
                 x_bufFIX.as_mut_ptr(),
                 ((*psEnc).x_buf).as_mut_ptr(),
                 old_buf_samples,
             );
-            let mut temp_resampler_state: [silk_resampler_state_struct; 1] =
-                [silk_resampler_state_struct {
-                    sIIR: [0; 6],
-                    sFIR: C2RustUnnamed { i32_0: [0; 36] },
-                    delayBuf: [0; 48],
-                    resampler_function: 0,
-                    batchSize: 0,
-                    invRatio_Q16: 0,
-                    FIR_Order: 0,
-                    FIR_Fracs: 0,
-                    Fs_in_kHz: 0,
-                    Fs_out_kHz: 0,
-                    inputDelay: 0,
-                    Coefs: 0 as *const opus_int16,
-                }; 1];
-            ret += silk_resampler_init(
-                temp_resampler_state.as_mut_ptr(),
-                (*psEnc).sCmn.fs_kHz as opus_int16 as opus_int32
-                    * 1000 as libc::c_int as opus_int16 as opus_int32,
-                (*psEnc).sCmn.API_fs_Hz,
-                0 as libc::c_int,
-            );
-            api_buf_samples = buf_length_ms * ((*psEnc).sCmn.API_fs_Hz / 1000 as libc::c_int);
+            let mut temp_resampler_state: [silk_resampler_state_struct; 1] = [silk_resampler_state_struct {
+                sIIR: [0; 6],
+                sFIR: C2RustUnnamed { i32_0: [0; 36] },
+                delayBuf: [0; 48],
+                resampler_function: 0,
+                batchSize: 0,
+                invRatio_Q16: 0,
+                FIR_Order: 0,
+                FIR_Fracs: 0,
+                Fs_in_kHz: 0,
+                Fs_out_kHz: 0,
+                inputDelay: 0,
+                Coefs: 0 as *const opus_int16,
+            }; 1];
+            ret
+                += silk_resampler_init(
+                    temp_resampler_state.as_mut_ptr(),
+                    (*psEnc).sCmn.fs_kHz as opus_int16 as opus_int32
+                        * 1000 as libc::c_int as opus_int16 as opus_int32,
+                    (*psEnc).sCmn.API_fs_Hz,
+                    0 as libc::c_int,
+                );
+            api_buf_samples = buf_length_ms
+                * ((*psEnc).sCmn.API_fs_Hz / 1000 as libc::c_int);
             let vla_0 = api_buf_samples as usize;
-            let mut x_buf_API_fs_Hz: Vec<opus_int16> = ::std::vec::from_elem(0, vla_0);
-            ret += silk_resampler(
-                temp_resampler_state.as_mut_ptr(),
-                x_buf_API_fs_Hz.as_mut_ptr(),
-                x_bufFIX.as_mut_ptr() as *const opus_int16,
-                old_buf_samples,
-            );
-            ret += silk_resampler_init(
-                &mut (*psEnc).sCmn.resampler_state,
-                (*psEnc).sCmn.API_fs_Hz,
-                fs_kHz as opus_int16 as opus_int32
-                    * 1000 as libc::c_int as opus_int16 as opus_int32,
-                1 as libc::c_int,
-            );
-            ret += silk_resampler(
-                &mut (*psEnc).sCmn.resampler_state,
-                x_bufFIX.as_mut_ptr(),
-                x_buf_API_fs_Hz.as_mut_ptr() as *const opus_int16,
-                api_buf_samples,
-            );
+            let mut x_buf_API_fs_Hz: Vec::<opus_int16> = ::std::vec::from_elem(0, vla_0);
+            ret
+                += silk_resampler(
+                    temp_resampler_state.as_mut_ptr(),
+                    x_buf_API_fs_Hz.as_mut_ptr(),
+                    x_bufFIX.as_mut_ptr() as *const opus_int16,
+                    old_buf_samples,
+                );
+            ret
+                += silk_resampler_init(
+                    &mut (*psEnc).sCmn.resampler_state,
+                    (*psEnc).sCmn.API_fs_Hz,
+                    fs_kHz as opus_int16 as opus_int32
+                        * 1000 as libc::c_int as opus_int16 as opus_int32,
+                    1 as libc::c_int,
+                );
+            ret
+                += silk_resampler(
+                    &mut (*psEnc).sCmn.resampler_state,
+                    x_bufFIX.as_mut_ptr(),
+                    x_buf_API_fs_Hz.as_mut_ptr() as *const opus_int16,
+                    api_buf_samples,
+                );
             silk_short2float_array(
                 ((*psEnc).x_buf).as_mut_ptr(),
                 x_bufFIX.as_mut_ptr(),
@@ -608,41 +678,54 @@ unsafe extern "C" fn silk_setup_fs(
     mut fs_kHz: libc::c_int,
     mut PacketSize_ms: libc::c_int,
 ) -> libc::c_int {
-    let mut ret: libc::c_int = 0 as libc::c_int;
+    let mut ret: libc::c_int = SILK_NO_ERROR;
     if PacketSize_ms != (*psEnc).sCmn.PacketSize_ms {
-        if PacketSize_ms != 10 as libc::c_int
-            && PacketSize_ms != 20 as libc::c_int
-            && PacketSize_ms != 40 as libc::c_int
-            && PacketSize_ms != 60 as libc::c_int
+        if PacketSize_ms != 10 as libc::c_int && PacketSize_ms != 20 as libc::c_int
+            && PacketSize_ms != 40 as libc::c_int && PacketSize_ms != 60 as libc::c_int
         {
-            ret = -(103 as libc::c_int);
+            ret = SILK_ENC_PACKET_SIZE_NOT_SUPPORTED;
         }
         if PacketSize_ms <= 10 as libc::c_int {
             (*psEnc).sCmn.nFramesPerPacket = 1 as libc::c_int;
-            (*psEnc).sCmn.nb_subfr = if PacketSize_ms == 10 as libc::c_int {
+            (*psEnc)
+                .sCmn
+                .nb_subfr = if PacketSize_ms == 10 as libc::c_int {
                 2 as libc::c_int
             } else {
                 1 as libc::c_int
             };
-            (*psEnc).sCmn.frame_length =
-                PacketSize_ms as opus_int16 as opus_int32 * fs_kHz as opus_int16 as opus_int32;
-            (*psEnc).sCmn.pitch_LPC_win_length = (10 as libc::c_int
-                + ((2 as libc::c_int) << 1 as libc::c_int))
-                as opus_int16 as opus_int32
+            (*psEnc)
+                .sCmn
+                .frame_length = PacketSize_ms as opus_int16 as opus_int32
+                * fs_kHz as opus_int16 as opus_int32;
+            (*psEnc)
+                .sCmn
+                .pitch_LPC_win_length = (10 as libc::c_int
+                + ((2 as libc::c_int) << 1 as libc::c_int)) as opus_int16 as opus_int32
                 * fs_kHz as opus_int16 as opus_int32;
             if (*psEnc).sCmn.fs_kHz == 8 as libc::c_int {
-                (*psEnc).sCmn.pitch_contour_iCDF = silk_pitch_contour_10_ms_NB_iCDF.as_ptr();
+                (*psEnc)
+                    .sCmn
+                    .pitch_contour_iCDF = silk_pitch_contour_10_ms_NB_iCDF.as_ptr();
             } else {
-                (*psEnc).sCmn.pitch_contour_iCDF = silk_pitch_contour_10_ms_iCDF.as_ptr();
+                (*psEnc)
+                    .sCmn
+                    .pitch_contour_iCDF = silk_pitch_contour_10_ms_iCDF.as_ptr();
             }
         } else {
-            (*psEnc).sCmn.nFramesPerPacket = PacketSize_ms / (5 as libc::c_int * 4 as libc::c_int);
-            (*psEnc).sCmn.nb_subfr = 4 as libc::c_int;
-            (*psEnc).sCmn.frame_length =
-                20 as libc::c_int as opus_int16 as opus_int32 * fs_kHz as opus_int16 as opus_int32;
-            (*psEnc).sCmn.pitch_LPC_win_length = (20 as libc::c_int
-                + ((2 as libc::c_int) << 1 as libc::c_int))
-                as opus_int16 as opus_int32
+            (*psEnc)
+                .sCmn
+                .nFramesPerPacket = PacketSize_ms
+                / (5 as libc::c_int * 4 as libc::c_int);
+            (*psEnc).sCmn.nb_subfr = MAX_NB_SUBFR;
+            (*psEnc)
+                .sCmn
+                .frame_length = 20 as libc::c_int as opus_int16 as opus_int32
+                * fs_kHz as opus_int16 as opus_int32;
+            (*psEnc)
+                .sCmn
+                .pitch_LPC_win_length = (20 as libc::c_int
+                + ((2 as libc::c_int) << 1 as libc::c_int)) as opus_int16 as opus_int32
                 * fs_kHz as opus_int16 as opus_int32;
             if (*psEnc).sCmn.fs_kHz == 8 as libc::c_int {
                 (*psEnc).sCmn.pitch_contour_iCDF = silk_pitch_contour_NB_iCDF.as_ptr();
@@ -653,15 +736,19 @@ unsafe extern "C" fn silk_setup_fs(
         (*psEnc).sCmn.PacketSize_ms = PacketSize_ms;
         (*psEnc).sCmn.TargetRate_bps = 0 as libc::c_int;
     }
-    if !(fs_kHz == 8 as libc::c_int || fs_kHz == 12 as libc::c_int || fs_kHz == 16 as libc::c_int) {
+    if !(fs_kHz == 8 as libc::c_int || fs_kHz == 12 as libc::c_int
+        || fs_kHz == 16 as libc::c_int)
+    {
         celt_fatal(
-            b"assertion failed: fs_kHz == 8 || fs_kHz == 12 || fs_kHz == 16\0" as *const u8
-                as *const libc::c_char,
+            b"assertion failed: fs_kHz == 8 || fs_kHz == 12 || fs_kHz == 16\0"
+                as *const u8 as *const libc::c_char,
             b"silk/control_codec.c\0" as *const u8 as *const libc::c_char,
             241 as libc::c_int,
         );
     }
-    if !((*psEnc).sCmn.nb_subfr == 2 as libc::c_int || (*psEnc).sCmn.nb_subfr == 4 as libc::c_int) {
+    if !((*psEnc).sCmn.nb_subfr == 2 as libc::c_int
+        || (*psEnc).sCmn.nb_subfr == 4 as libc::c_int)
+    {
         celt_fatal(
             b"assertion failed: psEnc->sCmn.nb_subfr == 2 || psEnc->sCmn.nb_subfr == 4\0"
                 as *const u8 as *const libc::c_char,
@@ -686,7 +773,8 @@ unsafe extern "C" fn silk_setup_fs(
             ::core::mem::size_of::<[opus_int16; 16]>() as libc::c_ulong,
         );
         memset(
-            &mut (*psEnc).sCmn.sLP.In_LP_State as *mut [opus_int32; 2] as *mut libc::c_void,
+            &mut (*psEnc).sCmn.sLP.In_LP_State as *mut [opus_int32; 2]
+                as *mut libc::c_void,
             0 as libc::c_int,
             ::core::mem::size_of::<[opus_int32; 2]>() as libc::c_ulong,
         );
@@ -698,44 +786,58 @@ unsafe extern "C" fn silk_setup_fs(
         (*psEnc).sShape.LastGainIndex = 10 as libc::c_int as opus_int8;
         (*psEnc).sCmn.sNSQ.lagPrev = 100 as libc::c_int;
         (*psEnc).sCmn.sNSQ.prev_gain_Q16 = 65536 as libc::c_int;
-        (*psEnc).sCmn.prevSignalType = 0 as libc::c_int as opus_int8;
+        (*psEnc).sCmn.prevSignalType = TYPE_NO_VOICE_ACTIVITY as opus_int8;
         (*psEnc).sCmn.fs_kHz = fs_kHz;
         if (*psEnc).sCmn.fs_kHz == 8 as libc::c_int {
-            if (*psEnc).sCmn.nb_subfr == 4 as libc::c_int {
+            if (*psEnc).sCmn.nb_subfr == MAX_NB_SUBFR {
                 (*psEnc).sCmn.pitch_contour_iCDF = silk_pitch_contour_NB_iCDF.as_ptr();
             } else {
-                (*psEnc).sCmn.pitch_contour_iCDF = silk_pitch_contour_10_ms_NB_iCDF.as_ptr();
+                (*psEnc)
+                    .sCmn
+                    .pitch_contour_iCDF = silk_pitch_contour_10_ms_NB_iCDF.as_ptr();
             }
-        } else if (*psEnc).sCmn.nb_subfr == 4 as libc::c_int {
+        } else if (*psEnc).sCmn.nb_subfr == MAX_NB_SUBFR {
             (*psEnc).sCmn.pitch_contour_iCDF = silk_pitch_contour_iCDF.as_ptr();
         } else {
             (*psEnc).sCmn.pitch_contour_iCDF = silk_pitch_contour_10_ms_iCDF.as_ptr();
         }
-        if (*psEnc).sCmn.fs_kHz == 8 as libc::c_int || (*psEnc).sCmn.fs_kHz == 12 as libc::c_int {
-            (*psEnc).sCmn.predictLPCOrder = 10 as libc::c_int;
+        if (*psEnc).sCmn.fs_kHz == 8 as libc::c_int
+            || (*psEnc).sCmn.fs_kHz == 12 as libc::c_int
+        {
+            (*psEnc).sCmn.predictLPCOrder = MIN_LPC_ORDER;
             (*psEnc).sCmn.psNLSF_CB = &silk_NLSF_CB_NB_MB;
         } else {
-            (*psEnc).sCmn.predictLPCOrder = 16 as libc::c_int;
+            (*psEnc).sCmn.predictLPCOrder = MAX_LPC_ORDER;
             (*psEnc).sCmn.psNLSF_CB = &silk_NLSF_CB_WB;
         }
-        (*psEnc).sCmn.subfr_length = 5 as libc::c_int * fs_kHz;
-        (*psEnc).sCmn.frame_length = (*psEnc).sCmn.subfr_length as opus_int16 as opus_int32
+        (*psEnc).sCmn.subfr_length = SUB_FRAME_LENGTH_MS * fs_kHz;
+        (*psEnc)
+            .sCmn
+            .frame_length = (*psEnc).sCmn.subfr_length as opus_int16 as opus_int32
             * (*psEnc).sCmn.nb_subfr as opus_int16 as opus_int32;
-        (*psEnc).sCmn.ltp_mem_length =
-            20 as libc::c_int as opus_int16 as opus_int32 * fs_kHz as opus_int16 as opus_int32;
-        (*psEnc).sCmn.la_pitch =
-            2 as libc::c_int as opus_int16 as opus_int32 * fs_kHz as opus_int16 as opus_int32;
-        (*psEnc).sCmn.max_pitch_lag =
-            18 as libc::c_int as opus_int16 as opus_int32 * fs_kHz as opus_int16 as opus_int32;
-        if (*psEnc).sCmn.nb_subfr == 4 as libc::c_int {
-            (*psEnc).sCmn.pitch_LPC_win_length = (20 as libc::c_int
-                + ((2 as libc::c_int) << 1 as libc::c_int))
-                as opus_int16 as opus_int32
+        (*psEnc)
+            .sCmn
+            .ltp_mem_length = 20 as libc::c_int as opus_int16 as opus_int32
+            * fs_kHz as opus_int16 as opus_int32;
+        (*psEnc)
+            .sCmn
+            .la_pitch = 2 as libc::c_int as opus_int16 as opus_int32
+            * fs_kHz as opus_int16 as opus_int32;
+        (*psEnc)
+            .sCmn
+            .max_pitch_lag = 18 as libc::c_int as opus_int16 as opus_int32
+            * fs_kHz as opus_int16 as opus_int32;
+        if (*psEnc).sCmn.nb_subfr == MAX_NB_SUBFR {
+            (*psEnc)
+                .sCmn
+                .pitch_LPC_win_length = (20 as libc::c_int
+                + ((2 as libc::c_int) << 1 as libc::c_int)) as opus_int16 as opus_int32
                 * fs_kHz as opus_int16 as opus_int32;
         } else {
-            (*psEnc).sCmn.pitch_LPC_win_length = (10 as libc::c_int
-                + ((2 as libc::c_int) << 1 as libc::c_int))
-                as opus_int16 as opus_int32
+            (*psEnc)
+                .sCmn
+                .pitch_LPC_win_length = (10 as libc::c_int
+                + ((2 as libc::c_int) << 1 as libc::c_int)) as opus_int16 as opus_int32
                 * fs_kHz as opus_int16 as opus_int32;
         }
         if (*psEnc).sCmn.fs_kHz == 16 as libc::c_int {
@@ -746,7 +848,9 @@ unsafe extern "C" fn silk_setup_fs(
             (*psEnc).sCmn.pitch_lag_low_bits_iCDF = silk_uniform4_iCDF.as_ptr();
         }
     }
-    if !((*psEnc).sCmn.subfr_length * (*psEnc).sCmn.nb_subfr == (*psEnc).sCmn.frame_length) {
+    if !((*psEnc).sCmn.subfr_length * (*psEnc).sCmn.nb_subfr
+        == (*psEnc).sCmn.frame_length)
+    {
         celt_fatal(
             b"assertion failed: ( psEnc->sCmn.subfr_length * psEnc->sCmn.nb_subfr ) == psEnc->sCmn.frame_length\0"
                 as *const u8 as *const libc::c_char,
@@ -771,8 +875,9 @@ unsafe extern "C" fn silk_setup_complexity(
         );
     }
     if Complexity < 1 as libc::c_int {
-        (*psEncC).pitchEstimationComplexity = 0 as libc::c_int;
-        (*psEncC).pitchEstimationThreshold_Q16 = (0.8f64
+        (*psEncC).pitchEstimationComplexity = SILK_PE_MIN_COMPLEX;
+        (*psEncC)
+            .pitchEstimationThreshold_Q16 = (0.8f64
             * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int) as libc::c_double
             + 0.5f64) as opus_int32;
         (*psEncC).pitchEstimationLPCOrder = 6 as libc::c_int;
@@ -783,8 +888,9 @@ unsafe extern "C" fn silk_setup_complexity(
         (*psEncC).NLSF_MSVQ_Survivors = 2 as libc::c_int;
         (*psEncC).warping_Q16 = 0 as libc::c_int;
     } else if Complexity < 2 as libc::c_int {
-        (*psEncC).pitchEstimationComplexity = 1 as libc::c_int;
-        (*psEncC).pitchEstimationThreshold_Q16 = (0.76f64
+        (*psEncC).pitchEstimationComplexity = SILK_PE_MID_COMPLEX;
+        (*psEncC)
+            .pitchEstimationThreshold_Q16 = (0.76f64
             * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int) as libc::c_double
             + 0.5f64) as opus_int32;
         (*psEncC).pitchEstimationLPCOrder = 8 as libc::c_int;
@@ -795,8 +901,9 @@ unsafe extern "C" fn silk_setup_complexity(
         (*psEncC).NLSF_MSVQ_Survivors = 3 as libc::c_int;
         (*psEncC).warping_Q16 = 0 as libc::c_int;
     } else if Complexity < 3 as libc::c_int {
-        (*psEncC).pitchEstimationComplexity = 0 as libc::c_int;
-        (*psEncC).pitchEstimationThreshold_Q16 = (0.8f64
+        (*psEncC).pitchEstimationComplexity = SILK_PE_MIN_COMPLEX;
+        (*psEncC)
+            .pitchEstimationThreshold_Q16 = (0.8f64
             * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int) as libc::c_double
             + 0.5f64) as opus_int32;
         (*psEncC).pitchEstimationLPCOrder = 6 as libc::c_int;
@@ -807,8 +914,9 @@ unsafe extern "C" fn silk_setup_complexity(
         (*psEncC).NLSF_MSVQ_Survivors = 2 as libc::c_int;
         (*psEncC).warping_Q16 = 0 as libc::c_int;
     } else if Complexity < 4 as libc::c_int {
-        (*psEncC).pitchEstimationComplexity = 1 as libc::c_int;
-        (*psEncC).pitchEstimationThreshold_Q16 = (0.76f64
+        (*psEncC).pitchEstimationComplexity = SILK_PE_MID_COMPLEX;
+        (*psEncC)
+            .pitchEstimationThreshold_Q16 = (0.76f64
             * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int) as libc::c_double
             + 0.5f64) as opus_int32;
         (*psEncC).pitchEstimationLPCOrder = 8 as libc::c_int;
@@ -819,8 +927,9 @@ unsafe extern "C" fn silk_setup_complexity(
         (*psEncC).NLSF_MSVQ_Survivors = 4 as libc::c_int;
         (*psEncC).warping_Q16 = 0 as libc::c_int;
     } else if Complexity < 6 as libc::c_int {
-        (*psEncC).pitchEstimationComplexity = 1 as libc::c_int;
-        (*psEncC).pitchEstimationThreshold_Q16 = (0.74f64
+        (*psEncC).pitchEstimationComplexity = SILK_PE_MID_COMPLEX;
+        (*psEncC)
+            .pitchEstimationThreshold_Q16 = (0.74f64
             * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int) as libc::c_double
             + 0.5f64) as opus_int32;
         (*psEncC).pitchEstimationLPCOrder = 10 as libc::c_int;
@@ -829,13 +938,15 @@ unsafe extern "C" fn silk_setup_complexity(
         (*psEncC).nStatesDelayedDecision = 2 as libc::c_int;
         (*psEncC).useInterpolatedNLSFs = 1 as libc::c_int;
         (*psEncC).NLSF_MSVQ_Survivors = 6 as libc::c_int;
-        (*psEncC).warping_Q16 = (*psEncC).fs_kHz
-            * ((0.015f32 * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int) as libc::c_float)
-                as libc::c_double
-                + 0.5f64) as opus_int32;
+        (*psEncC)
+            .warping_Q16 = (*psEncC).fs_kHz
+            * ((0.015f32
+                * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int)
+                    as libc::c_float) as libc::c_double + 0.5f64) as opus_int32;
     } else if Complexity < 8 as libc::c_int {
-        (*psEncC).pitchEstimationComplexity = 1 as libc::c_int;
-        (*psEncC).pitchEstimationThreshold_Q16 = (0.72f64
+        (*psEncC).pitchEstimationComplexity = SILK_PE_MID_COMPLEX;
+        (*psEncC)
+            .pitchEstimationThreshold_Q16 = (0.72f64
             * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int) as libc::c_double
             + 0.5f64) as opus_int32;
         (*psEncC).pitchEstimationLPCOrder = 12 as libc::c_int;
@@ -844,30 +955,37 @@ unsafe extern "C" fn silk_setup_complexity(
         (*psEncC).nStatesDelayedDecision = 3 as libc::c_int;
         (*psEncC).useInterpolatedNLSFs = 1 as libc::c_int;
         (*psEncC).NLSF_MSVQ_Survivors = 8 as libc::c_int;
-        (*psEncC).warping_Q16 = (*psEncC).fs_kHz
-            * ((0.015f32 * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int) as libc::c_float)
-                as libc::c_double
-                + 0.5f64) as opus_int32;
+        (*psEncC)
+            .warping_Q16 = (*psEncC).fs_kHz
+            * ((0.015f32
+                * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int)
+                    as libc::c_float) as libc::c_double + 0.5f64) as opus_int32;
     } else {
-        (*psEncC).pitchEstimationComplexity = 2 as libc::c_int;
-        (*psEncC).pitchEstimationThreshold_Q16 = (0.7f64
+        (*psEncC).pitchEstimationComplexity = SILK_PE_MAX_COMPLEX;
+        (*psEncC)
+            .pitchEstimationThreshold_Q16 = (0.7f64
             * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int) as libc::c_double
             + 0.5f64) as opus_int32;
         (*psEncC).pitchEstimationLPCOrder = 16 as libc::c_int;
         (*psEncC).shapingLPCOrder = 24 as libc::c_int;
         (*psEncC).la_shape = 5 as libc::c_int * (*psEncC).fs_kHz;
-        (*psEncC).nStatesDelayedDecision = 4 as libc::c_int;
+        (*psEncC).nStatesDelayedDecision = MAX_DEL_DEC_STATES;
         (*psEncC).useInterpolatedNLSFs = 1 as libc::c_int;
         (*psEncC).NLSF_MSVQ_Survivors = 16 as libc::c_int;
-        (*psEncC).warping_Q16 = (*psEncC).fs_kHz
-            * ((0.015f32 * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int) as libc::c_float)
-                as libc::c_double
-                + 0.5f64) as opus_int32;
+        (*psEncC)
+            .warping_Q16 = (*psEncC).fs_kHz
+            * ((0.015f32
+                * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int)
+                    as libc::c_float) as libc::c_double + 0.5f64) as opus_int32;
     }
-    (*psEncC).pitchEstimationLPCOrder =
-        silk_min_int((*psEncC).pitchEstimationLPCOrder, (*psEncC).predictLPCOrder);
-    (*psEncC).shapeWinLength =
-        5 as libc::c_int * (*psEncC).fs_kHz + 2 as libc::c_int * (*psEncC).la_shape;
+    (*psEncC)
+        .pitchEstimationLPCOrder = silk_min_int(
+        (*psEncC).pitchEstimationLPCOrder,
+        (*psEncC).predictLPCOrder,
+    );
+    (*psEncC)
+        .shapeWinLength = SUB_FRAME_LENGTH_MS * (*psEncC).fs_kHz
+        + 2 as libc::c_int * (*psEncC).la_shape;
     (*psEncC).Complexity = Complexity;
     if !((*psEncC).pitchEstimationLPCOrder <= 16 as libc::c_int) {
         celt_fatal(
@@ -879,23 +997,24 @@ unsafe extern "C" fn silk_setup_complexity(
     }
     if !((*psEncC).shapingLPCOrder <= 24 as libc::c_int) {
         celt_fatal(
-            b"assertion failed: psEncC->shapingLPCOrder <= MAX_SHAPE_LPC_ORDER\0" as *const u8
-                as *const libc::c_char,
+            b"assertion failed: psEncC->shapingLPCOrder <= MAX_SHAPE_LPC_ORDER\0"
+                as *const u8 as *const libc::c_char,
             b"silk/control_codec.c\0" as *const u8 as *const libc::c_char,
             394 as libc::c_int,
         );
     }
     if !((*psEncC).nStatesDelayedDecision <= 4 as libc::c_int) {
         celt_fatal(
-            b"assertion failed: psEncC->nStatesDelayedDecision <= MAX_DEL_DEC_STATES\0" as *const u8
-                as *const libc::c_char,
+            b"assertion failed: psEncC->nStatesDelayedDecision <= MAX_DEL_DEC_STATES\0"
+                as *const u8 as *const libc::c_char,
             b"silk/control_codec.c\0" as *const u8 as *const libc::c_char,
             395 as libc::c_int,
         );
     }
     if !((*psEncC).warping_Q16 <= 32767 as libc::c_int) {
         celt_fatal(
-            b"assertion failed: psEncC->warping_Q16 <= 32767\0" as *const u8 as *const libc::c_char,
+            b"assertion failed: psEncC->warping_Q16 <= 32767\0" as *const u8
+                as *const libc::c_char,
             b"silk/control_codec.c\0" as *const u8 as *const libc::c_char,
             396 as libc::c_int,
         );
@@ -910,8 +1029,8 @@ unsafe extern "C" fn silk_setup_complexity(
     }
     if !((*psEncC).shapeWinLength <= 15 as libc::c_int * 16 as libc::c_int) {
         celt_fatal(
-            b"assertion failed: psEncC->shapeWinLength <= SHAPE_LPC_WIN_MAX\0" as *const u8
-                as *const libc::c_char,
+            b"assertion failed: psEncC->shapeWinLength <= SHAPE_LPC_WIN_MAX\0"
+                as *const u8 as *const libc::c_char,
             b"silk/control_codec.c\0" as *const u8 as *const libc::c_char,
             398 as libc::c_int,
         );
@@ -925,22 +1044,21 @@ unsafe extern "C" fn silk_setup_LBRR(
     mut encControl: *const silk_EncControlStruct,
 ) -> libc::c_int {
     let mut LBRR_in_previous_packet: libc::c_int = 0;
-    let mut ret: libc::c_int = 0 as libc::c_int;
+    let mut ret: libc::c_int = SILK_NO_ERROR;
     LBRR_in_previous_packet = (*psEncC).LBRR_enabled;
     (*psEncC).LBRR_enabled = (*encControl).LBRR_coded;
     if (*psEncC).LBRR_enabled != 0 {
         if LBRR_in_previous_packet == 0 as libc::c_int {
             (*psEncC).LBRR_GainIncreases = 7 as libc::c_int;
         } else {
-            (*psEncC).LBRR_GainIncreases = silk_max_int(
+            (*psEncC)
+                .LBRR_GainIncreases = silk_max_int(
                 7 as libc::c_int
                     - ((*psEncC).PacketLoss_perc as libc::c_long
                         * (0.4f64
                             * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int)
-                                as libc::c_double
-                            + 0.5f64) as opus_int32 as opus_int16
-                            as opus_int64
-                        >> 16 as libc::c_int) as opus_int32,
+                                as libc::c_double + 0.5f64) as opus_int32 as opus_int16
+                            as opus_int64 >> 16 as libc::c_int) as opus_int32,
                 2 as libc::c_int,
             );
         }

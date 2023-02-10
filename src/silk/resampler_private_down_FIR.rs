@@ -67,7 +67,7 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int16, opus_int32};
+    use super::opus_types_h::{opus_int32, opus_int16};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
 pub mod arch_h {
@@ -91,9 +91,25 @@ pub mod string_h {
         ) -> *mut libc::c_void;
     }
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
+pub mod typedef_h {
+    #[c2rust::src_loc = "44:9"]
+    pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
+    #[c2rust::src_loc = "45:9"]
+    pub const silk_int16_MIN: libc::c_int = 0x8000 as libc::c_int;
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_rom.h:33"]
+pub mod resampler_rom_h {
+    #[c2rust::src_loc = "39:9"]
+    pub const RESAMPLER_DOWN_ORDER_FIR0: libc::c_int = 18;
+    #[c2rust::src_loc = "40:9"]
+    pub const RESAMPLER_DOWN_ORDER_FIR1: libc::c_int = 24;
+    #[c2rust::src_loc = "41:9"]
+    pub const RESAMPLER_DOWN_ORDER_FIR2: libc::c_int = 36;
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_private.h:33"]
 pub mod resampler_private_h {
-    use super::opus_types_h::{opus_int16, opus_int32};
+    use super::opus_types_h::{opus_int32, opus_int16};
     extern "C" {
         #[c2rust::src_loc = "77:1"]
         pub fn silk_resampler_private_AR2(
@@ -105,16 +121,20 @@ pub mod resampler_private_h {
         );
     }
 }
-use self::arch_h::celt_fatal;
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
-use self::resampler_private_h::silk_resampler_private_AR2;
-pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
-};
+pub use self::types_h::{__int16_t, __int32_t, __uint32_t, __int64_t};
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
 pub use self::stdint_uintn_h::uint32_t;
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32, opus_int64};
+pub use self::resampler_structs_h::{
+    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
+};
+use self::arch_h::celt_fatal;
 use self::string_h::memcpy;
-pub use self::types_h::{__int16_t, __int32_t, __int64_t, __uint32_t};
+pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
+pub use self::resampler_rom_h::{
+    RESAMPLER_DOWN_ORDER_FIR0, RESAMPLER_DOWN_ORDER_FIR1, RESAMPLER_DOWN_ORDER_FIR2,
+};
+use self::resampler_private_h::silk_resampler_private_AR2;
 #[inline]
 #[c2rust::src_loc = "36:1"]
 unsafe extern "C" fn silk_resampler_private_down_FIR_INTERPOL(
@@ -132,16 +152,18 @@ unsafe extern "C" fn silk_resampler_private_down_FIR_INTERPOL(
     let mut interpol_ind: opus_int32 = 0;
     let mut interpol_ptr: *const opus_int16 = 0 as *const opus_int16;
     match FIR_Order {
-        18 => {
+        RESAMPLER_DOWN_ORDER_FIR0 => {
             index_Q16 = 0 as libc::c_int;
             while index_Q16 < max_index_Q16 {
                 buf_ptr = buf.offset((index_Q16 >> 16 as libc::c_int) as isize);
                 interpol_ind = ((index_Q16 & 0xffff as libc::c_int) as libc::c_long
-                    * FIR_Fracs as opus_int16 as opus_int64
-                    >> 16 as libc::c_int) as opus_int32;
+                    * FIR_Fracs as opus_int16 as opus_int64 >> 16 as libc::c_int)
+                    as opus_int32;
                 interpol_ptr = &*FIR_Coefs
-                    .offset((18 as libc::c_int / 2 as libc::c_int * interpol_ind) as isize)
-                    as *const opus_int16;
+                    .offset(
+                        (RESAMPLER_DOWN_ORDER_FIR0 / 2 as libc::c_int * interpol_ind)
+                            as isize,
+                    ) as *const opus_int16;
                 res_Q6 = (*buf_ptr.offset(0 as libc::c_int as isize) as libc::c_long
                     * *interpol_ptr.offset(0 as libc::c_int as isize) as opus_int64
                     >> 16 as libc::c_int) as opus_int32;
@@ -177,11 +199,11 @@ unsafe extern "C" fn silk_resampler_private_down_FIR_INTERPOL(
                     + (*buf_ptr.offset(8 as libc::c_int as isize) as libc::c_long
                         * *interpol_ptr.offset(8 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
-                interpol_ptr = &*FIR_Coefs.offset(
-                    (18 as libc::c_int / 2 as libc::c_int
-                        * (FIR_Fracs - 1 as libc::c_int - interpol_ind))
-                        as isize,
-                ) as *const opus_int16;
+                interpol_ptr = &*FIR_Coefs
+                    .offset(
+                        (RESAMPLER_DOWN_ORDER_FIR0 / 2 as libc::c_int
+                            * (FIR_Fracs - 1 as libc::c_int - interpol_ind)) as isize,
+                    ) as *const opus_int16;
                 res_Q6 = (res_Q6 as libc::c_long
                     + (*buf_ptr.offset(17 as libc::c_int as isize) as libc::c_long
                         * *interpol_ptr.offset(0 as libc::c_int as isize) as opus_int64
@@ -225,17 +247,17 @@ unsafe extern "C" fn silk_resampler_private_down_FIR_INTERPOL(
                 } else {
                     (res_Q6 >> 6 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                         >> 1 as libc::c_int
-                }) > 0x7fff as libc::c_int
+                }) > silk_int16_MAX
                 {
-                    0x7fff as libc::c_int
+                    silk_int16_MAX
                 } else if (if 6 as libc::c_int == 1 as libc::c_int {
                     (res_Q6 >> 1 as libc::c_int) + (res_Q6 & 1 as libc::c_int)
                 } else {
                     (res_Q6 >> 6 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                         >> 1 as libc::c_int
-                }) < 0x8000 as libc::c_int as opus_int16 as libc::c_int
+                }) < silk_int16_MIN
                 {
-                    0x8000 as libc::c_int as opus_int16 as libc::c_int
+                    silk_int16_MIN
                 } else if 6 as libc::c_int == 1 as libc::c_int {
                     (res_Q6 >> 1 as libc::c_int) + (res_Q6 & 1 as libc::c_int)
                 } else {
@@ -245,79 +267,67 @@ unsafe extern "C" fn silk_resampler_private_down_FIR_INTERPOL(
                 index_Q16 += index_increment_Q16;
             }
         }
-        24 => {
+        RESAMPLER_DOWN_ORDER_FIR1 => {
             index_Q16 = 0 as libc::c_int;
             while index_Q16 < max_index_Q16 {
                 buf_ptr = buf.offset((index_Q16 >> 16 as libc::c_int) as isize);
                 res_Q6 = ((*buf_ptr.offset(0 as libc::c_int as isize)
-                    + *buf_ptr.offset(23 as libc::c_int as isize))
-                    as libc::c_long
+                    + *buf_ptr.offset(23 as libc::c_int as isize)) as libc::c_long
                     * *FIR_Coefs.offset(0 as libc::c_int as isize) as opus_int64
                     >> 16 as libc::c_int) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(1 as libc::c_int as isize)
-                        + *buf_ptr.offset(22 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(22 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(1 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(2 as libc::c_int as isize)
-                        + *buf_ptr.offset(21 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(21 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(2 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(3 as libc::c_int as isize)
-                        + *buf_ptr.offset(20 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(20 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(3 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(4 as libc::c_int as isize)
-                        + *buf_ptr.offset(19 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(19 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(4 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(5 as libc::c_int as isize)
-                        + *buf_ptr.offset(18 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(18 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(5 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(6 as libc::c_int as isize)
-                        + *buf_ptr.offset(17 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(17 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(6 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(7 as libc::c_int as isize)
-                        + *buf_ptr.offset(16 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(16 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(7 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(8 as libc::c_int as isize)
-                        + *buf_ptr.offset(15 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(15 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(8 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(9 as libc::c_int as isize)
-                        + *buf_ptr.offset(14 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(14 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(9 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(10 as libc::c_int as isize)
-                        + *buf_ptr.offset(13 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(13 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(10 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(11 as libc::c_int as isize)
-                        + *buf_ptr.offset(12 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(12 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(11 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 let fresh1 = out;
@@ -327,17 +337,17 @@ unsafe extern "C" fn silk_resampler_private_down_FIR_INTERPOL(
                 } else {
                     (res_Q6 >> 6 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                         >> 1 as libc::c_int
-                }) > 0x7fff as libc::c_int
+                }) > silk_int16_MAX
                 {
-                    0x7fff as libc::c_int
+                    silk_int16_MAX
                 } else if (if 6 as libc::c_int == 1 as libc::c_int {
                     (res_Q6 >> 1 as libc::c_int) + (res_Q6 & 1 as libc::c_int)
                 } else {
                     (res_Q6 >> 6 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                         >> 1 as libc::c_int
-                }) < 0x8000 as libc::c_int as opus_int16 as libc::c_int
+                }) < silk_int16_MIN
                 {
-                    0x8000 as libc::c_int as opus_int16 as libc::c_int
+                    silk_int16_MIN
                 } else if 6 as libc::c_int == 1 as libc::c_int {
                     (res_Q6 >> 1 as libc::c_int) + (res_Q6 & 1 as libc::c_int)
                 } else {
@@ -347,115 +357,97 @@ unsafe extern "C" fn silk_resampler_private_down_FIR_INTERPOL(
                 index_Q16 += index_increment_Q16;
             }
         }
-        36 => {
+        RESAMPLER_DOWN_ORDER_FIR2 => {
             index_Q16 = 0 as libc::c_int;
             while index_Q16 < max_index_Q16 {
                 buf_ptr = buf.offset((index_Q16 >> 16 as libc::c_int) as isize);
                 res_Q6 = ((*buf_ptr.offset(0 as libc::c_int as isize)
-                    + *buf_ptr.offset(35 as libc::c_int as isize))
-                    as libc::c_long
+                    + *buf_ptr.offset(35 as libc::c_int as isize)) as libc::c_long
                     * *FIR_Coefs.offset(0 as libc::c_int as isize) as opus_int64
                     >> 16 as libc::c_int) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(1 as libc::c_int as isize)
-                        + *buf_ptr.offset(34 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(34 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(1 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(2 as libc::c_int as isize)
-                        + *buf_ptr.offset(33 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(33 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(2 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(3 as libc::c_int as isize)
-                        + *buf_ptr.offset(32 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(32 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(3 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(4 as libc::c_int as isize)
-                        + *buf_ptr.offset(31 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(31 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(4 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(5 as libc::c_int as isize)
-                        + *buf_ptr.offset(30 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(30 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(5 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(6 as libc::c_int as isize)
-                        + *buf_ptr.offset(29 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(29 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(6 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(7 as libc::c_int as isize)
-                        + *buf_ptr.offset(28 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(28 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(7 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(8 as libc::c_int as isize)
-                        + *buf_ptr.offset(27 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(27 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(8 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(9 as libc::c_int as isize)
-                        + *buf_ptr.offset(26 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(26 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(9 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(10 as libc::c_int as isize)
-                        + *buf_ptr.offset(25 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(25 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(10 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(11 as libc::c_int as isize)
-                        + *buf_ptr.offset(24 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(24 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(11 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(12 as libc::c_int as isize)
-                        + *buf_ptr.offset(23 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(23 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(12 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(13 as libc::c_int as isize)
-                        + *buf_ptr.offset(22 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(22 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(13 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(14 as libc::c_int as isize)
-                        + *buf_ptr.offset(21 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(21 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(14 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(15 as libc::c_int as isize)
-                        + *buf_ptr.offset(20 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(20 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(15 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(16 as libc::c_int as isize)
-                        + *buf_ptr.offset(19 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(19 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(16 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 res_Q6 = (res_Q6 as libc::c_long
                     + ((*buf_ptr.offset(17 as libc::c_int as isize)
-                        + *buf_ptr.offset(18 as libc::c_int as isize))
-                        as libc::c_long
+                        + *buf_ptr.offset(18 as libc::c_int as isize)) as libc::c_long
                         * *FIR_Coefs.offset(17 as libc::c_int as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 let fresh2 = out;
@@ -465,17 +457,17 @@ unsafe extern "C" fn silk_resampler_private_down_FIR_INTERPOL(
                 } else {
                     (res_Q6 >> 6 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                         >> 1 as libc::c_int
-                }) > 0x7fff as libc::c_int
+                }) > silk_int16_MAX
                 {
-                    0x7fff as libc::c_int
+                    silk_int16_MAX
                 } else if (if 6 as libc::c_int == 1 as libc::c_int {
                     (res_Q6 >> 1 as libc::c_int) + (res_Q6 & 1 as libc::c_int)
                 } else {
                     (res_Q6 >> 6 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                         >> 1 as libc::c_int
-                }) < 0x8000 as libc::c_int as opus_int16 as libc::c_int
+                }) < silk_int16_MIN
                 {
-                    0x8000 as libc::c_int as opus_int16 as libc::c_int
+                    silk_int16_MIN
                 } else if 6 as libc::c_int == 1 as libc::c_int {
                     (res_Q6 >> 1 as libc::c_int) + (res_Q6 & 1 as libc::c_int)
                 } else {
@@ -489,7 +481,8 @@ unsafe extern "C" fn silk_resampler_private_down_FIR_INTERPOL(
             if 0 as libc::c_int == 0 {
                 celt_fatal(
                     b"assertion failed: 0\0" as *const u8 as *const libc::c_char,
-                    b"silk/resampler_private_down_FIR.c\0" as *const u8 as *const libc::c_char,
+                    b"silk/resampler_private_down_FIR.c\0" as *const u8
+                        as *const libc::c_char,
                     139 as libc::c_int,
                 );
             }
@@ -511,7 +504,7 @@ pub unsafe extern "C" fn silk_resampler_private_down_FIR(
     let mut index_increment_Q16: opus_int32 = 0;
     let mut FIR_Coefs: *const opus_int16 = 0 as *const opus_int16;
     let vla = ((*S).batchSize + (*S).FIR_Order) as usize;
-    let mut buf: Vec<opus_int32> = ::std::vec::from_elem(0, vla);
+    let mut buf: Vec::<opus_int32> = ::std::vec::from_elem(0, vla);
     memcpy(
         buf.as_mut_ptr() as *mut libc::c_void,
         ((*S).sFIR.i32_0).as_mut_ptr() as *const libc::c_void,
@@ -521,11 +514,7 @@ pub unsafe extern "C" fn silk_resampler_private_down_FIR(
     FIR_Coefs = &*((*S).Coefs).offset(2 as libc::c_int as isize) as *const opus_int16;
     index_increment_Q16 = (*S).invRatio_Q16;
     loop {
-        nSamplesIn = if inLen < (*S).batchSize {
-            inLen
-        } else {
-            (*S).batchSize
-        };
+        nSamplesIn = if inLen < (*S).batchSize { inLen } else { (*S).batchSize };
         silk_resampler_private_AR2(
             ((*S).sIIR).as_mut_ptr(),
             &mut *buf.as_mut_ptr().offset((*S).FIR_Order as isize),

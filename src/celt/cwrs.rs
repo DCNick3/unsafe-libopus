@@ -92,15 +92,15 @@ pub mod entdec_h {
         pub fn ec_dec_uint(_this: *mut ec_dec, _ft: opus_uint32) -> opus_uint32;
     }
 }
-pub use self::arch_h::{celt_fatal, opus_val32};
-pub use self::entcode_h::{ec_ctx, ec_dec, ec_enc, ec_window};
-use self::entdec_h::ec_dec_uint;
-use self::entenc_h::ec_enc_uint;
-pub use self::opus_types_h::{opus_int16, opus_uint32};
+pub use self::types_h::{__int16_t, __uint32_t};
 pub use self::stdint_intn_h::int16_t;
 pub use self::stdint_uintn_h::uint32_t;
+pub use self::opus_types_h::{opus_int16, opus_uint32};
+pub use self::arch_h::{opus_val32, celt_fatal};
+pub use self::entcode_h::{ec_window, ec_ctx, ec_enc, ec_dec};
 use self::stdlib_h::abs;
-pub use self::types_h::{__int16_t, __uint32_t};
+use self::entenc_h::ec_enc_uint;
+use self::entdec_h::ec_dec_uint;
 #[c2rust::src_loc = "213:26"]
 static mut CELT_PVQ_U_DATA: [opus_uint32; 1272] = [
     1 as libc::c_int as opus_uint32,
@@ -1379,7 +1379,10 @@ static mut CELT_PVQ_U_DATA: [opus_uint32; 1272] = [
 #[c2rust::src_loc = "421:33"]
 static mut CELT_PVQ_U_ROW: [*const opus_uint32; 15] = [0 as *const opus_uint32; 15];
 #[c2rust::src_loc = "440:1"]
-unsafe extern "C" fn icwrs(mut _n: libc::c_int, mut _y: *const libc::c_int) -> opus_uint32 {
+unsafe extern "C" fn icwrs(
+    mut _n: libc::c_int,
+    mut _y: *const libc::c_int,
+) -> opus_uint32 {
     let mut i: opus_uint32 = 0;
     let mut j: libc::c_int = 0;
     let mut k: libc::c_int = 0;
@@ -1395,26 +1398,28 @@ unsafe extern "C" fn icwrs(mut _n: libc::c_int, mut _y: *const libc::c_int) -> o
     k = abs(*_y.offset(j as isize));
     loop {
         j -= 1;
-        i = (i as libc::c_uint).wrapping_add(
-            *(CELT_PVQ_U_ROW[(if _n - j < k { _n - j } else { k }) as usize])
-                .offset((if _n - j > k { _n - j } else { k }) as isize),
-        ) as opus_uint32 as opus_uint32;
+        i = (i as libc::c_uint)
+            .wrapping_add(
+                *(CELT_PVQ_U_ROW[(if _n - j < k { _n - j } else { k }) as usize])
+                    .offset((if _n - j > k { _n - j } else { k }) as isize),
+            ) as opus_uint32 as opus_uint32;
         k += abs(*_y.offset(j as isize));
         if *_y.offset(j as isize) < 0 as libc::c_int {
-            i = (i as libc::c_uint).wrapping_add(
-                *(CELT_PVQ_U_ROW[(if _n - j < k + 1 as libc::c_int {
-                    _n - j
-                } else {
-                    k + 1 as libc::c_int
-                }) as usize])
-                    .offset(
-                        (if _n - j > k + 1 as libc::c_int {
-                            _n - j
-                        } else {
-                            k + 1 as libc::c_int
-                        }) as isize,
-                    ),
-            ) as opus_uint32 as opus_uint32;
+            i = (i as libc::c_uint)
+                .wrapping_add(
+                    *(CELT_PVQ_U_ROW[(if _n - j < k + 1 as libc::c_int {
+                        _n - j
+                    } else {
+                        k + 1 as libc::c_int
+                    }) as usize])
+                        .offset(
+                            (if _n - j > k + 1 as libc::c_int {
+                                _n - j
+                            } else {
+                                k + 1 as libc::c_int
+                            }) as isize,
+                        ),
+                ) as opus_uint32 as opus_uint32;
         }
         if !(j > 0 as libc::c_int) {
             break;
@@ -1442,20 +1447,20 @@ pub unsafe extern "C" fn encode_pulses(
         icwrs(_n, _y),
         (*(CELT_PVQ_U_ROW[(if _n < _k { _n } else { _k }) as usize])
             .offset((if _n > _k { _n } else { _k }) as isize))
-        .wrapping_add(
-            *(CELT_PVQ_U_ROW[(if _n < _k + 1 as libc::c_int {
-                _n
-            } else {
-                _k + 1 as libc::c_int
-            }) as usize])
-                .offset(
-                    (if _n > _k + 1 as libc::c_int {
-                        _n
-                    } else {
-                        _k + 1 as libc::c_int
-                    }) as isize,
-                ),
-        ),
+            .wrapping_add(
+                *(CELT_PVQ_U_ROW[(if _n < _k + 1 as libc::c_int {
+                    _n
+                } else {
+                    _k + 1 as libc::c_int
+                }) as usize])
+                    .offset(
+                        (if _n > _k + 1 as libc::c_int {
+                            _n
+                        } else {
+                            _k + 1 as libc::c_int
+                        }) as isize,
+                    ),
+            ),
     );
 }
 #[c2rust::src_loc = "463:1"]
@@ -1527,8 +1532,8 @@ unsafe extern "C" fn cwrsi(
                 *fresh1 = 0 as libc::c_int;
             } else {
                 s = -((_i >= q) as libc::c_int);
-                _i = (_i as libc::c_uint).wrapping_sub(q & s as libc::c_uint) as opus_uint32
-                    as opus_uint32;
+                _i = (_i as libc::c_uint).wrapping_sub(q & s as libc::c_uint)
+                    as opus_uint32 as opus_uint32;
                 k0 = _k;
                 loop {
                     _k -= 1;
@@ -1549,9 +1554,11 @@ unsafe extern "C" fn cwrsi(
     }
     p = (2 as libc::c_int * _k + 1 as libc::c_int) as opus_uint32;
     s = -((_i >= p) as libc::c_int);
-    _i = (_i as libc::c_uint).wrapping_sub(p & s as libc::c_uint) as opus_uint32 as opus_uint32;
+    _i = (_i as libc::c_uint).wrapping_sub(p & s as libc::c_uint) as opus_uint32
+        as opus_uint32;
     k0 = _k;
-    _k = (_i.wrapping_add(1 as libc::c_int as libc::c_uint) >> 1 as libc::c_int) as libc::c_int;
+    _k = (_i.wrapping_add(1 as libc::c_int as libc::c_uint) >> 1 as libc::c_int)
+        as libc::c_int;
     if _k != 0 {
         _i = (_i as libc::c_uint)
             .wrapping_sub((2 as libc::c_int * _k - 1 as libc::c_int) as libc::c_uint)
@@ -1583,20 +1590,20 @@ pub unsafe extern "C" fn decode_pulses(
             _dec,
             (*(CELT_PVQ_U_ROW[(if _n < _k { _n } else { _k }) as usize])
                 .offset((if _n > _k { _n } else { _k }) as isize))
-            .wrapping_add(
-                *(CELT_PVQ_U_ROW[(if _n < _k + 1 as libc::c_int {
-                    _n
-                } else {
-                    _k + 1 as libc::c_int
-                }) as usize])
-                    .offset(
-                        (if _n > _k + 1 as libc::c_int {
-                            _n
-                        } else {
-                            _k + 1 as libc::c_int
-                        }) as isize,
-                    ),
-            ),
+                .wrapping_add(
+                    *(CELT_PVQ_U_ROW[(if _n < _k + 1 as libc::c_int {
+                        _n
+                    } else {
+                        _k + 1 as libc::c_int
+                    }) as usize])
+                        .offset(
+                            (if _n > _k + 1 as libc::c_int {
+                                _n
+                            } else {
+                                _k + 1 as libc::c_int
+                            }) as isize,
+                        ),
+                ),
         ),
         _y,
     );
@@ -1609,33 +1616,15 @@ unsafe extern "C" fn run_static_initializers() {
         CELT_PVQ_U_DATA.as_ptr().offset(525 as libc::c_int as isize),
         CELT_PVQ_U_DATA.as_ptr().offset(698 as libc::c_int as isize),
         CELT_PVQ_U_DATA.as_ptr().offset(870 as libc::c_int as isize),
-        CELT_PVQ_U_DATA
-            .as_ptr()
-            .offset(1041 as libc::c_int as isize),
-        CELT_PVQ_U_DATA
-            .as_ptr()
-            .offset(1131 as libc::c_int as isize),
-        CELT_PVQ_U_DATA
-            .as_ptr()
-            .offset(1178 as libc::c_int as isize),
-        CELT_PVQ_U_DATA
-            .as_ptr()
-            .offset(1207 as libc::c_int as isize),
-        CELT_PVQ_U_DATA
-            .as_ptr()
-            .offset(1226 as libc::c_int as isize),
-        CELT_PVQ_U_DATA
-            .as_ptr()
-            .offset(1240 as libc::c_int as isize),
-        CELT_PVQ_U_DATA
-            .as_ptr()
-            .offset(1248 as libc::c_int as isize),
-        CELT_PVQ_U_DATA
-            .as_ptr()
-            .offset(1254 as libc::c_int as isize),
-        CELT_PVQ_U_DATA
-            .as_ptr()
-            .offset(1257 as libc::c_int as isize),
+        CELT_PVQ_U_DATA.as_ptr().offset(1041 as libc::c_int as isize),
+        CELT_PVQ_U_DATA.as_ptr().offset(1131 as libc::c_int as isize),
+        CELT_PVQ_U_DATA.as_ptr().offset(1178 as libc::c_int as isize),
+        CELT_PVQ_U_DATA.as_ptr().offset(1207 as libc::c_int as isize),
+        CELT_PVQ_U_DATA.as_ptr().offset(1226 as libc::c_int as isize),
+        CELT_PVQ_U_DATA.as_ptr().offset(1240 as libc::c_int as isize),
+        CELT_PVQ_U_DATA.as_ptr().offset(1248 as libc::c_int as isize),
+        CELT_PVQ_U_DATA.as_ptr().offset(1254 as libc::c_int as isize),
+        CELT_PVQ_U_DATA.as_ptr().offset(1257 as libc::c_int as isize),
     ];
 }
 #[used]

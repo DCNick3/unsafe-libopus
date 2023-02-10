@@ -24,6 +24,8 @@ pub mod arch_h {
     pub type opus_val32 = libc::c_float;
     #[c2rust::src_loc = "184:1"]
     pub type celt_norm = libc::c_float;
+    #[c2rust::src_loc = "207:9"]
+    pub const EPSILON: libc::c_float = 1e-15f32;
     extern "C" {
         #[c2rust::src_loc = "63:1"]
         pub fn celt_fatal(
@@ -60,7 +62,10 @@ pub mod entcode_h {
     pub type ec_dec = ec_ctx;
     #[inline]
     #[c2rust::src_loc = "124:1"]
-    pub unsafe extern "C" fn celt_udiv(mut n: opus_uint32, mut d: opus_uint32) -> opus_uint32 {
+    pub unsafe extern "C" fn celt_udiv(
+        mut n: opus_uint32,
+        mut d: opus_uint32,
+    ) -> opus_uint32 {
         return n.wrapping_div(d);
     }
     use super::opus_types_h::opus_uint32;
@@ -80,6 +85,16 @@ pub mod mathcalls_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.h:33"]
 pub mod mathops_h {
+    #[c2rust::src_loc = "50:9"]
+    pub const cA: libc::c_float = 0.43157974f32;
+    #[c2rust::src_loc = "51:9"]
+    pub const cB: libc::c_float = 0.67848403f32;
+    #[c2rust::src_loc = "52:9"]
+    pub const cC: libc::c_float = 0.08595542f32;
+    #[c2rust::src_loc = "53:9"]
+    pub const cE: libc::c_float = PI / 2 as libc::c_int as libc::c_float;
+    #[c2rust::src_loc = "41:9"]
+    pub const PI: libc::c_float = 3.141592653f32;
     #[inline]
     #[c2rust::src_loc = "54:1"]
     pub unsafe extern "C" fn fast_atan2f(
@@ -94,33 +109,21 @@ pub mod mathops_h {
             return 0 as libc::c_int as libc::c_float;
         }
         if x2 < y2 {
-            let mut den: libc::c_float = (y2 + 0.67848403f32 * x2) * (y2 + 0.08595542f32 * x2);
-            return -x * y * (y2 + 0.43157974f32 * x2) / den
-                + (if y < 0 as libc::c_int as libc::c_float {
-                    -(3.141592653f32 / 2 as libc::c_int as libc::c_float)
-                } else {
-                    3.141592653f32 / 2 as libc::c_int as libc::c_float
-                });
+            let mut den: libc::c_float = (y2 + cB * x2) * (y2 + cC * x2);
+            return -x * y * (y2 + cA * x2) / den
+                + (if y < 0 as libc::c_int as libc::c_float { -cE } else { cE });
         } else {
-            let mut den_0: libc::c_float = (x2 + 0.67848403f32 * y2) * (x2 + 0.08595542f32 * y2);
-            return x * y * (x2 + 0.43157974f32 * y2) / den_0
-                + (if y < 0 as libc::c_int as libc::c_float {
-                    -(3.141592653f32 / 2 as libc::c_int as libc::c_float)
-                } else {
-                    3.141592653f32 / 2 as libc::c_int as libc::c_float
-                })
-                - (if x * y < 0 as libc::c_int as libc::c_float {
-                    -(3.141592653f32 / 2 as libc::c_int as libc::c_float)
-                } else {
-                    3.141592653f32 / 2 as libc::c_int as libc::c_float
-                });
+            let mut den_0: libc::c_float = (x2 + cB * y2) * (x2 + cC * y2);
+            return x * y * (x2 + cA * y2) / den_0
+                + (if y < 0 as libc::c_int as libc::c_float { -cE } else { cE })
+                - (if x * y < 0 as libc::c_int as libc::c_float { -cE } else { cE });
         };
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cwrs.h:34"]
 pub mod cwrs_h {
-    use super::arch_h::opus_val32;
     use super::entcode_h::{ec_dec, ec_enc};
+    use super::arch_h::opus_val32;
     extern "C" {
         #[c2rust::src_loc = "46:1"]
         pub fn decode_pulses(
@@ -137,6 +140,11 @@ pub mod cwrs_h {
             enc: *mut ec_enc,
         );
     }
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/bands.h:38"]
+pub mod bands_h {
+    #[c2rust::src_loc = "68:9"]
+    pub const SPREAD_NONE: libc::c_int = 0 as libc::c_int;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/pitch.h:40"]
 pub mod pitch_h {
@@ -158,15 +166,16 @@ pub mod pitch_h {
     }
     use super::arch_h::{opus_val16, opus_val32};
 }
-pub use self::arch_h::{celt_fatal, celt_norm, opus_val16, opus_val32};
-use self::cwrs_h::{decode_pulses, encode_pulses};
-pub use self::entcode_h::{celt_udiv, ec_ctx, ec_dec, ec_enc, ec_window};
-use self::mathcalls_h::{cos, fabs, floor, sqrt};
-pub use self::mathops_h::fast_atan2f;
-pub use self::opus_types_h::opus_uint32;
-pub use self::pitch_h::celt_inner_prod_c;
-pub use self::stdint_uintn_h::uint32_t;
 pub use self::types_h::__uint32_t;
+pub use self::stdint_uintn_h::uint32_t;
+pub use self::opus_types_h::opus_uint32;
+pub use self::arch_h::{opus_val16, opus_val32, celt_norm, EPSILON, celt_fatal};
+pub use self::entcode_h::{ec_window, ec_ctx, ec_enc, ec_dec, celt_udiv};
+use self::mathcalls_h::{cos, sqrt, fabs, floor};
+pub use self::mathops_h::{cA, cB, cC, cE, PI, fast_atan2f};
+use self::cwrs_h::{decode_pulses, encode_pulses};
+pub use self::bands_h::SPREAD_NONE;
+pub use self::pitch_h::celt_inner_prod_c;
 #[c2rust::src_loc = "47:1"]
 unsafe extern "C" fn exp_rotation1(
     mut X: *mut celt_norm,
@@ -217,8 +226,11 @@ pub unsafe extern "C" fn exp_rotation(
     mut K: libc::c_int,
     mut spread: libc::c_int,
 ) {
-    static mut SPREAD_FACTOR: [libc::c_int; 3] =
-        [15 as libc::c_int, 10 as libc::c_int, 5 as libc::c_int];
+    static mut SPREAD_FACTOR: [libc::c_int; 3] = [
+        15 as libc::c_int,
+        10 as libc::c_int,
+        5 as libc::c_int,
+    ];
     let mut i: libc::c_int = 0;
     let mut c: opus_val16 = 0.;
     let mut s: opus_val16 = 0.;
@@ -226,17 +238,18 @@ pub unsafe extern "C" fn exp_rotation(
     let mut theta: opus_val16 = 0.;
     let mut stride2: libc::c_int = 0 as libc::c_int;
     let mut factor: libc::c_int = 0;
-    if 2 as libc::c_int * K >= len || spread == 0 as libc::c_int {
+    if 2 as libc::c_int * K >= len || spread == SPREAD_NONE {
         return;
     }
     factor = SPREAD_FACTOR[(spread - 1 as libc::c_int) as usize];
     gain = 1.0f32 * len as opus_val32 / (len + factor * K) as opus_val32;
     theta = 0.5f32 * (gain * gain);
-    c = cos((0.5f32 * 3.141592653f32 * theta) as libc::c_double) as libc::c_float;
-    s = cos((0.5f32 * 3.141592653f32 * (1.0f32 - theta)) as libc::c_double) as libc::c_float;
+    c = cos((0.5f32 * PI * theta) as libc::c_double) as libc::c_float;
+    s = cos((0.5f32 * PI * (1.0f32 - theta)) as libc::c_double) as libc::c_float;
     if len >= 8 as libc::c_int * stride {
         stride2 = 1 as libc::c_int;
-        while (stride2 * stride2 + stride2) * stride + (stride >> 2 as libc::c_int) < len {
+        while (stride2 * stride2 + stride2) * stride + (stride >> 2 as libc::c_int) < len
+        {
             stride2 += 1;
         }
     }
@@ -277,7 +290,7 @@ unsafe extern "C" fn normalise_residual(
         if !(i < N) {
             break;
         }
-    }
+    };
 }
 #[c2rust::src_loc = "143:1"]
 unsafe extern "C" fn extract_collapse_mask(
@@ -305,8 +318,9 @@ unsafe extern "C" fn extract_collapse_mask(
                 break;
             }
         }
-        collapse_mask |=
-            (((tmp != 0 as libc::c_int as libc::c_uint) as libc::c_int) << i) as libc::c_uint;
+        collapse_mask
+            |= (((tmp != 0 as libc::c_int as libc::c_uint) as libc::c_int) << i)
+                as libc::c_uint;
         i += 1;
         if !(i < B) {
             break;
@@ -330,15 +344,22 @@ pub unsafe extern "C" fn op_pvq_search_c(
     let mut xy: opus_val32 = 0.;
     let mut yy: opus_val16 = 0.;
     let vla = N as usize;
-    let mut y: Vec<celt_norm> = ::std::vec::from_elem(0., vla);
+    let mut y: Vec::<celt_norm> = ::std::vec::from_elem(0., vla);
     let vla_0 = N as usize;
-    let mut signx: Vec<libc::c_int> = ::std::vec::from_elem(0, vla_0);
+    let mut signx: Vec::<libc::c_int> = ::std::vec::from_elem(0, vla_0);
     sum = 0 as libc::c_int as opus_val32;
     j = 0 as libc::c_int;
     loop {
-        *signx.as_mut_ptr().offset(j as isize) =
-            (*X.offset(j as isize) < 0 as libc::c_int as libc::c_float) as libc::c_int;
-        *X.offset(j as isize) = fabs(*X.offset(j as isize) as libc::c_double) as libc::c_float;
+        *signx
+            .as_mut_ptr()
+            .offset(
+                j as isize,
+            ) = (*X.offset(j as isize) < 0 as libc::c_int as libc::c_float)
+            as libc::c_int;
+        *X
+            .offset(
+                j as isize,
+            ) = fabs(*X.offset(j as isize) as libc::c_double) as libc::c_float;
         *iy.offset(j as isize) = 0 as libc::c_int;
         *y.as_mut_ptr().offset(j as isize) = 0 as libc::c_int as celt_norm;
         j += 1;
@@ -359,7 +380,7 @@ pub unsafe extern "C" fn op_pvq_search_c(
                 break;
             }
         }
-        if !(sum > 1e-15f32 && sum < 64 as libc::c_int as libc::c_float) {
+        if !(sum > EPSILON && sum < 64 as libc::c_int as libc::c_float) {
             *X.offset(0 as libc::c_int as isize) = 1.0f32;
             j = 1 as libc::c_int;
             loop {
@@ -374,10 +395,15 @@ pub unsafe extern "C" fn op_pvq_search_c(
         rcp = (K as libc::c_float + 0.8f32) * (1.0f32 / sum);
         j = 0 as libc::c_int;
         loop {
-            *iy.offset(j as isize) =
-                floor((rcp * *X.offset(j as isize)) as libc::c_double) as libc::c_int;
+            *iy
+                .offset(
+                    j as isize,
+                ) = floor((rcp * *X.offset(j as isize)) as libc::c_double)
+                as libc::c_int;
             *y.as_mut_ptr().offset(j as isize) = *iy.offset(j as isize) as celt_norm;
-            yy = yy + *y.as_mut_ptr().offset(j as isize) * *y.as_mut_ptr().offset(j as isize);
+            yy = yy
+                + *y.as_mut_ptr().offset(j as isize)
+                    * *y.as_mut_ptr().offset(j as isize);
             xy = xy + *X.offset(j as isize) * *y.as_mut_ptr().offset(j as isize);
             let ref mut fresh2 = *y.as_mut_ptr().offset(j as isize);
             *fresh2 *= 2 as libc::c_int as libc::c_float;
@@ -434,7 +460,10 @@ pub unsafe extern "C" fn op_pvq_search_c(
     }
     j = 0 as libc::c_int;
     loop {
-        *iy.offset(j as isize) = (*iy.offset(j as isize) ^ -*signx.as_mut_ptr().offset(j as isize))
+        *iy
+            .offset(
+                j as isize,
+            ) = (*iy.offset(j as isize) ^ -*signx.as_mut_ptr().offset(j as isize))
             + *signx.as_mut_ptr().offset(j as isize);
         j += 1;
         if !(j < N) {
@@ -468,14 +497,14 @@ pub unsafe extern "C" fn alg_quant(
     }
     if !(N > 1 as libc::c_int) {
         celt_fatal(
-            b"assertion failed: N>1\nalg_quant() needs at least two dimensions\0" as *const u8
-                as *const libc::c_char,
+            b"assertion failed: N>1\nalg_quant() needs at least two dimensions\0"
+                as *const u8 as *const libc::c_char,
             b"celt/vq.c\0" as *const u8 as *const libc::c_char,
             339 as libc::c_int,
         );
     }
     let vla = (N + 3 as libc::c_int) as usize;
-    let mut iy: Vec<libc::c_int> = ::std::vec::from_elem(0, vla);
+    let mut iy: Vec::<libc::c_int> = ::std::vec::from_elem(0, vla);
     exp_rotation(X, N, 1 as libc::c_int, B, K, spread);
     yy = op_pvq_search_c(X, iy.as_mut_ptr(), K, N, arch);
     encode_pulses(iy.as_mut_ptr(), N, K, enc);
@@ -501,22 +530,22 @@ pub unsafe extern "C" fn alg_unquant(
     let mut collapse_mask: libc::c_uint = 0;
     if !(K > 0 as libc::c_int) {
         celt_fatal(
-            b"assertion failed: K>0\nalg_unquant() needs at least one pulse\0" as *const u8
-                as *const libc::c_char,
+            b"assertion failed: K>0\nalg_unquant() needs at least one pulse\0"
+                as *const u8 as *const libc::c_char,
             b"celt/vq.c\0" as *const u8 as *const libc::c_char,
             371 as libc::c_int,
         );
     }
     if !(N > 1 as libc::c_int) {
         celt_fatal(
-            b"assertion failed: N>1\nalg_unquant() needs at least two dimensions\0" as *const u8
-                as *const libc::c_char,
+            b"assertion failed: N>1\nalg_unquant() needs at least two dimensions\0"
+                as *const u8 as *const libc::c_char,
             b"celt/vq.c\0" as *const u8 as *const libc::c_char,
             372 as libc::c_int,
         );
     }
     let vla = N as usize;
-    let mut iy: Vec<libc::c_int> = ::std::vec::from_elem(0, vla);
+    let mut iy: Vec::<libc::c_int> = ::std::vec::from_elem(0, vla);
     Ryy = decode_pulses(iy.as_mut_ptr(), N, K, dec);
     normalise_residual(iy.as_mut_ptr(), X, N, Ryy, gain);
     exp_rotation(X, N, -(1 as libc::c_int), B, K, spread);
@@ -536,7 +565,7 @@ pub unsafe extern "C" fn renormalise_vector(
     let mut g: opus_val16 = 0.;
     let mut t: opus_val32 = 0.;
     let mut xptr: *mut celt_norm = 0 as *mut celt_norm;
-    E = 1e-15f32 + celt_inner_prod_c(X, X, N);
+    E = EPSILON + celt_inner_prod_c(X, X, N);
     t = E;
     g = 1.0f32 / sqrt(t as libc::c_double) as libc::c_float * gain;
     xptr = X;
@@ -562,7 +591,7 @@ pub unsafe extern "C" fn stereo_itheta(
     let mut side: opus_val16 = 0.;
     let mut Emid: opus_val32 = 0.;
     let mut Eside: opus_val32 = 0.;
-    Eside = 1e-15f32;
+    Eside = EPSILON;
     Emid = Eside;
     if stereo != 0 {
         i = 0 as libc::c_int;
@@ -582,8 +611,9 @@ pub unsafe extern "C" fn stereo_itheta(
     mid = sqrt(Emid as libc::c_double) as libc::c_float;
     side = sqrt(Eside as libc::c_double) as libc::c_float;
     itheta = floor(
-        (0.5f32 + 16384 as libc::c_int as libc::c_float * 0.63662f32 * fast_atan2f(side, mid))
-            as libc::c_double,
+        (0.5f32
+            + 16384 as libc::c_int as libc::c_float * 0.63662f32
+                * fast_atan2f(side, mid)) as libc::c_double,
     ) as libc::c_int;
     return itheta;
 }

@@ -25,9 +25,14 @@ pub unsafe extern "C" fn silk_autocorrelation_FLP(
     }
     i = 0 as libc::c_int;
     while i < correlationCount {
-        *results.offset(i as isize) =
-            silk_inner_product_FLP(inputData, inputData.offset(i as isize), inputDataSize - i)
-                as libc::c_float;
+        *results
+            .offset(
+                i as isize,
+            ) = silk_inner_product_FLP(
+            inputData,
+            inputData.offset(i as isize),
+            inputDataSize - i,
+        ) as libc::c_float;
         i += 1;
     }
 }

@@ -37,12 +37,36 @@ pub mod entcode_h {
         pub rem: libc::c_int,
         pub error: libc::c_int,
     }
+    #[c2rust::src_loc = "57:10"]
+    pub const BITRES: libc::c_int = 3 as libc::c_int;
     use super::opus_types_h::opus_uint32;
 }
-pub use self::entcode_h::{ec_ctx, ec_window};
-pub use self::opus_types_h::opus_uint32;
-pub use self::stdint_uintn_h::uint32_t;
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:32"]
+pub mod ecintrin_h {
+    #[c2rust::src_loc = "69:11"]
+    pub const EC_CLZ0: libc::c_int = ::core::mem::size_of::<libc::c_uint>()
+        as libc::c_ulong as libc::c_int * CHAR_BIT;
+    use super::internal::__CHAR_BIT__;
+    use super::limits_h::CHAR_BIT;
+}
+#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:32"]
+pub mod limits_h {
+    #[c2rust::src_loc = "63:9"]
+    pub const CHAR_BIT: libc::c_int = __CHAR_BIT__;
+    use super::internal::__CHAR_BIT__;
+}
+#[c2rust::header_src = "internal:0"]
+pub mod internal {
+    #[c2rust::src_loc = "36:9"]
+    pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
+}
 pub use self::types_h::__uint32_t;
+pub use self::stdint_uintn_h::uint32_t;
+pub use self::opus_types_h::opus_uint32;
+pub use self::entcode_h::{ec_window, ec_ctx, BITRES};
+pub use self::ecintrin_h::EC_CLZ0;
+pub use self::limits_h::CHAR_BIT;
+pub use self::internal::__CHAR_BIT__;
 #[no_mangle]
 #[c2rust::src_loc = "69:1"]
 pub unsafe extern "C" fn ec_tell_frac(mut _this: *mut ec_ctx) -> opus_uint32 {
@@ -60,9 +84,8 @@ pub unsafe extern "C" fn ec_tell_frac(mut _this: *mut ec_ctx) -> opus_uint32 {
     let mut r: opus_uint32 = 0;
     let mut l: libc::c_int = 0;
     let mut b: libc::c_uint = 0;
-    nbits = ((*_this).nbits_total << 3 as libc::c_int) as opus_uint32;
-    l = ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * 8 as libc::c_int
-        - ((*_this).rng).leading_zeros() as i32;
+    nbits = ((*_this).nbits_total << BITRES) as opus_uint32;
+    l = EC_CLZ0 - ((*_this).rng).leading_zeros() as i32;
     r = (*_this).rng >> l - 16 as libc::c_int;
     b = (r >> 12 as libc::c_int).wrapping_sub(8 as libc::c_int as libc::c_uint);
     b = b.wrapping_add((r > correction[b as usize]) as libc::c_int as libc::c_uint);

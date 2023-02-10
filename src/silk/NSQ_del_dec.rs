@@ -24,7 +24,7 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     #[c2rust::src_loc = "27:1"]
     pub type int64_t = __int64_t;
-    use super::types_h::{__int16_t, __int32_t, __int64_t, __int8_t};
+    use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
 pub mod stdint_uintn_h {
@@ -32,7 +32,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint32_t, __uint8_t};
+    use super::types_h::{__uint8_t, __uint32_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
 pub mod opus_types_h {
@@ -48,8 +48,8 @@ pub mod opus_types_h {
     pub type opus_uint32 = uint32_t;
     #[c2rust::src_loc = "57:4"]
     pub type opus_int64 = int64_t;
-    use super::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
-    use super::stdint_uintn_h::{uint32_t, uint8_t};
+    use super::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
+    use super::stdint_uintn_h::{uint8_t, uint32_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:32"]
 pub mod resampler_structs_h {
@@ -79,7 +79,7 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int16, opus_int32};
+    use super::opus_types_h::{opus_int32, opus_int16};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
 pub mod structs_h {
@@ -239,8 +239,17 @@ pub mod structs_h {
         pub indices_LBRR: [SideInfoIndices; 3],
         pub pulses_LBRR: [[opus_int8; 320]; 3],
     }
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
+    use super::opus_types_h::{opus_int16, opus_int32, opus_uint8, opus_int8};
     use super::resampler_structs_h::silk_resampler_state_struct;
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
+pub mod typedef_h {
+    #[c2rust::src_loc = "42:9"]
+    pub const silk_int32_MAX: libc::c_int = 0x7fffffff as libc::c_int;
+    #[c2rust::src_loc = "45:9"]
+    pub const silk_int16_MIN: libc::c_int = 0x8000 as libc::c_int;
+    #[c2rust::src_loc = "44:9"]
+    pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
 pub mod arch_h {
@@ -269,8 +278,25 @@ pub mod string_h {
             _: libc::c_ulong,
         ) -> *mut libc::c_void;
         #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
+        pub fn memset(
+            _: *mut libc::c_void,
+            _: libc::c_int,
+            _: libc::c_ulong,
+        ) -> *mut libc::c_void;
     }
+}
+#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:32"]
+pub mod limits_h {
+    #[c2rust::src_loc = "63:9"]
+    pub const CHAR_BIT: libc::c_int = __CHAR_BIT__;
+    use super::internal::__CHAR_BIT__;
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:32"]
+pub mod ecintrin_h {
+    #[c2rust::src_loc = "69:11"]
+    pub const EC_CLZ0: libc::c_int = ::core::mem::size_of::<libc::c_uint>()
+        as libc::c_ulong as libc::c_int * CHAR_BIT;
+    use super::limits_h::CHAR_BIT;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/macros.h:32"]
 pub mod macros_h {
@@ -278,21 +304,22 @@ pub mod macros_h {
     #[c2rust::src_loc = "120:1"]
     pub unsafe extern "C" fn silk_CLZ32(mut in32: opus_int32) -> opus_int32 {
         return if in32 != 0 {
-            32 as libc::c_int
-                - (::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int
-                    * 8 as libc::c_int
-                    - (in32 as libc::c_uint).leading_zeros() as i32)
+            32 as libc::c_int - (EC_CLZ0 - (in32 as libc::c_uint).leading_zeros() as i32)
         } else {
             32 as libc::c_int
         };
     }
     use super::opus_types_h::opus_int32;
+    use super::ecintrin_h::EC_CLZ0;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
 pub mod SigProc_FIX_h {
     #[inline]
     #[c2rust::src_loc = "546:1"]
-    pub unsafe extern "C" fn silk_min_int(mut a: libc::c_int, mut b: libc::c_int) -> libc::c_int {
+    pub unsafe extern "C" fn silk_min_int(
+        mut a: libc::c_int,
+        mut b: libc::c_int,
+    ) -> libc::c_int {
         return if a < b { a } else { b };
     }
     use super::opus_types_h::{opus_int16, opus_int32};
@@ -324,21 +351,25 @@ pub mod Inlines_h {
         let mut a32_nrm: opus_int32 = 0;
         let mut b32_nrm: opus_int32 = 0;
         let mut result: opus_int32 = 0;
-        a_headrm = silk_CLZ32((if a32 > 0 as libc::c_int { a32 } else { -a32 })) - 1 as libc::c_int;
+        a_headrm = silk_CLZ32((if a32 > 0 as libc::c_int { a32 } else { -a32 }))
+            - 1 as libc::c_int;
         a32_nrm = ((a32 as opus_uint32) << a_headrm) as opus_int32;
-        b_headrm = silk_CLZ32((if b32 > 0 as libc::c_int { b32 } else { -b32 })) - 1 as libc::c_int;
+        b_headrm = silk_CLZ32((if b32 > 0 as libc::c_int { b32 } else { -b32 }))
+            - 1 as libc::c_int;
         b32_nrm = ((b32 as opus_uint32) << b_headrm) as opus_int32;
-        b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int) / (b32_nrm >> 16 as libc::c_int);
+        b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int)
+            / (b32_nrm >> 16 as libc::c_int);
         result = (a32_nrm as libc::c_long * b32_inv as opus_int16 as opus_int64
             >> 16 as libc::c_int) as opus_int32;
-        a32_nrm = (a32_nrm as opus_uint32).wrapping_sub(
-            (((b32_nrm as opus_int64 * result as libc::c_long >> 32 as libc::c_int) as opus_int32
-                as opus_uint32)
-                << 3 as libc::c_int) as opus_int32 as opus_uint32,
-        ) as opus_int32;
+        a32_nrm = (a32_nrm as opus_uint32)
+            .wrapping_sub(
+                (((b32_nrm as opus_int64 * result as libc::c_long >> 32 as libc::c_int)
+                    as opus_int32 as opus_uint32) << 3 as libc::c_int) as opus_int32
+                    as opus_uint32,
+            ) as opus_int32;
         result = (result as libc::c_long
-            + (a32_nrm as libc::c_long * b32_inv as opus_int16 as opus_int64 >> 16 as libc::c_int))
-            as opus_int32;
+            + (a32_nrm as libc::c_long * b32_inv as opus_int16 as opus_int64
+                >> 16 as libc::c_int)) as opus_int32;
         lshift = 29 as libc::c_int + a_headrm - b_headrm - Qres;
         if lshift < 0 as libc::c_int {
             return (((if 0x80000000 as libc::c_uint as opus_int32 >> -lshift
@@ -363,31 +394,35 @@ pub mod Inlines_h {
                         result
                     })
                 })
-            }) as opus_uint32)
-                << -lshift) as opus_int32;
+            }) as opus_uint32) << -lshift) as opus_int32
         } else if lshift < 32 as libc::c_int {
-            return result >> lshift;
+            return result >> lshift
         } else {
-            return 0 as libc::c_int;
+            return 0 as libc::c_int
         };
     }
     #[inline]
     #[c2rust::src_loc = "143:1"]
-    pub unsafe extern "C" fn silk_INVERSE32_varQ(b32: opus_int32, Qres: libc::c_int) -> opus_int32 {
+    pub unsafe extern "C" fn silk_INVERSE32_varQ(
+        b32: opus_int32,
+        Qres: libc::c_int,
+    ) -> opus_int32 {
         let mut b_headrm: libc::c_int = 0;
         let mut lshift: libc::c_int = 0;
         let mut b32_inv: opus_int32 = 0;
         let mut b32_nrm: opus_int32 = 0;
         let mut err_Q32: opus_int32 = 0;
         let mut result: opus_int32 = 0;
-        b_headrm = silk_CLZ32((if b32 > 0 as libc::c_int { b32 } else { -b32 })) - 1 as libc::c_int;
+        b_headrm = silk_CLZ32((if b32 > 0 as libc::c_int { b32 } else { -b32 }))
+            - 1 as libc::c_int;
         b32_nrm = ((b32 as opus_uint32) << b_headrm) as opus_int32;
-        b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int) / (b32_nrm >> 16 as libc::c_int);
+        b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int)
+            / (b32_nrm >> 16 as libc::c_int);
         result = ((b32_inv as opus_uint32) << 16 as libc::c_int) as opus_int32;
         err_Q32 = (((((1 as libc::c_int) << 29 as libc::c_int)
-            - (b32_nrm as libc::c_long * b32_inv as opus_int16 as opus_int64 >> 16 as libc::c_int)
-                as opus_int32) as opus_uint32)
-            << 3 as libc::c_int) as opus_int32;
+            - (b32_nrm as libc::c_long * b32_inv as opus_int16 as opus_int64
+                >> 16 as libc::c_int) as opus_int32) as opus_uint32) << 3 as libc::c_int)
+            as opus_int32;
         result = (result as libc::c_long
             + (err_Q32 as opus_int64 * b32_inv as libc::c_long >> 16 as libc::c_int))
             as opus_int32;
@@ -415,16 +450,15 @@ pub mod Inlines_h {
                         result
                     })
                 })
-            }) as opus_uint32)
-                << -lshift) as opus_int32;
+            }) as opus_uint32) << -lshift) as opus_int32
         } else if lshift < 32 as libc::c_int {
-            return result >> lshift;
+            return result >> lshift
         } else {
-            return 0 as libc::c_int;
+            return 0 as libc::c_int
         };
     }
+    use super::opus_types_h::{opus_int32, opus_uint32, opus_int16, opus_int64};
     use super::macros_h::silk_CLZ32;
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
 pub mod tables_h {
@@ -433,6 +467,23 @@ pub mod tables_h {
         #[c2rust::src_loc = "101:26"]
         pub static silk_Quantization_Offsets_Q10: [[opus_int16; 2]; 2];
     }
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
+pub mod define_h {
+    #[c2rust::src_loc = "155:9"]
+    pub const MAX_SHAPE_LPC_ORDER: libc::c_int = 24 as libc::c_int;
+    #[c2rust::src_loc = "157:9"]
+    pub const HARM_SHAPE_FIR_TAPS: libc::c_int = 3 as libc::c_int;
+    #[c2rust::src_loc = "165:9"]
+    pub const DECISION_DELAY: libc::c_int = 40 as libc::c_int;
+    #[c2rust::src_loc = "146:9"]
+    pub const LTP_ORDER: libc::c_int = 5 as libc::c_int;
+    #[c2rust::src_loc = "72:9"]
+    pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
+    #[c2rust::src_loc = "142:9"]
+    pub const MAX_LPC_ORDER: libc::c_int = 16 as libc::c_int;
+    #[c2rust::src_loc = "180:10"]
+    pub const NSQ_LPC_BUF_LENGTH: libc::c_int = MAX_LPC_ORDER;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/NSQ.h:34"]
 pub mod NSQ_h {
@@ -513,28 +564,43 @@ pub mod NSQ_h {
         }
         return out;
     }
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int64};
+    use super::opus_types_h::{opus_int32, opus_int16, opus_int64};
 }
-use self::arch_h::celt_fatal;
-pub use self::macros_h::silk_CLZ32;
+#[c2rust::header_src = "internal:0"]
+pub mod internal {
+    #[c2rust::src_loc = "36:9"]
+    pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
+}
+pub use self::types_h::{
+    __int8_t, __uint8_t, __int16_t, __int32_t, __uint32_t, __int64_t,
+};
+pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
+pub use self::stdint_uintn_h::{uint8_t, uint32_t};
 pub use self::opus_types_h::{
-    opus_int16, opus_int32, opus_int64, opus_int8, opus_uint32, opus_uint8,
+    opus_int8, opus_uint8, opus_int16, opus_int32, opus_uint32, opus_int64,
 };
 pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
+    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
 };
-pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
-pub use self::stdint_uintn_h::{uint32_t, uint8_t};
-use self::string_h::{memcpy, memmove, memset};
 pub use self::structs_h::{
-    silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
-    SideInfoIndices,
+    silk_nsq_state, silk_VAD_state, silk_LP_state, silk_NLSF_CB_struct, SideInfoIndices,
+    silk_encoder_state,
 };
-use self::tables_h::silk_Quantization_Offsets_Q10;
-pub use self::types_h::{__int16_t, __int32_t, __int64_t, __int8_t, __uint32_t, __uint8_t};
+pub use self::typedef_h::{silk_int32_MAX, silk_int16_MIN, silk_int16_MAX};
+use self::arch_h::celt_fatal;
+use self::string_h::{memmove, memcpy, memset};
+pub use self::limits_h::CHAR_BIT;
+pub use self::ecintrin_h::EC_CLZ0;
+pub use self::macros_h::silk_CLZ32;
+pub use self::SigProc_FIX_h::{silk_min_int, silk_LPC_analysis_filter};
 pub use self::Inlines_h::{silk_DIV32_varQ, silk_INVERSE32_varQ};
+use self::tables_h::silk_Quantization_Offsets_Q10;
+pub use self::define_h::{
+    MAX_SHAPE_LPC_ORDER, HARM_SHAPE_FIR_TAPS, DECISION_DELAY, LTP_ORDER, TYPE_VOICED,
+    MAX_LPC_ORDER, NSQ_LPC_BUF_LENGTH,
+};
 pub use self::NSQ_h::silk_noise_shape_quantizer_short_prediction_c;
-pub use self::SigProc_FIX_h::{silk_LPC_analysis_filter, silk_min_int};
+pub use self::internal::__CHAR_BIT__;
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "37:9"]
@@ -606,7 +672,7 @@ pub unsafe extern "C" fn silk_NSQ_del_dec_c(
     let mut psDD: *mut NSQ_del_dec_struct = 0 as *mut NSQ_del_dec_struct;
     lag = (*NSQ).lagPrev;
     let vla = (*psEncC).nStatesDelayedDecision as usize;
-    let mut psDelDec: Vec<NSQ_del_dec_struct> = ::std::vec::from_elem(
+    let mut psDelDec: Vec::<NSQ_del_dec_struct> = ::std::vec::from_elem(
         NSQ_del_dec_struct {
             sLPC_Q14: [0; 96],
             RandState: [0; 40],
@@ -637,8 +703,10 @@ pub unsafe extern "C" fn silk_NSQ_del_dec_c(
         (*psDD).RD_Q10 = 0 as libc::c_int;
         (*psDD).LF_AR_Q14 = (*NSQ).sLF_AR_shp_Q14;
         (*psDD).Diff_Q14 = (*NSQ).sDiff_shp_Q14;
-        (*psDD).Shape_Q14[0 as libc::c_int as usize] =
-            (*NSQ).sLTP_shp_Q14[((*psEncC).ltp_mem_length - 1 as libc::c_int) as usize];
+        (*psDD)
+            .Shape_Q14[0 as libc::c_int
+            as usize] = (*NSQ)
+            .sLTP_shp_Q14[((*psEncC).ltp_mem_length - 1 as libc::c_int) as usize];
         memcpy(
             ((*psDD).sLPC_Q14).as_mut_ptr() as *mut libc::c_void,
             ((*NSQ).sLPC_Q14).as_mut_ptr() as *const libc::c_void,
@@ -652,24 +720,25 @@ pub unsafe extern "C" fn silk_NSQ_del_dec_c(
         );
         k += 1;
     }
-    offset_Q10 = silk_Quantization_Offsets_Q10
-        [((*psIndices).signalType as libc::c_int >> 1 as libc::c_int) as usize]
-        [(*psIndices).quantOffsetType as usize] as libc::c_int;
+    offset_Q10 = silk_Quantization_Offsets_Q10[((*psIndices).signalType as libc::c_int
+        >> 1 as libc::c_int) as usize][(*psIndices).quantOffsetType as usize]
+        as libc::c_int;
     smpl_buf_idx = 0 as libc::c_int;
-    decisionDelay = silk_min_int(40 as libc::c_int, (*psEncC).subfr_length);
-    if (*psIndices).signalType as libc::c_int == 2 as libc::c_int {
+    decisionDelay = silk_min_int(DECISION_DELAY, (*psEncC).subfr_length);
+    if (*psIndices).signalType as libc::c_int == TYPE_VOICED {
         k = 0 as libc::c_int;
         while k < (*psEncC).nb_subfr {
             decisionDelay = silk_min_int(
                 decisionDelay,
-                *pitchL.offset(k as isize) - 5 as libc::c_int / 2 as libc::c_int - 1 as libc::c_int,
+                *pitchL.offset(k as isize) - LTP_ORDER / 2 as libc::c_int
+                    - 1 as libc::c_int,
             );
             k += 1;
         }
     } else if lag > 0 as libc::c_int {
         decisionDelay = silk_min_int(
             decisionDelay,
-            lag - 5 as libc::c_int / 2 as libc::c_int - 1 as libc::c_int,
+            lag - LTP_ORDER / 2 as libc::c_int - 1 as libc::c_int,
         );
     }
     if (*psIndices).NLSFInterpCoef_Q2 as libc::c_int == 4 as libc::c_int {
@@ -678,44 +747,52 @@ pub unsafe extern "C" fn silk_NSQ_del_dec_c(
         LSF_interpolation_flag = 1 as libc::c_int;
     }
     let vla_0 = ((*psEncC).ltp_mem_length + (*psEncC).frame_length) as usize;
-    let mut sLTP_Q15: Vec<opus_int32> = ::std::vec::from_elem(0, vla_0);
+    let mut sLTP_Q15: Vec::<opus_int32> = ::std::vec::from_elem(0, vla_0);
     let vla_1 = ((*psEncC).ltp_mem_length + (*psEncC).frame_length) as usize;
-    let mut sLTP: Vec<opus_int16> = ::std::vec::from_elem(0, vla_1);
+    let mut sLTP: Vec::<opus_int16> = ::std::vec::from_elem(0, vla_1);
     let vla_2 = (*psEncC).subfr_length as usize;
-    let mut x_sc_Q10: Vec<opus_int32> = ::std::vec::from_elem(0, vla_2);
+    let mut x_sc_Q10: Vec::<opus_int32> = ::std::vec::from_elem(0, vla_2);
     let mut delayedGain_Q10: [opus_int32; 40] = [0; 40];
-    pxq = &mut *((*NSQ).xq)
-        .as_mut_ptr()
-        .offset((*psEncC).ltp_mem_length as isize) as *mut opus_int16;
+    pxq = &mut *((*NSQ).xq).as_mut_ptr().offset((*psEncC).ltp_mem_length as isize)
+        as *mut opus_int16;
     (*NSQ).sLTP_shp_buf_idx = (*psEncC).ltp_mem_length;
     (*NSQ).sLTP_buf_idx = (*psEncC).ltp_mem_length;
     subfr = 0 as libc::c_int;
     k = 0 as libc::c_int;
     while k < (*psEncC).nb_subfr {
-        A_Q12 = &*PredCoef_Q12.offset(
-            ((k >> 1 as libc::c_int | 1 as libc::c_int - LSF_interpolation_flag)
-                * 16 as libc::c_int) as isize,
-        ) as *const opus_int16;
-        B_Q14 = &*LTPCoef_Q14.offset((k * 5 as libc::c_int) as isize) as *const opus_int16;
-        AR_shp_Q13 = &*AR_Q13.offset((k * 24 as libc::c_int) as isize) as *const opus_int16;
-        HarmShapeFIRPacked_Q14 = *HarmShapeGain_Q14.offset(k as isize) >> 2 as libc::c_int;
-        HarmShapeFIRPacked_Q14 |= (((*HarmShapeGain_Q14.offset(k as isize) >> 1 as libc::c_int)
-            as opus_uint32)
-            << 16 as libc::c_int) as opus_int32;
+        A_Q12 = &*PredCoef_Q12
+            .offset(
+                ((k >> 1 as libc::c_int | 1 as libc::c_int - LSF_interpolation_flag)
+                    * MAX_LPC_ORDER) as isize,
+            ) as *const opus_int16;
+        B_Q14 = &*LTPCoef_Q14.offset((k * LTP_ORDER) as isize) as *const opus_int16;
+        AR_shp_Q13 = &*AR_Q13.offset((k * MAX_SHAPE_LPC_ORDER) as isize)
+            as *const opus_int16;
+        HarmShapeFIRPacked_Q14 = *HarmShapeGain_Q14.offset(k as isize)
+            >> 2 as libc::c_int;
+        HarmShapeFIRPacked_Q14
+            |= (((*HarmShapeGain_Q14.offset(k as isize) >> 1 as libc::c_int)
+                as opus_uint32) << 16 as libc::c_int) as opus_int32;
         (*NSQ).rewhite_flag = 0 as libc::c_int;
-        if (*psIndices).signalType as libc::c_int == 2 as libc::c_int {
+        if (*psIndices).signalType as libc::c_int == TYPE_VOICED {
             lag = *pitchL.offset(k as isize);
-            if k & 3 as libc::c_int
-                - ((LSF_interpolation_flag as opus_uint32) << 1 as libc::c_int) as opus_int32
-                == 0 as libc::c_int
+            if k
+                & 3 as libc::c_int
+                    - ((LSF_interpolation_flag as opus_uint32) << 1 as libc::c_int)
+                        as opus_int32 == 0 as libc::c_int
             {
                 if k == 2 as libc::c_int {
-                    RDmin_Q10 = (*psDelDec.as_mut_ptr().offset(0 as libc::c_int as isize)).RD_Q10;
+                    RDmin_Q10 = (*psDelDec
+                        .as_mut_ptr()
+                        .offset(0 as libc::c_int as isize))
+                        .RD_Q10;
                     Winner_ind = 0 as libc::c_int;
                     i = 1 as libc::c_int;
                     while i < (*psEncC).nStatesDelayedDecision {
-                        if (*psDelDec.as_mut_ptr().offset(i as isize)).RD_Q10 < RDmin_Q10 {
-                            RDmin_Q10 = (*psDelDec.as_mut_ptr().offset(i as isize)).RD_Q10;
+                        if (*psDelDec.as_mut_ptr().offset(i as isize)).RD_Q10 < RDmin_Q10
+                        {
+                            RDmin_Q10 = (*psDelDec.as_mut_ptr().offset(i as isize))
+                                .RD_Q10;
                             Winner_ind = i;
                         }
                         i += 1;
@@ -723,8 +800,11 @@ pub unsafe extern "C" fn silk_NSQ_del_dec_c(
                     i = 0 as libc::c_int;
                     while i < (*psEncC).nStatesDelayedDecision {
                         if i != Winner_ind {
-                            let ref mut fresh0 = (*psDelDec.as_mut_ptr().offset(i as isize)).RD_Q10;
-                            *fresh0 += 0x7fffffff as libc::c_int >> 4 as libc::c_int;
+                            let ref mut fresh0 = (*psDelDec
+                                .as_mut_ptr()
+                                .offset(i as isize))
+                                .RD_Q10;
+                            *fresh0 += silk_int32_MAX >> 4 as libc::c_int;
                         }
                         i += 1;
                     }
@@ -733,95 +813,91 @@ pub unsafe extern "C" fn silk_NSQ_del_dec_c(
                     last_smple_idx = smpl_buf_idx + decisionDelay;
                     i = 0 as libc::c_int;
                     while i < decisionDelay {
-                        last_smple_idx = (last_smple_idx - 1 as libc::c_int) % 40 as libc::c_int;
+                        last_smple_idx = (last_smple_idx - 1 as libc::c_int)
+                            % DECISION_DELAY;
                         if last_smple_idx < 0 as libc::c_int {
-                            last_smple_idx += 40 as libc::c_int;
+                            last_smple_idx += DECISION_DELAY;
                         }
-                        *pulses.offset((i - decisionDelay) as isize) =
-                            (if 10 as libc::c_int == 1 as libc::c_int {
-                                ((*psDD).Q_Q10[last_smple_idx as usize] >> 1 as libc::c_int)
-                                    + ((*psDD).Q_Q10[last_smple_idx as usize] & 1 as libc::c_int)
-                            } else {
-                                ((*psDD).Q_Q10[last_smple_idx as usize]
-                                    >> 10 as libc::c_int - 1 as libc::c_int)
-                                    + 1 as libc::c_int
-                                    >> 1 as libc::c_int
-                            }) as opus_int8;
-                        *pxq.offset((i - decisionDelay) as isize) = (if (if 14 as libc::c_int
-                            == 1 as libc::c_int
-                        {
+                        *pulses
+                            .offset(
+                                (i - decisionDelay) as isize,
+                            ) = (if 10 as libc::c_int == 1 as libc::c_int {
+                            ((*psDD).Q_Q10[last_smple_idx as usize] >> 1 as libc::c_int)
+                                + ((*psDD).Q_Q10[last_smple_idx as usize]
+                                    & 1 as libc::c_int)
+                        } else {
+                            ((*psDD).Q_Q10[last_smple_idx as usize]
+                                >> 10 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+                                >> 1 as libc::c_int
+                        }) as opus_int8;
+                        *pxq
+                            .offset(
+                                (i - decisionDelay) as isize,
+                            ) = (if (if 14 as libc::c_int == 1 as libc::c_int {
                             (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
-                                * *Gains_Q16.offset(1 as libc::c_int as isize) as libc::c_long
-                                >> 16 as libc::c_int) as opus_int32
+                                * *Gains_Q16.offset(1 as libc::c_int as isize)
+                                    as libc::c_long >> 16 as libc::c_int) as opus_int32
                                 >> 1 as libc::c_int)
                                 + (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
-                                    * *Gains_Q16.offset(1 as libc::c_int as isize) as libc::c_long
-                                    >> 16 as libc::c_int)
-                                    as opus_int32
+                                    * *Gains_Q16.offset(1 as libc::c_int as isize)
+                                        as libc::c_long >> 16 as libc::c_int) as opus_int32
                                     & 1 as libc::c_int)
                         } else {
                             (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
-                                * *Gains_Q16.offset(1 as libc::c_int as isize) as libc::c_long
-                                >> 16 as libc::c_int) as opus_int32
-                                >> 14 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int
+                                * *Gains_Q16.offset(1 as libc::c_int as isize)
+                                    as libc::c_long >> 16 as libc::c_int) as opus_int32
+                                >> 14 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                                 >> 1 as libc::c_int
-                        }) > 0x7fff as libc::c_int
+                        }) > silk_int16_MAX
                         {
-                            0x7fff as libc::c_int
+                            silk_int16_MAX
                         } else if (if 14 as libc::c_int == 1 as libc::c_int {
                             (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
-                                * *Gains_Q16.offset(1 as libc::c_int as isize) as libc::c_long
-                                >> 16 as libc::c_int) as opus_int32
+                                * *Gains_Q16.offset(1 as libc::c_int as isize)
+                                    as libc::c_long >> 16 as libc::c_int) as opus_int32
                                 >> 1 as libc::c_int)
                                 + (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
-                                    * *Gains_Q16.offset(1 as libc::c_int as isize) as libc::c_long
-                                    >> 16 as libc::c_int)
-                                    as opus_int32
+                                    * *Gains_Q16.offset(1 as libc::c_int as isize)
+                                        as libc::c_long >> 16 as libc::c_int) as opus_int32
                                     & 1 as libc::c_int)
                         } else {
                             (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
-                                * *Gains_Q16.offset(1 as libc::c_int as isize) as libc::c_long
-                                >> 16 as libc::c_int) as opus_int32
-                                >> 14 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int
+                                * *Gains_Q16.offset(1 as libc::c_int as isize)
+                                    as libc::c_long >> 16 as libc::c_int) as opus_int32
+                                >> 14 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                                 >> 1 as libc::c_int
-                        }) < 0x8000 as libc::c_int as opus_int16 as libc::c_int
+                        }) < silk_int16_MIN
                         {
-                            0x8000 as libc::c_int as opus_int16 as libc::c_int
+                            silk_int16_MIN
                         } else if 14 as libc::c_int == 1 as libc::c_int {
                             (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
-                                * *Gains_Q16.offset(1 as libc::c_int as isize) as libc::c_long
-                                >> 16 as libc::c_int) as opus_int32
+                                * *Gains_Q16.offset(1 as libc::c_int as isize)
+                                    as libc::c_long >> 16 as libc::c_int) as opus_int32
                                 >> 1 as libc::c_int)
                                 + (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
-                                    * *Gains_Q16.offset(1 as libc::c_int as isize) as libc::c_long
-                                    >> 16 as libc::c_int)
-                                    as opus_int32
+                                    * *Gains_Q16.offset(1 as libc::c_int as isize)
+                                        as libc::c_long >> 16 as libc::c_int) as opus_int32
                                     & 1 as libc::c_int)
                         } else {
                             (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
-                                * *Gains_Q16.offset(1 as libc::c_int as isize) as libc::c_long
-                                >> 16 as libc::c_int) as opus_int32
-                                >> 14 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int
+                                * *Gains_Q16.offset(1 as libc::c_int as isize)
+                                    as libc::c_long >> 16 as libc::c_int) as opus_int32
+                                >> 14 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                                 >> 1 as libc::c_int
-                        })
-                            as opus_int16;
-                        (*NSQ).sLTP_shp_Q14
-                            [((*NSQ).sLTP_shp_buf_idx - decisionDelay + i) as usize] =
-                            (*psDD).Shape_Q14[last_smple_idx as usize];
+                        }) as opus_int16;
+                        (*NSQ)
+                            .sLTP_shp_Q14[((*NSQ).sLTP_shp_buf_idx - decisionDelay + i)
+                            as usize] = (*psDD).Shape_Q14[last_smple_idx as usize];
                         i += 1;
                     }
                     subfr = 0 as libc::c_int;
                 }
-                start_idx = (*psEncC).ltp_mem_length
-                    - lag
-                    - (*psEncC).predictLPCOrder
-                    - 5 as libc::c_int / 2 as libc::c_int;
+                start_idx = (*psEncC).ltp_mem_length - lag - (*psEncC).predictLPCOrder
+                    - LTP_ORDER / 2 as libc::c_int;
                 if !(start_idx > 0 as libc::c_int) {
                     celt_fatal(
-                        b"assertion failed: start_idx > 0\0" as *const u8 as *const libc::c_char,
+                        b"assertion failed: start_idx > 0\0" as *const u8
+                            as *const libc::c_char,
                         b"silk/NSQ_del_dec.c\0" as *const u8 as *const libc::c_char,
                         253 as libc::c_int,
                     );
@@ -902,84 +978,84 @@ pub unsafe extern "C" fn silk_NSQ_del_dec_c(
         }
         k += 1;
     }
-    psDD = &mut *psDelDec.as_mut_ptr().offset(Winner_ind as isize) as *mut NSQ_del_dec_struct;
+    psDD = &mut *psDelDec.as_mut_ptr().offset(Winner_ind as isize)
+        as *mut NSQ_del_dec_struct;
     (*psIndices).Seed = (*psDD).SeedInit as opus_int8;
     last_smple_idx = smpl_buf_idx + decisionDelay;
-    Gain_Q10 =
-        *Gains_Q16.offset(((*psEncC).nb_subfr - 1 as libc::c_int) as isize) >> 6 as libc::c_int;
+    Gain_Q10 = *Gains_Q16.offset(((*psEncC).nb_subfr - 1 as libc::c_int) as isize)
+        >> 6 as libc::c_int;
     i = 0 as libc::c_int;
     while i < decisionDelay {
-        last_smple_idx = (last_smple_idx - 1 as libc::c_int) % 40 as libc::c_int;
+        last_smple_idx = (last_smple_idx - 1 as libc::c_int) % DECISION_DELAY;
         if last_smple_idx < 0 as libc::c_int {
-            last_smple_idx += 40 as libc::c_int;
+            last_smple_idx += DECISION_DELAY;
         }
-        *pulses.offset((i - decisionDelay) as isize) = (if 10 as libc::c_int == 1 as libc::c_int {
+        *pulses
+            .offset(
+                (i - decisionDelay) as isize,
+            ) = (if 10 as libc::c_int == 1 as libc::c_int {
             ((*psDD).Q_Q10[last_smple_idx as usize] >> 1 as libc::c_int)
                 + ((*psDD).Q_Q10[last_smple_idx as usize] & 1 as libc::c_int)
         } else {
-            ((*psDD).Q_Q10[last_smple_idx as usize] >> 10 as libc::c_int - 1 as libc::c_int)
-                + 1 as libc::c_int
+            ((*psDD).Q_Q10[last_smple_idx as usize]
+                >> 10 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                 >> 1 as libc::c_int
         }) as opus_int8;
-        *pxq.offset((i - decisionDelay) as isize) = (if (if 8 as libc::c_int == 1 as libc::c_int {
-            (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64 * Gain_Q10 as libc::c_long
-                >> 16 as libc::c_int) as opus_int32
+        *pxq
+            .offset(
+                (i - decisionDelay) as isize,
+            ) = (if (if 8 as libc::c_int == 1 as libc::c_int {
+            (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
+                * Gain_Q10 as libc::c_long >> 16 as libc::c_int) as opus_int32
                 >> 1 as libc::c_int)
                 + (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
-                    * Gain_Q10 as libc::c_long
-                    >> 16 as libc::c_int) as opus_int32
+                    * Gain_Q10 as libc::c_long >> 16 as libc::c_int) as opus_int32
                     & 1 as libc::c_int)
         } else {
-            (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64 * Gain_Q10 as libc::c_long
-                >> 16 as libc::c_int) as opus_int32
-                >> 8 as libc::c_int - 1 as libc::c_int)
-                + 1 as libc::c_int
+            (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
+                * Gain_Q10 as libc::c_long >> 16 as libc::c_int) as opus_int32
+                >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                 >> 1 as libc::c_int
-        }) > 0x7fff as libc::c_int
+        }) > silk_int16_MAX
         {
-            0x7fff as libc::c_int
+            silk_int16_MAX
         } else if (if 8 as libc::c_int == 1 as libc::c_int {
-            (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64 * Gain_Q10 as libc::c_long
-                >> 16 as libc::c_int) as opus_int32
+            (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
+                * Gain_Q10 as libc::c_long >> 16 as libc::c_int) as opus_int32
                 >> 1 as libc::c_int)
                 + (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
-                    * Gain_Q10 as libc::c_long
-                    >> 16 as libc::c_int) as opus_int32
+                    * Gain_Q10 as libc::c_long >> 16 as libc::c_int) as opus_int32
                     & 1 as libc::c_int)
         } else {
-            (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64 * Gain_Q10 as libc::c_long
-                >> 16 as libc::c_int) as opus_int32
-                >> 8 as libc::c_int - 1 as libc::c_int)
-                + 1 as libc::c_int
+            (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
+                * Gain_Q10 as libc::c_long >> 16 as libc::c_int) as opus_int32
+                >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                 >> 1 as libc::c_int
-        }) < 0x8000 as libc::c_int as opus_int16 as libc::c_int
+        }) < silk_int16_MIN
         {
-            0x8000 as libc::c_int as opus_int16 as libc::c_int
+            silk_int16_MIN
         } else if 8 as libc::c_int == 1 as libc::c_int {
-            (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64 * Gain_Q10 as libc::c_long
-                >> 16 as libc::c_int) as opus_int32
+            (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
+                * Gain_Q10 as libc::c_long >> 16 as libc::c_int) as opus_int32
                 >> 1 as libc::c_int)
                 + (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
-                    * Gain_Q10 as libc::c_long
-                    >> 16 as libc::c_int) as opus_int32
+                    * Gain_Q10 as libc::c_long >> 16 as libc::c_int) as opus_int32
                     & 1 as libc::c_int)
         } else {
-            (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64 * Gain_Q10 as libc::c_long
-                >> 16 as libc::c_int) as opus_int32
-                >> 8 as libc::c_int - 1 as libc::c_int)
-                + 1 as libc::c_int
+            (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
+                * Gain_Q10 as libc::c_long >> 16 as libc::c_int) as opus_int32
+                >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                 >> 1 as libc::c_int
         }) as opus_int16;
-        (*NSQ).sLTP_shp_Q14[((*NSQ).sLTP_shp_buf_idx - decisionDelay + i) as usize] =
-            (*psDD).Shape_Q14[last_smple_idx as usize];
+        (*NSQ)
+            .sLTP_shp_Q14[((*NSQ).sLTP_shp_buf_idx - decisionDelay + i)
+            as usize] = (*psDD).Shape_Q14[last_smple_idx as usize];
         i += 1;
     }
     memcpy(
         ((*NSQ).sLPC_Q14).as_mut_ptr() as *mut libc::c_void,
-        &mut *((*psDD).sLPC_Q14)
-            .as_mut_ptr()
-            .offset((*psEncC).subfr_length as isize) as *mut opus_int32
-            as *const libc::c_void,
+        &mut *((*psDD).sLPC_Q14).as_mut_ptr().offset((*psEncC).subfr_length as isize)
+            as *mut opus_int32 as *const libc::c_void,
         (16 as libc::c_int as libc::c_ulong)
             .wrapping_mul(::core::mem::size_of::<opus_int32>() as libc::c_ulong),
     );
@@ -993,19 +1069,15 @@ pub unsafe extern "C" fn silk_NSQ_del_dec_c(
     (*NSQ).lagPrev = *pitchL.offset(((*psEncC).nb_subfr - 1 as libc::c_int) as isize);
     memmove(
         ((*NSQ).xq).as_mut_ptr() as *mut libc::c_void,
-        &mut *((*NSQ).xq)
-            .as_mut_ptr()
-            .offset((*psEncC).frame_length as isize) as *mut opus_int16
-            as *const libc::c_void,
+        &mut *((*NSQ).xq).as_mut_ptr().offset((*psEncC).frame_length as isize)
+            as *mut opus_int16 as *const libc::c_void,
         ((*psEncC).ltp_mem_length as libc::c_ulong)
             .wrapping_mul(::core::mem::size_of::<opus_int16>() as libc::c_ulong),
     );
     memmove(
         ((*NSQ).sLTP_shp_Q14).as_mut_ptr() as *mut libc::c_void,
-        &mut *((*NSQ).sLTP_shp_Q14)
-            .as_mut_ptr()
-            .offset((*psEncC).frame_length as isize) as *mut opus_int32
-            as *const libc::c_void,
+        &mut *((*NSQ).sLTP_shp_Q14).as_mut_ptr().offset((*psEncC).frame_length as isize)
+            as *mut opus_int32 as *const libc::c_void,
         ((*psEncC).ltp_mem_length as libc::c_ulong)
             .wrapping_mul(::core::mem::size_of::<opus_int32>() as libc::c_ulong),
     );
@@ -1077,13 +1149,14 @@ unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
     let mut psSS: *mut NSQ_sample_struct = 0 as *mut NSQ_sample_struct;
     if !(nStatesDelayedDecision > 0 as libc::c_int) {
         celt_fatal(
-            b"assertion failed: nStatesDelayedDecision > 0\0" as *const u8 as *const libc::c_char,
+            b"assertion failed: nStatesDelayedDecision > 0\0" as *const u8
+                as *const libc::c_char,
             b"silk/NSQ_del_dec.c\0" as *const u8 as *const libc::c_char,
             364 as libc::c_int,
         );
     }
     let vla = nStatesDelayedDecision as usize;
-    let mut psSampleState: Vec<NSQ_sample_pair> = ::std::vec::from_elem(
+    let mut psSampleState: Vec::<NSQ_sample_pair> = ::std::vec::from_elem(
         [NSQ_sample_struct {
             Q_Q10: 0,
             RD_Q10: 0,
@@ -1097,15 +1170,17 @@ unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
     );
     shp_lag_ptr = &mut *((*NSQ).sLTP_shp_Q14)
         .as_mut_ptr()
-        .offset(((*NSQ).sLTP_shp_buf_idx - lag + 3 as libc::c_int / 2 as libc::c_int) as isize)
-        as *mut opus_int32;
+        .offset(
+            ((*NSQ).sLTP_shp_buf_idx - lag + HARM_SHAPE_FIR_TAPS / 2 as libc::c_int)
+                as isize,
+        ) as *mut opus_int32;
     pred_lag_ptr = &mut *sLTP_Q15
-        .offset(((*NSQ).sLTP_buf_idx - lag + 5 as libc::c_int / 2 as libc::c_int) as isize)
+        .offset(((*NSQ).sLTP_buf_idx - lag + LTP_ORDER / 2 as libc::c_int) as isize)
         as *mut opus_int32;
     Gain_Q10 = Gain_Q16 >> 6 as libc::c_int;
     i = 0 as libc::c_int;
     while i < length {
-        if signalType == 2 as libc::c_int {
+        if signalType == TYPE_VOICED {
             LTP_pred_Q14 = 2 as libc::c_int;
             LTP_pred_Q14 = (LTP_pred_Q14 as libc::c_long
                 + (*pred_lag_ptr.offset(0 as libc::c_int as isize) as libc::c_long
@@ -1127,23 +1202,23 @@ unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
                 + (*pred_lag_ptr.offset(-(4 as libc::c_int) as isize) as libc::c_long
                     * *b_Q14.offset(4 as libc::c_int as isize) as opus_int64
                     >> 16 as libc::c_int)) as opus_int32;
-            LTP_pred_Q14 = ((LTP_pred_Q14 as opus_uint32) << 1 as libc::c_int) as opus_int32;
+            LTP_pred_Q14 = ((LTP_pred_Q14 as opus_uint32) << 1 as libc::c_int)
+                as opus_int32;
             pred_lag_ptr = pred_lag_ptr.offset(1);
         } else {
             LTP_pred_Q14 = 0 as libc::c_int;
         }
         if lag > 0 as libc::c_int {
             n_LTP_Q14 = ((*shp_lag_ptr.offset(0 as libc::c_int as isize)
-                + *shp_lag_ptr.offset(-(2 as libc::c_int) as isize))
-                as libc::c_long
+                + *shp_lag_ptr.offset(-(2 as libc::c_int) as isize)) as libc::c_long
                 * HarmShapeFIRPacked_Q14 as opus_int16 as opus_int64
                 >> 16 as libc::c_int) as opus_int32;
             n_LTP_Q14 = (n_LTP_Q14 as libc::c_long
                 + (*shp_lag_ptr.offset(-(1 as libc::c_int) as isize) as libc::c_long
                     * (HarmShapeFIRPacked_Q14 as opus_int64 >> 16 as libc::c_int)
                     >> 16 as libc::c_int)) as opus_int32;
-            n_LTP_Q14 =
-                LTP_pred_Q14 - ((n_LTP_Q14 as opus_uint32) << 2 as libc::c_int) as opus_int32;
+            n_LTP_Q14 = LTP_pred_Q14
+                - ((n_LTP_Q14 as opus_uint32) << 2 as libc::c_int) as opus_int32;
             shp_lag_ptr = shp_lag_ptr.offset(1);
         } else {
             n_LTP_Q14 = 0 as libc::c_int;
@@ -1152,16 +1227,23 @@ unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
         while k < nStatesDelayedDecision {
             psDD = &mut *psDelDec.offset(k as isize) as *mut NSQ_del_dec_struct;
             psSS = (*psSampleState.as_mut_ptr().offset(k as isize)).as_mut_ptr();
-            (*psDD).Seed = (907633515 as libc::c_int as opus_uint32).wrapping_add(
-                ((*psDD).Seed as opus_uint32).wrapping_mul(196314165 as libc::c_int as opus_uint32),
-            ) as opus_int32;
+            (*psDD)
+                .Seed = (907633515 as libc::c_int as opus_uint32)
+                .wrapping_add(
+                    ((*psDD).Seed as opus_uint32)
+                        .wrapping_mul(196314165 as libc::c_int as opus_uint32),
+                ) as opus_int32;
             psLPC_Q14 = &mut *((*psDD).sLPC_Q14)
                 .as_mut_ptr()
-                .offset((16 as libc::c_int - 1 as libc::c_int + i) as isize)
+                .offset((NSQ_LPC_BUF_LENGTH - 1 as libc::c_int + i) as isize)
                 as *mut opus_int32;
-            LPC_pred_Q14 =
-                silk_noise_shape_quantizer_short_prediction_c(psLPC_Q14, a_Q12, predictLPCOrder);
-            LPC_pred_Q14 = ((LPC_pred_Q14 as opus_uint32) << 4 as libc::c_int) as opus_int32;
+            LPC_pred_Q14 = silk_noise_shape_quantizer_short_prediction_c(
+                psLPC_Q14,
+                a_Q12,
+                predictLPCOrder,
+            );
+            LPC_pred_Q14 = ((LPC_pred_Q14 as opus_uint32) << 4 as libc::c_int)
+                as opus_int32;
             if !(shapingLPCOrder & 1 as libc::c_int == 0 as libc::c_int) {
                 celt_fatal(
                     b"assertion failed: ( shapingLPCOrder & 1 ) == 0\0" as *const u8
@@ -1172,12 +1254,12 @@ unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
             }
             tmp2 = ((*psDD).Diff_Q14 as libc::c_long
                 + ((*psDD).sAR2_Q14[0 as libc::c_int as usize] as libc::c_long
-                    * warping_Q16 as opus_int16 as opus_int64
-                    >> 16 as libc::c_int)) as opus_int32;
+                    * warping_Q16 as opus_int16 as opus_int64 >> 16 as libc::c_int))
+                as opus_int32;
             tmp1 = ((*psDD).sAR2_Q14[0 as libc::c_int as usize] as libc::c_long
                 + (((*psDD).sAR2_Q14[1 as libc::c_int as usize] - tmp2) as libc::c_long
-                    * warping_Q16 as opus_int16 as opus_int64
-                    >> 16 as libc::c_int)) as opus_int32;
+                    * warping_Q16 as opus_int16 as opus_int64 >> 16 as libc::c_int))
+                as opus_int32;
             (*psDD).sAR2_Q14[0 as libc::c_int as usize] = tmp2;
             n_AR_Q14 = shapingLPCOrder >> 1 as libc::c_int;
             n_AR_Q14 = (n_AR_Q14 as libc::c_long
@@ -1187,21 +1269,22 @@ unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
             j = 2 as libc::c_int;
             while j < shapingLPCOrder {
                 tmp2 = ((*psDD).sAR2_Q14[(j - 1 as libc::c_int) as usize] as libc::c_long
-                    + (((*psDD).sAR2_Q14[(j + 0 as libc::c_int) as usize] - tmp1) as libc::c_long
-                        * warping_Q16 as opus_int16 as opus_int64
+                    + (((*psDD).sAR2_Q14[(j + 0 as libc::c_int) as usize] - tmp1)
+                        as libc::c_long * warping_Q16 as opus_int16 as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 (*psDD).sAR2_Q14[(j - 1 as libc::c_int) as usize] = tmp1;
                 n_AR_Q14 = (n_AR_Q14 as libc::c_long
                     + (tmp1 as libc::c_long
-                        * *AR_shp_Q13.offset((j - 1 as libc::c_int) as isize) as opus_int64
-                        >> 16 as libc::c_int)) as opus_int32;
+                        * *AR_shp_Q13.offset((j - 1 as libc::c_int) as isize)
+                            as opus_int64 >> 16 as libc::c_int)) as opus_int32;
                 tmp1 = ((*psDD).sAR2_Q14[(j + 0 as libc::c_int) as usize] as libc::c_long
-                    + (((*psDD).sAR2_Q14[(j + 1 as libc::c_int) as usize] - tmp2) as libc::c_long
-                        * warping_Q16 as opus_int16 as opus_int64
+                    + (((*psDD).sAR2_Q14[(j + 1 as libc::c_int) as usize] - tmp2)
+                        as libc::c_long * warping_Q16 as opus_int16 as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 (*psDD).sAR2_Q14[(j + 0 as libc::c_int) as usize] = tmp2;
                 n_AR_Q14 = (n_AR_Q14 as libc::c_long
-                    + (tmp2 as libc::c_long * *AR_shp_Q13.offset(j as isize) as opus_int64
+                    + (tmp2 as libc::c_long
+                        * *AR_shp_Q13.offset(j as isize) as opus_int64
                         >> 16 as libc::c_int)) as opus_int32;
                 j += 2 as libc::c_int;
             }
@@ -1209,16 +1292,16 @@ unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
             n_AR_Q14 = (n_AR_Q14 as libc::c_long
                 + (tmp1 as libc::c_long
                     * *AR_shp_Q13.offset((shapingLPCOrder - 1 as libc::c_int) as isize)
-                        as opus_int64
-                    >> 16 as libc::c_int)) as opus_int32;
+                        as opus_int64 >> 16 as libc::c_int)) as opus_int32;
             n_AR_Q14 = ((n_AR_Q14 as opus_uint32) << 1 as libc::c_int) as opus_int32;
             n_AR_Q14 = (n_AR_Q14 as libc::c_long
-                + ((*psDD).LF_AR_Q14 as libc::c_long * Tilt_Q14 as opus_int16 as opus_int64
-                    >> 16 as libc::c_int)) as opus_int32;
+                + ((*psDD).LF_AR_Q14 as libc::c_long
+                    * Tilt_Q14 as opus_int16 as opus_int64 >> 16 as libc::c_int))
+                as opus_int32;
             n_AR_Q14 = ((n_AR_Q14 as opus_uint32) << 2 as libc::c_int) as opus_int32;
             n_LF_Q14 = ((*psDD).Shape_Q14[*smpl_buf_idx as usize] as libc::c_long
-                * LF_shp_Q14 as opus_int16 as opus_int64
-                >> 16 as libc::c_int) as opus_int32;
+                * LF_shp_Q14 as opus_int16 as opus_int64 >> 16 as libc::c_int)
+                as opus_int32;
             n_LF_Q14 = (n_LF_Q14 as libc::c_long
                 + ((*psDD).LF_AR_Q14 as libc::c_long
                     * (LF_shp_Q14 as opus_int64 >> 16 as libc::c_int)
@@ -1230,7 +1313,8 @@ unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
             tmp1 = if 4 as libc::c_int == 1 as libc::c_int {
                 (tmp1 >> 1 as libc::c_int) + (tmp1 & 1 as libc::c_int)
             } else {
-                (tmp1 >> 4 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int >> 1 as libc::c_int
+                (tmp1 >> 4 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+                    >> 1 as libc::c_int
             };
             r_Q10 = *x_Q10.offset(i as isize) - tmp1;
             if (*psDD).Seed < 0 as libc::c_int {
@@ -1256,8 +1340,8 @@ unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
             q1_Q10 = r_Q10 - offset_Q10;
             q1_Q0 = q1_Q10 >> 10 as libc::c_int;
             if Lambda_Q10 > 2048 as libc::c_int {
-                let mut rdo_offset: libc::c_int =
-                    Lambda_Q10 / 2 as libc::c_int - 512 as libc::c_int;
+                let mut rdo_offset: libc::c_int = Lambda_Q10 / 2 as libc::c_int
+                    - 512 as libc::c_int;
                 if q1_Q10 > rdo_offset {
                     q1_Q0 = q1_Q10 - rdo_offset >> 10 as libc::c_int;
                 } else if q1_Q10 < -rdo_offset {
@@ -1269,37 +1353,37 @@ unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
                 }
             }
             if q1_Q0 > 0 as libc::c_int {
-                q1_Q10 =
-                    ((q1_Q0 as opus_uint32) << 10 as libc::c_int) as opus_int32 - 80 as libc::c_int;
+                q1_Q10 = ((q1_Q0 as opus_uint32) << 10 as libc::c_int) as opus_int32
+                    - 80 as libc::c_int;
                 q1_Q10 = q1_Q10 + offset_Q10;
                 q2_Q10 = q1_Q10 + 1024 as libc::c_int;
-                rd1_Q10 =
-                    q1_Q10 as opus_int16 as opus_int32 * Lambda_Q10 as opus_int16 as opus_int32;
-                rd2_Q10 =
-                    q2_Q10 as opus_int16 as opus_int32 * Lambda_Q10 as opus_int16 as opus_int32;
+                rd1_Q10 = q1_Q10 as opus_int16 as opus_int32
+                    * Lambda_Q10 as opus_int16 as opus_int32;
+                rd2_Q10 = q2_Q10 as opus_int16 as opus_int32
+                    * Lambda_Q10 as opus_int16 as opus_int32;
             } else if q1_Q0 == 0 as libc::c_int {
                 q1_Q10 = offset_Q10;
                 q2_Q10 = q1_Q10 + (1024 as libc::c_int - 80 as libc::c_int);
-                rd1_Q10 =
-                    q1_Q10 as opus_int16 as opus_int32 * Lambda_Q10 as opus_int16 as opus_int32;
-                rd2_Q10 =
-                    q2_Q10 as opus_int16 as opus_int32 * Lambda_Q10 as opus_int16 as opus_int32;
+                rd1_Q10 = q1_Q10 as opus_int16 as opus_int32
+                    * Lambda_Q10 as opus_int16 as opus_int32;
+                rd2_Q10 = q2_Q10 as opus_int16 as opus_int32
+                    * Lambda_Q10 as opus_int16 as opus_int32;
             } else if q1_Q0 == -(1 as libc::c_int) {
                 q2_Q10 = offset_Q10;
                 q1_Q10 = q2_Q10 - (1024 as libc::c_int - 80 as libc::c_int);
-                rd1_Q10 =
-                    -q1_Q10 as opus_int16 as opus_int32 * Lambda_Q10 as opus_int16 as opus_int32;
-                rd2_Q10 =
-                    q2_Q10 as opus_int16 as opus_int32 * Lambda_Q10 as opus_int16 as opus_int32;
+                rd1_Q10 = -q1_Q10 as opus_int16 as opus_int32
+                    * Lambda_Q10 as opus_int16 as opus_int32;
+                rd2_Q10 = q2_Q10 as opus_int16 as opus_int32
+                    * Lambda_Q10 as opus_int16 as opus_int32;
             } else {
-                q1_Q10 =
-                    ((q1_Q0 as opus_uint32) << 10 as libc::c_int) as opus_int32 + 80 as libc::c_int;
+                q1_Q10 = ((q1_Q0 as opus_uint32) << 10 as libc::c_int) as opus_int32
+                    + 80 as libc::c_int;
                 q1_Q10 = q1_Q10 + offset_Q10;
                 q2_Q10 = q1_Q10 + 1024 as libc::c_int;
-                rd1_Q10 =
-                    -q1_Q10 as opus_int16 as opus_int32 * Lambda_Q10 as opus_int16 as opus_int32;
-                rd2_Q10 =
-                    -q2_Q10 as opus_int16 as opus_int32 * Lambda_Q10 as opus_int16 as opus_int32;
+                rd1_Q10 = -q1_Q10 as opus_int16 as opus_int32
+                    * Lambda_Q10 as opus_int16 as opus_int32;
+                rd2_Q10 = -q2_Q10 as opus_int16 as opus_int32
+                    * Lambda_Q10 as opus_int16 as opus_int32;
             }
             rr_Q10 = r_Q10 - q1_Q10;
             rd1_Q10 = rd1_Q10
@@ -1310,13 +1394,17 @@ unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
                 + rr_Q10 as opus_int16 as opus_int32 * rr_Q10 as opus_int16 as opus_int32
                 >> 10 as libc::c_int;
             if rd1_Q10 < rd2_Q10 {
-                (*psSS.offset(0 as libc::c_int as isize)).RD_Q10 = (*psDD).RD_Q10 + rd1_Q10;
-                (*psSS.offset(1 as libc::c_int as isize)).RD_Q10 = (*psDD).RD_Q10 + rd2_Q10;
+                (*psSS.offset(0 as libc::c_int as isize))
+                    .RD_Q10 = (*psDD).RD_Q10 + rd1_Q10;
+                (*psSS.offset(1 as libc::c_int as isize))
+                    .RD_Q10 = (*psDD).RD_Q10 + rd2_Q10;
                 (*psSS.offset(0 as libc::c_int as isize)).Q_Q10 = q1_Q10;
                 (*psSS.offset(1 as libc::c_int as isize)).Q_Q10 = q2_Q10;
             } else {
-                (*psSS.offset(0 as libc::c_int as isize)).RD_Q10 = (*psDD).RD_Q10 + rd2_Q10;
-                (*psSS.offset(1 as libc::c_int as isize)).RD_Q10 = (*psDD).RD_Q10 + rd1_Q10;
+                (*psSS.offset(0 as libc::c_int as isize))
+                    .RD_Q10 = (*psDD).RD_Q10 + rd2_Q10;
+                (*psSS.offset(1 as libc::c_int as isize))
+                    .RD_Q10 = (*psDD).RD_Q10 + rd1_Q10;
                 (*psSS.offset(0 as libc::c_int as isize)).Q_Q10 = q2_Q10;
                 (*psSS.offset(1 as libc::c_int as isize)).Q_Q10 = q1_Q10;
             }
@@ -1327,10 +1415,14 @@ unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
             }
             LPC_exc_Q14 = exc_Q14 + LTP_pred_Q14;
             xq_Q14 = LPC_exc_Q14 + LPC_pred_Q14;
-            (*psSS.offset(0 as libc::c_int as isize)).Diff_Q14 = xq_Q14
-                - ((*x_Q10.offset(i as isize) as opus_uint32) << 4 as libc::c_int) as opus_int32;
-            sLF_AR_shp_Q14 = (*psSS.offset(0 as libc::c_int as isize)).Diff_Q14 - n_AR_Q14;
-            (*psSS.offset(0 as libc::c_int as isize)).sLTP_shp_Q14 = sLF_AR_shp_Q14 - n_LF_Q14;
+            (*psSS.offset(0 as libc::c_int as isize))
+                .Diff_Q14 = xq_Q14
+                - ((*x_Q10.offset(i as isize) as opus_uint32) << 4 as libc::c_int)
+                    as opus_int32;
+            sLF_AR_shp_Q14 = (*psSS.offset(0 as libc::c_int as isize)).Diff_Q14
+                - n_AR_Q14;
+            (*psSS.offset(0 as libc::c_int as isize))
+                .sLTP_shp_Q14 = sLF_AR_shp_Q14 - n_LF_Q14;
             (*psSS.offset(0 as libc::c_int as isize)).LF_AR_Q14 = sLF_AR_shp_Q14;
             (*psSS.offset(0 as libc::c_int as isize)).LPC_exc_Q14 = LPC_exc_Q14;
             (*psSS.offset(0 as libc::c_int as isize)).xq_Q14 = xq_Q14;
@@ -1341,79 +1433,99 @@ unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
             }
             LPC_exc_Q14 = exc_Q14 + LTP_pred_Q14;
             xq_Q14 = LPC_exc_Q14 + LPC_pred_Q14;
-            (*psSS.offset(1 as libc::c_int as isize)).Diff_Q14 = xq_Q14
-                - ((*x_Q10.offset(i as isize) as opus_uint32) << 4 as libc::c_int) as opus_int32;
-            sLF_AR_shp_Q14 = (*psSS.offset(1 as libc::c_int as isize)).Diff_Q14 - n_AR_Q14;
-            (*psSS.offset(1 as libc::c_int as isize)).sLTP_shp_Q14 = sLF_AR_shp_Q14 - n_LF_Q14;
+            (*psSS.offset(1 as libc::c_int as isize))
+                .Diff_Q14 = xq_Q14
+                - ((*x_Q10.offset(i as isize) as opus_uint32) << 4 as libc::c_int)
+                    as opus_int32;
+            sLF_AR_shp_Q14 = (*psSS.offset(1 as libc::c_int as isize)).Diff_Q14
+                - n_AR_Q14;
+            (*psSS.offset(1 as libc::c_int as isize))
+                .sLTP_shp_Q14 = sLF_AR_shp_Q14 - n_LF_Q14;
             (*psSS.offset(1 as libc::c_int as isize)).LF_AR_Q14 = sLF_AR_shp_Q14;
             (*psSS.offset(1 as libc::c_int as isize)).LPC_exc_Q14 = LPC_exc_Q14;
             (*psSS.offset(1 as libc::c_int as isize)).xq_Q14 = xq_Q14;
             k += 1;
         }
-        *smpl_buf_idx = (*smpl_buf_idx - 1 as libc::c_int) % 40 as libc::c_int;
+        *smpl_buf_idx = (*smpl_buf_idx - 1 as libc::c_int) % DECISION_DELAY;
         if *smpl_buf_idx < 0 as libc::c_int {
-            *smpl_buf_idx += 40 as libc::c_int;
+            *smpl_buf_idx += DECISION_DELAY;
         }
-        last_smple_idx = (*smpl_buf_idx + decisionDelay) % 40 as libc::c_int;
-        RDmin_Q10 = (*psSampleState.as_mut_ptr().offset(0 as libc::c_int as isize))
-            [0 as libc::c_int as usize]
+        last_smple_idx = (*smpl_buf_idx + decisionDelay) % DECISION_DELAY;
+        RDmin_Q10 = (*psSampleState
+            .as_mut_ptr()
+            .offset(0 as libc::c_int as isize))[0 as libc::c_int as usize]
             .RD_Q10;
         Winner_ind = 0 as libc::c_int;
         k = 1 as libc::c_int;
         while k < nStatesDelayedDecision {
-            if (*psSampleState.as_mut_ptr().offset(k as isize))[0 as libc::c_int as usize].RD_Q10
-                < RDmin_Q10
+            if (*psSampleState
+                .as_mut_ptr()
+                .offset(k as isize))[0 as libc::c_int as usize]
+                .RD_Q10 < RDmin_Q10
             {
-                RDmin_Q10 = (*psSampleState.as_mut_ptr().offset(k as isize))
-                    [0 as libc::c_int as usize]
+                RDmin_Q10 = (*psSampleState
+                    .as_mut_ptr()
+                    .offset(k as isize))[0 as libc::c_int as usize]
                     .RD_Q10;
                 Winner_ind = k;
             }
             k += 1;
         }
-        Winner_rand_state =
-            (*psDelDec.offset(Winner_ind as isize)).RandState[last_smple_idx as usize];
+        Winner_rand_state = (*psDelDec.offset(Winner_ind as isize))
+            .RandState[last_smple_idx as usize];
         k = 0 as libc::c_int;
         while k < nStatesDelayedDecision {
             if (*psDelDec.offset(k as isize)).RandState[last_smple_idx as usize]
                 != Winner_rand_state
             {
-                (*psSampleState.as_mut_ptr().offset(k as isize))[0 as libc::c_int as usize]
-                    .RD_Q10 = (*psSampleState.as_mut_ptr().offset(k as isize))
-                    [0 as libc::c_int as usize]
-                    .RD_Q10
-                    + (0x7fffffff as libc::c_int >> 4 as libc::c_int);
-                (*psSampleState.as_mut_ptr().offset(k as isize))[1 as libc::c_int as usize]
-                    .RD_Q10 = (*psSampleState.as_mut_ptr().offset(k as isize))
-                    [1 as libc::c_int as usize]
-                    .RD_Q10
-                    + (0x7fffffff as libc::c_int >> 4 as libc::c_int);
+                (*psSampleState
+                    .as_mut_ptr()
+                    .offset(k as isize))[0 as libc::c_int as usize]
+                    .RD_Q10 = (*psSampleState
+                    .as_mut_ptr()
+                    .offset(k as isize))[0 as libc::c_int as usize]
+                    .RD_Q10 + (0x7fffffff as libc::c_int >> 4 as libc::c_int);
+                (*psSampleState
+                    .as_mut_ptr()
+                    .offset(k as isize))[1 as libc::c_int as usize]
+                    .RD_Q10 = (*psSampleState
+                    .as_mut_ptr()
+                    .offset(k as isize))[1 as libc::c_int as usize]
+                    .RD_Q10 + (0x7fffffff as libc::c_int >> 4 as libc::c_int);
             }
             k += 1;
         }
-        RDmax_Q10 = (*psSampleState.as_mut_ptr().offset(0 as libc::c_int as isize))
-            [0 as libc::c_int as usize]
+        RDmax_Q10 = (*psSampleState
+            .as_mut_ptr()
+            .offset(0 as libc::c_int as isize))[0 as libc::c_int as usize]
             .RD_Q10;
-        RDmin_Q10 = (*psSampleState.as_mut_ptr().offset(0 as libc::c_int as isize))
-            [1 as libc::c_int as usize]
+        RDmin_Q10 = (*psSampleState
+            .as_mut_ptr()
+            .offset(0 as libc::c_int as isize))[1 as libc::c_int as usize]
             .RD_Q10;
         RDmax_ind = 0 as libc::c_int;
         RDmin_ind = 0 as libc::c_int;
         k = 1 as libc::c_int;
         while k < nStatesDelayedDecision {
-            if (*psSampleState.as_mut_ptr().offset(k as isize))[0 as libc::c_int as usize].RD_Q10
-                > RDmax_Q10
+            if (*psSampleState
+                .as_mut_ptr()
+                .offset(k as isize))[0 as libc::c_int as usize]
+                .RD_Q10 > RDmax_Q10
             {
-                RDmax_Q10 = (*psSampleState.as_mut_ptr().offset(k as isize))
-                    [0 as libc::c_int as usize]
+                RDmax_Q10 = (*psSampleState
+                    .as_mut_ptr()
+                    .offset(k as isize))[0 as libc::c_int as usize]
                     .RD_Q10;
                 RDmax_ind = k;
             }
-            if (*psSampleState.as_mut_ptr().offset(k as isize))[1 as libc::c_int as usize].RD_Q10
-                < RDmin_Q10
+            if (*psSampleState
+                .as_mut_ptr()
+                .offset(k as isize))[1 as libc::c_int as usize]
+                .RD_Q10 < RDmin_Q10
             {
-                RDmin_Q10 = (*psSampleState.as_mut_ptr().offset(k as isize))
-                    [1 as libc::c_int as usize]
+                RDmin_Q10 = (*psSampleState
+                    .as_mut_ptr()
+                    .offset(k as isize))[1 as libc::c_int as usize]
                     .RD_Q10;
                 RDmin_ind = k;
             }
@@ -1427,10 +1539,13 @@ unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
                 (&mut *psDelDec.offset(RDmin_ind as isize) as *mut NSQ_del_dec_struct
                     as *mut opus_int32)
                     .offset(i as isize) as *const libc::c_void,
-                (::core::mem::size_of::<NSQ_del_dec_struct>() as libc::c_ulong).wrapping_sub(
-                    (i as libc::c_ulong)
-                        .wrapping_mul(::core::mem::size_of::<opus_int32>() as libc::c_ulong),
-                ),
+                (::core::mem::size_of::<NSQ_del_dec_struct>() as libc::c_ulong)
+                    .wrapping_sub(
+                        (i as libc::c_ulong)
+                            .wrapping_mul(
+                                ::core::mem::size_of::<opus_int32>() as libc::c_ulong,
+                            ),
+                    ),
             );
             memcpy(
                 &mut *(*psSampleState.as_mut_ptr().offset(RDmax_ind as isize))
@@ -1446,75 +1561,76 @@ unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
         }
         psDD = &mut *psDelDec.offset(Winner_ind as isize) as *mut NSQ_del_dec_struct;
         if subfr > 0 as libc::c_int || i >= decisionDelay {
-            *pulses.offset((i - decisionDelay) as isize) = (if 10 as libc::c_int == 1 as libc::c_int
-            {
+            *pulses
+                .offset(
+                    (i - decisionDelay) as isize,
+                ) = (if 10 as libc::c_int == 1 as libc::c_int {
                 ((*psDD).Q_Q10[last_smple_idx as usize] >> 1 as libc::c_int)
                     + ((*psDD).Q_Q10[last_smple_idx as usize] & 1 as libc::c_int)
             } else {
-                ((*psDD).Q_Q10[last_smple_idx as usize] >> 10 as libc::c_int - 1 as libc::c_int)
-                    + 1 as libc::c_int
+                ((*psDD).Q_Q10[last_smple_idx as usize]
+                    >> 10 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                     >> 1 as libc::c_int
             }) as opus_int8;
-            *xq.offset((i - decisionDelay) as isize) = (if (if 8 as libc::c_int == 1 as libc::c_int
-            {
+            *xq
+                .offset(
+                    (i - decisionDelay) as isize,
+                ) = (if (if 8 as libc::c_int == 1 as libc::c_int {
                 (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
                     * *delayedGain_Q10.offset(last_smple_idx as isize) as libc::c_long
-                    >> 16 as libc::c_int) as opus_int32
-                    >> 1 as libc::c_int)
+                    >> 16 as libc::c_int) as opus_int32 >> 1 as libc::c_int)
                     + (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
-                        * *delayedGain_Q10.offset(last_smple_idx as isize) as libc::c_long
-                        >> 16 as libc::c_int) as opus_int32
+                        * *delayedGain_Q10.offset(last_smple_idx as isize)
+                            as libc::c_long >> 16 as libc::c_int) as opus_int32
                         & 1 as libc::c_int)
             } else {
                 (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
                     * *delayedGain_Q10.offset(last_smple_idx as isize) as libc::c_long
                     >> 16 as libc::c_int) as opus_int32
-                    >> 8 as libc::c_int - 1 as libc::c_int)
-                    + 1 as libc::c_int
+                    >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                     >> 1 as libc::c_int
-            }) > 0x7fff as libc::c_int
+            }) > silk_int16_MAX
             {
-                0x7fff as libc::c_int
+                silk_int16_MAX
             } else if (if 8 as libc::c_int == 1 as libc::c_int {
                 (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
                     * *delayedGain_Q10.offset(last_smple_idx as isize) as libc::c_long
-                    >> 16 as libc::c_int) as opus_int32
-                    >> 1 as libc::c_int)
+                    >> 16 as libc::c_int) as opus_int32 >> 1 as libc::c_int)
                     + (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
-                        * *delayedGain_Q10.offset(last_smple_idx as isize) as libc::c_long
-                        >> 16 as libc::c_int) as opus_int32
+                        * *delayedGain_Q10.offset(last_smple_idx as isize)
+                            as libc::c_long >> 16 as libc::c_int) as opus_int32
                         & 1 as libc::c_int)
             } else {
                 (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
                     * *delayedGain_Q10.offset(last_smple_idx as isize) as libc::c_long
                     >> 16 as libc::c_int) as opus_int32
-                    >> 8 as libc::c_int - 1 as libc::c_int)
-                    + 1 as libc::c_int
+                    >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                     >> 1 as libc::c_int
-            }) < 0x8000 as libc::c_int as opus_int16 as libc::c_int
+            }) < silk_int16_MIN
             {
-                0x8000 as libc::c_int as opus_int16 as libc::c_int
+                silk_int16_MIN
             } else if 8 as libc::c_int == 1 as libc::c_int {
                 (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
                     * *delayedGain_Q10.offset(last_smple_idx as isize) as libc::c_long
-                    >> 16 as libc::c_int) as opus_int32
-                    >> 1 as libc::c_int)
+                    >> 16 as libc::c_int) as opus_int32 >> 1 as libc::c_int)
                     + (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
-                        * *delayedGain_Q10.offset(last_smple_idx as isize) as libc::c_long
-                        >> 16 as libc::c_int) as opus_int32
+                        * *delayedGain_Q10.offset(last_smple_idx as isize)
+                            as libc::c_long >> 16 as libc::c_int) as opus_int32
                         & 1 as libc::c_int)
             } else {
                 (((*psDD).Xq_Q14[last_smple_idx as usize] as opus_int64
                     * *delayedGain_Q10.offset(last_smple_idx as isize) as libc::c_long
                     >> 16 as libc::c_int) as opus_int32
-                    >> 8 as libc::c_int - 1 as libc::c_int)
-                    + 1 as libc::c_int
+                    >> 8 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                     >> 1 as libc::c_int
             }) as opus_int16;
-            (*NSQ).sLTP_shp_Q14[((*NSQ).sLTP_shp_buf_idx - decisionDelay) as usize] =
-                (*psDD).Shape_Q14[last_smple_idx as usize];
-            *sLTP_Q15.offset(((*NSQ).sLTP_buf_idx - decisionDelay) as isize) =
-                (*psDD).Pred_Q15[last_smple_idx as usize];
+            (*NSQ)
+                .sLTP_shp_Q14[((*NSQ).sLTP_shp_buf_idx - decisionDelay)
+                as usize] = (*psDD).Shape_Q14[last_smple_idx as usize];
+            *sLTP_Q15
+                .offset(
+                    ((*NSQ).sLTP_buf_idx - decisionDelay) as isize,
+                ) = (*psDD).Pred_Q15[last_smple_idx as usize];
         }
         (*NSQ).sLTP_shp_buf_idx += 1;
         (*NSQ).sLTP_buf_idx += 1;
@@ -1526,20 +1642,25 @@ unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
                 .offset(0 as libc::c_int as isize) as *mut NSQ_sample_struct;
             (*psDD).LF_AR_Q14 = (*psSS).LF_AR_Q14;
             (*psDD).Diff_Q14 = (*psSS).Diff_Q14;
-            (*psDD).sLPC_Q14[(16 as libc::c_int + i) as usize] = (*psSS).xq_Q14;
+            (*psDD).sLPC_Q14[(NSQ_LPC_BUF_LENGTH + i) as usize] = (*psSS).xq_Q14;
             (*psDD).Xq_Q14[*smpl_buf_idx as usize] = (*psSS).xq_Q14;
             (*psDD).Q_Q10[*smpl_buf_idx as usize] = (*psSS).Q_Q10;
-            (*psDD).Pred_Q15[*smpl_buf_idx as usize] =
-                (((*psSS).LPC_exc_Q14 as opus_uint32) << 1 as libc::c_int) as opus_int32;
+            (*psDD)
+                .Pred_Q15[*smpl_buf_idx
+                as usize] = (((*psSS).LPC_exc_Q14 as opus_uint32) << 1 as libc::c_int)
+                as opus_int32;
             (*psDD).Shape_Q14[*smpl_buf_idx as usize] = (*psSS).sLTP_shp_Q14;
-            (*psDD).Seed = ((*psDD).Seed as opus_uint32).wrapping_add(
-                (if 10 as libc::c_int == 1 as libc::c_int {
-                    ((*psSS).Q_Q10 >> 1 as libc::c_int) + ((*psSS).Q_Q10 & 1 as libc::c_int)
-                } else {
-                    ((*psSS).Q_Q10 >> 10 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
-                        >> 1 as libc::c_int
-                }) as opus_uint32,
-            ) as opus_int32;
+            (*psDD)
+                .Seed = ((*psDD).Seed as opus_uint32)
+                .wrapping_add(
+                    (if 10 as libc::c_int == 1 as libc::c_int {
+                        ((*psSS).Q_Q10 >> 1 as libc::c_int)
+                            + ((*psSS).Q_Q10 & 1 as libc::c_int)
+                    } else {
+                        ((*psSS).Q_Q10 >> 10 as libc::c_int - 1 as libc::c_int)
+                            + 1 as libc::c_int >> 1 as libc::c_int
+                    }) as opus_uint32,
+                ) as opus_int32;
             (*psDD).RandState[*smpl_buf_idx as usize] = (*psDD).Seed;
             (*psDD).RD_Q10 = (*psSS).RD_Q10;
             k += 1;
@@ -1552,8 +1673,8 @@ unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
         psDD = &mut *psDelDec.offset(k as isize) as *mut NSQ_del_dec_struct;
         memcpy(
             ((*psDD).sLPC_Q14).as_mut_ptr() as *mut libc::c_void,
-            &mut *((*psDD).sLPC_Q14).as_mut_ptr().offset(length as isize) as *mut opus_int32
-                as *const libc::c_void,
+            &mut *((*psDD).sLPC_Q14).as_mut_ptr().offset(length as isize)
+                as *mut opus_int32 as *const libc::c_void,
             (16 as libc::c_int as libc::c_ulong)
                 .wrapping_mul(::core::mem::size_of::<opus_int32>() as libc::c_ulong),
         );
@@ -1597,27 +1718,32 @@ unsafe extern "C" fn silk_nsq_del_dec_scale_states(
     inv_gain_Q26 = if 5 as libc::c_int == 1 as libc::c_int {
         (inv_gain_Q31 >> 1 as libc::c_int) + (inv_gain_Q31 & 1 as libc::c_int)
     } else {
-        (inv_gain_Q31 >> 5 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int >> 1 as libc::c_int
+        (inv_gain_Q31 >> 5 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+            >> 1 as libc::c_int
     };
     i = 0 as libc::c_int;
     while i < (*psEncC).subfr_length {
-        *x_sc_Q10.offset(i as isize) = (*x16.offset(i as isize) as opus_int64
-            * inv_gain_Q26 as libc::c_long
+        *x_sc_Q10
+            .offset(
+                i as isize,
+            ) = (*x16.offset(i as isize) as opus_int64 * inv_gain_Q26 as libc::c_long
             >> 16 as libc::c_int) as opus_int32;
         i += 1;
     }
     if (*NSQ).rewhite_flag != 0 {
         if subfr == 0 as libc::c_int {
             inv_gain_Q31 = (((inv_gain_Q31 as libc::c_long
-                * LTP_scale_Q14 as opus_int16 as opus_int64
-                >> 16 as libc::c_int) as opus_int32 as opus_uint32)
-                << 2 as libc::c_int) as opus_int32;
+                * LTP_scale_Q14 as opus_int16 as opus_int64 >> 16 as libc::c_int)
+                as opus_int32 as opus_uint32) << 2 as libc::c_int) as opus_int32;
         }
-        i = (*NSQ).sLTP_buf_idx - lag - 5 as libc::c_int / 2 as libc::c_int;
+        i = (*NSQ).sLTP_buf_idx - lag - LTP_ORDER / 2 as libc::c_int;
         while i < (*NSQ).sLTP_buf_idx {
-            *sLTP_Q15.offset(i as isize) = (inv_gain_Q31 as libc::c_long
-                * *sLTP.offset(i as isize) as opus_int64
-                >> 16 as libc::c_int) as opus_int32;
+            *sLTP_Q15
+                .offset(
+                    i as isize,
+                ) = (inv_gain_Q31 as libc::c_long
+                * *sLTP.offset(i as isize) as opus_int64 >> 16 as libc::c_int)
+                as opus_int32;
             i += 1;
         }
     }
@@ -1629,49 +1755,64 @@ unsafe extern "C" fn silk_nsq_del_dec_scale_states(
         );
         i = (*NSQ).sLTP_shp_buf_idx - (*psEncC).ltp_mem_length;
         while i < (*NSQ).sLTP_shp_buf_idx {
-            (*NSQ).sLTP_shp_Q14[i as usize] = (gain_adj_Q16 as opus_int64
-                * (*NSQ).sLTP_shp_Q14[i as usize] as libc::c_long
-                >> 16 as libc::c_int) as opus_int32;
+            (*NSQ)
+                .sLTP_shp_Q14[i
+                as usize] = (gain_adj_Q16 as opus_int64
+                * (*NSQ).sLTP_shp_Q14[i as usize] as libc::c_long >> 16 as libc::c_int)
+                as opus_int32;
             i += 1;
         }
-        if signal_type == 2 as libc::c_int && (*NSQ).rewhite_flag == 0 as libc::c_int {
-            i = (*NSQ).sLTP_buf_idx - lag - 5 as libc::c_int / 2 as libc::c_int;
+        if signal_type == TYPE_VOICED && (*NSQ).rewhite_flag == 0 as libc::c_int {
+            i = (*NSQ).sLTP_buf_idx - lag - LTP_ORDER / 2 as libc::c_int;
             while i < (*NSQ).sLTP_buf_idx - decisionDelay {
-                *sLTP_Q15.offset(i as isize) =
-                    (gain_adj_Q16 as opus_int64 * *sLTP_Q15.offset(i as isize) as libc::c_long
-                        >> 16 as libc::c_int) as opus_int32;
+                *sLTP_Q15
+                    .offset(
+                        i as isize,
+                    ) = (gain_adj_Q16 as opus_int64
+                    * *sLTP_Q15.offset(i as isize) as libc::c_long >> 16 as libc::c_int)
+                    as opus_int32;
                 i += 1;
             }
         }
         k = 0 as libc::c_int;
         while k < nStatesDelayedDecision {
             psDD = &mut *psDelDec.offset(k as isize) as *mut NSQ_del_dec_struct;
-            (*psDD).LF_AR_Q14 = (gain_adj_Q16 as opus_int64 * (*psDD).LF_AR_Q14 as libc::c_long
-                >> 16 as libc::c_int) as opus_int32;
-            (*psDD).Diff_Q14 = (gain_adj_Q16 as opus_int64 * (*psDD).Diff_Q14 as libc::c_long
-                >> 16 as libc::c_int) as opus_int32;
+            (*psDD)
+                .LF_AR_Q14 = (gain_adj_Q16 as opus_int64
+                * (*psDD).LF_AR_Q14 as libc::c_long >> 16 as libc::c_int) as opus_int32;
+            (*psDD)
+                .Diff_Q14 = (gain_adj_Q16 as opus_int64
+                * (*psDD).Diff_Q14 as libc::c_long >> 16 as libc::c_int) as opus_int32;
             i = 0 as libc::c_int;
-            while i < 16 as libc::c_int {
-                (*psDD).sLPC_Q14[i as usize] =
-                    (gain_adj_Q16 as opus_int64 * (*psDD).sLPC_Q14[i as usize] as libc::c_long
-                        >> 16 as libc::c_int) as opus_int32;
+            while i < NSQ_LPC_BUF_LENGTH {
+                (*psDD)
+                    .sLPC_Q14[i
+                    as usize] = (gain_adj_Q16 as opus_int64
+                    * (*psDD).sLPC_Q14[i as usize] as libc::c_long >> 16 as libc::c_int)
+                    as opus_int32;
                 i += 1;
             }
             i = 0 as libc::c_int;
-            while i < 24 as libc::c_int {
-                (*psDD).sAR2_Q14[i as usize] =
-                    (gain_adj_Q16 as opus_int64 * (*psDD).sAR2_Q14[i as usize] as libc::c_long
-                        >> 16 as libc::c_int) as opus_int32;
+            while i < MAX_SHAPE_LPC_ORDER {
+                (*psDD)
+                    .sAR2_Q14[i
+                    as usize] = (gain_adj_Q16 as opus_int64
+                    * (*psDD).sAR2_Q14[i as usize] as libc::c_long >> 16 as libc::c_int)
+                    as opus_int32;
                 i += 1;
             }
             i = 0 as libc::c_int;
-            while i < 40 as libc::c_int {
-                (*psDD).Pred_Q15[i as usize] =
-                    (gain_adj_Q16 as opus_int64 * (*psDD).Pred_Q15[i as usize] as libc::c_long
-                        >> 16 as libc::c_int) as opus_int32;
-                (*psDD).Shape_Q14[i as usize] =
-                    (gain_adj_Q16 as opus_int64 * (*psDD).Shape_Q14[i as usize] as libc::c_long
-                        >> 16 as libc::c_int) as opus_int32;
+            while i < DECISION_DELAY {
+                (*psDD)
+                    .Pred_Q15[i
+                    as usize] = (gain_adj_Q16 as opus_int64
+                    * (*psDD).Pred_Q15[i as usize] as libc::c_long >> 16 as libc::c_int)
+                    as opus_int32;
+                (*psDD)
+                    .Shape_Q14[i
+                    as usize] = (gain_adj_Q16 as opus_int64
+                    * (*psDD).Shape_Q14[i as usize] as libc::c_long >> 16 as libc::c_int)
+                    as opus_int32;
                 i += 1;
             }
             k += 1;

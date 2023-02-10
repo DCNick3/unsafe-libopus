@@ -39,23 +39,30 @@ pub mod opus_types_h {
     use super::stdint_intn_h::{int16_t, int32_t, int64_t};
     use super::stdint_uintn_h::uint32_t;
 }
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
+pub mod typedef_h {
+    #[c2rust::src_loc = "42:9"]
+    pub const silk_int32_MAX: libc::c_int = 0x7fffffff as libc::c_int;
+}
+pub use self::types_h::{__int16_t, __int32_t, __uint32_t, __int64_t};
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
 pub use self::stdint_uintn_h::uint32_t;
-pub use self::types_h::{__int16_t, __int32_t, __int64_t, __uint32_t};
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32, opus_int64};
+pub use self::typedef_h::silk_int32_MAX;
 #[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_log2lin(inLog_Q7: opus_int32) -> opus_int32 {
     let mut out: opus_int32 = 0;
     let mut frac_Q7: opus_int32 = 0;
     if inLog_Q7 < 0 as libc::c_int {
-        return 0 as libc::c_int;
+        return 0 as libc::c_int
     } else {
         if inLog_Q7 >= 3967 as libc::c_int {
-            return 0x7fffffff as libc::c_int;
+            return silk_int32_MAX;
         }
     }
-    out = ((1 as libc::c_int as opus_uint32) << (inLog_Q7 >> 7 as libc::c_int)) as opus_int32;
+    out = ((1 as libc::c_int as opus_uint32) << (inLog_Q7 >> 7 as libc::c_int))
+        as opus_int32;
     frac_Q7 = inLog_Q7 & 0x7f as libc::c_int;
     if inLog_Q7 < 2048 as libc::c_int {
         out = out
@@ -65,8 +72,7 @@ pub unsafe extern "C" fn silk_log2lin(inLog_Q7: opus_int32) -> opus_int32 {
                         * (128 as libc::c_int - frac_Q7) as opus_int16 as opus_int32)
                         as libc::c_long
                         * -(174 as libc::c_int) as opus_int16 as opus_int64
-                        >> 16 as libc::c_int)) as opus_int32
-                >> 7 as libc::c_int);
+                        >> 16 as libc::c_int)) as opus_int32 >> 7 as libc::c_int);
     } else {
         out = out
             + (out >> 7 as libc::c_int)

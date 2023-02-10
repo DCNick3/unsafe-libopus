@@ -33,10 +33,10 @@ pub mod arch_h {
         ) -> !;
     }
 }
-use self::arch_h::celt_fatal;
-pub use self::opus_types_h::{opus_int16, opus_int32};
-pub use self::stdint_intn_h::{int16_t, int32_t};
 pub use self::types_h::{__int16_t, __int32_t};
+pub use self::stdint_intn_h::{int16_t, int32_t};
+pub use self::opus_types_h::{opus_int16, opus_int32};
+use self::arch_h::celt_fatal;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_interpolate(
@@ -63,11 +63,14 @@ pub unsafe extern "C" fn silk_interpolate(
     }
     i = 0 as libc::c_int;
     while i < d {
-        *xi.offset(i as isize) = (*x0.offset(i as isize) as libc::c_int
-            + ((*x1.offset(i as isize) as libc::c_int - *x0.offset(i as isize) as libc::c_int)
-                as opus_int16 as opus_int32
-                * ifact_Q2 as opus_int16 as opus_int32
-                >> 2 as libc::c_int)) as opus_int16;
+        *xi
+            .offset(
+                i as isize,
+            ) = (*x0.offset(i as isize) as libc::c_int
+            + ((*x1.offset(i as isize) as libc::c_int
+                - *x0.offset(i as isize) as libc::c_int) as opus_int16 as opus_int32
+                * ifact_Q2 as opus_int16 as opus_int32 >> 2 as libc::c_int))
+            as opus_int16;
         i += 1;
     }
 }

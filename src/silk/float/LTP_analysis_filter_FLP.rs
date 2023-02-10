@@ -1,4 +1,10 @@
 use ::libc;
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
+pub mod define_h {
+    #[c2rust::src_loc = "146:9"]
+    pub const LTP_ORDER: libc::c_int = 5 as libc::c_int;
+}
+pub use self::define_h::LTP_ORDER;
 #[no_mangle]
 #[c2rust::src_loc = "34:1"]
 pub unsafe extern "C" fn silk_LTP_analysis_filter_FLP(
@@ -26,17 +32,18 @@ pub unsafe extern "C" fn silk_LTP_analysis_filter_FLP(
         x_lag_ptr = x_ptr.offset(-(*pitchL.offset(k as isize) as isize));
         inv_gain = *invGains.offset(k as isize);
         i = 0 as libc::c_int;
-        while i < 5 as libc::c_int {
-            Btmp[i as usize] = *B.offset((k * 5 as libc::c_int + i) as isize);
+        while i < LTP_ORDER {
+            Btmp[i as usize] = *B.offset((k * LTP_ORDER + i) as isize);
             i += 1;
         }
         i = 0 as libc::c_int;
         while i < subfr_length + pre_length {
             *LTP_res_ptr.offset(i as isize) = *x_ptr.offset(i as isize);
             j = 0 as libc::c_int;
-            while j < 5 as libc::c_int {
-                *LTP_res_ptr.offset(i as isize) -= Btmp[j as usize]
-                    * *x_lag_ptr.offset((5 as libc::c_int / 2 as libc::c_int - j) as isize);
+            while j < LTP_ORDER {
+                *LTP_res_ptr.offset(i as isize)
+                    -= Btmp[j as usize]
+                        * *x_lag_ptr.offset((LTP_ORDER / 2 as libc::c_int - j) as isize);
                 j += 1;
             }
             *LTP_res_ptr.offset(i as isize) *= inv_gain;

@@ -38,6 +38,9 @@ pub mod mlp_h {
         pub nb_inputs: libc::c_int,
         pub nb_neurons: libc::c_int,
     }
+    #[c2rust::src_loc = "32:9"]
+    pub const WEIGHTS_SCALE: libc::c_float = 1.0f32
+        / 128 as libc::c_int as libc::c_float;
     use super::opus_types_h::opus_int8;
 }
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:32"]
@@ -254,12 +257,12 @@ pub mod tansig_table_h {
         1.000000f32,
     ];
 }
-use self::mathcalls_h::floor;
-pub use self::mlp_h::{DenseLayer, GRULayer};
-pub use self::opus_types_h::opus_int8;
-pub use self::stdint_intn_h::int8_t;
-pub use self::tansig_table_h::tansig_table;
 pub use self::types_h::__int8_t;
+pub use self::stdint_intn_h::int8_t;
+pub use self::opus_types_h::opus_int8;
+pub use self::mlp_h::{DenseLayer, GRULayer, WEIGHTS_SCALE};
+use self::mathcalls_h::floor;
+pub use self::tansig_table_h::tansig_table;
 #[inline]
 #[c2rust::src_loc = "39:1"]
 unsafe extern "C" fn tansig_approx(mut x: libc::c_float) -> libc::c_float {
@@ -280,7 +283,8 @@ unsafe extern "C" fn tansig_approx(mut x: libc::c_float) -> libc::c_float {
         x = -x;
         sign = -(1 as libc::c_int) as libc::c_float;
     }
-    i = floor((0.5f32 + 25 as libc::c_int as libc::c_float * x) as libc::c_double) as libc::c_int;
+    i = floor((0.5f32 + 25 as libc::c_int as libc::c_float * x) as libc::c_double)
+        as libc::c_int;
     x -= 0.04f32 * i as libc::c_float;
     y = tansig_table[i as usize];
     dy = 1 as libc::c_int as libc::c_float - y * y;
@@ -307,9 +311,9 @@ unsafe extern "C" fn gemm_accum(
     while i < rows {
         j = 0 as libc::c_int;
         while j < cols {
-            *out.offset(i as isize) += *weights.offset((j * col_stride + i) as isize) as libc::c_int
-                as libc::c_float
-                * *x.offset(j as isize);
+            *out.offset(i as isize)
+                += *weights.offset((j * col_stride + i) as isize) as libc::c_int
+                    as libc::c_float * *x.offset(j as isize);
             j += 1;
         }
         i += 1;
@@ -331,13 +335,14 @@ pub unsafe extern "C" fn compute_dense(
     stride = N;
     i = 0 as libc::c_int;
     while i < N {
-        *output.offset(i as isize) = *((*layer).bias).offset(i as isize) as libc::c_float;
+        *output
+            .offset(i as isize) = *((*layer).bias).offset(i as isize) as libc::c_float;
         i += 1;
     }
     gemm_accum(output, (*layer).input_weights, N, M, stride, input);
     i = 0 as libc::c_int;
     while i < N {
-        *output.offset(i as isize) *= 1.0f32 / 128 as libc::c_int as libc::c_float;
+        *output.offset(i as isize) *= WEIGHTS_SCALE;
         i += 1;
     }
     if (*layer).sigmoid != 0 {
@@ -378,18 +383,10 @@ pub unsafe extern "C" fn compute_gru(
         i += 1;
     }
     gemm_accum(z.as_mut_ptr(), (*gru).input_weights, N, M, stride, input);
-    gemm_accum(
-        z.as_mut_ptr(),
-        (*gru).recurrent_weights,
-        N,
-        N,
-        stride,
-        state,
-    );
+    gemm_accum(z.as_mut_ptr(), (*gru).recurrent_weights, N, N, stride, state);
     i = 0 as libc::c_int;
     while i < N {
-        z[i as usize] =
-            sigmoid_approx(1.0f32 / 128 as libc::c_int as libc::c_float * z[i as usize]);
+        z[i as usize] = sigmoid_approx(WEIGHTS_SCALE * z[i as usize]);
         i += 1;
     }
     i = 0 as libc::c_int;
@@ -415,13 +412,14 @@ pub unsafe extern "C" fn compute_gru(
     );
     i = 0 as libc::c_int;
     while i < N {
-        r[i as usize] =
-            sigmoid_approx(1.0f32 / 128 as libc::c_int as libc::c_float * r[i as usize]);
+        r[i as usize] = sigmoid_approx(WEIGHTS_SCALE * r[i as usize]);
         i += 1;
     }
     i = 0 as libc::c_int;
     while i < N {
-        h[i as usize] = *((*gru).bias).offset((2 as libc::c_int * N + i) as isize) as libc::c_float;
+        h[i
+            as usize] = *((*gru).bias).offset((2 as libc::c_int * N + i) as isize)
+            as libc::c_float;
         i += 1;
     }
     i = 0 as libc::c_int;
@@ -447,9 +445,10 @@ pub unsafe extern "C" fn compute_gru(
     );
     i = 0 as libc::c_int;
     while i < N {
-        h[i as usize] = z[i as usize] * *state.offset(i as isize)
+        h[i
+            as usize] = z[i as usize] * *state.offset(i as isize)
             + (1 as libc::c_int as libc::c_float - z[i as usize])
-                * tansig_approx(1.0f32 / 128 as libc::c_int as libc::c_float * h[i as usize]);
+                * tansig_approx(WEIGHTS_SCALE * h[i as usize]);
         i += 1;
     }
     i = 0 as libc::c_int;

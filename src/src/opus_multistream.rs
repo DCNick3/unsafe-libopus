@@ -14,7 +14,9 @@ pub mod opus_private_h {
 pub use self::opus_private_h::ChannelLayout;
 #[no_mangle]
 #[c2rust::src_loc = "41:1"]
-pub unsafe extern "C" fn validate_layout(mut layout: *const ChannelLayout) -> libc::c_int {
+pub unsafe extern "C" fn validate_layout(
+    mut layout: *const ChannelLayout,
+) -> libc::c_int {
     let mut i: libc::c_int = 0;
     let mut max_channel: libc::c_int = 0;
     max_channel = (*layout).nb_streams + (*layout).nb_coupled_streams;
@@ -40,11 +42,7 @@ pub unsafe extern "C" fn get_left_channel(
     mut prev: libc::c_int,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
-    i = if prev < 0 as libc::c_int {
-        0 as libc::c_int
-    } else {
-        prev + 1 as libc::c_int
-    };
+    i = if prev < 0 as libc::c_int { 0 as libc::c_int } else { prev + 1 as libc::c_int };
     while i < (*layout).nb_channels {
         if (*layout).mapping[i as usize] as libc::c_int == stream_id * 2 as libc::c_int {
             return i;
@@ -61,11 +59,7 @@ pub unsafe extern "C" fn get_right_channel(
     mut prev: libc::c_int,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
-    i = if prev < 0 as libc::c_int {
-        0 as libc::c_int
-    } else {
-        prev + 1 as libc::c_int
-    };
+    i = if prev < 0 as libc::c_int { 0 as libc::c_int } else { prev + 1 as libc::c_int };
     while i < (*layout).nb_channels {
         if (*layout).mapping[i as usize] as libc::c_int
             == stream_id * 2 as libc::c_int + 1 as libc::c_int
@@ -84,13 +78,10 @@ pub unsafe extern "C" fn get_mono_channel(
     mut prev: libc::c_int,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
-    i = if prev < 0 as libc::c_int {
-        0 as libc::c_int
-    } else {
-        prev + 1 as libc::c_int
-    };
+    i = if prev < 0 as libc::c_int { 0 as libc::c_int } else { prev + 1 as libc::c_int };
     while i < (*layout).nb_channels {
-        if (*layout).mapping[i as usize] as libc::c_int == stream_id + (*layout).nb_coupled_streams
+        if (*layout).mapping[i as usize] as libc::c_int
+            == stream_id + (*layout).nb_coupled_streams
         {
             return i;
         }

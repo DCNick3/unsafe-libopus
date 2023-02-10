@@ -21,7 +21,11 @@ pub mod mathcalls_h {
 pub mod string_h {
     extern "C" {
         #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
+        pub fn memset(
+            _: *mut libc::c_void,
+            _: libc::c_int,
+            _: libc::c_ulong,
+        ) -> *mut libc::c_void;
         #[c2rust::src_loc = "43:14"]
         pub fn memcpy(
             _: *mut libc::c_void,
@@ -40,14 +44,22 @@ pub mod SigProc_FLP_h {
             dataSize: libc::c_int,
         ) -> libc::c_double;
         #[c2rust::src_loc = "134:1"]
-        pub fn silk_energy_FLP(data: *const libc::c_float, dataSize: libc::c_int)
-            -> libc::c_double;
+        pub fn silk_energy_FLP(
+            data: *const libc::c_float,
+            dataSize: libc::c_int,
+        ) -> libc::c_double;
     }
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tuning_parameters.h:33"]
+pub mod tuning_parameters_h {
+    #[c2rust::src_loc = "54:9"]
+    pub const FIND_LPC_COND_FAC: libc::c_float = 1e-5f32;
 }
 use self::arch_h::celt_fatal;
 use self::mathcalls_h::sqrt;
-use self::string_h::{memcpy, memset};
-use self::SigProc_FLP_h::{silk_energy_FLP, silk_inner_product_FLP};
+use self::string_h::{memset, memcpy};
+use self::SigProc_FLP_h::{silk_inner_product_FLP, silk_energy_FLP};
+pub use self::tuning_parameters_h::FIND_LPC_COND_FAC;
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_burg_modified_FLP(
@@ -97,8 +109,12 @@ pub unsafe extern "C" fn silk_burg_modified_FLP(
         x_ptr = x.offset((s * subfr_length) as isize);
         n = 1 as libc::c_int;
         while n < D + 1 as libc::c_int {
-            C_first_row[(n - 1 as libc::c_int) as usize] +=
-                silk_inner_product_FLP(x_ptr, x_ptr.offset(n as isize), subfr_length - n);
+            C_first_row[(n - 1 as libc::c_int) as usize]
+                += silk_inner_product_FLP(
+                    x_ptr,
+                    x_ptr.offset(n as isize),
+                    subfr_length - n,
+                );
             n += 1;
         }
         s += 1;
@@ -109,8 +125,9 @@ pub unsafe extern "C" fn silk_burg_modified_FLP(
         (24 as libc::c_int as libc::c_ulong)
             .wrapping_mul(::core::mem::size_of::<libc::c_double>() as libc::c_ulong),
     );
-    CAf[0 as libc::c_int as usize] =
-        C0 + 1e-5f32 as libc::c_double * C0 + 1e-9f32 as libc::c_double;
+    CAf[0 as libc::c_int
+        as usize] = C0 + FIND_LPC_COND_FAC as libc::c_double * C0
+        + 1e-9f32 as libc::c_double;
     CAb[0 as libc::c_int as usize] = CAf[0 as libc::c_int as usize];
     invGain = 1.0f32 as libc::c_double;
     reached_max_gain = 0 as libc::c_int;
@@ -120,27 +137,36 @@ pub unsafe extern "C" fn silk_burg_modified_FLP(
         while s < nb_subfr {
             x_ptr = x.offset((s * subfr_length) as isize);
             tmp1 = *x_ptr.offset(n as isize) as libc::c_double;
-            tmp2 = *x_ptr.offset((subfr_length - n - 1 as libc::c_int) as isize) as libc::c_double;
+            tmp2 = *x_ptr.offset((subfr_length - n - 1 as libc::c_int) as isize)
+                as libc::c_double;
             k = 0 as libc::c_int;
             while k < n {
-                C_first_row[k as usize] -= (*x_ptr.offset(n as isize)
-                    * *x_ptr.offset((n - k - 1 as libc::c_int) as isize))
-                    as libc::c_double;
-                C_last_row[k as usize] -= (*x_ptr
-                    .offset((subfr_length - n - 1 as libc::c_int) as isize)
-                    * *x_ptr.offset((subfr_length - n + k) as isize))
-                    as libc::c_double;
+                C_first_row[k as usize]
+                    -= (*x_ptr.offset(n as isize)
+                        * *x_ptr.offset((n - k - 1 as libc::c_int) as isize))
+                        as libc::c_double;
+                C_last_row[k as usize]
+                    -= (*x_ptr.offset((subfr_length - n - 1 as libc::c_int) as isize)
+                        * *x_ptr.offset((subfr_length - n + k) as isize))
+                        as libc::c_double;
                 Atmp = Af[k as usize];
-                tmp1 += *x_ptr.offset((n - k - 1 as libc::c_int) as isize) as libc::c_double * Atmp;
-                tmp2 += *x_ptr.offset((subfr_length - n + k) as isize) as libc::c_double * Atmp;
+                tmp1
+                    += *x_ptr.offset((n - k - 1 as libc::c_int) as isize)
+                        as libc::c_double * Atmp;
+                tmp2
+                    += *x_ptr.offset((subfr_length - n + k) as isize) as libc::c_double
+                        * Atmp;
                 k += 1;
             }
             k = 0 as libc::c_int;
             while k <= n {
-                CAf[k as usize] -= tmp1 * *x_ptr.offset((n - k) as isize) as libc::c_double;
-                CAb[k as usize] -= tmp2
-                    * *x_ptr.offset((subfr_length - n + k - 1 as libc::c_int) as isize)
-                        as libc::c_double;
+                CAf[k as usize]
+                    -= tmp1 * *x_ptr.offset((n - k) as isize) as libc::c_double;
+                CAb[k as usize]
+                    -= tmp2
+                        * *x_ptr
+                            .offset((subfr_length - n + k - 1 as libc::c_int) as isize)
+                            as libc::c_double;
                 k += 1;
             }
             s += 1;
@@ -229,7 +255,7 @@ pub unsafe extern "C" fn silk_burg_modified_FLP(
             *A.offset(k as isize) = -Atmp as libc::c_float;
             k += 1;
         }
-        nrg_f -= 1e-5f32 as libc::c_double * C0 * tmp1;
+        nrg_f -= FIND_LPC_COND_FAC as libc::c_double * C0 * tmp1;
     }
     return nrg_f as libc::c_float;
 }

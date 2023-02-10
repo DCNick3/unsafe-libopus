@@ -39,41 +39,64 @@ pub mod opus_types_h {
     use super::stdint_intn_h::{int16_t, int32_t, int64_t};
     use super::stdint_uintn_h::uint32_t;
 }
+#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:32"]
+pub mod limits_h {
+    #[c2rust::src_loc = "63:9"]
+    pub const CHAR_BIT: libc::c_int = __CHAR_BIT__;
+    use super::internal::__CHAR_BIT__;
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:32"]
+pub mod ecintrin_h {
+    #[c2rust::src_loc = "69:11"]
+    pub const EC_CLZ0: libc::c_int = ::core::mem::size_of::<libc::c_uint>()
+        as libc::c_ulong as libc::c_int * CHAR_BIT;
+    use super::limits_h::CHAR_BIT;
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/macros.h:32"]
 pub mod macros_h {
     #[inline]
     #[c2rust::src_loc = "120:1"]
     pub unsafe extern "C" fn silk_CLZ32(mut in32: opus_int32) -> opus_int32 {
         return if in32 != 0 {
-            32 as libc::c_int
-                - (::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int
-                    * 8 as libc::c_int
-                    - (in32 as libc::c_uint).leading_zeros() as i32)
+            32 as libc::c_int - (EC_CLZ0 - (in32 as libc::c_uint).leading_zeros() as i32)
         } else {
             32 as libc::c_int
         };
     }
     use super::opus_types_h::opus_int32;
+    use super::ecintrin_h::EC_CLZ0;
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
+pub mod typedef_h {
+    #[c2rust::src_loc = "43:9"]
+    pub const silk_int32_MIN: libc::c_uint = 0x80000000 as libc::c_uint;
+    #[c2rust::src_loc = "42:9"]
+    pub const silk_int32_MAX: libc::c_int = 0x7fffffff as libc::c_int;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/Inlines.h:32"]
 pub mod Inlines_h {
     #[inline]
     #[c2rust::src_loc = "143:1"]
-    pub unsafe extern "C" fn silk_INVERSE32_varQ(b32: opus_int32, Qres: libc::c_int) -> opus_int32 {
+    pub unsafe extern "C" fn silk_INVERSE32_varQ(
+        b32: opus_int32,
+        Qres: libc::c_int,
+    ) -> opus_int32 {
         let mut b_headrm: libc::c_int = 0;
         let mut lshift: libc::c_int = 0;
         let mut b32_inv: opus_int32 = 0;
         let mut b32_nrm: opus_int32 = 0;
         let mut err_Q32: opus_int32 = 0;
         let mut result: opus_int32 = 0;
-        b_headrm = silk_CLZ32((if b32 > 0 as libc::c_int { b32 } else { -b32 })) - 1 as libc::c_int;
+        b_headrm = silk_CLZ32((if b32 > 0 as libc::c_int { b32 } else { -b32 }))
+            - 1 as libc::c_int;
         b32_nrm = ((b32 as opus_uint32) << b_headrm) as opus_int32;
-        b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int) / (b32_nrm >> 16 as libc::c_int);
+        b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int)
+            / (b32_nrm >> 16 as libc::c_int);
         result = ((b32_inv as opus_uint32) << 16 as libc::c_int) as opus_int32;
         err_Q32 = (((((1 as libc::c_int) << 29 as libc::c_int)
-            - (b32_nrm as libc::c_long * b32_inv as opus_int16 as opus_int64 >> 16 as libc::c_int)
-                as opus_int32) as opus_uint32)
-            << 3 as libc::c_int) as opus_int32;
+            - (b32_nrm as libc::c_long * b32_inv as opus_int16 as opus_int64
+                >> 16 as libc::c_int) as opus_int32) as opus_uint32) << 3 as libc::c_int)
+            as opus_int32;
         result = (result as libc::c_long
             + (err_Q32 as opus_int64 * b32_inv as libc::c_long >> 16 as libc::c_int))
             as opus_int32;
@@ -101,23 +124,34 @@ pub mod Inlines_h {
                         result
                     })
                 })
-            }) as opus_uint32)
-                << -lshift) as opus_int32;
+            }) as opus_uint32) << -lshift) as opus_int32
         } else if lshift < 32 as libc::c_int {
-            return result >> lshift;
+            return result >> lshift
         } else {
-            return 0 as libc::c_int;
+            return 0 as libc::c_int
         };
     }
+    use super::opus_types_h::{opus_int32, opus_uint32, opus_int16, opus_int64};
     use super::macros_h::silk_CLZ32;
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
 }
-pub use self::macros_h::silk_CLZ32;
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
+#[c2rust::header_src = "internal:0"]
+pub mod internal {
+    #[c2rust::src_loc = "36:9"]
+    pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
+}
+pub use self::types_h::{__int16_t, __int32_t, __uint32_t, __int64_t};
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
 pub use self::stdint_uintn_h::uint32_t;
-pub use self::types_h::{__int16_t, __int32_t, __int64_t, __uint32_t};
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32, opus_int64};
+pub use self::limits_h::CHAR_BIT;
+pub use self::ecintrin_h::EC_CLZ0;
+pub use self::macros_h::silk_CLZ32;
+pub use self::typedef_h::{silk_int32_MIN, silk_int32_MAX};
 pub use self::Inlines_h::silk_INVERSE32_varQ;
+pub use self::internal::__CHAR_BIT__;
+#[c2rust::src_loc = "36:9"]
+pub const A_LIMIT: libc::c_double = 0.99975f64
+    * ((1 as libc::c_int as opus_int64) << 24 as libc::c_int) as libc::c_double + 0.5f64;
 #[c2rust::src_loc = "42:1"]
 unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
     mut A_QA: *mut opus_int32,
@@ -133,37 +167,29 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
     let mut tmp1: opus_int32 = 0;
     let mut tmp2: opus_int32 = 0;
     invGain_Q30 = ((1 as libc::c_int as libc::c_long
-        * ((1 as libc::c_int as opus_int64) << 30 as libc::c_int))
-        as libc::c_double
+        * ((1 as libc::c_int as opus_int64) << 30 as libc::c_int)) as libc::c_double
         + 0.5f64) as opus_int32;
     k = order - 1 as libc::c_int;
     while k > 0 as libc::c_int {
-        if *A_QA.offset(k as isize)
-            > (0.99975f64
-                * ((1 as libc::c_int as opus_int64) << 24 as libc::c_int) as libc::c_double
-                + 0.5f64) as opus_int32
-            || *A_QA.offset(k as isize)
-                < -((0.99975f64
-                    * ((1 as libc::c_int as opus_int64) << 24 as libc::c_int) as libc::c_double
-                    + 0.5f64) as opus_int32)
+        if *A_QA.offset(k as isize) > A_LIMIT as opus_int32
+            || *A_QA.offset(k as isize) < -(A_LIMIT as opus_int32)
         {
             return 0 as libc::c_int;
         }
         rc_Q31 = -(((*A_QA.offset(k as isize) as opus_uint32)
             << 31 as libc::c_int - 24 as libc::c_int) as opus_int32);
         rc_mult1_Q30 = ((1 as libc::c_int as libc::c_long
-            * ((1 as libc::c_int as opus_int64) << 30 as libc::c_int))
-            as libc::c_double
+            * ((1 as libc::c_int as opus_int64) << 30 as libc::c_int)) as libc::c_double
             + 0.5f64) as opus_int32
-            - (rc_Q31 as opus_int64 * rc_Q31 as libc::c_long >> 32 as libc::c_int) as opus_int32;
+            - (rc_Q31 as opus_int64 * rc_Q31 as libc::c_long >> 32 as libc::c_int)
+                as opus_int32;
         invGain_Q30 = (((invGain_Q30 as opus_int64 * rc_mult1_Q30 as libc::c_long
-            >> 32 as libc::c_int) as opus_int32 as opus_uint32)
-            << 2 as libc::c_int) as opus_int32;
+            >> 32 as libc::c_int) as opus_int32 as opus_uint32) << 2 as libc::c_int)
+            as opus_int32;
         if invGain_Q30
             < ((1.0f32 / 1e4f32
-                * ((1 as libc::c_int as opus_int64) << 30 as libc::c_int) as libc::c_float)
-                as libc::c_double
-                + 0.5f64) as opus_int32
+                * ((1 as libc::c_int as opus_int64) << 30 as libc::c_int)
+                    as libc::c_float) as libc::c_double + 0.5f64) as opus_int32
         {
             return 0 as libc::c_int;
         }
@@ -182,461 +208,447 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
             tmp1 = *A_QA.offset(n as isize);
             tmp2 = *A_QA.offset((k - n - 1 as libc::c_int) as isize);
             tmp64 = if mult2Q == 1 as libc::c_int {
-                ((if (tmp1 as opus_uint32).wrapping_sub(
-                    (if 31 as libc::c_int == 1 as libc::c_int {
-                        (tmp2 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
-                            + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
-                                & 1 as libc::c_int as libc::c_long)
-                    } else {
-                        (tmp2 as opus_int64 * rc_Q31 as libc::c_long
-                            >> 31 as libc::c_int - 1 as libc::c_int)
-                            + 1 as libc::c_int as libc::c_long
-                            >> 1 as libc::c_int
-                    }) as opus_int32 as opus_uint32,
-                ) & 0x80000000 as libc::c_uint
-                    == 0 as libc::c_int as libc::c_uint
+                ((if (tmp1 as opus_uint32)
+                    .wrapping_sub(
+                        (if 31 as libc::c_int == 1 as libc::c_int {
+                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                >> 1 as libc::c_int)
+                                + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                    & 1 as libc::c_int as libc::c_long)
+                        } else {
+                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                >> 31 as libc::c_int - 1 as libc::c_int)
+                                + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                        }) as opus_int32 as opus_uint32,
+                    ) & 0x80000000 as libc::c_uint == 0 as libc::c_int as libc::c_uint
                 {
                     (if tmp1 as libc::c_uint
                         & ((if 31 as libc::c_int == 1 as libc::c_int {
-                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
+                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                >> 1 as libc::c_int)
                                 + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
                                     & 1 as libc::c_int as libc::c_long)
                         } else {
                             (tmp2 as opus_int64 * rc_Q31 as libc::c_long
                                 >> 31 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int as libc::c_long
-                                >> 1 as libc::c_int
-                        }) as opus_int32 as libc::c_uint
-                            ^ 0x80000000 as libc::c_uint)
-                        & 0x80000000 as libc::c_uint
-                        != 0
+                                + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                        }) as opus_int32 as libc::c_uint ^ 0x80000000 as libc::c_uint)
+                        & 0x80000000 as libc::c_uint != 0
                     {
                         0x80000000 as libc::c_uint as opus_int32
                     } else {
-                        tmp1 - (if 31 as libc::c_int == 1 as libc::c_int {
-                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
-                                + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
-                                    & 1 as libc::c_int as libc::c_long)
-                        } else {
-                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long
-                                >> 31 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int as libc::c_long
-                                >> 1 as libc::c_int
-                        }) as opus_int32
+                        tmp1
+                            - (if 31 as libc::c_int == 1 as libc::c_int {
+                                (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 1 as libc::c_int)
+                                    + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                        & 1 as libc::c_int as libc::c_long)
+                            } else {
+                                (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 31 as libc::c_int - 1 as libc::c_int)
+                                    + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                            }) as opus_int32
                     })
                 } else {
                     (if (tmp1 as libc::c_uint ^ 0x80000000 as libc::c_uint)
                         & (if 31 as libc::c_int == 1 as libc::c_int {
-                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
+                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                >> 1 as libc::c_int)
                                 + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
                                     & 1 as libc::c_int as libc::c_long)
                         } else {
                             (tmp2 as opus_int64 * rc_Q31 as libc::c_long
                                 >> 31 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int as libc::c_long
-                                >> 1 as libc::c_int
-                        }) as opus_int32 as libc::c_uint
-                        & 0x80000000 as libc::c_uint
+                                + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                        }) as opus_int32 as libc::c_uint & 0x80000000 as libc::c_uint
                         != 0
                     {
                         0x7fffffff as libc::c_int
                     } else {
-                        tmp1 - (if 31 as libc::c_int == 1 as libc::c_int {
-                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
-                                + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
-                                    & 1 as libc::c_int as libc::c_long)
-                        } else {
-                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long
-                                >> 31 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int as libc::c_long
-                                >> 1 as libc::c_int
-                        }) as opus_int32
+                        tmp1
+                            - (if 31 as libc::c_int == 1 as libc::c_int {
+                                (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 1 as libc::c_int)
+                                    + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                        & 1 as libc::c_int as libc::c_long)
+                            } else {
+                                (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 31 as libc::c_int - 1 as libc::c_int)
+                                    + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                            }) as opus_int32
                     })
-                }) as opus_int64
-                    * rc_mult2 as libc::c_long
-                    >> 1 as libc::c_int)
-                    + ((if (tmp1 as opus_uint32).wrapping_sub(
-                        (if 31 as libc::c_int == 1 as libc::c_int {
-                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
-                                + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
-                                    & 1 as libc::c_int as libc::c_long)
-                        } else {
-                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long
-                                >> 31 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int as libc::c_long
-                                >> 1 as libc::c_int
-                        }) as opus_int32 as opus_uint32,
-                    ) & 0x80000000 as libc::c_uint
+                }) as opus_int64 * rc_mult2 as libc::c_long >> 1 as libc::c_int)
+                    + ((if (tmp1 as opus_uint32)
+                        .wrapping_sub(
+                            (if 31 as libc::c_int == 1 as libc::c_int {
+                                (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 1 as libc::c_int)
+                                    + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                        & 1 as libc::c_int as libc::c_long)
+                            } else {
+                                (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 31 as libc::c_int - 1 as libc::c_int)
+                                    + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                            }) as opus_int32 as opus_uint32,
+                        ) & 0x80000000 as libc::c_uint
                         == 0 as libc::c_int as libc::c_uint
                     {
                         (if tmp1 as libc::c_uint
                             & ((if 31 as libc::c_int == 1 as libc::c_int {
-                                (tmp2 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
+                                (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 1 as libc::c_int)
                                     + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
                                         & 1 as libc::c_int as libc::c_long)
                             } else {
                                 (tmp2 as opus_int64 * rc_Q31 as libc::c_long
                                     >> 31 as libc::c_int - 1 as libc::c_int)
-                                    + 1 as libc::c_int as libc::c_long
-                                    >> 1 as libc::c_int
+                                    + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
                             }) as opus_int32 as libc::c_uint
-                                ^ 0x80000000 as libc::c_uint)
-                            & 0x80000000 as libc::c_uint
+                                ^ 0x80000000 as libc::c_uint) & 0x80000000 as libc::c_uint
                             != 0
                         {
                             0x80000000 as libc::c_uint as opus_int32
                         } else {
-                            tmp1 - (if 31 as libc::c_int == 1 as libc::c_int {
-                                (tmp2 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
-                                    + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
-                                        & 1 as libc::c_int as libc::c_long)
-                            } else {
-                                (tmp2 as opus_int64 * rc_Q31 as libc::c_long
-                                    >> 31 as libc::c_int - 1 as libc::c_int)
-                                    + 1 as libc::c_int as libc::c_long
-                                    >> 1 as libc::c_int
-                            }) as opus_int32
+                            tmp1
+                                - (if 31 as libc::c_int == 1 as libc::c_int {
+                                    (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                        >> 1 as libc::c_int)
+                                        + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                            & 1 as libc::c_int as libc::c_long)
+                                } else {
+                                    (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                        >> 31 as libc::c_int - 1 as libc::c_int)
+                                        + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                                }) as opus_int32
                         })
                     } else {
                         (if (tmp1 as libc::c_uint ^ 0x80000000 as libc::c_uint)
                             & (if 31 as libc::c_int == 1 as libc::c_int {
-                                (tmp2 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
+                                (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 1 as libc::c_int)
                                     + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
                                         & 1 as libc::c_int as libc::c_long)
                             } else {
                                 (tmp2 as opus_int64 * rc_Q31 as libc::c_long
                                     >> 31 as libc::c_int - 1 as libc::c_int)
-                                    + 1 as libc::c_int as libc::c_long
-                                    >> 1 as libc::c_int
-                            }) as opus_int32 as libc::c_uint
-                            & 0x80000000 as libc::c_uint
+                                    + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                            }) as opus_int32 as libc::c_uint & 0x80000000 as libc::c_uint
                             != 0
                         {
                             0x7fffffff as libc::c_int
                         } else {
-                            tmp1 - (if 31 as libc::c_int == 1 as libc::c_int {
-                                (tmp2 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
+                            tmp1
+                                - (if 31 as libc::c_int == 1 as libc::c_int {
+                                    (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                        >> 1 as libc::c_int)
+                                        + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                            & 1 as libc::c_int as libc::c_long)
+                                } else {
+                                    (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                        >> 31 as libc::c_int - 1 as libc::c_int)
+                                        + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                                }) as opus_int32
+                        })
+                    }) as opus_int64 * rc_mult2 as libc::c_long
+                        & 1 as libc::c_int as libc::c_long)
+            } else {
+                ((if (tmp1 as opus_uint32)
+                    .wrapping_sub(
+                        (if 31 as libc::c_int == 1 as libc::c_int {
+                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                >> 1 as libc::c_int)
+                                + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                    & 1 as libc::c_int as libc::c_long)
+                        } else {
+                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                >> 31 as libc::c_int - 1 as libc::c_int)
+                                + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                        }) as opus_int32 as opus_uint32,
+                    ) & 0x80000000 as libc::c_uint == 0 as libc::c_int as libc::c_uint
+                {
+                    (if tmp1 as libc::c_uint
+                        & ((if 31 as libc::c_int == 1 as libc::c_int {
+                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                >> 1 as libc::c_int)
+                                + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                    & 1 as libc::c_int as libc::c_long)
+                        } else {
+                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                >> 31 as libc::c_int - 1 as libc::c_int)
+                                + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                        }) as opus_int32 as libc::c_uint ^ 0x80000000 as libc::c_uint)
+                        & 0x80000000 as libc::c_uint != 0
+                    {
+                        0x80000000 as libc::c_uint as opus_int32
+                    } else {
+                        tmp1
+                            - (if 31 as libc::c_int == 1 as libc::c_int {
+                                (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 1 as libc::c_int)
                                     + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
                                         & 1 as libc::c_int as libc::c_long)
                             } else {
                                 (tmp2 as opus_int64 * rc_Q31 as libc::c_long
                                     >> 31 as libc::c_int - 1 as libc::c_int)
-                                    + 1 as libc::c_int as libc::c_long
-                                    >> 1 as libc::c_int
+                                    + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
                             }) as opus_int32
-                        })
-                    }) as opus_int64
-                        * rc_mult2 as libc::c_long
-                        & 1 as libc::c_int as libc::c_long)
-            } else {
-                ((if (tmp1 as opus_uint32).wrapping_sub(
-                    (if 31 as libc::c_int == 1 as libc::c_int {
-                        (tmp2 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
-                            + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
-                                & 1 as libc::c_int as libc::c_long)
-                    } else {
-                        (tmp2 as opus_int64 * rc_Q31 as libc::c_long
-                            >> 31 as libc::c_int - 1 as libc::c_int)
-                            + 1 as libc::c_int as libc::c_long
-                            >> 1 as libc::c_int
-                    }) as opus_int32 as opus_uint32,
-                ) & 0x80000000 as libc::c_uint
-                    == 0 as libc::c_int as libc::c_uint
-                {
-                    (if tmp1 as libc::c_uint
-                        & ((if 31 as libc::c_int == 1 as libc::c_int {
-                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
-                                + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
-                                    & 1 as libc::c_int as libc::c_long)
-                        } else {
-                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long
-                                >> 31 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int as libc::c_long
-                                >> 1 as libc::c_int
-                        }) as opus_int32 as libc::c_uint
-                            ^ 0x80000000 as libc::c_uint)
-                        & 0x80000000 as libc::c_uint
-                        != 0
-                    {
-                        0x80000000 as libc::c_uint as opus_int32
-                    } else {
-                        tmp1 - (if 31 as libc::c_int == 1 as libc::c_int {
-                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
-                                + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
-                                    & 1 as libc::c_int as libc::c_long)
-                        } else {
-                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long
-                                >> 31 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int as libc::c_long
-                                >> 1 as libc::c_int
-                        }) as opus_int32
                     })
                 } else {
                     (if (tmp1 as libc::c_uint ^ 0x80000000 as libc::c_uint)
                         & (if 31 as libc::c_int == 1 as libc::c_int {
-                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
+                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                >> 1 as libc::c_int)
                                 + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
                                     & 1 as libc::c_int as libc::c_long)
                         } else {
                             (tmp2 as opus_int64 * rc_Q31 as libc::c_long
                                 >> 31 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int as libc::c_long
-                                >> 1 as libc::c_int
-                        }) as opus_int32 as libc::c_uint
-                        & 0x80000000 as libc::c_uint
+                                + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                        }) as opus_int32 as libc::c_uint & 0x80000000 as libc::c_uint
                         != 0
                     {
                         0x7fffffff as libc::c_int
                     } else {
-                        tmp1 - (if 31 as libc::c_int == 1 as libc::c_int {
-                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
-                                + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
-                                    & 1 as libc::c_int as libc::c_long)
-                        } else {
-                            (tmp2 as opus_int64 * rc_Q31 as libc::c_long
-                                >> 31 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int as libc::c_long
-                                >> 1 as libc::c_int
-                        }) as opus_int32
+                        tmp1
+                            - (if 31 as libc::c_int == 1 as libc::c_int {
+                                (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 1 as libc::c_int)
+                                    + (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                        & 1 as libc::c_int as libc::c_long)
+                            } else {
+                                (tmp2 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 31 as libc::c_int - 1 as libc::c_int)
+                                    + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                            }) as opus_int32
                     })
-                }) as opus_int64
-                    * rc_mult2 as libc::c_long
-                    >> mult2Q - 1 as libc::c_int)
-                    + 1 as libc::c_int as libc::c_long
-                    >> 1 as libc::c_int
+                }) as opus_int64 * rc_mult2 as libc::c_long >> mult2Q - 1 as libc::c_int)
+                    + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
             };
-            if tmp64 > 0x7fffffff as libc::c_int as libc::c_long
-                || tmp64 < 0x80000000 as libc::c_uint as opus_int32 as libc::c_long
+            if tmp64 > silk_int32_MAX as libc::c_long
+                || tmp64 < silk_int32_MIN as libc::c_long
             {
                 return 0 as libc::c_int;
             }
             *A_QA.offset(n as isize) = tmp64 as opus_int32;
             tmp64 = if mult2Q == 1 as libc::c_int {
-                ((if (tmp2 as opus_uint32).wrapping_sub(
-                    (if 31 as libc::c_int == 1 as libc::c_int {
-                        (tmp1 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
-                            + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
-                                & 1 as libc::c_int as libc::c_long)
-                    } else {
-                        (tmp1 as opus_int64 * rc_Q31 as libc::c_long
-                            >> 31 as libc::c_int - 1 as libc::c_int)
-                            + 1 as libc::c_int as libc::c_long
-                            >> 1 as libc::c_int
-                    }) as opus_int32 as opus_uint32,
-                ) & 0x80000000 as libc::c_uint
-                    == 0 as libc::c_int as libc::c_uint
+                ((if (tmp2 as opus_uint32)
+                    .wrapping_sub(
+                        (if 31 as libc::c_int == 1 as libc::c_int {
+                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                >> 1 as libc::c_int)
+                                + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                    & 1 as libc::c_int as libc::c_long)
+                        } else {
+                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                >> 31 as libc::c_int - 1 as libc::c_int)
+                                + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                        }) as opus_int32 as opus_uint32,
+                    ) & 0x80000000 as libc::c_uint == 0 as libc::c_int as libc::c_uint
                 {
                     (if tmp2 as libc::c_uint
                         & ((if 31 as libc::c_int == 1 as libc::c_int {
-                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
+                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                >> 1 as libc::c_int)
                                 + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
                                     & 1 as libc::c_int as libc::c_long)
                         } else {
                             (tmp1 as opus_int64 * rc_Q31 as libc::c_long
                                 >> 31 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int as libc::c_long
-                                >> 1 as libc::c_int
-                        }) as opus_int32 as libc::c_uint
-                            ^ 0x80000000 as libc::c_uint)
-                        & 0x80000000 as libc::c_uint
-                        != 0
+                                + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                        }) as opus_int32 as libc::c_uint ^ 0x80000000 as libc::c_uint)
+                        & 0x80000000 as libc::c_uint != 0
                     {
                         0x80000000 as libc::c_uint as opus_int32
                     } else {
-                        tmp2 - (if 31 as libc::c_int == 1 as libc::c_int {
-                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
-                                + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
-                                    & 1 as libc::c_int as libc::c_long)
-                        } else {
-                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long
-                                >> 31 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int as libc::c_long
-                                >> 1 as libc::c_int
-                        }) as opus_int32
+                        tmp2
+                            - (if 31 as libc::c_int == 1 as libc::c_int {
+                                (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 1 as libc::c_int)
+                                    + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                        & 1 as libc::c_int as libc::c_long)
+                            } else {
+                                (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 31 as libc::c_int - 1 as libc::c_int)
+                                    + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                            }) as opus_int32
                     })
                 } else {
                     (if (tmp2 as libc::c_uint ^ 0x80000000 as libc::c_uint)
                         & (if 31 as libc::c_int == 1 as libc::c_int {
-                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
+                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                >> 1 as libc::c_int)
                                 + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
                                     & 1 as libc::c_int as libc::c_long)
                         } else {
                             (tmp1 as opus_int64 * rc_Q31 as libc::c_long
                                 >> 31 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int as libc::c_long
-                                >> 1 as libc::c_int
-                        }) as opus_int32 as libc::c_uint
-                        & 0x80000000 as libc::c_uint
+                                + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                        }) as opus_int32 as libc::c_uint & 0x80000000 as libc::c_uint
                         != 0
                     {
                         0x7fffffff as libc::c_int
                     } else {
-                        tmp2 - (if 31 as libc::c_int == 1 as libc::c_int {
-                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
-                                + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
-                                    & 1 as libc::c_int as libc::c_long)
-                        } else {
-                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long
-                                >> 31 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int as libc::c_long
-                                >> 1 as libc::c_int
-                        }) as opus_int32
+                        tmp2
+                            - (if 31 as libc::c_int == 1 as libc::c_int {
+                                (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 1 as libc::c_int)
+                                    + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                        & 1 as libc::c_int as libc::c_long)
+                            } else {
+                                (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 31 as libc::c_int - 1 as libc::c_int)
+                                    + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                            }) as opus_int32
                     })
-                }) as opus_int64
-                    * rc_mult2 as libc::c_long
-                    >> 1 as libc::c_int)
-                    + ((if (tmp2 as opus_uint32).wrapping_sub(
-                        (if 31 as libc::c_int == 1 as libc::c_int {
-                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
-                                + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
-                                    & 1 as libc::c_int as libc::c_long)
-                        } else {
-                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long
-                                >> 31 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int as libc::c_long
-                                >> 1 as libc::c_int
-                        }) as opus_int32 as opus_uint32,
-                    ) & 0x80000000 as libc::c_uint
+                }) as opus_int64 * rc_mult2 as libc::c_long >> 1 as libc::c_int)
+                    + ((if (tmp2 as opus_uint32)
+                        .wrapping_sub(
+                            (if 31 as libc::c_int == 1 as libc::c_int {
+                                (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 1 as libc::c_int)
+                                    + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                        & 1 as libc::c_int as libc::c_long)
+                            } else {
+                                (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 31 as libc::c_int - 1 as libc::c_int)
+                                    + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                            }) as opus_int32 as opus_uint32,
+                        ) & 0x80000000 as libc::c_uint
                         == 0 as libc::c_int as libc::c_uint
                     {
                         (if tmp2 as libc::c_uint
                             & ((if 31 as libc::c_int == 1 as libc::c_int {
-                                (tmp1 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
+                                (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 1 as libc::c_int)
                                     + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
                                         & 1 as libc::c_int as libc::c_long)
                             } else {
                                 (tmp1 as opus_int64 * rc_Q31 as libc::c_long
                                     >> 31 as libc::c_int - 1 as libc::c_int)
-                                    + 1 as libc::c_int as libc::c_long
-                                    >> 1 as libc::c_int
+                                    + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
                             }) as opus_int32 as libc::c_uint
-                                ^ 0x80000000 as libc::c_uint)
-                            & 0x80000000 as libc::c_uint
+                                ^ 0x80000000 as libc::c_uint) & 0x80000000 as libc::c_uint
                             != 0
                         {
                             0x80000000 as libc::c_uint as opus_int32
                         } else {
-                            tmp2 - (if 31 as libc::c_int == 1 as libc::c_int {
-                                (tmp1 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
-                                    + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
-                                        & 1 as libc::c_int as libc::c_long)
-                            } else {
-                                (tmp1 as opus_int64 * rc_Q31 as libc::c_long
-                                    >> 31 as libc::c_int - 1 as libc::c_int)
-                                    + 1 as libc::c_int as libc::c_long
-                                    >> 1 as libc::c_int
-                            }) as opus_int32
+                            tmp2
+                                - (if 31 as libc::c_int == 1 as libc::c_int {
+                                    (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                        >> 1 as libc::c_int)
+                                        + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                            & 1 as libc::c_int as libc::c_long)
+                                } else {
+                                    (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                        >> 31 as libc::c_int - 1 as libc::c_int)
+                                        + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                                }) as opus_int32
                         })
                     } else {
                         (if (tmp2 as libc::c_uint ^ 0x80000000 as libc::c_uint)
                             & (if 31 as libc::c_int == 1 as libc::c_int {
-                                (tmp1 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
+                                (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 1 as libc::c_int)
                                     + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
                                         & 1 as libc::c_int as libc::c_long)
                             } else {
                                 (tmp1 as opus_int64 * rc_Q31 as libc::c_long
                                     >> 31 as libc::c_int - 1 as libc::c_int)
-                                    + 1 as libc::c_int as libc::c_long
-                                    >> 1 as libc::c_int
-                            }) as opus_int32 as libc::c_uint
-                            & 0x80000000 as libc::c_uint
+                                    + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                            }) as opus_int32 as libc::c_uint & 0x80000000 as libc::c_uint
                             != 0
                         {
                             0x7fffffff as libc::c_int
                         } else {
-                            tmp2 - (if 31 as libc::c_int == 1 as libc::c_int {
-                                (tmp1 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
+                            tmp2
+                                - (if 31 as libc::c_int == 1 as libc::c_int {
+                                    (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                        >> 1 as libc::c_int)
+                                        + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                            & 1 as libc::c_int as libc::c_long)
+                                } else {
+                                    (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                        >> 31 as libc::c_int - 1 as libc::c_int)
+                                        + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                                }) as opus_int32
+                        })
+                    }) as opus_int64 * rc_mult2 as libc::c_long
+                        & 1 as libc::c_int as libc::c_long)
+            } else {
+                ((if (tmp2 as opus_uint32)
+                    .wrapping_sub(
+                        (if 31 as libc::c_int == 1 as libc::c_int {
+                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                >> 1 as libc::c_int)
+                                + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                    & 1 as libc::c_int as libc::c_long)
+                        } else {
+                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                >> 31 as libc::c_int - 1 as libc::c_int)
+                                + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                        }) as opus_int32 as opus_uint32,
+                    ) & 0x80000000 as libc::c_uint == 0 as libc::c_int as libc::c_uint
+                {
+                    (if tmp2 as libc::c_uint
+                        & ((if 31 as libc::c_int == 1 as libc::c_int {
+                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                >> 1 as libc::c_int)
+                                + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                    & 1 as libc::c_int as libc::c_long)
+                        } else {
+                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                >> 31 as libc::c_int - 1 as libc::c_int)
+                                + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                        }) as opus_int32 as libc::c_uint ^ 0x80000000 as libc::c_uint)
+                        & 0x80000000 as libc::c_uint != 0
+                    {
+                        0x80000000 as libc::c_uint as opus_int32
+                    } else {
+                        tmp2
+                            - (if 31 as libc::c_int == 1 as libc::c_int {
+                                (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 1 as libc::c_int)
                                     + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
                                         & 1 as libc::c_int as libc::c_long)
                             } else {
                                 (tmp1 as opus_int64 * rc_Q31 as libc::c_long
                                     >> 31 as libc::c_int - 1 as libc::c_int)
-                                    + 1 as libc::c_int as libc::c_long
-                                    >> 1 as libc::c_int
+                                    + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
                             }) as opus_int32
-                        })
-                    }) as opus_int64
-                        * rc_mult2 as libc::c_long
-                        & 1 as libc::c_int as libc::c_long)
-            } else {
-                ((if (tmp2 as opus_uint32).wrapping_sub(
-                    (if 31 as libc::c_int == 1 as libc::c_int {
-                        (tmp1 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
-                            + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
-                                & 1 as libc::c_int as libc::c_long)
-                    } else {
-                        (tmp1 as opus_int64 * rc_Q31 as libc::c_long
-                            >> 31 as libc::c_int - 1 as libc::c_int)
-                            + 1 as libc::c_int as libc::c_long
-                            >> 1 as libc::c_int
-                    }) as opus_int32 as opus_uint32,
-                ) & 0x80000000 as libc::c_uint
-                    == 0 as libc::c_int as libc::c_uint
-                {
-                    (if tmp2 as libc::c_uint
-                        & ((if 31 as libc::c_int == 1 as libc::c_int {
-                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
-                                + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
-                                    & 1 as libc::c_int as libc::c_long)
-                        } else {
-                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long
-                                >> 31 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int as libc::c_long
-                                >> 1 as libc::c_int
-                        }) as opus_int32 as libc::c_uint
-                            ^ 0x80000000 as libc::c_uint)
-                        & 0x80000000 as libc::c_uint
-                        != 0
-                    {
-                        0x80000000 as libc::c_uint as opus_int32
-                    } else {
-                        tmp2 - (if 31 as libc::c_int == 1 as libc::c_int {
-                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
-                                + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
-                                    & 1 as libc::c_int as libc::c_long)
-                        } else {
-                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long
-                                >> 31 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int as libc::c_long
-                                >> 1 as libc::c_int
-                        }) as opus_int32
                     })
                 } else {
                     (if (tmp2 as libc::c_uint ^ 0x80000000 as libc::c_uint)
                         & (if 31 as libc::c_int == 1 as libc::c_int {
-                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
+                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                >> 1 as libc::c_int)
                                 + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
                                     & 1 as libc::c_int as libc::c_long)
                         } else {
                             (tmp1 as opus_int64 * rc_Q31 as libc::c_long
                                 >> 31 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int as libc::c_long
-                                >> 1 as libc::c_int
-                        }) as opus_int32 as libc::c_uint
-                        & 0x80000000 as libc::c_uint
+                                + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                        }) as opus_int32 as libc::c_uint & 0x80000000 as libc::c_uint
                         != 0
                     {
                         0x7fffffff as libc::c_int
                     } else {
-                        tmp2 - (if 31 as libc::c_int == 1 as libc::c_int {
-                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long >> 1 as libc::c_int)
-                                + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
-                                    & 1 as libc::c_int as libc::c_long)
-                        } else {
-                            (tmp1 as opus_int64 * rc_Q31 as libc::c_long
-                                >> 31 as libc::c_int - 1 as libc::c_int)
-                                + 1 as libc::c_int as libc::c_long
-                                >> 1 as libc::c_int
-                        }) as opus_int32
+                        tmp2
+                            - (if 31 as libc::c_int == 1 as libc::c_int {
+                                (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 1 as libc::c_int)
+                                    + (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                        & 1 as libc::c_int as libc::c_long)
+                            } else {
+                                (tmp1 as opus_int64 * rc_Q31 as libc::c_long
+                                    >> 31 as libc::c_int - 1 as libc::c_int)
+                                    + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
+                            }) as opus_int32
                     })
-                }) as opus_int64
-                    * rc_mult2 as libc::c_long
-                    >> mult2Q - 1 as libc::c_int)
-                    + 1 as libc::c_int as libc::c_long
-                    >> 1 as libc::c_int
+                }) as opus_int64 * rc_mult2 as libc::c_long >> mult2Q - 1 as libc::c_int)
+                    + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
             };
-            if tmp64 > 0x7fffffff as libc::c_int as libc::c_long
-                || tmp64 < 0x80000000 as libc::c_uint as opus_int32 as libc::c_long
+            if tmp64 > silk_int32_MAX as libc::c_long
+                || tmp64 < silk_int32_MIN as libc::c_long
             {
                 return 0 as libc::c_int;
             }
@@ -645,31 +657,25 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
         }
         k -= 1;
     }
-    if *A_QA.offset(k as isize)
-        > (0.99975f64 * ((1 as libc::c_int as opus_int64) << 24 as libc::c_int) as libc::c_double
-            + 0.5f64) as opus_int32
-        || *A_QA.offset(k as isize)
-            < -((0.99975f64
-                * ((1 as libc::c_int as opus_int64) << 24 as libc::c_int) as libc::c_double
-                + 0.5f64) as opus_int32)
+    if *A_QA.offset(k as isize) > A_LIMIT as opus_int32
+        || *A_QA.offset(k as isize) < -(A_LIMIT as opus_int32)
     {
         return 0 as libc::c_int;
     }
     rc_Q31 = -(((*A_QA.offset(0 as libc::c_int as isize) as opus_uint32)
         << 31 as libc::c_int - 24 as libc::c_int) as opus_int32);
     rc_mult1_Q30 = ((1 as libc::c_int as libc::c_long
-        * ((1 as libc::c_int as opus_int64) << 30 as libc::c_int))
-        as libc::c_double
+        * ((1 as libc::c_int as opus_int64) << 30 as libc::c_int)) as libc::c_double
         + 0.5f64) as opus_int32
-        - (rc_Q31 as opus_int64 * rc_Q31 as libc::c_long >> 32 as libc::c_int) as opus_int32;
-    invGain_Q30 = (((invGain_Q30 as opus_int64 * rc_mult1_Q30 as libc::c_long >> 32 as libc::c_int)
-        as opus_int32 as opus_uint32)
-        << 2 as libc::c_int) as opus_int32;
+        - (rc_Q31 as opus_int64 * rc_Q31 as libc::c_long >> 32 as libc::c_int)
+            as opus_int32;
+    invGain_Q30 = (((invGain_Q30 as opus_int64 * rc_mult1_Q30 as libc::c_long
+        >> 32 as libc::c_int) as opus_int32 as opus_uint32) << 2 as libc::c_int)
+        as opus_int32;
     if invGain_Q30
         < ((1.0f32 / 1e4f32
             * ((1 as libc::c_int as opus_int64) << 30 as libc::c_int) as libc::c_float)
-            as libc::c_double
-            + 0.5f64) as opus_int32
+            as libc::c_double + 0.5f64) as opus_int32
     {
         return 0 as libc::c_int;
     }
@@ -687,7 +693,8 @@ pub unsafe extern "C" fn silk_LPC_inverse_pred_gain_c(
     k = 0 as libc::c_int;
     while k < order {
         DC_resp += *A_Q12.offset(k as isize) as opus_int32;
-        Atmp_QA[k as usize] = ((*A_Q12.offset(k as isize) as opus_int32 as opus_uint32)
+        Atmp_QA[k
+            as usize] = ((*A_Q12.offset(k as isize) as opus_int32 as opus_uint32)
             << 24 as libc::c_int - 12 as libc::c_int) as opus_int32;
         k += 1;
     }

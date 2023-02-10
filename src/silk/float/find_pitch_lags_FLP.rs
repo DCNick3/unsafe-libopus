@@ -18,7 +18,7 @@ pub mod stdint_intn_h {
     pub type int16_t = __int16_t;
     #[c2rust::src_loc = "26:1"]
     pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t, __int8_t};
+    use super::types_h::{__int8_t, __int16_t, __int32_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:33"]
 pub mod stdint_uintn_h {
@@ -36,7 +36,7 @@ pub mod opus_types_h {
     pub type opus_int16 = int16_t;
     #[c2rust::src_loc = "55:4"]
     pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::{int16_t, int32_t, int8_t};
+    use super::stdint_intn_h::{int8_t, int16_t, int32_t};
     use super::stdint_uintn_h::uint8_t;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:33"]
@@ -67,7 +67,7 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int16, opus_int32};
+    use super::opus_types_h::{opus_int32, opus_int16};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:33"]
 pub mod structs_h {
@@ -227,7 +227,7 @@ pub mod structs_h {
         pub indices_LBRR: [SideInfoIndices; 3],
         pub pulses_LBRR: [[opus_int8; 320]; 3],
     }
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
+    use super::opus_types_h::{opus_int16, opus_int32, opus_uint8, opus_int8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:33"]
@@ -272,7 +272,7 @@ pub mod structs_FLP_h {
         pub GainsUnq_Q16: [opus_int32; 4],
         pub lastGainIndexPrev: opus_int8,
     }
-    use super::opus_types_h::{opus_int32, opus_int8};
+    use super::opus_types_h::{opus_int8, opus_int32};
     use super::structs_h::silk_encoder_state;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
@@ -290,7 +290,11 @@ pub mod arch_h {
 pub mod string_h {
     extern "C" {
         #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
+        pub fn memset(
+            _: *mut libc::c_void,
+            _: libc::c_int,
+            _: libc::c_ulong,
+        ) -> *mut libc::c_void;
         #[c2rust::src_loc = "43:14"]
         pub fn memcpy(
             _: *mut libc::c_void,
@@ -319,12 +323,25 @@ pub mod main_FLP_h {
         );
     }
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:33"]
+pub mod define_h {
+    #[c2rust::src_loc = "70:9"]
+    pub const TYPE_NO_VOICE_ACTIVITY: libc::c_int = 0 as libc::c_int;
+    #[c2rust::src_loc = "72:9"]
+    pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
+    #[c2rust::src_loc = "71:9"]
+    pub const TYPE_UNVOICED: libc::c_int = 1 as libc::c_int;
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:33"]
 pub mod SigProc_FLP_h {
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int8};
+    use super::opus_types_h::{opus_int32, opus_int16, opus_int8};
     extern "C" {
         #[c2rust::src_loc = "45:1"]
-        pub fn silk_bwexpander_FLP(ar: *mut libc::c_float, d: libc::c_int, chirp: libc::c_float);
+        pub fn silk_bwexpander_FLP(
+            ar: *mut libc::c_float,
+            d: libc::c_int,
+            chirp: libc::c_float,
+        );
         #[c2rust::src_loc = "59:1"]
         pub fn silk_schur_FLP(
             refl_coef: *mut libc::c_float,
@@ -332,7 +349,11 @@ pub mod SigProc_FLP_h {
             order: libc::c_int,
         ) -> libc::c_float;
         #[c2rust::src_loc = "65:1"]
-        pub fn silk_k2a_FLP(A: *mut libc::c_float, rc: *const libc::c_float, order: opus_int32);
+        pub fn silk_k2a_FLP(
+            A: *mut libc::c_float,
+            rc: *const libc::c_float,
+            order: opus_int32,
+        );
         #[c2rust::src_loc = "72:1"]
         pub fn silk_autocorrelation_FLP(
             results: *mut libc::c_float,
@@ -357,26 +378,37 @@ pub mod SigProc_FLP_h {
         ) -> libc::c_int;
     }
 }
-use self::arch_h::celt_fatal;
-use self::main_FLP_h::{silk_LPC_analysis_filter_FLP, silk_apply_sine_window_FLP};
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
-pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
-};
-pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tuning_parameters.h:34"]
+pub mod tuning_parameters_h {
+    #[c2rust::src_loc = "44:9"]
+    pub const FIND_PITCH_WHITE_NOISE_FRACTION: libc::c_float = 1e-3f32;
+    #[c2rust::src_loc = "47:9"]
+    pub const FIND_PITCH_BANDWIDTH_EXPANSION: libc::c_float = 0.99f32;
+}
+pub use self::types_h::{__int8_t, __uint8_t, __int16_t, __int32_t};
+pub use self::stdint_intn_h::{int8_t, int16_t, int32_t};
 pub use self::stdint_uintn_h::uint8_t;
-use self::string_h::{memcpy, memset};
-pub use self::structs_FLP_h::{
-    silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
+pub use self::opus_types_h::{opus_int8, opus_uint8, opus_int16, opus_int32};
+pub use self::resampler_structs_h::{
+    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
 };
 pub use self::structs_h::{
-    silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
-    SideInfoIndices,
+    silk_nsq_state, silk_VAD_state, silk_LP_state, silk_NLSF_CB_struct, SideInfoIndices,
+    silk_encoder_state,
 };
-pub use self::types_h::{__int16_t, __int32_t, __int8_t, __uint8_t};
+pub use self::structs_FLP_h::{
+    silk_shape_state_FLP, silk_encoder_state_FLP, silk_encoder_control_FLP,
+};
+use self::arch_h::celt_fatal;
+use self::string_h::{memset, memcpy};
+use self::main_FLP_h::{silk_apply_sine_window_FLP, silk_LPC_analysis_filter_FLP};
+pub use self::define_h::{TYPE_NO_VOICE_ACTIVITY, TYPE_VOICED, TYPE_UNVOICED};
 use self::SigProc_FLP_h::{
-    silk_autocorrelation_FLP, silk_bwexpander_FLP, silk_k2a_FLP, silk_pitch_analysis_core_FLP,
-    silk_schur_FLP,
+    silk_bwexpander_FLP, silk_schur_FLP, silk_k2a_FLP, silk_autocorrelation_FLP,
+    silk_pitch_analysis_core_FLP,
+};
+pub use self::tuning_parameters_h::{
+    FIND_PITCH_WHITE_NOISE_FRACTION, FIND_PITCH_BANDWIDTH_EXPANSION,
 };
 #[no_mangle]
 #[c2rust::src_loc = "36:1"]
@@ -397,11 +429,12 @@ pub unsafe extern "C" fn silk_find_pitch_lags_FLP(
     let mut refl_coef: [libc::c_float; 16] = [0.; 16];
     let mut Wsig: [libc::c_float; 384] = [0.; 384];
     let mut Wsig_ptr: *mut libc::c_float = 0 as *mut libc::c_float;
-    buf_len = (*psEnc).sCmn.la_pitch + (*psEnc).sCmn.frame_length + (*psEnc).sCmn.ltp_mem_length;
+    buf_len = (*psEnc).sCmn.la_pitch + (*psEnc).sCmn.frame_length
+        + (*psEnc).sCmn.ltp_mem_length;
     if !(buf_len >= (*psEnc).sCmn.pitch_LPC_win_length) {
         celt_fatal(
-            b"assertion failed: buf_len >= psEnc->sCmn.pitch_LPC_win_length\0" as *const u8
-                as *const libc::c_char,
+            b"assertion failed: buf_len >= psEnc->sCmn.pitch_LPC_win_length\0"
+                as *const u8 as *const libc::c_char,
             b"silk/float/find_pitch_lags_FLP.c\0" as *const u8 as *const libc::c_char,
             59 as libc::c_int,
         );
@@ -422,18 +455,20 @@ pub unsafe extern "C" fn silk_find_pitch_lags_FLP(
     memcpy(
         Wsig_ptr as *mut libc::c_void,
         x_buf_ptr as *const libc::c_void,
-        (((*psEnc).sCmn.pitch_LPC_win_length - ((*psEnc).sCmn.la_pitch << 1 as libc::c_int))
-            as libc::c_ulong)
+        (((*psEnc).sCmn.pitch_LPC_win_length
+            - ((*psEnc).sCmn.la_pitch << 1 as libc::c_int)) as libc::c_ulong)
             .wrapping_mul(::core::mem::size_of::<libc::c_float>() as libc::c_ulong),
     );
-    Wsig_ptr = Wsig_ptr.offset(
-        ((*psEnc).sCmn.pitch_LPC_win_length - ((*psEnc).sCmn.la_pitch << 1 as libc::c_int))
-            as isize,
-    );
-    x_buf_ptr = x_buf_ptr.offset(
-        ((*psEnc).sCmn.pitch_LPC_win_length - ((*psEnc).sCmn.la_pitch << 1 as libc::c_int))
-            as isize,
-    );
+    Wsig_ptr = Wsig_ptr
+        .offset(
+            ((*psEnc).sCmn.pitch_LPC_win_length
+                - ((*psEnc).sCmn.la_pitch << 1 as libc::c_int)) as isize,
+        );
+    x_buf_ptr = x_buf_ptr
+        .offset(
+            ((*psEnc).sCmn.pitch_LPC_win_length
+                - ((*psEnc).sCmn.la_pitch << 1 as libc::c_int)) as isize,
+        );
     silk_apply_sine_window_FLP(
         Wsig_ptr,
         x_buf_ptr,
@@ -446,15 +481,17 @@ pub unsafe extern "C" fn silk_find_pitch_lags_FLP(
         (*psEnc).sCmn.pitch_LPC_win_length,
         (*psEnc).sCmn.pitchEstimationLPCOrder + 1 as libc::c_int,
     );
-    auto_corr[0 as libc::c_int as usize] +=
-        auto_corr[0 as libc::c_int as usize] * 1e-3f32 + 1 as libc::c_int as libc::c_float;
+    auto_corr[0 as libc::c_int as usize]
+        += auto_corr[0 as libc::c_int as usize] * FIND_PITCH_WHITE_NOISE_FRACTION
+            + 1 as libc::c_int as libc::c_float;
     res_nrg = silk_schur_FLP(
         refl_coef.as_mut_ptr(),
         auto_corr.as_mut_ptr() as *const libc::c_float,
         (*psEnc).sCmn.pitchEstimationLPCOrder,
     );
-    (*psEncCtrl).predGain =
-        auto_corr[0 as libc::c_int as usize] / (if res_nrg > 1.0f32 { res_nrg } else { 1.0f32 });
+    (*psEncCtrl)
+        .predGain = auto_corr[0 as libc::c_int as usize]
+        / (if res_nrg > 1.0f32 { res_nrg } else { 1.0f32 });
     silk_k2a_FLP(
         A.as_mut_ptr(),
         refl_coef.as_mut_ptr(),
@@ -463,7 +500,7 @@ pub unsafe extern "C" fn silk_find_pitch_lags_FLP(
     silk_bwexpander_FLP(
         A.as_mut_ptr(),
         (*psEnc).sCmn.pitchEstimationLPCOrder,
-        0.99f32,
+        FIND_PITCH_BANDWIDTH_EXPANSION,
     );
     silk_LPC_analysis_filter_FLP(
         res,
@@ -472,15 +509,21 @@ pub unsafe extern "C" fn silk_find_pitch_lags_FLP(
         buf_len,
         (*psEnc).sCmn.pitchEstimationLPCOrder,
     );
-    if (*psEnc).sCmn.indices.signalType as libc::c_int != 0 as libc::c_int
+    if (*psEnc).sCmn.indices.signalType as libc::c_int != TYPE_NO_VOICE_ACTIVITY
         && (*psEnc).sCmn.first_frame_after_reset == 0 as libc::c_int
     {
         thrhld = 0.6f32;
         thrhld -= 0.004f32 * (*psEnc).sCmn.pitchEstimationLPCOrder as libc::c_float;
-        thrhld -= 0.1f32 * (*psEnc).sCmn.speech_activity_Q8 as libc::c_float * (1.0f32 / 256.0f32);
-        thrhld -= 0.15f32
-            * ((*psEnc).sCmn.prevSignalType as libc::c_int >> 1 as libc::c_int) as libc::c_float;
-        thrhld -= 0.1f32 * (*psEnc).sCmn.input_tilt_Q15 as libc::c_float * (1.0f32 / 32768.0f32);
+        thrhld
+            -= 0.1f32 * (*psEnc).sCmn.speech_activity_Q8 as libc::c_float
+                * (1.0f32 / 256.0f32);
+        thrhld
+            -= 0.15f32
+                * ((*psEnc).sCmn.prevSignalType as libc::c_int >> 1 as libc::c_int)
+                    as libc::c_float;
+        thrhld
+            -= 0.1f32 * (*psEnc).sCmn.input_tilt_Q15 as libc::c_float
+                * (1.0f32 / 32768.0f32);
         if silk_pitch_analysis_core_FLP(
             res as *const libc::c_float,
             ((*psEncCtrl).pitchL).as_mut_ptr(),
@@ -496,9 +539,9 @@ pub unsafe extern "C" fn silk_find_pitch_lags_FLP(
             arch,
         ) == 0 as libc::c_int
         {
-            (*psEnc).sCmn.indices.signalType = 2 as libc::c_int as opus_int8;
+            (*psEnc).sCmn.indices.signalType = TYPE_VOICED as opus_int8;
         } else {
-            (*psEnc).sCmn.indices.signalType = 1 as libc::c_int as opus_int8;
+            (*psEnc).sCmn.indices.signalType = TYPE_UNVOICED as opus_int8;
         }
     } else {
         memset(

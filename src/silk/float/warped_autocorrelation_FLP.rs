@@ -80,8 +80,10 @@ pub unsafe extern "C" fn silk_warped_autocorrelation_FLP(
     ];
     if !(order & 1 as libc::c_int == 0 as libc::c_int) {
         celt_fatal(
-            b"assertion failed: ( order & 1 ) == 0\0" as *const u8 as *const libc::c_char,
-            b"silk/float/warped_autocorrelation_FLP.c\0" as *const u8 as *const libc::c_char,
+            b"assertion failed: ( order & 1 ) == 0\0" as *const u8
+                as *const libc::c_char,
+            b"silk/float/warped_autocorrelation_FLP.c\0" as *const u8
+                as *const libc::c_char,
             49 as libc::c_int,
         );
     }
@@ -91,13 +93,16 @@ pub unsafe extern "C" fn silk_warped_autocorrelation_FLP(
         i = 0 as libc::c_int;
         while i < order {
             tmp2 = state[i as usize]
-                + warping as libc::c_double * (state[(i + 1 as libc::c_int) as usize] - tmp1);
+                + warping as libc::c_double
+                    * (state[(i + 1 as libc::c_int) as usize] - tmp1);
             state[i as usize] = tmp1;
             C[i as usize] += state[0 as libc::c_int as usize] * tmp1;
             tmp1 = state[(i + 1 as libc::c_int) as usize]
-                + warping as libc::c_double * (state[(i + 2 as libc::c_int) as usize] - tmp2);
+                + warping as libc::c_double
+                    * (state[(i + 2 as libc::c_int) as usize] - tmp2);
             state[(i + 1 as libc::c_int) as usize] = tmp2;
-            C[(i + 1 as libc::c_int) as usize] += state[0 as libc::c_int as usize] * tmp2;
+            C[(i + 1 as libc::c_int) as usize]
+                += state[0 as libc::c_int as usize] * tmp2;
             i += 2 as libc::c_int;
         }
         state[order as usize] = tmp1;

@@ -18,7 +18,7 @@ pub mod stdint_intn_h {
     pub type int16_t = __int16_t;
     #[c2rust::src_loc = "26:1"]
     pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t, __int8_t};
+    use super::types_h::{__int8_t, __int16_t, __int32_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
 pub mod stdint_uintn_h {
@@ -36,7 +36,7 @@ pub mod opus_types_h {
     pub type opus_int16 = int16_t;
     #[c2rust::src_loc = "55:4"]
     pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::{int16_t, int32_t, int8_t};
+    use super::stdint_intn_h::{int8_t, int16_t, int32_t};
     use super::stdint_uintn_h::uint8_t;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:32"]
@@ -67,7 +67,7 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int16, opus_int32};
+    use super::opus_types_h::{opus_int32, opus_int16};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
 pub mod structs_h {
@@ -227,7 +227,7 @@ pub mod structs_h {
         pub indices_LBRR: [SideInfoIndices; 3],
         pub pulses_LBRR: [[opus_int8; 320]; 3],
     }
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
+    use super::opus_types_h::{opus_int16, opus_int32, opus_uint8, opus_int8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:32"]
@@ -272,7 +272,7 @@ pub mod structs_FLP_h {
         pub GainsUnq_Q16: [opus_int32; 4],
         pub lastGainIndexPrev: opus_int8,
     }
-    use super::opus_types_h::{opus_int32, opus_int8};
+    use super::opus_types_h::{opus_int8, opus_int32};
     use super::structs_h::silk_encoder_state;
 }
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:32"]
@@ -316,7 +316,7 @@ pub mod tables_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
-    use super::opus_types_h::{opus_int32, opus_int8};
+    use super::opus_types_h::{opus_int8, opus_int32};
     extern "C" {
         #[c2rust::src_loc = "178:1"]
         pub fn silk_gains_quant(
@@ -328,25 +328,52 @@ pub mod main_h {
         );
     }
 }
-use self::main_h::silk_gains_quant;
-use self::mathcalls_h::{exp, pow, sqrt};
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
-pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
-};
-pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
+pub mod define_h {
+    #[c2rust::src_loc = "77:9"]
+    pub const CODE_CONDITIONALLY: libc::c_int = 2 as libc::c_int;
+    #[c2rust::src_loc = "72:9"]
+    pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tuning_parameters.h:33"]
+pub mod tuning_parameters_h {
+    #[c2rust::src_loc = "138:9"]
+    pub const LAMBDA_OFFSET: libc::c_float = 1.2f32;
+    #[c2rust::src_loc = "139:9"]
+    pub const LAMBDA_SPEECH_ACT: libc::c_float = -0.2f32;
+    #[c2rust::src_loc = "140:9"]
+    pub const LAMBDA_DELAYED_DECISIONS: libc::c_float = -0.05f32;
+    #[c2rust::src_loc = "141:9"]
+    pub const LAMBDA_INPUT_QUALITY: libc::c_float = -0.1f32;
+    #[c2rust::src_loc = "142:9"]
+    pub const LAMBDA_CODING_QUALITY: libc::c_float = -0.2f32;
+    #[c2rust::src_loc = "143:9"]
+    pub const LAMBDA_QUANT_OFFSET: libc::c_float = 0.8f32;
+}
+pub use self::types_h::{__int8_t, __uint8_t, __int16_t, __int32_t};
+pub use self::stdint_intn_h::{int8_t, int16_t, int32_t};
 pub use self::stdint_uintn_h::uint8_t;
-use self::string_h::memcpy;
-pub use self::structs_FLP_h::{
-    silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
+pub use self::opus_types_h::{opus_int8, opus_uint8, opus_int16, opus_int32};
+pub use self::resampler_structs_h::{
+    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
 };
 pub use self::structs_h::{
-    silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
-    SideInfoIndices,
+    silk_nsq_state, silk_VAD_state, silk_LP_state, silk_NLSF_CB_struct, SideInfoIndices,
+    silk_encoder_state,
 };
-use self::tables_h::silk_Quantization_Offsets_Q10;
-pub use self::types_h::{__int16_t, __int32_t, __int8_t, __uint8_t};
+pub use self::structs_FLP_h::{
+    silk_shape_state_FLP, silk_encoder_state_FLP, silk_encoder_control_FLP,
+};
+use self::mathcalls_h::{exp, pow, sqrt};
+use self::string_h::memcpy;
 pub use self::SigProc_FLP_h::silk_sigmoid;
+use self::tables_h::silk_Quantization_Offsets_Q10;
+use self::main_h::silk_gains_quant;
+pub use self::define_h::{CODE_CONDITIONALLY, TYPE_VOICED};
+pub use self::tuning_parameters_h::{
+    LAMBDA_OFFSET, LAMBDA_SPEECH_ACT, LAMBDA_DELAYED_DECISIONS, LAMBDA_INPUT_QUALITY,
+    LAMBDA_CODING_QUALITY, LAMBDA_QUANT_OFFSET,
+};
 #[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_process_gains_FLP(
@@ -361,8 +388,9 @@ pub unsafe extern "C" fn silk_process_gains_FLP(
     let mut InvMaxSqrVal: libc::c_float = 0.;
     let mut gain: libc::c_float = 0.;
     let mut quant_offset: libc::c_float = 0.;
-    if (*psEnc).sCmn.indices.signalType as libc::c_int == 2 as libc::c_int {
-        s = 1.0f32 - 0.5f32 * silk_sigmoid(0.25f32 * ((*psEncCtrl).LTPredCodGain - 12.0f32));
+    if (*psEnc).sCmn.indices.signalType as libc::c_int == TYPE_VOICED {
+        s = 1.0f32
+            - 0.5f32 * silk_sigmoid(0.25f32 * ((*psEncCtrl).LTPredCodGain - 12.0f32));
         k = 0 as libc::c_int;
         while k < (*psEnc).sCmn.nb_subfr {
             (*psEncCtrl).Gains[k as usize] *= s;
@@ -379,15 +407,18 @@ pub unsafe extern "C" fn silk_process_gains_FLP(
     k = 0 as libc::c_int;
     while k < (*psEnc).sCmn.nb_subfr {
         gain = (*psEncCtrl).Gains[k as usize];
-        gain =
-            sqrt((gain * gain + (*psEncCtrl).ResNrg[k as usize] * InvMaxSqrVal) as libc::c_double)
-                as libc::c_float;
-        (*psEncCtrl).Gains[k as usize] = if gain < 32767.0f32 { gain } else { 32767.0f32 };
+        gain = sqrt(
+            (gain * gain + (*psEncCtrl).ResNrg[k as usize] * InvMaxSqrVal)
+                as libc::c_double,
+        ) as libc::c_float;
+        (*psEncCtrl)
+            .Gains[k as usize] = if gain < 32767.0f32 { gain } else { 32767.0f32 };
         k += 1;
     }
     k = 0 as libc::c_int;
     while k < (*psEnc).sCmn.nb_subfr {
-        pGains_Q16[k as usize] = ((*psEncCtrl).Gains[k as usize] * 65536.0f32) as opus_int32;
+        pGains_Q16[k
+            as usize] = ((*psEncCtrl).Gains[k as usize] * 65536.0f32) as opus_int32;
         k += 1;
     }
     memcpy(
@@ -401,15 +432,16 @@ pub unsafe extern "C" fn silk_process_gains_FLP(
         ((*psEnc).sCmn.indices.GainsIndices).as_mut_ptr(),
         pGains_Q16.as_mut_ptr(),
         &mut (*psShapeSt).LastGainIndex,
-        (condCoding == 2 as libc::c_int) as libc::c_int,
+        (condCoding == CODE_CONDITIONALLY) as libc::c_int,
         (*psEnc).sCmn.nb_subfr,
     );
     k = 0 as libc::c_int;
     while k < (*psEnc).sCmn.nb_subfr {
-        (*psEncCtrl).Gains[k as usize] = pGains_Q16[k as usize] as libc::c_float / 65536.0f32;
+        (*psEncCtrl)
+            .Gains[k as usize] = pGains_Q16[k as usize] as libc::c_float / 65536.0f32;
         k += 1;
     }
-    if (*psEnc).sCmn.indices.signalType as libc::c_int == 2 as libc::c_int {
+    if (*psEnc).sCmn.indices.signalType as libc::c_int == TYPE_VOICED {
         if (*psEncCtrl).LTPredCodGain
             + (*psEnc).sCmn.input_tilt_Q15 as libc::c_float * (1.0f32 / 32768.0f32)
             > 1.0f32
@@ -419,15 +451,16 @@ pub unsafe extern "C" fn silk_process_gains_FLP(
             (*psEnc).sCmn.indices.quantOffsetType = 1 as libc::c_int as opus_int8;
         }
     }
-    quant_offset = silk_Quantization_Offsets_Q10
-        [((*psEnc).sCmn.indices.signalType as libc::c_int >> 1 as libc::c_int) as usize]
-        [(*psEnc).sCmn.indices.quantOffsetType as usize] as libc::c_int
-        as libc::c_float
-        / 1024.0f32;
-    (*psEncCtrl).Lambda = 1.2f32
-        + -0.05f32 * (*psEnc).sCmn.nStatesDelayedDecision as libc::c_float
-        + -0.2f32 * (*psEnc).sCmn.speech_activity_Q8 as libc::c_float * (1.0f32 / 256.0f32)
-        + -0.1f32 * (*psEncCtrl).input_quality
-        + -0.2f32 * (*psEncCtrl).coding_quality
-        + 0.8f32 * quant_offset;
+    quant_offset = silk_Quantization_Offsets_Q10[((*psEnc).sCmn.indices.signalType
+        as libc::c_int >> 1 as libc::c_int)
+        as usize][(*psEnc).sCmn.indices.quantOffsetType as usize] as libc::c_int
+        as libc::c_float / 1024.0f32;
+    (*psEncCtrl)
+        .Lambda = LAMBDA_OFFSET
+        + LAMBDA_DELAYED_DECISIONS
+            * (*psEnc).sCmn.nStatesDelayedDecision as libc::c_float
+        + LAMBDA_SPEECH_ACT * (*psEnc).sCmn.speech_activity_Q8 as libc::c_float
+            * (1.0f32 / 256.0f32) + LAMBDA_INPUT_QUALITY * (*psEncCtrl).input_quality
+        + LAMBDA_CODING_QUALITY * (*psEncCtrl).coding_quality
+        + LAMBDA_QUANT_OFFSET * quant_offset;
 }

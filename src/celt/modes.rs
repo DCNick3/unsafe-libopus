@@ -53,9 +53,9 @@ pub mod modes_h {
         pub bits: *const libc::c_uchar,
         pub caps: *const libc::c_uchar,
     }
+    use super::opus_types_h::{opus_int32, opus_int16};
     use super::arch_h::opus_val16;
     use super::mdct_h::mdct_lookup;
-    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:35"]
 pub mod mdct_h {
@@ -105,6 +105,18 @@ pub mod kiss_fft_h {
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = libc::c_float;
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:34"]
+pub mod opus_defines_h {
+    #[c2rust::src_loc = "46:9"]
+    pub const OPUS_OK: libc::c_int = 0 as libc::c_int;
+    #[c2rust::src_loc = "48:9"]
+    pub const OPUS_BAD_ARG: libc::c_int = -(1 as libc::c_int);
+}
+#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:34"]
+pub mod stddef_h {
+    #[c2rust::src_loc = "89:11"]
+    pub const NULL: libc::c_int = 0 as libc::c_int;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/static_modes_float.h:69"]
 pub mod static_modes_float_h {
@@ -5231,7 +5243,7 @@ pub mod static_modes_float_h {
                 ],
                 bitrev: fft_bitrev480.as_ptr(),
                 twiddles: fft_twiddles48000_960.as_ptr(),
-                arch_fft: 0 as *const arch_fft_state as *mut arch_fft_state,
+                arch_fft: NULL as *mut arch_fft_state,
             };
             init
         }
@@ -5263,7 +5275,7 @@ pub mod static_modes_float_h {
                 ],
                 bitrev: fft_bitrev240.as_ptr(),
                 twiddles: fft_twiddles48000_960.as_ptr(),
-                arch_fft: 0 as *const arch_fft_state as *mut arch_fft_state,
+                arch_fft: NULL as *mut arch_fft_state,
             };
             init
         }
@@ -5295,7 +5307,7 @@ pub mod static_modes_float_h {
                 ],
                 bitrev: fft_bitrev120.as_ptr(),
                 twiddles: fft_twiddles48000_960.as_ptr(),
-                arch_fft: 0 as *const arch_fft_state as *mut arch_fft_state,
+                arch_fft: NULL as *mut arch_fft_state,
             };
             init
         }
@@ -5327,7 +5339,7 @@ pub mod static_modes_float_h {
                 ],
                 bitrev: fft_bitrev60.as_ptr(),
                 twiddles: fft_twiddles48000_960.as_ptr(),
-                arch_fft: 0 as *const arch_fft_state as *mut arch_fft_state,
+                arch_fft: NULL as *mut arch_fft_state,
             };
             init
         }
@@ -7179,29 +7191,35 @@ pub mod static_modes_float_h {
             init
         }
     };
+    #[c2rust::src_loc = "885:9"]
+    pub const TOTAL_MODES: libc::c_int = 1 as libc::c_int;
     #[c2rust::src_loc = "886:31"]
-    pub static mut static_mode_list: [*const OpusCustomMode; 1] =
-        unsafe { [&mode48000_960_120 as *const OpusCustomMode] };
+    pub static mut static_mode_list: [*const OpusCustomMode; 1] = unsafe {
+        [&mode48000_960_120 as *const OpusCustomMode]
+    };
     use super::arch_h::opus_val16;
-    use super::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
-    use super::mdct_h::mdct_lookup;
-    use super::modes_h::{OpusCustomMode, PulseCache};
     use super::opus_types_h::{opus_int16, opus_int32};
-    use super::{band_allocation, eband5ms};
+    use super::kiss_fft_h::{kiss_twiddle_cpx, arch_fft_state, kiss_fft_state};
+    use super::stddef_h::NULL;
+    use super::mdct_h::mdct_lookup;
+    use super::modes_h::{PulseCache, OpusCustomMode};
+    use super::{eband5ms, band_allocation};
 }
-pub use self::arch_h::opus_val16;
-pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
-pub use self::mdct_h::mdct_lookup;
-pub use self::modes_h::{OpusCustomMode, PulseCache};
-pub use self::opus_types_h::{opus_int16, opus_int32};
-pub use self::static_modes_float_h::{
-    cache_bits50, cache_caps50, cache_index50, fft_bitrev120, fft_bitrev240, fft_bitrev480,
-    fft_bitrev60, fft_state48000_960_0, fft_state48000_960_1, fft_state48000_960_2,
-    fft_state48000_960_3, fft_twiddles48000_960, logN400, mdct_twiddles960, mode48000_960_120,
-    static_mode_list, window120,
-};
-pub use self::stdint_intn_h::{int16_t, int32_t};
 pub use self::types_h::{__int16_t, __int32_t};
+pub use self::stdint_intn_h::{int16_t, int32_t};
+pub use self::opus_types_h::{opus_int16, opus_int32};
+pub use self::modes_h::{OpusCustomMode, PulseCache};
+pub use self::mdct_h::mdct_lookup;
+pub use self::kiss_fft_h::{kiss_fft_state, arch_fft_state, kiss_twiddle_cpx};
+pub use self::arch_h::opus_val16;
+pub use self::opus_defines_h::{OPUS_OK, OPUS_BAD_ARG};
+pub use self::stddef_h::NULL;
+pub use self::static_modes_float_h::{
+    window120, logN400, cache_index50, cache_bits50, cache_caps50, fft_twiddles48000_960,
+    fft_bitrev480, fft_bitrev240, fft_bitrev120, fft_bitrev60, fft_state48000_960_0,
+    fft_state48000_960_1, fft_state48000_960_2, fft_state48000_960_3, mdct_twiddles960,
+    mode48000_960_120, TOTAL_MODES, static_mode_list,
+};
 #[c2rust::src_loc = "42:25"]
 static mut eband5ms: [opus_int16; 22] = [
     0 as libc::c_int as opus_int16,
@@ -7470,7 +7488,7 @@ pub unsafe extern "C" fn opus_custom_mode_create(
 ) -> *mut OpusCustomMode {
     let mut i: libc::c_int = 0;
     i = 0 as libc::c_int;
-    while i < 1 as libc::c_int {
+    while i < TOTAL_MODES {
         let mut j: libc::c_int = 0;
         j = 0 as libc::c_int;
         while j < 4 as libc::c_int {
@@ -7480,7 +7498,7 @@ pub unsafe extern "C" fn opus_custom_mode_create(
                         * (*static_mode_list[i as usize]).nbShortMdcts
             {
                 if !error.is_null() {
-                    *error = 0 as libc::c_int;
+                    *error = OPUS_OK;
                 }
                 return static_mode_list[i as usize] as *mut OpusCustomMode;
             }
@@ -7489,7 +7507,7 @@ pub unsafe extern "C" fn opus_custom_mode_create(
         i += 1;
     }
     if !error.is_null() {
-        *error = -(1 as libc::c_int);
+        *error = OPUS_BAD_ARG;
     }
-    return 0 as *mut OpusCustomMode;
+    return NULL as *mut OpusCustomMode;
 }

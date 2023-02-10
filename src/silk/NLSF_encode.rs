@@ -26,7 +26,7 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     #[c2rust::src_loc = "27:1"]
     pub type int64_t = __int64_t;
-    use super::types_h::{__int16_t, __int32_t, __int64_t, __int8_t};
+    use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
 pub mod stdint_uintn_h {
@@ -36,7 +36,7 @@ pub mod stdint_uintn_h {
     pub type uint16_t = __uint16_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint16_t, __uint32_t, __uint8_t};
+    use super::types_h::{__uint8_t, __uint16_t, __uint32_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
 pub mod opus_types_h {
@@ -54,8 +54,8 @@ pub mod opus_types_h {
     pub type opus_uint32 = uint32_t;
     #[c2rust::src_loc = "57:4"]
     pub type opus_int64 = int64_t;
-    use super::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
-    use super::stdint_uintn_h::{uint16_t, uint32_t, uint8_t};
+    use super::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
+    use super::stdint_uintn_h::{uint8_t, uint16_t, uint32_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
 pub mod structs_h {
@@ -100,25 +100,36 @@ pub mod string_h {
         ) -> *mut libc::c_void;
     }
 }
+#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:32"]
+pub mod limits_h {
+    #[c2rust::src_loc = "63:9"]
+    pub const CHAR_BIT: libc::c_int = __CHAR_BIT__;
+    use super::internal::__CHAR_BIT__;
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:32"]
+pub mod ecintrin_h {
+    #[c2rust::src_loc = "69:11"]
+    pub const EC_CLZ0: libc::c_int = ::core::mem::size_of::<libc::c_uint>()
+        as libc::c_ulong as libc::c_int * CHAR_BIT;
+    use super::limits_h::CHAR_BIT;
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/macros.h:32"]
 pub mod macros_h {
     #[inline]
     #[c2rust::src_loc = "120:1"]
     pub unsafe extern "C" fn silk_CLZ32(mut in32: opus_int32) -> opus_int32 {
         return if in32 != 0 {
-            32 as libc::c_int
-                - (::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int
-                    * 8 as libc::c_int
-                    - (in32 as libc::c_uint).leading_zeros() as i32)
+            32 as libc::c_int - (EC_CLZ0 - (in32 as libc::c_uint).leading_zeros() as i32)
         } else {
             32 as libc::c_int
         };
     }
     use super::opus_types_h::opus_int32;
+    use super::ecintrin_h::EC_CLZ0;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
 pub mod SigProc_FIX_h {
-    use super::opus_types_h::{opus_int16, opus_int32};
+    use super::opus_types_h::{opus_int32, opus_int16};
     extern "C" {
         #[c2rust::src_loc = "176:1"]
         pub fn silk_lin2log(inLin: opus_int32) -> opus_int32;
@@ -139,7 +150,7 @@ pub mod SigProc_FIX_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
+    use super::opus_types_h::{opus_int16, opus_int8, opus_uint8, opus_int32};
     use super::structs_h::silk_NLSF_CB_struct;
     extern "C" {
         #[c2rust::src_loc = "383:1"]
@@ -179,6 +190,11 @@ pub mod main_h {
         );
     }
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
+pub mod define_h {
+    #[c2rust::src_loc = "142:9"]
+    pub const MAX_LPC_ORDER: libc::c_int = 16 as libc::c_int;
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/Inlines.h:32"]
 pub mod Inlines_h {
     #[inline]
@@ -195,21 +211,25 @@ pub mod Inlines_h {
         let mut a32_nrm: opus_int32 = 0;
         let mut b32_nrm: opus_int32 = 0;
         let mut result: opus_int32 = 0;
-        a_headrm = silk_CLZ32((if a32 > 0 as libc::c_int { a32 } else { -a32 })) - 1 as libc::c_int;
+        a_headrm = silk_CLZ32((if a32 > 0 as libc::c_int { a32 } else { -a32 }))
+            - 1 as libc::c_int;
         a32_nrm = ((a32 as opus_uint32) << a_headrm) as opus_int32;
-        b_headrm = silk_CLZ32((if b32 > 0 as libc::c_int { b32 } else { -b32 })) - 1 as libc::c_int;
+        b_headrm = silk_CLZ32((if b32 > 0 as libc::c_int { b32 } else { -b32 }))
+            - 1 as libc::c_int;
         b32_nrm = ((b32 as opus_uint32) << b_headrm) as opus_int32;
-        b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int) / (b32_nrm >> 16 as libc::c_int);
+        b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int)
+            / (b32_nrm >> 16 as libc::c_int);
         result = (a32_nrm as libc::c_long * b32_inv as opus_int16 as opus_int64
             >> 16 as libc::c_int) as opus_int32;
-        a32_nrm = (a32_nrm as opus_uint32).wrapping_sub(
-            (((b32_nrm as opus_int64 * result as libc::c_long >> 32 as libc::c_int) as opus_int32
-                as opus_uint32)
-                << 3 as libc::c_int) as opus_int32 as opus_uint32,
-        ) as opus_int32;
+        a32_nrm = (a32_nrm as opus_uint32)
+            .wrapping_sub(
+                (((b32_nrm as opus_int64 * result as libc::c_long >> 32 as libc::c_int)
+                    as opus_int32 as opus_uint32) << 3 as libc::c_int) as opus_int32
+                    as opus_uint32,
+            ) as opus_int32;
         result = (result as libc::c_long
-            + (a32_nrm as libc::c_long * b32_inv as opus_int16 as opus_int64 >> 16 as libc::c_int))
-            as opus_int32;
+            + (a32_nrm as libc::c_long * b32_inv as opus_int16 as opus_int64
+                >> 16 as libc::c_int)) as opus_int32;
         lshift = 29 as libc::c_int + a_headrm - b_headrm - Qres;
         if lshift < 0 as libc::c_int {
             return (((if 0x80000000 as libc::c_uint as opus_int32 >> -lshift
@@ -234,32 +254,44 @@ pub mod Inlines_h {
                         result
                     })
                 })
-            }) as opus_uint32)
-                << -lshift) as opus_int32;
+            }) as opus_uint32) << -lshift) as opus_int32
         } else if lshift < 32 as libc::c_int {
-            return result >> lshift;
+            return result >> lshift
         } else {
-            return 0 as libc::c_int;
+            return 0 as libc::c_int
         };
     }
+    use super::opus_types_h::{opus_int32, opus_uint32, opus_int16, opus_int64};
     use super::macros_h::silk_CLZ32;
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
 }
-use self::arch_h::celt_fatal;
-pub use self::macros_h::silk_CLZ32;
-use self::main_h::{silk_NLSF_VQ, silk_NLSF_decode, silk_NLSF_del_dec_quant, silk_NLSF_unpack};
-pub use self::opus_types_h::{
-    opus_int16, opus_int32, opus_int64, opus_int8, opus_uint16, opus_uint32, opus_uint8,
-};
-pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
-pub use self::stdint_uintn_h::{uint16_t, uint32_t, uint8_t};
-use self::string_h::memcpy;
-pub use self::structs_h::silk_NLSF_CB_struct;
+#[c2rust::header_src = "internal:0"]
+pub mod internal {
+    #[c2rust::src_loc = "36:9"]
+    pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
+}
 pub use self::types_h::{
-    __int16_t, __int32_t, __int64_t, __int8_t, __uint16_t, __uint32_t, __uint8_t,
+    __int8_t, __uint8_t, __int16_t, __uint16_t, __int32_t, __uint32_t, __int64_t,
 };
+pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
+pub use self::stdint_uintn_h::{uint8_t, uint16_t, uint32_t};
+pub use self::opus_types_h::{
+    opus_int8, opus_uint8, opus_int16, opus_uint16, opus_int32, opus_uint32, opus_int64,
+};
+pub use self::structs_h::silk_NLSF_CB_struct;
+use self::arch_h::celt_fatal;
+use self::string_h::memcpy;
+pub use self::limits_h::CHAR_BIT;
+pub use self::ecintrin_h::EC_CLZ0;
+pub use self::macros_h::silk_CLZ32;
+use self::SigProc_FIX_h::{
+    silk_lin2log, silk_insertion_sort_increasing, silk_NLSF_stabilize,
+};
+use self::main_h::{
+    silk_NLSF_decode, silk_NLSF_del_dec_quant, silk_NLSF_unpack, silk_NLSF_VQ,
+};
+pub use self::define_h::MAX_LPC_ORDER;
 pub use self::Inlines_h::silk_DIV32_varQ;
-use self::SigProc_FIX_h::{silk_NLSF_stabilize, silk_insertion_sort_increasing, silk_lin2log};
+pub use self::internal::__CHAR_BIT__;
 #[no_mangle]
 #[c2rust::src_loc = "38:1"]
 pub unsafe extern "C" fn silk_NLSF_encode(
@@ -301,7 +333,7 @@ pub unsafe extern "C" fn silk_NLSF_encode(
         (*psNLSF_CB).order as libc::c_int,
     );
     let vla = (*psNLSF_CB).nVectors as usize;
-    let mut err_Q24: Vec<opus_int32> = ::std::vec::from_elem(0, vla);
+    let mut err_Q24: Vec::<opus_int32> = ::std::vec::from_elem(0, vla);
     silk_NLSF_VQ(
         err_Q24.as_mut_ptr(),
         pNLSF_Q15 as *const opus_int16,
@@ -311,7 +343,7 @@ pub unsafe extern "C" fn silk_NLSF_encode(
         (*psNLSF_CB).order as libc::c_int,
     );
     let vla_0 = nSurvivors as usize;
-    let mut tempIndices1: Vec<libc::c_int> = ::std::vec::from_elem(0, vla_0);
+    let mut tempIndices1: Vec::<libc::c_int> = ::std::vec::from_elem(0, vla_0);
     silk_insertion_sort_increasing(
         err_Q24.as_mut_ptr(),
         tempIndices1.as_mut_ptr(),
@@ -319,9 +351,9 @@ pub unsafe extern "C" fn silk_NLSF_encode(
         nSurvivors,
     );
     let vla_1 = nSurvivors as usize;
-    let mut RD_Q25: Vec<opus_int32> = ::std::vec::from_elem(0, vla_1);
+    let mut RD_Q25: Vec::<opus_int32> = ::std::vec::from_elem(0, vla_1);
     let vla_2 = (nSurvivors * 16 as libc::c_int) as usize;
-    let mut tempIndices2: Vec<opus_int8> = ::std::vec::from_elem(0, vla_2);
+    let mut tempIndices2: Vec::<opus_int8> = ::std::vec::from_elem(0, vla_2);
     s = 0 as libc::c_int;
     while s < nSurvivors {
         ind1 = *tempIndices1.as_mut_ptr().offset(s as isize);
@@ -333,27 +365,31 @@ pub unsafe extern "C" fn silk_NLSF_encode(
             as *const opus_int16;
         i = 0 as libc::c_int;
         while i < (*psNLSF_CB).order as libc::c_int {
-            NLSF_tmp_Q15[i as usize] = ((*pCB_element.offset(i as isize) as opus_int16
-                as opus_uint16 as libc::c_int)
-                << 7 as libc::c_int) as opus_int16;
+            NLSF_tmp_Q15[i
+                as usize] = ((*pCB_element.offset(i as isize) as opus_int16
+                as opus_uint16 as libc::c_int) << 7 as libc::c_int) as opus_int16;
             W_tmp_Q9 = *pCB_Wght_Q9.offset(i as isize) as opus_int32;
-            res_Q10[i as usize] = ((*pNLSF_Q15.offset(i as isize) as libc::c_int
-                - NLSF_tmp_Q15[i as usize] as libc::c_int)
-                as opus_int16 as opus_int32
-                * W_tmp_Q9 as opus_int16 as opus_int32
-                >> 14 as libc::c_int) as opus_int16;
-            W_adj_Q5[i as usize] = silk_DIV32_varQ(
+            res_Q10[i
+                as usize] = ((*pNLSF_Q15.offset(i as isize) as libc::c_int
+                - NLSF_tmp_Q15[i as usize] as libc::c_int) as opus_int16 as opus_int32
+                * W_tmp_Q9 as opus_int16 as opus_int32 >> 14 as libc::c_int)
+                as opus_int16;
+            W_adj_Q5[i
+                as usize] = silk_DIV32_varQ(
                 *pW_Q2.offset(i as isize) as opus_int32,
-                W_tmp_Q9 as opus_int16 as opus_int32 * W_tmp_Q9 as opus_int16 as opus_int32,
+                W_tmp_Q9 as opus_int16 as opus_int32
+                    * W_tmp_Q9 as opus_int16 as opus_int32,
                 21 as libc::c_int,
             ) as opus_int16;
             i += 1;
         }
         silk_NLSF_unpack(ec_ix.as_mut_ptr(), pred_Q8.as_mut_ptr(), psNLSF_CB, ind1);
-        *RD_Q25.as_mut_ptr().offset(s as isize) = silk_NLSF_del_dec_quant(
-            &mut *tempIndices2
-                .as_mut_ptr()
-                .offset((s * 16 as libc::c_int) as isize),
+        *RD_Q25
+            .as_mut_ptr()
+            .offset(
+                s as isize,
+            ) = silk_NLSF_del_dec_quant(
+            &mut *tempIndices2.as_mut_ptr().offset((s * MAX_LPC_ORDER) as isize),
             res_Q10.as_mut_ptr() as *const opus_int16,
             W_adj_Q5.as_mut_ptr() as *const opus_int16,
             pred_Q8.as_mut_ptr() as *const opus_uint8,
@@ -364,17 +400,24 @@ pub unsafe extern "C" fn silk_NLSF_encode(
             NLSF_mu_Q20,
             (*psNLSF_CB).order,
         );
-        iCDF_ptr = &*((*psNLSF_CB).CB1_iCDF).offset(
-            ((signalType >> 1 as libc::c_int) * (*psNLSF_CB).nVectors as libc::c_int) as isize,
-        ) as *const opus_uint8;
+        iCDF_ptr = &*((*psNLSF_CB).CB1_iCDF)
+            .offset(
+                ((signalType >> 1 as libc::c_int) * (*psNLSF_CB).nVectors as libc::c_int)
+                    as isize,
+            ) as *const opus_uint8;
         if ind1 == 0 as libc::c_int {
-            prob_Q8 = 256 as libc::c_int - *iCDF_ptr.offset(ind1 as isize) as libc::c_int;
+            prob_Q8 = 256 as libc::c_int
+                - *iCDF_ptr.offset(ind1 as isize) as libc::c_int;
         } else {
             prob_Q8 = *iCDF_ptr.offset((ind1 - 1 as libc::c_int) as isize) as libc::c_int
                 - *iCDF_ptr.offset(ind1 as isize) as libc::c_int;
         }
         bits_q7 = ((8 as libc::c_int) << 7 as libc::c_int) - silk_lin2log(prob_Q8);
-        *RD_Q25.as_mut_ptr().offset(s as isize) = *RD_Q25.as_mut_ptr().offset(s as isize)
+        *RD_Q25
+            .as_mut_ptr()
+            .offset(
+                s as isize,
+            ) = *RD_Q25.as_mut_ptr().offset(s as isize)
             + bits_q7 as opus_int16 as opus_int32
                 * (NLSF_mu_Q20 >> 2 as libc::c_int) as opus_int16 as opus_int32;
         s += 1;
@@ -385,14 +428,15 @@ pub unsafe extern "C" fn silk_NLSF_encode(
         nSurvivors,
         1 as libc::c_int,
     );
-    *NLSFIndices.offset(0 as libc::c_int as isize) =
-        *tempIndices1.as_mut_ptr().offset(bestIndex as isize) as opus_int8;
+    *NLSFIndices
+        .offset(
+            0 as libc::c_int as isize,
+        ) = *tempIndices1.as_mut_ptr().offset(bestIndex as isize) as opus_int8;
     memcpy(
-        &mut *NLSFIndices.offset(1 as libc::c_int as isize) as *mut opus_int8 as *mut libc::c_void,
-        &mut *tempIndices2
-            .as_mut_ptr()
-            .offset((bestIndex * 16 as libc::c_int) as isize) as *mut opus_int8
-            as *const libc::c_void,
+        &mut *NLSFIndices.offset(1 as libc::c_int as isize) as *mut opus_int8
+            as *mut libc::c_void,
+        &mut *tempIndices2.as_mut_ptr().offset((bestIndex * 16 as libc::c_int) as isize)
+            as *mut opus_int8 as *const libc::c_void,
         ((*psNLSF_CB).order as libc::c_ulong)
             .wrapping_mul(::core::mem::size_of::<opus_int8>() as libc::c_ulong),
     );

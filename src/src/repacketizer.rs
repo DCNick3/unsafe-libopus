@@ -55,6 +55,19 @@ pub mod opus_private_h {
 pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]
     pub type size_t = libc::c_ulong;
+    #[c2rust::src_loc = "89:11"]
+    pub const NULL: libc::c_int = 0 as libc::c_int;
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:32"]
+pub mod opus_defines_h {
+    #[c2rust::src_loc = "48:9"]
+    pub const OPUS_BAD_ARG: libc::c_int = -(1 as libc::c_int);
+    #[c2rust::src_loc = "50:9"]
+    pub const OPUS_BUFFER_TOO_SMALL: libc::c_int = -(2 as libc::c_int);
+    #[c2rust::src_loc = "54:9"]
+    pub const OPUS_INVALID_PACKET: libc::c_int = -(4 as libc::c_int);
+    #[c2rust::src_loc = "46:9"]
+    pub const OPUS_OK: libc::c_int = 0 as libc::c_int;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus.h:32"]
 pub mod opus_h {
@@ -96,7 +109,7 @@ pub mod os_support_h {
         free(ptr);
     }
     use super::stddef_h::size_t;
-    use super::stdlib_h::{free, malloc};
+    use super::stdlib_h::{malloc, free};
 }
 #[c2rust::header_src = "/usr/include/string.h:34"]
 pub mod string_h {
@@ -118,16 +131,19 @@ pub mod stdlib_h {
         pub fn free(_: *mut libc::c_void);
     }
 }
-use self::arch_h::celt_fatal;
-use self::opus_h::{opus_packet_get_nb_frames, opus_packet_get_samples_per_frame};
-pub use self::opus_private_h::{encode_size, opus_packet_parse_impl, OpusRepacketizer};
-pub use self::opus_types_h::{opus_int16, opus_int32};
-pub use self::os_support_h::{opus_alloc, opus_free};
-pub use self::stddef_h::size_t;
-pub use self::stdint_intn_h::{int16_t, int32_t};
-use self::stdlib_h::{free, malloc};
-use self::string_h::memmove;
 pub use self::types_h::{__int16_t, __int32_t};
+pub use self::stdint_intn_h::{int16_t, int32_t};
+pub use self::opus_types_h::{opus_int16, opus_int32};
+pub use self::opus_private_h::{OpusRepacketizer, opus_packet_parse_impl, encode_size};
+pub use self::stddef_h::{size_t, NULL};
+pub use self::opus_defines_h::{
+    OPUS_BAD_ARG, OPUS_BUFFER_TOO_SMALL, OPUS_INVALID_PACKET, OPUS_OK,
+};
+use self::opus_h::{opus_packet_get_samples_per_frame, opus_packet_get_nb_frames};
+use self::arch_h::celt_fatal;
+pub use self::os_support_h::{opus_alloc, opus_free};
+use self::string_h::memmove;
+use self::stdlib_h::{malloc, free};
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn opus_repacketizer_get_size() -> libc::c_int {
@@ -147,7 +163,7 @@ pub unsafe extern "C" fn opus_repacketizer_create() -> *mut OpusRepacketizer {
     let mut rp: *mut OpusRepacketizer = 0 as *mut OpusRepacketizer;
     rp = opus_alloc(opus_repacketizer_get_size() as size_t) as *mut OpusRepacketizer;
     if rp.is_null() {
-        return 0 as *mut OpusRepacketizer;
+        return NULL as *mut OpusRepacketizer;
     }
     return opus_repacketizer_init(rp);
 }
@@ -167,7 +183,7 @@ unsafe extern "C" fn opus_repacketizer_cat_impl(
     let mut curr_nb_frames: libc::c_int = 0;
     let mut ret: libc::c_int = 0;
     if len < 1 as libc::c_int {
-        return -(4 as libc::c_int);
+        return OPUS_INVALID_PACKET;
     }
     if (*rp).nb_frames == 0 as libc::c_int {
         (*rp).toc = *data.offset(0 as libc::c_int as isize);
@@ -175,14 +191,14 @@ unsafe extern "C" fn opus_repacketizer_cat_impl(
     } else if (*rp).toc as libc::c_int & 0xfc as libc::c_int
         != *data.offset(0 as libc::c_int as isize) as libc::c_int & 0xfc as libc::c_int
     {
-        return -(4 as libc::c_int);
+        return OPUS_INVALID_PACKET
     }
     curr_nb_frames = opus_packet_get_nb_frames(data, len);
     if curr_nb_frames < 1 as libc::c_int {
-        return -(4 as libc::c_int);
+        return OPUS_INVALID_PACKET;
     }
     if (curr_nb_frames + (*rp).nb_frames) * (*rp).framesize > 960 as libc::c_int {
-        return -(4 as libc::c_int);
+        return OPUS_INVALID_PACKET;
     }
     ret = opus_packet_parse_impl(
         data,
@@ -191,14 +207,14 @@ unsafe extern "C" fn opus_repacketizer_cat_impl(
         &mut tmp_toc,
         &mut *((*rp).frames).as_mut_ptr().offset((*rp).nb_frames as isize),
         &mut *((*rp).len).as_mut_ptr().offset((*rp).nb_frames as isize),
-        0 as *mut libc::c_int,
-        0 as *mut opus_int32,
+        NULL as *mut libc::c_int,
+        NULL as *mut opus_int32,
     );
     if ret < 1 as libc::c_int {
         return ret;
     }
     (*rp).nb_frames += curr_nb_frames;
-    return 0 as libc::c_int;
+    return OPUS_OK;
 }
 #[no_mangle]
 #[c2rust::src_loc = "92:1"]
@@ -234,7 +250,7 @@ pub unsafe extern "C" fn opus_repacketizer_out_range_impl(
     let mut frames: *mut *const libc::c_uchar = 0 as *mut *const libc::c_uchar;
     let mut ptr: *mut libc::c_uchar = 0 as *mut libc::c_uchar;
     if begin < 0 as libc::c_int || begin >= end || end > (*rp).nb_frames {
-        return -(1 as libc::c_int);
+        return OPUS_BAD_ARG;
     }
     count = end - begin;
     len = ((*rp).len).as_mut_ptr().offset(begin as isize);
@@ -248,9 +264,10 @@ pub unsafe extern "C" fn opus_repacketizer_out_range_impl(
     }
     ptr = data;
     if count == 1 as libc::c_int {
-        tot_size += *len.offset(0 as libc::c_int as isize) as libc::c_int + 1 as libc::c_int;
+        tot_size
+            += *len.offset(0 as libc::c_int as isize) as libc::c_int + 1 as libc::c_int;
         if tot_size > maxlen {
-            return -(2 as libc::c_int);
+            return OPUS_BUFFER_TOO_SMALL;
         }
         let fresh0 = ptr;
         ptr = ptr.offset(1);
@@ -259,31 +276,38 @@ pub unsafe extern "C" fn opus_repacketizer_out_range_impl(
         if *len.offset(1 as libc::c_int as isize) as libc::c_int
             == *len.offset(0 as libc::c_int as isize) as libc::c_int
         {
-            tot_size += 2 as libc::c_int * *len.offset(0 as libc::c_int as isize) as libc::c_int
-                + 1 as libc::c_int;
+            tot_size
+                += 2 as libc::c_int
+                    * *len.offset(0 as libc::c_int as isize) as libc::c_int
+                    + 1 as libc::c_int;
             if tot_size > maxlen {
-                return -(2 as libc::c_int);
+                return OPUS_BUFFER_TOO_SMALL;
             }
             let fresh1 = ptr;
             ptr = ptr.offset(1);
-            *fresh1 = ((*rp).toc as libc::c_int & 0xfc as libc::c_int | 0x1 as libc::c_int)
-                as libc::c_uchar;
+            *fresh1 = ((*rp).toc as libc::c_int & 0xfc as libc::c_int
+                | 0x1 as libc::c_int) as libc::c_uchar;
         } else {
-            tot_size += *len.offset(0 as libc::c_int as isize) as libc::c_int
-                + *len.offset(1 as libc::c_int as isize) as libc::c_int
-                + 2 as libc::c_int
-                + (*len.offset(0 as libc::c_int as isize) as libc::c_int >= 252 as libc::c_int)
-                    as libc::c_int;
+            tot_size
+                += *len.offset(0 as libc::c_int as isize) as libc::c_int
+                    + *len.offset(1 as libc::c_int as isize) as libc::c_int
+                    + 2 as libc::c_int
+                    + (*len.offset(0 as libc::c_int as isize) as libc::c_int
+                        >= 252 as libc::c_int) as libc::c_int;
             if tot_size > maxlen {
-                return -(2 as libc::c_int);
+                return OPUS_BUFFER_TOO_SMALL;
             }
             let fresh2 = ptr;
             ptr = ptr.offset(1);
-            *fresh2 = ((*rp).toc as libc::c_int & 0xfc as libc::c_int | 0x2 as libc::c_int)
-                as libc::c_uchar;
-            ptr = ptr.offset(
-                encode_size(*len.offset(0 as libc::c_int as isize) as libc::c_int, ptr) as isize,
-            );
+            *fresh2 = ((*rp).toc as libc::c_int & 0xfc as libc::c_int
+                | 0x2 as libc::c_int) as libc::c_uchar;
+            ptr = ptr
+                .offset(
+                    encode_size(
+                        *len.offset(0 as libc::c_int as isize) as libc::c_int,
+                        ptr,
+                    ) as isize,
+                );
         }
     }
     if count > 2 as libc::c_int || pad != 0 && tot_size < maxlen {
@@ -313,41 +337,39 @@ pub unsafe extern "C" fn opus_repacketizer_out_range_impl(
             tot_size += 2 as libc::c_int;
             i = 0 as libc::c_int;
             while i < count - 1 as libc::c_int {
-                tot_size += 1 as libc::c_int
-                    + (*len.offset(i as isize) as libc::c_int >= 252 as libc::c_int) as libc::c_int
-                    + *len.offset(i as isize) as libc::c_int;
+                tot_size
+                    += 1 as libc::c_int
+                        + (*len.offset(i as isize) as libc::c_int >= 252 as libc::c_int)
+                            as libc::c_int + *len.offset(i as isize) as libc::c_int;
                 i += 1;
             }
             tot_size += *len.offset((count - 1 as libc::c_int) as isize) as libc::c_int;
             if tot_size > maxlen {
-                return -(2 as libc::c_int);
+                return OPUS_BUFFER_TOO_SMALL;
             }
             let fresh3 = ptr;
             ptr = ptr.offset(1);
-            *fresh3 = ((*rp).toc as libc::c_int & 0xfc as libc::c_int | 0x3 as libc::c_int)
-                as libc::c_uchar;
+            *fresh3 = ((*rp).toc as libc::c_int & 0xfc as libc::c_int
+                | 0x3 as libc::c_int) as libc::c_uchar;
             let fresh4 = ptr;
             ptr = ptr.offset(1);
             *fresh4 = (count | 0x80 as libc::c_int) as libc::c_uchar;
         } else {
-            tot_size +=
-                count * *len.offset(0 as libc::c_int as isize) as libc::c_int + 2 as libc::c_int;
+            tot_size
+                += count * *len.offset(0 as libc::c_int as isize) as libc::c_int
+                    + 2 as libc::c_int;
             if tot_size > maxlen {
-                return -(2 as libc::c_int);
+                return OPUS_BUFFER_TOO_SMALL;
             }
             let fresh5 = ptr;
             ptr = ptr.offset(1);
-            *fresh5 = ((*rp).toc as libc::c_int & 0xfc as libc::c_int | 0x3 as libc::c_int)
-                as libc::c_uchar;
+            *fresh5 = ((*rp).toc as libc::c_int & 0xfc as libc::c_int
+                | 0x3 as libc::c_int) as libc::c_uchar;
             let fresh6 = ptr;
             ptr = ptr.offset(1);
             *fresh6 = count as libc::c_uchar;
         }
-        pad_amount = if pad != 0 {
-            maxlen - tot_size
-        } else {
-            0 as libc::c_int
-        };
+        pad_amount = if pad != 0 { maxlen - tot_size } else { 0 as libc::c_int };
         if pad_amount != 0 as libc::c_int {
             let mut nb_255s: libc::c_int = 0;
             let ref mut fresh7 = *data.offset(1 as libc::c_int as isize);
@@ -362,14 +384,17 @@ pub unsafe extern "C" fn opus_repacketizer_out_range_impl(
             }
             let fresh9 = ptr;
             ptr = ptr.offset(1);
-            *fresh9 =
-                (pad_amount - 255 as libc::c_int * nb_255s - 1 as libc::c_int) as libc::c_uchar;
+            *fresh9 = (pad_amount - 255 as libc::c_int * nb_255s - 1 as libc::c_int)
+                as libc::c_uchar;
             tot_size += pad_amount;
         }
         if vbr != 0 {
             i = 0 as libc::c_int;
             while i < count - 1 as libc::c_int {
-                ptr = ptr.offset(encode_size(*len.offset(i as isize) as libc::c_int, ptr) as isize);
+                ptr = ptr
+                    .offset(
+                        encode_size(*len.offset(i as isize) as libc::c_int, ptr) as isize,
+                    );
                 i += 1;
             }
         }
@@ -458,13 +483,13 @@ pub unsafe extern "C" fn opus_packet_pad(
     };
     let mut ret: opus_int32 = 0;
     if len < 1 as libc::c_int {
-        return -(1 as libc::c_int);
+        return OPUS_BAD_ARG;
     }
     if len == new_len {
-        return 0 as libc::c_int;
+        return OPUS_OK
     } else {
         if len > new_len {
-            return -(1 as libc::c_int);
+            return OPUS_BAD_ARG;
         }
     }
     opus_repacketizer_init(&mut rp);
@@ -486,7 +511,7 @@ pub unsafe extern "C" fn opus_packet_pad(
         data.offset(new_len as isize).offset(-(len as isize)),
         len,
     );
-    if ret != 0 as libc::c_int {
+    if ret != OPUS_OK {
         return ret;
     }
     ret = opus_repacketizer_out_range_impl(
@@ -498,11 +523,7 @@ pub unsafe extern "C" fn opus_packet_pad(
         0 as libc::c_int,
         1 as libc::c_int,
     );
-    if ret > 0 as libc::c_int {
-        return 0 as libc::c_int;
-    } else {
-        return ret;
-    };
+    if ret > 0 as libc::c_int { return OPUS_OK } else { return ret };
 }
 #[no_mangle]
 #[c2rust::src_loc = "263:1"]
@@ -519,7 +540,7 @@ pub unsafe extern "C" fn opus_packet_unpad(
     };
     let mut ret: opus_int32 = 0;
     if len < 1 as libc::c_int {
-        return -(1 as libc::c_int);
+        return OPUS_BAD_ARG;
     }
     opus_repacketizer_init(&mut rp);
     ret = opus_repacketizer_cat(&mut rp, data, len);
@@ -537,7 +558,8 @@ pub unsafe extern "C" fn opus_packet_unpad(
     );
     if !(ret > 0 as libc::c_int && ret <= len) {
         celt_fatal(
-            b"assertion failed: ret > 0 && ret <= len\0" as *const u8 as *const libc::c_char,
+            b"assertion failed: ret > 0 && ret <= len\0" as *const u8
+                as *const libc::c_char,
             b"src/repacketizer.c\0" as *const u8 as *const libc::c_char,
             274 as libc::c_int,
         );
@@ -559,29 +581,29 @@ pub unsafe extern "C" fn opus_multistream_packet_pad(
     let mut packet_offset: opus_int32 = 0;
     let mut amount: opus_int32 = 0;
     if len < 1 as libc::c_int {
-        return -(1 as libc::c_int);
+        return OPUS_BAD_ARG;
     }
     if len == new_len {
-        return 0 as libc::c_int;
+        return OPUS_OK
     } else {
         if len > new_len {
-            return -(1 as libc::c_int);
+            return OPUS_BAD_ARG;
         }
     }
     amount = new_len - len;
     s = 0 as libc::c_int;
     while s < nb_streams - 1 as libc::c_int {
         if len <= 0 as libc::c_int {
-            return -(4 as libc::c_int);
+            return OPUS_INVALID_PACKET;
         }
         count = opus_packet_parse_impl(
             data,
             len,
             1 as libc::c_int,
             &mut toc,
-            0 as *mut *const libc::c_uchar,
+            NULL as *mut *const libc::c_uchar,
             size.as_mut_ptr(),
-            0 as *mut libc::c_int,
+            NULL as *mut libc::c_int,
             &mut packet_offset,
         );
         if count < 0 as libc::c_int {
@@ -614,16 +636,17 @@ pub unsafe extern "C" fn opus_multistream_packet_unpad(
     let mut dst: *mut libc::c_uchar = 0 as *mut libc::c_uchar;
     let mut dst_len: opus_int32 = 0;
     if len < 1 as libc::c_int {
-        return -(1 as libc::c_int);
+        return OPUS_BAD_ARG;
     }
     dst = data;
     dst_len = 0 as libc::c_int;
     s = 0 as libc::c_int;
     while s < nb_streams {
         let mut ret: opus_int32 = 0;
-        let mut self_delimited: libc::c_int = (s != nb_streams - 1 as libc::c_int) as libc::c_int;
+        let mut self_delimited: libc::c_int = (s != nb_streams - 1 as libc::c_int)
+            as libc::c_int;
         if len <= 0 as libc::c_int {
-            return -(4 as libc::c_int);
+            return OPUS_INVALID_PACKET;
         }
         opus_repacketizer_init(&mut rp);
         ret = opus_packet_parse_impl(
@@ -631,9 +654,9 @@ pub unsafe extern "C" fn opus_multistream_packet_unpad(
             len,
             self_delimited,
             &mut toc,
-            0 as *mut *const libc::c_uchar,
+            NULL as *mut *const libc::c_uchar,
             size.as_mut_ptr(),
-            0 as *mut libc::c_int,
+            NULL as *mut libc::c_int,
             &mut packet_offset,
         );
         if ret < 0 as libc::c_int {
@@ -653,7 +676,7 @@ pub unsafe extern "C" fn opus_multistream_packet_unpad(
             0 as libc::c_int,
         );
         if ret < 0 as libc::c_int {
-            return ret;
+            return ret
         } else {
             dst_len += ret;
         }

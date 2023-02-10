@@ -39,6 +39,13 @@ pub mod string_h {
         ) -> *mut libc::c_void;
     }
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
+pub mod typedef_h {
+    #[c2rust::src_loc = "45:9"]
+    pub const silk_int16_MIN: libc::c_int = 0x8000 as libc::c_int;
+    #[c2rust::src_loc = "44:9"]
+    pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_rom.h:33"]
 pub mod resampler_rom_h {
     use super::opus_types_h::opus_int16;
@@ -49,7 +56,7 @@ pub mod resampler_rom_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_private.h:33"]
 pub mod resampler_private_h {
-    use super::opus_types_h::{opus_int16, opus_int32};
+    use super::opus_types_h::{opus_int32, opus_int16};
     extern "C" {
         #[c2rust::src_loc = "77:1"]
         pub fn silk_resampler_private_AR2(
@@ -61,12 +68,15 @@ pub mod resampler_private_h {
         );
     }
 }
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64};
-use self::resampler_private_h::silk_resampler_private_AR2;
-use self::resampler_rom_h::silk_Resampler_2_3_COEFS_LQ;
-pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
-use self::string_h::memcpy;
 pub use self::types_h::{__int16_t, __int32_t, __int64_t};
+pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64};
+use self::string_h::memcpy;
+pub use self::typedef_h::{silk_int16_MIN, silk_int16_MAX};
+use self::resampler_rom_h::silk_Resampler_2_3_COEFS_LQ;
+use self::resampler_private_h::silk_resampler_private_AR2;
+#[c2rust::src_loc = "36:9"]
+pub const ORDER_FIR: libc::c_int = 4 as libc::c_int;
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_resampler_down2_3(
@@ -93,8 +103,8 @@ pub unsafe extern "C" fn silk_resampler_down2_3(
             10 as libc::c_int * 48 as libc::c_int
         };
         silk_resampler_private_AR2(
-            &mut *S.offset(4 as libc::c_int as isize),
-            &mut *buf.as_mut_ptr().offset(4 as libc::c_int as isize),
+            &mut *S.offset(ORDER_FIR as isize),
+            &mut *buf.as_mut_ptr().offset(ORDER_FIR as isize),
             in_0,
             silk_Resampler_2_3_COEFS_LQ.as_ptr(),
             nSamplesIn,
@@ -107,16 +117,16 @@ pub unsafe extern "C" fn silk_resampler_down2_3(
                 >> 16 as libc::c_int) as opus_int32;
             res_Q6 = (res_Q6 as libc::c_long
                 + (*buf_ptr.offset(1 as libc::c_int as isize) as libc::c_long
-                    * silk_Resampler_2_3_COEFS_LQ[3 as libc::c_int as usize] as opus_int64
-                    >> 16 as libc::c_int)) as opus_int32;
+                    * silk_Resampler_2_3_COEFS_LQ[3 as libc::c_int as usize]
+                        as opus_int64 >> 16 as libc::c_int)) as opus_int32;
             res_Q6 = (res_Q6 as libc::c_long
                 + (*buf_ptr.offset(2 as libc::c_int as isize) as libc::c_long
-                    * silk_Resampler_2_3_COEFS_LQ[5 as libc::c_int as usize] as opus_int64
-                    >> 16 as libc::c_int)) as opus_int32;
+                    * silk_Resampler_2_3_COEFS_LQ[5 as libc::c_int as usize]
+                        as opus_int64 >> 16 as libc::c_int)) as opus_int32;
             res_Q6 = (res_Q6 as libc::c_long
                 + (*buf_ptr.offset(3 as libc::c_int as isize) as libc::c_long
-                    * silk_Resampler_2_3_COEFS_LQ[4 as libc::c_int as usize] as opus_int64
-                    >> 16 as libc::c_int)) as opus_int32;
+                    * silk_Resampler_2_3_COEFS_LQ[4 as libc::c_int as usize]
+                        as opus_int64 >> 16 as libc::c_int)) as opus_int32;
             let fresh0 = out;
             out = out.offset(1);
             *fresh0 = (if (if 6 as libc::c_int == 1 as libc::c_int {
@@ -124,17 +134,17 @@ pub unsafe extern "C" fn silk_resampler_down2_3(
             } else {
                 (res_Q6 >> 6 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                     >> 1 as libc::c_int
-            }) > 0x7fff as libc::c_int
+            }) > silk_int16_MAX
             {
-                0x7fff as libc::c_int
+                silk_int16_MAX
             } else if (if 6 as libc::c_int == 1 as libc::c_int {
                 (res_Q6 >> 1 as libc::c_int) + (res_Q6 & 1 as libc::c_int)
             } else {
                 (res_Q6 >> 6 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                     >> 1 as libc::c_int
-            }) < 0x8000 as libc::c_int as opus_int16 as libc::c_int
+            }) < silk_int16_MIN
             {
-                0x8000 as libc::c_int as opus_int16 as libc::c_int
+                silk_int16_MIN
             } else if 6 as libc::c_int == 1 as libc::c_int {
                 (res_Q6 >> 1 as libc::c_int) + (res_Q6 & 1 as libc::c_int)
             } else {
@@ -146,16 +156,16 @@ pub unsafe extern "C" fn silk_resampler_down2_3(
                 >> 16 as libc::c_int) as opus_int32;
             res_Q6 = (res_Q6 as libc::c_long
                 + (*buf_ptr.offset(2 as libc::c_int as isize) as libc::c_long
-                    * silk_Resampler_2_3_COEFS_LQ[5 as libc::c_int as usize] as opus_int64
-                    >> 16 as libc::c_int)) as opus_int32;
+                    * silk_Resampler_2_3_COEFS_LQ[5 as libc::c_int as usize]
+                        as opus_int64 >> 16 as libc::c_int)) as opus_int32;
             res_Q6 = (res_Q6 as libc::c_long
                 + (*buf_ptr.offset(3 as libc::c_int as isize) as libc::c_long
-                    * silk_Resampler_2_3_COEFS_LQ[3 as libc::c_int as usize] as opus_int64
-                    >> 16 as libc::c_int)) as opus_int32;
+                    * silk_Resampler_2_3_COEFS_LQ[3 as libc::c_int as usize]
+                        as opus_int64 >> 16 as libc::c_int)) as opus_int32;
             res_Q6 = (res_Q6 as libc::c_long
                 + (*buf_ptr.offset(4 as libc::c_int as isize) as libc::c_long
-                    * silk_Resampler_2_3_COEFS_LQ[2 as libc::c_int as usize] as opus_int64
-                    >> 16 as libc::c_int)) as opus_int32;
+                    * silk_Resampler_2_3_COEFS_LQ[2 as libc::c_int as usize]
+                        as opus_int64 >> 16 as libc::c_int)) as opus_int32;
             let fresh1 = out;
             out = out.offset(1);
             *fresh1 = (if (if 6 as libc::c_int == 1 as libc::c_int {
@@ -163,17 +173,17 @@ pub unsafe extern "C" fn silk_resampler_down2_3(
             } else {
                 (res_Q6 >> 6 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                     >> 1 as libc::c_int
-            }) > 0x7fff as libc::c_int
+            }) > silk_int16_MAX
             {
-                0x7fff as libc::c_int
+                silk_int16_MAX
             } else if (if 6 as libc::c_int == 1 as libc::c_int {
                 (res_Q6 >> 1 as libc::c_int) + (res_Q6 & 1 as libc::c_int)
             } else {
                 (res_Q6 >> 6 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                     >> 1 as libc::c_int
-            }) < 0x8000 as libc::c_int as opus_int16 as libc::c_int
+            }) < silk_int16_MIN
             {
-                0x8000 as libc::c_int as opus_int16 as libc::c_int
+                silk_int16_MIN
             } else if 6 as libc::c_int == 1 as libc::c_int {
                 (res_Q6 >> 1 as libc::c_int) + (res_Q6 & 1 as libc::c_int)
             } else {

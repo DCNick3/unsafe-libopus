@@ -67,7 +67,14 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int16, opus_int32};
+    use super::opus_types_h::{opus_int32, opus_int16};
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
+pub mod typedef_h {
+    #[c2rust::src_loc = "44:9"]
+    pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
+    #[c2rust::src_loc = "45:9"]
+    pub const silk_int16_MIN: libc::c_int = 0x8000 as libc::c_int;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_rom.h:33"]
 pub mod resampler_rom_h {
@@ -85,14 +92,15 @@ pub mod resampler_rom_h {
     ];
     use super::opus_types_h::opus_int16;
 }
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
-pub use self::resampler_rom_h::{silk_resampler_up2_hq_0, silk_resampler_up2_hq_1};
-pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
-};
+pub use self::types_h::{__int16_t, __int32_t, __uint32_t, __int64_t};
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
 pub use self::stdint_uintn_h::uint32_t;
-pub use self::types_h::{__int16_t, __int32_t, __int64_t, __uint32_t};
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32, opus_int64};
+pub use self::resampler_structs_h::{
+    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
+};
+pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
+pub use self::resampler_rom_h::{silk_resampler_up2_hq_0, silk_resampler_up2_hq_1};
 #[no_mangle]
 #[c2rust::src_loc = "38:1"]
 pub unsafe extern "C" fn silk_resampler_private_up2_HQ(
@@ -109,15 +117,17 @@ pub unsafe extern "C" fn silk_resampler_private_up2_HQ(
     let mut X: opus_int32 = 0;
     k = 0 as libc::c_int;
     while k < len {
-        in32 = ((*in_0.offset(k as isize) as opus_int32 as opus_uint32) << 10 as libc::c_int)
-            as opus_int32;
+        in32 = ((*in_0.offset(k as isize) as opus_int32 as opus_uint32)
+            << 10 as libc::c_int) as opus_int32;
         Y = in32 - *S.offset(0 as libc::c_int as isize);
-        X = (Y as libc::c_long * silk_resampler_up2_hq_0[0 as libc::c_int as usize] as opus_int64
+        X = (Y as libc::c_long
+            * silk_resampler_up2_hq_0[0 as libc::c_int as usize] as opus_int64
             >> 16 as libc::c_int) as opus_int32;
         out32_1 = *S.offset(0 as libc::c_int as isize) + X;
         *S.offset(0 as libc::c_int as isize) = in32 + X;
         Y = out32_1 - *S.offset(1 as libc::c_int as isize);
-        X = (Y as libc::c_long * silk_resampler_up2_hq_0[1 as libc::c_int as usize] as opus_int64
+        X = (Y as libc::c_long
+            * silk_resampler_up2_hq_0[1 as libc::c_int as usize] as opus_int64
             >> 16 as libc::c_int) as opus_int32;
         out32_2 = *S.offset(1 as libc::c_int as isize) + X;
         *S.offset(1 as libc::c_int as isize) = out32_1 + X;
@@ -128,33 +138,40 @@ pub unsafe extern "C" fn silk_resampler_private_up2_HQ(
                 >> 16 as libc::c_int)) as opus_int32;
         out32_1 = *S.offset(2 as libc::c_int as isize) + X;
         *S.offset(2 as libc::c_int as isize) = out32_2 + X;
-        *out.offset((2 as libc::c_int * k) as isize) = (if (if 10 as libc::c_int == 1 as libc::c_int
-        {
+        *out
+            .offset(
+                (2 as libc::c_int * k) as isize,
+            ) = (if (if 10 as libc::c_int == 1 as libc::c_int {
             (out32_1 >> 1 as libc::c_int) + (out32_1 & 1 as libc::c_int)
         } else {
-            (out32_1 >> 10 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int >> 1 as libc::c_int
-        }) > 0x7fff as libc::c_int
+            (out32_1 >> 10 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+                >> 1 as libc::c_int
+        }) > silk_int16_MAX
         {
-            0x7fff as libc::c_int
+            silk_int16_MAX
         } else if (if 10 as libc::c_int == 1 as libc::c_int {
             (out32_1 >> 1 as libc::c_int) + (out32_1 & 1 as libc::c_int)
         } else {
-            (out32_1 >> 10 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int >> 1 as libc::c_int
-        }) < 0x8000 as libc::c_int as opus_int16 as libc::c_int
+            (out32_1 >> 10 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+                >> 1 as libc::c_int
+        }) < silk_int16_MIN
         {
-            0x8000 as libc::c_int as opus_int16 as libc::c_int
+            silk_int16_MIN
         } else if 10 as libc::c_int == 1 as libc::c_int {
             (out32_1 >> 1 as libc::c_int) + (out32_1 & 1 as libc::c_int)
         } else {
-            (out32_1 >> 10 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int >> 1 as libc::c_int
+            (out32_1 >> 10 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+                >> 1 as libc::c_int
         }) as opus_int16;
         Y = in32 - *S.offset(3 as libc::c_int as isize);
-        X = (Y as libc::c_long * silk_resampler_up2_hq_1[0 as libc::c_int as usize] as opus_int64
+        X = (Y as libc::c_long
+            * silk_resampler_up2_hq_1[0 as libc::c_int as usize] as opus_int64
             >> 16 as libc::c_int) as opus_int32;
         out32_1 = *S.offset(3 as libc::c_int as isize) + X;
         *S.offset(3 as libc::c_int as isize) = in32 + X;
         Y = out32_1 - *S.offset(4 as libc::c_int as isize);
-        X = (Y as libc::c_long * silk_resampler_up2_hq_1[1 as libc::c_int as usize] as opus_int64
+        X = (Y as libc::c_long
+            * silk_resampler_up2_hq_1[1 as libc::c_int as usize] as opus_int64
             >> 16 as libc::c_int) as opus_int32;
         out32_2 = *S.offset(4 as libc::c_int as isize) + X;
         *S.offset(4 as libc::c_int as isize) = out32_1 + X;
@@ -165,27 +182,30 @@ pub unsafe extern "C" fn silk_resampler_private_up2_HQ(
                 >> 16 as libc::c_int)) as opus_int32;
         out32_1 = *S.offset(5 as libc::c_int as isize) + X;
         *S.offset(5 as libc::c_int as isize) = out32_2 + X;
-        *out.offset((2 as libc::c_int * k + 1 as libc::c_int) as isize) = (if (if 10 as libc::c_int
-            == 1 as libc::c_int
-        {
+        *out
+            .offset(
+                (2 as libc::c_int * k + 1 as libc::c_int) as isize,
+            ) = (if (if 10 as libc::c_int == 1 as libc::c_int {
             (out32_1 >> 1 as libc::c_int) + (out32_1 & 1 as libc::c_int)
         } else {
-            (out32_1 >> 10 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int >> 1 as libc::c_int
-        }) > 0x7fff
-            as libc::c_int
+            (out32_1 >> 10 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+                >> 1 as libc::c_int
+        }) > silk_int16_MAX
         {
-            0x7fff as libc::c_int
+            silk_int16_MAX
         } else if (if 10 as libc::c_int == 1 as libc::c_int {
             (out32_1 >> 1 as libc::c_int) + (out32_1 & 1 as libc::c_int)
         } else {
-            (out32_1 >> 10 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int >> 1 as libc::c_int
-        }) < 0x8000 as libc::c_int as opus_int16 as libc::c_int
+            (out32_1 >> 10 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+                >> 1 as libc::c_int
+        }) < silk_int16_MIN
         {
-            0x8000 as libc::c_int as opus_int16 as libc::c_int
+            silk_int16_MIN
         } else if 10 as libc::c_int == 1 as libc::c_int {
             (out32_1 >> 1 as libc::c_int) + (out32_1 & 1 as libc::c_int)
         } else {
-            (out32_1 >> 10 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int >> 1 as libc::c_int
+            (out32_1 >> 10 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
+                >> 1 as libc::c_int
         }) as opus_int16;
         k += 1;
     }

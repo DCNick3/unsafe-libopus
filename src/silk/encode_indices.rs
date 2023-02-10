@@ -20,7 +20,7 @@ pub mod stdint_intn_h {
     pub type int16_t = __int16_t;
     #[c2rust::src_loc = "26:1"]
     pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t, __int8_t};
+    use super::types_h::{__int8_t, __int16_t, __int32_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
 pub mod stdint_uintn_h {
@@ -28,7 +28,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint32_t, __uint8_t};
+    use super::types_h::{__uint8_t, __uint32_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
 pub mod opus_types_h {
@@ -42,8 +42,8 @@ pub mod opus_types_h {
     pub type opus_int32 = int32_t;
     #[c2rust::src_loc = "56:4"]
     pub type opus_uint32 = uint32_t;
-    use super::stdint_intn_h::{int16_t, int32_t, int8_t};
-    use super::stdint_uintn_h::{uint32_t, uint8_t};
+    use super::stdint_intn_h::{int8_t, int16_t, int32_t};
+    use super::stdint_uintn_h::{uint8_t, uint32_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:32"]
 pub mod resampler_structs_h {
@@ -73,7 +73,7 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int16, opus_int32};
+    use super::opus_types_h::{opus_int32, opus_int16};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:32"]
 pub mod entcode_h {
@@ -258,7 +258,7 @@ pub mod structs_h {
         pub indices_LBRR: [SideInfoIndices; 3],
         pub pulses_LBRR: [[opus_int8; 320]; 3],
     }
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
+    use super::opus_types_h::{opus_int16, opus_int32, opus_uint8, opus_int8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
@@ -271,6 +271,19 @@ pub mod arch_h {
             line: libc::c_int,
         ) -> !;
     }
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
+pub mod define_h {
+    #[c2rust::src_loc = "208:9"]
+    pub const NLSF_QUANT_MAX_AMPLITUDE: libc::c_int = 4 as libc::c_int;
+    #[c2rust::src_loc = "90:9"]
+    pub const MAX_NB_SUBFR: libc::c_int = 4 as libc::c_int;
+    #[c2rust::src_loc = "77:9"]
+    pub const CODE_CONDITIONALLY: libc::c_int = 2 as libc::c_int;
+    #[c2rust::src_loc = "75:9"]
+    pub const CODE_INDEPENDENTLY: libc::c_int = 0 as libc::c_int;
+    #[c2rust::src_loc = "72:9"]
+    pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:32"]
 pub mod entenc_h {
@@ -331,27 +344,31 @@ pub mod main_h {
         );
     }
 }
-use self::arch_h::celt_fatal;
-pub use self::entcode_h::{ec_ctx, ec_enc, ec_window};
-use self::entenc_h::ec_enc_icdf;
-use self::main_h::silk_NLSF_unpack;
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint32, opus_uint8};
+pub use self::types_h::{__int8_t, __uint8_t, __int16_t, __int32_t, __uint32_t};
+pub use self::stdint_intn_h::{int8_t, int16_t, int32_t};
+pub use self::stdint_uintn_h::{uint8_t, uint32_t};
+pub use self::opus_types_h::{opus_int8, opus_uint8, opus_int16, opus_int32, opus_uint32};
 pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
+    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
 };
-pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
-pub use self::stdint_uintn_h::{uint32_t, uint8_t};
+pub use self::entcode_h::{ec_window, ec_ctx, ec_enc};
 pub use self::structs_h::{
-    silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
-    SideInfoIndices,
+    silk_nsq_state, silk_VAD_state, silk_LP_state, silk_NLSF_CB_struct, SideInfoIndices,
+    silk_encoder_state,
 };
+use self::arch_h::celt_fatal;
+pub use self::define_h::{
+    NLSF_QUANT_MAX_AMPLITUDE, MAX_NB_SUBFR, CODE_CONDITIONALLY, CODE_INDEPENDENTLY,
+    TYPE_VOICED,
+};
+use self::entenc_h::ec_enc_icdf;
 use self::tables_h::{
-    silk_LTP_gain_iCDF_ptrs, silk_LTP_per_index_iCDF, silk_LTPscale_iCDF, silk_NLSF_EXT_iCDF,
-    silk_NLSF_interpolation_factor_iCDF, silk_delta_gain_iCDF, silk_gain_iCDF,
-    silk_pitch_delta_iCDF, silk_pitch_lag_iCDF, silk_type_offset_VAD_iCDF,
-    silk_type_offset_no_VAD_iCDF, silk_uniform4_iCDF, silk_uniform8_iCDF,
+    silk_gain_iCDF, silk_delta_gain_iCDF, silk_pitch_lag_iCDF, silk_pitch_delta_iCDF,
+    silk_uniform4_iCDF, silk_uniform8_iCDF, silk_NLSF_EXT_iCDF, silk_LTP_per_index_iCDF,
+    silk_LTP_gain_iCDF_ptrs, silk_LTPscale_iCDF, silk_type_offset_VAD_iCDF,
+    silk_type_offset_no_VAD_iCDF, silk_NLSF_interpolation_factor_iCDF,
 };
-pub use self::types_h::{__int16_t, __int32_t, __int8_t, __uint32_t, __uint8_t};
+use self::main_h::silk_NLSF_unpack;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_encode_indices(
@@ -409,7 +426,7 @@ pub unsafe extern "C" fn silk_encode_indices(
             8 as libc::c_int as libc::c_uint,
         );
     }
-    if condCoding == 2 as libc::c_int {
+    if condCoding == CODE_CONDITIONALLY {
         ec_enc_icdf(
             psRangeEnc,
             (*psIndices).GainsIndices[0 as libc::c_int as usize] as libc::c_int,
@@ -419,13 +436,15 @@ pub unsafe extern "C" fn silk_encode_indices(
     } else {
         ec_enc_icdf(
             psRangeEnc,
-            (*psIndices).GainsIndices[0 as libc::c_int as usize] as libc::c_int >> 3 as libc::c_int,
+            (*psIndices).GainsIndices[0 as libc::c_int as usize] as libc::c_int
+                >> 3 as libc::c_int,
             (silk_gain_iCDF[(*psIndices).signalType as usize]).as_ptr(),
             8 as libc::c_int as libc::c_uint,
         );
         ec_enc_icdf(
             psRangeEnc,
-            (*psIndices).GainsIndices[0 as libc::c_int as usize] as libc::c_int & 7 as libc::c_int,
+            (*psIndices).GainsIndices[0 as libc::c_int as usize] as libc::c_int
+                & 7 as libc::c_int,
             silk_uniform8_iCDF.as_ptr(),
             8 as libc::c_int as libc::c_uint,
         );
@@ -443,10 +462,11 @@ pub unsafe extern "C" fn silk_encode_indices(
     ec_enc_icdf(
         psRangeEnc,
         (*psIndices).NLSFIndices[0 as libc::c_int as usize] as libc::c_int,
-        &*((*(*psEncC).psNLSF_CB).CB1_iCDF).offset(
-            (((*psIndices).signalType as libc::c_int >> 1 as libc::c_int)
-                * (*(*psEncC).psNLSF_CB).nVectors as libc::c_int) as isize,
-        ),
+        &*((*(*psEncC).psNLSF_CB).CB1_iCDF)
+            .offset(
+                (((*psIndices).signalType as libc::c_int >> 1 as libc::c_int)
+                    * (*(*psEncC).psNLSF_CB).nVectors as libc::c_int) as isize,
+            ),
         8 as libc::c_int as libc::c_uint,
     );
     silk_NLSF_unpack(
@@ -457,8 +477,8 @@ pub unsafe extern "C" fn silk_encode_indices(
     );
     if !((*(*psEncC).psNLSF_CB).order as libc::c_int == (*psEncC).predictLPCOrder) {
         celt_fatal(
-            b"assertion failed: psEncC->psNLSF_CB->order == psEncC->predictLPCOrder\0" as *const u8
-                as *const libc::c_char,
+            b"assertion failed: psEncC->psNLSF_CB->order == psEncC->predictLPCOrder\0"
+                as *const u8 as *const libc::c_char,
             b"silk/encode_indices.c\0" as *const u8 as *const libc::c_char,
             93 as libc::c_int,
         );
@@ -466,11 +486,11 @@ pub unsafe extern "C" fn silk_encode_indices(
     i = 0 as libc::c_int;
     while i < (*(*psEncC).psNLSF_CB).order as libc::c_int {
         if (*psIndices).NLSFIndices[(i + 1 as libc::c_int) as usize] as libc::c_int
-            >= 4 as libc::c_int
+            >= NLSF_QUANT_MAX_AMPLITUDE
         {
             ec_enc_icdf(
                 psRangeEnc,
-                2 as libc::c_int * 4 as libc::c_int,
+                2 as libc::c_int * NLSF_QUANT_MAX_AMPLITUDE,
                 &*((*(*psEncC).psNLSF_CB).ec_iCDF)
                     .offset(*ec_ix.as_mut_ptr().offset(i as isize) as isize),
                 8 as libc::c_int as libc::c_uint,
@@ -478,12 +498,12 @@ pub unsafe extern "C" fn silk_encode_indices(
             ec_enc_icdf(
                 psRangeEnc,
                 (*psIndices).NLSFIndices[(i + 1 as libc::c_int) as usize] as libc::c_int
-                    - 4 as libc::c_int,
+                    - NLSF_QUANT_MAX_AMPLITUDE,
                 silk_NLSF_EXT_iCDF.as_ptr(),
                 8 as libc::c_int as libc::c_uint,
             );
-        } else if (*psIndices).NLSFIndices[(i + 1 as libc::c_int) as usize] as libc::c_int
-            <= -(4 as libc::c_int)
+        } else if (*psIndices).NLSFIndices[(i + 1 as libc::c_int) as usize]
+            as libc::c_int <= -NLSF_QUANT_MAX_AMPLITUDE
         {
             ec_enc_icdf(
                 psRangeEnc,
@@ -494,8 +514,8 @@ pub unsafe extern "C" fn silk_encode_indices(
             );
             ec_enc_icdf(
                 psRangeEnc,
-                -((*psIndices).NLSFIndices[(i + 1 as libc::c_int) as usize] as libc::c_int)
-                    - 4 as libc::c_int,
+                -((*psIndices).NLSFIndices[(i + 1 as libc::c_int) as usize]
+                    as libc::c_int) - NLSF_QUANT_MAX_AMPLITUDE,
                 silk_NLSF_EXT_iCDF.as_ptr(),
                 8 as libc::c_int as libc::c_uint,
             );
@@ -503,7 +523,7 @@ pub unsafe extern "C" fn silk_encode_indices(
             ec_enc_icdf(
                 psRangeEnc,
                 (*psIndices).NLSFIndices[(i + 1 as libc::c_int) as usize] as libc::c_int
-                    + 4 as libc::c_int,
+                    + NLSF_QUANT_MAX_AMPLITUDE,
                 &*((*(*psEncC).psNLSF_CB).ec_iCDF)
                     .offset(*ec_ix.as_mut_ptr().offset(i as isize) as isize),
                 8 as libc::c_int as libc::c_uint,
@@ -511,7 +531,7 @@ pub unsafe extern "C" fn silk_encode_indices(
         }
         i += 1;
     }
-    if (*psEncC).nb_subfr == 4 as libc::c_int {
+    if (*psEncC).nb_subfr == MAX_NB_SUBFR {
         ec_enc_icdf(
             psRangeEnc,
             (*psIndices).NLSFInterpCoef_Q2 as libc::c_int,
@@ -519,12 +539,14 @@ pub unsafe extern "C" fn silk_encode_indices(
             8 as libc::c_int as libc::c_uint,
         );
     }
-    if (*psIndices).signalType as libc::c_int == 2 as libc::c_int {
+    if (*psIndices).signalType as libc::c_int == TYPE_VOICED {
         encode_absolute_lagIndex = 1 as libc::c_int;
-        if condCoding == 2 as libc::c_int && (*psEncC).ec_prevSignalType == 2 as libc::c_int {
-            delta_lagIndex =
-                (*psIndices).lagIndex as libc::c_int - (*psEncC).ec_prevLagIndex as libc::c_int;
-            if delta_lagIndex < -(8 as libc::c_int) || delta_lagIndex > 11 as libc::c_int {
+        if condCoding == CODE_CONDITIONALLY && (*psEncC).ec_prevSignalType == TYPE_VOICED
+        {
+            delta_lagIndex = (*psIndices).lagIndex as libc::c_int
+                - (*psEncC).ec_prevLagIndex as libc::c_int;
+            if delta_lagIndex < -(8 as libc::c_int) || delta_lagIndex > 11 as libc::c_int
+            {
                 delta_lagIndex = 0 as libc::c_int;
             } else {
                 delta_lagIndex = delta_lagIndex + 9 as libc::c_int;
@@ -540,8 +562,8 @@ pub unsafe extern "C" fn silk_encode_indices(
         if encode_absolute_lagIndex != 0 {
             let mut pitch_high_bits: opus_int32 = 0;
             let mut pitch_low_bits: opus_int32 = 0;
-            pitch_high_bits =
-                (*psIndices).lagIndex as libc::c_int / ((*psEncC).fs_kHz >> 1 as libc::c_int);
+            pitch_high_bits = (*psIndices).lagIndex as libc::c_int
+                / ((*psEncC).fs_kHz >> 1 as libc::c_int);
             pitch_low_bits = (*psIndices).lagIndex as libc::c_int
                 - pitch_high_bits as opus_int16 as opus_int32
                     * ((*psEncC).fs_kHz >> 1 as libc::c_int) as opus_int16 as opus_int32;
@@ -581,7 +603,7 @@ pub unsafe extern "C" fn silk_encode_indices(
             );
             k += 1;
         }
-        if condCoding == 0 as libc::c_int {
+        if condCoding == CODE_INDEPENDENTLY {
             ec_enc_icdf(
                 psRangeEnc,
                 (*psIndices).LTP_scaleIndex as libc::c_int,

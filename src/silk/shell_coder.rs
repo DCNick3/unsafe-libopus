@@ -20,7 +20,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint32_t, __uint8_t};
+    use super::types_h::{__uint8_t, __uint32_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
 pub mod opus_types_h {
@@ -30,8 +30,8 @@ pub mod opus_types_h {
     pub type opus_int16 = int16_t;
     #[c2rust::src_loc = "56:4"]
     pub type opus_uint32 = uint32_t;
+    use super::stdint_uintn_h::{uint8_t, uint32_t};
     use super::stdint_intn_h::int16_t;
-    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:32"]
 pub mod entcode_h {
@@ -101,17 +101,17 @@ pub mod tables_h {
         pub static silk_shell_code_table_offsets: [opus_uint8; 17];
     }
 }
-pub use self::entcode_h::{ec_ctx, ec_dec, ec_enc, ec_window};
-use self::entdec_h::ec_dec_icdf;
-use self::entenc_h::ec_enc_icdf;
-pub use self::opus_types_h::{opus_int16, opus_uint32, opus_uint8};
+pub use self::types_h::{__uint8_t, __int16_t, __uint32_t};
 pub use self::stdint_intn_h::int16_t;
-pub use self::stdint_uintn_h::{uint32_t, uint8_t};
+pub use self::stdint_uintn_h::{uint8_t, uint32_t};
+pub use self::opus_types_h::{opus_uint8, opus_int16, opus_uint32};
+pub use self::entcode_h::{ec_window, ec_ctx, ec_enc, ec_dec};
+use self::entenc_h::ec_enc_icdf;
+use self::entdec_h::ec_dec_icdf;
 use self::tables_h::{
-    silk_shell_code_table0, silk_shell_code_table1, silk_shell_code_table2, silk_shell_code_table3,
-    silk_shell_code_table_offsets,
+    silk_shell_code_table0, silk_shell_code_table1, silk_shell_code_table2,
+    silk_shell_code_table3, silk_shell_code_table_offsets,
 };
-pub use self::types_h::{__int16_t, __uint32_t, __uint8_t};
 #[inline]
 #[c2rust::src_loc = "36:1"]
 unsafe extern "C" fn combine_pulses(
@@ -122,7 +122,10 @@ unsafe extern "C" fn combine_pulses(
     let mut k: libc::c_int = 0;
     k = 0 as libc::c_int;
     while k < len {
-        *out.offset(k as isize) = *in_0.offset((2 as libc::c_int * k) as isize)
+        *out
+            .offset(
+                k as isize,
+            ) = *in_0.offset((2 as libc::c_int * k) as isize)
             + *in_0.offset((2 as libc::c_int * k + 1 as libc::c_int) as isize);
         k += 1;
     }
@@ -140,7 +143,9 @@ unsafe extern "C" fn encode_split(
             psRangeEnc,
             p_child1,
             &*shell_table
-                .offset(*silk_shell_code_table_offsets.as_ptr().offset(p as isize) as isize),
+                .offset(
+                    *silk_shell_code_table_offsets.as_ptr().offset(p as isize) as isize,
+                ),
             8 as libc::c_int as libc::c_uint,
         );
     }
@@ -155,14 +160,22 @@ unsafe extern "C" fn decode_split(
     mut shell_table: *const opus_uint8,
 ) {
     if p > 0 as libc::c_int {
-        *p_child1.offset(0 as libc::c_int as isize) = ec_dec_icdf(
+        *p_child1
+            .offset(
+                0 as libc::c_int as isize,
+            ) = ec_dec_icdf(
             psRangeDec,
             &*shell_table
-                .offset(*silk_shell_code_table_offsets.as_ptr().offset(p as isize) as isize),
+                .offset(
+                    *silk_shell_code_table_offsets.as_ptr().offset(p as isize) as isize,
+                ),
             8 as libc::c_int as libc::c_uint,
         ) as opus_int16;
-        *p_child2.offset(0 as libc::c_int as isize) =
-            (p - *p_child1.offset(0 as libc::c_int as isize) as libc::c_int) as opus_int16;
+        *p_child2
+            .offset(
+                0 as libc::c_int as isize,
+            ) = (p - *p_child1.offset(0 as libc::c_int as isize) as libc::c_int)
+            as opus_int16;
     } else {
         *p_child1.offset(0 as libc::c_int as isize) = 0 as libc::c_int as opus_int16;
         *p_child2.offset(0 as libc::c_int as isize) = 0 as libc::c_int as opus_int16;

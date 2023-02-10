@@ -18,7 +18,7 @@ pub mod stdint_intn_h {
     pub type int16_t = __int16_t;
     #[c2rust::src_loc = "26:1"]
     pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t, __int8_t};
+    use super::types_h::{__int8_t, __int16_t, __int32_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
 pub mod stdint_uintn_h {
@@ -36,7 +36,7 @@ pub mod opus_types_h {
     pub type opus_int16 = int16_t;
     #[c2rust::src_loc = "55:4"]
     pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::{int16_t, int32_t, int8_t};
+    use super::stdint_intn_h::{int8_t, int16_t, int32_t};
     use super::stdint_uintn_h::uint8_t;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:32"]
@@ -67,7 +67,7 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int16, opus_int32};
+    use super::opus_types_h::{opus_int32, opus_int16};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
 pub mod structs_h {
@@ -227,7 +227,7 @@ pub mod structs_h {
         pub indices_LBRR: [SideInfoIndices; 3],
         pub pulses_LBRR: [[opus_int8; 320]; 3],
     }
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
+    use super::opus_types_h::{opus_int16, opus_int32, opus_uint8, opus_int8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:32"]
@@ -272,7 +272,7 @@ pub mod structs_FLP_h {
         pub GainsUnq_Q16: [opus_int32; 4],
         pub lastGainIndexPrev: opus_int8,
     }
-    use super::opus_types_h::{opus_int32, opus_int8};
+    use super::opus_types_h::{opus_int8, opus_int32};
     use super::structs_h::silk_encoder_state;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
@@ -283,21 +283,27 @@ pub mod tables_h {
         pub static silk_LTPScales_table_Q14: [opus_int16; 3];
     }
 }
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
-pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
-};
-pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
+pub mod define_h {
+    #[c2rust::src_loc = "75:9"]
+    pub const CODE_INDEPENDENTLY: libc::c_int = 0 as libc::c_int;
+}
+pub use self::types_h::{__int8_t, __uint8_t, __int16_t, __int32_t};
+pub use self::stdint_intn_h::{int8_t, int16_t, int32_t};
 pub use self::stdint_uintn_h::uint8_t;
-pub use self::structs_FLP_h::{
-    silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
+pub use self::opus_types_h::{opus_int8, opus_uint8, opus_int16, opus_int32};
+pub use self::resampler_structs_h::{
+    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
 };
 pub use self::structs_h::{
-    silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
-    SideInfoIndices,
+    silk_nsq_state, silk_VAD_state, silk_LP_state, silk_NLSF_CB_struct, SideInfoIndices,
+    silk_encoder_state,
+};
+pub use self::structs_FLP_h::{
+    silk_shape_state_FLP, silk_encoder_state_FLP, silk_encoder_control_FLP,
 };
 use self::tables_h::silk_LTPScales_table_Q14;
-pub use self::types_h::{__int16_t, __int32_t, __int8_t, __uint8_t};
+pub use self::define_h::CODE_INDEPENDENTLY;
 #[no_mangle]
 #[c2rust::src_loc = "34:1"]
 pub unsafe extern "C" fn silk_LTP_scale_ctrl_FLP(
@@ -306,19 +312,29 @@ pub unsafe extern "C" fn silk_LTP_scale_ctrl_FLP(
     mut condCoding: libc::c_int,
 ) {
     let mut round_loss: libc::c_int = 0;
-    if condCoding == 0 as libc::c_int {
+    if condCoding == CODE_INDEPENDENTLY {
         round_loss = (*psEnc).sCmn.PacketLoss_perc + (*psEnc).sCmn.nFramesPerPacket;
-        (*psEnc).sCmn.indices.LTP_scaleIndex = (if 0.0f32 > 2.0f32 {
-            if round_loss as libc::c_float * (*psEncCtrl).LTPredCodGain * 0.1f32 > 0.0f32 {
+        (*psEnc)
+            .sCmn
+            .indices
+            .LTP_scaleIndex = (if 0.0f32 > 2.0f32 {
+            if round_loss as libc::c_float * (*psEncCtrl).LTPredCodGain * 0.1f32 > 0.0f32
+            {
                 0.0f32
-            } else if round_loss as libc::c_float * (*psEncCtrl).LTPredCodGain * 0.1f32 < 2.0f32 {
+            } else if round_loss as libc::c_float * (*psEncCtrl).LTPredCodGain * 0.1f32
+                < 2.0f32
+            {
                 2.0f32
             } else {
                 round_loss as libc::c_float * (*psEncCtrl).LTPredCodGain * 0.1f32
             }
-        } else if round_loss as libc::c_float * (*psEncCtrl).LTPredCodGain * 0.1f32 > 2.0f32 {
+        } else if round_loss as libc::c_float * (*psEncCtrl).LTPredCodGain * 0.1f32
+            > 2.0f32
+        {
             2.0f32
-        } else if round_loss as libc::c_float * (*psEncCtrl).LTPredCodGain * 0.1f32 < 0.0f32 {
+        } else if round_loss as libc::c_float * (*psEncCtrl).LTPredCodGain * 0.1f32
+            < 0.0f32
+        {
             0.0f32
         } else {
             round_loss as libc::c_float * (*psEncCtrl).LTPredCodGain * 0.1f32
@@ -326,7 +342,7 @@ pub unsafe extern "C" fn silk_LTP_scale_ctrl_FLP(
     } else {
         (*psEnc).sCmn.indices.LTP_scaleIndex = 0 as libc::c_int as opus_int8;
     }
-    (*psEncCtrl).LTP_scale = silk_LTPScales_table_Q14[(*psEnc).sCmn.indices.LTP_scaleIndex as usize]
-        as libc::c_float
-        / 16384.0f32;
+    (*psEncCtrl)
+        .LTP_scale = silk_LTPScales_table_Q14[(*psEnc).sCmn.indices.LTP_scaleIndex
+        as usize] as libc::c_float / 16384.0f32;
 }

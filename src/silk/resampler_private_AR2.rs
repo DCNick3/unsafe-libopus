@@ -39,10 +39,10 @@ pub mod opus_types_h {
     use super::stdint_intn_h::{int16_t, int32_t, int64_t};
     use super::stdint_uintn_h::uint32_t;
 }
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
+pub use self::types_h::{__int16_t, __int32_t, __uint32_t, __int64_t};
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
 pub use self::stdint_uintn_h::uint32_t;
-pub use self::types_h::{__int16_t, __int32_t, __int64_t, __uint32_t};
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32, opus_int64};
 #[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_resampler_private_AR2(
@@ -57,15 +57,21 @@ pub unsafe extern "C" fn silk_resampler_private_AR2(
     k = 0 as libc::c_int;
     while k < len {
         out32 = *S.offset(0 as libc::c_int as isize)
-            + ((*in_0.offset(k as isize) as opus_int32 as opus_uint32) << 8 as libc::c_int)
-                as opus_int32;
+            + ((*in_0.offset(k as isize) as opus_int32 as opus_uint32)
+                << 8 as libc::c_int) as opus_int32;
         *out_Q8.offset(k as isize) = out32;
         out32 = ((out32 as opus_uint32) << 2 as libc::c_int) as opus_int32;
-        *S.offset(0 as libc::c_int as isize) = (*S.offset(1 as libc::c_int as isize)
-            as libc::c_long
-            + (out32 as libc::c_long * *A_Q14.offset(0 as libc::c_int as isize) as opus_int64
+        *S
+            .offset(
+                0 as libc::c_int as isize,
+            ) = (*S.offset(1 as libc::c_int as isize) as libc::c_long
+            + (out32 as libc::c_long
+                * *A_Q14.offset(0 as libc::c_int as isize) as opus_int64
                 >> 16 as libc::c_int)) as opus_int32;
-        *S.offset(1 as libc::c_int as isize) = (out32 as libc::c_long
+        *S
+            .offset(
+                1 as libc::c_int as isize,
+            ) = (out32 as libc::c_long
             * *A_Q14.offset(1 as libc::c_int as isize) as opus_int64
             >> 16 as libc::c_int) as opus_int32;
         k += 1;

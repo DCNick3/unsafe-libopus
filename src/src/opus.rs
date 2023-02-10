@@ -22,6 +22,13 @@ pub mod opus_types_h {
     pub type opus_int32 = int32_t;
     use super::stdint_intn_h::{int16_t, int32_t};
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:32"]
+pub mod opus_defines_h {
+    #[c2rust::src_loc = "54:9"]
+    pub const OPUS_INVALID_PACKET: libc::c_int = -(4 as libc::c_int);
+    #[c2rust::src_loc = "48:9"]
+    pub const OPUS_BAD_ARG: libc::c_int = -(1 as libc::c_int);
+}
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:33"]
 pub mod mathcalls_h {
     extern "C" {
@@ -29,10 +36,17 @@ pub mod mathcalls_h {
         pub fn fabs(_: libc::c_double) -> libc::c_double;
     }
 }
-use self::mathcalls_h::fabs;
-pub use self::opus_types_h::{opus_int16, opus_int32};
-pub use self::stdint_intn_h::{int16_t, int32_t};
+#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:33"]
+pub mod stddef_h {
+    #[c2rust::src_loc = "89:11"]
+    pub const NULL: libc::c_int = 0 as libc::c_int;
+}
 pub use self::types_h::{__int16_t, __int32_t};
+pub use self::stdint_intn_h::{int16_t, int32_t};
+pub use self::opus_types_h::{opus_int16, opus_int32};
+pub use self::opus_defines_h::{OPUS_INVALID_PACKET, OPUS_BAD_ARG};
+use self::mathcalls_h::fabs;
+pub use self::stddef_h::NULL;
 #[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn opus_pcm_soft_clip(
@@ -44,17 +58,23 @@ pub unsafe extern "C" fn opus_pcm_soft_clip(
     let mut c: libc::c_int = 0;
     let mut i: libc::c_int = 0;
     let mut x: *mut libc::c_float = 0 as *mut libc::c_float;
-    if C < 1 as libc::c_int || N < 1 as libc::c_int || _x.is_null() || declip_mem.is_null() {
+    if C < 1 as libc::c_int || N < 1 as libc::c_int || _x.is_null()
+        || declip_mem.is_null()
+    {
         return;
     }
     i = 0 as libc::c_int;
     while i < N * C {
-        *_x.offset(i as isize) = if -2.0f32
+        *_x
+            .offset(
+                i as isize,
+            ) = if -2.0f32
             > (if 2.0f32 < *_x.offset(i as isize) {
                 2.0f32
             } else {
                 *_x.offset(i as isize)
-            }) {
+            })
+        {
             -2.0f32
         } else if 2.0f32 < *_x.offset(i as isize) {
             2.0f32
@@ -75,7 +95,10 @@ pub unsafe extern "C" fn opus_pcm_soft_clip(
             if *x.offset((i * C) as isize) * a >= 0 as libc::c_int as libc::c_float {
                 break;
             }
-            *x.offset((i * C) as isize) = *x.offset((i * C) as isize)
+            *x
+                .offset(
+                    (i * C) as isize,
+                ) = *x.offset((i * C) as isize)
                 + a * *x.offset((i * C) as isize) * *x.offset((i * C) as isize);
             i += 1;
         }
@@ -103,7 +126,8 @@ pub unsafe extern "C" fn opus_pcm_soft_clip(
                 peak_pos = i;
                 end = i;
                 start = end;
-                maxval = fabs(*x.offset((i * C) as isize) as libc::c_double) as libc::c_float;
+                maxval = fabs(*x.offset((i * C) as isize) as libc::c_double)
+                    as libc::c_float;
                 while start > 0 as libc::c_int
                     && *x.offset((i * C) as isize)
                         * *x.offset(((start - 1 as libc::c_int) * C) as isize)
@@ -115,19 +139,18 @@ pub unsafe extern "C" fn opus_pcm_soft_clip(
                     && *x.offset((i * C) as isize) * *x.offset((end * C) as isize)
                         >= 0 as libc::c_int as libc::c_float
                 {
-                    if fabs(*x.offset((end * C) as isize) as libc::c_double) as libc::c_float
-                        > maxval
+                    if fabs(*x.offset((end * C) as isize) as libc::c_double)
+                        as libc::c_float > maxval
                     {
-                        maxval =
-                            fabs(*x.offset((end * C) as isize) as libc::c_double) as libc::c_float;
+                        maxval = fabs(*x.offset((end * C) as isize) as libc::c_double)
+                            as libc::c_float;
                         peak_pos = end;
                     }
                     end += 1;
                 }
                 special = (start == 0 as libc::c_int
                     && *x.offset((i * C) as isize) * *x.offset(0 as libc::c_int as isize)
-                        >= 0 as libc::c_int as libc::c_float)
-                    as libc::c_int;
+                        >= 0 as libc::c_int as libc::c_float) as libc::c_int;
                 a = (maxval - 1 as libc::c_int as libc::c_float) / (maxval * maxval);
                 a += a * 2.4e-7f32;
                 if *x.offset((i * C) as isize) > 0 as libc::c_int as libc::c_float {
@@ -135,24 +158,32 @@ pub unsafe extern "C" fn opus_pcm_soft_clip(
                 }
                 i = start;
                 while i < end {
-                    *x.offset((i * C) as isize) = *x.offset((i * C) as isize)
+                    *x
+                        .offset(
+                            (i * C) as isize,
+                        ) = *x.offset((i * C) as isize)
                         + a * *x.offset((i * C) as isize) * *x.offset((i * C) as isize);
                     i += 1;
                 }
                 if special != 0 && peak_pos >= 2 as libc::c_int {
                     let mut delta: libc::c_float = 0.;
-                    let mut offset: libc::c_float = x0 - *x.offset(0 as libc::c_int as isize);
+                    let mut offset: libc::c_float = x0
+                        - *x.offset(0 as libc::c_int as isize);
                     delta = offset / peak_pos as libc::c_float;
                     i = curr;
                     while i < peak_pos {
                         offset -= delta;
                         *x.offset((i * C) as isize) += offset;
-                        *x.offset((i * C) as isize) = if -1.0f32
+                        *x
+                            .offset(
+                                (i * C) as isize,
+                            ) = if -1.0f32
                             > (if 1.0f32 < *x.offset((i * C) as isize) {
                                 1.0f32
                             } else {
                                 *x.offset((i * C) as isize)
-                            }) {
+                            })
+                        {
                             -1.0f32
                         } else if 1.0f32 < *x.offset((i * C) as isize) {
                             1.0f32
@@ -182,10 +213,14 @@ pub unsafe extern "C" fn encode_size(
         *data.offset(0 as libc::c_int as isize) = size as libc::c_uchar;
         return 1 as libc::c_int;
     } else {
-        *data.offset(0 as libc::c_int as isize) =
-            (252 as libc::c_int + (size & 0x3 as libc::c_int)) as libc::c_uchar;
-        *data.offset(1 as libc::c_int as isize) = (size
-            - *data.offset(0 as libc::c_int as isize) as libc::c_int
+        *data
+            .offset(
+                0 as libc::c_int as isize,
+            ) = (252 as libc::c_int + (size & 0x3 as libc::c_int)) as libc::c_uchar;
+        *data
+            .offset(
+                1 as libc::c_int as isize,
+            ) = (size - *data.offset(0 as libc::c_int as isize) as libc::c_int
             >> 2 as libc::c_int) as libc::c_uchar;
         return 2 as libc::c_int;
     };
@@ -199,14 +234,17 @@ unsafe extern "C" fn parse_size(
     if len < 1 as libc::c_int {
         *size = -(1 as libc::c_int) as opus_int16;
         return -(1 as libc::c_int);
-    } else if (*data.offset(0 as libc::c_int as isize) as libc::c_int) < 252 as libc::c_int {
+    } else if (*data.offset(0 as libc::c_int as isize) as libc::c_int)
+        < 252 as libc::c_int
+    {
         *size = *data.offset(0 as libc::c_int as isize) as opus_int16;
         return 1 as libc::c_int;
     } else if len < 2 as libc::c_int {
         *size = -(1 as libc::c_int) as opus_int16;
         return -(1 as libc::c_int);
     } else {
-        *size = (4 as libc::c_int * *data.offset(1 as libc::c_int as isize) as libc::c_int
+        *size = (4 as libc::c_int
+            * *data.offset(1 as libc::c_int as isize) as libc::c_int
             + *data.offset(0 as libc::c_int as isize) as libc::c_int) as opus_int16;
         return 2 as libc::c_int;
     };
@@ -218,22 +256,24 @@ pub unsafe extern "C" fn opus_packet_get_samples_per_frame(
     mut Fs: opus_int32,
 ) -> libc::c_int {
     let mut audiosize: libc::c_int = 0;
-    if *data.offset(0 as libc::c_int as isize) as libc::c_int & 0x80 as libc::c_int != 0 {
-        audiosize = *data.offset(0 as libc::c_int as isize) as libc::c_int >> 3 as libc::c_int
-            & 0x3 as libc::c_int;
-        audiosize = (Fs << audiosize) / 400 as libc::c_int;
-    } else if *data.offset(0 as libc::c_int as isize) as libc::c_int & 0x60 as libc::c_int
-        == 0x60 as libc::c_int
+    if *data.offset(0 as libc::c_int as isize) as libc::c_int & 0x80 as libc::c_int != 0
     {
-        audiosize =
-            if *data.offset(0 as libc::c_int as isize) as libc::c_int & 0x8 as libc::c_int != 0 {
-                Fs / 50 as libc::c_int
-            } else {
-                Fs / 100 as libc::c_int
-            };
+        audiosize = *data.offset(0 as libc::c_int as isize) as libc::c_int
+            >> 3 as libc::c_int & 0x3 as libc::c_int;
+        audiosize = (Fs << audiosize) / 400 as libc::c_int;
+    } else if *data.offset(0 as libc::c_int as isize) as libc::c_int
+        & 0x60 as libc::c_int == 0x60 as libc::c_int
+    {
+        audiosize = if *data.offset(0 as libc::c_int as isize) as libc::c_int
+            & 0x8 as libc::c_int != 0
+        {
+            Fs / 50 as libc::c_int
+        } else {
+            Fs / 100 as libc::c_int
+        };
     } else {
-        audiosize = *data.offset(0 as libc::c_int as isize) as libc::c_int >> 3 as libc::c_int
-            & 0x3 as libc::c_int;
+        audiosize = *data.offset(0 as libc::c_int as isize) as libc::c_int
+            >> 3 as libc::c_int & 0x3 as libc::c_int;
         if audiosize == 3 as libc::c_int {
             audiosize = Fs * 60 as libc::c_int / 1000 as libc::c_int;
         } else {
@@ -265,10 +305,10 @@ pub unsafe extern "C" fn opus_packet_parse_impl(
     let mut pad: opus_int32 = 0 as libc::c_int;
     let mut data0: *const libc::c_uchar = data;
     if size.is_null() || len < 0 as libc::c_int {
-        return -(1 as libc::c_int);
+        return OPUS_BAD_ARG;
     }
     if len == 0 as libc::c_int {
-        return -(4 as libc::c_int);
+        return OPUS_INVALID_PACKET;
     }
     framesize = opus_packet_get_samples_per_frame(data, 48000 as libc::c_int);
     cbr = 0 as libc::c_int;
@@ -286,7 +326,7 @@ pub unsafe extern "C" fn opus_packet_parse_impl(
             cbr = 1 as libc::c_int;
             if self_delimited == 0 {
                 if len & 0x1 as libc::c_int != 0 {
-                    return -(4 as libc::c_int);
+                    return OPUS_INVALID_PACKET;
                 }
                 last_size = len / 2 as libc::c_int;
                 *size.offset(0 as libc::c_int as isize) = last_size as opus_int16;
@@ -296,24 +336,25 @@ pub unsafe extern "C" fn opus_packet_parse_impl(
             count = 2 as libc::c_int;
             bytes = parse_size(data, len, size);
             len -= bytes;
-            if (*size.offset(0 as libc::c_int as isize) as libc::c_int) < 0 as libc::c_int
+            if (*size.offset(0 as libc::c_int as isize) as libc::c_int)
+                < 0 as libc::c_int
                 || *size.offset(0 as libc::c_int as isize) as libc::c_int > len
             {
-                return -(4 as libc::c_int);
+                return OPUS_INVALID_PACKET;
             }
             data = data.offset(bytes as isize);
             last_size = len - *size.offset(0 as libc::c_int as isize) as libc::c_int;
         }
         _ => {
             if len < 1 as libc::c_int {
-                return -(4 as libc::c_int);
+                return OPUS_INVALID_PACKET;
             }
             let fresh1 = data;
             data = data.offset(1);
             ch = *fresh1;
             count = ch as libc::c_int & 0x3f as libc::c_int;
             if count <= 0 as libc::c_int || framesize * count > 5760 as libc::c_int {
-                return -(4 as libc::c_int);
+                return OPUS_INVALID_PACKET;
             }
             len -= 1;
             if ch as libc::c_int & 0x40 as libc::c_int != 0 {
@@ -321,17 +362,13 @@ pub unsafe extern "C" fn opus_packet_parse_impl(
                 loop {
                     let mut tmp: libc::c_int = 0;
                     if len <= 0 as libc::c_int {
-                        return -(4 as libc::c_int);
+                        return OPUS_INVALID_PACKET;
                     }
                     let fresh2 = data;
                     data = data.offset(1);
                     p = *fresh2 as libc::c_int;
                     len -= 1;
-                    tmp = if p == 255 as libc::c_int {
-                        254 as libc::c_int
-                    } else {
-                        p
-                    };
+                    tmp = if p == 255 as libc::c_int { 254 as libc::c_int } else { p };
                     len -= tmp;
                     pad += tmp;
                     if !(p == 255 as libc::c_int) {
@@ -340,7 +377,7 @@ pub unsafe extern "C" fn opus_packet_parse_impl(
                 }
             }
             if len < 0 as libc::c_int {
-                return -(4 as libc::c_int);
+                return OPUS_INVALID_PACKET;
             }
             cbr = (ch as libc::c_int & 0x80 as libc::c_int == 0) as libc::c_int;
             if cbr == 0 {
@@ -352,19 +389,19 @@ pub unsafe extern "C" fn opus_packet_parse_impl(
                     if (*size.offset(i as isize) as libc::c_int) < 0 as libc::c_int
                         || *size.offset(i as isize) as libc::c_int > len
                     {
-                        return -(4 as libc::c_int);
+                        return OPUS_INVALID_PACKET;
                     }
                     data = data.offset(bytes as isize);
                     last_size -= bytes + *size.offset(i as isize) as libc::c_int;
                     i += 1;
                 }
                 if last_size < 0 as libc::c_int {
-                    return -(4 as libc::c_int);
+                    return OPUS_INVALID_PACKET;
                 }
             } else if self_delimited == 0 {
                 last_size = len / count;
                 if last_size * count != len {
-                    return -(4 as libc::c_int);
+                    return OPUS_INVALID_PACKET;
                 }
                 i = 0 as libc::c_int;
                 while i < count - 1 as libc::c_int {
@@ -378,33 +415,39 @@ pub unsafe extern "C" fn opus_packet_parse_impl(
         bytes = parse_size(
             data,
             len,
-            size.offset(count as isize)
-                .offset(-(1 as libc::c_int as isize)),
+            size.offset(count as isize).offset(-(1 as libc::c_int as isize)),
         );
         len -= bytes;
-        if (*size.offset((count - 1 as libc::c_int) as isize) as libc::c_int) < 0 as libc::c_int
+        if (*size.offset((count - 1 as libc::c_int) as isize) as libc::c_int)
+            < 0 as libc::c_int
             || *size.offset((count - 1 as libc::c_int) as isize) as libc::c_int > len
         {
-            return -(4 as libc::c_int);
+            return OPUS_INVALID_PACKET;
         }
         data = data.offset(bytes as isize);
         if cbr != 0 {
-            if *size.offset((count - 1 as libc::c_int) as isize) as libc::c_int * count > len {
-                return -(4 as libc::c_int);
+            if *size.offset((count - 1 as libc::c_int) as isize) as libc::c_int * count
+                > len
+            {
+                return OPUS_INVALID_PACKET;
             }
             i = 0 as libc::c_int;
             while i < count - 1 as libc::c_int {
-                *size.offset(i as isize) = *size.offset((count - 1 as libc::c_int) as isize);
+                *size
+                    .offset(
+                        i as isize,
+                    ) = *size.offset((count - 1 as libc::c_int) as isize);
                 i += 1;
             }
-        } else if bytes + *size.offset((count - 1 as libc::c_int) as isize) as libc::c_int
+        } else if bytes
+            + *size.offset((count - 1 as libc::c_int) as isize) as libc::c_int
             > last_size
         {
-            return -(4 as libc::c_int);
+            return OPUS_INVALID_PACKET
         }
     } else {
         if last_size > 1275 as libc::c_int {
-            return -(4 as libc::c_int);
+            return OPUS_INVALID_PACKET;
         }
         *size.offset((count - 1 as libc::c_int) as isize) = last_size as opus_int16;
     }
@@ -446,6 +489,6 @@ pub unsafe extern "C" fn opus_packet_parse(
         frames,
         size,
         payload_offset,
-        0 as *mut opus_int32,
+        NULL as *mut opus_int32,
     );
 }

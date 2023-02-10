@@ -20,7 +20,7 @@ pub mod stdint_intn_h {
     pub type int16_t = __int16_t;
     #[c2rust::src_loc = "26:1"]
     pub type int32_t = __int32_t;
-    use super::types_h::{__int16_t, __int32_t, __int8_t};
+    use super::types_h::{__int8_t, __int16_t, __int32_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:32"]
 pub mod stdint_uintn_h {
@@ -28,7 +28,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint32_t, __uint8_t};
+    use super::types_h::{__uint8_t, __uint32_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
 pub mod opus_types_h {
@@ -42,8 +42,8 @@ pub mod opus_types_h {
     pub type opus_int32 = int32_t;
     #[c2rust::src_loc = "56:4"]
     pub type opus_uint32 = uint32_t;
-    use super::stdint_intn_h::{int16_t, int32_t, int8_t};
-    use super::stdint_uintn_h::{uint32_t, uint8_t};
+    use super::stdint_intn_h::{int8_t, int16_t, int32_t};
+    use super::stdint_uintn_h::{uint8_t, uint32_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:32"]
 pub mod resampler_structs_h {
@@ -73,7 +73,7 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int16, opus_int32};
+    use super::opus_types_h::{opus_int32, opus_int16};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:32"]
 pub mod entcode_h {
@@ -211,7 +211,7 @@ pub mod structs_h {
         pub LTPCoef_Q14: [opus_int16; 20],
         pub LTP_scale_Q14: libc::c_int,
     }
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
+    use super::opus_types_h::{opus_int16, opus_uint8, opus_int8, opus_int32};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
@@ -242,11 +242,18 @@ pub mod string_h {
         ) -> *mut libc::c_void;
     }
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/control.h:32"]
+pub mod control_h {
+    #[c2rust::src_loc = "39:9"]
+    pub const FLAG_DECODE_NORMAL: libc::c_int = 0 as libc::c_int;
+    #[c2rust::src_loc = "41:9"]
+    pub const FLAG_DECODE_LBRR: libc::c_int = 2 as libc::c_int;
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
+    use super::structs_h::{silk_decoder_state, silk_decoder_control};
     use super::entcode_h::ec_dec;
     use super::opus_types_h::opus_int16;
-    use super::structs_h::{silk_decoder_control, silk_decoder_state};
     extern "C" {
         #[c2rust::src_loc = "417:1"]
         pub fn silk_decode_indices(
@@ -289,8 +296,8 @@ pub mod main_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/PLC.h:32"]
 pub mod PLC_h {
+    use super::structs_h::{silk_decoder_state, silk_decoder_control};
     use super::opus_types_h::opus_int16;
-    use super::structs_h::{silk_decoder_control, silk_decoder_state};
     extern "C" {
         #[c2rust::src_loc = "47:1"]
         pub fn silk_PLC(
@@ -308,23 +315,25 @@ pub mod PLC_h {
         );
     }
 }
-use self::arch_h::celt_fatal;
-pub use self::entcode_h::{ec_ctx, ec_dec, ec_window};
-use self::main_h::{
-    silk_CNG, silk_decode_core, silk_decode_indices, silk_decode_parameters, silk_decode_pulses,
-};
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint32, opus_uint8};
+pub use self::types_h::{__int8_t, __uint8_t, __int16_t, __int32_t, __uint32_t};
+pub use self::stdint_intn_h::{int8_t, int16_t, int32_t};
+pub use self::stdint_uintn_h::{uint8_t, uint32_t};
+pub use self::opus_types_h::{opus_int8, opus_uint8, opus_int16, opus_int32, opus_uint32};
 pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
+    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
 };
-pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
-pub use self::stdint_uintn_h::{uint32_t, uint8_t};
-use self::string_h::{memcpy, memmove};
+pub use self::entcode_h::{ec_window, ec_ctx, ec_dec};
 pub use self::structs_h::{
-    silk_CNG_struct, silk_NLSF_CB_struct, silk_PLC_struct, silk_decoder_control,
-    silk_decoder_state, SideInfoIndices,
+    silk_NLSF_CB_struct, SideInfoIndices, silk_PLC_struct, silk_CNG_struct,
+    silk_decoder_state, silk_decoder_control,
 };
-pub use self::types_h::{__int16_t, __int32_t, __int8_t, __uint32_t, __uint8_t};
+use self::arch_h::celt_fatal;
+use self::string_h::{memmove, memcpy};
+pub use self::control_h::{FLAG_DECODE_NORMAL, FLAG_DECODE_LBRR};
+use self::main_h::{
+    silk_decode_indices, silk_decode_pulses, silk_decode_parameters, silk_decode_core,
+    silk_CNG,
+};
 use self::PLC_h::{silk_PLC, silk_PLC_glue_frames};
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]
@@ -349,7 +358,9 @@ pub unsafe extern "C" fn silk_decode_frame(
         LTP_scale_Q14: 0,
     }; 1];
     (*psDecCtrl.as_mut_ptr()).LTP_scale_Q14 = 0 as libc::c_int;
-    if !(L > 0 as libc::c_int && L <= 5 as libc::c_int * 4 as libc::c_int * 16 as libc::c_int) {
+    if !(L > 0 as libc::c_int
+        && L <= 5 as libc::c_int * 4 as libc::c_int * 16 as libc::c_int)
+    {
         celt_fatal(
             b"assertion failed: L > 0 && L <= MAX_FRAME_LENGTH\0" as *const u8
                 as *const libc::c_char,
@@ -357,13 +368,13 @@ pub unsafe extern "C" fn silk_decode_frame(
             58 as libc::c_int,
         );
     }
-    if lostFlag == 0 as libc::c_int
-        || lostFlag == 2 as libc::c_int
+    if lostFlag == FLAG_DECODE_NORMAL
+        || lostFlag == FLAG_DECODE_LBRR
             && (*psDec).LBRR_flags[(*psDec).nFramesDecoded as usize] == 1 as libc::c_int
     {
         let vla = (L + 16 as libc::c_int - 1 as libc::c_int
             & !(16 as libc::c_int - 1 as libc::c_int)) as usize;
-        let mut pulses: Vec<opus_int16> = ::std::vec::from_elem(0, vla);
+        let mut pulses: Vec::<opus_int16> = ::std::vec::from_elem(0, vla);
         silk_decode_indices(
             psDec,
             psRangeDec,
@@ -406,8 +417,8 @@ pub unsafe extern "C" fn silk_decode_frame(
     }
     if !((*psDec).ltp_mem_length >= (*psDec).frame_length) {
         celt_fatal(
-            b"assertion failed: psDec->ltp_mem_length >= psDec->frame_length\0" as *const u8
-                as *const libc::c_char,
+            b"assertion failed: psDec->ltp_mem_length >= psDec->frame_length\0"
+                as *const u8 as *const libc::c_char,
             b"silk/decode_frame.c\0" as *const u8 as *const libc::c_char,
             107 as libc::c_int,
         );
@@ -415,10 +426,8 @@ pub unsafe extern "C" fn silk_decode_frame(
     mv_len = (*psDec).ltp_mem_length - (*psDec).frame_length;
     memmove(
         ((*psDec).outBuf).as_mut_ptr() as *mut libc::c_void,
-        &mut *((*psDec).outBuf)
-            .as_mut_ptr()
-            .offset((*psDec).frame_length as isize) as *mut opus_int16
-            as *const libc::c_void,
+        &mut *((*psDec).outBuf).as_mut_ptr().offset((*psDec).frame_length as isize)
+            as *mut opus_int16 as *const libc::c_void,
         (mv_len as libc::c_ulong)
             .wrapping_mul(::core::mem::size_of::<opus_int16>() as libc::c_ulong),
     );
@@ -431,8 +440,9 @@ pub unsafe extern "C" fn silk_decode_frame(
     );
     silk_CNG(psDec, psDecCtrl.as_mut_ptr(), pOut, L);
     silk_PLC_glue_frames(psDec, pOut, L);
-    (*psDec).lagPrev =
-        (*psDecCtrl.as_mut_ptr()).pitchL[((*psDec).nb_subfr - 1 as libc::c_int) as usize];
+    (*psDec)
+        .lagPrev = (*psDecCtrl.as_mut_ptr())
+        .pitchL[((*psDec).nb_subfr - 1 as libc::c_int) as usize];
     *pN = L;
     return ret;
 }

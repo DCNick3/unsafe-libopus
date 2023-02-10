@@ -24,7 +24,7 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     #[c2rust::src_loc = "27:1"]
     pub type int64_t = __int64_t;
-    use super::types_h::{__int16_t, __int32_t, __int64_t, __int8_t};
+    use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:33"]
 pub mod stdint_uintn_h {
@@ -32,7 +32,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint32_t, __uint8_t};
+    use super::types_h::{__uint8_t, __uint32_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:33"]
 pub mod opus_types_h {
@@ -48,8 +48,8 @@ pub mod opus_types_h {
     pub type opus_uint32 = uint32_t;
     #[c2rust::src_loc = "57:4"]
     pub type opus_int64 = int64_t;
-    use super::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
-    use super::stdint_uintn_h::{uint32_t, uint8_t};
+    use super::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
+    use super::stdint_uintn_h::{uint8_t, uint32_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:33"]
 pub mod resampler_structs_h {
@@ -79,7 +79,7 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int16, opus_int32};
+    use super::opus_types_h::{opus_int32, opus_int16};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:33"]
 pub mod entcode_h {
@@ -107,12 +107,10 @@ pub mod entcode_h {
     #[inline]
     #[c2rust::src_loc = "111:1"]
     pub unsafe extern "C" fn ec_tell(mut _this: *mut ec_ctx) -> libc::c_int {
-        return (*_this).nbits_total
-            - (::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int
-                * 8 as libc::c_int
-                - ((*_this).rng).leading_zeros() as i32);
+        return (*_this).nbits_total - (EC_CLZ0 - ((*_this).rng).leading_zeros() as i32);
     }
     use super::opus_types_h::opus_uint32;
+    use super::ecintrin_h::EC_CLZ0;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:33"]
 pub mod structs_h {
@@ -272,7 +270,7 @@ pub mod structs_h {
         pub indices_LBRR: [SideInfoIndices; 3],
         pub pulses_LBRR: [[opus_int8; 320]; 3],
     }
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
+    use super::opus_types_h::{opus_int16, opus_int32, opus_uint8, opus_int8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:33"]
@@ -317,7 +315,7 @@ pub mod structs_FLP_h {
         pub GainsUnq_Q16: [opus_int32; 4],
         pub lastGainIndexPrev: opus_int8,
     }
-    use super::opus_types_h::{opus_int32, opus_int8};
+    use super::opus_types_h::{opus_int8, opus_int32};
     use super::structs_h::silk_encoder_state;
 }
 #[c2rust::header_src = "/usr/include/stdlib.h:32"]
@@ -331,7 +329,10 @@ pub mod stdlib_h {
 pub mod SigProc_FIX_h {
     #[inline]
     #[c2rust::src_loc = "546:1"]
-    pub unsafe extern "C" fn silk_min_int(mut a: libc::c_int, mut b: libc::c_int) -> libc::c_int {
+    pub unsafe extern "C" fn silk_min_int(
+        mut a: libc::c_int,
+        mut b: libc::c_int,
+    ) -> libc::c_int {
         return if a < b { a } else { b };
     }
     use super::opus_types_h::opus_int32;
@@ -351,6 +352,19 @@ pub mod arch_h {
         ) -> !;
     }
 }
+#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:33"]
+pub mod limits_h {
+    #[c2rust::src_loc = "63:9"]
+    pub const CHAR_BIT: libc::c_int = __CHAR_BIT__;
+    use super::internal::__CHAR_BIT__;
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:33"]
+pub mod ecintrin_h {
+    #[c2rust::src_loc = "69:11"]
+    pub const EC_CLZ0: libc::c_int = ::core::mem::size_of::<libc::c_uint>()
+        as libc::c_ulong as libc::c_int * CHAR_BIT;
+    use super::limits_h::CHAR_BIT;
+}
 #[c2rust::header_src = "/usr/include/string.h:33"]
 pub mod string_h {
     extern "C" {
@@ -368,11 +382,30 @@ pub mod string_h {
         ) -> *mut libc::c_void;
     }
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:33"]
+pub mod define_h {
+    #[c2rust::src_loc = "112:9"]
+    pub const LA_SHAPE_MS: libc::c_int = 5 as libc::c_int;
+    #[c2rust::src_loc = "123:9"]
+    pub const N_LEVELS_QGAIN: libc::c_int = 64 as libc::c_int;
+    #[c2rust::src_loc = "71:9"]
+    pub const TYPE_UNVOICED: libc::c_int = 1 as libc::c_int;
+    #[c2rust::src_loc = "56:9"]
+    pub const NB_SPEECH_FRAMES_BEFORE_DTX: libc::c_int = 10 as libc::c_int;
+    #[c2rust::src_loc = "57:9"]
+    pub const MAX_CONSECUTIVE_DTX: libc::c_int = 20 as libc::c_int;
+    #[c2rust::src_loc = "70:9"]
+    pub const TYPE_NO_VOICE_ACTIVITY: libc::c_int = 0 as libc::c_int;
+    #[c2rust::src_loc = "62:9"]
+    pub const VAD_NO_ACTIVITY: libc::c_int = 0 as libc::c_int;
+    #[c2rust::src_loc = "77:9"]
+    pub const CODE_CONDITIONALLY: libc::c_int = 2 as libc::c_int;
+}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/main_FLP.h:33"]
 pub mod main_FLP_h {
+    use super::structs_FLP_h::{silk_encoder_state_FLP, silk_encoder_control_FLP};
+    use super::structs_h::{SideInfoIndices, silk_nsq_state};
     use super::opus_types_h::opus_int8;
-    use super::structs_FLP_h::{silk_encoder_control_FLP, silk_encoder_state_FLP};
-    use super::structs_h::{silk_nsq_state, SideInfoIndices};
     extern "C" {
         #[c2rust::src_loc = "119:1"]
         pub fn silk_find_pitch_lags_FLP(
@@ -435,8 +468,8 @@ pub mod SigProc_FLP_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:33"]
 pub mod main_h {
     use super::entcode_h::ec_enc;
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int8};
-    use super::structs_h::{silk_LP_state, silk_encoder_state};
+    use super::opus_types_h::{opus_int8, opus_int32, opus_int16};
+    use super::structs_h::{silk_encoder_state, silk_LP_state};
     extern "C" {
         #[c2rust::src_loc = "156:1"]
         pub fn silk_encode_pulses(
@@ -485,36 +518,50 @@ pub mod main_h {
         );
     }
 }
-use self::arch_h::celt_fatal;
-pub use self::entcode_h::{ec_ctx, ec_enc, ec_tell, ec_window};
-use self::main_FLP_h::{
-    silk_NSQ_wrapper_FLP, silk_find_pitch_lags_FLP, silk_find_pred_coefs_FLP,
-    silk_noise_shape_analysis_FLP, silk_process_gains_FLP,
+#[c2rust::header_src = "internal:0"]
+pub mod internal {
+    #[c2rust::src_loc = "36:9"]
+    pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
+}
+pub use self::types_h::{
+    __int8_t, __uint8_t, __int16_t, __int32_t, __uint32_t, __int64_t,
 };
-use self::main_h::{
-    silk_LP_variable_cutoff, silk_VAD_GetSA_Q8_c, silk_encode_indices, silk_encode_pulses,
-    silk_gains_ID, silk_gains_dequant, silk_gains_quant,
-};
+pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
+pub use self::stdint_uintn_h::{uint8_t, uint32_t};
 pub use self::opus_types_h::{
-    opus_int16, opus_int32, opus_int64, opus_int8, opus_uint32, opus_uint8,
+    opus_int8, opus_uint8, opus_int16, opus_int32, opus_uint32, opus_int64,
 };
 pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
+    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
 };
-pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
-pub use self::stdint_uintn_h::{uint32_t, uint8_t};
-use self::stdlib_h::abs;
-use self::string_h::{memcpy, memmove};
-pub use self::structs_FLP_h::{
-    silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
-};
+pub use self::entcode_h::{ec_window, ec_ctx, ec_enc, ec_tell};
 pub use self::structs_h::{
-    silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
-    SideInfoIndices,
+    silk_nsq_state, silk_VAD_state, silk_LP_state, silk_NLSF_CB_struct, SideInfoIndices,
+    silk_encoder_state,
 };
-pub use self::types_h::{__int16_t, __int32_t, __int64_t, __int8_t, __uint32_t, __uint8_t};
-pub use self::SigProc_FIX_h::{silk_log2lin, silk_min_int};
+pub use self::structs_FLP_h::{
+    silk_shape_state_FLP, silk_encoder_state_FLP, silk_encoder_control_FLP,
+};
+use self::stdlib_h::abs;
+pub use self::SigProc_FIX_h::{silk_min_int, silk_log2lin};
+use self::arch_h::celt_fatal;
+pub use self::limits_h::CHAR_BIT;
+pub use self::ecintrin_h::EC_CLZ0;
+use self::string_h::{memmove, memcpy};
+pub use self::define_h::{
+    LA_SHAPE_MS, N_LEVELS_QGAIN, TYPE_UNVOICED, NB_SPEECH_FRAMES_BEFORE_DTX,
+    MAX_CONSECUTIVE_DTX, TYPE_NO_VOICE_ACTIVITY, VAD_NO_ACTIVITY, CODE_CONDITIONALLY,
+};
+use self::main_FLP_h::{
+    silk_find_pitch_lags_FLP, silk_noise_shape_analysis_FLP, silk_find_pred_coefs_FLP,
+    silk_process_gains_FLP, silk_NSQ_wrapper_FLP,
+};
 pub use self::SigProc_FLP_h::silk_short2float_array;
+use self::main_h::{
+    silk_encode_pulses, silk_gains_quant, silk_gains_dequant, silk_gains_ID,
+    silk_VAD_GetSA_Q8_c, silk_LP_variable_cutoff, silk_encode_indices,
+};
+pub use self::internal::__CHAR_BIT__;
 #[no_mangle]
 #[c2rust::src_loc = "44:1"]
 pub unsafe extern "C" fn silk_encode_do_VAD_FLP(
@@ -523,34 +570,40 @@ pub unsafe extern "C" fn silk_encode_do_VAD_FLP(
 ) {
     let activity_threshold: libc::c_int = ((0.05f32
         * ((1 as libc::c_int as opus_int64) << 8 as libc::c_int) as libc::c_float)
-        as libc::c_double
-        + 0.5f64) as opus_int32;
+        as libc::c_double + 0.5f64) as opus_int32;
     silk_VAD_GetSA_Q8_c(
         &mut (*psEnc).sCmn,
-        ((*psEnc).sCmn.inputBuf)
-            .as_mut_ptr()
-            .offset(1 as libc::c_int as isize) as *const opus_int16,
+        ((*psEnc).sCmn.inputBuf).as_mut_ptr().offset(1 as libc::c_int as isize)
+            as *const opus_int16,
     );
-    if activity == 0 as libc::c_int && (*psEnc).sCmn.speech_activity_Q8 >= activity_threshold {
+    if activity == VAD_NO_ACTIVITY
+        && (*psEnc).sCmn.speech_activity_Q8 >= activity_threshold
+    {
         (*psEnc).sCmn.speech_activity_Q8 = activity_threshold - 1 as libc::c_int;
     }
     if (*psEnc).sCmn.speech_activity_Q8 < activity_threshold {
-        (*psEnc).sCmn.indices.signalType = 0 as libc::c_int as opus_int8;
+        (*psEnc).sCmn.indices.signalType = TYPE_NO_VOICE_ACTIVITY as opus_int8;
         (*psEnc).sCmn.noSpeechCounter += 1;
-        if (*psEnc).sCmn.noSpeechCounter <= 10 as libc::c_int {
+        if (*psEnc).sCmn.noSpeechCounter <= NB_SPEECH_FRAMES_BEFORE_DTX {
             (*psEnc).sCmn.inDTX = 0 as libc::c_int;
-        } else if (*psEnc).sCmn.noSpeechCounter > 20 as libc::c_int + 10 as libc::c_int {
-            (*psEnc).sCmn.noSpeechCounter = 10 as libc::c_int;
+        } else if (*psEnc).sCmn.noSpeechCounter
+            > MAX_CONSECUTIVE_DTX + NB_SPEECH_FRAMES_BEFORE_DTX
+        {
+            (*psEnc).sCmn.noSpeechCounter = NB_SPEECH_FRAMES_BEFORE_DTX;
             (*psEnc).sCmn.inDTX = 0 as libc::c_int;
         }
-        (*psEnc).sCmn.VAD_flags[(*psEnc).sCmn.nFramesEncoded as usize] =
-            0 as libc::c_int as opus_int8;
+        (*psEnc)
+            .sCmn
+            .VAD_flags[(*psEnc).sCmn.nFramesEncoded
+            as usize] = 0 as libc::c_int as opus_int8;
     } else {
         (*psEnc).sCmn.noSpeechCounter = 0 as libc::c_int;
         (*psEnc).sCmn.inDTX = 0 as libc::c_int;
-        (*psEnc).sCmn.indices.signalType = 1 as libc::c_int as opus_int8;
-        (*psEnc).sCmn.VAD_flags[(*psEnc).sCmn.nFramesEncoded as usize] =
-            1 as libc::c_int as opus_int8;
+        (*psEnc).sCmn.indices.signalType = TYPE_UNVOICED as opus_int8;
+        (*psEnc)
+            .sCmn
+            .VAD_flags[(*psEnc).sCmn.nFramesEncoded
+            as usize] = 1 as libc::c_int as opus_int8;
     };
 }
 #[no_mangle]
@@ -682,24 +735,21 @@ pub unsafe extern "C" fn silk_encode_frame_FLP(
         .offset((*psEnc).sCmn.ltp_mem_length as isize);
     silk_LP_variable_cutoff(
         &mut (*psEnc).sCmn.sLP,
-        ((*psEnc).sCmn.inputBuf)
-            .as_mut_ptr()
-            .offset(1 as libc::c_int as isize),
+        ((*psEnc).sCmn.inputBuf).as_mut_ptr().offset(1 as libc::c_int as isize),
         (*psEnc).sCmn.frame_length,
     );
     silk_short2float_array(
-        x_frame.offset((5 as libc::c_int * (*psEnc).sCmn.fs_kHz) as isize),
-        ((*psEnc).sCmn.inputBuf)
-            .as_mut_ptr()
-            .offset(1 as libc::c_int as isize),
+        x_frame.offset((LA_SHAPE_MS * (*psEnc).sCmn.fs_kHz) as isize),
+        ((*psEnc).sCmn.inputBuf).as_mut_ptr().offset(1 as libc::c_int as isize),
         (*psEnc).sCmn.frame_length,
     );
     i = 0 as libc::c_int;
     while i < 8 as libc::c_int {
-        *x_frame.offset(
-            (5 as libc::c_int * (*psEnc).sCmn.fs_kHz
-                + i * ((*psEnc).sCmn.frame_length >> 3 as libc::c_int)) as isize,
-        ) += (1 as libc::c_int - (i & 2 as libc::c_int)) as libc::c_float * 1e-6f32;
+        *x_frame
+            .offset(
+                (LA_SHAPE_MS * (*psEnc).sCmn.fs_kHz
+                    + i * ((*psEnc).sCmn.frame_length >> 3 as libc::c_int)) as isize,
+            ) += (1 as libc::c_int - (i & 2 as libc::c_int)) as libc::c_float * 1e-6f32;
         i += 1;
     }
     if (*psEnc).sCmn.prefillFlag == 0 {
@@ -727,8 +777,7 @@ pub unsafe extern "C" fn silk_encode_frame_FLP(
         );
         maxIter = 6 as libc::c_int;
         gainMult_Q8 = ((1 as libc::c_int as libc::c_long
-            * ((1 as libc::c_int as opus_int64) << 8 as libc::c_int))
-            as libc::c_double
+            * ((1 as libc::c_int as opus_int64) << 8 as libc::c_int)) as libc::c_double
             + 0.5f64) as opus_int32 as opus_int16;
         found_lower = 0 as libc::c_int;
         found_upper = 0 as libc::c_int;
@@ -765,7 +814,8 @@ pub unsafe extern "C" fn silk_encode_frame_FLP(
                         ::core::mem::size_of::<ec_enc>() as libc::c_ulong,
                     );
                     memcpy(
-                        &mut (*psEnc).sCmn.sNSQ as *mut silk_nsq_state as *mut libc::c_void,
+                        &mut (*psEnc).sCmn.sNSQ as *mut silk_nsq_state
+                            as *mut libc::c_void,
                         &mut sNSQ_copy as *mut silk_nsq_state as *const libc::c_void,
                         ::core::mem::size_of::<silk_nsq_state>() as libc::c_ulong,
                     );
@@ -812,13 +862,18 @@ pub unsafe extern "C" fn silk_encode_frame_FLP(
                     (*psEnc).sShape.LastGainIndex = sEncCtrl.lastGainIndexPrev;
                     i = 0 as libc::c_int;
                     while i < (*psEnc).sCmn.nb_subfr {
-                        (*psEnc).sCmn.indices.GainsIndices[i as usize] =
-                            4 as libc::c_int as opus_int8;
+                        (*psEnc)
+                            .sCmn
+                            .indices
+                            .GainsIndices[i as usize] = 4 as libc::c_int as opus_int8;
                         i += 1;
                     }
-                    if condCoding != 2 as libc::c_int {
-                        (*psEnc).sCmn.indices.GainsIndices[0 as libc::c_int as usize] =
-                            sEncCtrl.lastGainIndexPrev;
+                    if condCoding != CODE_CONDITIONALLY {
+                        (*psEnc)
+                            .sCmn
+                            .indices
+                            .GainsIndices[0 as libc::c_int
+                            as usize] = sEncCtrl.lastGainIndexPrev;
                     }
                     (*psEnc).sCmn.ec_prevLagIndex = ec_prevLagIndex_copy;
                     (*psEnc).sCmn.ec_prevSignalType = ec_prevSignalType_copy;
@@ -843,7 +898,9 @@ pub unsafe extern "C" fn silk_encode_frame_FLP(
                     );
                     nBits = ec_tell(psRangeEnc);
                 }
-                if useCBR == 0 as libc::c_int && iter == 0 as libc::c_int && nBits <= maxBits {
+                if useCBR == 0 as libc::c_int && iter == 0 as libc::c_int
+                    && nBits <= maxBits
+                {
                     break;
                 }
             }
@@ -856,9 +913,10 @@ pub unsafe extern "C" fn silk_encode_frame_FLP(
                     );
                     if !(sRangeEnc_copy2.offs <= 1275 as libc::c_int as libc::c_uint) {
                         celt_fatal(
-                            b"assertion failed: sRangeEnc_copy2.offs <= 1275\0" as *const u8
+                            b"assertion failed: sRangeEnc_copy2.offs <= 1275\0"
+                                as *const u8 as *const libc::c_char,
+                            b"silk/float/encode_frame_FLP.c\0" as *const u8
                                 as *const libc::c_char,
-                            b"silk/float/encode_frame_FLP.c\0" as *const u8 as *const libc::c_char,
                             251 as libc::c_int,
                         );
                     }
@@ -868,7 +926,8 @@ pub unsafe extern "C" fn silk_encode_frame_FLP(
                         sRangeEnc_copy2.offs as libc::c_ulong,
                     );
                     memcpy(
-                        &mut (*psEnc).sCmn.sNSQ as *mut silk_nsq_state as *mut libc::c_void,
+                        &mut (*psEnc).sCmn.sNSQ as *mut silk_nsq_state
+                            as *mut libc::c_void,
                         &mut sNSQ_copy2 as *mut silk_nsq_state as *const libc::c_void,
                         ::core::mem::size_of::<silk_nsq_state>() as libc::c_ulong,
                     );
@@ -878,12 +937,16 @@ pub unsafe extern "C" fn silk_encode_frame_FLP(
             } else {
                 if nBits > maxBits {
                     if found_lower == 0 as libc::c_int && iter >= 2 as libc::c_int {
-                        sEncCtrl.Lambda = if sEncCtrl.Lambda * 1.5f32 > 1.5f32 {
+                        sEncCtrl
+                            .Lambda = if sEncCtrl.Lambda * 1.5f32 > 1.5f32 {
                             sEncCtrl.Lambda * 1.5f32
                         } else {
                             1.5f32
                         };
-                        (*psEnc).sCmn.indices.quantOffsetType = 0 as libc::c_int as opus_int8;
+                        (*psEnc)
+                            .sCmn
+                            .indices
+                            .quantOffsetType = 0 as libc::c_int as opus_int8;
                         found_upper = 0 as libc::c_int;
                         gainsID_upper = -(1 as libc::c_int);
                     } else {
@@ -922,7 +985,8 @@ pub unsafe extern "C" fn silk_encode_frame_FLP(
                         );
                         memcpy(
                             &mut sNSQ_copy2 as *mut silk_nsq_state as *mut libc::c_void,
-                            &mut (*psEnc).sCmn.sNSQ as *mut silk_nsq_state as *const libc::c_void,
+                            &mut (*psEnc).sCmn.sNSQ as *mut silk_nsq_state
+                                as *const libc::c_void,
                             ::core::mem::size_of::<silk_nsq_state>() as libc::c_ulong,
                         );
                         LastGainIndex_copy2 = (*psEnc).sShape.LastGainIndex;
@@ -952,38 +1016,38 @@ pub unsafe extern "C" fn silk_encode_frame_FLP(
                 if found_lower & found_upper == 0 as libc::c_int {
                     if nBits > maxBits {
                         if (gainMult_Q8 as libc::c_int) < 16384 as libc::c_int {
-                            gainMult_Q8 =
-                                (gainMult_Q8 as libc::c_int * 2 as libc::c_int) as opus_int16;
+                            gainMult_Q8 = (gainMult_Q8 as libc::c_int * 2 as libc::c_int)
+                                as opus_int16;
                         } else {
                             gainMult_Q8 = 32767 as libc::c_int as opus_int16;
                         }
                     } else {
                         let mut gain_factor_Q16: opus_int32 = 0;
                         gain_factor_Q16 = silk_log2lin(
-                            (((nBits - maxBits) as opus_uint32) << 7 as libc::c_int) as opus_int32
-                                / (*psEnc).sCmn.frame_length
+                            (((nBits - maxBits) as opus_uint32) << 7 as libc::c_int)
+                                as opus_int32 / (*psEnc).sCmn.frame_length
                                 + ((16 as libc::c_int as libc::c_long
                                     * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int))
-                                    as libc::c_double
-                                    + 0.5f64) as opus_int32,
+                                    as libc::c_double + 0.5f64) as opus_int32,
                         );
-                        gainMult_Q8 = (gain_factor_Q16 as libc::c_long * gainMult_Q8 as opus_int64
-                            >> 16 as libc::c_int)
+                        gainMult_Q8 = (gain_factor_Q16 as libc::c_long
+                            * gainMult_Q8 as opus_int64 >> 16 as libc::c_int)
                             as opus_int32 as opus_int16;
                     }
                 } else {
                     gainMult_Q8 = (gainMult_lower
                         + (gainMult_upper - gainMult_lower) * (maxBits - nBits_lower)
-                            / (nBits_upper - nBits_lower))
-                        as opus_int16;
+                            / (nBits_upper - nBits_lower)) as opus_int16;
                     if gainMult_Q8 as libc::c_int
-                        > gainMult_lower + (gainMult_upper - gainMult_lower >> 2 as libc::c_int)
+                        > gainMult_lower
+                            + (gainMult_upper - gainMult_lower >> 2 as libc::c_int)
                     {
                         gainMult_Q8 = (gainMult_lower
                             + (gainMult_upper - gainMult_lower >> 2 as libc::c_int))
                             as opus_int16;
                     } else if (gainMult_Q8 as libc::c_int)
-                        < gainMult_upper - (gainMult_upper - gainMult_lower >> 2 as libc::c_int)
+                        < gainMult_upper
+                            - (gainMult_upper - gainMult_lower >> 2 as libc::c_int)
                     {
                         gainMult_Q8 = (gainMult_upper
                             - (gainMult_upper - gainMult_lower >> 2 as libc::c_int))
@@ -998,54 +1062,47 @@ pub unsafe extern "C" fn silk_encode_frame_FLP(
                     } else {
                         tmp = gainMult_Q8;
                     }
-                    pGains_Q16[i as usize] = (((if 0x80000000 as libc::c_uint as opus_int32
+                    pGains_Q16[i
+                        as usize] = (((if 0x80000000 as libc::c_uint as opus_int32
                         >> 8 as libc::c_int
                         > 0x7fffffff as libc::c_int >> 8 as libc::c_int
                     {
-                        (if (sEncCtrl.GainsUnq_Q16[i as usize] as libc::c_long * tmp as opus_int64
-                            >> 16 as libc::c_int) as opus_int32
-                            > 0x80000000 as libc::c_uint as opus_int32 >> 8 as libc::c_int
+                        (if (sEncCtrl.GainsUnq_Q16[i as usize] as libc::c_long
+                            * tmp as opus_int64 >> 16 as libc::c_int) as opus_int32
+                            > 0x80000000 as libc::c_uint as opus_int32
+                                >> 8 as libc::c_int
                         {
                             0x80000000 as libc::c_uint as opus_int32 >> 8 as libc::c_int
                         } else {
                             (if ((sEncCtrl.GainsUnq_Q16[i as usize] as libc::c_long
-                                * tmp as opus_int64
-                                >> 16 as libc::c_int)
-                                as opus_int32)
+                                * tmp as opus_int64 >> 16 as libc::c_int) as opus_int32)
                                 < 0x7fffffff as libc::c_int >> 8 as libc::c_int
                             {
                                 0x7fffffff as libc::c_int >> 8 as libc::c_int
                             } else {
                                 (sEncCtrl.GainsUnq_Q16[i as usize] as libc::c_long
-                                    * tmp as opus_int64
-                                    >> 16 as libc::c_int)
-                                    as opus_int32
+                                    * tmp as opus_int64 >> 16 as libc::c_int) as opus_int32
                             })
                         })
                     } else {
-                        (if (sEncCtrl.GainsUnq_Q16[i as usize] as libc::c_long * tmp as opus_int64
-                            >> 16 as libc::c_int) as opus_int32
+                        (if (sEncCtrl.GainsUnq_Q16[i as usize] as libc::c_long
+                            * tmp as opus_int64 >> 16 as libc::c_int) as opus_int32
                             > 0x7fffffff as libc::c_int >> 8 as libc::c_int
                         {
                             0x7fffffff as libc::c_int >> 8 as libc::c_int
                         } else {
                             (if ((sEncCtrl.GainsUnq_Q16[i as usize] as libc::c_long
-                                * tmp as opus_int64
-                                >> 16 as libc::c_int)
-                                as opus_int32)
-                                < 0x80000000 as libc::c_uint as opus_int32 >> 8 as libc::c_int
+                                * tmp as opus_int64 >> 16 as libc::c_int) as opus_int32)
+                                < 0x80000000 as libc::c_uint as opus_int32
+                                    >> 8 as libc::c_int
                             {
                                 0x80000000 as libc::c_uint as opus_int32 >> 8 as libc::c_int
                             } else {
                                 (sEncCtrl.GainsUnq_Q16[i as usize] as libc::c_long
-                                    * tmp as opus_int64
-                                    >> 16 as libc::c_int)
-                                    as opus_int32
+                                    * tmp as opus_int64 >> 16 as libc::c_int) as opus_int32
                             })
                         })
-                    }) as opus_uint32)
-                        << 8 as libc::c_int)
-                        as opus_int32;
+                    }) as opus_uint32) << 8 as libc::c_int) as opus_int32;
                     i += 1;
                 }
                 (*psEnc).sShape.LastGainIndex = sEncCtrl.lastGainIndexPrev;
@@ -1053,17 +1110,19 @@ pub unsafe extern "C" fn silk_encode_frame_FLP(
                     ((*psEnc).sCmn.indices.GainsIndices).as_mut_ptr(),
                     pGains_Q16.as_mut_ptr(),
                     &mut (*psEnc).sShape.LastGainIndex,
-                    (condCoding == 2 as libc::c_int) as libc::c_int,
+                    (condCoding == CODE_CONDITIONALLY) as libc::c_int,
                     (*psEnc).sCmn.nb_subfr,
                 );
                 gainsID = silk_gains_ID(
-                    ((*psEnc).sCmn.indices.GainsIndices).as_mut_ptr() as *const opus_int8,
+                    ((*psEnc).sCmn.indices.GainsIndices).as_mut_ptr()
+                        as *const opus_int8,
                     (*psEnc).sCmn.nb_subfr,
                 );
                 i = 0 as libc::c_int;
                 while i < (*psEnc).sCmn.nb_subfr {
-                    sEncCtrl.Gains[i as usize] =
-                        pGains_Q16[i as usize] as libc::c_float / 65536.0f32;
+                    sEncCtrl
+                        .Gains[i
+                        as usize] = pGains_Q16[i as usize] as libc::c_float / 65536.0f32;
                     i += 1;
                 }
                 iter += 1;
@@ -1072,18 +1131,19 @@ pub unsafe extern "C" fn silk_encode_frame_FLP(
     }
     memmove(
         ((*psEnc).x_buf).as_mut_ptr() as *mut libc::c_void,
-        &mut *((*psEnc).x_buf)
-            .as_mut_ptr()
-            .offset((*psEnc).sCmn.frame_length as isize) as *mut libc::c_float
-            as *const libc::c_void,
-        (((*psEnc).sCmn.ltp_mem_length + 5 as libc::c_int * (*psEnc).sCmn.fs_kHz) as libc::c_ulong)
+        &mut *((*psEnc).x_buf).as_mut_ptr().offset((*psEnc).sCmn.frame_length as isize)
+            as *mut libc::c_float as *const libc::c_void,
+        (((*psEnc).sCmn.ltp_mem_length + 5 as libc::c_int * (*psEnc).sCmn.fs_kHz)
+            as libc::c_ulong)
             .wrapping_mul(::core::mem::size_of::<libc::c_float>() as libc::c_ulong),
     );
     if (*psEnc).sCmn.prefillFlag != 0 {
         *pnBytesOut = 0 as libc::c_int;
         return ret;
     }
-    (*psEnc).sCmn.prevLag = sEncCtrl.pitchL[((*psEnc).sCmn.nb_subfr - 1 as libc::c_int) as usize];
+    (*psEnc)
+        .sCmn
+        .prevLag = sEncCtrl.pitchL[((*psEnc).sCmn.nb_subfr - 1 as libc::c_int) as usize];
     (*psEnc).sCmn.prevSignalType = (*psEnc).sCmn.indices.signalType;
     (*psEnc).sCmn.first_frame_after_reset = 0 as libc::c_int;
     *pnBytesOut = ec_tell(psRangeEnc) + 7 as libc::c_int >> 3 as libc::c_int;
@@ -1102,8 +1162,7 @@ unsafe extern "C" fn silk_LBRR_encode_FLP(
     let mut TempGains: [libc::c_float; 4] = [0.; 4];
     let mut psIndices_LBRR: *mut SideInfoIndices = &mut *((*psEnc).sCmn.indices_LBRR)
         .as_mut_ptr()
-        .offset((*psEnc).sCmn.nFramesEncoded as isize)
-        as *mut SideInfoIndices;
+        .offset((*psEnc).sCmn.nFramesEncoded as isize) as *mut SideInfoIndices;
     let mut sNSQ_LBRR: silk_nsq_state = silk_nsq_state {
         xq: [0; 640],
         sLTP_shp_Q14: [0; 640],
@@ -1120,11 +1179,13 @@ unsafe extern "C" fn silk_LBRR_encode_FLP(
     };
     if (*psEnc).sCmn.LBRR_enabled != 0
         && (*psEnc).sCmn.speech_activity_Q8
-            > ((0.3f32 * ((1 as libc::c_int as opus_int64) << 8 as libc::c_int) as libc::c_float)
-                as libc::c_double
-                + 0.5f64) as opus_int32
+            > ((0.3f32
+                * ((1 as libc::c_int as opus_int64) << 8 as libc::c_int)
+                    as libc::c_float) as libc::c_double + 0.5f64) as opus_int32
     {
-        (*psEnc).sCmn.LBRR_flags[(*psEnc).sCmn.nFramesEncoded as usize] = 1 as libc::c_int;
+        (*psEnc)
+            .sCmn
+            .LBRR_flags[(*psEnc).sCmn.nFramesEncoded as usize] = 1 as libc::c_int;
         memcpy(
             &mut sNSQ_LBRR as *mut silk_nsq_state as *mut libc::c_void,
             &mut (*psEnc).sCmn.sNSQ as *mut silk_nsq_state as *const libc::c_void,
@@ -1142,29 +1203,36 @@ unsafe extern "C" fn silk_LBRR_encode_FLP(
                 .wrapping_mul(::core::mem::size_of::<libc::c_float>() as libc::c_ulong),
         );
         if (*psEnc).sCmn.nFramesEncoded == 0 as libc::c_int
-            || (*psEnc).sCmn.LBRR_flags[((*psEnc).sCmn.nFramesEncoded - 1 as libc::c_int) as usize]
+            || (*psEnc)
+                .sCmn
+                .LBRR_flags[((*psEnc).sCmn.nFramesEncoded - 1 as libc::c_int) as usize]
                 == 0 as libc::c_int
         {
             (*psEnc).sCmn.LBRRprevLastGainIndex = (*psEnc).sShape.LastGainIndex;
-            (*psIndices_LBRR).GainsIndices[0 as libc::c_int as usize] =
-                ((*psIndices_LBRR).GainsIndices[0 as libc::c_int as usize] as libc::c_int
-                    + (*psEnc).sCmn.LBRR_GainIncreases) as opus_int8;
-            (*psIndices_LBRR).GainsIndices[0 as libc::c_int as usize] = silk_min_int(
+            (*psIndices_LBRR)
+                .GainsIndices[0 as libc::c_int
+                as usize] = ((*psIndices_LBRR).GainsIndices[0 as libc::c_int as usize]
+                as libc::c_int + (*psEnc).sCmn.LBRR_GainIncreases) as opus_int8;
+            (*psIndices_LBRR)
+                .GainsIndices[0 as libc::c_int
+                as usize] = silk_min_int(
                 (*psIndices_LBRR).GainsIndices[0 as libc::c_int as usize] as libc::c_int,
-                64 as libc::c_int - 1 as libc::c_int,
+                N_LEVELS_QGAIN - 1 as libc::c_int,
             ) as opus_int8;
         }
         silk_gains_dequant(
             Gains_Q16.as_mut_ptr(),
             ((*psIndices_LBRR).GainsIndices).as_mut_ptr() as *const opus_int8,
             &mut (*psEnc).sCmn.LBRRprevLastGainIndex,
-            (condCoding == 2 as libc::c_int) as libc::c_int,
+            (condCoding == CODE_CONDITIONALLY) as libc::c_int,
             (*psEnc).sCmn.nb_subfr,
         );
         k = 0 as libc::c_int;
         while k < (*psEnc).sCmn.nb_subfr {
-            (*psEncCtrl).Gains[k as usize] =
-                Gains_Q16[k as usize] as libc::c_float * (1.0f32 / 65536.0f32);
+            (*psEncCtrl)
+                .Gains[k
+                as usize] = Gains_Q16[k as usize] as libc::c_float
+                * (1.0f32 / 65536.0f32);
             k += 1;
         }
         silk_NSQ_wrapper_FLP(
@@ -1172,7 +1240,8 @@ unsafe extern "C" fn silk_LBRR_encode_FLP(
             psEncCtrl,
             psIndices_LBRR,
             &mut sNSQ_LBRR,
-            ((*psEnc).sCmn.pulses_LBRR[(*psEnc).sCmn.nFramesEncoded as usize]).as_mut_ptr(),
+            ((*psEnc).sCmn.pulses_LBRR[(*psEnc).sCmn.nFramesEncoded as usize])
+                .as_mut_ptr(),
             xfw,
         );
         memcpy(

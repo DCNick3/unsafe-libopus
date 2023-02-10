@@ -24,7 +24,7 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     #[c2rust::src_loc = "27:1"]
     pub type int64_t = __int64_t;
-    use super::types_h::{__int16_t, __int32_t, __int64_t, __int8_t};
+    use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:34"]
 pub mod stdint_uintn_h {
@@ -32,7 +32,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint32_t, __uint8_t};
+    use super::types_h::{__uint8_t, __uint32_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:34"]
 pub mod opus_types_h {
@@ -48,8 +48,8 @@ pub mod opus_types_h {
     pub type opus_uint32 = uint32_t;
     #[c2rust::src_loc = "57:4"]
     pub type opus_int64 = int64_t;
-    use super::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
-    use super::stdint_uintn_h::{uint32_t, uint8_t};
+    use super::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
+    use super::stdint_uintn_h::{uint8_t, uint32_t};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:34"]
 pub mod resampler_structs_h {
@@ -79,7 +79,7 @@ pub mod resampler_structs_h {
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int16, opus_int32};
+    use super::opus_types_h::{opus_int32, opus_int16};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:34"]
 pub mod structs_h {
@@ -239,7 +239,7 @@ pub mod structs_h {
         pub indices_LBRR: [SideInfoIndices; 3],
         pub pulses_LBRR: [[opus_int8; 320]; 3],
     }
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
+    use super::opus_types_h::{opus_int16, opus_int32, opus_uint8, opus_int8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:34"]
@@ -276,7 +276,11 @@ pub mod SigProc_FIX_h {
 pub mod string_h {
     extern "C" {
         #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
+        pub fn memset(
+            _: *mut libc::c_void,
+            _: libc::c_int,
+            _: libc::c_ulong,
+        ) -> *mut libc::c_void;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:34"]
@@ -287,23 +291,25 @@ pub mod main_h {
         pub fn silk_VAD_Init(psSilk_VAD: *mut silk_VAD_state) -> libc::c_int;
     }
 }
-use self::main_h::silk_VAD_Init;
+pub use self::types_h::{
+    __int8_t, __uint8_t, __int16_t, __int32_t, __uint32_t, __int64_t,
+};
+pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
+pub use self::stdint_uintn_h::{uint8_t, uint32_t};
 pub use self::opus_types_h::{
-    opus_int16, opus_int32, opus_int64, opus_int8, opus_uint32, opus_uint8,
+    opus_int8, opus_uint8, opus_int16, opus_int32, opus_uint32, opus_int64,
 };
 pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
+    _silk_resampler_state_struct, C2RustUnnamed, silk_resampler_state_struct,
 };
-pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
-pub use self::stdint_uintn_h::{uint32_t, uint8_t};
-use self::string_h::memset;
-pub use self::structs_FLP_h::{silk_encoder_state_FLP, silk_shape_state_FLP};
 pub use self::structs_h::{
-    silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
-    SideInfoIndices,
+    silk_nsq_state, silk_VAD_state, silk_LP_state, silk_NLSF_CB_struct, SideInfoIndices,
+    silk_encoder_state,
 };
-pub use self::types_h::{__int16_t, __int32_t, __int64_t, __int8_t, __uint32_t, __uint8_t};
+pub use self::structs_FLP_h::{silk_shape_state_FLP, silk_encoder_state_FLP};
 use self::SigProc_FIX_h::silk_lin2log;
+use self::string_h::memset;
+use self::main_h::silk_VAD_Init;
 #[no_mangle]
 #[c2rust::src_loc = "42:1"]
 pub unsafe extern "C" fn silk_init_encoder(
@@ -317,13 +323,14 @@ pub unsafe extern "C" fn silk_init_encoder(
         ::core::mem::size_of::<silk_encoder_state_FLP>() as libc::c_ulong,
     );
     (*psEnc).sCmn.arch = arch;
-    (*psEnc).sCmn.variable_HP_smth1_Q15 = (((silk_lin2log(
+    (*psEnc)
+        .sCmn
+        .variable_HP_smth1_Q15 = (((silk_lin2log(
         ((60 as libc::c_int as libc::c_long
             * ((1 as libc::c_int as opus_int64) << 16 as libc::c_int)) as libc::c_double
             + 0.5f64) as opus_int32,
-    ) - ((16 as libc::c_int) << 7 as libc::c_int))
-        as opus_uint32)
-        << 8 as libc::c_int) as opus_int32;
+    ) - ((16 as libc::c_int) << 7 as libc::c_int)) as opus_uint32) << 8 as libc::c_int)
+        as opus_int32;
     (*psEnc).sCmn.variable_HP_smth2_Q15 = (*psEnc).sCmn.variable_HP_smth1_Q15;
     (*psEnc).sCmn.first_frame_after_reset = 1 as libc::c_int;
     ret += silk_VAD_Init(&mut (*psEnc).sCmn.sVAD);

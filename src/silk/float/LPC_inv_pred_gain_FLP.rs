@@ -27,10 +27,16 @@ pub mod string_h {
         ) -> *mut libc::c_void;
     }
 }
-pub use self::opus_types_h::opus_int32;
-pub use self::stdint_intn_h::int32_t;
-use self::string_h::memcpy;
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:34"]
+pub mod define_h {
+    #[c2rust::src_loc = "139:9"]
+    pub const MAX_PREDICTION_POWER_GAIN: libc::c_float = 1e4f32;
+}
 pub use self::types_h::__int32_t;
+pub use self::stdint_intn_h::int32_t;
+pub use self::opus_types_h::opus_int32;
+use self::string_h::memcpy;
+pub use self::define_h::MAX_PREDICTION_POWER_GAIN;
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_LPC_inverse_pred_gain_FLP(
@@ -58,7 +64,9 @@ pub unsafe extern "C" fn silk_LPC_inverse_pred_gain_FLP(
         rc = -Atmp[k as usize] as libc::c_double;
         rc_mult1 = 1.0f32 as libc::c_double - rc * rc;
         invGain *= rc_mult1;
-        if (invGain * 1e4f32 as libc::c_double) < 1.0f32 as libc::c_double {
+        if (invGain * MAX_PREDICTION_POWER_GAIN as libc::c_double)
+            < 1.0f32 as libc::c_double
+        {
             return 0.0f32;
         }
         rc_mult2 = 1.0f32 as libc::c_double / rc_mult1;
@@ -67,8 +75,8 @@ pub unsafe extern "C" fn silk_LPC_inverse_pred_gain_FLP(
             tmp1 = Atmp[n as usize] as libc::c_double;
             tmp2 = Atmp[(k - n - 1 as libc::c_int) as usize] as libc::c_double;
             Atmp[n as usize] = ((tmp1 - tmp2 * rc) * rc_mult2) as libc::c_float;
-            Atmp[(k - n - 1 as libc::c_int) as usize] =
-                ((tmp2 - tmp1 * rc) * rc_mult2) as libc::c_float;
+            Atmp[(k - n - 1 as libc::c_int)
+                as usize] = ((tmp2 - tmp1 * rc) * rc_mult2) as libc::c_float;
             n += 1;
         }
         k -= 1;
@@ -76,7 +84,8 @@ pub unsafe extern "C" fn silk_LPC_inverse_pred_gain_FLP(
     rc = -Atmp[0 as libc::c_int as usize] as libc::c_double;
     rc_mult1 = 1.0f32 as libc::c_double - rc * rc;
     invGain *= rc_mult1;
-    if (invGain * 1e4f32 as libc::c_double) < 1.0f32 as libc::c_double {
+    if (invGain * MAX_PREDICTION_POWER_GAIN as libc::c_double) < 1.0f32 as libc::c_double
+    {
         return 0.0f32;
     }
     return invGain as libc::c_float;

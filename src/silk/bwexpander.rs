@@ -22,9 +22,9 @@ pub mod opus_types_h {
     pub type opus_int32 = int32_t;
     use super::stdint_intn_h::{int16_t, int32_t};
 }
-pub use self::opus_types_h::{opus_int16, opus_int32};
-pub use self::stdint_intn_h::{int16_t, int32_t};
 pub use self::types_h::{__int16_t, __int32_t};
+pub use self::stdint_intn_h::{int16_t, int32_t};
+pub use self::opus_types_h::{opus_int16, opus_int32};
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_bwexpander(
@@ -36,33 +36,38 @@ pub unsafe extern "C" fn silk_bwexpander(
     let mut chirp_minus_one_Q16: opus_int32 = chirp_Q16 - 65536 as libc::c_int;
     i = 0 as libc::c_int;
     while i < d - 1 as libc::c_int {
-        *ar.offset(i as isize) = (if 16 as libc::c_int == 1 as libc::c_int {
+        *ar
+            .offset(
+                i as isize,
+            ) = (if 16 as libc::c_int == 1 as libc::c_int {
             (chirp_Q16 * *ar.offset(i as isize) as libc::c_int >> 1 as libc::c_int)
                 + (chirp_Q16 * *ar.offset(i as isize) as libc::c_int & 1 as libc::c_int)
         } else {
             (chirp_Q16 * *ar.offset(i as isize) as libc::c_int
-                >> 16 as libc::c_int - 1 as libc::c_int)
-                + 1 as libc::c_int
+                >> 16 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                 >> 1 as libc::c_int
         }) as opus_int16;
-        chirp_Q16 += if 16 as libc::c_int == 1 as libc::c_int {
-            (chirp_Q16 * chirp_minus_one_Q16 >> 1 as libc::c_int)
-                + (chirp_Q16 * chirp_minus_one_Q16 & 1 as libc::c_int)
-        } else {
-            (chirp_Q16 * chirp_minus_one_Q16 >> 16 as libc::c_int - 1 as libc::c_int)
-                + 1 as libc::c_int
-                >> 1 as libc::c_int
-        };
+        chirp_Q16
+            += if 16 as libc::c_int == 1 as libc::c_int {
+                (chirp_Q16 * chirp_minus_one_Q16 >> 1 as libc::c_int)
+                    + (chirp_Q16 * chirp_minus_one_Q16 & 1 as libc::c_int)
+            } else {
+                (chirp_Q16 * chirp_minus_one_Q16 >> 16 as libc::c_int - 1 as libc::c_int)
+                    + 1 as libc::c_int >> 1 as libc::c_int
+            };
         i += 1;
     }
-    *ar.offset((d - 1 as libc::c_int) as isize) = (if 16 as libc::c_int == 1 as libc::c_int {
-        (chirp_Q16 * *ar.offset((d - 1 as libc::c_int) as isize) as libc::c_int >> 1 as libc::c_int)
+    *ar
+        .offset(
+            (d - 1 as libc::c_int) as isize,
+        ) = (if 16 as libc::c_int == 1 as libc::c_int {
+        (chirp_Q16 * *ar.offset((d - 1 as libc::c_int) as isize) as libc::c_int
+            >> 1 as libc::c_int)
             + (chirp_Q16 * *ar.offset((d - 1 as libc::c_int) as isize) as libc::c_int
                 & 1 as libc::c_int)
     } else {
         (chirp_Q16 * *ar.offset((d - 1 as libc::c_int) as isize) as libc::c_int
-            >> 16 as libc::c_int - 1 as libc::c_int)
-            + 1 as libc::c_int
+            >> 16 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
             >> 1 as libc::c_int
     }) as opus_int16;
 }
