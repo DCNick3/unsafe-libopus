@@ -375,16 +375,6 @@ pub mod opus_private_h {
             libc::c_int,
         ) -> (),
     >;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "39:8"]
-    pub struct OpusRepacketizer {
-        pub toc: libc::c_uchar,
-        pub nb_frames: libc::c_int,
-        pub frames: [*const libc::c_uchar; 48],
-        pub len: [i16; 48],
-        pub framesize: libc::c_int,
-    }
     #[c2rust::src_loc = "108:9"]
     pub const MODE_SILK_ONLY: libc::c_int = 1000 as libc::c_int;
     #[c2rust::src_loc = "109:9"]
@@ -408,18 +398,6 @@ pub mod opus_private_h {
             .wrapping_mul(alignment) as libc::c_int;
     }
     use super::arch_h::opus_val32;
-    extern "C" {
-        #[c2rust::src_loc = "170:1"]
-        pub fn opus_repacketizer_out_range_impl(
-            rp: *mut OpusRepacketizer,
-            begin: libc::c_int,
-            end: libc::c_int,
-            data: *mut libc::c_uchar,
-            maxlen: i32,
-            self_delimited: libc::c_int,
-            pad: libc::c_int,
-        ) -> i32;
-    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:51"]
 pub mod structs_h {
@@ -883,22 +861,6 @@ pub mod float_cast_h {
     use super::arch_h::CELT_SIG_SCALE;
     use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus.h:39"]
-pub mod opus_h {
-    use super::opus_private_h::OpusRepacketizer;
-    extern "C" {
-        #[c2rust::src_loc = "778:1"]
-        pub fn opus_repacketizer_init(rp: *mut OpusRepacketizer) -> *mut OpusRepacketizer;
-        #[c2rust::src_loc = "838:1"]
-        pub fn opus_repacketizer_cat(
-            rp: *mut OpusRepacketizer,
-            data: *const libc::c_uchar,
-            len: i32,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "929:1"]
-        pub fn opus_packet_pad(data: *mut libc::c_uchar, len: i32, new_len: i32) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/pitch.h:41"]
 pub mod pitch_h {
     #[inline]
@@ -1010,9 +972,8 @@ pub use self::opus_defines_h::{
     OPUS_SET_VBR_REQUEST, OPUS_SIGNAL_MUSIC, OPUS_SIGNAL_VOICE, OPUS_UNIMPLEMENTED,
 };
 pub use self::opus_private_h::{
-    align, downmix_func, foo, opus_repacketizer_out_range_impl, C2RustUnnamed, OpusRepacketizer,
-    MODE_CELT_ONLY, MODE_HYBRID, MODE_SILK_ONLY, OPUS_GET_VOICE_RATIO_REQUEST,
-    OPUS_SET_FORCE_MODE_REQUEST, OPUS_SET_VOICE_RATIO_REQUEST,
+    align, downmix_func, foo, C2RustUnnamed, MODE_CELT_ONLY, MODE_HYBRID, MODE_SILK_ONLY,
+    OPUS_GET_VOICE_RATIO_REQUEST, OPUS_SET_FORCE_MODE_REQUEST, OPUS_SET_VOICE_RATIO_REQUEST,
 };
 pub use self::resampler_structs_h::{
     silk_resampler_state_struct, C2RustUnnamed_0, _silk_resampler_state_struct,
@@ -1033,60 +994,64 @@ pub use self::define_h::{
 };
 pub use self::float_cast_h::{float2int, FLOAT2INT16};
 pub use self::mathops_h::celt_maxabs16;
-use self::opus_h::{opus_packet_pad, opus_repacketizer_cat, opus_repacketizer_init};
 pub use self::pitch_h::celt_inner_prod_c;
 use self::API_h::{silk_Encode, silk_Get_Encoder_Size, silk_InitEncoder};
 use self::SigProc_FIX_h::{silk_lin2log, silk_log2lin};
 use crate::externs::{memcpy, memmove, memset};
+use crate::{
+    opus_packet_pad, opus_repacketizer_cat, opus_repacketizer_init,
+    opus_repacketizer_out_range_impl, OpusRepacketizer,
+};
+
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "66:8"]
 pub struct OpusEncoder {
-    pub celt_enc_offset: libc::c_int,
-    pub silk_enc_offset: libc::c_int,
-    pub silk_mode: silk_EncControlStruct,
-    pub application: libc::c_int,
-    pub channels: libc::c_int,
-    pub delay_compensation: libc::c_int,
-    pub force_channels: libc::c_int,
-    pub signal_type: libc::c_int,
-    pub user_bandwidth: libc::c_int,
-    pub max_bandwidth: libc::c_int,
-    pub user_forced_mode: libc::c_int,
-    pub voice_ratio: libc::c_int,
-    pub Fs: i32,
-    pub use_vbr: libc::c_int,
-    pub vbr_constraint: libc::c_int,
-    pub variable_duration: libc::c_int,
-    pub bitrate_bps: i32,
-    pub user_bitrate_bps: i32,
-    pub lsb_depth: libc::c_int,
-    pub encoder_buffer: libc::c_int,
-    pub lfe: libc::c_int,
-    pub arch: libc::c_int,
-    pub use_dtx: libc::c_int,
-    pub analysis: TonalityAnalysisState,
-    pub stream_channels: libc::c_int,
-    pub hybrid_stereo_width_Q14: i16,
-    pub variable_HP_smth2_Q15: i32,
-    pub prev_HB_gain: opus_val16,
-    pub hp_mem: [opus_val32; 4],
-    pub mode: libc::c_int,
-    pub prev_mode: libc::c_int,
-    pub prev_channels: libc::c_int,
-    pub prev_framesize: libc::c_int,
-    pub bandwidth: libc::c_int,
-    pub auto_bandwidth: libc::c_int,
-    pub silk_bw_switch: libc::c_int,
-    pub first: libc::c_int,
-    pub energy_masking: *mut opus_val16,
-    pub width_mem: StereoWidthState,
-    pub delay_buffer: [opus_val16; 960],
-    pub detected_bandwidth: libc::c_int,
-    pub nb_no_activity_frames: libc::c_int,
-    pub peak_signal_energy: opus_val32,
-    pub nonfinal_frame: libc::c_int,
-    pub rangeFinal: u32,
+    pub(crate) celt_enc_offset: libc::c_int,
+    pub(crate) silk_enc_offset: libc::c_int,
+    pub(crate) silk_mode: silk_EncControlStruct,
+    pub(crate) application: libc::c_int,
+    pub(crate) channels: libc::c_int,
+    pub(crate) delay_compensation: libc::c_int,
+    pub(crate) force_channels: libc::c_int,
+    pub(crate) signal_type: libc::c_int,
+    pub(crate) user_bandwidth: libc::c_int,
+    pub(crate) max_bandwidth: libc::c_int,
+    pub(crate) user_forced_mode: libc::c_int,
+    pub(crate) voice_ratio: libc::c_int,
+    pub(crate) Fs: i32,
+    pub(crate) use_vbr: libc::c_int,
+    pub(crate) vbr_constraint: libc::c_int,
+    pub(crate) variable_duration: libc::c_int,
+    pub(crate) bitrate_bps: i32,
+    pub(crate) user_bitrate_bps: i32,
+    pub(crate) lsb_depth: libc::c_int,
+    pub(crate) encoder_buffer: libc::c_int,
+    pub(crate) lfe: libc::c_int,
+    pub(crate) arch: libc::c_int,
+    pub(crate) use_dtx: libc::c_int,
+    pub(crate) analysis: TonalityAnalysisState,
+    pub(crate) stream_channels: libc::c_int,
+    pub(crate) hybrid_stereo_width_Q14: i16,
+    pub(crate) variable_HP_smth2_Q15: i32,
+    pub(crate) prev_HB_gain: opus_val16,
+    pub(crate) hp_mem: [opus_val32; 4],
+    pub(crate) mode: libc::c_int,
+    pub(crate) prev_mode: libc::c_int,
+    pub(crate) prev_channels: libc::c_int,
+    pub(crate) prev_framesize: libc::c_int,
+    pub(crate) bandwidth: libc::c_int,
+    pub(crate) auto_bandwidth: libc::c_int,
+    pub(crate) silk_bw_switch: libc::c_int,
+    pub(crate) first: libc::c_int,
+    pub(crate) energy_masking: *mut opus_val16,
+    pub(crate) width_mem: StereoWidthState,
+    pub(crate) delay_buffer: [opus_val16; 960],
+    pub(crate) detected_bandwidth: libc::c_int,
+    pub(crate) nb_no_activity_frames: libc::c_int,
+    pub(crate) peak_signal_energy: opus_val32,
+    pub(crate) nonfinal_frame: libc::c_int,
+    pub(crate) rangeFinal: u32,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]

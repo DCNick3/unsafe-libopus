@@ -15,47 +15,8 @@ pub mod internal {
         pub reg_save_area: *mut libc::c_void,
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus.h:32"]
-pub mod opus_h {
-    use super::opus_private_h::OpusRepacketizer;
-    extern "C" {
-        #[c2rust::src_loc = "164:16"]
-        pub type OpusEncoder;
-        #[c2rust::src_loc = "171:1"]
-        pub fn opus_encoder_get_size(channels: libc::c_int) -> libc::c_int;
-        #[c2rust::src_loc = "228:1"]
-        pub fn opus_encoder_init(
-            st: *mut OpusEncoder,
-            Fs: i32,
-            channels: libc::c_int,
-            application: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "328:1"]
-        pub fn opus_encoder_ctl(st: *mut OpusEncoder, request: libc::c_int, _: ...) -> libc::c_int;
-        #[c2rust::src_loc = "838:1"]
-        pub fn opus_repacketizer_cat(
-            rp: *mut OpusRepacketizer,
-            data: *const libc::c_uchar,
-            len: i32,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "778:1"]
-        pub fn opus_repacketizer_init(rp: *mut OpusRepacketizer) -> *mut OpusRepacketizer;
-        #[c2rust::src_loc = "884:1"]
-        pub fn opus_repacketizer_get_nb_frames(rp: *mut OpusRepacketizer) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/opus_private.h:34"]
 pub mod opus_private_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "39:8"]
-    pub struct OpusRepacketizer {
-        pub toc: libc::c_uchar,
-        pub nb_frames: libc::c_int,
-        pub frames: [*const libc::c_uchar; 48],
-        pub len: [i16; 48],
-        pub framesize: libc::c_int,
-    }
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "60:8"]
@@ -138,8 +99,9 @@ pub mod opus_private_h {
             .wrapping_div(alignment)
             .wrapping_mul(alignment) as libc::c_int;
     }
+
     use super::arch_h::{opus_val16, opus_val32};
-    use super::opus_h::OpusEncoder;
+    use crate::OpusEncoder;
     extern "C" {
         #[c2rust::src_loc = "136:1"]
         pub fn downmix_float(
@@ -168,16 +130,6 @@ pub mod opus_private_h {
             analysis_channels: libc::c_int,
             downmix: downmix_func,
             float_api: libc::c_int,
-        ) -> i32;
-        #[c2rust::src_loc = "170:1"]
-        pub fn opus_repacketizer_out_range_impl(
-            rp: *mut OpusRepacketizer,
-            begin: libc::c_int,
-            end: libc::c_int,
-            data: *mut libc::c_uchar,
-            maxlen: i32,
-            self_delimited: libc::c_int,
-            pad: libc::c_int,
         ) -> i32;
         #[c2rust::src_loc = "137:1"]
         pub fn downmix_int(
@@ -542,17 +494,13 @@ pub use self::opus_defines_h::{
     OPUS_SET_SIGNAL_REQUEST, OPUS_SET_VBR_CONSTRAINT_REQUEST, OPUS_SET_VBR_REQUEST,
     OPUS_UNIMPLEMENTED,
 };
-use self::opus_h::{
-    opus_encoder_ctl, opus_encoder_get_size, opus_encoder_init, opus_repacketizer_cat,
-    opus_repacketizer_get_nb_frames, opus_repacketizer_init, OpusEncoder,
-};
 pub use self::opus_multistream_h::OPUS_MULTISTREAM_GET_ENCODER_STATE_REQUEST;
 pub use self::opus_private_h::{
     align, downmix_float, downmix_func, downmix_int, foo, frame_size_select, get_left_channel,
     get_mono_channel, get_right_channel, opus_copy_channel_in_func, opus_encode_native,
-    opus_repacketizer_out_range_impl, validate_layout, C2RustUnnamed, ChannelLayout, MappingType,
-    OpusMSEncoder, OpusRepacketizer, MAPPING_TYPE_AMBISONICS, MAPPING_TYPE_NONE,
-    MAPPING_TYPE_SURROUND, OPUS_GET_VOICE_RATIO_REQUEST, OPUS_SET_FORCE_MODE_REQUEST,
+    validate_layout, C2RustUnnamed, ChannelLayout, MappingType, OpusMSEncoder,
+    MAPPING_TYPE_AMBISONICS, MAPPING_TYPE_NONE, MAPPING_TYPE_SURROUND,
+    OPUS_GET_VOICE_RATIO_REQUEST, OPUS_SET_FORCE_MODE_REQUEST,
 };
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
@@ -564,6 +512,12 @@ use self::mathops_h::isqrt32;
 pub use self::pitch_h::celt_inner_prod_c;
 use self::quant_bands_h::amp2Log2;
 use crate::externs::{memcpy, memset};
+use crate::{
+    opus_encoder_ctl, opus_encoder_get_size, opus_encoder_init, opus_repacketizer_cat,
+    opus_repacketizer_get_nb_frames, opus_repacketizer_init, opus_repacketizer_out_range_impl,
+    OpusEncoder, OpusRepacketizer,
+};
+
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "46:9"]

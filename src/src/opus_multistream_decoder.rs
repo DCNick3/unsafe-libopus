@@ -15,29 +15,6 @@ pub mod internal {
         pub reg_save_area: *mut libc::c_void,
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus.h:32"]
-pub mod opus_h {
-    extern "C" {
-        #[c2rust::src_loc = "399:16"]
-        pub type OpusDecoder;
-        #[c2rust::src_loc = "406:1"]
-        pub fn opus_decoder_get_size(channels: libc::c_int) -> libc::c_int;
-        #[c2rust::src_loc = "440:1"]
-        pub fn opus_decoder_init(
-            st: *mut OpusDecoder,
-            Fs: i32,
-            channels: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "507:1"]
-        pub fn opus_decoder_ctl(st: *mut OpusDecoder, request: libc::c_int, _: ...) -> libc::c_int;
-        #[c2rust::src_loc = "584:1"]
-        pub fn opus_packet_get_nb_samples(
-            packet: *const libc::c_uchar,
-            len: i32,
-            Fs: i32,
-        ) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/opus_private.h:34"]
 pub mod opus_private_h {
     #[derive(Copy, Clone)]
@@ -92,8 +69,9 @@ pub mod opus_private_h {
             .wrapping_div(alignment)
             .wrapping_mul(alignment) as libc::c_int;
     }
+
     use super::arch_h::{opus_val16, opus_val32};
-    use super::opus_h::OpusDecoder;
+    use crate::OpusDecoder;
     extern "C" {
         #[c2rust::src_loc = "165:1"]
         pub fn opus_packet_parse_impl(
@@ -244,10 +222,7 @@ pub use self::opus_defines_h::{
     OPUS_INVALID_PACKET, OPUS_OK, OPUS_RESET_STATE, OPUS_SET_GAIN_REQUEST,
     OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_UNIMPLEMENTED,
 };
-use self::opus_h::{
-    opus_decoder_ctl, opus_decoder_get_size, opus_decoder_init, opus_packet_get_nb_samples,
-    OpusDecoder,
-};
+
 pub use self::opus_multistream_h::OPUS_MULTISTREAM_GET_DECODER_STATE_REQUEST;
 pub use self::opus_private_h::{
     align, foo, get_left_channel, get_mono_channel, get_right_channel, opus_copy_channel_out_func,
@@ -257,6 +232,10 @@ pub use self::opus_private_h::{
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 use crate::celt::celt::celt_fatal;
+use crate::{
+    opus_decoder_ctl, opus_decoder_get_size, opus_decoder_init, opus_packet_get_nb_samples,
+    OpusDecoder,
+};
 
 pub use self::float_cast_h::{float2int, FLOAT2INT16};
 #[c2rust::src_loc = "43:1"]

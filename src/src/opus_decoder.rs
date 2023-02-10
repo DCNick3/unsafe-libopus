@@ -335,23 +335,6 @@ pub mod entdec_h {
         pub fn ec_dec_uint(_this: *mut ec_dec, _ft: u32) -> u32;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus.h:42"]
-pub mod opus_h {
-    extern "C" {
-        #[c2rust::src_loc = "556:1"]
-        pub fn opus_packet_get_samples_per_frame(
-            data: *const libc::c_uchar,
-            Fs: i32,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "606:1"]
-        pub fn opus_pcm_soft_clip(
-            pcm: *mut libc::c_float,
-            frame_size: libc::c_int,
-            channels: libc::c_int,
-            softclip_mem: *mut libc::c_float,
-        );
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cpu_support.h:44"]
 pub mod cpu_support_h {
     #[inline]
@@ -443,7 +426,6 @@ pub use self::opus_defines_h::{
     OPUS_RESET_STATE, OPUS_SET_GAIN_REQUEST, OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST,
     OPUS_UNIMPLEMENTED,
 };
-use self::opus_h::{opus_packet_get_samples_per_frame, opus_pcm_soft_clip};
 pub use self::opus_private_h::{
     align, foo, opus_packet_parse_impl, C2RustUnnamed, MODE_CELT_ONLY, MODE_HYBRID, MODE_SILK_ONLY,
 };
@@ -456,26 +438,28 @@ pub use self::float_cast_h::{float2int, FLOAT2INT16};
 pub use self::stack_alloc_h::{_opus_false, ALLOC_NONE};
 use self::API_h::{silk_Decode, silk_Get_Decoder_Size, silk_InitDecoder};
 use crate::externs::memset;
+use crate::{opus_packet_get_samples_per_frame, opus_pcm_soft_clip};
+
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "55:8"]
 pub struct OpusDecoder {
-    pub celt_dec_offset: libc::c_int,
-    pub silk_dec_offset: libc::c_int,
-    pub channels: libc::c_int,
-    pub Fs: i32,
-    pub DecControl: silk_DecControlStruct,
-    pub decode_gain: libc::c_int,
-    pub arch: libc::c_int,
-    pub stream_channels: libc::c_int,
-    pub bandwidth: libc::c_int,
-    pub mode: libc::c_int,
-    pub prev_mode: libc::c_int,
-    pub frame_size: libc::c_int,
-    pub prev_redundancy: libc::c_int,
-    pub last_packet_duration: libc::c_int,
-    pub softclip_mem: [opus_val16; 2],
-    pub rangeFinal: u32,
+    pub(crate) celt_dec_offset: libc::c_int,
+    pub(crate) silk_dec_offset: libc::c_int,
+    pub(crate) channels: libc::c_int,
+    pub(crate) Fs: i32,
+    pub(crate) DecControl: silk_DecControlStruct,
+    pub(crate) decode_gain: libc::c_int,
+    pub(crate) arch: libc::c_int,
+    pub(crate) stream_channels: libc::c_int,
+    pub(crate) bandwidth: libc::c_int,
+    pub(crate) mode: libc::c_int,
+    pub(crate) prev_mode: libc::c_int,
+    pub(crate) frame_size: libc::c_int,
+    pub(crate) prev_redundancy: libc::c_int,
+    pub(crate) last_packet_duration: libc::c_int,
+    pub(crate) softclip_mem: [opus_val16; 2],
+    pub(crate) rangeFinal: u32,
 }
 #[c2rust::src_loc = "82:1"]
 unsafe extern "C" fn validate_opus_decoder(st: *mut OpusDecoder) {

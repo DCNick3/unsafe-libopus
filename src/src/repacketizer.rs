@@ -1,18 +1,18 @@
 use crate::externs::{free, malloc};
 use ::libc;
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "39:8"]
+pub struct OpusRepacketizer {
+    pub(crate) toc: libc::c_uchar,
+    pub(crate) nb_frames: libc::c_int,
+    pub(crate) frames: [*const libc::c_uchar; 48],
+    pub(crate) len: [i16; 48],
+    pub(crate) framesize: libc::c_int,
+}
 
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/opus_private.h:33"]
 pub mod opus_private_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "39:8"]
-    pub struct OpusRepacketizer {
-        pub toc: libc::c_uchar,
-        pub nb_frames: libc::c_int,
-        pub frames: [*const libc::c_uchar; 48],
-        pub len: [i16; 48],
-        pub framesize: libc::c_int,
-    }
     extern "C" {
         #[c2rust::src_loc = "165:1"]
         pub fn opus_packet_parse_impl(
@@ -47,27 +47,13 @@ pub mod opus_defines_h {
     #[c2rust::src_loc = "46:9"]
     pub const OPUS_OK: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus.h:32"]
-pub mod opus_h {
-    extern "C" {
-        #[c2rust::src_loc = "556:1"]
-        pub fn opus_packet_get_samples_per_frame(
-            data: *const libc::c_uchar,
-            Fs: i32,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "572:1"]
-        pub fn opus_packet_get_nb_frames(packet: *const libc::c_uchar, len: i32) -> libc::c_int;
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
-pub mod arch_h {}
 pub use self::opus_defines_h::{OPUS_BAD_ARG, OPUS_BUFFER_TOO_SMALL, OPUS_INVALID_PACKET, OPUS_OK};
-use self::opus_h::{opus_packet_get_nb_frames, opus_packet_get_samples_per_frame};
-pub use self::opus_private_h::{encode_size, opus_packet_parse_impl, OpusRepacketizer};
+pub use self::opus_private_h::{encode_size, opus_packet_parse_impl};
 pub use self::stddef_h::{size_t, NULL};
 use crate::celt::celt::celt_fatal;
 
 use crate::externs::memmove;
+use crate::{opus_packet_get_nb_frames, opus_packet_get_samples_per_frame};
 
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]
