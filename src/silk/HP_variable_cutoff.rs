@@ -298,7 +298,7 @@ pub use self::define_h::TYPE_VOICED;
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_HP_variable_cutoff(
-    mut state_Fxx: *mut silk_encoder_state_FLP,
+    state_Fxx: *mut silk_encoder_state_FLP,
 ) {
     let mut quality_Q15: libc::c_int = 0;
     let mut pitch_freq_Hz_Q16: opus_int32 = 0;

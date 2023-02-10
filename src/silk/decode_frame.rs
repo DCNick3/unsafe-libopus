@@ -339,16 +339,16 @@ use self::PLC_h::{silk_PLC, silk_PLC_glue_frames};
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_decode_frame(
     mut psDec: *mut silk_decoder_state,
-    mut psRangeDec: *mut ec_dec,
-    mut pOut: *mut opus_int16,
-    mut pN: *mut opus_int32,
-    mut lostFlag: libc::c_int,
-    mut condCoding: libc::c_int,
-    mut arch: libc::c_int,
+    psRangeDec: *mut ec_dec,
+    pOut: *mut opus_int16,
+    pN: *mut opus_int32,
+    lostFlag: libc::c_int,
+    condCoding: libc::c_int,
+    arch: libc::c_int,
 ) -> libc::c_int {
     let mut L: libc::c_int = 0;
     let mut mv_len: libc::c_int = 0;
-    let mut ret: libc::c_int = 0 as libc::c_int;
+    let ret: libc::c_int = 0 as libc::c_int;
     L = (*psDec).frame_length;
     let mut psDecCtrl: [silk_decoder_control; 1] = [silk_decoder_control {
         pitchL: [0; 4],

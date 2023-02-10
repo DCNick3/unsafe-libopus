@@ -2,9 +2,9 @@ use ::libc;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_inner_product_FLP(
-    mut data1: *const libc::c_float,
-    mut data2: *const libc::c_float,
-    mut dataSize: libc::c_int,
+    data1: *const libc::c_float,
+    data2: *const libc::c_float,
+    dataSize: libc::c_int,
 ) -> libc::c_double {
     let mut i: libc::c_int = 0;
     let mut result: libc::c_double = 0.;

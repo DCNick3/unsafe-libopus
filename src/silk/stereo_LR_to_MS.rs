@@ -91,7 +91,7 @@ pub mod ecintrin_h {
 pub mod macros_h {
     #[inline]
     #[c2rust::src_loc = "120:1"]
-    pub unsafe extern "C" fn silk_CLZ32(mut in32: opus_int32) -> opus_int32 {
+    pub unsafe extern "C" fn silk_CLZ32(in32: opus_int32) -> opus_int32 {
         return if in32 != 0 {
             32 as libc::c_int - (EC_CLZ0 - (in32 as libc::c_uint).leading_zeros() as i32)
         } else {
@@ -117,10 +117,10 @@ pub mod Inlines_h {
         let mut a32_nrm: opus_int32 = 0;
         let mut b32_nrm: opus_int32 = 0;
         let mut result: opus_int32 = 0;
-        a_headrm = silk_CLZ32((if a32 > 0 as libc::c_int { a32 } else { -a32 }))
+        a_headrm = silk_CLZ32(if a32 > 0 as libc::c_int { a32 } else { -a32 })
             - 1 as libc::c_int;
         a32_nrm = ((a32 as opus_uint32) << a_headrm) as opus_int32;
-        b_headrm = silk_CLZ32((if b32 > 0 as libc::c_int { b32 } else { -b32 }))
+        b_headrm = silk_CLZ32(if b32 > 0 as libc::c_int { b32 } else { -b32 })
             - 1 as libc::c_int;
         b32_nrm = ((b32 as opus_uint32) << b_headrm) as opus_int32;
         b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int)
@@ -141,25 +141,25 @@ pub mod Inlines_h {
             return (((if 0x80000000 as libc::c_uint as opus_int32 >> -lshift
                 > 0x7fffffff as libc::c_int >> -lshift
             {
-                (if result > 0x80000000 as libc::c_uint as opus_int32 >> -lshift {
+                if result > 0x80000000 as libc::c_uint as opus_int32 >> -lshift {
                     0x80000000 as libc::c_uint as opus_int32 >> -lshift
                 } else {
-                    (if result < 0x7fffffff as libc::c_int >> -lshift {
+                    if result < 0x7fffffff as libc::c_int >> -lshift {
                         0x7fffffff as libc::c_int >> -lshift
                     } else {
                         result
-                    })
-                })
+                    }
+                }
             } else {
-                (if result > 0x7fffffff as libc::c_int >> -lshift {
+                if result > 0x7fffffff as libc::c_int >> -lshift {
                     0x7fffffff as libc::c_int >> -lshift
                 } else {
-                    (if result < 0x80000000 as libc::c_uint as opus_int32 >> -lshift {
+                    if result < 0x80000000 as libc::c_uint as opus_int32 >> -lshift {
                         0x80000000 as libc::c_uint as opus_int32 >> -lshift
                     } else {
                         result
-                    })
-                })
+                    }
+                }
             }) as opus_uint32) << -lshift) as opus_int32
         } else if lshift < 32 as libc::c_int {
             return result >> lshift
@@ -209,8 +209,8 @@ pub mod SigProc_FIX_h {
     #[inline]
     #[c2rust::src_loc = "564:1"]
     pub unsafe extern "C" fn silk_max_int(
-        mut a: libc::c_int,
-        mut b: libc::c_int,
+        a: libc::c_int,
+        b: libc::c_int,
     ) -> libc::c_int {
         return if a > b { a } else { b };
     }
@@ -239,16 +239,16 @@ pub use self::internal::__CHAR_BIT__;
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_stereo_LR_to_MS(
     mut state: *mut stereo_enc_state,
-    mut x1: *mut opus_int16,
-    mut x2: *mut opus_int16,
-    mut ix: *mut [opus_int8; 3],
-    mut mid_only_flag: *mut opus_int8,
-    mut mid_side_rates_bps: *mut opus_int32,
+    x1: *mut opus_int16,
+    x2: *mut opus_int16,
+    ix: *mut [opus_int8; 3],
+    mid_only_flag: *mut opus_int8,
+    mid_side_rates_bps: *mut opus_int32,
     mut total_rate_bps: opus_int32,
-    mut prev_speech_act_Q8: libc::c_int,
-    mut toMono: libc::c_int,
-    mut fs_kHz: libc::c_int,
-    mut frame_length: libc::c_int,
+    prev_speech_act_Q8: libc::c_int,
+    toMono: libc::c_int,
+    fs_kHz: libc::c_int,
+    frame_length: libc::c_int,
 ) {
     let mut n: libc::c_int = 0;
     let mut is10msFrame: libc::c_int = 0;
@@ -269,7 +269,7 @@ pub unsafe extern "C" fn silk_stereo_LR_to_MS(
     let mut width_Q14: opus_int32 = 0;
     let mut w_Q24: opus_int32 = 0;
     let mut deltaw_Q24: opus_int32 = 0;
-    let mut mid: *mut opus_int16 = &mut *x1.offset(-(2 as libc::c_int) as isize)
+    let mid: *mut opus_int16 = &mut *x1.offset(-(2 as libc::c_int) as isize)
         as *mut opus_int16;
     let vla = (frame_length + 2 as libc::c_int) as usize;
     let mut side: Vec::<opus_int16> = ::std::vec::from_elem(0, vla);

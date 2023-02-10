@@ -87,20 +87,20 @@ pub use self::mdct_h::mdct_lookup;
 #[no_mangle]
 #[c2rust::src_loc = "119:1"]
 pub unsafe extern "C" fn clt_mdct_forward_c(
-    mut l: *const mdct_lookup,
-    mut in_0: *mut libc::c_float,
-    mut out: *mut libc::c_float,
-    mut window: *const opus_val16,
-    mut overlap: libc::c_int,
-    mut shift: libc::c_int,
-    mut stride: libc::c_int,
-    mut arch: libc::c_int,
+    l: *const mdct_lookup,
+    in_0: *mut libc::c_float,
+    out: *mut libc::c_float,
+    window: *const opus_val16,
+    overlap: libc::c_int,
+    shift: libc::c_int,
+    stride: libc::c_int,
+    _arch: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut N: libc::c_int = 0;
     let mut N2: libc::c_int = 0;
     let mut N4: libc::c_int = 0;
-    let mut st: *const kiss_fft_state = (*l).kfft[shift as usize];
+    let st: *const kiss_fft_state = (*l).kfft[shift as usize];
     let mut trig: *const libc::c_float = 0 as *const libc::c_float;
     let mut scale: opus_val16 = 0.;
     scale = (*st).scale;
@@ -174,7 +174,7 @@ pub unsafe extern "C" fn clt_mdct_forward_c(
         i += 1;
     }
     let mut yp_0: *mut libc::c_float = f.as_mut_ptr();
-    let mut t: *const libc::c_float = &*trig.offset(0 as libc::c_int as isize)
+    let t: *const libc::c_float = &*trig.offset(0 as libc::c_int as isize)
         as *const libc::c_float;
     i = 0 as libc::c_int;
     while i < N4 {
@@ -207,7 +207,7 @@ pub unsafe extern "C" fn clt_mdct_forward_c(
     let mut yp1: *mut libc::c_float = out;
     let mut yp2: *mut libc::c_float = out
         .offset((stride * (N2 - 1 as libc::c_int)) as isize);
-    let mut t_0: *const libc::c_float = &*trig.offset(0 as libc::c_int as isize)
+    let t_0: *const libc::c_float = &*trig.offset(0 as libc::c_int as isize)
         as *const libc::c_float;
     i = 0 as libc::c_int;
     while i < N4 {
@@ -228,14 +228,14 @@ pub unsafe extern "C" fn clt_mdct_forward_c(
 #[no_mangle]
 #[c2rust::src_loc = "242:1"]
 pub unsafe extern "C" fn clt_mdct_backward_c(
-    mut l: *const mdct_lookup,
-    mut in_0: *mut libc::c_float,
-    mut out: *mut libc::c_float,
-    mut window: *const opus_val16,
-    mut overlap: libc::c_int,
-    mut shift: libc::c_int,
-    mut stride: libc::c_int,
-    mut arch: libc::c_int,
+    l: *const mdct_lookup,
+    in_0: *mut libc::c_float,
+    out: *mut libc::c_float,
+    window: *const opus_val16,
+    overlap: libc::c_int,
+    shift: libc::c_int,
+    stride: libc::c_int,
+    _arch: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut N: libc::c_int = 0;
@@ -255,8 +255,8 @@ pub unsafe extern "C" fn clt_mdct_backward_c(
     let mut xp1: *const libc::c_float = in_0;
     let mut xp2: *const libc::c_float = in_0
         .offset((stride * (N2 - 1 as libc::c_int)) as isize);
-    let mut yp: *mut libc::c_float = out.offset((overlap >> 1 as libc::c_int) as isize);
-    let mut t: *const libc::c_float = &*trig.offset(0 as libc::c_int as isize)
+    let yp: *mut libc::c_float = out.offset((overlap >> 1 as libc::c_int) as isize);
+    let t: *const libc::c_float = &*trig.offset(0 as libc::c_int as isize)
         as *const libc::c_float;
     let mut bitrev: *const opus_int16 = (*(*l).kfft[shift as usize]).bitrev;
     i = 0 as libc::c_int;
@@ -284,7 +284,7 @@ pub unsafe extern "C" fn clt_mdct_backward_c(
         .offset((overlap >> 1 as libc::c_int) as isize)
         .offset(N2 as isize)
         .offset(-(2 as libc::c_int as isize));
-    let mut t_0: *const libc::c_float = &*trig.offset(0 as libc::c_int as isize)
+    let t_0: *const libc::c_float = &*trig.offset(0 as libc::c_int as isize)
         as *const libc::c_float;
     i = 0 as libc::c_int;
     while i < N4 + 1 as libc::c_int >> 1 as libc::c_int {

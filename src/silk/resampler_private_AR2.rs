@@ -46,11 +46,11 @@ pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32, opus_int64};
 #[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_resampler_private_AR2(
-    mut S: *mut opus_int32,
-    mut out_Q8: *mut opus_int32,
-    mut in_0: *const opus_int16,
-    mut A_Q14: *const opus_int16,
-    mut len: opus_int32,
+    S: *mut opus_int32,
+    out_Q8: *mut opus_int32,
+    in_0: *const opus_int16,
+    A_Q14: *const opus_int16,
+    len: opus_int32,
 ) {
     let mut k: opus_int32 = 0;
     let mut out32: opus_int32 = 0;

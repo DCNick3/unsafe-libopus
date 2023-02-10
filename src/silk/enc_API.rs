@@ -619,9 +619,9 @@ use self::tables_h::{silk_LBRR_flags_iCDF_ptr, silk_Quantization_Offsets_Q10};
 #[no_mangle]
 #[c2rust::src_loc = "56:1"]
 pub unsafe extern "C" fn silk_Get_Encoder_Size(
-    mut encSizeBytes: *mut libc::c_int,
+    encSizeBytes: *mut libc::c_int,
 ) -> libc::c_int {
-    let mut ret: libc::c_int = SILK_NO_ERROR;
+    let ret: libc::c_int = SILK_NO_ERROR;
     *encSizeBytes = ::core::mem::size_of::<silk_encoder>() as libc::c_ulong
         as libc::c_int;
     return ret;
@@ -629,9 +629,9 @@ pub unsafe extern "C" fn silk_Get_Encoder_Size(
 #[no_mangle]
 #[c2rust::src_loc = "70:1"]
 pub unsafe extern "C" fn silk_InitEncoder(
-    mut encState: *mut libc::c_void,
-    mut arch: libc::c_int,
-    mut encStatus: *mut silk_EncControlStruct,
+    encState: *mut libc::c_void,
+    arch: libc::c_int,
+    encStatus: *mut silk_EncControlStruct,
 ) -> libc::c_int {
     let mut psEnc: *mut silk_encoder = 0 as *mut silk_encoder;
     let mut n: libc::c_int = 0;
@@ -676,12 +676,12 @@ pub unsafe extern "C" fn silk_InitEncoder(
 }
 #[c2rust::src_loc = "103:1"]
 unsafe extern "C" fn silk_QueryEncoder(
-    mut encState: *const libc::c_void,
+    encState: *const libc::c_void,
     mut encStatus: *mut silk_EncControlStruct,
 ) -> libc::c_int {
-    let mut ret: libc::c_int = SILK_NO_ERROR;
+    let ret: libc::c_int = SILK_NO_ERROR;
     let mut state_Fxx: *mut silk_encoder_state_FLP = 0 as *mut silk_encoder_state_FLP;
-    let mut psEnc: *mut silk_encoder = encState as *mut silk_encoder;
+    let psEnc: *mut silk_encoder = encState as *mut silk_encoder;
     state_Fxx = ((*psEnc).state_Fxx).as_mut_ptr();
     (*encStatus).nChannelsAPI = (*psEnc).nChannelsAPI;
     (*encStatus).nChannelsInternal = (*psEnc).nChannelsInternal;
@@ -733,14 +733,14 @@ unsafe extern "C" fn silk_QueryEncoder(
 #[no_mangle]
 #[c2rust::src_loc = "140:1"]
 pub unsafe extern "C" fn silk_Encode(
-    mut encState: *mut libc::c_void,
+    encState: *mut libc::c_void,
     mut encControl: *mut silk_EncControlStruct,
     mut samplesIn: *const opus_int16,
     mut nSamplesIn: libc::c_int,
-    mut psRangeEnc: *mut ec_enc,
-    mut nBytesOut: *mut opus_int32,
+    psRangeEnc: *mut ec_enc,
+    nBytesOut: *mut opus_int32,
     prefillFlag: libc::c_int,
-    mut activity: libc::c_int,
+    activity: libc::c_int,
 ) -> libc::c_int {
     let mut n: libc::c_int = 0;
     let mut i: libc::c_int = 0;
@@ -949,7 +949,7 @@ pub unsafe extern "C" fn silk_Encode(
     }
     n = 0 as libc::c_int;
     while n < (*encControl).nChannelsInternal {
-        let mut force_fs_kHz: libc::c_int = if n == 1 as libc::c_int {
+        let force_fs_kHz: libc::c_int = if n == 1 as libc::c_int {
             (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.fs_kHz
         } else {
             0 as libc::c_int
@@ -1020,7 +1020,7 @@ pub unsafe extern "C" fn silk_Encode(
         if (*encControl).nChannelsAPI == 2 as libc::c_int
             && (*encControl).nChannelsInternal == 2 as libc::c_int
         {
-            let mut id: libc::c_int = (*psEnc)
+            let id: libc::c_int = (*psEnc)
                 .state_Fxx[0 as libc::c_int as usize]
                 .sCmn
                 .nFramesEncoded;
@@ -1453,7 +1453,7 @@ pub unsafe extern "C" fn silk_Encode(
             && (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.nFramesEncoded
                 > 0 as libc::c_int
         {
-            let mut bitsBalance: opus_int32 = ec_tell(psRangeEnc)
+            let bitsBalance: opus_int32 = ec_tell(psRangeEnc)
                 - (*psEnc).nBitsUsedLBRR
                 - nBits
                     * (*psEnc).state_Fxx[0 as libc::c_int as usize].sCmn.nFramesEncoded;
@@ -1711,7 +1711,7 @@ pub unsafe extern "C" fn silk_Encode(
                     maxBits,
                     useCBR,
                 );
-                ret != 0 as libc::c_int;
+                let _ = ret != 0 as libc::c_int;
             }
             (*psEnc)
                 .state_Fxx[n as usize]

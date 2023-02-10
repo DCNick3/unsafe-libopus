@@ -5055,7 +5055,7 @@ static mut layer2_bias: [opus_int8; 2] = [
 #[c2rust::src_loc = "654:18"]
 pub static mut layer0: DenseLayer = unsafe {
     {
-        let mut init = DenseLayer {
+        let init = DenseLayer {
             bias: layer0_bias.as_ptr(),
             input_weights: layer0_weights.as_ptr(),
             nb_inputs: 25 as libc::c_int,
@@ -5069,7 +5069,7 @@ pub static mut layer0: DenseLayer = unsafe {
 #[c2rust::src_loc = "660:16"]
 pub static mut layer1: GRULayer = unsafe {
     {
-        let mut init = GRULayer {
+        let init = GRULayer {
             bias: layer1_bias.as_ptr(),
             input_weights: layer1_weights.as_ptr(),
             recurrent_weights: layer1_recur_weights.as_ptr(),
@@ -5083,7 +5083,7 @@ pub static mut layer1: GRULayer = unsafe {
 #[c2rust::src_loc = "667:18"]
 pub static mut layer2: DenseLayer = unsafe {
     {
-        let mut init = DenseLayer {
+        let init = DenseLayer {
             bias: layer2_bias.as_ptr(),
             input_weights: layer2_weights.as_ptr(),
             nb_inputs: 24 as libc::c_int,

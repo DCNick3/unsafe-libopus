@@ -14,8 +14,8 @@ use self::arch_h::celt_fatal;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_warped_autocorrelation_FLP(
-    mut corr: *mut libc::c_float,
-    mut input: *const libc::c_float,
+    corr: *mut libc::c_float,
+    input: *const libc::c_float,
     warping: libc::c_float,
     length: libc::c_int,
     order: libc::c_int,

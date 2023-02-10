@@ -1130,7 +1130,7 @@ static mut silk_NLSF_DELTA_MIN_NB_MB_Q15: [opus_int16; 11] = [
 #[c2rust::src_loc = "181:27"]
 pub static mut silk_NLSF_CB_NB_MB: silk_NLSF_CB_struct = unsafe {
     {
-        let mut init = silk_NLSF_CB_struct {
+        let init = silk_NLSF_CB_struct {
             nVectors: 32 as libc::c_int as opus_int16,
             order: 10 as libc::c_int as opus_int16,
             quantStepSize_Q16: (0.18f64

@@ -213,8 +213,8 @@ pub mod entcode_h {
     #[c2rust::src_loc = "57:10"]
     pub const BITRES: libc::c_int = 3 as libc::c_int;
     use super::opus_types_h::opus_uint32;
-    use super::internal::__CHAR_BIT__;
-    use super::limits_h::CHAR_BIT;
+    
+    
     use super::ecintrin_h::EC_CLZ0;
     extern "C" {
         #[c2rust::src_loc = "121:1"]
@@ -711,7 +711,7 @@ pub const PLC_PITCH_LAG_MIN: libc::c_int = 100 as libc::c_int;
 pub const DECODE_BUFFER_SIZE: libc::c_int = 2048 as libc::c_int;
 #[no_mangle]
 #[c2rust::src_loc = "115:1"]
-pub unsafe extern "C" fn validate_celt_decoder(mut st: *mut OpusCustomDecoder) {
+pub unsafe extern "C" fn validate_celt_decoder(st: *mut OpusCustomDecoder) {
     if !((*st).mode
         == opus_custom_mode_create(
             48000 as libc::c_int,
@@ -888,9 +888,9 @@ pub unsafe extern "C" fn validate_celt_decoder(mut st: *mut OpusCustomDecoder) {
 #[no_mangle]
 #[c2rust::src_loc = "144:1"]
 pub unsafe extern "C" fn celt_decoder_get_size(
-    mut channels: libc::c_int,
+    channels: libc::c_int,
 ) -> libc::c_int {
-    let mut mode: *const OpusCustomMode = opus_custom_mode_create(
+    let mode: *const OpusCustomMode = opus_custom_mode_create(
         48000 as libc::c_int,
         960 as libc::c_int,
         NULL as *mut libc::c_int,
@@ -900,10 +900,10 @@ pub unsafe extern "C" fn celt_decoder_get_size(
 #[inline]
 #[c2rust::src_loc = "150:1"]
 unsafe extern "C" fn opus_custom_decoder_get_size(
-    mut mode: *const OpusCustomMode,
-    mut channels: libc::c_int,
+    mode: *const OpusCustomMode,
+    channels: libc::c_int,
 ) -> libc::c_int {
-    let mut size: libc::c_int = (::core::mem::size_of::<OpusCustomDecoder>()
+    let size: libc::c_int = (::core::mem::size_of::<OpusCustomDecoder>()
         as libc::c_ulong)
         .wrapping_add(
             ((channels * (DECODE_BUFFER_SIZE + (*mode).overlap) - 1 as libc::c_int)
@@ -924,8 +924,8 @@ unsafe extern "C" fn opus_custom_decoder_get_size(
 #[c2rust::src_loc = "176:1"]
 pub unsafe extern "C" fn celt_decoder_init(
     mut st: *mut OpusCustomDecoder,
-    mut sampling_rate: opus_int32,
-    mut channels: libc::c_int,
+    sampling_rate: opus_int32,
+    channels: libc::c_int,
 ) -> libc::c_int {
     let mut ret: libc::c_int = 0;
     ret = opus_custom_decoder_init(
@@ -951,8 +951,8 @@ pub unsafe extern "C" fn celt_decoder_init(
 #[c2rust::src_loc = "189:1"]
 unsafe extern "C" fn opus_custom_decoder_init(
     mut st: *mut OpusCustomDecoder,
-    mut mode: *const OpusCustomMode,
-    mut channels: libc::c_int,
+    mode: *const OpusCustomMode,
+    channels: libc::c_int,
 ) -> libc::c_int {
     if channels < 0 as libc::c_int || channels > 2 as libc::c_int {
         return OPUS_BAD_ARG;
@@ -981,11 +981,11 @@ unsafe extern "C" fn opus_custom_decoder_init(
 }
 #[c2rust::src_loc = "230:1"]
 unsafe extern "C" fn deemphasis_stereo_simple(
-    mut in_0: *mut *mut celt_sig,
-    mut pcm: *mut opus_val16,
-    mut N: libc::c_int,
+    in_0: *mut *mut celt_sig,
+    pcm: *mut opus_val16,
+    N: libc::c_int,
     coef0: opus_val16,
-    mut mem: *mut celt_sig,
+    mem: *mut celt_sig,
 ) {
     let mut x0: *mut celt_sig = 0 as *mut celt_sig;
     let mut x1: *mut celt_sig = 0 as *mut celt_sig;
@@ -1019,14 +1019,14 @@ unsafe extern "C" fn deemphasis_stereo_simple(
 }
 #[c2rust::src_loc = "258:1"]
 unsafe extern "C" fn deemphasis(
-    mut in_0: *mut *mut celt_sig,
-    mut pcm: *mut opus_val16,
-    mut N: libc::c_int,
-    mut C: libc::c_int,
-    mut downsample: libc::c_int,
-    mut coef: *const opus_val16,
-    mut mem: *mut celt_sig,
-    mut accum: libc::c_int,
+    in_0: *mut *mut celt_sig,
+    pcm: *mut opus_val16,
+    N: libc::c_int,
+    C: libc::c_int,
+    downsample: libc::c_int,
+    coef: *const opus_val16,
+    mem: *mut celt_sig,
+    accum: libc::c_int,
 ) {
     let mut c: libc::c_int = 0;
     let mut Nd: libc::c_int = 0;
@@ -1064,7 +1064,7 @@ unsafe extern "C" fn deemphasis(
         if downsample > 1 as libc::c_int {
             j = 0 as libc::c_int;
             while j < N {
-                let mut tmp: celt_sig = *x.offset(j as isize) + VERY_SMALL + m;
+                let tmp: celt_sig = *x.offset(j as isize) + VERY_SMALL + m;
                 m = coef0 * tmp;
                 *scratch.as_mut_ptr().offset(j as isize) = tmp;
                 j += 1;
@@ -1073,7 +1073,7 @@ unsafe extern "C" fn deemphasis(
         } else {
             j = 0 as libc::c_int;
             while j < N {
-                let mut tmp_0: celt_sig = *x.offset(j as isize) + VERY_SMALL + m;
+                let tmp_0: celt_sig = *x.offset(j as isize) + VERY_SMALL + m;
                 m = coef0 * tmp_0;
                 *y
                     .offset(
@@ -1102,19 +1102,19 @@ unsafe extern "C" fn deemphasis(
 }
 #[c2rust::src_loc = "361:1"]
 unsafe extern "C" fn celt_synthesis(
-    mut mode: *const OpusCustomMode,
-    mut X: *mut celt_norm,
-    mut out_syn: *mut *mut celt_sig,
-    mut oldBandE: *mut opus_val16,
-    mut start: libc::c_int,
-    mut effEnd: libc::c_int,
-    mut C: libc::c_int,
-    mut CC: libc::c_int,
-    mut isTransient: libc::c_int,
-    mut LM: libc::c_int,
-    mut downsample: libc::c_int,
-    mut silence: libc::c_int,
-    mut arch: libc::c_int,
+    mode: *const OpusCustomMode,
+    X: *mut celt_norm,
+    out_syn: *mut *mut celt_sig,
+    oldBandE: *mut opus_val16,
+    start: libc::c_int,
+    effEnd: libc::c_int,
+    C: libc::c_int,
+    CC: libc::c_int,
+    isTransient: libc::c_int,
+    LM: libc::c_int,
+    downsample: libc::c_int,
+    silence: libc::c_int,
+    arch: libc::c_int,
 ) {
     let mut c: libc::c_int = 0;
     let mut i: libc::c_int = 0;
@@ -1295,12 +1295,12 @@ unsafe extern "C" fn celt_synthesis(
 }
 #[c2rust::src_loc = "441:1"]
 unsafe extern "C" fn tf_decode(
-    mut start: libc::c_int,
-    mut end: libc::c_int,
-    mut isTransient: libc::c_int,
-    mut tf_res: *mut libc::c_int,
-    mut LM: libc::c_int,
-    mut dec: *mut ec_dec,
+    start: libc::c_int,
+    end: libc::c_int,
+    isTransient: libc::c_int,
+    tf_res: *mut libc::c_int,
+    LM: libc::c_int,
+    dec: *mut ec_dec,
 ) {
     let mut i: libc::c_int = 0;
     let mut curr: libc::c_int = 0;
@@ -1356,9 +1356,9 @@ unsafe extern "C" fn tf_decode(
 }
 #[c2rust::src_loc = "480:1"]
 unsafe extern "C" fn celt_plc_pitch_search(
-    mut decode_mem: *mut *mut celt_sig,
-    mut C: libc::c_int,
-    mut arch: libc::c_int,
+    decode_mem: *mut *mut celt_sig,
+    C: libc::c_int,
+    arch: libc::c_int,
 ) -> libc::c_int {
     let mut pitch_index: libc::c_int = 0;
     let mut lp_pitch_buf: [opus_val16; 1024] = [0.; 1024];
@@ -1385,8 +1385,8 @@ unsafe extern "C" fn celt_plc_pitch_search(
 #[c2rust::src_loc = "496:1"]
 unsafe extern "C" fn celt_decode_lost(
     mut st: *mut OpusCustomDecoder,
-    mut N: libc::c_int,
-    mut LM: libc::c_int,
+    N: libc::c_int,
+    LM: libc::c_int,
 ) {
     let mut c: libc::c_int = 0;
     let mut i: libc::c_int = 0;
@@ -1707,7 +1707,7 @@ unsafe extern "C" fn celt_decode_lost(
             let mut S2: opus_val32 = 0 as libc::c_int as opus_val32;
             i = 0 as libc::c_int;
             while i < extrapolation_len {
-                let mut tmp_0: opus_val16 = *buf
+                let tmp_0: opus_val16 = *buf
                     .offset((2048 as libc::c_int - N + i) as isize);
                 S2 += tmp_0 * tmp_0;
                 i += 1;
@@ -1722,13 +1722,13 @@ unsafe extern "C" fn celt_decode_lost(
                     i += 1;
                 }
             } else if S1 < S2 {
-                let mut ratio: opus_val16 = sqrt(
+                let ratio: opus_val16 = sqrt(
                     ((S1 + 1 as libc::c_int as libc::c_float)
                         / (S2 + 1 as libc::c_int as libc::c_float)) as libc::c_double,
                 ) as libc::c_float;
                 i = 0 as libc::c_int;
                 while i < overlap {
-                    let mut tmp_g: opus_val16 = Q15ONE
+                    let tmp_g: opus_val16 = Q15ONE
                         - *window.offset(i as isize) * (1.0f32 - ratio);
                     *buf
                         .offset(
@@ -1784,12 +1784,12 @@ unsafe extern "C" fn celt_decode_lost(
 #[c2rust::src_loc = "814:1"]
 pub unsafe extern "C" fn celt_decode_with_ec(
     mut st: *mut OpusCustomDecoder,
-    mut data: *const libc::c_uchar,
-    mut len: libc::c_int,
-    mut pcm: *mut opus_val16,
+    data: *const libc::c_uchar,
+    len: libc::c_int,
+    pcm: *mut opus_val16,
     mut frame_size: libc::c_int,
     mut dec: *mut ec_dec,
-    mut accum: libc::c_int,
+    accum: libc::c_int,
 ) -> libc::c_int {
     let mut c: libc::c_int = 0;
     let mut i: libc::c_int = 0;
@@ -1840,7 +1840,7 @@ pub unsafe extern "C" fn celt_decode_with_ec(
     let mut anti_collapse_rsv: libc::c_int = 0;
     let mut anti_collapse_on: libc::c_int = 0 as libc::c_int;
     let mut silence: libc::c_int = 0;
-    let mut C: libc::c_int = (*st).stream_channels;
+    let C: libc::c_int = (*st).stream_channels;
     let mut mode: *const OpusCustomMode = 0 as *const OpusCustomMode;
     let mut nbEBands: libc::c_int = 0;
     let mut overlap: libc::c_int = 0;
@@ -2380,15 +2380,15 @@ pub unsafe extern "C" fn celt_decode_with_ec(
 #[c2rust::src_loc = "1247:1"]
 pub unsafe extern "C" fn opus_custom_decoder_ctl(
     mut st: *mut OpusCustomDecoder,
-    mut request: libc::c_int,
-    mut args: ...
+    request: libc::c_int,
+    args: ...
 ) -> libc::c_int {
-    let mut current_block: u64;
+    let current_block: u64;
     let mut ap: ::core::ffi::VaListImpl;
     ap = args.clone();
     match request {
         CELT_SET_START_BAND_REQUEST => {
-            let mut value: opus_int32 = ap.arg::<opus_int32>();
+            let value: opus_int32 = ap.arg::<opus_int32>();
             if value < 0 as libc::c_int || value >= (*(*st).mode).nbEBands {
                 current_block = 7990025728955927862;
             } else {
@@ -2397,7 +2397,7 @@ pub unsafe extern "C" fn opus_custom_decoder_ctl(
             }
         }
         CELT_SET_END_BAND_REQUEST => {
-            let mut value_0: opus_int32 = ap.arg::<opus_int32>();
+            let value_0: opus_int32 = ap.arg::<opus_int32>();
             if value_0 < 1 as libc::c_int || value_0 > (*(*st).mode).nbEBands {
                 current_block = 7990025728955927862;
             } else {
@@ -2406,7 +2406,7 @@ pub unsafe extern "C" fn opus_custom_decoder_ctl(
             }
         }
         CELT_SET_CHANNELS_REQUEST => {
-            let mut value_1: opus_int32 = ap.arg::<opus_int32>();
+            let value_1: opus_int32 = ap.arg::<opus_int32>();
             if value_1 < 1 as libc::c_int || value_1 > 2 as libc::c_int {
                 current_block = 7990025728955927862;
             } else {
@@ -2415,7 +2415,7 @@ pub unsafe extern "C" fn opus_custom_decoder_ctl(
             }
         }
         CELT_GET_AND_CLEAR_ERROR_REQUEST => {
-            let mut value_2: *mut opus_int32 = ap.arg::<*mut opus_int32>();
+            let value_2: *mut opus_int32 = ap.arg::<*mut opus_int32>();
             if value_2.is_null() {
                 current_block = 7990025728955927862;
             } else {
@@ -2425,7 +2425,7 @@ pub unsafe extern "C" fn opus_custom_decoder_ctl(
             }
         }
         OPUS_GET_LOOKAHEAD_REQUEST => {
-            let mut value_3: *mut opus_int32 = ap.arg::<*mut opus_int32>();
+            let value_3: *mut opus_int32 = ap.arg::<*mut opus_int32>();
             if value_3.is_null() {
                 current_block = 7990025728955927862;
             } else {
@@ -2472,7 +2472,7 @@ pub unsafe extern "C" fn opus_custom_decoder_ctl(
             current_block = 3689906465960840878;
         }
         OPUS_GET_PITCH_REQUEST => {
-            let mut value_4: *mut opus_int32 = ap.arg::<*mut opus_int32>();
+            let value_4: *mut opus_int32 = ap.arg::<*mut opus_int32>();
             if value_4.is_null() {
                 current_block = 7990025728955927862;
             } else {
@@ -2481,7 +2481,7 @@ pub unsafe extern "C" fn opus_custom_decoder_ctl(
             }
         }
         CELT_GET_MODE_REQUEST => {
-            let mut value_5: *mut *const OpusCustomMode = ap
+            let value_5: *mut *const OpusCustomMode = ap
                 .arg::<*mut *const OpusCustomMode>();
             if value_5.is_null() {
                 current_block = 7990025728955927862;
@@ -2491,12 +2491,12 @@ pub unsafe extern "C" fn opus_custom_decoder_ctl(
             }
         }
         CELT_SET_SIGNALLING_REQUEST => {
-            let mut value_6: opus_int32 = ap.arg::<opus_int32>();
+            let value_6: opus_int32 = ap.arg::<opus_int32>();
             (*st).signalling = value_6;
             current_block = 3689906465960840878;
         }
         OPUS_GET_FINAL_RANGE_REQUEST => {
-            let mut value_7: *mut opus_uint32 = ap.arg::<*mut opus_uint32>();
+            let value_7: *mut opus_uint32 = ap.arg::<*mut opus_uint32>();
             if value_7.is_null() {
                 current_block = 7990025728955927862;
             } else {
@@ -2505,7 +2505,7 @@ pub unsafe extern "C" fn opus_custom_decoder_ctl(
             }
         }
         OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST => {
-            let mut value_8: opus_int32 = ap.arg::<opus_int32>();
+            let value_8: opus_int32 = ap.arg::<opus_int32>();
             if value_8 < 0 as libc::c_int || value_8 > 1 as libc::c_int {
                 current_block = 7990025728955927862;
             } else {
@@ -2514,7 +2514,7 @@ pub unsafe extern "C" fn opus_custom_decoder_ctl(
             }
         }
         OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST => {
-            let mut value_9: *mut opus_int32 = ap.arg::<*mut opus_int32>();
+            let value_9: *mut opus_int32 = ap.arg::<*mut opus_int32>();
             if value_9.is_null() {
                 current_block = 7990025728955927862;
             } else {

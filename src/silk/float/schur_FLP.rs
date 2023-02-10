@@ -14,9 +14,9 @@ use self::arch_h::celt_fatal;
 #[no_mangle]
 #[c2rust::src_loc = "34:1"]
 pub unsafe extern "C" fn silk_schur_FLP(
-    mut refl_coef: *mut libc::c_float,
-    mut auto_corr: *const libc::c_float,
-    mut order: libc::c_int,
+    refl_coef: *mut libc::c_float,
+    auto_corr: *const libc::c_float,
+    order: libc::c_int,
 ) -> libc::c_float {
     let mut k: libc::c_int = 0;
     let mut n: libc::c_int = 0;

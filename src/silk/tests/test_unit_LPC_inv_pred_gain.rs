@@ -147,8 +147,8 @@ use self::SigProc_FIX_h::silk_LPC_inverse_pred_gain_c;
 #[no_mangle]
 #[c2rust::src_loc = "42:1"]
 pub unsafe extern "C" fn check_stability(
-    mut A_Q12: *mut opus_int16,
-    mut order: libc::c_int,
+    A_Q12: *mut opus_int16,
+    order: libc::c_int,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
@@ -235,7 +235,7 @@ pub unsafe extern "C" fn check_stability(
 }
 #[c2rust::src_loc = "90:1"]
 unsafe fn main_0() -> libc::c_int {
-    let arch: libc::c_int = opus_select_arch();
+    let _arch: libc::c_int = opus_select_arch();
     let loop_num: libc::c_int = 10000 as libc::c_int;
     let mut count: libc::c_int = 0 as libc::c_int;
     srand(0 as libc::c_int as libc::c_uint);

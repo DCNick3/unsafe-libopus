@@ -296,7 +296,7 @@ pub use self::define_h::{LTP_ORDER, TYPE_VOICED, BWE_AFTER_LOSS_Q16, CODE_CONDIT
 pub unsafe extern "C" fn silk_decode_parameters(
     mut psDec: *mut silk_decoder_state,
     mut psDecCtrl: *mut silk_decoder_control,
-    mut condCoding: libc::c_int,
+    condCoding: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut k: libc::c_int = 0;

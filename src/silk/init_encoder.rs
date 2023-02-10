@@ -314,7 +314,7 @@ use self::main_h::silk_VAD_Init;
 #[c2rust::src_loc = "42:1"]
 pub unsafe extern "C" fn silk_init_encoder(
     mut psEnc: *mut silk_encoder_state_FLP,
-    mut arch: libc::c_int,
+    arch: libc::c_int,
 ) -> libc::c_int {
     let mut ret: libc::c_int = 0 as libc::c_int;
     memset(

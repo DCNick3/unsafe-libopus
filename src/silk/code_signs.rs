@@ -122,12 +122,12 @@ pub use self::define_h::SHELL_CODEC_FRAME_LENGTH;
 #[no_mangle]
 #[c2rust::src_loc = "41:1"]
 pub unsafe extern "C" fn silk_encode_signs(
-    mut psRangeEnc: *mut ec_enc,
-    mut pulses: *const opus_int8,
+    psRangeEnc: *mut ec_enc,
+    pulses: *const opus_int8,
     mut length: libc::c_int,
     signalType: libc::c_int,
     quantOffsetType: libc::c_int,
-    mut sum_pulses: *const libc::c_int,
+    sum_pulses: *const libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
@@ -177,12 +177,12 @@ pub unsafe extern "C" fn silk_encode_signs(
 #[no_mangle]
 #[c2rust::src_loc = "75:1"]
 pub unsafe extern "C" fn silk_decode_signs(
-    mut psRangeDec: *mut ec_dec,
-    mut pulses: *mut opus_int16,
+    psRangeDec: *mut ec_dec,
+    pulses: *mut opus_int16,
     mut length: libc::c_int,
     signalType: libc::c_int,
     quantOffsetType: libc::c_int,
-    mut sum_pulses: *const libc::c_int,
+    sum_pulses: *const libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;

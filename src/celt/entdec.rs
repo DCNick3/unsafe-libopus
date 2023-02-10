@@ -47,13 +47,13 @@ pub mod entcode_h {
     #[inline]
     #[c2rust::src_loc = "124:1"]
     pub unsafe extern "C" fn celt_udiv(
-        mut n: opus_uint32,
-        mut d: opus_uint32,
+        n: opus_uint32,
+        d: opus_uint32,
     ) -> opus_uint32 {
         return n.wrapping_div(d);
     }
     use super::opus_types_h::opus_uint32;
-    use super::internal::__CHAR_BIT__;
+    
     use super::limits_h::CHAR_BIT;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:34"]

@@ -14,9 +14,9 @@ use self::SigProc_FLP_h::silk_inner_product_FLP;
 #[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_autocorrelation_FLP(
-    mut results: *mut libc::c_float,
-    mut inputData: *const libc::c_float,
-    mut inputDataSize: libc::c_int,
+    results: *mut libc::c_float,
+    inputData: *const libc::c_float,
+    inputDataSize: libc::c_int,
     mut correlationCount: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;

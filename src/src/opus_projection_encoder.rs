@@ -139,8 +139,8 @@ pub mod opus_private_h {
     }
     #[inline]
     #[c2rust::src_loc = "154:1"]
-    pub unsafe extern "C" fn align(mut i: libc::c_int) -> libc::c_int {
-        let mut alignment: libc::c_uint = 8 as libc::c_ulong as libc::c_uint;
+    pub unsafe extern "C" fn align(i: libc::c_int) -> libc::c_int {
+        let alignment: libc::c_uint = 8 as libc::c_ulong as libc::c_uint;
         return (i as libc::c_uint)
             .wrapping_add(alignment)
             .wrapping_sub(1 as libc::c_int as libc::c_uint)
@@ -149,7 +149,7 @@ pub mod opus_private_h {
     }
     use super::opus_types_h::opus_int32;
     use super::arch_h::{opus_val16, opus_val32};
-    use super::internal::__va_list_tag;
+    
     extern "C" {
         #[c2rust::src_loc = "78:1"]
         pub fn opus_multistream_encoder_ctl_va_list(
@@ -290,12 +290,12 @@ pub mod mathops_h {
 pub mod os_support_h {
     #[inline]
     #[c2rust::src_loc = "64:1"]
-    pub unsafe extern "C" fn opus_free(mut ptr: *mut libc::c_void) {
+    pub unsafe extern "C" fn opus_free(ptr: *mut libc::c_void) {
         free(ptr);
     }
     #[inline]
     #[c2rust::src_loc = "47:1"]
-    pub unsafe extern "C" fn opus_alloc(mut size: size_t) -> *mut libc::c_void {
+    pub unsafe extern "C" fn opus_alloc(size: size_t) -> *mut libc::c_void {
         return malloc(size);
     }
     use super::stdlib_h::{free, malloc};
@@ -370,7 +370,7 @@ pub use self::opus_defines_h::{
 };
 use self::mathops_h::isqrt32;
 pub use self::os_support_h::{opus_free, opus_alloc};
-use self::stdlib_h::{malloc, free};
+
 pub use self::opus_projection_h::{
     OPUS_PROJECTION_GET_DEMIXING_MATRIX_GAIN_REQUEST,
     OPUS_PROJECTION_GET_DEMIXING_MATRIX_SIZE_REQUEST,
@@ -388,13 +388,13 @@ pub struct OpusProjectionEncoder {
 }
 #[c2rust::src_loc = "49:1"]
 unsafe extern "C" fn opus_projection_copy_channel_in_float(
-    mut dst: *mut opus_val16,
-    mut dst_stride: libc::c_int,
-    mut src: *const libc::c_void,
-    mut src_stride: libc::c_int,
-    mut src_channel: libc::c_int,
-    mut frame_size: libc::c_int,
-    mut user_data: *mut libc::c_void,
+    dst: *mut opus_val16,
+    dst_stride: libc::c_int,
+    src: *const libc::c_void,
+    src_stride: libc::c_int,
+    src_channel: libc::c_int,
+    frame_size: libc::c_int,
+    user_data: *mut libc::c_void,
 ) {
     mapping_matrix_multiply_channel_in_float(
         user_data as *const MappingMatrix,
@@ -408,13 +408,13 @@ unsafe extern "C" fn opus_projection_copy_channel_in_float(
 }
 #[c2rust::src_loc = "64:1"]
 unsafe extern "C" fn opus_projection_copy_channel_in_short(
-    mut dst: *mut opus_val16,
-    mut dst_stride: libc::c_int,
-    mut src: *const libc::c_void,
-    mut src_stride: libc::c_int,
-    mut src_channel: libc::c_int,
-    mut frame_size: libc::c_int,
-    mut user_data: *mut libc::c_void,
+    dst: *mut opus_val16,
+    dst_stride: libc::c_int,
+    src: *const libc::c_void,
+    src_stride: libc::c_int,
+    src_channel: libc::c_int,
+    frame_size: libc::c_int,
+    user_data: *mut libc::c_void,
 ) {
     mapping_matrix_multiply_channel_in_short(
         user_data as *const MappingMatrix,
@@ -428,8 +428,8 @@ unsafe extern "C" fn opus_projection_copy_channel_in_short(
 }
 #[c2rust::src_loc = "78:1"]
 unsafe extern "C" fn get_order_plus_one_from_channels(
-    mut channels: libc::c_int,
-    mut order_plus_one: *mut libc::c_int,
+    channels: libc::c_int,
+    order_plus_one: *mut libc::c_int,
 ) -> libc::c_int {
     let mut order_plus_one_: libc::c_int = 0;
     let mut acn_channels: libc::c_int = 0;
@@ -452,11 +452,11 @@ unsafe extern "C" fn get_order_plus_one_from_channels(
 }
 #[c2rust::src_loc = "101:1"]
 unsafe extern "C" fn get_streams_from_channels(
-    mut channels: libc::c_int,
-    mut mapping_family: libc::c_int,
-    mut streams: *mut libc::c_int,
-    mut coupled_streams: *mut libc::c_int,
-    mut order_plus_one: *mut libc::c_int,
+    channels: libc::c_int,
+    mapping_family: libc::c_int,
+    streams: *mut libc::c_int,
+    coupled_streams: *mut libc::c_int,
+    order_plus_one: *mut libc::c_int,
 ) -> libc::c_int {
     if mapping_family == 3 as libc::c_int {
         if get_order_plus_one_from_channels(channels, order_plus_one) != OPUS_OK {
@@ -474,7 +474,7 @@ unsafe extern "C" fn get_streams_from_channels(
 }
 #[c2rust::src_loc = "118:1"]
 unsafe extern "C" fn get_mixing_matrix(
-    mut st: *mut OpusProjectionEncoder,
+    st: *mut OpusProjectionEncoder,
 ) -> *mut MappingMatrix {
     return (st as *mut libc::c_char)
         .offset(
@@ -486,7 +486,7 @@ unsafe extern "C" fn get_mixing_matrix(
 }
 #[c2rust::src_loc = "125:1"]
 unsafe extern "C" fn get_enc_demixing_matrix(
-    mut st: *mut OpusProjectionEncoder,
+    st: *mut OpusProjectionEncoder,
 ) -> *mut MappingMatrix {
     return (st as *mut libc::c_char)
         .offset(
@@ -499,7 +499,7 @@ unsafe extern "C" fn get_enc_demixing_matrix(
 }
 #[c2rust::src_loc = "133:1"]
 unsafe extern "C" fn get_multistream_encoder(
-    mut st: *mut OpusProjectionEncoder,
+    st: *mut OpusProjectionEncoder,
 ) -> *mut OpusMSEncoder {
     return (st as *mut libc::c_char)
         .offset(
@@ -514,8 +514,8 @@ unsafe extern "C" fn get_multistream_encoder(
 #[no_mangle]
 #[c2rust::src_loc = "142:1"]
 pub unsafe extern "C" fn opus_projection_ambisonics_encoder_get_size(
-    mut channels: libc::c_int,
-    mut mapping_family: libc::c_int,
+    channels: libc::c_int,
+    mapping_family: libc::c_int,
 ) -> opus_int32 {
     let mut nb_streams: libc::c_int = 0;
     let mut nb_coupled_streams: libc::c_int = 0;
@@ -579,12 +579,12 @@ pub unsafe extern "C" fn opus_projection_ambisonics_encoder_get_size(
 #[c2rust::src_loc = "202:1"]
 pub unsafe extern "C" fn opus_projection_ambisonics_encoder_init(
     mut st: *mut OpusProjectionEncoder,
-    mut Fs: opus_int32,
-    mut channels: libc::c_int,
-    mut mapping_family: libc::c_int,
-    mut streams: *mut libc::c_int,
-    mut coupled_streams: *mut libc::c_int,
-    mut application: libc::c_int,
+    Fs: opus_int32,
+    channels: libc::c_int,
+    mapping_family: libc::c_int,
+    streams: *mut libc::c_int,
+    coupled_streams: *mut libc::c_int,
+    application: libc::c_int,
 ) -> libc::c_int {
     let mut mixing_matrix: *mut MappingMatrix = 0 as *mut MappingMatrix;
     let mut demixing_matrix: *mut MappingMatrix = 0 as *mut MappingMatrix;
@@ -718,13 +718,13 @@ pub unsafe extern "C" fn opus_projection_ambisonics_encoder_init(
 #[no_mangle]
 #[c2rust::src_loc = "308:1"]
 pub unsafe extern "C" fn opus_projection_ambisonics_encoder_create(
-    mut Fs: opus_int32,
-    mut channels: libc::c_int,
-    mut mapping_family: libc::c_int,
-    mut streams: *mut libc::c_int,
-    mut coupled_streams: *mut libc::c_int,
-    mut application: libc::c_int,
-    mut error: *mut libc::c_int,
+    Fs: opus_int32,
+    channels: libc::c_int,
+    mapping_family: libc::c_int,
+    streams: *mut libc::c_int,
+    coupled_streams: *mut libc::c_int,
+    application: libc::c_int,
+    error: *mut libc::c_int,
 ) -> *mut OpusProjectionEncoder {
     let mut size: libc::c_int = 0;
     let mut ret: libc::c_int = 0;
@@ -764,11 +764,11 @@ pub unsafe extern "C" fn opus_projection_ambisonics_encoder_create(
 #[no_mangle]
 #[c2rust::src_loc = "344:1"]
 pub unsafe extern "C" fn opus_projection_encode(
-    mut st: *mut OpusProjectionEncoder,
-    mut pcm: *const opus_int16,
-    mut frame_size: libc::c_int,
-    mut data: *mut libc::c_uchar,
-    mut max_data_bytes: opus_int32,
+    st: *mut OpusProjectionEncoder,
+    pcm: *const opus_int16,
+    frame_size: libc::c_int,
+    data: *mut libc::c_uchar,
+    max_data_bytes: opus_int32,
 ) -> libc::c_int {
     return opus_multistream_encode_native(
         get_multistream_encoder(st),
@@ -808,11 +808,11 @@ pub unsafe extern "C" fn opus_projection_encode(
 #[no_mangle]
 #[c2rust::src_loc = "364:1"]
 pub unsafe extern "C" fn opus_projection_encode_float(
-    mut st: *mut OpusProjectionEncoder,
-    mut pcm: *const libc::c_float,
-    mut frame_size: libc::c_int,
-    mut data: *mut libc::c_uchar,
-    mut max_data_bytes: opus_int32,
+    st: *mut OpusProjectionEncoder,
+    pcm: *const libc::c_float,
+    frame_size: libc::c_int,
+    data: *mut libc::c_uchar,
+    max_data_bytes: opus_int32,
 ) -> libc::c_int {
     return opus_multistream_encode_native(
         get_multistream_encoder(st),
@@ -852,18 +852,18 @@ pub unsafe extern "C" fn opus_projection_encode_float(
 #[no_mangle]
 #[c2rust::src_loc = "375:1"]
 pub unsafe extern "C" fn opus_projection_encoder_destroy(
-    mut st: *mut OpusProjectionEncoder,
+    st: *mut OpusProjectionEncoder,
 ) {
     opus_free(st as *mut libc::c_void);
 }
 #[no_mangle]
 #[c2rust::src_loc = "380:1"]
 pub unsafe extern "C" fn opus_projection_encoder_ctl(
-    mut st: *mut OpusProjectionEncoder,
-    mut request: libc::c_int,
-    mut args: ...
+    st: *mut OpusProjectionEncoder,
+    request: libc::c_int,
+    args: ...
 ) -> libc::c_int {
-    let mut current_block: u64;
+    let current_block: u64;
     let mut ap: ::core::ffi::VaListImpl;
     let mut demixing_matrix: *mut MappingMatrix = 0 as *mut MappingMatrix;
     let mut ms_encoder: *mut OpusMSEncoder = 0 as *mut OpusMSEncoder;
@@ -873,7 +873,7 @@ pub unsafe extern "C" fn opus_projection_encoder_ctl(
     ap = args.clone();
     match request {
         OPUS_PROJECTION_GET_DEMIXING_MATRIX_SIZE_REQUEST => {
-            let mut value: *mut opus_int32 = ap.arg::<*mut opus_int32>();
+            let value: *mut opus_int32 = ap.arg::<*mut opus_int32>();
             if value.is_null() {
                 current_block = 17184638872671510253;
             } else {
@@ -886,7 +886,7 @@ pub unsafe extern "C" fn opus_projection_encoder_ctl(
             }
         }
         OPUS_PROJECTION_GET_DEMIXING_MATRIX_GAIN_REQUEST => {
-            let mut value_0: *mut opus_int32 = ap.arg::<*mut opus_int32>();
+            let value_0: *mut opus_int32 = ap.arg::<*mut opus_int32>();
             if value_0.is_null() {
                 current_block = 17184638872671510253;
             } else {

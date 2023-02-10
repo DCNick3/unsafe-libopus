@@ -83,8 +83,8 @@ pub use self::kiss_fft_h::{
 #[c2rust::src_loc = "48:1"]
 unsafe extern "C" fn kf_bfly2(
     mut Fout: *mut kiss_fft_cpx,
-    mut m: libc::c_int,
-    mut N: libc::c_int,
+    m: libc::c_int,
+    N: libc::c_int,
 ) {
     let mut Fout2: *mut kiss_fft_cpx = 0 as *mut kiss_fft_cpx;
     let mut i: libc::c_int = 0;
@@ -148,10 +148,10 @@ unsafe extern "C" fn kf_bfly2(
 unsafe extern "C" fn kf_bfly4(
     mut Fout: *mut kiss_fft_cpx,
     fstride: size_t,
-    mut st: *const kiss_fft_state,
-    mut m: libc::c_int,
-    mut N: libc::c_int,
-    mut mm: libc::c_int,
+    st: *const kiss_fft_state,
+    m: libc::c_int,
+    N: libc::c_int,
+    mm: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     if m == 1 as libc::c_int {
@@ -194,7 +194,7 @@ unsafe extern "C" fn kf_bfly4(
         let mut tw3: *const kiss_twiddle_cpx = 0 as *const kiss_twiddle_cpx;
         let m2: libc::c_int = 2 as libc::c_int * m;
         let m3: libc::c_int = 3 as libc::c_int * m;
-        let mut Fout_beg: *mut kiss_fft_cpx = Fout;
+        let Fout_beg: *mut kiss_fft_cpx = Fout;
         i = 0 as libc::c_int;
         while i < N {
             Fout = Fout_beg.offset((i * mm) as isize);
@@ -277,10 +277,10 @@ unsafe extern "C" fn kf_bfly4(
 unsafe extern "C" fn kf_bfly3(
     mut Fout: *mut kiss_fft_cpx,
     fstride: size_t,
-    mut st: *const kiss_fft_state,
-    mut m: libc::c_int,
-    mut N: libc::c_int,
-    mut mm: libc::c_int,
+    st: *const kiss_fft_state,
+    m: libc::c_int,
+    N: libc::c_int,
+    mm: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut k: size_t = 0;
@@ -289,7 +289,7 @@ unsafe extern "C" fn kf_bfly3(
     let mut tw2: *const kiss_twiddle_cpx = 0 as *const kiss_twiddle_cpx;
     let mut scratch: [kiss_fft_cpx; 5] = [kiss_fft_cpx { r: 0., i: 0. }; 5];
     let mut epi3: kiss_twiddle_cpx = kiss_twiddle_cpx { r: 0., i: 0. };
-    let mut Fout_beg: *mut kiss_fft_cpx = Fout;
+    let Fout_beg: *mut kiss_fft_cpx = Fout;
     epi3 = *((*st).twiddles).offset(fstride.wrapping_mul(m as libc::c_ulong) as isize);
     i = 0 as libc::c_int;
     while i < N {
@@ -356,10 +356,10 @@ unsafe extern "C" fn kf_bfly3(
 unsafe extern "C" fn kf_bfly5(
     mut Fout: *mut kiss_fft_cpx,
     fstride: size_t,
-    mut st: *const kiss_fft_state,
-    mut m: libc::c_int,
-    mut N: libc::c_int,
-    mut mm: libc::c_int,
+    st: *const kiss_fft_state,
+    m: libc::c_int,
+    N: libc::c_int,
+    mm: libc::c_int,
 ) {
     let mut Fout0: *mut kiss_fft_cpx = 0 as *mut kiss_fft_cpx;
     let mut Fout1: *mut kiss_fft_cpx = 0 as *mut kiss_fft_cpx;
@@ -372,7 +372,7 @@ unsafe extern "C" fn kf_bfly5(
     let mut tw: *const kiss_twiddle_cpx = 0 as *const kiss_twiddle_cpx;
     let mut ya: kiss_twiddle_cpx = kiss_twiddle_cpx { r: 0., i: 0. };
     let mut yb: kiss_twiddle_cpx = kiss_twiddle_cpx { r: 0., i: 0. };
-    let mut Fout_beg: *mut kiss_fft_cpx = Fout;
+    let Fout_beg: *mut kiss_fft_cpx = Fout;
     ya = *((*st).twiddles).offset(fstride.wrapping_mul(m as libc::c_ulong) as isize);
     yb = *((*st).twiddles)
         .offset(
@@ -591,8 +591,8 @@ unsafe extern "C" fn kf_bfly5(
 #[no_mangle]
 #[c2rust::src_loc = "521:1"]
 pub unsafe extern "C" fn opus_fft_impl(
-    mut st: *const kiss_fft_state,
-    mut fout: *mut kiss_fft_cpx,
+    st: *const kiss_fft_state,
+    fout: *mut kiss_fft_cpx,
 ) {
     let mut m2: libc::c_int = 0;
     let mut m: libc::c_int = 0;
@@ -666,9 +666,9 @@ pub unsafe extern "C" fn opus_fft_impl(
 #[no_mangle]
 #[c2rust::src_loc = "569:1"]
 pub unsafe extern "C" fn opus_fft_c(
-    mut st: *const kiss_fft_state,
-    mut fin: *const kiss_fft_cpx,
-    mut fout: *mut kiss_fft_cpx,
+    st: *const kiss_fft_state,
+    fin: *const kiss_fft_cpx,
+    fout: *mut kiss_fft_cpx,
 ) {
     let mut i: libc::c_int = 0;
     let mut scale: opus_val16 = 0.;
@@ -683,7 +683,7 @@ pub unsafe extern "C" fn opus_fft_c(
     }
     i = 0 as libc::c_int;
     while i < (*st).nfft {
-        let mut x: kiss_fft_cpx = *fin.offset(i as isize);
+        let x: kiss_fft_cpx = *fin.offset(i as isize);
         (*fout.offset(*((*st).bitrev).offset(i as isize) as isize)).r = scale * x.r;
         (*fout.offset(*((*st).bitrev).offset(i as isize) as isize)).i = scale * x.i;
         i += 1;
@@ -693,9 +693,9 @@ pub unsafe extern "C" fn opus_fft_c(
 #[no_mangle]
 #[c2rust::src_loc = "592:1"]
 pub unsafe extern "C" fn opus_ifft_c(
-    mut st: *const kiss_fft_state,
-    mut fin: *const kiss_fft_cpx,
-    mut fout: *mut kiss_fft_cpx,
+    st: *const kiss_fft_state,
+    fin: *const kiss_fft_cpx,
+    fout: *mut kiss_fft_cpx,
 ) {
     let mut i: libc::c_int = 0;
     if !(fin != fout as *const kiss_fft_cpx) {

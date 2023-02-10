@@ -433,9 +433,9 @@ pub use self::define_h::{
 pub unsafe extern "C" fn silk_find_pred_coefs_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,
     mut psEncCtrl: *mut silk_encoder_control_FLP,
-    mut res_pitch: *const libc::c_float,
-    mut x: *const libc::c_float,
-    mut condCoding: libc::c_int,
+    res_pitch: *const libc::c_float,
+    x: *const libc::c_float,
+    condCoding: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut XXLTP: [libc::c_float; 100] = [0.; 100];

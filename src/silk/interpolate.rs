@@ -40,9 +40,9 @@ use self::arch_h::celt_fatal;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_interpolate(
-    mut xi: *mut opus_int16,
-    mut x0: *const opus_int16,
-    mut x1: *const opus_int16,
+    xi: *mut opus_int16,
+    x0: *const opus_int16,
+    x1: *const opus_int16,
     ifact_Q2: libc::c_int,
     d: libc::c_int,
 ) {

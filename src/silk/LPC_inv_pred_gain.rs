@@ -56,7 +56,7 @@ pub mod ecintrin_h {
 pub mod macros_h {
     #[inline]
     #[c2rust::src_loc = "120:1"]
-    pub unsafe extern "C" fn silk_CLZ32(mut in32: opus_int32) -> opus_int32 {
+    pub unsafe extern "C" fn silk_CLZ32(in32: opus_int32) -> opus_int32 {
         return if in32 != 0 {
             32 as libc::c_int - (EC_CLZ0 - (in32 as libc::c_uint).leading_zeros() as i32)
         } else {
@@ -87,7 +87,7 @@ pub mod Inlines_h {
         let mut b32_nrm: opus_int32 = 0;
         let mut err_Q32: opus_int32 = 0;
         let mut result: opus_int32 = 0;
-        b_headrm = silk_CLZ32((if b32 > 0 as libc::c_int { b32 } else { -b32 }))
+        b_headrm = silk_CLZ32(if b32 > 0 as libc::c_int { b32 } else { -b32 })
             - 1 as libc::c_int;
         b32_nrm = ((b32 as opus_uint32) << b_headrm) as opus_int32;
         b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int)
@@ -105,25 +105,25 @@ pub mod Inlines_h {
             return (((if 0x80000000 as libc::c_uint as opus_int32 >> -lshift
                 > 0x7fffffff as libc::c_int >> -lshift
             {
-                (if result > 0x80000000 as libc::c_uint as opus_int32 >> -lshift {
+                if result > 0x80000000 as libc::c_uint as opus_int32 >> -lshift {
                     0x80000000 as libc::c_uint as opus_int32 >> -lshift
                 } else {
-                    (if result < 0x7fffffff as libc::c_int >> -lshift {
+                    if result < 0x7fffffff as libc::c_int >> -lshift {
                         0x7fffffff as libc::c_int >> -lshift
                     } else {
                         result
-                    })
-                })
+                    }
+                }
             } else {
-                (if result > 0x7fffffff as libc::c_int >> -lshift {
+                if result > 0x7fffffff as libc::c_int >> -lshift {
                     0x7fffffff as libc::c_int >> -lshift
                 } else {
-                    (if result < 0x80000000 as libc::c_uint as opus_int32 >> -lshift {
+                    if result < 0x80000000 as libc::c_uint as opus_int32 >> -lshift {
                         0x80000000 as libc::c_uint as opus_int32 >> -lshift
                     } else {
                         result
-                    })
-                })
+                    }
+                }
             }) as opus_uint32) << -lshift) as opus_int32
         } else if lshift < 32 as libc::c_int {
             return result >> lshift
@@ -154,7 +154,7 @@ pub const A_LIMIT: libc::c_double = 0.99975f64
     * ((1 as libc::c_int as opus_int64) << 24 as libc::c_int) as libc::c_double + 0.5f64;
 #[c2rust::src_loc = "42:1"]
 unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
-    mut A_QA: *mut opus_int32,
+    A_QA: *mut opus_int32,
     order: libc::c_int,
 ) -> opus_int32 {
     let mut k: libc::c_int = 0;
@@ -195,11 +195,11 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
         }
         mult2Q = 32 as libc::c_int
             - silk_CLZ32(
-                (if rc_mult1_Q30 > 0 as libc::c_int {
+                if rc_mult1_Q30 > 0 as libc::c_int {
                     rc_mult1_Q30
                 } else {
                     -rc_mult1_Q30
-                }),
+                },
             );
         rc_mult2 = silk_INVERSE32_varQ(rc_mult1_Q30, mult2Q + 30 as libc::c_int);
         n = 0 as libc::c_int;
@@ -222,7 +222,7 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
                         }) as opus_int32 as opus_uint32,
                     ) & 0x80000000 as libc::c_uint == 0 as libc::c_int as libc::c_uint
                 {
-                    (if tmp1 as libc::c_uint
+                    if tmp1 as libc::c_uint
                         & ((if 31 as libc::c_int == 1 as libc::c_int {
                             (tmp2 as opus_int64 * rc_Q31 as libc::c_long
                                 >> 1 as libc::c_int)
@@ -248,9 +248,9 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
                                     >> 31 as libc::c_int - 1 as libc::c_int)
                                     + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
                             }) as opus_int32
-                    })
+                    }
                 } else {
-                    (if (tmp1 as libc::c_uint ^ 0x80000000 as libc::c_uint)
+                    if (tmp1 as libc::c_uint ^ 0x80000000 as libc::c_uint)
                         & (if 31 as libc::c_int == 1 as libc::c_int {
                             (tmp2 as opus_int64 * rc_Q31 as libc::c_long
                                 >> 1 as libc::c_int)
@@ -276,7 +276,7 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
                                     >> 31 as libc::c_int - 1 as libc::c_int)
                                     + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
                             }) as opus_int32
-                    })
+                    }
                 }) as opus_int64 * rc_mult2 as libc::c_long >> 1 as libc::c_int)
                     + ((if (tmp1 as opus_uint32)
                         .wrapping_sub(
@@ -293,7 +293,7 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
                         ) & 0x80000000 as libc::c_uint
                         == 0 as libc::c_int as libc::c_uint
                     {
-                        (if tmp1 as libc::c_uint
+                        if tmp1 as libc::c_uint
                             & ((if 31 as libc::c_int == 1 as libc::c_int {
                                 (tmp2 as opus_int64 * rc_Q31 as libc::c_long
                                     >> 1 as libc::c_int)
@@ -320,9 +320,9 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
                                         >> 31 as libc::c_int - 1 as libc::c_int)
                                         + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
                                 }) as opus_int32
-                        })
+                        }
                     } else {
-                        (if (tmp1 as libc::c_uint ^ 0x80000000 as libc::c_uint)
+                        if (tmp1 as libc::c_uint ^ 0x80000000 as libc::c_uint)
                             & (if 31 as libc::c_int == 1 as libc::c_int {
                                 (tmp2 as opus_int64 * rc_Q31 as libc::c_long
                                     >> 1 as libc::c_int)
@@ -348,7 +348,7 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
                                         >> 31 as libc::c_int - 1 as libc::c_int)
                                         + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
                                 }) as opus_int32
-                        })
+                        }
                     }) as opus_int64 * rc_mult2 as libc::c_long
                         & 1 as libc::c_int as libc::c_long)
             } else {
@@ -366,7 +366,7 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
                         }) as opus_int32 as opus_uint32,
                     ) & 0x80000000 as libc::c_uint == 0 as libc::c_int as libc::c_uint
                 {
-                    (if tmp1 as libc::c_uint
+                    if tmp1 as libc::c_uint
                         & ((if 31 as libc::c_int == 1 as libc::c_int {
                             (tmp2 as opus_int64 * rc_Q31 as libc::c_long
                                 >> 1 as libc::c_int)
@@ -392,9 +392,9 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
                                     >> 31 as libc::c_int - 1 as libc::c_int)
                                     + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
                             }) as opus_int32
-                    })
+                    }
                 } else {
-                    (if (tmp1 as libc::c_uint ^ 0x80000000 as libc::c_uint)
+                    if (tmp1 as libc::c_uint ^ 0x80000000 as libc::c_uint)
                         & (if 31 as libc::c_int == 1 as libc::c_int {
                             (tmp2 as opus_int64 * rc_Q31 as libc::c_long
                                 >> 1 as libc::c_int)
@@ -420,7 +420,7 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
                                     >> 31 as libc::c_int - 1 as libc::c_int)
                                     + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
                             }) as opus_int32
-                    })
+                    }
                 }) as opus_int64 * rc_mult2 as libc::c_long >> mult2Q - 1 as libc::c_int)
                     + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
             };
@@ -445,7 +445,7 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
                         }) as opus_int32 as opus_uint32,
                     ) & 0x80000000 as libc::c_uint == 0 as libc::c_int as libc::c_uint
                 {
-                    (if tmp2 as libc::c_uint
+                    if tmp2 as libc::c_uint
                         & ((if 31 as libc::c_int == 1 as libc::c_int {
                             (tmp1 as opus_int64 * rc_Q31 as libc::c_long
                                 >> 1 as libc::c_int)
@@ -471,9 +471,9 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
                                     >> 31 as libc::c_int - 1 as libc::c_int)
                                     + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
                             }) as opus_int32
-                    })
+                    }
                 } else {
-                    (if (tmp2 as libc::c_uint ^ 0x80000000 as libc::c_uint)
+                    if (tmp2 as libc::c_uint ^ 0x80000000 as libc::c_uint)
                         & (if 31 as libc::c_int == 1 as libc::c_int {
                             (tmp1 as opus_int64 * rc_Q31 as libc::c_long
                                 >> 1 as libc::c_int)
@@ -499,7 +499,7 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
                                     >> 31 as libc::c_int - 1 as libc::c_int)
                                     + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
                             }) as opus_int32
-                    })
+                    }
                 }) as opus_int64 * rc_mult2 as libc::c_long >> 1 as libc::c_int)
                     + ((if (tmp2 as opus_uint32)
                         .wrapping_sub(
@@ -516,7 +516,7 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
                         ) & 0x80000000 as libc::c_uint
                         == 0 as libc::c_int as libc::c_uint
                     {
-                        (if tmp2 as libc::c_uint
+                        if tmp2 as libc::c_uint
                             & ((if 31 as libc::c_int == 1 as libc::c_int {
                                 (tmp1 as opus_int64 * rc_Q31 as libc::c_long
                                     >> 1 as libc::c_int)
@@ -543,9 +543,9 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
                                         >> 31 as libc::c_int - 1 as libc::c_int)
                                         + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
                                 }) as opus_int32
-                        })
+                        }
                     } else {
-                        (if (tmp2 as libc::c_uint ^ 0x80000000 as libc::c_uint)
+                        if (tmp2 as libc::c_uint ^ 0x80000000 as libc::c_uint)
                             & (if 31 as libc::c_int == 1 as libc::c_int {
                                 (tmp1 as opus_int64 * rc_Q31 as libc::c_long
                                     >> 1 as libc::c_int)
@@ -571,7 +571,7 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
                                         >> 31 as libc::c_int - 1 as libc::c_int)
                                         + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
                                 }) as opus_int32
-                        })
+                        }
                     }) as opus_int64 * rc_mult2 as libc::c_long
                         & 1 as libc::c_int as libc::c_long)
             } else {
@@ -589,7 +589,7 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
                         }) as opus_int32 as opus_uint32,
                     ) & 0x80000000 as libc::c_uint == 0 as libc::c_int as libc::c_uint
                 {
-                    (if tmp2 as libc::c_uint
+                    if tmp2 as libc::c_uint
                         & ((if 31 as libc::c_int == 1 as libc::c_int {
                             (tmp1 as opus_int64 * rc_Q31 as libc::c_long
                                 >> 1 as libc::c_int)
@@ -615,9 +615,9 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
                                     >> 31 as libc::c_int - 1 as libc::c_int)
                                     + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
                             }) as opus_int32
-                    })
+                    }
                 } else {
-                    (if (tmp2 as libc::c_uint ^ 0x80000000 as libc::c_uint)
+                    if (tmp2 as libc::c_uint ^ 0x80000000 as libc::c_uint)
                         & (if 31 as libc::c_int == 1 as libc::c_int {
                             (tmp1 as opus_int64 * rc_Q31 as libc::c_long
                                 >> 1 as libc::c_int)
@@ -643,7 +643,7 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
                                     >> 31 as libc::c_int - 1 as libc::c_int)
                                     + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
                             }) as opus_int32
-                    })
+                    }
                 }) as opus_int64 * rc_mult2 as libc::c_long >> mult2Q - 1 as libc::c_int)
                     + 1 as libc::c_int as libc::c_long >> 1 as libc::c_int
             };
@@ -684,7 +684,7 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(
 #[no_mangle]
 #[c2rust::src_loc = "122:1"]
 pub unsafe extern "C" fn silk_LPC_inverse_pred_gain_c(
-    mut A_Q12: *const opus_int16,
+    A_Q12: *const opus_int16,
     order: libc::c_int,
 ) -> opus_int32 {
     let mut k: libc::c_int = 0;

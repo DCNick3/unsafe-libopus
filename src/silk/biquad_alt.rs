@@ -54,11 +54,11 @@ pub use self::typedef_h::{silk_int16_MIN, silk_int16_MAX};
 #[no_mangle]
 #[c2rust::src_loc = "42:1"]
 pub unsafe extern "C" fn silk_biquad_alt_stride1(
-    mut in_0: *const opus_int16,
-    mut B_Q28: *const opus_int32,
-    mut A_Q28: *const opus_int32,
-    mut S: *mut opus_int32,
-    mut out: *mut opus_int16,
+    in_0: *const opus_int16,
+    B_Q28: *const opus_int32,
+    A_Q28: *const opus_int32,
+    S: *mut opus_int32,
+    out: *mut opus_int16,
     len: opus_int32,
 ) {
     let mut k: libc::c_int = 0;
@@ -153,11 +153,11 @@ pub unsafe extern "C" fn silk_biquad_alt_stride1(
 #[no_mangle]
 #[c2rust::src_loc = "79:1"]
 pub unsafe extern "C" fn silk_biquad_alt_stride2_c(
-    mut in_0: *const opus_int16,
-    mut B_Q28: *const opus_int32,
-    mut A_Q28: *const opus_int32,
-    mut S: *mut opus_int32,
-    mut out: *mut opus_int16,
+    in_0: *const opus_int16,
+    B_Q28: *const opus_int32,
+    A_Q28: *const opus_int32,
+    S: *mut opus_int32,
+    out: *mut opus_int16,
     len: opus_int32,
 ) {
     let mut k: libc::c_int = 0;

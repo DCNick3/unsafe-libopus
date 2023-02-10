@@ -86,11 +86,11 @@ pub use self::define_h::STEREO_INTERP_LEN_MS;
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_stereo_MS_to_LR(
     mut state: *mut stereo_dec_state,
-    mut x1: *mut opus_int16,
-    mut x2: *mut opus_int16,
-    mut pred_Q13: *const opus_int32,
-    mut fs_kHz: libc::c_int,
-    mut frame_length: libc::c_int,
+    x1: *mut opus_int16,
+    x2: *mut opus_int16,
+    pred_Q13: *const opus_int32,
+    fs_kHz: libc::c_int,
+    frame_length: libc::c_int,
 ) {
     let mut n: libc::c_int = 0;
     let mut denom_Q16: libc::c_int = 0;

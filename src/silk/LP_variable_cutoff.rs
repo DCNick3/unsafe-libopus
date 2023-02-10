@@ -109,8 +109,8 @@ pub use self::define_h::{TRANSITION_NA, TRANSITION_NB, TRANSITION_INT_NUM};
 #[inline]
 #[c2rust::src_loc = "41:1"]
 unsafe extern "C" fn silk_LP_interpolate_filter_taps(
-    mut B_Q28: *mut opus_int32,
-    mut A_Q28: *mut opus_int32,
+    B_Q28: *mut opus_int32,
+    A_Q28: *mut opus_int32,
     ind: libc::c_int,
     fac_Q16: opus_int32,
 ) {
@@ -216,7 +216,7 @@ unsafe extern "C" fn silk_LP_interpolate_filter_taps(
 #[c2rust::src_loc = "100:1"]
 pub unsafe extern "C" fn silk_LP_variable_cutoff(
     mut psLP: *mut silk_LP_state,
-    mut frame: *mut opus_int16,
+    frame: *mut opus_int16,
     frame_length: libc::c_int,
 ) {
     let mut B_Q28: [opus_int32; 3] = [0; 3];

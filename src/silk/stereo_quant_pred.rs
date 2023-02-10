@@ -63,8 +63,8 @@ pub use self::typedef_h::silk_int32_MAX;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_stereo_quant_pred(
-    mut pred_Q13: *mut opus_int32,
-    mut ix: *mut [opus_int8; 3],
+    pred_Q13: *mut opus_int32,
+    ix: *mut [opus_int8; 3],
 ) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;

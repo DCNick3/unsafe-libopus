@@ -8,11 +8,11 @@ pub use self::define_h::LTP_ORDER;
 #[no_mangle]
 #[c2rust::src_loc = "34:1"]
 pub unsafe extern "C" fn silk_LTP_analysis_filter_FLP(
-    mut LTP_res: *mut libc::c_float,
-    mut x: *const libc::c_float,
-    mut B: *const libc::c_float,
-    mut pitchL: *const libc::c_int,
-    mut invGains: *const libc::c_float,
+    LTP_res: *mut libc::c_float,
+    x: *const libc::c_float,
+    B: *const libc::c_float,
+    pitchL: *const libc::c_int,
+    invGains: *const libc::c_float,
     subfr_length: libc::c_int,
     nb_subfr: libc::c_int,
     pre_length: libc::c_int,

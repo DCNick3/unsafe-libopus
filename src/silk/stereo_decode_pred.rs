@@ -113,8 +113,8 @@ use self::tables_h::{
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_stereo_decode_pred(
-    mut psRangeDec: *mut ec_dec,
-    mut pred_Q13: *mut opus_int32,
+    psRangeDec: *mut ec_dec,
+    pred_Q13: *mut opus_int32,
 ) {
     let mut n: libc::c_int = 0;
     let mut ix: [[libc::c_int; 3]; 2] = [[0; 3]; 2];
@@ -176,8 +176,8 @@ pub unsafe extern "C" fn silk_stereo_decode_pred(
 #[no_mangle]
 #[c2rust::src_loc = "66:1"]
 pub unsafe extern "C" fn silk_stereo_decode_mid_only(
-    mut psRangeDec: *mut ec_dec,
-    mut decode_only_mid: *mut libc::c_int,
+    psRangeDec: *mut ec_dec,
+    decode_only_mid: *mut libc::c_int,
 ) {
     *decode_only_mid = ec_dec_icdf(
         psRangeDec,

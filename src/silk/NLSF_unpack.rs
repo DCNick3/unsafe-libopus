@@ -62,9 +62,9 @@ pub use self::structs_h::silk_NLSF_CB_struct;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_NLSF_unpack(
-    mut ec_ix: *mut opus_int16,
-    mut pred_Q8: *mut opus_uint8,
-    mut psNLSF_CB: *const silk_NLSF_CB_struct,
+    ec_ix: *mut opus_int16,
+    pred_Q8: *mut opus_uint8,
+    psNLSF_CB: *const silk_NLSF_CB_struct,
     CB1_index: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;

@@ -104,7 +104,7 @@ pub use self::define_h::ENCODER_NUM_CHANNELS;
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn check_control_input(
-    mut encControl: *mut silk_EncControlStruct,
+    encControl: *mut silk_EncControlStruct,
 ) -> libc::c_int {
     if encControl.is_null() {
         celt_fatal(

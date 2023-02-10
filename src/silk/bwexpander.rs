@@ -28,12 +28,12 @@ pub use self::opus_types_h::{opus_int16, opus_int32};
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_bwexpander(
-    mut ar: *mut opus_int16,
+    ar: *mut opus_int16,
     d: libc::c_int,
     mut chirp_Q16: opus_int32,
 ) {
     let mut i: libc::c_int = 0;
-    let mut chirp_minus_one_Q16: opus_int32 = chirp_Q16 - 65536 as libc::c_int;
+    let chirp_minus_one_Q16: opus_int32 = chirp_Q16 - 65536 as libc::c_int;
     i = 0 as libc::c_int;
     while i < d - 1 as libc::c_int {
         *ar

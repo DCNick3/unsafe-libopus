@@ -346,8 +346,8 @@ pub use self::internal::__FLT_MAX__;
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn silk_find_LPC_FLP(
     mut psEncC: *mut silk_encoder_state,
-    mut NLSF_Q15: *mut opus_int16,
-    mut x: *const libc::c_float,
+    NLSF_Q15: *mut opus_int16,
+    x: *const libc::c_float,
     minInvGain: libc::c_float,
 ) {
     let mut k: libc::c_int = 0;

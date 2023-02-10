@@ -95,9 +95,9 @@ pub mod arch_h {
     #[no_mangle]
     #[c2rust::src_loc = "71:1"]
     pub unsafe extern "C" fn celt_fatal(
-        mut str: *const libc::c_char,
-        mut file: *const libc::c_char,
-        mut line: libc::c_int,
+        str: *const libc::c_char,
+        file: *const libc::c_char,
+        line: libc::c_int,
     ) -> ! {
         fprintf(
             stderr,
@@ -231,12 +231,12 @@ pub use self::arch_h::{opus_val16, opus_val32, celt_fatal};
 pub use self::kiss_fft_h::{kiss_twiddle_cpx, arch_fft_state, kiss_fft_state};
 pub use self::mdct_h::mdct_lookup;
 pub use self::modes_h::{OpusCustomMode, PulseCache};
-use self::stdio_h::{stderr, fprintf};
+
 use self::string_h::memmove;
-use self::stdlib_h::abort;
+
 #[no_mangle]
 #[c2rust::src_loc = "62:1"]
-pub unsafe extern "C" fn resampling_factor(mut rate: opus_int32) -> libc::c_int {
+pub unsafe extern "C" fn resampling_factor(rate: opus_int32) -> libc::c_int {
     let mut ret: libc::c_int = 0;
     match rate {
         48000 => {
@@ -269,13 +269,13 @@ pub unsafe extern "C" fn resampling_factor(mut rate: opus_int32) -> libc::c_int 
 }
 #[c2rust::src_loc = "160:1"]
 unsafe extern "C" fn comb_filter_const_c(
-    mut y: *mut opus_val32,
-    mut x: *mut opus_val32,
-    mut T: libc::c_int,
-    mut N: libc::c_int,
-    mut g10: opus_val16,
-    mut g11: opus_val16,
-    mut g12: opus_val16,
+    y: *mut opus_val32,
+    x: *mut opus_val32,
+    T: libc::c_int,
+    N: libc::c_int,
+    g10: opus_val16,
+    g11: opus_val16,
+    g12: opus_val16,
 ) {
     let mut x0: opus_val32 = 0.;
     let mut x1: opus_val32 = 0.;
@@ -305,18 +305,18 @@ unsafe extern "C" fn comb_filter_const_c(
 #[no_mangle]
 #[c2rust::src_loc = "190:1"]
 pub unsafe extern "C" fn comb_filter(
-    mut y: *mut opus_val32,
-    mut x: *mut opus_val32,
+    y: *mut opus_val32,
+    x: *mut opus_val32,
     mut T0: libc::c_int,
     mut T1: libc::c_int,
-    mut N: libc::c_int,
-    mut g0: opus_val16,
-    mut g1: opus_val16,
-    mut tapset0: libc::c_int,
-    mut tapset1: libc::c_int,
-    mut window: *const opus_val16,
+    N: libc::c_int,
+    g0: opus_val16,
+    g1: opus_val16,
+    tapset0: libc::c_int,
+    tapset1: libc::c_int,
+    window: *const opus_val16,
     mut overlap: libc::c_int,
-    mut arch: libc::c_int,
+    _arch: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut g00: opus_val16 = 0.;
@@ -464,10 +464,10 @@ pub static mut tf_select_table: [[libc::c_schar; 8]; 4] = [
 #[no_mangle]
 #[c2rust::src_loc = "272:1"]
 pub unsafe extern "C" fn init_caps(
-    mut m: *const OpusCustomMode,
-    mut cap: *mut libc::c_int,
-    mut LM: libc::c_int,
-    mut C: libc::c_int,
+    m: *const OpusCustomMode,
+    cap: *mut libc::c_int,
+    LM: libc::c_int,
+    C: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     i = 0 as libc::c_int;
@@ -488,7 +488,7 @@ pub unsafe extern "C" fn init_caps(
 }
 #[no_mangle]
 #[c2rust::src_loc = "285:1"]
-pub unsafe extern "C" fn opus_strerror(mut error: libc::c_int) -> *const libc::c_char {
+pub unsafe extern "C" fn opus_strerror(error: libc::c_int) -> *const libc::c_char {
     static mut error_strings: [*const libc::c_char; 8] = [
         b"success\0" as *const u8 as *const libc::c_char,
         b"invalid argument\0" as *const u8 as *const libc::c_char,

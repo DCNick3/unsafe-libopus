@@ -65,8 +65,8 @@ pub mod opus_private_h {
     }
     #[inline]
     #[c2rust::src_loc = "154:1"]
-    pub unsafe extern "C" fn align(mut i: libc::c_int) -> libc::c_int {
-        let mut alignment: libc::c_uint = 8 as libc::c_ulong as libc::c_uint;
+    pub unsafe extern "C" fn align(i: libc::c_int) -> libc::c_int {
+        let alignment: libc::c_uint = 8 as libc::c_ulong as libc::c_uint;
         return (i as libc::c_uint)
             .wrapping_add(alignment)
             .wrapping_sub(1 as libc::c_int as libc::c_uint)
@@ -107,7 +107,7 @@ pub mod float_cast_h {
     }
     #[inline]
     #[c2rust::src_loc = "68:1"]
-    pub unsafe extern "C" fn float2int(mut x: libc::c_float) -> opus_int32 {
+    pub unsafe extern "C" fn float2int(x: libc::c_float) -> opus_int32 {
         return _mm_cvt_ss2si(_mm_set_ss(x));
     }
     use super::opus_types_h::{opus_int16, opus_int32};
@@ -124,8 +124,8 @@ pub use self::float_cast_h::{FLOAT2INT16, float2int};
 #[no_mangle]
 #[c2rust::src_loc = "40:1"]
 pub unsafe extern "C" fn mapping_matrix_get_size(
-    mut rows: libc::c_int,
-    mut cols: libc::c_int,
+    rows: libc::c_int,
+    cols: libc::c_int,
 ) -> opus_int32 {
     let mut size: opus_int32 = 0;
     if rows > 255 as libc::c_int || cols > 255 as libc::c_int {
@@ -143,7 +143,7 @@ pub unsafe extern "C" fn mapping_matrix_get_size(
 #[no_mangle]
 #[c2rust::src_loc = "57:1"]
 pub unsafe extern "C" fn mapping_matrix_get_data(
-    mut matrix: *const MappingMatrix,
+    matrix: *const MappingMatrix,
 ) -> *mut opus_int16 {
     return (matrix as *mut libc::c_char)
         .offset(
@@ -156,11 +156,11 @@ pub unsafe extern "C" fn mapping_matrix_get_data(
 #[c2rust::src_loc = "63:1"]
 pub unsafe extern "C" fn mapping_matrix_init(
     matrix: *mut MappingMatrix,
-    mut rows: libc::c_int,
-    mut cols: libc::c_int,
-    mut gain: libc::c_int,
-    mut data: *const opus_int16,
-    mut data_size: opus_int32,
+    rows: libc::c_int,
+    cols: libc::c_int,
+    gain: libc::c_int,
+    data: *const opus_int16,
+    data_size: opus_int32,
 ) {
     let mut i: libc::c_int = 0;
     let mut ptr: *mut opus_int16 = 0 as *mut opus_int16;
@@ -191,13 +191,13 @@ pub unsafe extern "C" fn mapping_matrix_init(
 #[no_mangle]
 #[c2rust::src_loc = "85:1"]
 pub unsafe extern "C" fn mapping_matrix_multiply_channel_in_float(
-    mut matrix: *const MappingMatrix,
-    mut input: *const libc::c_float,
-    mut input_rows: libc::c_int,
-    mut output: *mut opus_val16,
-    mut output_row: libc::c_int,
-    mut output_rows: libc::c_int,
-    mut frame_size: libc::c_int,
+    matrix: *const MappingMatrix,
+    input: *const libc::c_float,
+    input_rows: libc::c_int,
+    output: *mut opus_val16,
+    output_row: libc::c_int,
+    output_rows: libc::c_int,
+    frame_size: libc::c_int,
 ) {
     let mut matrix_data: *mut opus_int16 = 0 as *mut opus_int16;
     let mut i: libc::c_int = 0;
@@ -232,13 +232,13 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_in_float(
 #[no_mangle]
 #[c2rust::src_loc = "119:1"]
 pub unsafe extern "C" fn mapping_matrix_multiply_channel_out_float(
-    mut matrix: *const MappingMatrix,
-    mut input: *const opus_val16,
-    mut input_row: libc::c_int,
-    mut input_rows: libc::c_int,
-    mut output: *mut libc::c_float,
-    mut output_rows: libc::c_int,
-    mut frame_size: libc::c_int,
+    matrix: *const MappingMatrix,
+    input: *const opus_val16,
+    input_row: libc::c_int,
+    input_rows: libc::c_int,
+    output: *mut libc::c_float,
+    output_rows: libc::c_int,
+    frame_size: libc::c_int,
 ) {
     let mut matrix_data: *mut opus_int16 = 0 as *mut opus_int16;
     let mut i: libc::c_int = 0;
@@ -258,7 +258,7 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_out_float(
         input_sample = *input.offset((input_rows * i) as isize);
         row = 0 as libc::c_int;
         while row < output_rows {
-            let mut tmp: libc::c_float = 1 as libc::c_int as libc::c_float / 32768.0f32
+            let tmp: libc::c_float = 1 as libc::c_int as libc::c_float / 32768.0f32
                 * *matrix_data.offset(((*matrix).rows * input_row + row) as isize)
                     as libc::c_int as libc::c_float * input_sample;
             *output.offset((output_rows * i + row) as isize) += tmp;
@@ -270,13 +270,13 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_out_float(
 #[no_mangle]
 #[c2rust::src_loc = "156:1"]
 pub unsafe extern "C" fn mapping_matrix_multiply_channel_in_short(
-    mut matrix: *const MappingMatrix,
-    mut input: *const opus_int16,
-    mut input_rows: libc::c_int,
-    mut output: *mut opus_val16,
-    mut output_row: libc::c_int,
-    mut output_rows: libc::c_int,
-    mut frame_size: libc::c_int,
+    matrix: *const MappingMatrix,
+    input: *const opus_int16,
+    input_rows: libc::c_int,
+    output: *mut opus_val16,
+    output_row: libc::c_int,
+    output_rows: libc::c_int,
+    frame_size: libc::c_int,
 ) {
     let mut matrix_data: *mut opus_int16 = 0 as *mut opus_int16;
     let mut i: libc::c_int = 0;
@@ -312,13 +312,13 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_in_short(
 #[no_mangle]
 #[c2rust::src_loc = "196:1"]
 pub unsafe extern "C" fn mapping_matrix_multiply_channel_out_short(
-    mut matrix: *const MappingMatrix,
-    mut input: *const opus_val16,
-    mut input_row: libc::c_int,
-    mut input_rows: libc::c_int,
-    mut output: *mut opus_int16,
-    mut output_rows: libc::c_int,
-    mut frame_size: libc::c_int,
+    matrix: *const MappingMatrix,
+    input: *const opus_val16,
+    input_row: libc::c_int,
+    input_rows: libc::c_int,
+    output: *mut opus_int16,
+    output_rows: libc::c_int,
+    frame_size: libc::c_int,
 ) {
     let mut matrix_data: *mut opus_int16 = 0 as *mut opus_int16;
     let mut i: libc::c_int = 0;
@@ -339,7 +339,7 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_out_short(
             as opus_int32;
         row = 0 as libc::c_int;
         while row < output_rows {
-            let mut tmp: opus_int32 = *matrix_data
+            let tmp: opus_int32 = *matrix_data
                 .offset(((*matrix).rows * input_row + row) as isize) as opus_int32
                 * input_sample;
             let ref mut fresh0 = *output.offset((output_rows * i + row) as isize);
@@ -353,7 +353,7 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_out_short(
 #[no_mangle]
 #[c2rust::src_loc = "231:21"]
 pub static mut mapping_matrix_foa_mixing: MappingMatrix = {
-    let mut init = MappingMatrix {
+    let init = MappingMatrix {
         rows: 6 as libc::c_int,
         cols: 6 as libc::c_int,
         gain: 0 as libc::c_int,
@@ -403,7 +403,7 @@ pub static mut mapping_matrix_foa_mixing_data: [opus_int16; 36] = [
 #[no_mangle]
 #[c2rust::src_loc = "240:21"]
 pub static mut mapping_matrix_soa_mixing: MappingMatrix = {
-    let mut init = MappingMatrix {
+    let init = MappingMatrix {
         rows: 11 as libc::c_int,
         cols: 11 as libc::c_int,
         gain: 0 as libc::c_int,
@@ -538,7 +538,7 @@ pub static mut mapping_matrix_soa_mixing_data: [opus_int16; 121] = [
 #[no_mangle]
 #[c2rust::src_loc = "260:21"]
 pub static mut mapping_matrix_toa_mixing: MappingMatrix = {
-    let mut init = MappingMatrix {
+    let init = MappingMatrix {
         rows: 18 as libc::c_int,
         cols: 18 as libc::c_int,
         gain: 0 as libc::c_int,
@@ -876,7 +876,7 @@ pub static mut mapping_matrix_toa_mixing_data: [opus_int16; 324] = [
 #[no_mangle]
 #[c2rust::src_loc = "305:21"]
 pub static mut mapping_matrix_foa_demixing: MappingMatrix = {
-    let mut init = MappingMatrix {
+    let init = MappingMatrix {
         rows: 6 as libc::c_int,
         cols: 6 as libc::c_int,
         gain: 0 as libc::c_int,
@@ -926,7 +926,7 @@ pub static mut mapping_matrix_foa_demixing_data: [opus_int16; 36] = [
 #[no_mangle]
 #[c2rust::src_loc = "314:21"]
 pub static mut mapping_matrix_soa_demixing: MappingMatrix = {
-    let mut init = MappingMatrix {
+    let init = MappingMatrix {
         rows: 11 as libc::c_int,
         cols: 11 as libc::c_int,
         gain: 3050 as libc::c_int,
@@ -1061,7 +1061,7 @@ pub static mut mapping_matrix_soa_demixing_data: [opus_int16; 121] = [
 #[no_mangle]
 #[c2rust::src_loc = "334:21"]
 pub static mut mapping_matrix_toa_demixing: MappingMatrix = {
-    let mut init = MappingMatrix {
+    let init = MappingMatrix {
         rows: 18 as libc::c_int,
         cols: 18 as libc::c_int,
         gain: 0 as libc::c_int,

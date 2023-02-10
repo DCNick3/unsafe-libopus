@@ -27,16 +27,16 @@ pub mod SigProc_FIX_h {
     #[inline]
     #[c2rust::src_loc = "546:1"]
     pub unsafe extern "C" fn silk_min_int(
-        mut a: libc::c_int,
-        mut b: libc::c_int,
+        a: libc::c_int,
+        b: libc::c_int,
     ) -> libc::c_int {
         return if a < b { a } else { b };
     }
     #[inline]
     #[c2rust::src_loc = "564:1"]
     pub unsafe extern "C" fn silk_max_int(
-        mut a: libc::c_int,
-        mut b: libc::c_int,
+        a: libc::c_int,
+        b: libc::c_int,
     ) -> libc::c_int {
         return if a > b { a } else { b };
     }
@@ -68,8 +68,8 @@ pub const MAX_LOOPS: libc::c_int = 20 as libc::c_int;
 #[no_mangle]
 #[c2rust::src_loc = "47:1"]
 pub unsafe extern "C" fn silk_NLSF_stabilize(
-    mut NLSF_Q15: *mut opus_int16,
-    mut NDeltaMin_Q15: *const opus_int16,
+    NLSF_Q15: *mut opus_int16,
+    NDeltaMin_Q15: *const opus_int16,
     L: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;

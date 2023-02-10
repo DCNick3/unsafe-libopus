@@ -77,13 +77,13 @@ pub use self::resampler_rom_h::{silk_resampler_down2_0, silk_resampler_down2_1};
 #[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_resampler_down2(
-    mut S: *mut opus_int32,
-    mut out: *mut opus_int16,
-    mut in_0: *const opus_int16,
-    mut inLen: opus_int32,
+    S: *mut opus_int32,
+    out: *mut opus_int16,
+    in_0: *const opus_int16,
+    inLen: opus_int32,
 ) {
     let mut k: opus_int32 = 0;
-    let mut len2: opus_int32 = inLen >> 1 as libc::c_int;
+    let len2: opus_int32 = inLen >> 1 as libc::c_int;
     let mut in32: opus_int32 = 0;
     let mut out32: opus_int32 = 0;
     let mut Y: opus_int32 = 0;

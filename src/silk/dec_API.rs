@@ -429,9 +429,9 @@ pub struct silk_decoder {
 #[no_mangle]
 #[c2rust::src_loc = "51:1"]
 pub unsafe extern "C" fn silk_Get_Decoder_Size(
-    mut decSizeBytes: *mut libc::c_int,
+    decSizeBytes: *mut libc::c_int,
 ) -> libc::c_int {
-    let mut ret: libc::c_int = SILK_NO_ERROR;
+    let ret: libc::c_int = SILK_NO_ERROR;
     *decSizeBytes = ::core::mem::size_of::<silk_decoder>() as libc::c_ulong
         as libc::c_int;
     return ret;
@@ -439,11 +439,11 @@ pub unsafe extern "C" fn silk_Get_Decoder_Size(
 #[no_mangle]
 #[c2rust::src_loc = "63:1"]
 pub unsafe extern "C" fn silk_InitDecoder(
-    mut decState: *mut libc::c_void,
+    decState: *mut libc::c_void,
 ) -> libc::c_int {
     let mut n: libc::c_int = 0;
     let mut ret: libc::c_int = SILK_NO_ERROR;
-    let mut channel_state: *mut silk_decoder_state = ((*(decState as *mut silk_decoder))
+    let channel_state: *mut silk_decoder_state = ((*(decState as *mut silk_decoder))
         .channel_state)
         .as_mut_ptr();
     n = 0 as libc::c_int;
@@ -463,14 +463,14 @@ pub unsafe extern "C" fn silk_InitDecoder(
 #[no_mangle]
 #[c2rust::src_loc = "81:1"]
 pub unsafe extern "C" fn silk_Decode(
-    mut decState: *mut libc::c_void,
+    decState: *mut libc::c_void,
     mut decControl: *mut silk_DecControlStruct,
-    mut lostFlag: libc::c_int,
-    mut newPacketFlag: libc::c_int,
-    mut psRangeDec: *mut ec_dec,
-    mut samplesOut: *mut opus_int16,
-    mut nSamplesOut: *mut opus_int32,
-    mut arch: libc::c_int,
+    lostFlag: libc::c_int,
+    newPacketFlag: libc::c_int,
+    psRangeDec: *mut ec_dec,
+    samplesOut: *mut opus_int16,
+    nSamplesOut: *mut opus_int32,
+    arch: libc::c_int,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
     let mut n: libc::c_int = 0;
@@ -482,7 +482,7 @@ pub unsafe extern "C" fn silk_Decode(
     let mut MS_pred_Q13: [opus_int32; 2] = [0 as libc::c_int, 0];
     let mut resample_out_ptr: *mut opus_int16 = 0 as *mut opus_int16;
     let mut psDec: *mut silk_decoder = decState as *mut silk_decoder;
-    let mut channel_state: *mut silk_decoder_state = ((*psDec).channel_state)
+    let channel_state: *mut silk_decoder_state = ((*psDec).channel_state)
         .as_mut_ptr();
     let mut has_side: libc::c_int = 0;
     let mut stereo_to_mono: libc::c_int = 0;
@@ -995,7 +995,7 @@ pub unsafe extern "C" fn silk_Decode(
         }
     }
     if (*channel_state.offset(0 as libc::c_int as isize)).prevSignalType == TYPE_VOICED {
-        let mut mult_tab: [libc::c_int; 3] = [
+        let mult_tab: [libc::c_int; 3] = [
             6 as libc::c_int,
             4 as libc::c_int,
             3 as libc::c_int,

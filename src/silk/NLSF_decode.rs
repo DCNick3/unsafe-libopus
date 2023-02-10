@@ -112,9 +112,9 @@ use self::main_h::silk_NLSF_unpack;
 #[inline]
 #[c2rust::src_loc = "35:1"]
 unsafe extern "C" fn silk_NLSF_residual_dequant(
-    mut x_Q10: *mut opus_int16,
-    mut indices: *const opus_int8,
-    mut pred_coef_Q8: *const opus_uint8,
+    x_Q10: *mut opus_int16,
+    indices: *const opus_int8,
+    pred_coef_Q8: *const opus_uint8,
     quant_step_size_Q16: libc::c_int,
     order: opus_int16,
 ) {
@@ -150,9 +150,9 @@ unsafe extern "C" fn silk_NLSF_residual_dequant(
 #[no_mangle]
 #[c2rust::src_loc = "63:1"]
 pub unsafe extern "C" fn silk_NLSF_decode(
-    mut pNLSF_Q15: *mut opus_int16,
-    mut NLSFIndices: *mut opus_int8,
-    mut psNLSF_CB: *const silk_NLSF_CB_struct,
+    pNLSF_Q15: *mut opus_int16,
+    NLSFIndices: *mut opus_int8,
+    psNLSF_CB: *const silk_NLSF_CB_struct,
 ) {
     let mut i: libc::c_int = 0;
     let mut pred_Q8: [opus_uint8; 16] = [0; 16];

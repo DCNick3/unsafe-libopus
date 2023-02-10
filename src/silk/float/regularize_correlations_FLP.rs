@@ -2,8 +2,8 @@ use ::libc;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_regularize_correlations_FLP(
-    mut XX: *mut libc::c_float,
-    mut xx: *mut libc::c_float,
+    XX: *mut libc::c_float,
+    xx: *mut libc::c_float,
     noise: libc::c_float,
     D: libc::c_int,
 ) {

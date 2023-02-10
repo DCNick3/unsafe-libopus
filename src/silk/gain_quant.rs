@@ -50,24 +50,24 @@ pub mod SigProc_FIX_h {
     #[inline]
     #[c2rust::src_loc = "546:1"]
     pub unsafe extern "C" fn silk_min_int(
-        mut a: libc::c_int,
-        mut b: libc::c_int,
+        a: libc::c_int,
+        b: libc::c_int,
     ) -> libc::c_int {
         return if a < b { a } else { b };
     }
     #[inline]
     #[c2rust::src_loc = "554:1"]
     pub unsafe extern "C" fn silk_min_32(
-        mut a: opus_int32,
-        mut b: opus_int32,
+        a: opus_int32,
+        b: opus_int32,
     ) -> opus_int32 {
         return if a < b { a } else { b };
     }
     #[inline]
     #[c2rust::src_loc = "564:1"]
     pub unsafe extern "C" fn silk_max_int(
-        mut a: libc::c_int,
-        mut b: libc::c_int,
+        a: libc::c_int,
+        b: libc::c_int,
     ) -> libc::c_int {
         return if a > b { a } else { b };
     }
@@ -106,9 +106,9 @@ pub const OFFSET: libc::c_int = MIN_QGAIN_DB * 128 as libc::c_int / 6 as libc::c
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_gains_quant(
-    mut ind: *mut opus_int8,
-    mut gain_Q16: *mut opus_int32,
-    mut prev_ind: *mut opus_int8,
+    ind: *mut opus_int8,
+    gain_Q16: *mut opus_int32,
+    prev_ind: *mut opus_int8,
     conditional: libc::c_int,
     nb_subfr: libc::c_int,
 ) {
@@ -251,9 +251,9 @@ pub unsafe extern "C" fn silk_gains_quant(
 #[no_mangle]
 #[c2rust::src_loc = "94:1"]
 pub unsafe extern "C" fn silk_gains_dequant(
-    mut gain_Q16: *mut opus_int32,
-    mut ind: *const opus_int8,
-    mut prev_ind: *mut opus_int8,
+    gain_Q16: *mut opus_int32,
+    ind: *const opus_int8,
+    prev_ind: *mut opus_int8,
     conditional: libc::c_int,
     nb_subfr: libc::c_int,
 ) {
@@ -313,7 +313,7 @@ pub unsafe extern "C" fn silk_gains_dequant(
 #[no_mangle]
 #[c2rust::src_loc = "128:1"]
 pub unsafe extern "C" fn silk_gains_ID(
-    mut ind: *const opus_int8,
+    ind: *const opus_int8,
     nb_subfr: libc::c_int,
 ) -> opus_int32 {
     let mut k: libc::c_int = 0;

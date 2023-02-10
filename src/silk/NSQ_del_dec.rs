@@ -302,7 +302,7 @@ pub mod ecintrin_h {
 pub mod macros_h {
     #[inline]
     #[c2rust::src_loc = "120:1"]
-    pub unsafe extern "C" fn silk_CLZ32(mut in32: opus_int32) -> opus_int32 {
+    pub unsafe extern "C" fn silk_CLZ32(in32: opus_int32) -> opus_int32 {
         return if in32 != 0 {
             32 as libc::c_int - (EC_CLZ0 - (in32 as libc::c_uint).leading_zeros() as i32)
         } else {
@@ -317,8 +317,8 @@ pub mod SigProc_FIX_h {
     #[inline]
     #[c2rust::src_loc = "546:1"]
     pub unsafe extern "C" fn silk_min_int(
-        mut a: libc::c_int,
-        mut b: libc::c_int,
+        a: libc::c_int,
+        b: libc::c_int,
     ) -> libc::c_int {
         return if a < b { a } else { b };
     }
@@ -351,10 +351,10 @@ pub mod Inlines_h {
         let mut a32_nrm: opus_int32 = 0;
         let mut b32_nrm: opus_int32 = 0;
         let mut result: opus_int32 = 0;
-        a_headrm = silk_CLZ32((if a32 > 0 as libc::c_int { a32 } else { -a32 }))
+        a_headrm = silk_CLZ32(if a32 > 0 as libc::c_int { a32 } else { -a32 })
             - 1 as libc::c_int;
         a32_nrm = ((a32 as opus_uint32) << a_headrm) as opus_int32;
-        b_headrm = silk_CLZ32((if b32 > 0 as libc::c_int { b32 } else { -b32 }))
+        b_headrm = silk_CLZ32(if b32 > 0 as libc::c_int { b32 } else { -b32 })
             - 1 as libc::c_int;
         b32_nrm = ((b32 as opus_uint32) << b_headrm) as opus_int32;
         b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int)
@@ -375,25 +375,25 @@ pub mod Inlines_h {
             return (((if 0x80000000 as libc::c_uint as opus_int32 >> -lshift
                 > 0x7fffffff as libc::c_int >> -lshift
             {
-                (if result > 0x80000000 as libc::c_uint as opus_int32 >> -lshift {
+                if result > 0x80000000 as libc::c_uint as opus_int32 >> -lshift {
                     0x80000000 as libc::c_uint as opus_int32 >> -lshift
                 } else {
-                    (if result < 0x7fffffff as libc::c_int >> -lshift {
+                    if result < 0x7fffffff as libc::c_int >> -lshift {
                         0x7fffffff as libc::c_int >> -lshift
                     } else {
                         result
-                    })
-                })
+                    }
+                }
             } else {
-                (if result > 0x7fffffff as libc::c_int >> -lshift {
+                if result > 0x7fffffff as libc::c_int >> -lshift {
                     0x7fffffff as libc::c_int >> -lshift
                 } else {
-                    (if result < 0x80000000 as libc::c_uint as opus_int32 >> -lshift {
+                    if result < 0x80000000 as libc::c_uint as opus_int32 >> -lshift {
                         0x80000000 as libc::c_uint as opus_int32 >> -lshift
                     } else {
                         result
-                    })
-                })
+                    }
+                }
             }) as opus_uint32) << -lshift) as opus_int32
         } else if lshift < 32 as libc::c_int {
             return result >> lshift
@@ -413,7 +413,7 @@ pub mod Inlines_h {
         let mut b32_nrm: opus_int32 = 0;
         let mut err_Q32: opus_int32 = 0;
         let mut result: opus_int32 = 0;
-        b_headrm = silk_CLZ32((if b32 > 0 as libc::c_int { b32 } else { -b32 }))
+        b_headrm = silk_CLZ32(if b32 > 0 as libc::c_int { b32 } else { -b32 })
             - 1 as libc::c_int;
         b32_nrm = ((b32 as opus_uint32) << b_headrm) as opus_int32;
         b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int)
@@ -431,25 +431,25 @@ pub mod Inlines_h {
             return (((if 0x80000000 as libc::c_uint as opus_int32 >> -lshift
                 > 0x7fffffff as libc::c_int >> -lshift
             {
-                (if result > 0x80000000 as libc::c_uint as opus_int32 >> -lshift {
+                if result > 0x80000000 as libc::c_uint as opus_int32 >> -lshift {
                     0x80000000 as libc::c_uint as opus_int32 >> -lshift
                 } else {
-                    (if result < 0x7fffffff as libc::c_int >> -lshift {
+                    if result < 0x7fffffff as libc::c_int >> -lshift {
                         0x7fffffff as libc::c_int >> -lshift
                     } else {
                         result
-                    })
-                })
+                    }
+                }
             } else {
-                (if result > 0x7fffffff as libc::c_int >> -lshift {
+                if result > 0x7fffffff as libc::c_int >> -lshift {
                     0x7fffffff as libc::c_int >> -lshift
                 } else {
-                    (if result < 0x80000000 as libc::c_uint as opus_int32 >> -lshift {
+                    if result < 0x80000000 as libc::c_uint as opus_int32 >> -lshift {
                         0x80000000 as libc::c_uint as opus_int32 >> -lshift
                     } else {
                         result
-                    })
-                })
+                    }
+                }
             }) as opus_uint32) << -lshift) as opus_int32
         } else if lshift < 32 as libc::c_int {
             return result >> lshift
@@ -490,9 +490,9 @@ pub mod NSQ_h {
     #[inline]
     #[c2rust::src_loc = "35:1"]
     pub unsafe extern "C" fn silk_noise_shape_quantizer_short_prediction_c(
-        mut buf32: *const opus_int32,
-        mut coef16: *const opus_int16,
-        mut order: libc::c_int,
+        buf32: *const opus_int32,
+        coef16: *const opus_int16,
+        order: libc::c_int,
     ) -> opus_int32 {
         let mut out: opus_int32 = 0;
         out = order >> 1 as libc::c_int;
@@ -635,19 +635,19 @@ pub type NSQ_sample_pair = [NSQ_sample_struct; 2];
 #[no_mangle]
 #[c2rust::src_loc = "117:1"]
 pub unsafe extern "C" fn silk_NSQ_del_dec_c(
-    mut psEncC: *const silk_encoder_state,
+    psEncC: *const silk_encoder_state,
     mut NSQ: *mut silk_nsq_state,
     mut psIndices: *mut SideInfoIndices,
     mut x16: *const opus_int16,
     mut pulses: *mut opus_int8,
-    mut PredCoef_Q12: *const opus_int16,
-    mut LTPCoef_Q14: *const opus_int16,
-    mut AR_Q13: *const opus_int16,
-    mut HarmShapeGain_Q14: *const libc::c_int,
-    mut Tilt_Q14: *const libc::c_int,
-    mut LF_shp_Q14: *const opus_int32,
-    mut Gains_Q16: *const opus_int32,
-    mut pitchL: *const libc::c_int,
+    PredCoef_Q12: *const opus_int16,
+    LTPCoef_Q14: *const opus_int16,
+    AR_Q13: *const opus_int16,
+    HarmShapeGain_Q14: *const libc::c_int,
+    Tilt_Q14: *const libc::c_int,
+    LF_shp_Q14: *const opus_int32,
+    Gains_Q16: *const opus_int32,
+    pitchL: *const libc::c_int,
     Lambda_Q10: libc::c_int,
     LTP_scale_Q14: libc::c_int,
 ) {
@@ -1086,32 +1086,32 @@ pub unsafe extern "C" fn silk_NSQ_del_dec_c(
 #[c2rust::src_loc = "318:1"]
 unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
     mut NSQ: *mut silk_nsq_state,
-    mut psDelDec: *mut NSQ_del_dec_struct,
-    mut signalType: libc::c_int,
-    mut x_Q10: *const opus_int32,
-    mut pulses: *mut opus_int8,
-    mut xq: *mut opus_int16,
-    mut sLTP_Q15: *mut opus_int32,
-    mut delayedGain_Q10: *mut opus_int32,
-    mut a_Q12: *const opus_int16,
-    mut b_Q14: *const opus_int16,
-    mut AR_shp_Q13: *const opus_int16,
-    mut lag: libc::c_int,
-    mut HarmShapeFIRPacked_Q14: opus_int32,
-    mut Tilt_Q14: libc::c_int,
-    mut LF_shp_Q14: opus_int32,
-    mut Gain_Q16: opus_int32,
-    mut Lambda_Q10: libc::c_int,
-    mut offset_Q10: libc::c_int,
-    mut length: libc::c_int,
-    mut subfr: libc::c_int,
-    mut shapingLPCOrder: libc::c_int,
-    mut predictLPCOrder: libc::c_int,
-    mut warping_Q16: libc::c_int,
-    mut nStatesDelayedDecision: libc::c_int,
-    mut smpl_buf_idx: *mut libc::c_int,
-    mut decisionDelay: libc::c_int,
-    mut arch: libc::c_int,
+    psDelDec: *mut NSQ_del_dec_struct,
+    signalType: libc::c_int,
+    x_Q10: *const opus_int32,
+    pulses: *mut opus_int8,
+    xq: *mut opus_int16,
+    sLTP_Q15: *mut opus_int32,
+    delayedGain_Q10: *mut opus_int32,
+    a_Q12: *const opus_int16,
+    b_Q14: *const opus_int16,
+    AR_shp_Q13: *const opus_int16,
+    lag: libc::c_int,
+    HarmShapeFIRPacked_Q14: opus_int32,
+    Tilt_Q14: libc::c_int,
+    LF_shp_Q14: opus_int32,
+    Gain_Q16: opus_int32,
+    Lambda_Q10: libc::c_int,
+    offset_Q10: libc::c_int,
+    length: libc::c_int,
+    subfr: libc::c_int,
+    shapingLPCOrder: libc::c_int,
+    predictLPCOrder: libc::c_int,
+    warping_Q16: libc::c_int,
+    nStatesDelayedDecision: libc::c_int,
+    smpl_buf_idx: *mut libc::c_int,
+    decisionDelay: libc::c_int,
+    _arch: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
@@ -1340,7 +1340,7 @@ unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
             q1_Q10 = r_Q10 - offset_Q10;
             q1_Q0 = q1_Q10 >> 10 as libc::c_int;
             if Lambda_Q10 > 2048 as libc::c_int {
-                let mut rdo_offset: libc::c_int = Lambda_Q10 / 2 as libc::c_int
+                let rdo_offset: libc::c_int = Lambda_Q10 / 2 as libc::c_int
                     - 512 as libc::c_int;
                 if q1_Q10 > rdo_offset {
                     q1_Q0 = q1_Q10 - rdo_offset >> 10 as libc::c_int;
@@ -1684,18 +1684,18 @@ unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
 #[inline]
 #[c2rust::src_loc = "651:1"]
 unsafe extern "C" fn silk_nsq_del_dec_scale_states(
-    mut psEncC: *const silk_encoder_state,
+    psEncC: *const silk_encoder_state,
     mut NSQ: *mut silk_nsq_state,
-    mut psDelDec: *mut NSQ_del_dec_struct,
-    mut x16: *const opus_int16,
-    mut x_sc_Q10: *mut opus_int32,
-    mut sLTP: *const opus_int16,
-    mut sLTP_Q15: *mut opus_int32,
-    mut subfr: libc::c_int,
-    mut nStatesDelayedDecision: libc::c_int,
+    psDelDec: *mut NSQ_del_dec_struct,
+    x16: *const opus_int16,
+    x_sc_Q10: *mut opus_int32,
+    sLTP: *const opus_int16,
+    sLTP_Q15: *mut opus_int32,
+    subfr: libc::c_int,
+    nStatesDelayedDecision: libc::c_int,
     LTP_scale_Q14: libc::c_int,
-    mut Gains_Q16: *const opus_int32,
-    mut pitchL: *const libc::c_int,
+    Gains_Q16: *const opus_int32,
+    pitchL: *const libc::c_int,
     signal_type: libc::c_int,
     decisionDelay: libc::c_int,
 ) {

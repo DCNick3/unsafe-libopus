@@ -56,7 +56,7 @@ pub mod ecintrin_h {
 pub mod macros_h {
     #[inline]
     #[c2rust::src_loc = "120:1"]
-    pub unsafe extern "C" fn silk_CLZ32(mut in32: opus_int32) -> opus_int32 {
+    pub unsafe extern "C" fn silk_CLZ32(in32: opus_int32) -> opus_int32 {
         return if in32 != 0 {
             32 as libc::c_int - (EC_CLZ0 - (in32 as libc::c_uint).leading_zeros() as i32)
         } else {
@@ -71,11 +71,11 @@ pub mod Inlines_h {
     #[inline]
     #[c2rust::src_loc = "56:1"]
     pub unsafe extern "C" fn silk_CLZ_FRAC(
-        mut in_0: opus_int32,
-        mut lz: *mut opus_int32,
-        mut frac_Q7: *mut opus_int32,
+        in_0: opus_int32,
+        lz: *mut opus_int32,
+        frac_Q7: *mut opus_int32,
     ) {
-        let mut lzeros: opus_int32 = silk_CLZ32(in_0);
+        let lzeros: opus_int32 = silk_CLZ32(in_0);
         *lz = lzeros;
         *frac_Q7 = silk_ROR32(in_0, 24 as libc::c_int - lzeros) & 0x7f as libc::c_int;
     }
@@ -88,12 +88,12 @@ pub mod SigProc_FIX_h {
     #[inline]
     #[c2rust::src_loc = "398:1"]
     pub unsafe extern "C" fn silk_ROR32(
-        mut a32: opus_int32,
-        mut rot: libc::c_int,
+        a32: opus_int32,
+        rot: libc::c_int,
     ) -> opus_int32 {
-        let mut x: opus_uint32 = a32 as opus_uint32;
-        let mut r: opus_uint32 = rot as opus_uint32;
-        let mut m: opus_uint32 = -rot as opus_uint32;
+        let x: opus_uint32 = a32 as opus_uint32;
+        let r: opus_uint32 = rot as opus_uint32;
+        let m: opus_uint32 = -rot as opus_uint32;
         if rot == 0 as libc::c_int {
             return a32
         } else if rot < 0 as libc::c_int {

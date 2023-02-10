@@ -50,7 +50,7 @@ pub mod ecintrin_h {
 pub mod macros_h {
     #[inline]
     #[c2rust::src_loc = "120:1"]
-    pub unsafe extern "C" fn silk_CLZ32(mut in32: opus_int32) -> opus_int32 {
+    pub unsafe extern "C" fn silk_CLZ32(in32: opus_int32) -> opus_int32 {
         return if in32 != 0 {
             32 as libc::c_int - (EC_CLZ0 - (in32 as libc::c_uint).leading_zeros() as i32)
         } else {
@@ -65,8 +65,8 @@ pub mod SigProc_FIX_h {
     #[inline]
     #[c2rust::src_loc = "572:1"]
     pub unsafe extern "C" fn silk_max_32(
-        mut a: opus_int32,
-        mut b: opus_int32,
+        a: opus_int32,
+        b: opus_int32,
     ) -> opus_int32 {
         return if a > b { a } else { b };
     }
@@ -89,10 +89,10 @@ pub use self::internal::__CHAR_BIT__;
 #[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_sum_sqr_shift(
-    mut energy: *mut opus_int32,
-    mut shift: *mut libc::c_int,
-    mut x: *const opus_int16,
-    mut len: libc::c_int,
+    energy: *mut opus_int32,
+    shift: *mut libc::c_int,
+    x: *const opus_int16,
+    len: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut shft: libc::c_int = 0;

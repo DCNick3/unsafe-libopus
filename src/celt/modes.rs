@@ -944,3360 +944,3360 @@ pub mod static_modes_float_h {
     #[c2rust::src_loc = "104:31"]
     pub static mut fft_twiddles48000_960: [kiss_twiddle_cpx; 480] = [
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 1.0000000f32,
                 i: -0.0000000f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.99991433f32,
                 i: -0.013089596f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.99965732f32,
                 i: -0.026176948f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.99922904f32,
                 i: -0.039259816f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.99862953f32,
                 i: -0.052335956f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.99785892f32,
                 i: -0.065403129f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.99691733f32,
                 i: -0.078459096f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.99580493f32,
                 i: -0.091501619f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.99452190f32,
                 i: -0.10452846f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.99306846f32,
                 i: -0.11753740f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.99144486f32,
                 i: -0.13052619f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.98965139f32,
                 i: -0.14349262f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.98768834f32,
                 i: -0.15643447f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.98555606f32,
                 i: -0.16934950f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.98325491f32,
                 i: -0.18223553f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.98078528f32,
                 i: -0.19509032f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.97814760f32,
                 i: -0.20791169f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.97534232f32,
                 i: -0.22069744f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.97236992f32,
                 i: -0.23344536f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.96923091f32,
                 i: -0.24615329f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.96592583f32,
                 i: -0.25881905f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.96245524f32,
                 i: -0.27144045f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.95881973f32,
                 i: -0.28401534f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.95501994f32,
                 i: -0.29654157f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.95105652f32,
                 i: -0.30901699f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.94693013f32,
                 i: -0.32143947f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.94264149f32,
                 i: -0.33380686f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.93819134f32,
                 i: -0.34611706f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.93358043f32,
                 i: -0.35836795f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.92880955f32,
                 i: -0.37055744f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.92387953f32,
                 i: -0.38268343f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.91879121f32,
                 i: -0.39474386f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.91354546f32,
                 i: -0.40673664f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.90814317f32,
                 i: -0.41865974f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.90258528f32,
                 i: -0.43051110f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.89687274f32,
                 i: -0.44228869f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.89100652f32,
                 i: -0.45399050f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.88498764f32,
                 i: -0.46561452f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.87881711f32,
                 i: -0.47715876f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.87249601f32,
                 i: -0.48862124f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.86602540f32,
                 i: -0.50000000f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.85940641f32,
                 i: -0.51129309f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.85264016f32,
                 i: -0.52249856f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.84572782f32,
                 i: -0.53361452f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.83867057f32,
                 i: -0.54463904f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.83146961f32,
                 i: -0.55557023f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.82412619f32,
                 i: -0.56640624f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.81664156f32,
                 i: -0.57714519f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.80901699f32,
                 i: -0.58778525f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.80125381f32,
                 i: -0.59832460f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.79335334f32,
                 i: -0.60876143f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.78531693f32,
                 i: -0.61909395f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.77714596f32,
                 i: -0.62932039f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.76884183f32,
                 i: -0.63943900f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.76040597f32,
                 i: -0.64944805f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.75183981f32,
                 i: -0.65934582f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.74314483f32,
                 i: -0.66913061f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.73432251f32,
                 i: -0.67880075f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.72537437f32,
                 i: -0.68835458f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.71630194f32,
                 i: -0.69779046f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.70710678f32,
                 i: -0.70710678f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.69779046f32,
                 i: -0.71630194f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.68835458f32,
                 i: -0.72537437f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.67880075f32,
                 i: -0.73432251f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.66913061f32,
                 i: -0.74314483f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.65934582f32,
                 i: -0.75183981f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.64944805f32,
                 i: -0.76040597f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.63943900f32,
                 i: -0.76884183f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.62932039f32,
                 i: -0.77714596f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.61909395f32,
                 i: -0.78531693f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.60876143f32,
                 i: -0.79335334f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.59832460f32,
                 i: -0.80125381f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.58778525f32,
                 i: -0.80901699f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.57714519f32,
                 i: -0.81664156f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.56640624f32,
                 i: -0.82412619f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.55557023f32,
                 i: -0.83146961f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.54463904f32,
                 i: -0.83867057f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.53361452f32,
                 i: -0.84572782f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.52249856f32,
                 i: -0.85264016f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.51129309f32,
                 i: -0.85940641f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.50000000f32,
                 i: -0.86602540f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.48862124f32,
                 i: -0.87249601f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.47715876f32,
                 i: -0.87881711f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.46561452f32,
                 i: -0.88498764f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.45399050f32,
                 i: -0.89100652f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.44228869f32,
                 i: -0.89687274f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.43051110f32,
                 i: -0.90258528f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.41865974f32,
                 i: -0.90814317f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.40673664f32,
                 i: -0.91354546f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.39474386f32,
                 i: -0.91879121f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.38268343f32,
                 i: -0.92387953f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.37055744f32,
                 i: -0.92880955f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.35836795f32,
                 i: -0.93358043f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.34611706f32,
                 i: -0.93819134f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.33380686f32,
                 i: -0.94264149f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.32143947f32,
                 i: -0.94693013f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.30901699f32,
                 i: -0.95105652f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.29654157f32,
                 i: -0.95501994f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.28401534f32,
                 i: -0.95881973f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.27144045f32,
                 i: -0.96245524f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.25881905f32,
                 i: -0.96592583f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.24615329f32,
                 i: -0.96923091f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.23344536f32,
                 i: -0.97236992f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.22069744f32,
                 i: -0.97534232f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.20791169f32,
                 i: -0.97814760f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.19509032f32,
                 i: -0.98078528f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.18223553f32,
                 i: -0.98325491f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.16934950f32,
                 i: -0.98555606f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.15643447f32,
                 i: -0.98768834f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.14349262f32,
                 i: -0.98965139f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.13052619f32,
                 i: -0.99144486f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.11753740f32,
                 i: -0.99306846f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.10452846f32,
                 i: -0.99452190f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.091501619f32,
                 i: -0.99580493f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.078459096f32,
                 i: -0.99691733f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.065403129f32,
                 i: -0.99785892f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.052335956f32,
                 i: -0.99862953f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.039259816f32,
                 i: -0.99922904f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.026176948f32,
                 i: -0.99965732f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.013089596f32,
                 i: -0.99991433f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 6.1230318e-17f32,
                 i: -1.0000000f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.013089596f32,
                 i: -0.99991433f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.026176948f32,
                 i: -0.99965732f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.039259816f32,
                 i: -0.99922904f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.052335956f32,
                 i: -0.99862953f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.065403129f32,
                 i: -0.99785892f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.078459096f32,
                 i: -0.99691733f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.091501619f32,
                 i: -0.99580493f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.10452846f32,
                 i: -0.99452190f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.11753740f32,
                 i: -0.99306846f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.13052619f32,
                 i: -0.99144486f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.14349262f32,
                 i: -0.98965139f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.15643447f32,
                 i: -0.98768834f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.16934950f32,
                 i: -0.98555606f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.18223553f32,
                 i: -0.98325491f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.19509032f32,
                 i: -0.98078528f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.20791169f32,
                 i: -0.97814760f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.22069744f32,
                 i: -0.97534232f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.23344536f32,
                 i: -0.97236992f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.24615329f32,
                 i: -0.96923091f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.25881905f32,
                 i: -0.96592583f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.27144045f32,
                 i: -0.96245524f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.28401534f32,
                 i: -0.95881973f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.29654157f32,
                 i: -0.95501994f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.30901699f32,
                 i: -0.95105652f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.32143947f32,
                 i: -0.94693013f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.33380686f32,
                 i: -0.94264149f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.34611706f32,
                 i: -0.93819134f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.35836795f32,
                 i: -0.93358043f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.37055744f32,
                 i: -0.92880955f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.38268343f32,
                 i: -0.92387953f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.39474386f32,
                 i: -0.91879121f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.40673664f32,
                 i: -0.91354546f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.41865974f32,
                 i: -0.90814317f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.43051110f32,
                 i: -0.90258528f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.44228869f32,
                 i: -0.89687274f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.45399050f32,
                 i: -0.89100652f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.46561452f32,
                 i: -0.88498764f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.47715876f32,
                 i: -0.87881711f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.48862124f32,
                 i: -0.87249601f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.50000000f32,
                 i: -0.86602540f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.51129309f32,
                 i: -0.85940641f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.52249856f32,
                 i: -0.85264016f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.53361452f32,
                 i: -0.84572782f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.54463904f32,
                 i: -0.83867057f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.55557023f32,
                 i: -0.83146961f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.56640624f32,
                 i: -0.82412619f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.57714519f32,
                 i: -0.81664156f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.58778525f32,
                 i: -0.80901699f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.59832460f32,
                 i: -0.80125381f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.60876143f32,
                 i: -0.79335334f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.61909395f32,
                 i: -0.78531693f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.62932039f32,
                 i: -0.77714596f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.63943900f32,
                 i: -0.76884183f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.64944805f32,
                 i: -0.76040597f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.65934582f32,
                 i: -0.75183981f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.66913061f32,
                 i: -0.74314483f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.67880075f32,
                 i: -0.73432251f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.68835458f32,
                 i: -0.72537437f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.69779046f32,
                 i: -0.71630194f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.70710678f32,
                 i: -0.70710678f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.71630194f32,
                 i: -0.69779046f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.72537437f32,
                 i: -0.68835458f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.73432251f32,
                 i: -0.67880075f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.74314483f32,
                 i: -0.66913061f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.75183981f32,
                 i: -0.65934582f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.76040597f32,
                 i: -0.64944805f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.76884183f32,
                 i: -0.63943900f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.77714596f32,
                 i: -0.62932039f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.78531693f32,
                 i: -0.61909395f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.79335334f32,
                 i: -0.60876143f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.80125381f32,
                 i: -0.59832460f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.80901699f32,
                 i: -0.58778525f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.81664156f32,
                 i: -0.57714519f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.82412619f32,
                 i: -0.56640624f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.83146961f32,
                 i: -0.55557023f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.83867057f32,
                 i: -0.54463904f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.84572782f32,
                 i: -0.53361452f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.85264016f32,
                 i: -0.52249856f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.85940641f32,
                 i: -0.51129309f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.86602540f32,
                 i: -0.50000000f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.87249601f32,
                 i: -0.48862124f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.87881711f32,
                 i: -0.47715876f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.88498764f32,
                 i: -0.46561452f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.89100652f32,
                 i: -0.45399050f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.89687274f32,
                 i: -0.44228869f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.90258528f32,
                 i: -0.43051110f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.90814317f32,
                 i: -0.41865974f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.91354546f32,
                 i: -0.40673664f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.91879121f32,
                 i: -0.39474386f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.92387953f32,
                 i: -0.38268343f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.92880955f32,
                 i: -0.37055744f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.93358043f32,
                 i: -0.35836795f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.93819134f32,
                 i: -0.34611706f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.94264149f32,
                 i: -0.33380686f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.94693013f32,
                 i: -0.32143947f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.95105652f32,
                 i: -0.30901699f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.95501994f32,
                 i: -0.29654157f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.95881973f32,
                 i: -0.28401534f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.96245524f32,
                 i: -0.27144045f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.96592583f32,
                 i: -0.25881905f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.96923091f32,
                 i: -0.24615329f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.97236992f32,
                 i: -0.23344536f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.97534232f32,
                 i: -0.22069744f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.97814760f32,
                 i: -0.20791169f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.98078528f32,
                 i: -0.19509032f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.98325491f32,
                 i: -0.18223553f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.98555606f32,
                 i: -0.16934950f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.98768834f32,
                 i: -0.15643447f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.98965139f32,
                 i: -0.14349262f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.99144486f32,
                 i: -0.13052619f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.99306846f32,
                 i: -0.11753740f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.99452190f32,
                 i: -0.10452846f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.99580493f32,
                 i: -0.091501619f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.99691733f32,
                 i: -0.078459096f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.99785892f32,
                 i: -0.065403129f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.99862953f32,
                 i: -0.052335956f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.99922904f32,
                 i: -0.039259816f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.99965732f32,
                 i: -0.026176948f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.99991433f32,
                 i: -0.013089596f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -1.0000000f32,
                 i: -1.2246064e-16f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.99991433f32,
                 i: 0.013089596f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.99965732f32,
                 i: 0.026176948f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.99922904f32,
                 i: 0.039259816f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.99862953f32,
                 i: 0.052335956f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.99785892f32,
                 i: 0.065403129f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.99691733f32,
                 i: 0.078459096f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.99580493f32,
                 i: 0.091501619f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.99452190f32,
                 i: 0.10452846f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.99306846f32,
                 i: 0.11753740f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.99144486f32,
                 i: 0.13052619f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.98965139f32,
                 i: 0.14349262f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.98768834f32,
                 i: 0.15643447f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.98555606f32,
                 i: 0.16934950f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.98325491f32,
                 i: 0.18223553f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.98078528f32,
                 i: 0.19509032f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.97814760f32,
                 i: 0.20791169f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.97534232f32,
                 i: 0.22069744f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.97236992f32,
                 i: 0.23344536f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.96923091f32,
                 i: 0.24615329f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.96592583f32,
                 i: 0.25881905f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.96245524f32,
                 i: 0.27144045f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.95881973f32,
                 i: 0.28401534f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.95501994f32,
                 i: 0.29654157f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.95105652f32,
                 i: 0.30901699f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.94693013f32,
                 i: 0.32143947f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.94264149f32,
                 i: 0.33380686f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.93819134f32,
                 i: 0.34611706f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.93358043f32,
                 i: 0.35836795f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.92880955f32,
                 i: 0.37055744f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.92387953f32,
                 i: 0.38268343f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.91879121f32,
                 i: 0.39474386f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.91354546f32,
                 i: 0.40673664f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.90814317f32,
                 i: 0.41865974f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.90258528f32,
                 i: 0.43051110f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.89687274f32,
                 i: 0.44228869f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.89100652f32,
                 i: 0.45399050f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.88498764f32,
                 i: 0.46561452f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.87881711f32,
                 i: 0.47715876f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.87249601f32,
                 i: 0.48862124f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.86602540f32,
                 i: 0.50000000f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.85940641f32,
                 i: 0.51129309f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.85264016f32,
                 i: 0.52249856f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.84572782f32,
                 i: 0.53361452f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.83867057f32,
                 i: 0.54463904f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.83146961f32,
                 i: 0.55557023f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.82412619f32,
                 i: 0.56640624f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.81664156f32,
                 i: 0.57714519f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.80901699f32,
                 i: 0.58778525f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.80125381f32,
                 i: 0.59832460f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.79335334f32,
                 i: 0.60876143f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.78531693f32,
                 i: 0.61909395f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.77714596f32,
                 i: 0.62932039f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.76884183f32,
                 i: 0.63943900f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.76040597f32,
                 i: 0.64944805f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.75183981f32,
                 i: 0.65934582f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.74314483f32,
                 i: 0.66913061f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.73432251f32,
                 i: 0.67880075f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.72537437f32,
                 i: 0.68835458f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.71630194f32,
                 i: 0.69779046f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.70710678f32,
                 i: 0.70710678f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.69779046f32,
                 i: 0.71630194f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.68835458f32,
                 i: 0.72537437f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.67880075f32,
                 i: 0.73432251f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.66913061f32,
                 i: 0.74314483f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.65934582f32,
                 i: 0.75183981f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.64944805f32,
                 i: 0.76040597f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.63943900f32,
                 i: 0.76884183f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.62932039f32,
                 i: 0.77714596f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.61909395f32,
                 i: 0.78531693f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.60876143f32,
                 i: 0.79335334f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.59832460f32,
                 i: 0.80125381f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.58778525f32,
                 i: 0.80901699f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.57714519f32,
                 i: 0.81664156f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.56640624f32,
                 i: 0.82412619f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.55557023f32,
                 i: 0.83146961f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.54463904f32,
                 i: 0.83867057f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.53361452f32,
                 i: 0.84572782f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.52249856f32,
                 i: 0.85264016f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.51129309f32,
                 i: 0.85940641f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.50000000f32,
                 i: 0.86602540f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.48862124f32,
                 i: 0.87249601f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.47715876f32,
                 i: 0.87881711f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.46561452f32,
                 i: 0.88498764f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.45399050f32,
                 i: 0.89100652f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.44228869f32,
                 i: 0.89687274f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.43051110f32,
                 i: 0.90258528f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.41865974f32,
                 i: 0.90814317f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.40673664f32,
                 i: 0.91354546f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.39474386f32,
                 i: 0.91879121f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.38268343f32,
                 i: 0.92387953f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.37055744f32,
                 i: 0.92880955f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.35836795f32,
                 i: 0.93358043f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.34611706f32,
                 i: 0.93819134f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.33380686f32,
                 i: 0.94264149f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.32143947f32,
                 i: 0.94693013f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.30901699f32,
                 i: 0.95105652f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.29654157f32,
                 i: 0.95501994f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.28401534f32,
                 i: 0.95881973f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.27144045f32,
                 i: 0.96245524f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.25881905f32,
                 i: 0.96592583f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.24615329f32,
                 i: 0.96923091f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.23344536f32,
                 i: 0.97236992f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.22069744f32,
                 i: 0.97534232f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.20791169f32,
                 i: 0.97814760f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.19509032f32,
                 i: 0.98078528f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.18223553f32,
                 i: 0.98325491f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.16934950f32,
                 i: 0.98555606f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.15643447f32,
                 i: 0.98768834f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.14349262f32,
                 i: 0.98965139f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.13052619f32,
                 i: 0.99144486f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.11753740f32,
                 i: 0.99306846f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.10452846f32,
                 i: 0.99452190f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.091501619f32,
                 i: 0.99580493f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.078459096f32,
                 i: 0.99691733f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.065403129f32,
                 i: 0.99785892f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.052335956f32,
                 i: 0.99862953f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.039259816f32,
                 i: 0.99922904f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.026176948f32,
                 i: 0.99965732f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -0.013089596f32,
                 i: 0.99991433f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: -1.8369095e-16f32,
                 i: 1.0000000f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.013089596f32,
                 i: 0.99991433f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.026176948f32,
                 i: 0.99965732f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.039259816f32,
                 i: 0.99922904f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.052335956f32,
                 i: 0.99862953f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.065403129f32,
                 i: 0.99785892f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.078459096f32,
                 i: 0.99691733f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.091501619f32,
                 i: 0.99580493f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.10452846f32,
                 i: 0.99452190f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.11753740f32,
                 i: 0.99306846f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.13052619f32,
                 i: 0.99144486f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.14349262f32,
                 i: 0.98965139f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.15643447f32,
                 i: 0.98768834f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.16934950f32,
                 i: 0.98555606f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.18223553f32,
                 i: 0.98325491f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.19509032f32,
                 i: 0.98078528f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.20791169f32,
                 i: 0.97814760f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.22069744f32,
                 i: 0.97534232f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.23344536f32,
                 i: 0.97236992f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.24615329f32,
                 i: 0.96923091f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.25881905f32,
                 i: 0.96592583f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.27144045f32,
                 i: 0.96245524f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.28401534f32,
                 i: 0.95881973f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.29654157f32,
                 i: 0.95501994f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.30901699f32,
                 i: 0.95105652f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.32143947f32,
                 i: 0.94693013f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.33380686f32,
                 i: 0.94264149f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.34611706f32,
                 i: 0.93819134f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.35836795f32,
                 i: 0.93358043f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.37055744f32,
                 i: 0.92880955f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.38268343f32,
                 i: 0.92387953f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.39474386f32,
                 i: 0.91879121f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.40673664f32,
                 i: 0.91354546f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.41865974f32,
                 i: 0.90814317f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.43051110f32,
                 i: 0.90258528f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.44228869f32,
                 i: 0.89687274f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.45399050f32,
                 i: 0.89100652f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.46561452f32,
                 i: 0.88498764f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.47715876f32,
                 i: 0.87881711f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.48862124f32,
                 i: 0.87249601f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.50000000f32,
                 i: 0.86602540f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.51129309f32,
                 i: 0.85940641f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.52249856f32,
                 i: 0.85264016f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.53361452f32,
                 i: 0.84572782f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.54463904f32,
                 i: 0.83867057f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.55557023f32,
                 i: 0.83146961f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.56640624f32,
                 i: 0.82412619f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.57714519f32,
                 i: 0.81664156f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.58778525f32,
                 i: 0.80901699f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.59832460f32,
                 i: 0.80125381f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.60876143f32,
                 i: 0.79335334f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.61909395f32,
                 i: 0.78531693f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.62932039f32,
                 i: 0.77714596f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.63943900f32,
                 i: 0.76884183f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.64944805f32,
                 i: 0.76040597f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.65934582f32,
                 i: 0.75183981f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.66913061f32,
                 i: 0.74314483f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.67880075f32,
                 i: 0.73432251f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.68835458f32,
                 i: 0.72537437f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.69779046f32,
                 i: 0.71630194f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.70710678f32,
                 i: 0.70710678f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.71630194f32,
                 i: 0.69779046f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.72537437f32,
                 i: 0.68835458f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.73432251f32,
                 i: 0.67880075f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.74314483f32,
                 i: 0.66913061f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.75183981f32,
                 i: 0.65934582f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.76040597f32,
                 i: 0.64944805f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.76884183f32,
                 i: 0.63943900f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.77714596f32,
                 i: 0.62932039f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.78531693f32,
                 i: 0.61909395f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.79335334f32,
                 i: 0.60876143f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.80125381f32,
                 i: 0.59832460f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.80901699f32,
                 i: 0.58778525f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.81664156f32,
                 i: 0.57714519f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.82412619f32,
                 i: 0.56640624f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.83146961f32,
                 i: 0.55557023f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.83867057f32,
                 i: 0.54463904f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.84572782f32,
                 i: 0.53361452f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.85264016f32,
                 i: 0.52249856f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.85940641f32,
                 i: 0.51129309f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.86602540f32,
                 i: 0.50000000f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.87249601f32,
                 i: 0.48862124f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.87881711f32,
                 i: 0.47715876f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.88498764f32,
                 i: 0.46561452f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.89100652f32,
                 i: 0.45399050f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.89687274f32,
                 i: 0.44228869f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.90258528f32,
                 i: 0.43051110f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.90814317f32,
                 i: 0.41865974f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.91354546f32,
                 i: 0.40673664f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.91879121f32,
                 i: 0.39474386f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.92387953f32,
                 i: 0.38268343f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.92880955f32,
                 i: 0.37055744f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.93358043f32,
                 i: 0.35836795f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.93819134f32,
                 i: 0.34611706f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.94264149f32,
                 i: 0.33380686f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.94693013f32,
                 i: 0.32143947f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.95105652f32,
                 i: 0.30901699f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.95501994f32,
                 i: 0.29654157f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.95881973f32,
                 i: 0.28401534f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.96245524f32,
                 i: 0.27144045f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.96592583f32,
                 i: 0.25881905f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.96923091f32,
                 i: 0.24615329f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.97236992f32,
                 i: 0.23344536f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.97534232f32,
                 i: 0.22069744f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.97814760f32,
                 i: 0.20791169f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.98078528f32,
                 i: 0.19509032f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.98325491f32,
                 i: 0.18223553f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.98555606f32,
                 i: 0.16934950f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.98768834f32,
                 i: 0.15643447f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.98965139f32,
                 i: 0.14349262f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.99144486f32,
                 i: 0.13052619f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.99306846f32,
                 i: 0.11753740f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.99452190f32,
                 i: 0.10452846f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.99580493f32,
                 i: 0.091501619f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.99691733f32,
                 i: 0.078459096f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.99785892f32,
                 i: 0.065403129f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.99862953f32,
                 i: 0.052335956f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.99922904f32,
                 i: 0.039259816f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.99965732f32,
                 i: 0.026176948f32,
             };
             init
         },
         {
-            let mut init = kiss_twiddle_cpx {
+            let init = kiss_twiddle_cpx {
                 r: 0.99991433f32,
                 i: 0.013089596f32,
             };
@@ -5219,7 +5219,7 @@ pub mod static_modes_float_h {
     #[c2rust::src_loc = "432:29"]
     pub static mut fft_state48000_960_0: kiss_fft_state = unsafe {
         {
-            let mut init = kiss_fft_state {
+            let init = kiss_fft_state {
                 nfft: 480 as libc::c_int,
                 scale: 0.002083333f32,
                 shift: -(1 as libc::c_int),
@@ -5251,7 +5251,7 @@ pub mod static_modes_float_h {
     #[c2rust::src_loc = "449:29"]
     pub static mut fft_state48000_960_1: kiss_fft_state = unsafe {
         {
-            let mut init = kiss_fft_state {
+            let init = kiss_fft_state {
                 nfft: 240 as libc::c_int,
                 scale: 0.004166667f32,
                 shift: 1 as libc::c_int,
@@ -5283,7 +5283,7 @@ pub mod static_modes_float_h {
     #[c2rust::src_loc = "466:29"]
     pub static mut fft_state48000_960_2: kiss_fft_state = unsafe {
         {
-            let mut init = kiss_fft_state {
+            let init = kiss_fft_state {
                 nfft: 120 as libc::c_int,
                 scale: 0.008333333f32,
                 shift: 2 as libc::c_int,
@@ -5315,7 +5315,7 @@ pub mod static_modes_float_h {
     #[c2rust::src_loc = "483:29"]
     pub static mut fft_state48000_960_3: kiss_fft_state = unsafe {
         {
-            let mut init = kiss_fft_state {
+            let init = kiss_fft_state {
                 nfft: 60 as libc::c_int,
                 scale: 0.016666667f32,
                 shift: 3 as libc::c_int,
@@ -7150,7 +7150,7 @@ pub mod static_modes_float_h {
     #[c2rust::src_loc = "866:23"]
     pub static mut mode48000_960_120: OpusCustomMode = unsafe {
         {
-            let mut init = OpusCustomMode {
+            let init = OpusCustomMode {
                 Fs: 48000 as libc::c_int,
                 overlap: 120 as libc::c_int,
                 nbEBands: 21 as libc::c_int,
@@ -7165,7 +7165,7 @@ pub mod static_modes_float_h {
                 logN: logN400.as_ptr(),
                 window: window120.as_ptr(),
                 mdct: {
-                    let mut init = mdct_lookup {
+                    let init = mdct_lookup {
                         n: 1920 as libc::c_int,
                         maxshift: 3 as libc::c_int,
                         kfft: [
@@ -7179,7 +7179,7 @@ pub mod static_modes_float_h {
                     init
                 },
                 cache: {
-                    let mut init = PulseCache {
+                    let init = PulseCache {
                         size: 392 as libc::c_int,
                         index: cache_index50.as_ptr(),
                         bits: cache_bits50.as_ptr(),
@@ -7198,7 +7198,7 @@ pub mod static_modes_float_h {
         [&mode48000_960_120 as *const OpusCustomMode]
     };
     use super::arch_h::opus_val16;
-    use super::opus_types_h::{opus_int16, opus_int32};
+    use super::opus_types_h::{opus_int16};
     use super::kiss_fft_h::{kiss_twiddle_cpx, arch_fft_state, kiss_fft_state};
     use super::stddef_h::NULL;
     use super::mdct_h::mdct_lookup;
@@ -7482,9 +7482,9 @@ static mut band_allocation: [libc::c_uchar; 231] = [
 #[no_mangle]
 #[c2rust::src_loc = "224:1"]
 pub unsafe extern "C" fn opus_custom_mode_create(
-    mut Fs: opus_int32,
-    mut frame_size: libc::c_int,
-    mut error: *mut libc::c_int,
+    Fs: opus_int32,
+    frame_size: libc::c_int,
+    error: *mut libc::c_int,
 ) -> *mut OpusCustomMode {
     let mut i: libc::c_int = 0;
     i = 0 as libc::c_int;

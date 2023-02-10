@@ -115,8 +115,8 @@ use self::tables_h::{
 #[inline]
 #[c2rust::src_loc = "36:1"]
 unsafe extern "C" fn combine_pulses(
-    mut out: *mut libc::c_int,
-    mut in_0: *const libc::c_int,
+    out: *mut libc::c_int,
+    in_0: *const libc::c_int,
     len: libc::c_int,
 ) {
     let mut k: libc::c_int = 0;
@@ -133,10 +133,10 @@ unsafe extern "C" fn combine_pulses(
 #[inline]
 #[c2rust::src_loc = "48:1"]
 unsafe extern "C" fn encode_split(
-    mut psRangeEnc: *mut ec_enc,
+    psRangeEnc: *mut ec_enc,
     p_child1: libc::c_int,
     p: libc::c_int,
-    mut shell_table: *const opus_uint8,
+    shell_table: *const opus_uint8,
 ) {
     if p > 0 as libc::c_int {
         ec_enc_icdf(
@@ -153,11 +153,11 @@ unsafe extern "C" fn encode_split(
 #[inline]
 #[c2rust::src_loc = "60:1"]
 unsafe extern "C" fn decode_split(
-    mut p_child1: *mut opus_int16,
-    mut p_child2: *mut opus_int16,
-    mut psRangeDec: *mut ec_dec,
+    p_child1: *mut opus_int16,
+    p_child2: *mut opus_int16,
+    psRangeDec: *mut ec_dec,
     p: libc::c_int,
-    mut shell_table: *const opus_uint8,
+    shell_table: *const opus_uint8,
 ) {
     if p > 0 as libc::c_int {
         *p_child1
@@ -184,8 +184,8 @@ unsafe extern "C" fn decode_split(
 #[no_mangle]
 #[c2rust::src_loc = "78:1"]
 pub unsafe extern "C" fn silk_shell_encoder(
-    mut psRangeEnc: *mut ec_enc,
-    mut pulses0: *const libc::c_int,
+    psRangeEnc: *mut ec_enc,
+    pulses0: *const libc::c_int,
 ) {
     let mut pulses1: [libc::c_int; 8] = [0; 8];
     let mut pulses2: [libc::c_int; 4] = [0; 4];
@@ -289,8 +289,8 @@ pub unsafe extern "C" fn silk_shell_encoder(
 #[no_mangle]
 #[c2rust::src_loc = "119:1"]
 pub unsafe extern "C" fn silk_shell_decoder(
-    mut pulses0: *mut opus_int16,
-    mut psRangeDec: *mut ec_dec,
+    pulses0: *mut opus_int16,
+    psRangeDec: *mut ec_dec,
     pulses4: libc::c_int,
 ) {
     let mut pulses3: [opus_int16; 2] = [0; 2];

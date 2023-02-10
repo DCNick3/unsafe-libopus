@@ -20,8 +20,8 @@ pub use self::SigProc_FLP_h::PI;
 #[no_mangle]
 #[c2rust::src_loc = "38:1"]
 pub unsafe extern "C" fn silk_apply_sine_window_FLP(
-    mut px_win: *mut libc::c_float,
-    mut px: *const libc::c_float,
+    px_win: *mut libc::c_float,
+    px: *const libc::c_float,
     win_type: libc::c_int,
     length: libc::c_int,
 ) {

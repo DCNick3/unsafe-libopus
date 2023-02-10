@@ -75,9 +75,9 @@ pub use self::pitch_est_defines_h::{
 #[no_mangle]
 #[c2rust::src_loc = "38:1"]
 pub unsafe extern "C" fn silk_decode_pitch(
-    mut lagIndex: opus_int16,
-    mut contourIndex: opus_int8,
-    mut pitch_lags: *mut libc::c_int,
+    lagIndex: opus_int16,
+    contourIndex: opus_int8,
+    pitch_lags: *mut libc::c_int,
     Fs_kHz: libc::c_int,
     nb_subfr: libc::c_int,
 ) {

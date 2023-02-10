@@ -373,10 +373,10 @@ use self::main_h::silk_NLSF_unpack;
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_encode_indices(
     mut psEncC: *mut silk_encoder_state,
-    mut psRangeEnc: *mut ec_enc,
-    mut FrameIndex: libc::c_int,
-    mut encode_LBRR: libc::c_int,
-    mut condCoding: libc::c_int,
+    psRangeEnc: *mut ec_enc,
+    FrameIndex: libc::c_int,
+    encode_LBRR: libc::c_int,
+    condCoding: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut k: libc::c_int = 0;

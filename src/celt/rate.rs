@@ -153,8 +153,8 @@ pub mod entcode_h {
     #[inline]
     #[c2rust::src_loc = "124:1"]
     pub unsafe extern "C" fn celt_udiv(
-        mut n: opus_uint32,
-        mut d: opus_uint32,
+        n: opus_uint32,
+        d: opus_uint32,
     ) -> opus_uint32 {
         return n.wrapping_div(d);
     }
@@ -237,30 +237,30 @@ pub const ALLOC_STEPS: libc::c_int = 6 as libc::c_int;
 #[inline]
 #[c2rust::src_loc = "248:1"]
 unsafe extern "C" fn interp_bits2pulses(
-    mut m: *const OpusCustomMode,
-    mut start: libc::c_int,
-    mut end: libc::c_int,
-    mut skip_start: libc::c_int,
-    mut bits1: *const libc::c_int,
-    mut bits2: *const libc::c_int,
-    mut thresh: *const libc::c_int,
-    mut cap: *const libc::c_int,
+    m: *const OpusCustomMode,
+    start: libc::c_int,
+    end: libc::c_int,
+    skip_start: libc::c_int,
+    bits1: *const libc::c_int,
+    bits2: *const libc::c_int,
+    thresh: *const libc::c_int,
+    cap: *const libc::c_int,
     mut total: opus_int32,
     mut _balance: *mut opus_int32,
-    mut skip_rsv: libc::c_int,
-    mut intensity: *mut libc::c_int,
+    skip_rsv: libc::c_int,
+    intensity: *mut libc::c_int,
     mut intensity_rsv: libc::c_int,
-    mut dual_stereo: *mut libc::c_int,
+    dual_stereo: *mut libc::c_int,
     mut dual_stereo_rsv: libc::c_int,
-    mut bits: *mut libc::c_int,
-    mut ebits: *mut libc::c_int,
-    mut fine_priority: *mut libc::c_int,
-    mut C: libc::c_int,
-    mut LM: libc::c_int,
-    mut ec: *mut ec_ctx,
-    mut encode: libc::c_int,
-    mut prev: libc::c_int,
-    mut signalBandwidth: libc::c_int,
+    bits: *mut libc::c_int,
+    ebits: *mut libc::c_int,
+    fine_priority: *mut libc::c_int,
+    C: libc::c_int,
+    LM: libc::c_int,
+    ec: *mut ec_ctx,
+    encode: libc::c_int,
+    prev: libc::c_int,
+    signalBandwidth: libc::c_int,
 ) -> libc::c_int {
     let mut psum: opus_int32 = 0;
     let mut lo: libc::c_int = 0;
@@ -282,7 +282,7 @@ unsafe extern "C" fn interp_bits2pulses(
     hi = (1 as libc::c_int) << ALLOC_STEPS;
     i = 0 as libc::c_int;
     while i < ALLOC_STEPS {
-        let mut mid: libc::c_int = lo + hi >> 1 as libc::c_int;
+        let mid: libc::c_int = lo + hi >> 1 as libc::c_int;
         psum = 0 as libc::c_int;
         done = 0 as libc::c_int;
         j = end;
@@ -292,7 +292,7 @@ unsafe extern "C" fn interp_bits2pulses(
             if !(fresh0 > start) {
                 break;
             }
-            let mut tmp: libc::c_int = *bits1.offset(j as isize)
+            let tmp: libc::c_int = *bits1.offset(j as isize)
                 + (mid * *bits2.offset(j as isize) >> ALLOC_STEPS);
             if tmp >= *thresh.offset(j as isize) || done != 0 {
                 done = 1 as libc::c_int;
@@ -493,7 +493,7 @@ unsafe extern "C" fn interp_bits2pulses(
     }
     j = start;
     while j < codedBands {
-        let mut tmp_1: libc::c_int = if left
+        let tmp_1: libc::c_int = if left
             < *((*m).eBands).offset((j + 1 as libc::c_int) as isize) as libc::c_int
                 - *((*m).eBands).offset(j as isize) as libc::c_int
         {
@@ -658,25 +658,25 @@ unsafe extern "C" fn interp_bits2pulses(
 #[no_mangle]
 #[c2rust::src_loc = "532:1"]
 pub unsafe extern "C" fn clt_compute_allocation(
-    mut m: *const OpusCustomMode,
-    mut start: libc::c_int,
-    mut end: libc::c_int,
-    mut offsets: *const libc::c_int,
-    mut cap: *const libc::c_int,
-    mut alloc_trim: libc::c_int,
-    mut intensity: *mut libc::c_int,
-    mut dual_stereo: *mut libc::c_int,
+    m: *const OpusCustomMode,
+    start: libc::c_int,
+    end: libc::c_int,
+    offsets: *const libc::c_int,
+    cap: *const libc::c_int,
+    alloc_trim: libc::c_int,
+    intensity: *mut libc::c_int,
+    dual_stereo: *mut libc::c_int,
     mut total: opus_int32,
-    mut balance: *mut opus_int32,
-    mut pulses: *mut libc::c_int,
-    mut ebits: *mut libc::c_int,
-    mut fine_priority: *mut libc::c_int,
-    mut C: libc::c_int,
-    mut LM: libc::c_int,
-    mut ec: *mut ec_ctx,
-    mut encode: libc::c_int,
-    mut prev: libc::c_int,
-    mut signalBandwidth: libc::c_int,
+    balance: *mut opus_int32,
+    pulses: *mut libc::c_int,
+    ebits: *mut libc::c_int,
+    fine_priority: *mut libc::c_int,
+    C: libc::c_int,
+    LM: libc::c_int,
+    ec: *mut ec_ctx,
+    encode: libc::c_int,
+    prev: libc::c_int,
+    signalBandwidth: libc::c_int,
 ) -> libc::c_int {
     let mut lo: libc::c_int = 0;
     let mut hi: libc::c_int = 0;
@@ -760,7 +760,7 @@ pub unsafe extern "C" fn clt_compute_allocation(
     loop {
         let mut done: libc::c_int = 0 as libc::c_int;
         let mut psum: libc::c_int = 0 as libc::c_int;
-        let mut mid: libc::c_int = lo + hi >> 1 as libc::c_int;
+        let mid: libc::c_int = lo + hi >> 1 as libc::c_int;
         j = end;
         loop {
             let fresh2 = j;
@@ -769,7 +769,7 @@ pub unsafe extern "C" fn clt_compute_allocation(
                 break;
             }
             let mut bitsj: libc::c_int = 0;
-            let mut N: libc::c_int = *((*m).eBands)
+            let N: libc::c_int = *((*m).eBands)
                 .offset((j + 1 as libc::c_int) as isize) as libc::c_int
                 - *((*m).eBands).offset(j as isize) as libc::c_int;
             bitsj = (C * N
@@ -813,7 +813,7 @@ pub unsafe extern "C" fn clt_compute_allocation(
     while j < end {
         let mut bits1j: libc::c_int = 0;
         let mut bits2j: libc::c_int = 0;
-        let mut N_0: libc::c_int = *((*m).eBands).offset((j + 1 as libc::c_int) as isize)
+        let N_0: libc::c_int = *((*m).eBands).offset((j + 1 as libc::c_int) as isize)
             as libc::c_int - *((*m).eBands).offset(j as isize) as libc::c_int;
         bits1j = (C * N_0
             * *((*m).allocVectors).offset((lo * len + j) as isize) as libc::c_int) << LM

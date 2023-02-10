@@ -104,10 +104,10 @@ pub use self::resampler_rom_h::{silk_resampler_up2_hq_0, silk_resampler_up2_hq_1
 #[no_mangle]
 #[c2rust::src_loc = "38:1"]
 pub unsafe extern "C" fn silk_resampler_private_up2_HQ(
-    mut S: *mut opus_int32,
-    mut out: *mut opus_int16,
-    mut in_0: *const opus_int16,
-    mut len: opus_int32,
+    S: *mut opus_int32,
+    out: *mut opus_int16,
+    in_0: *const opus_int16,
+    len: opus_int32,
 ) {
     let mut k: opus_int32 = 0;
     let mut in32: opus_int32 = 0;
@@ -213,11 +213,11 @@ pub unsafe extern "C" fn silk_resampler_private_up2_HQ(
 #[no_mangle]
 #[c2rust::src_loc = "104:1"]
 pub unsafe extern "C" fn silk_resampler_private_up2_HQ_wrapper(
-    mut SS: *mut libc::c_void,
-    mut out: *mut opus_int16,
-    mut in_0: *const opus_int16,
-    mut len: opus_int32,
+    SS: *mut libc::c_void,
+    out: *mut opus_int16,
+    in_0: *const opus_int16,
+    len: opus_int32,
 ) {
-    let mut S: *mut silk_resampler_state_struct = SS as *mut silk_resampler_state_struct;
+    let S: *mut silk_resampler_state_struct = SS as *mut silk_resampler_state_struct;
     silk_resampler_private_up2_HQ(((*S).sIIR).as_mut_ptr(), out, in_0, len);
 }

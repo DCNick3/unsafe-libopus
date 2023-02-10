@@ -281,7 +281,7 @@ pub mod ecintrin_h {
 pub mod macros_h {
     #[inline]
     #[c2rust::src_loc = "120:1"]
-    pub unsafe extern "C" fn silk_CLZ32(mut in32: opus_int32) -> opus_int32 {
+    pub unsafe extern "C" fn silk_CLZ32(in32: opus_int32) -> opus_int32 {
         return if in32 != 0 {
             32 as libc::c_int - (EC_CLZ0 - (in32 as libc::c_uint).leading_zeros() as i32)
         } else {
@@ -296,12 +296,12 @@ pub mod SigProc_FIX_h {
     #[inline]
     #[c2rust::src_loc = "398:1"]
     pub unsafe extern "C" fn silk_ROR32(
-        mut a32: opus_int32,
-        mut rot: libc::c_int,
+        a32: opus_int32,
+        rot: libc::c_int,
     ) -> opus_int32 {
-        let mut x: opus_uint32 = a32 as opus_uint32;
-        let mut r: opus_uint32 = rot as opus_uint32;
-        let mut m: opus_uint32 = -rot as opus_uint32;
+        let x: opus_uint32 = a32 as opus_uint32;
+        let r: opus_uint32 = rot as opus_uint32;
+        let m: opus_uint32 = -rot as opus_uint32;
         if rot == 0 as libc::c_int {
             return a32
         } else if rot < 0 as libc::c_int {
@@ -315,24 +315,24 @@ pub mod SigProc_FIX_h {
     #[inline]
     #[c2rust::src_loc = "546:1"]
     pub unsafe extern "C" fn silk_min_int(
-        mut a: libc::c_int,
-        mut b: libc::c_int,
+        a: libc::c_int,
+        b: libc::c_int,
     ) -> libc::c_int {
         return if a < b { a } else { b };
     }
     #[inline]
     #[c2rust::src_loc = "564:1"]
     pub unsafe extern "C" fn silk_max_int(
-        mut a: libc::c_int,
-        mut b: libc::c_int,
+        a: libc::c_int,
+        b: libc::c_int,
     ) -> libc::c_int {
         return if a > b { a } else { b };
     }
     #[inline]
     #[c2rust::src_loc = "572:1"]
     pub unsafe extern "C" fn silk_max_32(
-        mut a: opus_int32,
-        mut b: opus_int32,
+        a: opus_int32,
+        b: opus_int32,
     ) -> opus_int32 {
         return if a > b { a } else { b };
     }
@@ -357,17 +357,17 @@ pub mod Inlines_h {
     #[inline]
     #[c2rust::src_loc = "56:1"]
     pub unsafe extern "C" fn silk_CLZ_FRAC(
-        mut in_0: opus_int32,
-        mut lz: *mut opus_int32,
-        mut frac_Q7: *mut opus_int32,
+        in_0: opus_int32,
+        lz: *mut opus_int32,
+        frac_Q7: *mut opus_int32,
     ) {
-        let mut lzeros: opus_int32 = silk_CLZ32(in_0);
+        let lzeros: opus_int32 = silk_CLZ32(in_0);
         *lz = lzeros;
         *frac_Q7 = silk_ROR32(in_0, 24 as libc::c_int - lzeros) & 0x7f as libc::c_int;
     }
     #[inline]
     #[c2rust::src_loc = "71:1"]
-    pub unsafe extern "C" fn silk_SQRT_APPROX(mut x: opus_int32) -> opus_int32 {
+    pub unsafe extern "C" fn silk_SQRT_APPROX(x: opus_int32) -> opus_int32 {
         let mut y: opus_int32 = 0;
         let mut lz: opus_int32 = 0;
         let mut frac_Q7: opus_int32 = 0;
@@ -455,7 +455,7 @@ pub unsafe extern "C" fn silk_VAD_Init(
     mut psSilk_VAD: *mut silk_VAD_state,
 ) -> libc::c_int {
     let mut b: libc::c_int = 0;
-    let mut ret: libc::c_int = 0 as libc::c_int;
+    let ret: libc::c_int = 0 as libc::c_int;
     memset(
         psSilk_VAD as *mut libc::c_void,
         0 as libc::c_int,
@@ -501,7 +501,7 @@ static mut tiltWeights: [opus_int32; 4] = [
 #[c2rust::src_loc = "82:1"]
 pub unsafe extern "C" fn silk_VAD_GetSA_Q8_c(
     mut psEncC: *mut silk_encoder_state,
-    mut pIn: *const opus_int16,
+    pIn: *const opus_int16,
 ) -> libc::c_int {
     let mut SA_Q15: libc::c_int = 0;
     let mut pSNR_dB_Q7: libc::c_int = 0;
@@ -523,7 +523,7 @@ pub unsafe extern "C" fn silk_VAD_GetSA_Q8_c(
     let mut speech_nrg: opus_int32 = 0;
     let mut x_tmp: opus_int32 = 0;
     let mut X_offset: [libc::c_int; 4] = [0; 4];
-    let mut ret: libc::c_int = 0 as libc::c_int;
+    let ret: libc::c_int = 0 as libc::c_int;
     let mut psSilk_VAD: *mut silk_VAD_state = &mut (*psEncC).sVAD;
     if !(5 as libc::c_int * 4 as libc::c_int * 16 as libc::c_int
         >= (*psEncC).frame_length)
@@ -771,7 +771,7 @@ pub unsafe extern "C" fn silk_VAD_GetSA_Q8_c(
 #[inline]
 #[c2rust::src_loc = "301:1"]
 unsafe extern "C" fn silk_VAD_GetNoiseLevels(
-    mut pX: *const opus_int32,
+    pX: *const opus_int32,
     mut psSilk_VAD: *mut silk_VAD_state,
 ) {
     let mut k: libc::c_int = 0;

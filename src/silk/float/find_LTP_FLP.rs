@@ -46,10 +46,10 @@ use self::main_FLP_h::{silk_corrMatrix_FLP, silk_corrVector_FLP};
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_find_LTP_FLP(
-    mut XX: *mut libc::c_float,
-    mut xX: *mut libc::c_float,
+    XX: *mut libc::c_float,
+    xX: *mut libc::c_float,
     mut r_ptr: *const libc::c_float,
-    mut lag: *const libc::c_int,
+    lag: *const libc::c_int,
     subfr_length: libc::c_int,
     nb_subfr: libc::c_int,
 ) {

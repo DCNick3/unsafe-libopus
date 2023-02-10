@@ -43,16 +43,16 @@ pub mod SigProc_FIX_h {
     #[inline]
     #[c2rust::src_loc = "546:1"]
     pub unsafe extern "C" fn silk_min_int(
-        mut a: libc::c_int,
-        mut b: libc::c_int,
+        a: libc::c_int,
+        b: libc::c_int,
     ) -> libc::c_int {
         return if a < b { a } else { b };
     }
     #[inline]
     #[c2rust::src_loc = "564:1"]
     pub unsafe extern "C" fn silk_max_int(
-        mut a: libc::c_int,
-        mut b: libc::c_int,
+        a: libc::c_int,
+        b: libc::c_int,
     ) -> libc::c_int {
         return if a > b { a } else { b };
     }
@@ -66,8 +66,8 @@ pub use self::SigProc_FIX_h::{silk_min_int, silk_max_int};
 #[no_mangle]
 #[c2rust::src_loc = "42:1"]
 pub unsafe extern "C" fn silk_NLSF_VQ_weights_laroia(
-    mut pNLSFW_Q_OUT: *mut opus_int16,
-    mut pNLSF_Q15: *const opus_int16,
+    pNLSFW_Q_OUT: *mut opus_int16,
+    pNLSF_Q15: *const opus_int16,
     D: libc::c_int,
 ) {
     let mut k: libc::c_int = 0;

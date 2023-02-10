@@ -73,16 +73,16 @@ pub mod SigProc_FIX_h {
     #[inline]
     #[c2rust::src_loc = "546:1"]
     pub unsafe extern "C" fn silk_min_int(
-        mut a: libc::c_int,
-        mut b: libc::c_int,
+        a: libc::c_int,
+        b: libc::c_int,
     ) -> libc::c_int {
         return if a < b { a } else { b };
     }
     #[inline]
     #[c2rust::src_loc = "564:1"]
     pub unsafe extern "C" fn silk_max_int(
-        mut a: libc::c_int,
-        mut b: libc::c_int,
+        a: libc::c_int,
+        b: libc::c_int,
     ) -> libc::c_int {
         return if a > b { a } else { b };
     }
@@ -120,9 +120,9 @@ pub mod SigProc_FLP_h {
     #[inline]
     #[c2rust::src_loc = "162:1"]
     pub unsafe extern "C" fn silk_float2short_array(
-        mut out: *mut opus_int16,
-        mut in_0: *const libc::c_float,
-        mut length: opus_int32,
+        out: *mut opus_int16,
+        in_0: *const libc::c_float,
+        length: opus_int32,
     ) {
         let mut k: opus_int32 = 0;
         k = length - 1 as libc::c_int;
@@ -143,9 +143,9 @@ pub mod SigProc_FLP_h {
     #[inline]
     #[c2rust::src_loc = "175:1"]
     pub unsafe extern "C" fn silk_short2float_array(
-        mut out: *mut libc::c_float,
-        mut in_0: *const opus_int16,
-        mut length: opus_int32,
+        out: *mut libc::c_float,
+        in_0: *const opus_int16,
+        length: opus_int32,
     ) {
         let mut k: opus_int32 = 0;
         k = length - 1 as libc::c_int;
@@ -156,7 +156,7 @@ pub mod SigProc_FLP_h {
     }
     #[inline]
     #[c2rust::src_loc = "188:1"]
-    pub unsafe extern "C" fn silk_log2(mut x: libc::c_double) -> libc::c_float {
+    pub unsafe extern "C" fn silk_log2(x: libc::c_double) -> libc::c_float {
         return (3.32192809488736f64 * log10(x)) as libc::c_float;
     }
     use super::opus_types_h::{opus_int16, opus_int32};
@@ -188,7 +188,7 @@ pub mod SigProc_FLP_h {
 pub mod float_cast_h {
     #[inline]
     #[c2rust::src_loc = "68:1"]
-    pub unsafe extern "C" fn float2int(mut x: libc::c_float) -> opus_int32 {
+    pub unsafe extern "C" fn float2int(x: libc::c_float) -> opus_int32 {
         return _mm_cvt_ss2si(_mm_set_ss(x));
     }
     use super::opus_types_h::opus_int32;
@@ -280,7 +280,7 @@ pub use self::stdint_intn_h::{int8_t, int16_t, int32_t};
 pub use self::stdint_uintn_h::uint32_t;
 pub use self::opus_types_h::{opus_int8, opus_int16, opus_int32, opus_uint32};
 pub use self::arch_h::{opus_val16, opus_val32, celt_fatal};
-use self::mathcalls_h::log10;
+
 pub use self::SigProc_FIX_h::{
     silk_min_int, silk_max_int, silk_resampler_down2, silk_resampler_down2_3,
 };
@@ -304,18 +304,18 @@ pub use self::pitch_h::{celt_pitch_xcorr, celt_pitch_xcorr_c};
 #[no_mangle]
 #[c2rust::src_loc = "67:1"]
 pub unsafe extern "C" fn silk_pitch_analysis_core_FLP(
-    mut frame: *const libc::c_float,
-    mut pitch_out: *mut libc::c_int,
-    mut lagIndex: *mut opus_int16,
-    mut contourIndex: *mut opus_int8,
-    mut LTPCorr: *mut libc::c_float,
+    frame: *const libc::c_float,
+    pitch_out: *mut libc::c_int,
+    lagIndex: *mut opus_int16,
+    contourIndex: *mut opus_int8,
+    LTPCorr: *mut libc::c_float,
     mut prevLag: libc::c_int,
     search_thres1: libc::c_float,
     search_thres2: libc::c_float,
     Fs_kHz: libc::c_int,
     complexity: libc::c_int,
     nb_subfr: libc::c_int,
-    mut arch: libc::c_int,
+    arch: libc::c_int,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
     let mut k: libc::c_int = 0;
@@ -1014,13 +1014,13 @@ pub unsafe extern "C" fn silk_pitch_analysis_core_FLP(
 }
 #[c2rust::src_loc = "492:1"]
 unsafe extern "C" fn silk_P_Ana_calc_corr_st3(
-    mut cross_corr_st3: *mut [[libc::c_float; 5]; 34],
-    mut frame: *const libc::c_float,
-    mut start_lag: libc::c_int,
-    mut sf_length: libc::c_int,
-    mut nb_subfr: libc::c_int,
-    mut complexity: libc::c_int,
-    mut arch: libc::c_int,
+    cross_corr_st3: *mut [[libc::c_float; 5]; 34],
+    frame: *const libc::c_float,
+    start_lag: libc::c_int,
+    sf_length: libc::c_int,
+    nb_subfr: libc::c_int,
+    complexity: libc::c_int,
+    arch: libc::c_int,
 ) {
     let mut target_ptr: *const libc::c_float = 0 as *const libc::c_float;
     let mut i: libc::c_int = 0;
@@ -1134,12 +1134,12 @@ unsafe extern "C" fn silk_P_Ana_calc_corr_st3(
 }
 #[c2rust::src_loc = "559:1"]
 unsafe extern "C" fn silk_P_Ana_calc_energy_st3(
-    mut energies_st3: *mut [[libc::c_float; 5]; 34],
-    mut frame: *const libc::c_float,
-    mut start_lag: libc::c_int,
-    mut sf_length: libc::c_int,
-    mut nb_subfr: libc::c_int,
-    mut complexity: libc::c_int,
+    energies_st3: *mut [[libc::c_float; 5]; 34],
+    frame: *const libc::c_float,
+    start_lag: libc::c_int,
+    sf_length: libc::c_int,
+    nb_subfr: libc::c_int,
+    complexity: libc::c_int,
 ) {
     let mut target_ptr: *const libc::c_float = 0 as *const libc::c_float;
     let mut basis_ptr: *const libc::c_float = 0 as *const libc::c_float;

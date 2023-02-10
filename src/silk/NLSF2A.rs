@@ -103,9 +103,9 @@ pub const QA: libc::c_int = 16 as libc::c_int;
 #[inline]
 #[c2rust::src_loc = "44:1"]
 unsafe extern "C" fn silk_NLSF2A_find_poly(
-    mut out: *mut opus_int32,
-    mut cLSF: *const opus_int32,
-    mut dd: libc::c_int,
+    out: *mut opus_int32,
+    cLSF: *const opus_int32,
+    dd: libc::c_int,
 ) {
     let mut k: libc::c_int = 0;
     let mut n: libc::c_int = 0;
@@ -161,10 +161,10 @@ unsafe extern "C" fn silk_NLSF2A_find_poly(
 #[no_mangle]
 #[c2rust::src_loc = "66:1"]
 pub unsafe extern "C" fn silk_NLSF2A(
-    mut a_Q12: *mut opus_int16,
-    mut NLSF: *const opus_int16,
+    a_Q12: *mut opus_int16,
+    NLSF: *const opus_int16,
     d: libc::c_int,
-    mut arch: libc::c_int,
+    _arch: libc::c_int,
 ) {
     static mut ordering16: [libc::c_uchar; 16] = [
         0 as libc::c_int as libc::c_uchar,

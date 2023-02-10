@@ -15,7 +15,7 @@ pub use self::opus_private_h::ChannelLayout;
 #[no_mangle]
 #[c2rust::src_loc = "41:1"]
 pub unsafe extern "C" fn validate_layout(
-    mut layout: *const ChannelLayout,
+    layout: *const ChannelLayout,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
     let mut max_channel: libc::c_int = 0;
@@ -37,9 +37,9 @@ pub unsafe extern "C" fn validate_layout(
 #[no_mangle]
 #[c2rust::src_loc = "57:1"]
 pub unsafe extern "C" fn get_left_channel(
-    mut layout: *const ChannelLayout,
-    mut stream_id: libc::c_int,
-    mut prev: libc::c_int,
+    layout: *const ChannelLayout,
+    stream_id: libc::c_int,
+    prev: libc::c_int,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
     i = if prev < 0 as libc::c_int { 0 as libc::c_int } else { prev + 1 as libc::c_int };
@@ -54,9 +54,9 @@ pub unsafe extern "C" fn get_left_channel(
 #[no_mangle]
 #[c2rust::src_loc = "69:1"]
 pub unsafe extern "C" fn get_right_channel(
-    mut layout: *const ChannelLayout,
-    mut stream_id: libc::c_int,
-    mut prev: libc::c_int,
+    layout: *const ChannelLayout,
+    stream_id: libc::c_int,
+    prev: libc::c_int,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
     i = if prev < 0 as libc::c_int { 0 as libc::c_int } else { prev + 1 as libc::c_int };
@@ -73,9 +73,9 @@ pub unsafe extern "C" fn get_right_channel(
 #[no_mangle]
 #[c2rust::src_loc = "81:1"]
 pub unsafe extern "C" fn get_mono_channel(
-    mut layout: *const ChannelLayout,
-    mut stream_id: libc::c_int,
-    mut prev: libc::c_int,
+    layout: *const ChannelLayout,
+    stream_id: libc::c_int,
+    prev: libc::c_int,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
     i = if prev < 0 as libc::c_int { 0 as libc::c_int } else { prev + 1 as libc::c_int };

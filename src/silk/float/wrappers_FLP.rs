@@ -317,7 +317,7 @@ pub mod SigProc_FIX_h {
 pub mod float_cast_h {
     #[inline]
     #[c2rust::src_loc = "68:1"]
-    pub unsafe extern "C" fn float2int(mut x: libc::c_float) -> opus_int32 {
+    pub unsafe extern "C" fn float2int(x: libc::c_float) -> opus_int32 {
         return _mm_cvt_ss2si(_mm_set_ss(x));
     }
     use super::opus_types_h::opus_int32;
@@ -327,7 +327,7 @@ pub mod float_cast_h {
 pub mod SigProc_FLP_h {
     #[inline]
     #[c2rust::src_loc = "156:1"]
-    pub unsafe extern "C" fn silk_float2int(mut x: libc::c_float) -> opus_int32 {
+    pub unsafe extern "C" fn silk_float2int(x: libc::c_float) -> opus_int32 {
         return float2int(x);
     }
     use super::opus_types_h::opus_int32;
@@ -442,8 +442,8 @@ pub use self::define_h::{LTP_ORDER, MAX_SHAPE_LPC_ORDER, TYPE_VOICED};
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn silk_A2NLSF_FLP(
-    mut NLSF_Q15: *mut opus_int16,
-    mut pAR: *const libc::c_float,
+    NLSF_Q15: *mut opus_int16,
+    pAR: *const libc::c_float,
     LPC_order: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
@@ -458,10 +458,10 @@ pub unsafe extern "C" fn silk_A2NLSF_FLP(
 #[no_mangle]
 #[c2rust::src_loc = "54:1"]
 pub unsafe extern "C" fn silk_NLSF2A_FLP(
-    mut pAR: *mut libc::c_float,
-    mut NLSF_Q15: *const opus_int16,
+    pAR: *mut libc::c_float,
+    NLSF_Q15: *const opus_int16,
     LPC_order: libc::c_int,
-    mut arch: libc::c_int,
+    arch: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut a_fix_Q12: [opus_int16; 16] = [0; 16];
@@ -478,10 +478,10 @@ pub unsafe extern "C" fn silk_NLSF2A_FLP(
 #[no_mangle]
 #[c2rust::src_loc = "74:1"]
 pub unsafe extern "C" fn silk_process_NLSFs_FLP(
-    mut psEncC: *mut silk_encoder_state,
-    mut PredCoef: *mut [libc::c_float; 16],
-    mut NLSF_Q15: *mut opus_int16,
-    mut prev_NLSF_Q15: *const opus_int16,
+    psEncC: *mut silk_encoder_state,
+    PredCoef: *mut [libc::c_float; 16],
+    NLSF_Q15: *mut opus_int16,
+    prev_NLSF_Q15: *const opus_int16,
 ) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
@@ -505,12 +505,12 @@ pub unsafe extern "C" fn silk_process_NLSFs_FLP(
 #[no_mangle]
 #[c2rust::src_loc = "96:1"]
 pub unsafe extern "C" fn silk_NSQ_wrapper_FLP(
-    mut psEnc: *mut silk_encoder_state_FLP,
-    mut psEncCtrl: *mut silk_encoder_control_FLP,
-    mut psIndices: *mut SideInfoIndices,
-    mut psNSQ: *mut silk_nsq_state,
-    mut pulses: *mut opus_int8,
-    mut x: *const libc::c_float,
+    psEnc: *mut silk_encoder_state_FLP,
+    psEncCtrl: *mut silk_encoder_control_FLP,
+    psIndices: *mut SideInfoIndices,
+    psNSQ: *mut silk_nsq_state,
+    pulses: *mut opus_int8,
+    x: *const libc::c_float,
 ) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
@@ -632,16 +632,16 @@ pub unsafe extern "C" fn silk_NSQ_wrapper_FLP(
 #[no_mangle]
 #[c2rust::src_loc = "175:1"]
 pub unsafe extern "C" fn silk_quant_LTP_gains_FLP(
-    mut B: *mut libc::c_float,
-    mut cbk_index: *mut opus_int8,
-    mut periodicity_index: *mut opus_int8,
-    mut sum_log_gain_Q7: *mut opus_int32,
-    mut pred_gain_dB: *mut libc::c_float,
-    mut XX: *const libc::c_float,
-    mut xX: *const libc::c_float,
+    B: *mut libc::c_float,
+    cbk_index: *mut opus_int8,
+    periodicity_index: *mut opus_int8,
+    sum_log_gain_Q7: *mut opus_int32,
+    pred_gain_dB: *mut libc::c_float,
+    XX: *const libc::c_float,
+    xX: *const libc::c_float,
     subfr_len: libc::c_int,
     nb_subfr: libc::c_int,
-    mut arch: libc::c_int,
+    arch: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut pred_gain_dB_Q7: libc::c_int = 0;

@@ -14,8 +14,8 @@ use self::arch_h::celt_fatal;
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_insertion_sort_decreasing_FLP(
-    mut a: *mut libc::c_float,
-    mut idx: *mut libc::c_int,
+    a: *mut libc::c_float,
+    idx: *mut libc::c_int,
     L: libc::c_int,
     K: libc::c_int,
 ) {

@@ -49,9 +49,9 @@ pub const REGULARIZATION_FACTOR: libc::c_float = 1e-8f32;
 #[no_mangle]
 #[c2rust::src_loc = "38:1"]
 pub unsafe extern "C" fn silk_residual_energy_covar_FLP(
-    mut c: *const libc::c_float,
-    mut wXX: *mut libc::c_float,
-    mut wXx: *const libc::c_float,
+    c: *const libc::c_float,
+    wXX: *mut libc::c_float,
+    wXx: *const libc::c_float,
     wxx: libc::c_float,
     D: libc::c_int,
 ) -> libc::c_float {
@@ -114,10 +114,10 @@ pub unsafe extern "C" fn silk_residual_energy_covar_FLP(
 #[no_mangle]
 #[c2rust::src_loc = "91:1"]
 pub unsafe extern "C" fn silk_residual_energy_FLP(
-    mut nrgs: *mut libc::c_float,
-    mut x: *const libc::c_float,
-    mut a: *mut [libc::c_float; 16],
-    mut gains: *const libc::c_float,
+    nrgs: *mut libc::c_float,
+    x: *const libc::c_float,
+    a: *mut [libc::c_float; 16],
+    gains: *const libc::c_float,
     subfr_length: libc::c_int,
     nb_subfr: libc::c_int,
     LPC_order: libc::c_int,

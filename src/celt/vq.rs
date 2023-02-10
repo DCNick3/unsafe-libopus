@@ -63,8 +63,8 @@ pub mod entcode_h {
     #[inline]
     #[c2rust::src_loc = "124:1"]
     pub unsafe extern "C" fn celt_udiv(
-        mut n: opus_uint32,
-        mut d: opus_uint32,
+        n: opus_uint32,
+        d: opus_uint32,
     ) -> opus_uint32 {
         return n.wrapping_div(d);
     }
@@ -98,8 +98,8 @@ pub mod mathops_h {
     #[inline]
     #[c2rust::src_loc = "54:1"]
     pub unsafe extern "C" fn fast_atan2f(
-        mut y: libc::c_float,
-        mut x: libc::c_float,
+        y: libc::c_float,
+        x: libc::c_float,
     ) -> libc::c_float {
         let mut x2: libc::c_float = 0.;
         let mut y2: libc::c_float = 0.;
@@ -109,11 +109,11 @@ pub mod mathops_h {
             return 0 as libc::c_int as libc::c_float;
         }
         if x2 < y2 {
-            let mut den: libc::c_float = (y2 + cB * x2) * (y2 + cC * x2);
+            let den: libc::c_float = (y2 + cB * x2) * (y2 + cC * x2);
             return -x * y * (y2 + cA * x2) / den
                 + (if y < 0 as libc::c_int as libc::c_float { -cE } else { cE });
         } else {
-            let mut den_0: libc::c_float = (x2 + cB * y2) * (x2 + cC * y2);
+            let den_0: libc::c_float = (x2 + cB * y2) * (x2 + cC * y2);
             return x * y * (x2 + cA * y2) / den_0
                 + (if y < 0 as libc::c_int as libc::c_float { -cE } else { cE })
                 - (if x * y < 0 as libc::c_int as libc::c_float { -cE } else { cE });
@@ -151,9 +151,9 @@ pub mod pitch_h {
     #[inline]
     #[c2rust::src_loc = "159:1"]
     pub unsafe extern "C" fn celt_inner_prod_c(
-        mut x: *const opus_val16,
-        mut y: *const opus_val16,
-        mut N: libc::c_int,
+        x: *const opus_val16,
+        y: *const opus_val16,
+        N: libc::c_int,
     ) -> opus_val32 {
         let mut i: libc::c_int = 0;
         let mut xy: opus_val32 = 0 as libc::c_int as opus_val32;
@@ -178,11 +178,11 @@ pub use self::bands_h::SPREAD_NONE;
 pub use self::pitch_h::celt_inner_prod_c;
 #[c2rust::src_loc = "47:1"]
 unsafe extern "C" fn exp_rotation1(
-    mut X: *mut celt_norm,
-    mut len: libc::c_int,
-    mut stride: libc::c_int,
-    mut c: opus_val16,
-    mut s: opus_val16,
+    X: *mut celt_norm,
+    len: libc::c_int,
+    stride: libc::c_int,
+    c: opus_val16,
+    s: opus_val16,
 ) {
     let mut i: libc::c_int = 0;
     let mut ms: opus_val16 = 0.;
@@ -219,12 +219,12 @@ unsafe extern "C" fn exp_rotation1(
 #[no_mangle]
 #[c2rust::src_loc = "74:1"]
 pub unsafe extern "C" fn exp_rotation(
-    mut X: *mut celt_norm,
+    X: *mut celt_norm,
     mut len: libc::c_int,
-    mut dir: libc::c_int,
-    mut stride: libc::c_int,
-    mut K: libc::c_int,
-    mut spread: libc::c_int,
+    dir: libc::c_int,
+    stride: libc::c_int,
+    K: libc::c_int,
+    spread: libc::c_int,
 ) {
     static mut SPREAD_FACTOR: [libc::c_int; 3] = [
         15 as libc::c_int,
@@ -272,11 +272,11 @@ pub unsafe extern "C" fn exp_rotation(
 }
 #[c2rust::src_loc = "121:1"]
 unsafe extern "C" fn normalise_residual(
-    mut iy: *mut libc::c_int,
-    mut X: *mut celt_norm,
-    mut N: libc::c_int,
-    mut Ryy: opus_val32,
-    mut gain: opus_val16,
+    iy: *mut libc::c_int,
+    X: *mut celt_norm,
+    N: libc::c_int,
+    Ryy: opus_val32,
+    gain: opus_val16,
 ) {
     let mut i: libc::c_int = 0;
     let mut t: opus_val32 = 0.;
@@ -294,9 +294,9 @@ unsafe extern "C" fn normalise_residual(
 }
 #[c2rust::src_loc = "143:1"]
 unsafe extern "C" fn extract_collapse_mask(
-    mut iy: *mut libc::c_int,
-    mut N: libc::c_int,
-    mut B: libc::c_int,
+    iy: *mut libc::c_int,
+    N: libc::c_int,
+    B: libc::c_int,
 ) -> libc::c_uint {
     let mut collapse_mask: libc::c_uint = 0;
     let mut N0: libc::c_int = 0;
@@ -331,11 +331,11 @@ unsafe extern "C" fn extract_collapse_mask(
 #[no_mangle]
 #[c2rust::src_loc = "165:1"]
 pub unsafe extern "C" fn op_pvq_search_c(
-    mut X: *mut celt_norm,
-    mut iy: *mut libc::c_int,
-    mut K: libc::c_int,
-    mut N: libc::c_int,
-    mut arch: libc::c_int,
+    X: *mut celt_norm,
+    iy: *mut libc::c_int,
+    K: libc::c_int,
+    N: libc::c_int,
+    _arch: libc::c_int,
 ) -> opus_val16 {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
@@ -415,7 +415,7 @@ pub unsafe extern "C" fn op_pvq_search_c(
         }
     }
     if pulsesLeft > N + 3 as libc::c_int {
-        let mut tmp: opus_val16 = pulsesLeft as opus_val16;
+        let tmp: opus_val16 = pulsesLeft as opus_val16;
         yy = yy + tmp * tmp;
         yy = yy + tmp * *y.as_mut_ptr().offset(0 as libc::c_int as isize);
         *iy.offset(0 as libc::c_int as isize) += pulsesLeft;
@@ -475,15 +475,15 @@ pub unsafe extern "C" fn op_pvq_search_c(
 #[no_mangle]
 #[c2rust::src_loc = "330:1"]
 pub unsafe extern "C" fn alg_quant(
-    mut X: *mut celt_norm,
-    mut N: libc::c_int,
-    mut K: libc::c_int,
-    mut spread: libc::c_int,
-    mut B: libc::c_int,
-    mut enc: *mut ec_enc,
-    mut gain: opus_val16,
-    mut resynth: libc::c_int,
-    mut arch: libc::c_int,
+    X: *mut celt_norm,
+    N: libc::c_int,
+    K: libc::c_int,
+    spread: libc::c_int,
+    B: libc::c_int,
+    enc: *mut ec_enc,
+    gain: opus_val16,
+    resynth: libc::c_int,
+    arch: libc::c_int,
 ) -> libc::c_uint {
     let mut yy: opus_val16 = 0.;
     let mut collapse_mask: libc::c_uint = 0;
@@ -518,13 +518,13 @@ pub unsafe extern "C" fn alg_quant(
 #[no_mangle]
 #[c2rust::src_loc = "363:1"]
 pub unsafe extern "C" fn alg_unquant(
-    mut X: *mut celt_norm,
-    mut N: libc::c_int,
-    mut K: libc::c_int,
-    mut spread: libc::c_int,
-    mut B: libc::c_int,
-    mut dec: *mut ec_dec,
-    mut gain: opus_val16,
+    X: *mut celt_norm,
+    N: libc::c_int,
+    K: libc::c_int,
+    spread: libc::c_int,
+    B: libc::c_int,
+    dec: *mut ec_dec,
+    gain: opus_val16,
 ) -> libc::c_uint {
     let mut Ryy: opus_val32 = 0.;
     let mut collapse_mask: libc::c_uint = 0;
@@ -555,10 +555,10 @@ pub unsafe extern "C" fn alg_unquant(
 #[no_mangle]
 #[c2rust::src_loc = "383:1"]
 pub unsafe extern "C" fn renormalise_vector(
-    mut X: *mut celt_norm,
-    mut N: libc::c_int,
-    mut gain: opus_val16,
-    mut arch: libc::c_int,
+    X: *mut celt_norm,
+    N: libc::c_int,
+    gain: opus_val16,
+    _arch: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut E: opus_val32 = 0.;
@@ -579,11 +579,11 @@ pub unsafe extern "C" fn renormalise_vector(
 #[no_mangle]
 #[c2rust::src_loc = "410:1"]
 pub unsafe extern "C" fn stereo_itheta(
-    mut X: *const celt_norm,
-    mut Y: *const celt_norm,
-    mut stereo: libc::c_int,
-    mut N: libc::c_int,
-    mut arch: libc::c_int,
+    X: *const celt_norm,
+    Y: *const celt_norm,
+    stereo: libc::c_int,
+    N: libc::c_int,
+    _arch: libc::c_int,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
     let mut itheta: libc::c_int = 0;

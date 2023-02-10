@@ -117,7 +117,7 @@ pub mod ecintrin_h {
 pub mod macros_h {
     #[inline]
     #[c2rust::src_loc = "120:1"]
-    pub unsafe extern "C" fn silk_CLZ32(mut in32: opus_int32) -> opus_int32 {
+    pub unsafe extern "C" fn silk_CLZ32(in32: opus_int32) -> opus_int32 {
         return if in32 != 0 {
             32 as libc::c_int - (EC_CLZ0 - (in32 as libc::c_uint).leading_zeros() as i32)
         } else {
@@ -211,10 +211,10 @@ pub mod Inlines_h {
         let mut a32_nrm: opus_int32 = 0;
         let mut b32_nrm: opus_int32 = 0;
         let mut result: opus_int32 = 0;
-        a_headrm = silk_CLZ32((if a32 > 0 as libc::c_int { a32 } else { -a32 }))
+        a_headrm = silk_CLZ32(if a32 > 0 as libc::c_int { a32 } else { -a32 })
             - 1 as libc::c_int;
         a32_nrm = ((a32 as opus_uint32) << a_headrm) as opus_int32;
-        b_headrm = silk_CLZ32((if b32 > 0 as libc::c_int { b32 } else { -b32 }))
+        b_headrm = silk_CLZ32(if b32 > 0 as libc::c_int { b32 } else { -b32 })
             - 1 as libc::c_int;
         b32_nrm = ((b32 as opus_uint32) << b_headrm) as opus_int32;
         b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int)
@@ -235,25 +235,25 @@ pub mod Inlines_h {
             return (((if 0x80000000 as libc::c_uint as opus_int32 >> -lshift
                 > 0x7fffffff as libc::c_int >> -lshift
             {
-                (if result > 0x80000000 as libc::c_uint as opus_int32 >> -lshift {
+                if result > 0x80000000 as libc::c_uint as opus_int32 >> -lshift {
                     0x80000000 as libc::c_uint as opus_int32 >> -lshift
                 } else {
-                    (if result < 0x7fffffff as libc::c_int >> -lshift {
+                    if result < 0x7fffffff as libc::c_int >> -lshift {
                         0x7fffffff as libc::c_int >> -lshift
                     } else {
                         result
-                    })
-                })
+                    }
+                }
             } else {
-                (if result > 0x7fffffff as libc::c_int >> -lshift {
+                if result > 0x7fffffff as libc::c_int >> -lshift {
                     0x7fffffff as libc::c_int >> -lshift
                 } else {
-                    (if result < 0x80000000 as libc::c_uint as opus_int32 >> -lshift {
+                    if result < 0x80000000 as libc::c_uint as opus_int32 >> -lshift {
                         0x80000000 as libc::c_uint as opus_int32 >> -lshift
                     } else {
                         result
-                    })
-                })
+                    }
+                }
             }) as opus_uint32) << -lshift) as opus_int32
         } else if lshift < 32 as libc::c_int {
             return result >> lshift
@@ -295,10 +295,10 @@ pub use self::internal::__CHAR_BIT__;
 #[no_mangle]
 #[c2rust::src_loc = "38:1"]
 pub unsafe extern "C" fn silk_NLSF_encode(
-    mut NLSFIndices: *mut opus_int8,
-    mut pNLSF_Q15: *mut opus_int16,
-    mut psNLSF_CB: *const silk_NLSF_CB_struct,
-    mut pW_Q2: *const opus_int16,
+    NLSFIndices: *mut opus_int8,
+    pNLSF_Q15: *mut opus_int16,
+    psNLSF_CB: *const silk_NLSF_CB_struct,
+    pW_Q2: *const opus_int16,
     NLSF_mu_Q20: libc::c_int,
     nSurvivors: libc::c_int,
     signalType: libc::c_int,

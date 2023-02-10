@@ -211,7 +211,7 @@ pub mod SigProc_FIX_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
 pub mod tables_h {
-    use super::opus_types_h::{opus_uint8, opus_int16};
+    use super::opus_types_h::{opus_uint8};
     use super::structs_h::silk_NLSF_CB_struct;
     extern "C" {
         #[c2rust::src_loc = "45:26"]
@@ -271,8 +271,8 @@ pub use self::define_h::{
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_decoder_set_fs(
     mut psDec: *mut silk_decoder_state,
-    mut fs_kHz: libc::c_int,
-    mut fs_API_Hz: opus_int32,
+    fs_kHz: libc::c_int,
+    fs_API_Hz: opus_int32,
 ) -> libc::c_int {
     let mut frame_length: libc::c_int = 0;
     let mut ret: libc::c_int = 0 as libc::c_int;

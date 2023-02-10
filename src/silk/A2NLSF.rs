@@ -44,8 +44,8 @@ pub mod SigProc_FIX_h {
     #[inline]
     #[c2rust::src_loc = "554:1"]
     pub unsafe extern "C" fn silk_min_32(
-        mut a: opus_int32,
-        mut b: opus_int32,
+        a: opus_int32,
+        b: opus_int32,
     ) -> opus_int32 {
         return if a < b { a } else { b };
     }
@@ -91,7 +91,7 @@ pub const BIN_DIV_STEPS_A2NLSF_FIX: libc::c_int = 3 as libc::c_int;
 pub const MAX_ITERATIONS_A2NLSF_FIX: libc::c_int = 16 as libc::c_int;
 #[inline]
 #[c2rust::src_loc = "47:1"]
-unsafe extern "C" fn silk_A2NLSF_trans_poly(mut p: *mut opus_int32, dd: libc::c_int) {
+unsafe extern "C" fn silk_A2NLSF_trans_poly(p: *mut opus_int32, dd: libc::c_int) {
     let mut k: libc::c_int = 0;
     let mut n: libc::c_int = 0;
     k = 2 as libc::c_int;
@@ -112,7 +112,7 @@ unsafe extern "C" fn silk_A2NLSF_trans_poly(mut p: *mut opus_int32, dd: libc::c_
 #[inline]
 #[c2rust::src_loc = "63:1"]
 unsafe extern "C" fn silk_A2NLSF_eval_poly(
-    mut p: *mut opus_int32,
+    p: *mut opus_int32,
     x: opus_int32,
     dd: libc::c_int,
 ) -> opus_int32 {
@@ -160,9 +160,9 @@ unsafe extern "C" fn silk_A2NLSF_eval_poly(
 #[inline]
 #[c2rust::src_loc = "95:1"]
 unsafe extern "C" fn silk_A2NLSF_init(
-    mut a_Q16: *const opus_int32,
-    mut P: *mut opus_int32,
-    mut Q: *mut opus_int32,
+    a_Q16: *const opus_int32,
+    P: *mut opus_int32,
+    Q: *mut opus_int32,
     dd: libc::c_int,
 ) {
     let mut k: libc::c_int = 0;
@@ -202,8 +202,8 @@ unsafe extern "C" fn silk_A2NLSF_init(
 #[no_mangle]
 #[c2rust::src_loc = "127:1"]
 pub unsafe extern "C" fn silk_A2NLSF(
-    mut NLSF: *mut opus_int16,
-    mut a_Q16: *mut opus_int32,
+    NLSF: *mut opus_int16,
+    a_Q16: *mut opus_int32,
     d: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;

@@ -238,9 +238,9 @@ pub const USE_silk_resampler_private_down_FIR: libc::c_int = 3 as libc::c_int;
 #[c2rust::src_loc = "78:1"]
 pub unsafe extern "C" fn silk_resampler_init(
     mut S: *mut silk_resampler_state_struct,
-    mut Fs_Hz_in: opus_int32,
-    mut Fs_Hz_out: opus_int32,
-    mut forEnc: libc::c_int,
+    Fs_Hz_in: opus_int32,
+    Fs_Hz_out: opus_int32,
+    forEnc: libc::c_int,
 ) -> libc::c_int {
     let mut up2x: libc::c_int = 0;
     memset(
@@ -361,10 +361,10 @@ pub unsafe extern "C" fn silk_resampler_init(
 #[no_mangle]
 #[c2rust::src_loc = "174:1"]
 pub unsafe extern "C" fn silk_resampler(
-    mut S: *mut silk_resampler_state_struct,
-    mut out: *mut opus_int16,
-    mut in_0: *const opus_int16,
-    mut inLen: opus_int32,
+    S: *mut silk_resampler_state_struct,
+    out: *mut opus_int16,
+    in_0: *const opus_int16,
+    inLen: opus_int32,
 ) -> libc::c_int {
     let mut nSamples: libc::c_int = 0;
     if !(inLen >= (*S).Fs_in_kHz) {

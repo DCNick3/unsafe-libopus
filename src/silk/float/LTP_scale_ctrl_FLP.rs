@@ -309,7 +309,7 @@ pub use self::define_h::CODE_INDEPENDENTLY;
 pub unsafe extern "C" fn silk_LTP_scale_ctrl_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,
     mut psEncCtrl: *mut silk_encoder_control_FLP,
-    mut condCoding: libc::c_int,
+    condCoding: libc::c_int,
 ) {
     let mut round_loss: libc::c_int = 0;
     if condCoding == CODE_INDEPENDENTLY {

@@ -22,9 +22,9 @@ pub use self::opus_types_h::opus_int32;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_k2a_FLP(
-    mut A: *mut libc::c_float,
-    mut rc: *const libc::c_float,
-    mut order: opus_int32,
+    A: *mut libc::c_float,
+    rc: *const libc::c_float,
+    order: opus_int32,
 ) {
     let mut k: libc::c_int = 0;
     let mut n: libc::c_int = 0;

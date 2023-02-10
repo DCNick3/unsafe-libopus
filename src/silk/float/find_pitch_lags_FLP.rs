@@ -415,9 +415,9 @@ pub use self::tuning_parameters_h::{
 pub unsafe extern "C" fn silk_find_pitch_lags_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,
     mut psEncCtrl: *mut silk_encoder_control_FLP,
-    mut res: *mut libc::c_float,
-    mut x: *const libc::c_float,
-    mut arch: libc::c_int,
+    res: *mut libc::c_float,
+    x: *const libc::c_float,
+    arch: libc::c_int,
 ) {
     let mut buf_len: libc::c_int = 0;
     let mut thrhld: libc::c_float = 0.;

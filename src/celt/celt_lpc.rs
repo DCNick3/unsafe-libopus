@@ -41,8 +41,8 @@ pub mod pitch_h {
     pub unsafe extern "C" fn xcorr_kernel_c(
         mut x: *const opus_val16,
         mut y: *const opus_val16,
-        mut sum: *mut opus_val32,
-        mut len: libc::c_int,
+        sum: *mut opus_val32,
+        len: libc::c_int,
     ) {
         let mut j: libc::c_int = 0;
         let mut y_0: opus_val16 = 0.;
@@ -164,7 +164,7 @@ pub mod pitch_h {
         if fresh11 < len {
             let fresh12 = x;
             x = x.offset(1);
-            let mut tmp_0: opus_val16 = *fresh12;
+            let tmp_0: opus_val16 = *fresh12;
             let fresh13 = y;
             y = y.offset(1);
             y_3 = *fresh13;
@@ -190,7 +190,7 @@ pub mod pitch_h {
         if fresh14 < len {
             let fresh15 = x;
             x = x.offset(1);
-            let mut tmp_1: opus_val16 = *fresh15;
+            let tmp_1: opus_val16 = *fresh15;
             let fresh16 = y;
             y = y.offset(1);
             y_0 = *fresh16;
@@ -214,7 +214,7 @@ pub mod pitch_h {
         if j < len {
             let fresh17 = x;
             x = x.offset(1);
-            let mut tmp_2: opus_val16 = *fresh17;
+            let tmp_2: opus_val16 = *fresh17;
             let fresh18 = y;
             y = y.offset(1);
             y_1 = *fresh18;
@@ -256,14 +256,14 @@ pub use self::pitch_h::{celt_pitch_xcorr, xcorr_kernel_c, celt_pitch_xcorr_c};
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn _celt_lpc(
     mut _lpc: *mut opus_val16,
-    mut ac: *const opus_val32,
-    mut p: libc::c_int,
+    ac: *const opus_val32,
+    p: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     let mut r: opus_val32 = 0.;
     let mut error: opus_val32 = *ac.offset(0 as libc::c_int as isize);
-    let mut lpc: *mut libc::c_float = _lpc;
+    let lpc: *mut libc::c_float = _lpc;
     memset(
         lpc as *mut libc::c_void,
         0 as libc::c_int,
@@ -303,12 +303,12 @@ pub unsafe extern "C" fn _celt_lpc(
 #[no_mangle]
 #[c2rust::src_loc = "91:1"]
 pub unsafe extern "C" fn celt_fir_c(
-    mut x: *const opus_val16,
-    mut num: *const opus_val16,
-    mut y: *mut opus_val16,
-    mut N: libc::c_int,
-    mut ord: libc::c_int,
-    mut arch: libc::c_int,
+    x: *const opus_val16,
+    num: *const opus_val16,
+    y: *mut opus_val16,
+    N: libc::c_int,
+    ord: libc::c_int,
+    _arch: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
@@ -364,12 +364,12 @@ pub unsafe extern "C" fn celt_fir_c(
 #[c2rust::src_loc = "129:1"]
 pub unsafe extern "C" fn celt_iir(
     mut _x: *const opus_val32,
-    mut den: *const opus_val16,
+    den: *const opus_val16,
     mut _y: *mut opus_val32,
-    mut N: libc::c_int,
-    mut ord: libc::c_int,
-    mut mem: *mut opus_val16,
-    mut arch: libc::c_int,
+    N: libc::c_int,
+    ord: libc::c_int,
+    mem: *mut opus_val16,
+    _arch: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
@@ -483,18 +483,18 @@ pub unsafe extern "C" fn celt_iir(
 #[no_mangle]
 #[c2rust::src_loc = "210:1"]
 pub unsafe extern "C" fn _celt_autocorr(
-    mut x: *const opus_val16,
-    mut ac: *mut opus_val32,
-    mut window: *const opus_val16,
-    mut overlap: libc::c_int,
-    mut lag: libc::c_int,
-    mut n: libc::c_int,
-    mut arch: libc::c_int,
+    x: *const opus_val16,
+    ac: *mut opus_val32,
+    window: *const opus_val16,
+    overlap: libc::c_int,
+    lag: libc::c_int,
+    n: libc::c_int,
+    arch: libc::c_int,
 ) -> libc::c_int {
     let mut d: opus_val32 = 0.;
     let mut i: libc::c_int = 0;
     let mut k: libc::c_int = 0;
-    let mut fastN: libc::c_int = n - lag;
+    let fastN: libc::c_int = n - lag;
     let mut shift: libc::c_int = 0;
     let mut xptr: *const opus_val16 = 0 as *const opus_val16;
     let vla = n as usize;

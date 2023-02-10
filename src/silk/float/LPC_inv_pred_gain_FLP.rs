@@ -40,8 +40,8 @@ pub use self::define_h::MAX_PREDICTION_POWER_GAIN;
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_LPC_inverse_pred_gain_FLP(
-    mut A: *const libc::c_float,
-    mut order: opus_int32,
+    A: *const libc::c_float,
+    order: opus_int32,
 ) -> libc::c_float {
     let mut k: libc::c_int = 0;
     let mut n: libc::c_int = 0;

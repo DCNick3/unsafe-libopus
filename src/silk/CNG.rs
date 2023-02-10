@@ -246,7 +246,7 @@ pub mod ecintrin_h {
 pub mod macros_h {
     #[inline]
     #[c2rust::src_loc = "120:1"]
-    pub unsafe extern "C" fn silk_CLZ32(mut in32: opus_int32) -> opus_int32 {
+    pub unsafe extern "C" fn silk_CLZ32(in32: opus_int32) -> opus_int32 {
         return if in32 != 0 {
             32 as libc::c_int - (EC_CLZ0 - (in32 as libc::c_uint).leading_zeros() as i32)
         } else {
@@ -261,12 +261,12 @@ pub mod SigProc_FIX_h {
     #[inline]
     #[c2rust::src_loc = "398:1"]
     pub unsafe extern "C" fn silk_ROR32(
-        mut a32: opus_int32,
-        mut rot: libc::c_int,
+        a32: opus_int32,
+        rot: libc::c_int,
     ) -> opus_int32 {
-        let mut x: opus_uint32 = a32 as opus_uint32;
-        let mut r: opus_uint32 = rot as opus_uint32;
-        let mut m: opus_uint32 = -rot as opus_uint32;
+        let x: opus_uint32 = a32 as opus_uint32;
+        let r: opus_uint32 = rot as opus_uint32;
+        let m: opus_uint32 = -rot as opus_uint32;
         if rot == 0 as libc::c_int {
             return a32
         } else if rot < 0 as libc::c_int {
@@ -293,17 +293,17 @@ pub mod Inlines_h {
     #[inline]
     #[c2rust::src_loc = "56:1"]
     pub unsafe extern "C" fn silk_CLZ_FRAC(
-        mut in_0: opus_int32,
-        mut lz: *mut opus_int32,
-        mut frac_Q7: *mut opus_int32,
+        in_0: opus_int32,
+        lz: *mut opus_int32,
+        frac_Q7: *mut opus_int32,
     ) {
-        let mut lzeros: opus_int32 = silk_CLZ32(in_0);
+        let lzeros: opus_int32 = silk_CLZ32(in_0);
         *lz = lzeros;
         *frac_Q7 = silk_ROR32(in_0, 24 as libc::c_int - lzeros) & 0x7f as libc::c_int;
     }
     #[inline]
     #[c2rust::src_loc = "71:1"]
-    pub unsafe extern "C" fn silk_SQRT_APPROX(mut x: opus_int32) -> opus_int32 {
+    pub unsafe extern "C" fn silk_SQRT_APPROX(x: opus_int32) -> opus_int32 {
         let mut y: opus_int32 = 0;
         let mut lz: opus_int32 = 0;
         let mut frac_Q7: opus_int32 = 0;
@@ -383,10 +383,10 @@ pub use self::internal::__CHAR_BIT__;
 #[inline]
 #[c2rust::src_loc = "36:1"]
 unsafe extern "C" fn silk_CNG_exc(
-    mut exc_Q14: *mut opus_int32,
-    mut exc_buf_Q14: *mut opus_int32,
-    mut length: libc::c_int,
-    mut rand_seed: *mut opus_int32,
+    exc_Q14: *mut opus_int32,
+    exc_buf_Q14: *mut opus_int32,
+    length: libc::c_int,
+    rand_seed: *mut opus_int32,
 ) {
     let mut seed: opus_int32 = 0;
     let mut i: libc::c_int = 0;
@@ -430,10 +430,10 @@ pub unsafe extern "C" fn silk_CNG_Reset(mut psDec: *mut silk_decoder_state) {
 #[no_mangle]
 #[c2rust::src_loc = "79:1"]
 pub unsafe extern "C" fn silk_CNG(
-    mut psDec: *mut silk_decoder_state,
-    mut psDecCtrl: *mut silk_decoder_control,
-    mut frame: *mut opus_int16,
-    mut length: libc::c_int,
+    psDec: *mut silk_decoder_state,
+    psDecCtrl: *mut silk_decoder_control,
+    frame: *mut opus_int16,
+    length: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut subfr: libc::c_int = 0;
@@ -665,34 +665,34 @@ pub unsafe extern "C" fn silk_CNG(
                     (((if 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                         > 0x7fffffff as libc::c_int >> 4 as libc::c_int
                     {
-                        (if LPC_pred_Q10
+                        if LPC_pred_Q10
                             > 0x80000000 as libc::c_uint as opus_int32
                                 >> 4 as libc::c_int
                         {
                             0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                         } else {
-                            (if LPC_pred_Q10
+                            if LPC_pred_Q10
                                 < 0x7fffffff as libc::c_int >> 4 as libc::c_int
                             {
                                 0x7fffffff as libc::c_int >> 4 as libc::c_int
                             } else {
                                 LPC_pred_Q10
-                            })
-                        })
+                            }
+                        }
                     } else {
-                        (if LPC_pred_Q10 > 0x7fffffff as libc::c_int >> 4 as libc::c_int
+                        if LPC_pred_Q10 > 0x7fffffff as libc::c_int >> 4 as libc::c_int
                         {
                             0x7fffffff as libc::c_int >> 4 as libc::c_int
                         } else {
-                            (if LPC_pred_Q10
+                            if LPC_pred_Q10
                                 < 0x80000000 as libc::c_uint as opus_int32
                                     >> 4 as libc::c_int
                             {
                                 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                             } else {
                                 LPC_pred_Q10
-                            })
-                        })
+                            }
+                        }
                     }) as opus_uint32) << 4 as libc::c_int) as opus_int32 as opus_uint32,
                 ) & 0x80000000 as libc::c_uint == 0 as libc::c_int as libc::c_uint
             {
@@ -700,34 +700,34 @@ pub unsafe extern "C" fn silk_CNG(
                     & (((if 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                         > 0x7fffffff as libc::c_int >> 4 as libc::c_int
                     {
-                        (if LPC_pred_Q10
+                        if LPC_pred_Q10
                             > 0x80000000 as libc::c_uint as opus_int32
                                 >> 4 as libc::c_int
                         {
                             0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                         } else {
-                            (if LPC_pred_Q10
+                            if LPC_pred_Q10
                                 < 0x7fffffff as libc::c_int >> 4 as libc::c_int
                             {
                                 0x7fffffff as libc::c_int >> 4 as libc::c_int
                             } else {
                                 LPC_pred_Q10
-                            })
-                        })
+                            }
+                        }
                     } else {
-                        (if LPC_pred_Q10 > 0x7fffffff as libc::c_int >> 4 as libc::c_int
+                        if LPC_pred_Q10 > 0x7fffffff as libc::c_int >> 4 as libc::c_int
                         {
                             0x7fffffff as libc::c_int >> 4 as libc::c_int
                         } else {
-                            (if LPC_pred_Q10
+                            if LPC_pred_Q10
                                 < 0x80000000 as libc::c_uint as opus_int32
                                     >> 4 as libc::c_int
                             {
                                 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                             } else {
                                 LPC_pred_Q10
-                            })
-                        })
+                            }
+                        }
                     }) as opus_uint32) << 4 as libc::c_int) as opus_int32)
                     as libc::c_uint & 0x80000000 as libc::c_uint
                     != 0 as libc::c_int as libc::c_uint
@@ -739,66 +739,66 @@ pub unsafe extern "C" fn silk_CNG(
                             >> 4 as libc::c_int
                             > 0x7fffffff as libc::c_int >> 4 as libc::c_int
                         {
-                            (if LPC_pred_Q10
+                            if LPC_pred_Q10
                                 > 0x80000000 as libc::c_uint as opus_int32
                                     >> 4 as libc::c_int
                             {
                                 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                             } else {
-                                (if LPC_pred_Q10
+                                if LPC_pred_Q10
                                     < 0x7fffffff as libc::c_int >> 4 as libc::c_int
                                 {
                                     0x7fffffff as libc::c_int >> 4 as libc::c_int
                                 } else {
                                     LPC_pred_Q10
-                                })
-                            })
+                                }
+                            }
                         } else {
-                            (if LPC_pred_Q10
+                            if LPC_pred_Q10
                                 > 0x7fffffff as libc::c_int >> 4 as libc::c_int
                             {
                                 0x7fffffff as libc::c_int >> 4 as libc::c_int
                             } else {
-                                (if LPC_pred_Q10
+                                if LPC_pred_Q10
                                     < 0x80000000 as libc::c_uint as opus_int32
                                         >> 4 as libc::c_int
                                 {
                                     0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                                 } else {
                                     LPC_pred_Q10
-                                })
-                            })
+                                }
+                            }
                         }) as opus_uint32) << 4 as libc::c_int) as opus_int32
                 }
             } else if (*CNG_sig_Q14.as_mut_ptr().offset((16 as libc::c_int + i) as isize)
                 | (((if 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                     > 0x7fffffff as libc::c_int >> 4 as libc::c_int
                 {
-                    (if LPC_pred_Q10
+                    if LPC_pred_Q10
                         > 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                     {
                         0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                     } else {
-                        (if LPC_pred_Q10 < 0x7fffffff as libc::c_int >> 4 as libc::c_int
+                        if LPC_pred_Q10 < 0x7fffffff as libc::c_int >> 4 as libc::c_int
                         {
                             0x7fffffff as libc::c_int >> 4 as libc::c_int
                         } else {
                             LPC_pred_Q10
-                        })
-                    })
+                        }
+                    }
                 } else {
-                    (if LPC_pred_Q10 > 0x7fffffff as libc::c_int >> 4 as libc::c_int {
+                    if LPC_pred_Q10 > 0x7fffffff as libc::c_int >> 4 as libc::c_int {
                         0x7fffffff as libc::c_int >> 4 as libc::c_int
                     } else {
-                        (if LPC_pred_Q10
+                        if LPC_pred_Q10
                             < 0x80000000 as libc::c_uint as opus_int32
                                 >> 4 as libc::c_int
                         {
                             0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                         } else {
                             LPC_pred_Q10
-                        })
-                    })
+                        }
+                    }
                 }) as opus_uint32) << 4 as libc::c_int) as opus_int32) as libc::c_uint
                 & 0x80000000 as libc::c_uint == 0 as libc::c_int as libc::c_uint
             {
@@ -808,34 +808,34 @@ pub unsafe extern "C" fn silk_CNG(
                     + (((if 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                         > 0x7fffffff as libc::c_int >> 4 as libc::c_int
                     {
-                        (if LPC_pred_Q10
+                        if LPC_pred_Q10
                             > 0x80000000 as libc::c_uint as opus_int32
                                 >> 4 as libc::c_int
                         {
                             0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                         } else {
-                            (if LPC_pred_Q10
+                            if LPC_pred_Q10
                                 < 0x7fffffff as libc::c_int >> 4 as libc::c_int
                             {
                                 0x7fffffff as libc::c_int >> 4 as libc::c_int
                             } else {
                                 LPC_pred_Q10
-                            })
-                        })
+                            }
+                        }
                     } else {
-                        (if LPC_pred_Q10 > 0x7fffffff as libc::c_int >> 4 as libc::c_int
+                        if LPC_pred_Q10 > 0x7fffffff as libc::c_int >> 4 as libc::c_int
                         {
                             0x7fffffff as libc::c_int >> 4 as libc::c_int
                         } else {
-                            (if LPC_pred_Q10
+                            if LPC_pred_Q10
                                 < 0x80000000 as libc::c_uint as opus_int32
                                     >> 4 as libc::c_int
                             {
                                 0x80000000 as libc::c_uint as opus_int32 >> 4 as libc::c_int
                             } else {
                                 LPC_pred_Q10
-                            })
-                        })
+                            }
+                        }
                     }) as opus_uint32) << 4 as libc::c_int) as opus_int32
             };
             *frame
@@ -860,7 +860,7 @@ pub unsafe extern "C" fn silk_CNG(
                 {
                     0x7fff as libc::c_int
                 } else {
-                    (if (if 8 as libc::c_int == 1 as libc::c_int {
+                    if (if 8 as libc::c_int == 1 as libc::c_int {
                         ((*CNG_sig_Q14
                             .as_mut_ptr()
                             .offset((16 as libc::c_int + i) as isize) as opus_int64
@@ -882,7 +882,7 @@ pub unsafe extern "C" fn silk_CNG(
                     {
                         0x8000 as libc::c_int as opus_int16 as libc::c_int
                     } else {
-                        (if 8 as libc::c_int == 1 as libc::c_int {
+                        if 8 as libc::c_int == 1 as libc::c_int {
                             ((*CNG_sig_Q14
                                 .as_mut_ptr()
                                 .offset((16 as libc::c_int + i) as isize) as opus_int64
@@ -900,8 +900,8 @@ pub unsafe extern "C" fn silk_CNG(
                                 * gain_Q10 as libc::c_long >> 16 as libc::c_int)
                                 as opus_int32 >> 8 as libc::c_int - 1 as libc::c_int)
                                 + 1 as libc::c_int >> 1 as libc::c_int
-                        })
-                    })
+                        }
+                    }
                 }) > silk_int16_MAX
             {
                 silk_int16_MAX
@@ -924,7 +924,7 @@ pub unsafe extern "C" fn silk_CNG(
                 {
                     0x7fff as libc::c_int
                 } else {
-                    (if (if 8 as libc::c_int == 1 as libc::c_int {
+                    if (if 8 as libc::c_int == 1 as libc::c_int {
                         ((*CNG_sig_Q14
                             .as_mut_ptr()
                             .offset((16 as libc::c_int + i) as isize) as opus_int64
@@ -946,7 +946,7 @@ pub unsafe extern "C" fn silk_CNG(
                     {
                         0x8000 as libc::c_int as opus_int16 as libc::c_int
                     } else {
-                        (if 8 as libc::c_int == 1 as libc::c_int {
+                        if 8 as libc::c_int == 1 as libc::c_int {
                             ((*CNG_sig_Q14
                                 .as_mut_ptr()
                                 .offset((16 as libc::c_int + i) as isize) as opus_int64
@@ -964,8 +964,8 @@ pub unsafe extern "C" fn silk_CNG(
                                 * gain_Q10 as libc::c_long >> 16 as libc::c_int)
                                 as opus_int32 >> 8 as libc::c_int - 1 as libc::c_int)
                                 + 1 as libc::c_int >> 1 as libc::c_int
-                        })
-                    })
+                        }
+                    }
                 }) < silk_int16_MIN
             {
                 silk_int16_MIN
@@ -993,7 +993,7 @@ pub unsafe extern "C" fn silk_CNG(
                     {
                         0x7fff as libc::c_int
                     } else {
-                        (if (if 8 as libc::c_int == 1 as libc::c_int {
+                        if (if 8 as libc::c_int == 1 as libc::c_int {
                             ((*CNG_sig_Q14
                                 .as_mut_ptr()
                                 .offset((16 as libc::c_int + i) as isize) as opus_int64
@@ -1015,7 +1015,7 @@ pub unsafe extern "C" fn silk_CNG(
                         {
                             0x8000 as libc::c_int as opus_int16 as libc::c_int
                         } else {
-                            (if 8 as libc::c_int == 1 as libc::c_int {
+                            if 8 as libc::c_int == 1 as libc::c_int {
                                 ((*CNG_sig_Q14
                                     .as_mut_ptr()
                                     .offset((16 as libc::c_int + i) as isize) as opus_int64
@@ -1033,8 +1033,8 @@ pub unsafe extern "C" fn silk_CNG(
                                     * gain_Q10 as libc::c_long >> 16 as libc::c_int)
                                     as opus_int32 >> 8 as libc::c_int - 1 as libc::c_int)
                                     + 1 as libc::c_int >> 1 as libc::c_int
-                            })
-                        })
+                            }
+                        }
                     })
             }) as opus_int16;
             i += 1;

@@ -63,8 +63,8 @@ pub use self::tuning_parameters_h::FIND_LPC_COND_FAC;
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_burg_modified_FLP(
-    mut A: *mut libc::c_float,
-    mut x: *const libc::c_float,
+    A: *mut libc::c_float,
+    x: *const libc::c_float,
     minInvGain: libc::c_float,
     subfr_length: libc::c_int,
     nb_subfr: libc::c_int,

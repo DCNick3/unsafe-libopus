@@ -139,12 +139,12 @@ use self::resampler_private_h::silk_resampler_private_AR2;
 #[c2rust::src_loc = "36:1"]
 unsafe extern "C" fn silk_resampler_private_down_FIR_INTERPOL(
     mut out: *mut opus_int16,
-    mut buf: *mut opus_int32,
-    mut FIR_Coefs: *const opus_int16,
-    mut FIR_Order: libc::c_int,
-    mut FIR_Fracs: libc::c_int,
-    mut max_index_Q16: opus_int32,
-    mut index_increment_Q16: opus_int32,
+    buf: *mut opus_int32,
+    FIR_Coefs: *const opus_int16,
+    FIR_Order: libc::c_int,
+    FIR_Fracs: libc::c_int,
+    max_index_Q16: opus_int32,
+    index_increment_Q16: opus_int32,
 ) -> *mut opus_int16 {
     let mut index_Q16: opus_int32 = 0;
     let mut res_Q6: opus_int32 = 0;
@@ -493,12 +493,12 @@ unsafe extern "C" fn silk_resampler_private_down_FIR_INTERPOL(
 #[no_mangle]
 #[c2rust::src_loc = "145:1"]
 pub unsafe extern "C" fn silk_resampler_private_down_FIR(
-    mut SS: *mut libc::c_void,
+    SS: *mut libc::c_void,
     mut out: *mut opus_int16,
     mut in_0: *const opus_int16,
     mut inLen: opus_int32,
 ) {
-    let mut S: *mut silk_resampler_state_struct = SS as *mut silk_resampler_state_struct;
+    let S: *mut silk_resampler_state_struct = SS as *mut silk_resampler_state_struct;
     let mut nSamplesIn: opus_int32 = 0;
     let mut max_index_Q16: opus_int32 = 0;
     let mut index_increment_Q16: opus_int32 = 0;

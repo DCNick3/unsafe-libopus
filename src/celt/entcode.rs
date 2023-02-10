@@ -46,7 +46,7 @@ pub mod ecintrin_h {
     #[c2rust::src_loc = "69:11"]
     pub const EC_CLZ0: libc::c_int = ::core::mem::size_of::<libc::c_uint>()
         as libc::c_ulong as libc::c_int * CHAR_BIT;
-    use super::internal::__CHAR_BIT__;
+    
     use super::limits_h::CHAR_BIT;
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:32"]

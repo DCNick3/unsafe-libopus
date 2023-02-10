@@ -58,10 +58,10 @@ use self::arch_h::celt_fatal;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_NLSF_VQ(
-    mut err_Q24: *mut opus_int32,
-    mut in_Q15: *const opus_int16,
-    mut pCB_Q8: *const opus_uint8,
-    mut pWght_Q9: *const opus_int16,
+    err_Q24: *mut opus_int32,
+    in_Q15: *const opus_int16,
+    pCB_Q8: *const opus_uint8,
+    pWght_Q9: *const opus_int16,
     K: libc::c_int,
     LPC_order: libc::c_int,
 ) {

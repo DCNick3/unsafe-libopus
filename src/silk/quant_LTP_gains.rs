@@ -137,16 +137,16 @@ use self::main_h::silk_VQ_WMat_EC_c;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_quant_LTP_gains(
-    mut B_Q14: *mut opus_int16,
-    mut cbk_index: *mut opus_int8,
-    mut periodicity_index: *mut opus_int8,
-    mut sum_log_gain_Q7: *mut opus_int32,
-    mut pred_gain_dB_Q7: *mut libc::c_int,
-    mut XX_Q17: *const opus_int32,
-    mut xX_Q17: *const opus_int32,
+    B_Q14: *mut opus_int16,
+    cbk_index: *mut opus_int8,
+    periodicity_index: *mut opus_int8,
+    sum_log_gain_Q7: *mut opus_int32,
+    pred_gain_dB_Q7: *mut libc::c_int,
+    XX_Q17: *const opus_int32,
+    xX_Q17: *const opus_int32,
     subfr_len: libc::c_int,
     nb_subfr: libc::c_int,
-    mut arch: libc::c_int,
+    _arch: libc::c_int,
 ) {
     let mut j: libc::c_int = 0;
     let mut k: libc::c_int = 0;
@@ -170,7 +170,7 @@ pub unsafe extern "C" fn silk_quant_LTP_gains(
     best_sum_log_gain_Q7 = 0 as libc::c_int;
     k = 0 as libc::c_int;
     while k < 3 as libc::c_int {
-        let mut gain_safety: opus_int32 = (0.4f64
+        let gain_safety: opus_int32 = (0.4f64
             * ((1 as libc::c_int as opus_int64) << 7 as libc::c_int) as libc::c_double
             + 0.5f64) as opus_int32;
         cl_ptr_Q5 = silk_LTP_gain_BITS_Q5_ptrs[k as usize];

@@ -80,7 +80,7 @@ pub const ORDER_FIR: libc::c_int = 4 as libc::c_int;
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_resampler_down2_3(
-    mut S: *mut opus_int32,
+    S: *mut opus_int32,
     mut out: *mut opus_int16,
     mut in_0: *const opus_int16,
     mut inLen: opus_int32,

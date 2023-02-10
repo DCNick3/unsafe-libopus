@@ -167,10 +167,10 @@ pub use self::typedef_h::silk_int32_MAX;
 #[inline]
 #[c2rust::src_loc = "39:1"]
 unsafe extern "C" fn combine_and_check(
-    mut pulses_comb: *mut libc::c_int,
-    mut pulses_in: *const libc::c_int,
-    mut max_pulses: libc::c_int,
-    mut len: libc::c_int,
+    pulses_comb: *mut libc::c_int,
+    pulses_in: *const libc::c_int,
+    max_pulses: libc::c_int,
+    len: libc::c_int,
 ) -> libc::c_int {
     let mut k: libc::c_int = 0;
     let mut sum: libc::c_int = 0;
@@ -189,10 +189,10 @@ unsafe extern "C" fn combine_and_check(
 #[no_mangle]
 #[c2rust::src_loc = "60:1"]
 pub unsafe extern "C" fn silk_encode_pulses(
-    mut psRangeEnc: *mut ec_enc,
+    psRangeEnc: *mut ec_enc,
     signalType: libc::c_int,
     quantOffsetType: libc::c_int,
-    mut pulses: *mut opus_int8,
+    pulses: *mut opus_int8,
     frame_length: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;

@@ -96,12 +96,12 @@ pub use self::typedef_h::silk_int32_MAX;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_NLSF_del_dec_quant(
-    mut indices: *mut opus_int8,
-    mut x_Q10: *const opus_int16,
-    mut w_Q5: *const opus_int16,
-    mut pred_coef_Q8: *const opus_uint8,
-    mut ec_ix: *const opus_int16,
-    mut ec_rates_Q5: *const opus_uint8,
+    indices: *mut opus_int8,
+    x_Q10: *const opus_int16,
+    w_Q5: *const opus_int16,
+    pred_coef_Q8: *const opus_uint8,
+    ec_ix: *const opus_int16,
+    ec_rates_Q5: *const opus_uint8,
     quant_step_size_Q16: libc::c_int,
     inv_quant_step_size_Q6: opus_int16,
     mu_Q20: opus_int32,

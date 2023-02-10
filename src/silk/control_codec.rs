@@ -321,16 +321,16 @@ pub mod SigProc_FIX_h {
     #[inline]
     #[c2rust::src_loc = "546:1"]
     pub unsafe extern "C" fn silk_min_int(
-        mut a: libc::c_int,
-        mut b: libc::c_int,
+        a: libc::c_int,
+        b: libc::c_int,
     ) -> libc::c_int {
         return if a < b { a } else { b };
     }
     #[inline]
     #[c2rust::src_loc = "564:1"]
     pub unsafe extern "C" fn silk_max_int(
-        mut a: libc::c_int,
-        mut b: libc::c_int,
+        a: libc::c_int,
+        b: libc::c_int,
     ) -> libc::c_int {
         return if a > b { a } else { b };
     }
@@ -392,7 +392,7 @@ pub mod string_h {
 pub mod float_cast_h {
     #[inline]
     #[c2rust::src_loc = "68:1"]
-    pub unsafe extern "C" fn float2int(mut x: libc::c_float) -> opus_int32 {
+    pub unsafe extern "C" fn float2int(x: libc::c_float) -> opus_int32 {
         return _mm_cvt_ss2si(_mm_set_ss(x));
     }
     use super::opus_types_h::opus_int32;
@@ -403,9 +403,9 @@ pub mod SigProc_FLP_h {
     #[inline]
     #[c2rust::src_loc = "162:1"]
     pub unsafe extern "C" fn silk_float2short_array(
-        mut out: *mut opus_int16,
-        mut in_0: *const libc::c_float,
-        mut length: opus_int32,
+        out: *mut opus_int16,
+        in_0: *const libc::c_float,
+        length: opus_int32,
     ) {
         let mut k: opus_int32 = 0;
         k = length - 1 as libc::c_int;
@@ -426,9 +426,9 @@ pub mod SigProc_FLP_h {
     #[inline]
     #[c2rust::src_loc = "175:1"]
     pub unsafe extern "C" fn silk_short2float_array(
-        mut out: *mut libc::c_float,
-        mut in_0: *const opus_int16,
-        mut length: opus_int32,
+        out: *mut libc::c_float,
+        in_0: *const opus_int16,
+        length: opus_int32,
     ) {
         let mut k: opus_int32 = 0;
         k = length - 1 as libc::c_int;
@@ -450,7 +450,7 @@ pub mod typedef_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:35"]
 pub mod tables_h {
-    use super::opus_types_h::{opus_uint8, opus_int16};
+    use super::opus_types_h::{opus_uint8};
     use super::structs_h::silk_NLSF_CB_struct;
     extern "C" {
         #[c2rust::src_loc = "45:26"]
@@ -537,7 +537,7 @@ pub use self::pitch_est_defines_h::{
 #[c2rust::src_loc = "65:1"]
 pub unsafe extern "C" fn silk_control_encoder(
     mut psEnc: *mut silk_encoder_state_FLP,
-    mut encControl: *mut silk_EncControlStruct,
+    encControl: *mut silk_EncControlStruct,
     allow_bw_switch: libc::c_int,
     channelNb: libc::c_int,
     force_fs_kHz: libc::c_int,
@@ -580,7 +580,7 @@ pub unsafe extern "C" fn silk_control_encoder(
 #[c2rust::src_loc = "134:1"]
 unsafe extern "C" fn silk_setup_resamplers(
     mut psEnc: *mut silk_encoder_state_FLP,
-    mut fs_kHz: libc::c_int,
+    fs_kHz: libc::c_int,
 ) -> libc::c_int {
     let mut ret: libc::c_int = SILK_NO_ERROR;
     if (*psEnc).sCmn.fs_kHz != fs_kHz
@@ -675,8 +675,8 @@ unsafe extern "C" fn silk_setup_resamplers(
 #[c2rust::src_loc = "199:1"]
 unsafe extern "C" fn silk_setup_fs(
     mut psEnc: *mut silk_encoder_state_FLP,
-    mut fs_kHz: libc::c_int,
-    mut PacketSize_ms: libc::c_int,
+    fs_kHz: libc::c_int,
+    PacketSize_ms: libc::c_int,
 ) -> libc::c_int {
     let mut ret: libc::c_int = SILK_NO_ERROR;
     if PacketSize_ms != (*psEnc).sCmn.PacketSize_ms {
@@ -863,9 +863,9 @@ unsafe extern "C" fn silk_setup_fs(
 #[c2rust::src_loc = "307:1"]
 unsafe extern "C" fn silk_setup_complexity(
     mut psEncC: *mut silk_encoder_state,
-    mut Complexity: libc::c_int,
+    Complexity: libc::c_int,
 ) -> libc::c_int {
-    let mut ret: libc::c_int = 0 as libc::c_int;
+    let ret: libc::c_int = 0 as libc::c_int;
     if !(Complexity >= 0 as libc::c_int && Complexity <= 10 as libc::c_int) {
         celt_fatal(
             b"assertion failed: Complexity >= 0 && Complexity <= 10\0" as *const u8
@@ -1041,10 +1041,10 @@ unsafe extern "C" fn silk_setup_complexity(
 #[c2rust::src_loc = "403:1"]
 unsafe extern "C" fn silk_setup_LBRR(
     mut psEncC: *mut silk_encoder_state,
-    mut encControl: *const silk_EncControlStruct,
+    encControl: *const silk_EncControlStruct,
 ) -> libc::c_int {
     let mut LBRR_in_previous_packet: libc::c_int = 0;
-    let mut ret: libc::c_int = SILK_NO_ERROR;
+    let ret: libc::c_int = SILK_NO_ERROR;
     LBRR_in_previous_packet = (*psEncC).LBRR_enabled;
     (*psEncC).LBRR_enabled = (*encControl).LBRR_coded;
     if (*psEncC).LBRR_enabled != 0 {

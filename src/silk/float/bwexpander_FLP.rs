@@ -2,7 +2,7 @@ use ::libc;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_bwexpander_FLP(
-    mut ar: *mut libc::c_float,
+    ar: *mut libc::c_float,
     d: libc::c_int,
     chirp: libc::c_float,
 ) {

@@ -155,8 +155,8 @@ pub use self::define_h::{SHELL_CODEC_FRAME_LENGTH, N_RATE_LEVELS, SILK_MAX_PULSE
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn silk_decode_pulses(
-    mut psRangeDec: *mut ec_dec,
-    mut pulses: *mut opus_int16,
+    psRangeDec: *mut ec_dec,
+    pulses: *mut opus_int16,
     signalType: libc::c_int,
     quantOffsetType: libc::c_int,
     frame_length: libc::c_int,

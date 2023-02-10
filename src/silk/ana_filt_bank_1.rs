@@ -59,14 +59,14 @@ static mut A_fb1_21: opus_int16 = -(24290 as libc::c_int) as opus_int16;
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_ana_filt_bank_1(
-    mut in_0: *const opus_int16,
-    mut S: *mut opus_int32,
-    mut outL: *mut opus_int16,
-    mut outH: *mut opus_int16,
+    in_0: *const opus_int16,
+    S: *mut opus_int32,
+    outL: *mut opus_int16,
+    outH: *mut opus_int16,
     N: opus_int32,
 ) {
     let mut k: libc::c_int = 0;
-    let mut N2: libc::c_int = N >> 1 as libc::c_int;
+    let N2: libc::c_int = N >> 1 as libc::c_int;
     let mut in32: opus_int32 = 0;
     let mut X: opus_int32 = 0;
     let mut Y: opus_int32 = 0;

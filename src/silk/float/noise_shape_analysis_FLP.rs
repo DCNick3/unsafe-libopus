@@ -336,12 +336,12 @@ pub mod string_h {
 pub mod SigProc_FLP_h {
     #[inline]
     #[c2rust::src_loc = "150:1"]
-    pub unsafe extern "C" fn silk_sigmoid(mut x: libc::c_float) -> libc::c_float {
+    pub unsafe extern "C" fn silk_sigmoid(x: libc::c_float) -> libc::c_float {
         return (1.0f64 / (1.0f64 + exp(-x as libc::c_double))) as libc::c_float;
     }
     #[inline]
     #[c2rust::src_loc = "188:1"]
-    pub unsafe extern "C" fn silk_log2(mut x: libc::c_double) -> libc::c_float {
+    pub unsafe extern "C" fn silk_log2(x: libc::c_double) -> libc::c_float {
         return (3.32192809488736f64 * log10(x)) as libc::c_float;
     }
     use super::opus_types_h::opus_int32;
@@ -422,7 +422,7 @@ pub use self::structs_h::{
 pub use self::structs_FLP_h::{
     silk_shape_state_FLP, silk_encoder_state_FLP, silk_encoder_control_FLP,
 };
-use self::mathcalls_h::{exp, log10, pow, sqrt, fabs};
+use self::mathcalls_h::{pow, sqrt, fabs};
 use self::main_FLP_h::{silk_apply_sine_window_FLP, silk_warped_autocorrelation_FLP};
 pub use self::define_h::{
     MAX_SHAPE_LPC_ORDER, MIN_QGAIN_DB, USE_HARM_SHAPING, TYPE_VOICED,
@@ -442,9 +442,9 @@ pub use self::tuning_parameters_h::{
 #[inline]
 #[c2rust::src_loc = "39:1"]
 unsafe extern "C" fn warped_gain(
-    mut coefs: *const libc::c_float,
+    coefs: *const libc::c_float,
     mut lambda: libc::c_float,
-    mut order: libc::c_int,
+    order: libc::c_int,
 ) -> libc::c_float {
     let mut i: libc::c_int = 0;
     let mut gain: libc::c_float = 0.;
@@ -460,10 +460,10 @@ unsafe extern "C" fn warped_gain(
 #[inline]
 #[c2rust::src_loc = "57:1"]
 unsafe extern "C" fn warped_true2monic_coefs(
-    mut coefs: *mut libc::c_float,
-    mut lambda: libc::c_float,
-    mut limit: libc::c_float,
-    mut order: libc::c_int,
+    coefs: *mut libc::c_float,
+    lambda: libc::c_float,
+    limit: libc::c_float,
+    order: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut iter: libc::c_int = 0;
@@ -535,9 +535,9 @@ unsafe extern "C" fn warped_true2monic_coefs(
 #[inline]
 #[c2rust::src_loc = "116:1"]
 unsafe extern "C" fn limit_coefs(
-    mut coefs: *mut libc::c_float,
-    mut limit: libc::c_float,
-    mut order: libc::c_int,
+    coefs: *mut libc::c_float,
+    limit: libc::c_float,
+    order: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut iter: libc::c_int = 0;
@@ -572,8 +572,8 @@ unsafe extern "C" fn limit_coefs(
 pub unsafe extern "C" fn silk_noise_shape_analysis_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,
     mut psEncCtrl: *mut silk_encoder_control_FLP,
-    mut pitch_res: *const libc::c_float,
-    mut x: *const libc::c_float,
+    pitch_res: *const libc::c_float,
+    x: *const libc::c_float,
 ) {
     let mut psShapeSt: *mut silk_shape_state_FLP = &mut (*psEnc).sShape;
     let mut k: libc::c_int = 0;

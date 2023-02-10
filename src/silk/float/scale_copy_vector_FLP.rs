@@ -2,10 +2,10 @@ use ::libc;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_scale_copy_vector_FLP(
-    mut data_out: *mut libc::c_float,
-    mut data_in: *const libc::c_float,
-    mut gain: libc::c_float,
-    mut dataSize: libc::c_int,
+    data_out: *mut libc::c_float,
+    data_in: *const libc::c_float,
+    gain: libc::c_float,
+    dataSize: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut dataSize4: libc::c_int = 0;

@@ -341,8 +341,8 @@ pub mod mathops_h {
     #[inline]
     #[c2rust::src_loc = "54:1"]
     pub unsafe extern "C" fn fast_atan2f(
-        mut y: libc::c_float,
-        mut x: libc::c_float,
+        y: libc::c_float,
+        x: libc::c_float,
     ) -> libc::c_float {
         let mut x2: libc::c_float = 0.;
         let mut y2: libc::c_float = 0.;
@@ -352,11 +352,11 @@ pub mod mathops_h {
             return 0 as libc::c_int as libc::c_float;
         }
         if x2 < y2 {
-            let mut den: libc::c_float = (y2 + cB * x2) * (y2 + cC * x2);
+            let den: libc::c_float = (y2 + cB * x2) * (y2 + cC * x2);
             return -x * y * (y2 + cA * x2) / den
                 + (if y < 0 as libc::c_int as libc::c_float { -cE } else { cE });
         } else {
-            let mut den_0: libc::c_float = (x2 + cB * y2) * (x2 + cC * y2);
+            let den_0: libc::c_float = (x2 + cB * y2) * (x2 + cC * y2);
             return x * y * (x2 + cA * y2) / den_0
                 + (if y < 0 as libc::c_int as libc::c_float { -cE } else { cE })
                 - (if x * y < 0 as libc::c_int as libc::c_float { -cE } else { cE });
@@ -385,7 +385,7 @@ pub mod cpu_support_h {
 pub mod float_cast_h {
     #[inline]
     #[c2rust::src_loc = "68:1"]
-    pub unsafe extern "C" fn float2int(mut x: libc::c_float) -> opus_int32 {
+    pub unsafe extern "C" fn float2int(x: libc::c_float) -> opus_int32 {
         return _mm_cvt_ss2si(_mm_set_ss(x));
     }
     use super::opus_types_h::opus_int32;
@@ -815,13 +815,13 @@ static mut tbands: [libc::c_int; 19] = [
 pub const NB_TONAL_SKIP_BANDS: libc::c_int = 9 as libc::c_int;
 #[c2rust::src_loc = "113:1"]
 unsafe extern "C" fn silk_resampler_down2_hp(
-    mut S: *mut opus_val32,
-    mut out: *mut opus_val32,
-    mut in_0: *const opus_val32,
-    mut inLen: libc::c_int,
+    S: *mut opus_val32,
+    out: *mut opus_val32,
+    in_0: *const opus_val32,
+    inLen: libc::c_int,
 ) -> opus_val32 {
     let mut k: libc::c_int = 0;
-    let mut len2: libc::c_int = inLen / 2 as libc::c_int;
+    let len2: libc::c_int = inLen / 2 as libc::c_int;
     let mut in32: opus_val32 = 0.;
     let mut out32: opus_val32 = 0.;
     let mut out32_hp: opus_val32 = 0.;
@@ -855,16 +855,16 @@ unsafe extern "C" fn silk_resampler_down2_hp(
 }
 #[c2rust::src_loc = "161:1"]
 unsafe extern "C" fn downmix_and_resample(
-    mut downmix: downmix_func,
+    downmix: downmix_func,
     mut _x: *const libc::c_void,
-    mut y: *mut opus_val32,
-    mut S: *mut opus_val32,
+    y: *mut opus_val32,
+    S: *mut opus_val32,
     mut subframe: libc::c_int,
     mut offset: libc::c_int,
-    mut c1: libc::c_int,
-    mut c2: libc::c_int,
-    mut C: libc::c_int,
-    mut Fs: libc::c_int,
+    c1: libc::c_int,
+    c2: libc::c_int,
+    C: libc::c_int,
+    Fs: libc::c_int,
 ) -> opus_val32 {
     let mut scale: opus_val32 = 0.;
     let mut j: libc::c_int = 0;
@@ -941,7 +941,7 @@ unsafe extern "C" fn downmix_and_resample(
 #[c2rust::src_loc = "215:1"]
 pub unsafe extern "C" fn tonality_analysis_init(
     mut tonal: *mut TonalityAnalysisState,
-    mut Fs: opus_int32,
+    Fs: opus_int32,
 ) {
     (*tonal).arch = opus_select_arch();
     (*tonal).Fs = Fs;
@@ -949,8 +949,8 @@ pub unsafe extern "C" fn tonality_analysis_init(
 }
 #[no_mangle]
 #[c2rust::src_loc = "224:1"]
-pub unsafe extern "C" fn tonality_analysis_reset(mut tonal: *mut TonalityAnalysisState) {
-    let mut start: *mut libc::c_char = &mut (*tonal).angle as *mut [libc::c_float; 240]
+pub unsafe extern "C" fn tonality_analysis_reset(tonal: *mut TonalityAnalysisState) {
+    let start: *mut libc::c_char = &mut (*tonal).angle as *mut [libc::c_float; 240]
         as *mut libc::c_char;
     memset(
         start as *mut libc::c_void,
@@ -968,7 +968,7 @@ pub unsafe extern "C" fn tonality_analysis_reset(mut tonal: *mut TonalityAnalysi
 pub unsafe extern "C" fn tonality_get_info(
     mut tonal: *mut TonalityAnalysisState,
     mut info_out: *mut AnalysisInfo,
-    mut len: libc::c_int,
+    len: libc::c_int,
 ) {
     let mut pos: libc::c_int = 0;
     let mut curr_lookahead: libc::c_int = 0;
@@ -1223,24 +1223,24 @@ pub const LEAKAGE_SLOPE: libc::c_float = 2.0f32;
 #[c2rust::src_loc = "444:1"]
 unsafe extern "C" fn tonality_analysis(
     mut tonal: *mut TonalityAnalysisState,
-    mut celt_mode: *const OpusCustomMode,
-    mut x: *const libc::c_void,
+    celt_mode: *const OpusCustomMode,
+    x: *const libc::c_void,
     mut len: libc::c_int,
     mut offset: libc::c_int,
-    mut c1: libc::c_int,
-    mut c2: libc::c_int,
-    mut C: libc::c_int,
-    mut lsb_depth: libc::c_int,
-    mut downmix: downmix_func,
+    c1: libc::c_int,
+    c2: libc::c_int,
+    C: libc::c_int,
+    lsb_depth: libc::c_int,
+    downmix: downmix_func,
 ) {
     let mut i: libc::c_int = 0;
     let mut b: libc::c_int = 0;
     let mut kfft: *const kiss_fft_state = 0 as *const kiss_fft_state;
-    let mut N: libc::c_int = 480 as libc::c_int;
-    let mut N2: libc::c_int = 240 as libc::c_int;
-    let mut A: *mut libc::c_float = ((*tonal).angle).as_mut_ptr();
-    let mut dA: *mut libc::c_float = ((*tonal).d_angle).as_mut_ptr();
-    let mut d2A: *mut libc::c_float = ((*tonal).d2_angle).as_mut_ptr();
+    let N: libc::c_int = 480 as libc::c_int;
+    let N2: libc::c_int = 240 as libc::c_int;
+    let A: *mut libc::c_float = ((*tonal).angle).as_mut_ptr();
+    let dA: *mut libc::c_float = ((*tonal).d_angle).as_mut_ptr();
+    let d2A: *mut libc::c_float = ((*tonal).d2_angle).as_mut_ptr();
     let mut band_tonality: [libc::c_float; 18] = [0.; 18];
     let mut logE: [libc::c_float; 18] = [0.; 18];
     let mut BFCC: [libc::c_float; 8] = [0.; 8];
@@ -1349,7 +1349,7 @@ unsafe extern "C" fn tonality_analysis(
     let mut noisiness: [libc::c_float; 240] = [0.; 240];
     i = 0 as libc::c_int;
     while i < N2 {
-        let mut w: libc::c_float = analysis_window[i as usize];
+        let w: libc::c_float = analysis_window[i as usize];
         in_0[i as usize].r = w * (*tonal).inmem[i as usize];
         in_0[i as usize].i = w * (*tonal).inmem[(N2 + i) as usize];
         in_0[(N - i - 1 as libc::c_int) as usize]
@@ -1468,7 +1468,7 @@ unsafe extern "C" fn tonality_analysis(
     }
     i = 2 as libc::c_int;
     while i < N2 - 1 as libc::c_int {
-        let mut tt: libc::c_float = if tonality2[i as usize]
+        let tt: libc::c_float = if tonality2[i as usize]
             < (if tonality2[(i - 1 as libc::c_int) as usize]
                 > tonality2[(i + 1 as libc::c_int) as usize]
             {
@@ -1517,7 +1517,7 @@ unsafe extern "C" fn tonality_analysis(
     E = X1r_0 * X1r_0 + X2r_0 * X2r_0;
     i = 1 as libc::c_int;
     while i < 4 as libc::c_int {
-        let mut binE: libc::c_float = out[i as usize].r * out[i as usize].r
+        let binE: libc::c_float = out[i as usize].r * out[i as usize].r
             + out[(N - i) as usize].r * out[(N - i) as usize].r
             + out[i as usize].i * out[i as usize].i
             + out[(N - i) as usize].i * out[(N - i) as usize].i;
@@ -1664,7 +1664,7 @@ unsafe extern "C" fn tonality_analysis(
         as usize] = band_log2[0 as libc::c_int as usize] - LEAKAGE_OFFSET;
     b = 1 as libc::c_int;
     while b < NB_TBANDS + 1 as libc::c_int {
-        let mut leak_slope: libc::c_float = LEAKAGE_SLOPE
+        let leak_slope: libc::c_float = LEAKAGE_SLOPE
             * (tbands[b as usize] - tbands[(b - 1 as libc::c_int) as usize])
                 as libc::c_float / 4 as libc::c_int as libc::c_float;
         leakage_from[b
@@ -1687,7 +1687,7 @@ unsafe extern "C" fn tonality_analysis(
     }
     b = NB_TBANDS - 2 as libc::c_int;
     while b >= 0 as libc::c_int {
-        let mut leak_slope_0: libc::c_float = LEAKAGE_SLOPE
+        let leak_slope_0: libc::c_float = LEAKAGE_SLOPE
             * (tbands[(b + 1 as libc::c_int) as usize] - tbands[b as usize])
                 as libc::c_float / 4 as libc::c_int as libc::c_float;
         leakage_from[b
@@ -1718,7 +1718,7 @@ unsafe extern "C" fn tonality_analysis(
     }
     b = 0 as libc::c_int;
     while b < NB_TBANDS + 1 as libc::c_int {
-        let mut boost: libc::c_float = (if 0 as libc::c_int as libc::c_float
+        let boost: libc::c_float = (if 0 as libc::c_int as libc::c_float
             > leakage_to[b as usize] - band_log2[b as usize]
         {
             0 as libc::c_int as libc::c_float
@@ -1798,7 +1798,7 @@ unsafe extern "C" fn tonality_analysis(
         band_end = tbands[(b + 1 as libc::c_int) as usize];
         i = band_start;
         while i < band_end {
-            let mut binE_1: libc::c_float = out[i as usize].r * out[i as usize].r
+            let binE_1: libc::c_float = out[i as usize].r * out[i as usize].r
                 + out[(N - i) as usize].r * out[(N - i) as usize].r
                 + out[i as usize].i * out[i as usize].i
                 + out[(N - i) as usize].i * out[(N - i) as usize].i;
@@ -1851,7 +1851,7 @@ unsafe extern "C" fn tonality_analysis(
     if (*tonal).Fs == 48000 as libc::c_int {
         let mut noise_ratio: libc::c_float = 0.;
         let mut Em_0: libc::c_float = 0.;
-        let mut E_2: libc::c_float = hp_ener
+        let E_2: libc::c_float = hp_ener
             * (1.0f32 / (60 as libc::c_int * 60 as libc::c_int) as libc::c_float);
         noise_ratio = if (*tonal).prev_bandwidth == 20 as libc::c_int {
             10.0f32
@@ -2062,17 +2062,17 @@ unsafe extern "C" fn tonality_analysis(
 #[c2rust::src_loc = "953:1"]
 pub unsafe extern "C" fn run_analysis(
     mut analysis: *mut TonalityAnalysisState,
-    mut celt_mode: *const OpusCustomMode,
-    mut analysis_pcm: *const libc::c_void,
+    celt_mode: *const OpusCustomMode,
+    analysis_pcm: *const libc::c_void,
     mut analysis_frame_size: libc::c_int,
-    mut frame_size: libc::c_int,
-    mut c1: libc::c_int,
-    mut c2: libc::c_int,
-    mut C: libc::c_int,
-    mut Fs: opus_int32,
-    mut lsb_depth: libc::c_int,
-    mut downmix: downmix_func,
-    mut analysis_info: *mut AnalysisInfo,
+    frame_size: libc::c_int,
+    c1: libc::c_int,
+    c2: libc::c_int,
+    C: libc::c_int,
+    Fs: opus_int32,
+    lsb_depth: libc::c_int,
+    downmix: downmix_func,
+    analysis_info: *mut AnalysisInfo,
 ) {
     let mut offset: libc::c_int = 0;
     let mut pcm_len: libc::c_int = 0;

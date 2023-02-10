@@ -67,8 +67,8 @@ pub use self::typedef_h::{silk_int16_MIN, silk_int16_MAX};
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_LPC_fit(
-    mut a_QOUT: *mut opus_int16,
-    mut a_QIN: *mut opus_int32,
+    a_QOUT: *mut opus_int16,
+    a_QIN: *mut opus_int32,
     QOUT: libc::c_int,
     QIN: libc::c_int,
     d: libc::c_int,

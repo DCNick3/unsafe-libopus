@@ -164,8 +164,8 @@ pub mod entcode_h {
         return (*_this).nbits_total - (EC_CLZ0 - ((*_this).rng).leading_zeros() as i32);
     }
     use super::opus_types_h::opus_uint32;
-    use super::internal::__CHAR_BIT__;
-    use super::limits_h::CHAR_BIT;
+    
+    
     use super::ecintrin_h::EC_CLZ0;
     extern "C" {
         #[c2rust::src_loc = "121:1"]
@@ -725,12 +725,12 @@ static mut small_energy_icdf: [libc::c_uchar; 3] = [
 ];
 #[c2rust::src_loc = "142:1"]
 unsafe extern "C" fn loss_distortion(
-    mut eBands: *const opus_val16,
-    mut oldEBands: *mut opus_val16,
-    mut start: libc::c_int,
-    mut end: libc::c_int,
-    mut len: libc::c_int,
-    mut C: libc::c_int,
+    eBands: *const opus_val16,
+    oldEBands: *mut opus_val16,
+    start: libc::c_int,
+    end: libc::c_int,
+    len: libc::c_int,
+    C: libc::c_int,
 ) -> opus_val32 {
     let mut c: libc::c_int = 0;
     let mut i: libc::c_int = 0;
@@ -739,7 +739,7 @@ unsafe extern "C" fn loss_distortion(
     loop {
         i = start;
         while i < end {
-            let mut d: opus_val16 = *eBands.offset((i + c * len) as isize)
+            let d: opus_val16 = *eBands.offset((i + c * len) as isize)
                 - *oldEBands.offset((i + c * len) as isize);
             dist = dist + d * d;
             i += 1;
@@ -757,21 +757,21 @@ unsafe extern "C" fn loss_distortion(
 }
 #[c2rust::src_loc = "156:1"]
 unsafe extern "C" fn quant_coarse_energy_impl(
-    mut m: *const OpusCustomMode,
-    mut start: libc::c_int,
-    mut end: libc::c_int,
-    mut eBands: *const opus_val16,
-    mut oldEBands: *mut opus_val16,
-    mut budget: opus_int32,
+    m: *const OpusCustomMode,
+    start: libc::c_int,
+    end: libc::c_int,
+    eBands: *const opus_val16,
+    oldEBands: *mut opus_val16,
+    budget: opus_int32,
     mut tell: opus_int32,
-    mut prob_model: *const libc::c_uchar,
-    mut error: *mut opus_val16,
-    mut enc: *mut ec_enc,
-    mut C: libc::c_int,
-    mut LM: libc::c_int,
-    mut intra: libc::c_int,
-    mut max_decay: opus_val16,
-    mut lfe: libc::c_int,
+    prob_model: *const libc::c_uchar,
+    error: *mut opus_val16,
+    enc: *mut ec_enc,
+    C: libc::c_int,
+    LM: libc::c_int,
+    intra: libc::c_int,
+    max_decay: opus_val16,
+    lfe: libc::c_int,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
     let mut c: libc::c_int = 0;
@@ -892,23 +892,23 @@ unsafe extern "C" fn quant_coarse_energy_impl(
 #[no_mangle]
 #[c2rust::src_loc = "261:1"]
 pub unsafe extern "C" fn quant_coarse_energy(
-    mut m: *const OpusCustomMode,
-    mut start: libc::c_int,
-    mut end: libc::c_int,
-    mut effEnd: libc::c_int,
-    mut eBands: *const opus_val16,
-    mut oldEBands: *mut opus_val16,
-    mut budget: opus_uint32,
-    mut error: *mut opus_val16,
-    mut enc: *mut ec_enc,
-    mut C: libc::c_int,
-    mut LM: libc::c_int,
-    mut nbAvailableBytes: libc::c_int,
-    mut force_intra: libc::c_int,
-    mut delayedIntra: *mut opus_val32,
+    m: *const OpusCustomMode,
+    start: libc::c_int,
+    end: libc::c_int,
+    effEnd: libc::c_int,
+    eBands: *const opus_val16,
+    oldEBands: *mut opus_val16,
+    budget: opus_uint32,
+    error: *mut opus_val16,
+    enc: *mut ec_enc,
+    C: libc::c_int,
+    LM: libc::c_int,
+    nbAvailableBytes: libc::c_int,
+    force_intra: libc::c_int,
+    delayedIntra: *mut opus_val32,
     mut two_pass: libc::c_int,
-    mut loss_rate: libc::c_int,
-    mut lfe: libc::c_int,
+    loss_rate: libc::c_int,
+    lfe: libc::c_int,
 ) {
     let mut intra: libc::c_int = 0;
     let mut max_decay: opus_val16 = 0.;
@@ -1126,20 +1126,20 @@ pub unsafe extern "C" fn quant_coarse_energy(
 #[no_mangle]
 #[c2rust::src_loc = "361:1"]
 pub unsafe extern "C" fn quant_fine_energy(
-    mut m: *const OpusCustomMode,
-    mut start: libc::c_int,
-    mut end: libc::c_int,
-    mut oldEBands: *mut opus_val16,
-    mut error: *mut opus_val16,
-    mut fine_quant: *mut libc::c_int,
-    mut enc: *mut ec_enc,
-    mut C: libc::c_int,
+    m: *const OpusCustomMode,
+    start: libc::c_int,
+    end: libc::c_int,
+    oldEBands: *mut opus_val16,
+    error: *mut opus_val16,
+    fine_quant: *mut libc::c_int,
+    enc: *mut ec_enc,
+    C: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut c: libc::c_int = 0;
     i = start;
     while i < end {
-        let mut frac: opus_int16 = ((1 as libc::c_int) << *fine_quant.offset(i as isize))
+        let frac: opus_int16 = ((1 as libc::c_int) << *fine_quant.offset(i as isize))
             as opus_int16;
         if !(*fine_quant.offset(i as isize) <= 0 as libc::c_int) {
             c = 0 as libc::c_int;
@@ -1182,16 +1182,16 @@ pub unsafe extern "C" fn quant_fine_energy(
 #[no_mangle]
 #[c2rust::src_loc = "398:1"]
 pub unsafe extern "C" fn quant_energy_finalise(
-    mut m: *const OpusCustomMode,
-    mut start: libc::c_int,
-    mut end: libc::c_int,
-    mut oldEBands: *mut opus_val16,
-    mut error: *mut opus_val16,
-    mut fine_quant: *mut libc::c_int,
-    mut fine_priority: *mut libc::c_int,
+    m: *const OpusCustomMode,
+    start: libc::c_int,
+    end: libc::c_int,
+    oldEBands: *mut opus_val16,
+    error: *mut opus_val16,
+    fine_quant: *mut libc::c_int,
+    fine_priority: *mut libc::c_int,
     mut bits_left: libc::c_int,
-    mut enc: *mut ec_enc,
-    mut C: libc::c_int,
+    enc: *mut ec_enc,
+    C: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut prio: libc::c_int = 0;
@@ -1244,16 +1244,16 @@ pub unsafe extern "C" fn quant_energy_finalise(
 #[no_mangle]
 #[c2rust::src_loc = "428:1"]
 pub unsafe extern "C" fn unquant_coarse_energy(
-    mut m: *const OpusCustomMode,
-    mut start: libc::c_int,
-    mut end: libc::c_int,
-    mut oldEBands: *mut opus_val16,
-    mut intra: libc::c_int,
-    mut dec: *mut ec_dec,
-    mut C: libc::c_int,
-    mut LM: libc::c_int,
+    m: *const OpusCustomMode,
+    start: libc::c_int,
+    end: libc::c_int,
+    oldEBands: *mut opus_val16,
+    intra: libc::c_int,
+    dec: *mut ec_dec,
+    C: libc::c_int,
+    LM: libc::c_int,
 ) {
-    let mut prob_model: *const libc::c_uchar = (e_prob_model[LM
+    let prob_model: *const libc::c_uchar = (e_prob_model[LM
         as usize][intra as usize])
         .as_ptr();
     let mut i: libc::c_int = 0;
@@ -1330,13 +1330,13 @@ pub unsafe extern "C" fn unquant_coarse_energy(
 #[no_mangle]
 #[c2rust::src_loc = "493:1"]
 pub unsafe extern "C" fn unquant_fine_energy(
-    mut m: *const OpusCustomMode,
-    mut start: libc::c_int,
-    mut end: libc::c_int,
-    mut oldEBands: *mut opus_val16,
-    mut fine_quant: *mut libc::c_int,
-    mut dec: *mut ec_dec,
-    mut C: libc::c_int,
+    m: *const OpusCustomMode,
+    start: libc::c_int,
+    end: libc::c_int,
+    oldEBands: *mut opus_val16,
+    fine_quant: *mut libc::c_int,
+    dec: *mut ec_dec,
+    C: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut c: libc::c_int = 0;
@@ -1368,15 +1368,15 @@ pub unsafe extern "C" fn unquant_fine_energy(
 #[no_mangle]
 #[c2rust::src_loc = "516:1"]
 pub unsafe extern "C" fn unquant_energy_finalise(
-    mut m: *const OpusCustomMode,
-    mut start: libc::c_int,
-    mut end: libc::c_int,
-    mut oldEBands: *mut opus_val16,
-    mut fine_quant: *mut libc::c_int,
-    mut fine_priority: *mut libc::c_int,
+    m: *const OpusCustomMode,
+    start: libc::c_int,
+    end: libc::c_int,
+    oldEBands: *mut opus_val16,
+    fine_quant: *mut libc::c_int,
+    fine_priority: *mut libc::c_int,
     mut bits_left: libc::c_int,
-    mut dec: *mut ec_dec,
-    mut C: libc::c_int,
+    dec: *mut ec_dec,
+    C: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut prio: libc::c_int = 0;
@@ -1417,12 +1417,12 @@ pub unsafe extern "C" fn unquant_energy_finalise(
 #[no_mangle]
 #[c2rust::src_loc = "544:1"]
 pub unsafe extern "C" fn amp2Log2(
-    mut m: *const OpusCustomMode,
-    mut effEnd: libc::c_int,
-    mut end: libc::c_int,
-    mut bandE: *mut celt_ener,
-    mut bandLogE: *mut opus_val16,
-    mut C: libc::c_int,
+    m: *const OpusCustomMode,
+    effEnd: libc::c_int,
+    end: libc::c_int,
+    bandE: *mut celt_ener,
+    bandLogE: *mut opus_val16,
+    C: libc::c_int,
 ) {
     let mut c: libc::c_int = 0;
     let mut i: libc::c_int = 0;

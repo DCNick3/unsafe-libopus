@@ -315,10 +315,10 @@ pub use self::define_h::{
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_decode_indices(
     mut psDec: *mut silk_decoder_state,
-    mut psRangeDec: *mut ec_dec,
-    mut FrameIndex: libc::c_int,
-    mut decode_LBRR: libc::c_int,
-    mut condCoding: libc::c_int,
+    psRangeDec: *mut ec_dec,
+    FrameIndex: libc::c_int,
+    decode_LBRR: libc::c_int,
+    condCoding: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut k: libc::c_int = 0;

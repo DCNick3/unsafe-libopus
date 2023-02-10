@@ -47,8 +47,8 @@ pub mod entcode_h {
     #[inline]
     #[c2rust::src_loc = "124:1"]
     pub unsafe extern "C" fn celt_udiv(
-        mut n: opus_uint32,
-        mut d: opus_uint32,
+        n: opus_uint32,
+        d: opus_uint32,
     ) -> opus_uint32 {
         return n.wrapping_div(d);
     }
@@ -59,12 +59,12 @@ pub mod pitch_h {
     #[inline]
     #[c2rust::src_loc = "137:1"]
     pub unsafe extern "C" fn dual_inner_prod_c(
-        mut x: *const opus_val16,
-        mut y01: *const opus_val16,
-        mut y02: *const opus_val16,
-        mut N: libc::c_int,
-        mut xy1: *mut opus_val32,
-        mut xy2: *mut opus_val32,
+        x: *const opus_val16,
+        y01: *const opus_val16,
+        y02: *const opus_val16,
+        N: libc::c_int,
+        xy1: *mut opus_val32,
+        xy2: *mut opus_val32,
     ) {
         let mut i: libc::c_int = 0;
         let mut xy01: opus_val32 = 0 as libc::c_int as opus_val32;
@@ -92,8 +92,8 @@ pub mod pitch_h {
     pub unsafe extern "C" fn xcorr_kernel_c(
         mut x: *const opus_val16,
         mut y: *const opus_val16,
-        mut sum: *mut opus_val32,
-        mut len: libc::c_int,
+        sum: *mut opus_val32,
+        len: libc::c_int,
     ) {
         let mut j: libc::c_int = 0;
         let mut y_0: opus_val16 = 0.;
@@ -215,7 +215,7 @@ pub mod pitch_h {
         if fresh11 < len {
             let fresh12 = x;
             x = x.offset(1);
-            let mut tmp_0: opus_val16 = *fresh12;
+            let tmp_0: opus_val16 = *fresh12;
             let fresh13 = y;
             y = y.offset(1);
             y_3 = *fresh13;
@@ -241,7 +241,7 @@ pub mod pitch_h {
         if fresh14 < len {
             let fresh15 = x;
             x = x.offset(1);
-            let mut tmp_1: opus_val16 = *fresh15;
+            let tmp_1: opus_val16 = *fresh15;
             let fresh16 = y;
             y = y.offset(1);
             y_0 = *fresh16;
@@ -265,7 +265,7 @@ pub mod pitch_h {
         if j < len {
             let fresh17 = x;
             x = x.offset(1);
-            let mut tmp_2: opus_val16 = *fresh17;
+            let tmp_2: opus_val16 = *fresh17;
             let fresh18 = y;
             y = y.offset(1);
             y_1 = *fresh18;
@@ -290,9 +290,9 @@ pub mod pitch_h {
     #[inline]
     #[c2rust::src_loc = "159:1"]
     pub unsafe extern "C" fn celt_inner_prod_c(
-        mut x: *const opus_val16,
-        mut y: *const opus_val16,
-        mut N: libc::c_int,
+        x: *const opus_val16,
+        y: *const opus_val16,
+        N: libc::c_int,
     ) -> opus_val32 {
         let mut i: libc::c_int = 0;
         let mut xy: opus_val32 = 0 as libc::c_int as opus_val32;
@@ -350,11 +350,11 @@ use self::stdlib_h::abs;
 use self::celt_lpc_h::{_celt_lpc, _celt_autocorr};
 #[c2rust::src_loc = "45:1"]
 unsafe extern "C" fn find_best_pitch(
-    mut xcorr: *mut opus_val32,
-    mut y: *mut opus_val16,
-    mut len: libc::c_int,
-    mut max_pitch: libc::c_int,
-    mut best_pitch: *mut libc::c_int,
+    xcorr: *mut opus_val32,
+    y: *mut opus_val16,
+    len: libc::c_int,
+    max_pitch: libc::c_int,
+    best_pitch: *mut libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
@@ -417,9 +417,9 @@ unsafe extern "C" fn find_best_pitch(
 }
 #[c2rust::src_loc = "105:1"]
 unsafe extern "C" fn celt_fir5(
-    mut x: *mut opus_val16,
-    mut num: *const opus_val16,
-    mut N: libc::c_int,
+    x: *mut opus_val16,
+    num: *const opus_val16,
+    N: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut num0: opus_val16 = 0.;
@@ -462,18 +462,18 @@ unsafe extern "C" fn celt_fir5(
 #[no_mangle]
 #[c2rust::src_loc = "140:1"]
 pub unsafe extern "C" fn pitch_downsample(
-    mut x: *mut *mut celt_sig,
-    mut x_lp: *mut opus_val16,
-    mut len: libc::c_int,
-    mut C: libc::c_int,
-    mut arch: libc::c_int,
+    x: *mut *mut celt_sig,
+    x_lp: *mut opus_val16,
+    len: libc::c_int,
+    C: libc::c_int,
+    arch: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut ac: [opus_val32; 5] = [0.; 5];
     let mut tmp: opus_val16 = Q15ONE;
     let mut lpc: [opus_val16; 4] = [0.; 4];
     let mut lpc2: [opus_val16; 5] = [0.; 5];
-    let mut c1: opus_val16 = 0.8f32;
+    let c1: opus_val16 = 0.8f32;
     i = 1 as libc::c_int;
     while i < len >> 1 as libc::c_int {
         *x_lp
@@ -559,10 +559,10 @@ pub unsafe extern "C" fn pitch_downsample(
 pub unsafe extern "C" fn celt_pitch_xcorr_c(
     mut _x: *const opus_val16,
     mut _y: *const opus_val16,
-    mut xcorr: *mut opus_val32,
-    mut len: libc::c_int,
-    mut max_pitch: libc::c_int,
-    mut arch: libc::c_int,
+    xcorr: *mut opus_val32,
+    len: libc::c_int,
+    max_pitch: libc::c_int,
+    _arch: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     if !(max_pitch > 0 as libc::c_int) {
@@ -597,12 +597,12 @@ pub unsafe extern "C" fn celt_pitch_xcorr_c(
 #[no_mangle]
 #[c2rust::src_loc = "284:1"]
 pub unsafe extern "C" fn pitch_search(
-    mut x_lp: *const opus_val16,
-    mut y: *mut opus_val16,
-    mut len: libc::c_int,
-    mut max_pitch: libc::c_int,
-    mut pitch: *mut libc::c_int,
-    mut arch: libc::c_int,
+    x_lp: *const opus_val16,
+    y: *mut opus_val16,
+    len: libc::c_int,
+    max_pitch: libc::c_int,
+    pitch: *mut libc::c_int,
+    arch: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
@@ -716,9 +716,9 @@ pub unsafe extern "C" fn pitch_search(
 }
 #[c2rust::src_loc = "424:1"]
 unsafe extern "C" fn compute_pitch_gain(
-    mut xy: opus_val32,
-    mut xx: opus_val32,
-    mut yy: opus_val32,
+    xy: opus_val32,
+    xx: opus_val32,
+    yy: opus_val32,
 ) -> opus_val16 {
     return xy
         / sqrt((1 as libc::c_int as libc::c_float + xx * yy) as libc::c_double)
@@ -750,10 +750,10 @@ pub unsafe extern "C" fn remove_doubling(
     mut maxperiod: libc::c_int,
     mut minperiod: libc::c_int,
     mut N: libc::c_int,
-    mut T0_: *mut libc::c_int,
+    T0_: *mut libc::c_int,
     mut prev_period: libc::c_int,
-    mut prev_gain: opus_val16,
-    mut arch: libc::c_int,
+    prev_gain: opus_val16,
+    _arch: libc::c_int,
 ) -> opus_val16 {
     let mut k: libc::c_int = 0;
     let mut i: libc::c_int = 0;

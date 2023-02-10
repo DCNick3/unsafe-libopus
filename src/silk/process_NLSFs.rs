@@ -330,10 +330,10 @@ use self::main_h::{silk_interpolate, silk_NLSF_encode};
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_process_NLSFs(
-    mut psEncC: *mut silk_encoder_state,
-    mut PredCoef_Q12: *mut [opus_int16; 16],
-    mut pNLSF_Q15: *mut opus_int16,
-    mut prev_NLSFq_Q15: *const opus_int16,
+    psEncC: *mut silk_encoder_state,
+    PredCoef_Q12: *mut [opus_int16; 16],
+    pNLSF_Q15: *mut opus_int16,
+    prev_NLSFq_Q15: *const opus_int16,
 ) {
     let mut i: libc::c_int = 0;
     let mut doInterpolate: libc::c_int = 0;

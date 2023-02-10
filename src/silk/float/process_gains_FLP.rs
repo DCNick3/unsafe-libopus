@@ -301,7 +301,7 @@ pub mod string_h {
 pub mod SigProc_FLP_h {
     #[inline]
     #[c2rust::src_loc = "150:1"]
-    pub unsafe extern "C" fn silk_sigmoid(mut x: libc::c_float) -> libc::c_float {
+    pub unsafe extern "C" fn silk_sigmoid(x: libc::c_float) -> libc::c_float {
         return (1.0f64 / (1.0f64 + exp(-x as libc::c_double))) as libc::c_float;
     }
     use super::mathcalls_h::exp;
@@ -364,7 +364,7 @@ pub use self::structs_h::{
 pub use self::structs_FLP_h::{
     silk_shape_state_FLP, silk_encoder_state_FLP, silk_encoder_control_FLP,
 };
-use self::mathcalls_h::{exp, pow, sqrt};
+use self::mathcalls_h::{pow, sqrt};
 use self::string_h::memcpy;
 pub use self::SigProc_FLP_h::silk_sigmoid;
 use self::tables_h::silk_Quantization_Offsets_Q10;
@@ -379,9 +379,9 @@ pub use self::tuning_parameters_h::{
 pub unsafe extern "C" fn silk_process_gains_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,
     mut psEncCtrl: *mut silk_encoder_control_FLP,
-    mut condCoding: libc::c_int,
+    condCoding: libc::c_int,
 ) {
-    let mut psShapeSt: *mut silk_shape_state_FLP = &mut (*psEnc).sShape;
+    let psShapeSt: *mut silk_shape_state_FLP = &mut (*psEnc).sShape;
     let mut k: libc::c_int = 0;
     let mut pGains_Q16: [opus_int32; 4] = [0; 4];
     let mut s: libc::c_float = 0.;

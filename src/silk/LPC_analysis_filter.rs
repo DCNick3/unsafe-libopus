@@ -72,12 +72,12 @@ pub use self::typedef_h::{silk_int16_MIN, silk_int16_MAX};
 #[no_mangle]
 #[c2rust::src_loc = "49:1"]
 pub unsafe extern "C" fn silk_LPC_analysis_filter(
-    mut out: *mut opus_int16,
-    mut in_0: *const opus_int16,
-    mut B: *const opus_int16,
+    out: *mut opus_int16,
+    in_0: *const opus_int16,
+    B: *const opus_int16,
     len: opus_int32,
     d: opus_int32,
-    mut arch: libc::c_int,
+    _arch: libc::c_int,
 ) {
     let mut j: libc::c_int = 0;
     let mut ix: libc::c_int = 0;

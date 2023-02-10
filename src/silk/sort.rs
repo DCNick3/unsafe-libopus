@@ -40,8 +40,8 @@ use self::arch_h::celt_fatal;
 #[no_mangle]
 #[c2rust::src_loc = "40:1"]
 pub unsafe extern "C" fn silk_insertion_sort_increasing(
-    mut a: *mut opus_int32,
-    mut idx: *mut libc::c_int,
+    a: *mut opus_int32,
+    idx: *mut libc::c_int,
     L: libc::c_int,
     K: libc::c_int,
 ) {
@@ -106,7 +106,7 @@ pub unsafe extern "C" fn silk_insertion_sort_increasing(
 #[no_mangle]
 #[c2rust::src_loc = "135:1"]
 pub unsafe extern "C" fn silk_insertion_sort_increasing_all_values_int16(
-    mut a: *mut opus_int16,
+    a: *mut opus_int16,
     L: libc::c_int,
 ) {
     let mut value: libc::c_int = 0;

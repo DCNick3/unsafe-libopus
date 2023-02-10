@@ -100,12 +100,12 @@ pub mod arch_h {
 pub mod os_support_h {
     #[inline]
     #[c2rust::src_loc = "47:1"]
-    pub unsafe extern "C" fn opus_alloc(mut size: size_t) -> *mut libc::c_void {
+    pub unsafe extern "C" fn opus_alloc(size: size_t) -> *mut libc::c_void {
         return malloc(size);
     }
     #[inline]
     #[c2rust::src_loc = "64:1"]
-    pub unsafe extern "C" fn opus_free(mut ptr: *mut libc::c_void) {
+    pub unsafe extern "C" fn opus_free(ptr: *mut libc::c_void) {
         free(ptr);
     }
     use super::stddef_h::size_t;
@@ -143,7 +143,7 @@ use self::opus_h::{opus_packet_get_samples_per_frame, opus_packet_get_nb_frames}
 use self::arch_h::celt_fatal;
 pub use self::os_support_h::{opus_alloc, opus_free};
 use self::string_h::memmove;
-use self::stdlib_h::{malloc, free};
+
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn opus_repacketizer_get_size() -> libc::c_int {
@@ -169,15 +169,15 @@ pub unsafe extern "C" fn opus_repacketizer_create() -> *mut OpusRepacketizer {
 }
 #[no_mangle]
 #[c2rust::src_loc = "56:1"]
-pub unsafe extern "C" fn opus_repacketizer_destroy(mut rp: *mut OpusRepacketizer) {
+pub unsafe extern "C" fn opus_repacketizer_destroy(rp: *mut OpusRepacketizer) {
     opus_free(rp as *mut libc::c_void);
 }
 #[c2rust::src_loc = "61:1"]
 unsafe extern "C" fn opus_repacketizer_cat_impl(
     mut rp: *mut OpusRepacketizer,
-    mut data: *const libc::c_uchar,
-    mut len: opus_int32,
-    mut self_delimited: libc::c_int,
+    data: *const libc::c_uchar,
+    len: opus_int32,
+    self_delimited: libc::c_int,
 ) -> libc::c_int {
     let mut tmp_toc: libc::c_uchar = 0;
     let mut curr_nb_frames: libc::c_int = 0;
@@ -219,29 +219,29 @@ unsafe extern "C" fn opus_repacketizer_cat_impl(
 #[no_mangle]
 #[c2rust::src_loc = "92:1"]
 pub unsafe extern "C" fn opus_repacketizer_cat(
-    mut rp: *mut OpusRepacketizer,
-    mut data: *const libc::c_uchar,
-    mut len: opus_int32,
+    rp: *mut OpusRepacketizer,
+    data: *const libc::c_uchar,
+    len: opus_int32,
 ) -> libc::c_int {
     return opus_repacketizer_cat_impl(rp, data, len, 0 as libc::c_int);
 }
 #[no_mangle]
 #[c2rust::src_loc = "97:1"]
 pub unsafe extern "C" fn opus_repacketizer_get_nb_frames(
-    mut rp: *mut OpusRepacketizer,
+    rp: *mut OpusRepacketizer,
 ) -> libc::c_int {
     return (*rp).nb_frames;
 }
 #[no_mangle]
 #[c2rust::src_loc = "102:1"]
 pub unsafe extern "C" fn opus_repacketizer_out_range_impl(
-    mut rp: *mut OpusRepacketizer,
-    mut begin: libc::c_int,
-    mut end: libc::c_int,
-    mut data: *mut libc::c_uchar,
-    mut maxlen: opus_int32,
-    mut self_delimited: libc::c_int,
-    mut pad: libc::c_int,
+    rp: *mut OpusRepacketizer,
+    begin: libc::c_int,
+    end: libc::c_int,
+    data: *mut libc::c_uchar,
+    maxlen: opus_int32,
+    self_delimited: libc::c_int,
+    pad: libc::c_int,
 ) -> opus_int32 {
     let mut i: libc::c_int = 0;
     let mut count: libc::c_int = 0;
@@ -400,7 +400,7 @@ pub unsafe extern "C" fn opus_repacketizer_out_range_impl(
         }
     }
     if self_delimited != 0 {
-        let mut sdlen: libc::c_int = encode_size(
+        let sdlen: libc::c_int = encode_size(
             *len.offset((count - 1 as libc::c_int) as isize) as libc::c_int,
             ptr,
         );
@@ -434,11 +434,11 @@ pub unsafe extern "C" fn opus_repacketizer_out_range_impl(
 #[no_mangle]
 #[c2rust::src_loc = "230:1"]
 pub unsafe extern "C" fn opus_repacketizer_out_range(
-    mut rp: *mut OpusRepacketizer,
-    mut begin: libc::c_int,
-    mut end: libc::c_int,
-    mut data: *mut libc::c_uchar,
-    mut maxlen: opus_int32,
+    rp: *mut OpusRepacketizer,
+    begin: libc::c_int,
+    end: libc::c_int,
+    data: *mut libc::c_uchar,
+    maxlen: opus_int32,
 ) -> opus_int32 {
     return opus_repacketizer_out_range_impl(
         rp,
@@ -453,9 +453,9 @@ pub unsafe extern "C" fn opus_repacketizer_out_range(
 #[no_mangle]
 #[c2rust::src_loc = "235:1"]
 pub unsafe extern "C" fn opus_repacketizer_out(
-    mut rp: *mut OpusRepacketizer,
-    mut data: *mut libc::c_uchar,
-    mut maxlen: opus_int32,
+    rp: *mut OpusRepacketizer,
+    data: *mut libc::c_uchar,
+    maxlen: opus_int32,
 ) -> opus_int32 {
     return opus_repacketizer_out_range_impl(
         rp,
@@ -470,9 +470,9 @@ pub unsafe extern "C" fn opus_repacketizer_out(
 #[no_mangle]
 #[c2rust::src_loc = "240:1"]
 pub unsafe extern "C" fn opus_packet_pad(
-    mut data: *mut libc::c_uchar,
-    mut len: opus_int32,
-    mut new_len: opus_int32,
+    data: *mut libc::c_uchar,
+    len: opus_int32,
+    new_len: opus_int32,
 ) -> libc::c_int {
     let mut rp: OpusRepacketizer = OpusRepacketizer {
         toc: 0,
@@ -528,8 +528,8 @@ pub unsafe extern "C" fn opus_packet_pad(
 #[no_mangle]
 #[c2rust::src_loc = "263:1"]
 pub unsafe extern "C" fn opus_packet_unpad(
-    mut data: *mut libc::c_uchar,
-    mut len: opus_int32,
+    data: *mut libc::c_uchar,
+    len: opus_int32,
 ) -> opus_int32 {
     let mut rp: OpusRepacketizer = OpusRepacketizer {
         toc: 0,
@@ -571,8 +571,8 @@ pub unsafe extern "C" fn opus_packet_unpad(
 pub unsafe extern "C" fn opus_multistream_packet_pad(
     mut data: *mut libc::c_uchar,
     mut len: opus_int32,
-    mut new_len: opus_int32,
-    mut nb_streams: libc::c_int,
+    new_len: opus_int32,
+    nb_streams: libc::c_int,
 ) -> libc::c_int {
     let mut s: libc::c_int = 0;
     let mut count: libc::c_int = 0;
@@ -620,7 +620,7 @@ pub unsafe extern "C" fn opus_multistream_packet_pad(
 pub unsafe extern "C" fn opus_multistream_packet_unpad(
     mut data: *mut libc::c_uchar,
     mut len: opus_int32,
-    mut nb_streams: libc::c_int,
+    nb_streams: libc::c_int,
 ) -> opus_int32 {
     let mut s: libc::c_int = 0;
     let mut toc: libc::c_uchar = 0;
@@ -643,7 +643,7 @@ pub unsafe extern "C" fn opus_multistream_packet_unpad(
     s = 0 as libc::c_int;
     while s < nb_streams {
         let mut ret: opus_int32 = 0;
-        let mut self_delimited: libc::c_int = (s != nb_streams - 1 as libc::c_int)
+        let self_delimited: libc::c_int = (s != nb_streams - 1 as libc::c_int)
             as libc::c_int;
         if len <= 0 as libc::c_int {
             return OPUS_INVALID_PACKET;

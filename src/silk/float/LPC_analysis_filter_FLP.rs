@@ -26,9 +26,9 @@ use self::string_h::memset;
 #[inline]
 #[c2rust::src_loc = "43:1"]
 unsafe extern "C" fn silk_LPC_analysis_filter16_FLP(
-    mut r_LPC: *mut libc::c_float,
-    mut PredCoef: *const libc::c_float,
-    mut s: *const libc::c_float,
+    r_LPC: *mut libc::c_float,
+    PredCoef: *const libc::c_float,
+    s: *const libc::c_float,
     length: libc::c_int,
 ) {
     let mut ix: libc::c_int = 0;
@@ -76,9 +76,9 @@ unsafe extern "C" fn silk_LPC_analysis_filter16_FLP(
 #[inline]
 #[c2rust::src_loc = "81:1"]
 unsafe extern "C" fn silk_LPC_analysis_filter12_FLP(
-    mut r_LPC: *mut libc::c_float,
-    mut PredCoef: *const libc::c_float,
-    mut s: *const libc::c_float,
+    r_LPC: *mut libc::c_float,
+    PredCoef: *const libc::c_float,
+    s: *const libc::c_float,
     length: libc::c_int,
 ) {
     let mut ix: libc::c_int = 0;
@@ -118,9 +118,9 @@ unsafe extern "C" fn silk_LPC_analysis_filter12_FLP(
 #[inline]
 #[c2rust::src_loc = "115:1"]
 unsafe extern "C" fn silk_LPC_analysis_filter10_FLP(
-    mut r_LPC: *mut libc::c_float,
-    mut PredCoef: *const libc::c_float,
-    mut s: *const libc::c_float,
+    r_LPC: *mut libc::c_float,
+    PredCoef: *const libc::c_float,
+    s: *const libc::c_float,
     length: libc::c_int,
 ) {
     let mut ix: libc::c_int = 0;
@@ -156,9 +156,9 @@ unsafe extern "C" fn silk_LPC_analysis_filter10_FLP(
 #[inline]
 #[c2rust::src_loc = "147:1"]
 unsafe extern "C" fn silk_LPC_analysis_filter8_FLP(
-    mut r_LPC: *mut libc::c_float,
-    mut PredCoef: *const libc::c_float,
-    mut s: *const libc::c_float,
+    r_LPC: *mut libc::c_float,
+    PredCoef: *const libc::c_float,
+    s: *const libc::c_float,
     length: libc::c_int,
 ) {
     let mut ix: libc::c_int = 0;
@@ -190,9 +190,9 @@ unsafe extern "C" fn silk_LPC_analysis_filter8_FLP(
 #[inline]
 #[c2rust::src_loc = "177:1"]
 unsafe extern "C" fn silk_LPC_analysis_filter6_FLP(
-    mut r_LPC: *mut libc::c_float,
-    mut PredCoef: *const libc::c_float,
-    mut s: *const libc::c_float,
+    r_LPC: *mut libc::c_float,
+    PredCoef: *const libc::c_float,
+    s: *const libc::c_float,
     length: libc::c_int,
 ) {
     let mut ix: libc::c_int = 0;
@@ -220,9 +220,9 @@ unsafe extern "C" fn silk_LPC_analysis_filter6_FLP(
 #[no_mangle]
 #[c2rust::src_loc = "210:1"]
 pub unsafe extern "C" fn silk_LPC_analysis_filter_FLP(
-    mut r_LPC: *mut libc::c_float,
-    mut PredCoef: *const libc::c_float,
-    mut s: *const libc::c_float,
+    r_LPC: *mut libc::c_float,
+    PredCoef: *const libc::c_float,
+    s: *const libc::c_float,
     length: libc::c_int,
     Order: libc::c_int,
 ) {

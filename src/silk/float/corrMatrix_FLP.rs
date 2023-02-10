@@ -19,11 +19,11 @@ use self::SigProc_FLP_h::{silk_inner_product_FLP, silk_energy_FLP};
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_corrVector_FLP(
-    mut x: *const libc::c_float,
-    mut t: *const libc::c_float,
+    x: *const libc::c_float,
+    t: *const libc::c_float,
     L: libc::c_int,
     Order: libc::c_int,
-    mut Xt: *mut libc::c_float,
+    Xt: *mut libc::c_float,
 ) {
     let mut lag: libc::c_int = 0;
     let mut ptr1: *const libc::c_float = 0 as *const libc::c_float;
@@ -38,10 +38,10 @@ pub unsafe extern "C" fn silk_corrVector_FLP(
 #[no_mangle]
 #[c2rust::src_loc = "59:1"]
 pub unsafe extern "C" fn silk_corrMatrix_FLP(
-    mut x: *const libc::c_float,
+    x: *const libc::c_float,
     L: libc::c_int,
     Order: libc::c_int,
-    mut XX: *mut libc::c_float,
+    XX: *mut libc::c_float,
 ) {
     let mut j: libc::c_int = 0;
     let mut lag: libc::c_int = 0;
