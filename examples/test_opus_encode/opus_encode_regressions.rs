@@ -197,7 +197,7 @@ pub use self::types_h::{__int16_t, __int32_t, __off64_t, __off_t};
 pub use self::FILE_h::FILE;
 #[c2rust::src_loc = "44:1"]
 unsafe extern "C" fn celt_ec_internal_error() -> libc::c_int {
-    let mut enc: *mut OpusMSEncoder = 0 as *mut OpusMSEncoder;
+    let mut enc: *mut OpusMSEncoder = std::ptr::null_mut::<OpusMSEncoder>();
     let mut err: libc::c_int = 0;
     let mut data: [libc::c_uchar; 2460] = [0; 2460];
     let mut streams: libc::c_int = 0;
@@ -1418,11 +1418,11 @@ unsafe extern "C" fn celt_ec_internal_error() -> libc::c_int {
         );
     }
     opus_multistream_encoder_destroy(enc);
-    return 0 as libc::c_int;
+    0 as libc::c_int
 }
 #[c2rust::src_loc = "291:1"]
 unsafe extern "C" fn mscbr_encode_fail10() -> libc::c_int {
-    let mut enc: *mut OpusMSEncoder = 0 as *mut OpusMSEncoder;
+    let mut enc: *mut OpusMSEncoder = std::ptr::null_mut::<OpusMSEncoder>();
     let mut err: libc::c_int = 0;
     let mut data: [libc::c_uchar; 627300] = [0; 627300];
     static mut mapping: [libc::c_uchar; 255] = [
@@ -6827,11 +6827,11 @@ unsafe extern "C" fn mscbr_encode_fail10() -> libc::c_int {
         );
     }
     opus_multistream_encoder_destroy(enc);
-    return 0 as libc::c_int;
+    0 as libc::c_int
 }
 #[c2rust::src_loc = "344:1"]
 unsafe extern "C" fn mscbr_encode_fail() -> libc::c_int {
-    let mut enc: *mut OpusMSEncoder = 0 as *mut OpusMSEncoder;
+    let mut enc: *mut OpusMSEncoder = std::ptr::null_mut::<OpusMSEncoder>();
     let mut err: libc::c_int = 0;
     let mut data: [libc::c_uchar; 472320] = [0; 472320];
     static mut mapping: [libc::c_uchar; 192] = [
@@ -10913,11 +10913,11 @@ unsafe extern "C" fn mscbr_encode_fail() -> libc::c_int {
         );
     }
     opus_multistream_encoder_destroy(enc);
-    return 0 as libc::c_int;
+    0 as libc::c_int
 }
 #[c2rust::src_loc = "394:1"]
 unsafe extern "C" fn surround_analysis_uninit() -> libc::c_int {
-    let mut enc: *mut OpusMSEncoder = 0 as *mut OpusMSEncoder;
+    let mut enc: *mut OpusMSEncoder = std::ptr::null_mut::<OpusMSEncoder>();
     let mut err: libc::c_int = 0;
     let mut data: [libc::c_uchar; 7380] = [0; 7380];
     let mut streams: libc::c_int = 0;
@@ -18203,11 +18203,11 @@ unsafe extern "C" fn surround_analysis_uninit() -> libc::c_int {
         );
     }
     opus_multistream_encoder_destroy(enc);
-    return 0 as libc::c_int;
+    0 as libc::c_int
 }
 #[c2rust::src_loc = "894:1"]
 unsafe extern "C" fn ec_enc_shrink_assert() -> libc::c_int {
-    let mut enc: *mut OpusEncoder = 0 as *mut OpusEncoder;
+    let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
     let mut err: libc::c_int = 0;
     let mut data_len: libc::c_int = 0;
     let mut data: [libc::c_uchar; 2000] = [0; 2000];
@@ -25011,11 +25011,11 @@ unsafe extern "C" fn ec_enc_shrink_assert() -> libc::c_int {
         );
     }
     opus_encoder_destroy(enc);
-    return 0 as libc::c_int;
+    0 as libc::c_int
 }
 #[c2rust::src_loc = "957:1"]
 unsafe extern "C" fn ec_enc_shrink_assert2() -> libc::c_int {
-    let mut enc: *mut OpusEncoder = 0 as *mut OpusEncoder;
+    let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
     let mut err: libc::c_int = 0;
     let mut data_len: libc::c_int = 0;
     let mut data: [libc::c_uchar; 2000] = [0; 2000];
@@ -26514,11 +26514,11 @@ unsafe extern "C" fn ec_enc_shrink_assert2() -> libc::c_int {
         );
     }
     opus_encoder_destroy(enc);
-    return 0 as libc::c_int;
+    0 as libc::c_int
 }
 #[c2rust::src_loc = "989:1"]
 unsafe extern "C" fn silk_gain_assert() -> libc::c_int {
-    let mut enc: *mut OpusEncoder = 0 as *mut OpusEncoder;
+    let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
     let mut err: libc::c_int = 0;
     let mut data_len: libc::c_int = 0;
     let mut data: [libc::c_uchar; 1000] = [0; 1000];
@@ -27698,7 +27698,7 @@ unsafe extern "C" fn silk_gain_assert() -> libc::c_int {
         );
     }
     opus_encoder_destroy(enc);
-    return 0 as libc::c_int;
+    0 as libc::c_int
 }
 #[no_mangle]
 #[c2rust::src_loc = "1025:1"]

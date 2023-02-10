@@ -224,7 +224,7 @@ pub mod float_cast_h {
     #[inline]
     #[c2rust::src_loc = "137:1"]
     pub unsafe extern "C" fn FLOAT2INT16(mut x: libc::c_float) -> opus_int16 {
-        x = x * 32768.0f32;
+        x *= 32768.0f32;
         x = if x > -(32768 as libc::c_int) as libc::c_float {
             x
         } else {
@@ -235,12 +235,12 @@ pub mod float_cast_h {
         } else {
             32767 as libc::c_int as libc::c_float
         };
-        return float2int(x) as opus_int16;
+        float2int(x) as opus_int16
     }
     #[inline]
     #[c2rust::src_loc = "68:1"]
     pub unsafe extern "C" fn float2int(mut x: libc::c_float) -> opus_int32 {
-        return _mm_cvt_ss2si(_mm_set_ss(x));
+        _mm_cvt_ss2si(_mm_set_ss(x))
     }
     use super::opus_types_h::{opus_int16, opus_int32};
     use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
@@ -260,7 +260,7 @@ pub mod test_opus_common_h {
         Rw = (18000 as libc::c_int as libc::c_uint)
             .wrapping_mul(Rw & 65535 as libc::c_int as libc::c_uint)
             .wrapping_add(Rw >> 16 as libc::c_int);
-        return (Rz << 16 as libc::c_int).wrapping_add(Rw);
+        (Rz << 16 as libc::c_int).wrapping_add(Rw)
     }
     #[c2rust::src_loc = "63:20"]
     pub static mut iseed: opus_uint32 = 0;
@@ -330,7 +330,7 @@ pub mod os_support_h {
     #[inline]
     #[c2rust::src_loc = "47:1"]
     pub unsafe extern "C" fn opus_alloc(mut size: size_t) -> *mut libc::c_void {
-        return malloc(size);
+        malloc(size)
     }
     use super::stddef_h::size_t;
     use super::stdlib_h::{free, malloc};
@@ -353,7 +353,7 @@ use self::stdlib_h::{abs, free, malloc};
 use self::string_h::memset;
 pub use self::test_opus_common_h::{_test_failed, fast_rand};
 use libopus_unsafe::{
-    opus_get_version_string, opus_projection_ambisonics_encoder_create, opus_projection_decode,
+    opus_projection_ambisonics_encoder_create, opus_projection_decode,
     opus_projection_decoder_create, opus_projection_decoder_destroy, opus_projection_encode,
     opus_projection_encoder_ctl, opus_projection_encoder_destroy, OpusProjectionDecoder,
     OpusProjectionEncoder,
@@ -376,7 +376,7 @@ pub unsafe extern "C" fn assert_is_equal(
         }
         i += 1;
     }
-    return 0 as libc::c_int;
+    0 as libc::c_int
 }
 #[no_mangle]
 #[c2rust::src_loc = "72:1"]
@@ -396,18 +396,18 @@ pub unsafe extern "C" fn assert_is_equal_short(
         }
         i += 1;
     }
-    return 0 as libc::c_int;
+    0 as libc::c_int
 }
 #[no_mangle]
 #[c2rust::src_loc = "82:1"]
 pub unsafe extern "C" fn test_simple_matrix() {
     let simple_matrix_params: MappingMatrix = {
-        let mut init = MappingMatrix {
+        
+        MappingMatrix {
             rows: 4 as libc::c_int,
             cols: 3 as libc::c_int,
             gain: 0 as libc::c_int,
-        };
-        init
+        }
     };
     let simple_matrix_data: [opus_int16; 12] = [
         0 as libc::c_int as opus_int16,
@@ -500,10 +500,10 @@ pub unsafe extern "C" fn test_simple_matrix() {
     let mut i: libc::c_int = 0;
     let mut ret: libc::c_int = 0;
     let mut simple_matrix_size: opus_int32 = 0;
-    let mut input_val16: *mut opus_val16 = 0 as *mut opus_val16;
-    let mut output_val16: *mut opus_val16 = 0 as *mut opus_val16;
-    let mut output_int16: *mut opus_int16 = 0 as *mut opus_int16;
-    let mut simple_matrix: *mut MappingMatrix = 0 as *mut MappingMatrix;
+    let mut input_val16: *mut opus_val16 = std::ptr::null_mut::<opus_val16>();
+    let mut output_val16: *mut opus_val16 = std::ptr::null_mut::<opus_val16>();
+    let mut output_int16: *mut opus_int16 = std::ptr::null_mut::<opus_int16>();
+    let mut simple_matrix: *mut MappingMatrix = std::ptr::null_mut::<MappingMatrix>();
     input_val16 = opus_alloc(
         (::core::mem::size_of::<opus_val16>() as libc::c_ulong)
             .wrapping_mul(30 as libc::c_int as libc::c_ulong),
@@ -675,8 +675,8 @@ pub unsafe extern "C" fn test_creation_arguments(
     let mut enc_error: libc::c_int = 0;
     let mut dec_error: libc::c_int = 0;
     let mut ret: libc::c_int = 0;
-    let mut st_enc: *mut OpusProjectionEncoder = 0 as *mut OpusProjectionEncoder;
-    let mut st_dec: *mut OpusProjectionDecoder = 0 as *mut OpusProjectionDecoder;
+    let mut st_enc: *mut OpusProjectionEncoder = std::ptr::null_mut::<OpusProjectionEncoder>();
+    let mut st_dec: *mut OpusProjectionDecoder = std::ptr::null_mut::<OpusProjectionDecoder>();
     let Fs: opus_int32 = 48000 as libc::c_int;
     let application: libc::c_int = 2049 as libc::c_int;
     let mut order_plus_one: libc::c_int =
@@ -695,7 +695,7 @@ pub unsafe extern "C" fn test_creation_arguments(
     );
     if !st_enc.is_null() {
         let mut matrix_size: opus_int32 = 0;
-        let mut matrix: *mut libc::c_uchar = 0 as *mut libc::c_uchar;
+        let mut matrix: *mut libc::c_uchar = std::ptr::null_mut::<libc::c_uchar>();
         ret = opus_projection_encoder_ctl(
             st_enc,
             6003 as libc::c_int,
@@ -765,10 +765,10 @@ pub unsafe extern "C" fn generate_music(
     let mut i: opus_int32 = 0;
     let mut j: opus_int32 = 0;
     let mut k: opus_int32 = 0;
-    let mut a: *mut opus_int32 = 0 as *mut opus_int32;
-    let mut b: *mut opus_int32 = 0 as *mut opus_int32;
-    let mut c: *mut opus_int32 = 0 as *mut opus_int32;
-    let mut d: *mut opus_int32 = 0 as *mut opus_int32;
+    let mut a: *mut opus_int32 = std::ptr::null_mut::<opus_int32>();
+    let mut b: *mut opus_int32 = std::ptr::null_mut::<opus_int32>();
+    let mut c: *mut opus_int32 = std::ptr::null_mut::<opus_int32>();
+    let mut d: *mut opus_int32 = std::ptr::null_mut::<opus_int32>();
     a = malloc(
         (::core::mem::size_of::<opus_int32>() as libc::c_ulong)
             .wrapping_mul(channels as libc::c_ulong),
@@ -816,12 +816,11 @@ pub unsafe extern "C" fn generate_music(
         while k < channels {
             let mut r: opus_uint32 = 0;
             let mut v: opus_int32 = 0;
-            v = ((j
+            v = (((j
                 * (j >> 12 as libc::c_int
                     ^ (j >> 10 as libc::c_int | j >> 12 as libc::c_int)
                         & 26 as libc::c_int
-                        & j >> 7 as libc::c_int)
-                & 128 as libc::c_int)
+                        & j >> 7 as libc::c_int)) & 128 as libc::c_int)
                 + 128 as libc::c_int)
                 << 15 as libc::c_int;
             r = fast_rand();
@@ -830,15 +829,13 @@ pub unsafe extern "C" fn generate_music(
             v = (v as libc::c_uint).wrapping_sub(r >> 16 as libc::c_int) as opus_int32
                 as opus_int32;
             *b.offset(k as isize) = v - *a.offset(k as isize)
-                + (*b.offset(k as isize) * 61 as libc::c_int + 32 as libc::c_int
-                    >> 6 as libc::c_int);
+                + ((*b.offset(k as isize) * 61 as libc::c_int + 32 as libc::c_int) >> 6 as libc::c_int);
             *a.offset(k as isize) = v;
-            *c.offset(k as isize) = 30 as libc::c_int
+            *c.offset(k as isize) = (30 as libc::c_int
                 * (*c.offset(k as isize) + *b.offset(k as isize) + *d.offset(k as isize))
-                + 32 as libc::c_int
-                >> 6 as libc::c_int;
+                + 32 as libc::c_int) >> 6 as libc::c_int;
             *d.offset(k as isize) = *b.offset(k as isize);
-            v = *c.offset(k as isize) + 128 as libc::c_int >> 8 as libc::c_int;
+            v = (*c.offset(k as isize) + 128 as libc::c_int) >> 8 as libc::c_int;
             *buf.offset((i * channels + k) as isize) = (if v > 32767 as libc::c_int {
                 32767 as libc::c_int
             } else if v < -(32768 as libc::c_int) {
@@ -867,13 +864,13 @@ pub unsafe extern "C" fn test_encode_decode(
 ) {
     let Fs: opus_int32 = 48000 as libc::c_int;
     let application: libc::c_int = 2049 as libc::c_int;
-    let mut st_enc: *mut OpusProjectionEncoder = 0 as *mut OpusProjectionEncoder;
-    let mut st_dec: *mut OpusProjectionDecoder = 0 as *mut OpusProjectionDecoder;
+    let mut st_enc: *mut OpusProjectionEncoder = std::ptr::null_mut::<OpusProjectionEncoder>();
+    let mut st_dec: *mut OpusProjectionDecoder = std::ptr::null_mut::<OpusProjectionDecoder>();
     let mut streams: libc::c_int = 0;
     let mut coupled: libc::c_int = 0;
     let mut error: libc::c_int = 0;
-    let mut buffer_in: *mut libc::c_short = 0 as *mut libc::c_short;
-    let mut buffer_out: *mut libc::c_short = 0 as *mut libc::c_short;
+    let mut buffer_in: *mut libc::c_short = std::ptr::null_mut::<libc::c_short>();
+    let mut buffer_out: *mut libc::c_short = std::ptr::null_mut::<libc::c_short>();
     let mut data: [libc::c_uchar; 32768] = [
         0 as libc::c_int as libc::c_uchar,
         0,
@@ -33647,7 +33644,7 @@ pub unsafe extern "C" fn test_encode_decode(
     let mut len: libc::c_int = 0;
     let mut out_samples: libc::c_int = 0;
     let mut matrix_size: opus_int32 = 0 as libc::c_int;
-    let mut matrix: *mut libc::c_uchar = 0 as *mut libc::c_uchar;
+    let mut matrix: *mut libc::c_uchar = std::ptr::null_mut::<libc::c_uchar>();
     buffer_in = malloc(
         (::core::mem::size_of::<libc::c_short>() as libc::c_ulong)
             .wrapping_mul(960 as libc::c_int as libc::c_ulong)
@@ -33687,7 +33684,7 @@ pub unsafe extern "C" fn test_encode_decode(
         4002 as libc::c_int,
         bitrate * 1000 as libc::c_int * (streams + coupled),
     );
-    if !(error != 0 as libc::c_int) {
+    if error == 0 as libc::c_int {
         error = opus_projection_encoder_ctl(
             st_enc,
             6003 as libc::c_int,
@@ -33781,7 +33778,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
         stderr,
         b"All projection tests passed.\n\0" as *const u8 as *const libc::c_char,
     );
-    return 0 as libc::c_int;
+    0 as libc::c_int
 }
 pub fn main() {
     let mut args: Vec<*mut libc::c_char> = Vec::new();

@@ -214,7 +214,7 @@ pub use self::stddef_h::size_t;
 pub use self::stdint_intn_h::{int16_t, int32_t};
 pub use self::stdint_uintn_h::uint32_t;
 use self::stdio_h::{fprintf, printf, stderr, stdout};
-use self::stdlib_h::{abort, free, malloc};
+use self::stdlib_h::{free, malloc};
 use self::string_h::{memcmp, memcpy, memset, strlen};
 pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
 pub use self::test_opus_common_h::{_test_failed, iseed};
@@ -255,8 +255,8 @@ static mut opus_rates: [opus_int32; 5] = [
 #[c2rust::src_loc = "86:1"]
 pub unsafe extern "C" fn test_dec_api() -> opus_int32 {
     let mut dec_final_range: opus_uint32 = 0;
-    let mut dec: *mut OpusDecoder = 0 as *mut OpusDecoder;
-    let mut dec2: *mut OpusDecoder = 0 as *mut OpusDecoder;
+    let mut dec: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
+    let mut dec2: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
     let mut i: opus_int32 = 0;
     let mut j: opus_int32 = 0;
     let mut cfgs: opus_int32 = 0;
@@ -337,7 +337,7 @@ pub unsafe extern "C" fn test_dec_api() -> opus_int32 {
                     );
                 }
                 cfgs += 1;
-                dec = opus_decoder_create(fs, c, 0 as *mut libc::c_int);
+                dec = opus_decoder_create(fs, c, std::ptr::null_mut::<libc::c_int>());
                 if !dec.is_null() {
                     _test_failed(
                         b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -902,11 +902,9 @@ pub unsafe extern "C" fn test_dec_api() -> opus_int32 {
         packet[0 as libc::c_int as usize] = i as libc::c_uchar;
         bw = packet[0 as libc::c_int as usize] as libc::c_int >> 4 as libc::c_int;
         bw = 1101 as libc::c_int
-            + (((bw & 7 as libc::c_int) * 9 as libc::c_int
-                & 63 as libc::c_int - (bw & 8 as libc::c_int))
+            + (((((bw & 7 as libc::c_int) * 9 as libc::c_int) & (63 as libc::c_int - (bw & 8 as libc::c_int)))
                 + 2 as libc::c_int
-                + 12 as libc::c_int * (bw & 8 as libc::c_int != 0 as libc::c_int) as libc::c_int
-                >> 4 as libc::c_int);
+                + 12 as libc::c_int * (bw & 8 as libc::c_int != 0 as libc::c_int) as libc::c_int) >> 4 as libc::c_int);
         if bw != opus_packet_get_bandwidth(packet.as_mut_ptr()) {
             _test_failed(
                 b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -927,10 +925,8 @@ pub unsafe extern "C" fn test_dec_api() -> opus_int32 {
         let mut rate: libc::c_int = 0;
         packet[0 as libc::c_int as usize] = i as libc::c_uchar;
         fp3s = packet[0 as libc::c_int as usize] as libc::c_int >> 3 as libc::c_int;
-        fp3s = (((3 as libc::c_int - (fp3s & 3 as libc::c_int)) * 13 as libc::c_int
-            & 119 as libc::c_int)
-            + 9 as libc::c_int
-            >> 2 as libc::c_int)
+        fp3s = (((((3 as libc::c_int - (fp3s & 3 as libc::c_int)) * 13 as libc::c_int) & 119 as libc::c_int)
+            + 9 as libc::c_int) >> 2 as libc::c_int)
             * ((fp3s > 13 as libc::c_int) as libc::c_int
                 * (3 as libc::c_int
                     - (fp3s & 3 as libc::c_int == 3 as libc::c_int) as libc::c_int)
@@ -1080,14 +1076,14 @@ pub unsafe extern "C" fn test_dec_api() -> opus_int32 {
             as *const libc::c_char,
         cfgs,
     );
-    return cfgs;
+    cfgs
 }
 #[no_mangle]
 #[c2rust::src_loc = "343:1"]
 pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
     let mut dec_final_range: opus_uint32 = 0;
-    let mut dec: *mut OpusMSDecoder = 0 as *mut OpusMSDecoder;
-    let mut streamdec: *mut OpusDecoder = 0 as *mut OpusDecoder;
+    let mut dec: *mut OpusMSDecoder = std::ptr::null_mut::<OpusMSDecoder>();
+    let mut streamdec: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
     let mut i: opus_int32 = 0;
     let mut j: opus_int32 = 0;
     let mut cfgs: opus_int32 = 0;
@@ -1197,7 +1193,7 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
                     1 as libc::c_int,
                     c - 1 as libc::c_int,
                     mapping.as_mut_ptr(),
-                    0 as *mut libc::c_int,
+                    std::ptr::null_mut::<libc::c_int>(),
                 );
                 if !dec.is_null() {
                     _test_failed(
@@ -1239,9 +1235,9 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
     }
     c = 0 as libc::c_int;
     while c < 2 as libc::c_int {
-        let mut ret_err: *mut libc::c_int = 0 as *mut libc::c_int;
+        let mut ret_err: *mut libc::c_int = std::ptr::null_mut::<libc::c_int>();
         ret_err = if c != 0 {
-            0 as *mut libc::c_int
+            std::ptr::null_mut::<libc::c_int>()
         } else {
             &mut err
         };
@@ -1259,7 +1255,7 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
             mapping.as_mut_ptr(),
             ret_err,
         );
-        !ret_err.is_null();
+        let _ = ret_err.is_null();
         if !ret_err.is_null() && *ret_err != -(1 as libc::c_int) || !dec.is_null() {
             _test_failed(
                 b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -1277,7 +1273,7 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
             mapping.as_mut_ptr(),
             ret_err,
         );
-        !ret_err.is_null();
+        let _ = ret_err.is_null();
         if !ret_err.is_null() && *ret_err != 0 as libc::c_int || dec.is_null() {
             _test_failed(
                 b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -1295,7 +1291,7 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
             mapping.as_mut_ptr(),
             ret_err,
         );
-        !ret_err.is_null();
+        let _ = ret_err.is_null();
         if !ret_err.is_null() && *ret_err != 0 as libc::c_int || dec.is_null() {
             _test_failed(
                 b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -1343,7 +1339,7 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
             mapping.as_mut_ptr(),
             ret_err,
         );
-        !ret_err.is_null();
+        let _ = ret_err.is_null();
         if !ret_err.is_null() && *ret_err != 0 as libc::c_int || dec.is_null() {
             _test_failed(
                 b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -1361,7 +1357,7 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
             mapping.as_mut_ptr(),
             ret_err,
         );
-        !ret_err.is_null();
+        let _ = ret_err.is_null();
         if !ret_err.is_null() && *ret_err != -(1 as libc::c_int) || !dec.is_null() {
             _test_failed(
                 b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -1377,7 +1373,7 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
             mapping.as_mut_ptr(),
             ret_err,
         );
-        !ret_err.is_null();
+        let _ = ret_err.is_null();
         if !ret_err.is_null() && *ret_err != -(1 as libc::c_int) || !dec.is_null() {
             _test_failed(
                 b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -1393,7 +1389,7 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
             mapping.as_mut_ptr(),
             ret_err,
         );
-        !ret_err.is_null();
+        let _ = ret_err.is_null();
         if !ret_err.is_null() && *ret_err != -(1 as libc::c_int) || !dec.is_null() {
             _test_failed(
                 b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -1409,7 +1405,7 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
             mapping.as_mut_ptr(),
             ret_err,
         );
-        !ret_err.is_null();
+        let _ = ret_err.is_null();
         if !ret_err.is_null() && *ret_err != -(1 as libc::c_int) || !dec.is_null() {
             _test_failed(
                 b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -1425,7 +1421,7 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
             mapping.as_mut_ptr(),
             ret_err,
         );
-        !ret_err.is_null();
+        let _ = ret_err.is_null();
         if !ret_err.is_null() && *ret_err != -(1 as libc::c_int) || !dec.is_null() {
             _test_failed(
                 b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -1441,7 +1437,7 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
             mapping.as_mut_ptr(),
             ret_err,
         );
-        !ret_err.is_null();
+        let _ = ret_err.is_null();
         if !ret_err.is_null() && *ret_err != -(1 as libc::c_int) || !dec.is_null() {
             _test_failed(
                 b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -1457,7 +1453,7 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
             mapping.as_mut_ptr(),
             ret_err,
         );
-        !ret_err.is_null();
+        let _ = ret_err.is_null();
         if !ret_err.is_null() && *ret_err != -(1 as libc::c_int) || !dec.is_null() {
             _test_failed(
                 b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -1476,7 +1472,7 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
             mapping.as_mut_ptr(),
             ret_err,
         );
-        !ret_err.is_null();
+        let _ = ret_err.is_null();
         if !ret_err.is_null() && *ret_err != -(1 as libc::c_int) || !dec.is_null() {
             _test_failed(
                 b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -1495,7 +1491,7 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
             mapping.as_mut_ptr(),
             ret_err,
         );
-        !ret_err.is_null();
+        let _ = ret_err.is_null();
         if !ret_err.is_null() && *ret_err != 0 as libc::c_int || dec.is_null() {
             _test_failed(
                 b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -1518,7 +1514,7 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
             mapping.as_mut_ptr(),
             ret_err,
         );
-        !ret_err.is_null();
+        let _ = ret_err.is_null();
         if !ret_err.is_null() && *ret_err != -(1 as libc::c_int) || !dec.is_null() {
             _test_failed(
                 b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -1578,7 +1574,7 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
             as *const libc::c_char,
     );
     cfgs += 1;
-    streamdec = 0 as *mut OpusDecoder;
+    streamdec = std::ptr::null_mut::<OpusDecoder>();
     err = opus_multistream_decoder_ctl(
         dec,
         5122 as libc::c_int,
@@ -1654,7 +1650,7 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
     cfgs += 1;
     j = 0 as libc::c_int;
     while j < 2 as libc::c_int {
-        let mut od: *mut OpusDecoder = 0 as *mut OpusDecoder;
+        let mut od: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
         err = opus_multistream_decoder_ctl(
             dec,
             5122 as libc::c_int,
@@ -1701,7 +1697,7 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
     );
     j = 0 as libc::c_int;
     while j < 2 as libc::c_int {
-        let mut od_0: *mut OpusDecoder = 0 as *mut OpusDecoder;
+        let mut od_0: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
         err = opus_multistream_decoder_ctl(
             dec,
             5122 as libc::c_int,
@@ -1951,7 +1947,7 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
             as *const libc::c_char,
         cfgs,
     );
-    return cfgs;
+    cfgs
 }
 #[no_mangle]
 #[c2rust::src_loc = "707:1"]
@@ -1964,7 +1960,7 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
     let mut cfgs: opus_int32 = 0;
     let mut cfgs_total: opus_int32 = 0;
     let mut toc: libc::c_uchar = 0;
-    let mut frames: [*const libc::c_uchar; 48] = [0 as *const libc::c_uchar; 48];
+    let mut frames: [*const libc::c_uchar; 48] = [std::ptr::null::<libc::c_uchar>(); 48];
     let mut size: [libc::c_short; 48] = [0; 48];
     let mut payload_offset: libc::c_int = 0;
     let mut ret: libc::c_int = 0;
@@ -1989,7 +1985,7 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
         1 as libc::c_int,
         &mut toc,
         frames.as_mut_ptr(),
-        0 as *mut opus_int16,
+        std::ptr::null_mut::<opus_int16>(),
         &mut payload_offset,
     ) != -(1 as libc::c_int)
     {
@@ -2004,8 +2000,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
     while i < 64 as libc::c_int {
         packet[0 as libc::c_int as usize] = (i << 2 as libc::c_int) as libc::c_uchar;
         toc = -(1 as libc::c_int) as libc::c_uchar;
-        frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-        frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+        frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+        frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
         payload_offset = -(1 as libc::c_int);
         ret = opus_packet_parse(
             packet.as_mut_ptr(),
@@ -2053,8 +2049,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
         jj = 0 as libc::c_int;
         while jj <= 1275 as libc::c_int * 2 as libc::c_int + 3 as libc::c_int {
             toc = -(1 as libc::c_int) as libc::c_uchar;
-            frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-            frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+            frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+            frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
             payload_offset = -(1 as libc::c_int);
             ret = opus_packet_parse(
                 packet.as_mut_ptr(),
@@ -2075,7 +2071,7 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
                 if size[0 as libc::c_int as usize] as libc::c_int
                     != size[1 as libc::c_int as usize] as libc::c_int
                     || size[0 as libc::c_int as usize] as libc::c_int
-                        != jj - 1 as libc::c_int >> 1 as libc::c_int
+                        != (jj - 1 as libc::c_int) >> 1 as libc::c_int
                 {
                     _test_failed(
                         b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -2128,8 +2124,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
         packet[0 as libc::c_int as usize] =
             ((i << 2 as libc::c_int) + 2 as libc::c_int) as libc::c_uchar;
         toc = -(1 as libc::c_int) as libc::c_uchar;
-        frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-        frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+        frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+        frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
         payload_offset = -(1 as libc::c_int);
         ret = opus_packet_parse(
             packet.as_mut_ptr(),
@@ -2148,8 +2144,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
         }
         packet[1 as libc::c_int as usize] = 252 as libc::c_int as libc::c_uchar;
         toc = -(1 as libc::c_int) as libc::c_uchar;
-        frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-        frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+        frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+        frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
         payload_offset = -(1 as libc::c_int);
         ret = opus_packet_parse(
             packet.as_mut_ptr(),
@@ -2174,11 +2170,11 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
                 packet[1 as libc::c_int as usize] =
                     (252 as libc::c_int + (j & 3 as libc::c_int)) as libc::c_uchar;
                 packet[2 as libc::c_int as usize] =
-                    (j - 252 as libc::c_int >> 2 as libc::c_int) as libc::c_uchar;
+                    ((j - 252 as libc::c_int) >> 2 as libc::c_int) as libc::c_uchar;
             }
             toc = -(1 as libc::c_int) as libc::c_uchar;
-            frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-            frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+            frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+            frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
             payload_offset = -(1 as libc::c_int);
             ret = opus_packet_parse(
                 packet.as_mut_ptr(),
@@ -2200,8 +2196,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
                 );
             }
             toc = -(1 as libc::c_int) as libc::c_uchar;
-            frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-            frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+            frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+            frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
             payload_offset = -(1 as libc::c_int);
             ret = opus_packet_parse(
                 packet.as_mut_ptr(),
@@ -2223,8 +2219,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
                 );
             }
             toc = -(1 as libc::c_int) as libc::c_uchar;
-            frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-            frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+            frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+            frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
             payload_offset = -(1 as libc::c_int);
             ret = opus_packet_parse(
                 packet.as_mut_ptr(),
@@ -2269,8 +2265,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
                 );
             }
             toc = -(1 as libc::c_int) as libc::c_uchar;
-            frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-            frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+            frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+            frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
             payload_offset = -(1 as libc::c_int);
             ret = opus_packet_parse(
                 packet.as_mut_ptr(),
@@ -2334,8 +2330,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
         packet[0 as libc::c_int as usize] =
             ((i << 2 as libc::c_int) + 3 as libc::c_int) as libc::c_uchar;
         toc = -(1 as libc::c_int) as libc::c_uchar;
-        frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-        frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+        frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+        frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
         payload_offset = -(1 as libc::c_int);
         ret = opus_packet_parse(
             packet.as_mut_ptr(),
@@ -2371,8 +2367,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
             packet[1 as libc::c_int as usize] =
                 (0 as libc::c_int + (jj & 63 as libc::c_int)) as libc::c_uchar;
             toc = -(1 as libc::c_int) as libc::c_uchar;
-            frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-            frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+            frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+            frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
             payload_offset = -(1 as libc::c_int);
             ret = opus_packet_parse(
                 packet.as_mut_ptr(),
@@ -2392,8 +2388,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
             packet[1 as libc::c_int as usize] =
                 (128 as libc::c_int + (jj & 63 as libc::c_int)) as libc::c_uchar;
             toc = -(1 as libc::c_int) as libc::c_uchar;
-            frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-            frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+            frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+            frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
             payload_offset = -(1 as libc::c_int);
             ret = opus_packet_parse(
                 packet.as_mut_ptr(),
@@ -2413,8 +2409,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
             packet[1 as libc::c_int as usize] =
                 (64 as libc::c_int + (jj & 63 as libc::c_int)) as libc::c_uchar;
             toc = -(1 as libc::c_int) as libc::c_uchar;
-            frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-            frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+            frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+            frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
             payload_offset = -(1 as libc::c_int);
             ret = opus_packet_parse(
                 packet.as_mut_ptr(),
@@ -2435,8 +2431,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
                 (128 as libc::c_int + 64 as libc::c_int + (jj & 63 as libc::c_int))
                     as libc::c_uchar;
             toc = -(1 as libc::c_int) as libc::c_uchar;
-            frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-            frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+            frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+            frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
             payload_offset = -(1 as libc::c_int);
             ret = opus_packet_parse(
                 packet.as_mut_ptr(),
@@ -2473,8 +2469,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
         j = 0 as libc::c_int;
         while j < 1276 as libc::c_int {
             toc = -(1 as libc::c_int) as libc::c_uchar;
-            frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-            frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+            frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+            frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
             payload_offset = -(1 as libc::c_int);
             ret = opus_packet_parse(
                 packet.as_mut_ptr(),
@@ -2506,8 +2502,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
             j += 1;
         }
         toc = -(1 as libc::c_int) as libc::c_uchar;
-        frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-        frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+        frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+        frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
         payload_offset = -(1 as libc::c_int);
         ret = opus_packet_parse(
             packet.as_mut_ptr(),
@@ -2546,8 +2542,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
             sz = 2 as libc::c_int;
             while sz < (j + 2 as libc::c_int) * 1275 as libc::c_int {
                 toc = -(1 as libc::c_int) as libc::c_uchar;
-                frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-                frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+                frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+                frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
                 payload_offset = -(1 as libc::c_int);
                 ret = opus_packet_parse(
                     packet.as_mut_ptr(),
@@ -2600,8 +2596,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
         }
         packet[1 as libc::c_int as usize] = (5760 as libc::c_int / frame_samp) as libc::c_uchar;
         toc = -(1 as libc::c_int) as libc::c_uchar;
-        frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-        frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+        frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+        frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
         payload_offset = -(1 as libc::c_int);
         ret = opus_packet_parse(
             packet.as_mut_ptr(),
@@ -2649,8 +2645,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
         jj = 0 as libc::c_int;
         while jj < 1276 as libc::c_int {
             toc = -(1 as libc::c_int) as libc::c_uchar;
-            frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-            frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+            frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+            frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
             payload_offset = -(1 as libc::c_int);
             ret = opus_packet_parse(
                 packet.as_mut_ptr(),
@@ -2682,8 +2678,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
             jj += 1;
         }
         toc = -(1 as libc::c_int) as libc::c_uchar;
-        frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-        frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+        frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+        frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
         payload_offset = -(1 as libc::c_int);
         ret = opus_packet_parse(
             packet.as_mut_ptr(),
@@ -2704,8 +2700,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
         while j < 49 as libc::c_int {
             packet[1 as libc::c_int as usize] = (128 as libc::c_int + j) as libc::c_uchar;
             toc = -(1 as libc::c_int) as libc::c_uchar;
-            frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-            frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+            frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+            frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
             payload_offset = -(1 as libc::c_int);
             ret = opus_packet_parse(
                 packet.as_mut_ptr(),
@@ -2730,8 +2726,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
                 jj += 1;
             }
             toc = -(1 as libc::c_int) as libc::c_uchar;
-            frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-            frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+            frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+            frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
             payload_offset = -(1 as libc::c_int);
             ret = opus_packet_parse(
                 packet.as_mut_ptr(),
@@ -2754,8 +2750,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
                 jj += 1;
             }
             toc = -(1 as libc::c_int) as libc::c_uchar;
-            frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-            frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+            frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+            frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
             payload_offset = -(1 as libc::c_int);
             ret = opus_packet_parse(
                 packet.as_mut_ptr(),
@@ -2780,8 +2776,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
                 jj += 1;
             }
             toc = -(1 as libc::c_int) as libc::c_uchar;
-            frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-            frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+            frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+            frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
             payload_offset = -(1 as libc::c_int);
             ret = opus_packet_parse(
                 packet.as_mut_ptr(),
@@ -2804,8 +2800,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
                 jj += 1;
             }
             toc = -(1 as libc::c_int) as libc::c_uchar;
-            frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-            frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+            frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+            frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
             payload_offset = -(1 as libc::c_int);
             ret = opus_packet_parse(
                 packet.as_mut_ptr(),
@@ -2868,14 +2864,14 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
                         packet[(2 as libc::c_int + pos) as usize] =
                             (252 as libc::c_int + (as_0 & 3 as libc::c_int)) as libc::c_uchar;
                         packet[(3 as libc::c_int + pos) as usize] =
-                            (as_0 - 252 as libc::c_int >> 2 as libc::c_int) as libc::c_uchar;
+                            ((as_0 - 252 as libc::c_int) >> 2 as libc::c_int) as libc::c_uchar;
                         pos += 2 as libc::c_int;
                     }
                     jj += 1;
                 }
                 toc = -(1 as libc::c_int) as libc::c_uchar;
-                frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-                frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+                frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+                frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
                 payload_offset = -(1 as libc::c_int);
                 ret = opus_packet_parse(
                     packet.as_mut_ptr(),
@@ -2956,8 +2952,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
             jj += 1;
         }
         toc = -(1 as libc::c_int) as libc::c_uchar;
-        frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-        frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+        frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+        frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
         payload_offset = -(1 as libc::c_int);
         ret = opus_packet_parse(
             packet.as_mut_ptr(),
@@ -2996,8 +2992,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
                 pos_0 += 1;
                 if sz == 0 as libc::c_int && i == 63 as libc::c_int {
                     toc = -(1 as libc::c_int) as libc::c_uchar;
-                    frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-                    frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+                    frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+                    frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
                     payload_offset = -(1 as libc::c_int);
                     ret = opus_packet_parse(
                         packet.as_mut_ptr(),
@@ -3016,8 +3012,8 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
                     }
                 }
                 toc = -(1 as libc::c_int) as libc::c_uchar;
-                frames[0 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
-                frames[1 as libc::c_int as usize] = 0 as *mut libc::c_uchar;
+                frames[0 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
+                frames[1 as libc::c_int as usize] = std::ptr::null_mut::<libc::c_uchar>();
                 payload_offset = -(1 as libc::c_int);
                 ret = opus_packet_parse(
                     packet.as_mut_ptr(),
@@ -3081,13 +3077,13 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
         b"                          (%d API invocations)\n\0" as *const u8 as *const libc::c_char,
         cfgs_total,
     );
-    return cfgs_total;
+    cfgs_total
 }
 #[no_mangle]
 #[c2rust::src_loc = "1065:1"]
 pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     let mut enc_final_range: opus_uint32 = 0;
-    let mut enc: *mut OpusEncoder = 0 as *mut OpusEncoder;
+    let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
     let mut i: opus_int32 = 0;
     let mut j: opus_int32 = 0;
     let mut packet: [libc::c_uchar; 1276] = [0; 1276];
@@ -3168,7 +3164,7 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
                     );
                 }
                 cfgs += 1;
-                enc = opus_encoder_create(fs, c, 2048 as libc::c_int, 0 as *mut libc::c_int);
+                enc = opus_encoder_create(fs, c, 2048 as libc::c_int, std::ptr::null_mut::<libc::c_int>());
                 if !enc.is_null() {
                     _test_failed(
                         b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -3203,7 +3199,7 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
         48000 as libc::c_int,
         2 as libc::c_int,
         -(1000 as libc::c_int),
-        0 as *mut libc::c_int,
+        std::ptr::null_mut::<libc::c_int>(),
     );
     if !enc.is_null() {
         _test_failed(
@@ -3229,7 +3225,7 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
         48000 as libc::c_int,
         2 as libc::c_int,
         2048 as libc::c_int,
-        0 as *mut libc::c_int,
+        std::ptr::null_mut::<libc::c_int>(),
     );
     if enc.is_null() {
         _test_failed(
@@ -4895,7 +4891,7 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
             as *const libc::c_char,
         cfgs,
     );
-    return cfgs;
+    cfgs
 }
 #[no_mangle]
 #[c2rust::src_loc = "1444:1"]
@@ -4905,9 +4901,9 @@ pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     let mut k: libc::c_int = 0;
-    let mut rp: *mut OpusRepacketizer = 0 as *mut OpusRepacketizer;
-    let mut packet: *mut libc::c_uchar = 0 as *mut libc::c_uchar;
-    let mut po: *mut libc::c_uchar = 0 as *mut libc::c_uchar;
+    let mut rp: *mut OpusRepacketizer = std::ptr::null_mut::<OpusRepacketizer>();
+    let mut packet: *mut libc::c_uchar = std::ptr::null_mut::<libc::c_uchar>();
+    let mut po: *mut libc::c_uchar = std::ptr::null_mut::<libc::c_uchar>();
     cfgs = 0 as libc::c_int;
     fprintf(
         stdout,
@@ -5090,16 +5086,16 @@ pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
     while j < 32 as libc::c_int {
         let mut maxi: libc::c_int = 0;
         *packet.offset(0 as libc::c_int as isize) =
-            ((j << 1 as libc::c_int) + (j & 1 as libc::c_int) << 2 as libc::c_int) as libc::c_uchar;
+            (((j << 1 as libc::c_int) + (j & 1 as libc::c_int)) << 2 as libc::c_int) as libc::c_uchar;
         maxi = 960 as libc::c_int / opus_packet_get_samples_per_frame(packet, 8000 as libc::c_int);
         i = 1 as libc::c_int;
         while i <= maxi {
             let mut maxp: libc::c_int = 0;
             *packet.offset(0 as libc::c_int as isize) =
-                ((j << 1 as libc::c_int) + (j & 1 as libc::c_int) << 2 as libc::c_int)
+                (((j << 1 as libc::c_int) + (j & 1 as libc::c_int)) << 2 as libc::c_int)
                     as libc::c_uchar;
             if i > 1 as libc::c_int {
-                let ref mut fresh0 = *packet.offset(0 as libc::c_int as isize);
+                let fresh0 = &mut (*packet.offset(0 as libc::c_int as isize));
                 *fresh0 = (*fresh0 as libc::c_int
                     + if i == 2 as libc::c_int {
                         1 as libc::c_int
@@ -5118,7 +5114,7 @@ pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
             while k <= 1275 as libc::c_int + 75 as libc::c_int {
                 let mut cnt: opus_int32 = 0;
                 let mut rcnt: opus_int32 = 0;
-                if !(k % i != 0 as libc::c_int) {
+                if k % i == 0 as libc::c_int {
                     cnt = 0 as libc::c_int;
                     while cnt < maxp + 2 as libc::c_int {
                         if cnt > 0 as libc::c_int {
@@ -5354,7 +5350,7 @@ pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
         );
     }
     cfgs += 1;
-    let ref mut fresh1 = *packet.offset(0 as libc::c_int as isize);
+    let fresh1 = &mut (*packet.offset(0 as libc::c_int as isize));
     *fresh1 = (*fresh1 as libc::c_int + 1 as libc::c_int) as libc::c_uchar;
     if opus_repacketizer_cat(rp, packet, 9 as libc::c_int) != 0 as libc::c_int {
         _test_failed(
@@ -5553,7 +5549,7 @@ pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
         let mut sum: libc::c_int = 0;
         let mut rcnt_0: libc::c_int = 0;
         *packet.offset(0 as libc::c_int as isize) =
-            ((j << 1 as libc::c_int) + (j & 1 as libc::c_int) << 2 as libc::c_int) as libc::c_uchar;
+            (((j << 1 as libc::c_int) + (j & 1 as libc::c_int)) << 2 as libc::c_int) as libc::c_uchar;
         maxi_0 =
             960 as libc::c_int / opus_packet_get_samples_per_frame(packet, 8000 as libc::c_int);
         sum = 0 as libc::c_int;
@@ -5582,12 +5578,10 @@ pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
             len_0 = sum
                 + (if rcnt_0 < 2 as libc::c_int {
                     1 as libc::c_int
+                } else if rcnt_0 < 3 as libc::c_int {
+                    2 as libc::c_int
                 } else {
-                    (if rcnt_0 < 3 as libc::c_int {
-                        2 as libc::c_int
-                    } else {
-                        2 as libc::c_int + rcnt_0 - 1 as libc::c_int
-                    })
+                    2 as libc::c_int + rcnt_0 - 1 as libc::c_int
                 });
             if opus_repacketizer_out(
                 rp,
@@ -5881,7 +5875,7 @@ pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
             as *const libc::c_char,
         cfgs,
     );
-    return cfgs;
+    cfgs
 }
 #[no_mangle]
 #[c2rust::src_loc = "1766:1"]
@@ -5925,12 +5919,12 @@ pub unsafe extern "C" fn test_malloc_fail() -> libc::c_int {
         b"(Test only supported with GLIBC and without valgrind)\n\0" as *const u8
             as *const libc::c_char,
     );
-    return 0 as libc::c_int;
+    0 as libc::c_int
 }
 #[c2rust::src_loc = "1875:1"]
 unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> libc::c_int {
     let mut total: opus_int32 = 0;
-    let mut oversion: *const libc::c_char = 0 as *const libc::c_char;
+    let mut oversion: *const libc::c_char = std::ptr::null::<libc::c_char>();
     if _argc > 1 as libc::c_int {
         fprintf(
             stderr,
@@ -5983,7 +5977,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
             as *const libc::c_char,
         total,
     );
-    return 0 as libc::c_int;
+    0 as libc::c_int
 }
 pub fn main() {
     let mut args: Vec<*mut libc::c_char> = Vec::new();

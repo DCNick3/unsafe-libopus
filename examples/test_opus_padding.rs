@@ -201,7 +201,7 @@ use libopus_unsafe::{
 #[no_mangle]
 #[c2rust::src_loc = "42:1"]
 pub unsafe extern "C" fn test_overflow() -> libc::c_int {
-    let mut decoder: *mut OpusDecoder = 0 as *mut OpusDecoder;
+    let mut decoder: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
     let mut result: libc::c_int = 0;
     let mut error: libc::c_int = 0;
     let mut in_0: *mut libc::c_uchar =
@@ -250,11 +250,11 @@ pub unsafe extern "C" fn test_overflow() -> libc::c_int {
         );
     }
     fprintf(stderr, b"OK.\n\0" as *const u8 as *const libc::c_char);
-    return 1 as libc::c_int;
+    1 as libc::c_int
 }
 #[c2rust::src_loc = "78:1"]
 unsafe fn main_0() -> libc::c_int {
-    let mut oversion: *const libc::c_char = 0 as *const libc::c_char;
+    let mut oversion: *const libc::c_char = std::ptr::null::<libc::c_char>();
     let mut tests: libc::c_int = 0 as libc::c_int;
     iseed = 0 as libc::c_int as opus_uint32;
     oversion = opus_get_version_string();
@@ -274,7 +274,7 @@ unsafe fn main_0() -> libc::c_int {
         stderr,
         b"All padding tests passed.\n\0" as *const u8 as *const libc::c_char,
     );
-    return 0 as libc::c_int;
+    0 as libc::c_int
 }
 pub fn main() {
     unsafe { ::std::process::exit(main_0() as i32) }

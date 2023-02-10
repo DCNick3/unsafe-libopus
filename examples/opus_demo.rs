@@ -162,20 +162,20 @@ pub mod stdlib_h {
     #[inline]
     #[c2rust::src_loc = "361:1"]
     pub unsafe extern "C" fn atoi(mut __nptr: *const libc::c_char) -> libc::c_int {
-        return strtol(
+        strtol(
             __nptr,
-            0 as *mut libc::c_void as *mut *mut libc::c_char,
+            std::ptr::null_mut::<libc::c_void>() as *mut *mut libc::c_char,
             10 as libc::c_int,
-        ) as libc::c_int;
+        ) as libc::c_int
     }
     #[inline]
     #[c2rust::src_loc = "366:1"]
     pub unsafe extern "C" fn atol(mut __nptr: *const libc::c_char) -> libc::c_long {
-        return strtol(
+        strtol(
             __nptr,
-            0 as *mut libc::c_void as *mut *mut libc::c_char,
+            std::ptr::null_mut::<libc::c_void>() as *mut *mut libc::c_char,
             10 as libc::c_int,
-        );
+        )
     }
     extern "C" {
         #[c2rust::src_loc = "177:17"]
@@ -328,10 +328,10 @@ unsafe extern "C" fn int_to_char(mut i: opus_uint32, mut ch: *mut libc::c_uchar)
 }
 #[c2rust::src_loc = "76:1"]
 unsafe extern "C" fn char_to_int(mut ch: *mut libc::c_uchar) -> opus_uint32 {
-    return (*ch.offset(0 as libc::c_int as isize) as opus_uint32) << 24 as libc::c_int
+    (*ch.offset(0 as libc::c_int as isize) as opus_uint32) << 24 as libc::c_int
         | (*ch.offset(1 as libc::c_int as isize) as opus_uint32) << 16 as libc::c_int
         | (*ch.offset(2 as libc::c_int as isize) as opus_uint32) << 8 as libc::c_int
-        | *ch.offset(3 as libc::c_int as isize) as opus_uint32;
+        | *ch.offset(3 as libc::c_int as isize) as opus_uint32
 }
 #[c2rust::src_loc = "84:18"]
 static mut silk8_test: [[libc::c_int; 4]; 8] = [
@@ -766,19 +766,19 @@ static mut celt_hq_test: [[libc::c_int; 4]; 4] = [
 unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> libc::c_int {
     let mut current_block: u64;
     let mut err: libc::c_int = 0;
-    let mut inFile: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut outFile: *mut libc::c_char = 0 as *mut libc::c_char;
-    let mut fin: *mut FILE = 0 as *mut FILE;
-    let mut fout: *mut FILE = 0 as *mut FILE;
-    let mut enc: *mut OpusEncoder = 0 as *mut OpusEncoder;
-    let mut dec: *mut OpusDecoder = 0 as *mut OpusDecoder;
+    let mut inFile: *mut libc::c_char = std::ptr::null_mut::<libc::c_char>();
+    let mut outFile: *mut libc::c_char = std::ptr::null_mut::<libc::c_char>();
+    let mut fin: *mut FILE = std::ptr::null_mut::<FILE>();
+    let mut fout: *mut FILE = std::ptr::null_mut::<FILE>();
+    let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
+    let mut dec: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
     let mut args: libc::c_int = 0;
     let mut len: [libc::c_int; 2] = [0; 2];
     let mut frame_size: libc::c_int = 0;
     let mut channels: libc::c_int = 0;
     let mut bitrate_bps: opus_int32 = 0 as libc::c_int;
-    let mut data: [*mut libc::c_uchar; 2] = [0 as *mut libc::c_uchar, 0 as *mut libc::c_uchar];
-    let mut fbytes: *mut libc::c_uchar = 0 as *mut libc::c_uchar;
+    let mut data: [*mut libc::c_uchar; 2] = [std::ptr::null_mut::<libc::c_uchar>(), std::ptr::null_mut::<libc::c_uchar>()];
+    let mut fbytes: *mut libc::c_uchar = std::ptr::null_mut::<libc::c_uchar>();
     let mut sampling_rate: opus_int32 = 0;
     let mut use_vbr: libc::c_int = 0;
     let mut max_payload_bytes: libc::c_int = 0;
@@ -793,8 +793,8 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
     let mut k: libc::c_int = 0;
     let mut skip: opus_int32 = 0 as libc::c_int;
     let mut stop: libc::c_int = 0 as libc::c_int;
-    let mut in_0: *mut libc::c_short = 0 as *mut libc::c_short;
-    let mut out: *mut libc::c_short = 0 as *mut libc::c_short;
+    let mut in_0: *mut libc::c_short = std::ptr::null_mut::<libc::c_short>();
+    let mut out: *mut libc::c_short = std::ptr::null_mut::<libc::c_short>();
     let mut application: libc::c_int = 2049 as libc::c_int;
     let mut bits: libc::c_double = 0.0f64;
     let mut bits_max: libc::c_double = 0.0f64;
@@ -805,7 +805,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
     let mut tot_in: opus_uint64 = 0;
     let mut tot_out: opus_uint64 = 0;
     let mut bandwidth: libc::c_int = -(1000 as libc::c_int);
-    let mut bandwidth_string: *const libc::c_char = 0 as *const libc::c_char;
+    let mut bandwidth_string: *const libc::c_char = std::ptr::null::<libc::c_char>();
     let mut lost: libc::c_int = 0 as libc::c_int;
     let mut lost_prev: libc::c_int = 1 as libc::c_int;
     let mut toggle: libc::c_int = 0 as libc::c_int;
@@ -823,7 +823,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
     let mut sweep_max: libc::c_int = 0 as libc::c_int;
     let mut sweep_min: libc::c_int = 0 as libc::c_int;
     let mut random_fec: libc::c_int = 0 as libc::c_int;
-    let mut mode_list: *const [libc::c_int; 4] = 0 as *const [libc::c_int; 4];
+    let mut mode_list: *const [libc::c_int; 4] = std::ptr::null::<[libc::c_int; 4]>();
     let mut nb_modes_in_list: libc::c_int = 0 as libc::c_int;
     let mut curr_mode: libc::c_int = 0 as libc::c_int;
     let mut curr_mode_count: libc::c_int = 0 as libc::c_int;
@@ -941,7 +941,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                             use_dtx = 0 as libc::c_int;
                             packet_loss_perc = 0 as libc::c_int;
                             loop {
-                                if !(args < argc - 2 as libc::c_int) {
+                                if args >= argc - 2 as libc::c_int {
                                     current_block = 10024259685434459487;
                                     break;
                                 }
@@ -1827,7 +1827,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                         * 48000 as libc::c_int;
                                                                 }
                                                                 loop {
-                                                                    if !(stop == 0) {
+                                                                    if stop != 0 {
                                                                         current_block =
                                                                             15240930316249348783;
                                                                         break;
@@ -2241,7 +2241,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                                     output_samples = opus_decode(
                                                                                         dec,
                                                                                         if lost != 0 {
-                                                                                            0 as *mut libc::c_uchar
+                                                                                            std::ptr::null_mut::<libc::c_uchar>()
                                                                                         } else {
                                                                                             data[toggle as usize]
                                                                                         },
@@ -2265,7 +2265,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                                 output_samples = opus_decode(
                                                                                     dec,
                                                                                     if lost != 0 {
-                                                                                        0 as *mut libc::c_uchar
+                                                                                        std::ptr::null_mut::<libc::c_uchar>()
                                                                                     } else {
                                                                                         data[toggle as usize]
                                                                                     },
@@ -2427,9 +2427,8 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                             }
                                                                         }
                                                                         count += 1;
-                                                                        toggle = toggle
-                                                                            + use_inbandfec
-                                                                            & 1 as libc::c_int;
+                                                                        toggle = (toggle
+                                                                            + use_inbandfec) & 1 as libc::c_int;
                                                                     }
                                                                 }
                                                                 match current_block {
@@ -2530,7 +2529,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
     free(in_0 as *mut libc::c_void);
     free(out as *mut libc::c_void);
     free(fbytes as *mut libc::c_void);
-    return ret;
+    ret
 }
 pub fn main() {
     let mut args: Vec<*mut libc::c_char> = Vec::new();

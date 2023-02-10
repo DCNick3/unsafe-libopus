@@ -185,11 +185,11 @@ pub mod stdlib_h {
     #[inline]
     #[c2rust::src_loc = "361:1"]
     pub unsafe extern "C" fn atoi(mut __nptr: *const libc::c_char) -> libc::c_int {
-        return strtol(
+        strtol(
             __nptr,
-            0 as *mut libc::c_void as *mut *mut libc::c_char,
+            std::ptr::null_mut::<libc::c_void>() as *mut *mut libc::c_char,
             10 as libc::c_int,
-        ) as libc::c_int;
+        ) as libc::c_int
     }
     extern "C" {
         #[c2rust::src_loc = "177:17"]
@@ -274,8 +274,8 @@ pub mod test_opus_common_h {
     #[inline]
     #[c2rust::src_loc = "44:1"]
     pub unsafe extern "C" fn debruijn2(mut _k: libc::c_int, mut _res: *mut libc::c_uchar) {
-        let mut p: *mut libc::c_uchar = 0 as *mut libc::c_uchar;
-        let mut t: *mut libc::c_uchar = 0 as *mut libc::c_uchar;
+        let mut p: *mut libc::c_uchar = std::ptr::null_mut::<libc::c_uchar>();
+        let mut t: *mut libc::c_uchar = std::ptr::null_mut::<libc::c_uchar>();
         t = malloc(
             (::core::mem::size_of::<libc::c_uchar>() as libc::c_ulong)
                 .wrapping_mul(_k as libc::c_ulong)
@@ -305,7 +305,7 @@ pub mod test_opus_common_h {
         Rw = (18000 as libc::c_int as libc::c_uint)
             .wrapping_mul(Rw & 65535 as libc::c_int as libc::c_uint)
             .wrapping_add(Rw >> 16 as libc::c_int);
-        return (Rz << 16 as libc::c_int).wrapping_add(Rw);
+        (Rz << 16 as libc::c_int).wrapping_add(Rw)
     }
     #[c2rust::src_loc = "63:20"]
     pub static mut iseed: opus_uint32 = 0;
@@ -388,16 +388,16 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
     let mut fec: libc::c_int = 0;
     let mut t: libc::c_int = 0;
     let mut i: opus_int32 = 0;
-    let mut dec: [*mut OpusDecoder; 10] = [0 as *mut OpusDecoder; 10];
+    let mut dec: [*mut OpusDecoder; 10] = [std::ptr::null_mut::<OpusDecoder>(); 10];
     let mut decsize: opus_int32 = 0;
-    let mut decbak: *mut OpusDecoder = 0 as *mut OpusDecoder;
+    let mut decbak: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
     let mut dec_final_range1: opus_uint32 = 0;
     let mut dec_final_range2: opus_uint32 = 0;
     let mut dec_final_acc: opus_uint32 = 0;
-    let mut packet: *mut libc::c_uchar = 0 as *mut libc::c_uchar;
+    let mut packet: *mut libc::c_uchar = std::ptr::null_mut::<libc::c_uchar>();
     let mut modes: [libc::c_uchar; 4096] = [0; 4096];
-    let mut outbuf_int: *mut libc::c_short = 0 as *mut libc::c_short;
-    let mut outbuf: *mut libc::c_short = 0 as *mut libc::c_short;
+    let mut outbuf_int: *mut libc::c_short = std::ptr::null_mut::<libc::c_short>();
+    let mut outbuf: *mut libc::c_short = std::ptr::null_mut::<libc::c_short>();
     dec_final_range2 = 2 as libc::c_int as opus_uint32;
     dec_final_range1 = dec_final_range2;
     packet = malloc(
@@ -445,7 +445,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
             fs,
             c,
         );
-        let mut dec2: *mut OpusDecoder = 0 as *mut OpusDecoder;
+        let mut dec2: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
         dec2 = malloc(opus_decoder_get_size(c) as libc::c_ulong) as *mut OpusDecoder;
         if dec2.is_null() {
             _test_failed(
@@ -484,7 +484,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
             let mut dur: opus_int32 = 0;
             out_samples = opus_decode(
                 dec[t as usize],
-                0 as *const libc::c_uchar,
+                std::ptr::null::<libc::c_uchar>(),
                 0 as libc::c_int,
                 outbuf,
                 120 as libc::c_int / factor,
@@ -518,7 +518,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
             }
             out_samples = opus_decode(
                 dec[t as usize],
-                0 as *const libc::c_uchar,
+                std::ptr::null::<libc::c_uchar>(),
                 0 as libc::c_int,
                 outbuf,
                 120 as libc::c_int / factor + 2 as libc::c_int,
@@ -532,7 +532,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
             }
             out_samples = opus_decode(
                 dec[t as usize],
-                0 as *const libc::c_uchar,
+                std::ptr::null::<libc::c_uchar>(),
                 -(1 as libc::c_int),
                 outbuf,
                 120 as libc::c_int / factor,
@@ -546,7 +546,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
             }
             out_samples = opus_decode(
                 dec[t as usize],
-                0 as *const libc::c_uchar,
+                std::ptr::null::<libc::c_uchar>(),
                 1 as libc::c_int,
                 outbuf,
                 120 as libc::c_int / factor,
@@ -560,7 +560,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
             }
             out_samples = opus_decode(
                 dec[t as usize],
-                0 as *const libc::c_uchar,
+                std::ptr::null::<libc::c_uchar>(),
                 10 as libc::c_int,
                 outbuf,
                 120 as libc::c_int / factor,
@@ -574,7 +574,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
             }
             out_samples = opus_decode(
                 dec[t as usize],
-                0 as *const libc::c_uchar,
+                std::ptr::null::<libc::c_uchar>(),
                 fast_rand() as opus_int32,
                 outbuf,
                 120 as libc::c_int / factor,
@@ -639,7 +639,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
                 dec[t as usize],
                 packet,
                 0 as libc::c_int,
-                0 as *mut opus_int16,
+                std::ptr::null_mut::<opus_int16>(),
                 0 as libc::c_int,
                 fec,
             );
@@ -827,7 +827,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
             while j < 6 as libc::c_int {
                 out_samples = opus_decode(
                     dec[t as usize],
-                    0 as *const libc::c_uchar,
+                    std::ptr::null::<libc::c_uchar>(),
                     0 as libc::c_int,
                     outbuf,
                     expected[t as usize],
@@ -864,7 +864,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
             if expected[t as usize] != 120 as libc::c_int / factor_0 {
                 out_samples = opus_decode(
                     dec[t as usize],
-                    0 as *const libc::c_uchar,
+                    std::ptr::null::<libc::c_uchar>(),
                     0 as libc::c_int,
                     outbuf,
                     120 as libc::c_int / factor_0,
@@ -1199,7 +1199,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
         );
         if opus_decode(
             decbak,
-            0 as *const libc::c_uchar,
+            std::ptr::null::<libc::c_uchar>(),
             0 as libc::c_int,
             outbuf,
             5760 as libc::c_int,
@@ -1218,7 +1218,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
         );
         if opus_decode(
             decbak,
-            0 as *const libc::c_uchar,
+            std::ptr::null::<libc::c_uchar>(),
             0 as libc::c_int,
             outbuf,
             5760 as libc::c_int,
@@ -1400,7 +1400,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
     }
     free(outbuf_int as *mut libc::c_void);
     free(packet as *mut libc::c_void);
-    return 0 as libc::c_int;
+    0 as libc::c_int
 }
 #[no_mangle]
 #[c2rust::src_loc = "384:1"]
@@ -1499,7 +1499,7 @@ pub unsafe extern "C" fn test_soft_clip() {
         x.as_mut_ptr(),
         1 as libc::c_int,
         1 as libc::c_int,
-        0 as *mut libc::c_float,
+        std::ptr::null_mut::<libc::c_float>(),
     );
     opus_pcm_soft_clip(
         x.as_mut_ptr(),
@@ -1514,7 +1514,7 @@ pub unsafe extern "C" fn test_soft_clip() {
         s.as_mut_ptr(),
     );
     opus_pcm_soft_clip(
-        0 as *mut libc::c_float,
+        std::ptr::null_mut::<libc::c_float>(),
         1 as libc::c_int,
         1 as libc::c_int,
         s.as_mut_ptr(),
@@ -1523,8 +1523,8 @@ pub unsafe extern "C" fn test_soft_clip() {
 }
 #[c2rust::src_loc = "426:1"]
 unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> libc::c_int {
-    let mut oversion: *const libc::c_char = 0 as *const libc::c_char;
-    let mut env_seed: *const libc::c_char = 0 as *const libc::c_char;
+    let mut oversion: *const libc::c_char = std::ptr::null::<libc::c_char>();
+    let mut env_seed: *const libc::c_char = std::ptr::null::<libc::c_char>();
     let mut env_used: libc::c_int = 0;
     if _argc > 2 as libc::c_int {
         fprintf(
@@ -1542,7 +1542,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
         iseed = atoi(env_seed) as opus_uint32;
         env_used = 1 as libc::c_int;
     } else {
-        iseed = time(0 as *mut time_t) as opus_uint32
+        iseed = time(std::ptr::null_mut::<time_t>()) as opus_uint32
             ^ (getpid() as opus_uint32 & 65535 as libc::c_int as libc::c_uint) << 16 as libc::c_int;
     }
     Rz = iseed;
@@ -1571,10 +1571,10 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
     }
     test_decoder_code0(
         (getenv(b"TEST_OPUS_NOFUZZ\0" as *const u8 as *const libc::c_char)
-            != 0 as *mut libc::c_void as *mut libc::c_char) as libc::c_int,
+            != std::ptr::null_mut::<libc::c_void>() as *mut libc::c_char) as libc::c_int,
     );
     test_soft_clip();
-    return 0 as libc::c_int;
+    0 as libc::c_int
 }
 pub fn main() {
     let mut args: Vec<*mut libc::c_char> = Vec::new();
