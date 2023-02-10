@@ -36,40 +36,6 @@ pub mod opus_custom_h {
         ) -> libc::c_int;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/modes.h:35"]
-pub mod modes_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "52:8"]
-    pub struct OpusCustomMode {
-        pub Fs: i32,
-        pub overlap: libc::c_int,
-        pub nbEBands: libc::c_int,
-        pub effEBands: libc::c_int,
-        pub preemph: [opus_val16; 4],
-        pub eBands: *const i16,
-        pub maxLM: libc::c_int,
-        pub nbShortMdcts: libc::c_int,
-        pub shortMdctSize: libc::c_int,
-        pub nbAllocVectors: libc::c_int,
-        pub allocVectors: *const libc::c_uchar,
-        pub logN: *const i16,
-        pub window: *const opus_val16,
-        pub mdct: mdct_lookup,
-        pub cache: PulseCache,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "42:9"]
-    pub struct PulseCache {
-        pub size: libc::c_int,
-        pub index: *const i16,
-        pub bits: *const libc::c_uchar,
-        pub caps: *const libc::c_uchar,
-    }
-    use super::arch_h::opus_val16;
-    use super::mdct_h::mdct_lookup;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:35"]
 pub mod mdct_h {
     #[derive(Copy, Clone)]
@@ -169,23 +135,6 @@ pub mod entcode_h {
 pub mod celt_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
-    #[c2rust::src_loc = "55:9"]
-    pub struct AnalysisInfo {
-        pub valid: libc::c_int,
-        pub tonality: libc::c_float,
-        pub tonality_slope: libc::c_float,
-        pub noisiness: libc::c_float,
-        pub activity: libc::c_float,
-        pub music_prob: libc::c_float,
-        pub music_prob_min: libc::c_float,
-        pub music_prob_max: libc::c_float,
-        pub bandwidth: libc::c_int,
-        pub activity_probability: libc::c_float,
-        pub max_pitch_ratio: libc::c_float,
-        pub leak_boost: [libc::c_uchar; 19],
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
     #[c2rust::src_loc = "71:9"]
     pub struct SILKInfo {
         pub signalType: libc::c_int,
@@ -281,71 +230,6 @@ pub mod xmmintrin_h {
     #[cfg(target_arch = "x86_64")]
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/analysis.h:45"]
-pub mod analysis_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "47:9"]
-    pub struct TonalityAnalysisState {
-        pub arch: libc::c_int,
-        pub application: libc::c_int,
-        pub Fs: i32,
-        pub angle: [libc::c_float; 240],
-        pub d_angle: [libc::c_float; 240],
-        pub d2_angle: [libc::c_float; 240],
-        pub inmem: [opus_val32; 720],
-        pub mem_fill: libc::c_int,
-        pub prev_band_tonality: [libc::c_float; 18],
-        pub prev_tonality: libc::c_float,
-        pub prev_bandwidth: libc::c_int,
-        pub E: [[libc::c_float; 18]; 8],
-        pub logE: [[libc::c_float; 18]; 8],
-        pub lowE: [libc::c_float; 18],
-        pub highE: [libc::c_float; 18],
-        pub meanE: [libc::c_float; 19],
-        pub mem: [libc::c_float; 32],
-        pub cmean: [libc::c_float; 8],
-        pub std: [libc::c_float; 9],
-        pub Etracker: libc::c_float,
-        pub lowECount: libc::c_float,
-        pub E_count: libc::c_int,
-        pub count: libc::c_int,
-        pub analysis_offset: libc::c_int,
-        pub write_pos: libc::c_int,
-        pub read_pos: libc::c_int,
-        pub read_subframe: libc::c_int,
-        pub hp_ener_accum: libc::c_float,
-        pub initialized: libc::c_int,
-        pub rnn_state: [libc::c_float; 32],
-        pub downmix_state: [opus_val32; 3],
-        pub info: [AnalysisInfo; 100],
-    }
-    use super::arch_h::opus_val32;
-    use super::celt_h::AnalysisInfo;
-    use super::modes_h::OpusCustomMode;
-    use super::opus_private_h::downmix_func;
-    extern "C" {
-        #[c2rust::src_loc = "95:1"]
-        pub fn tonality_analysis_reset(analysis: *mut TonalityAnalysisState);
-        #[c2rust::src_loc = "99:1"]
-        pub fn run_analysis(
-            analysis: *mut TonalityAnalysisState,
-            celt_mode: *const OpusCustomMode,
-            analysis_pcm: *const libc::c_void,
-            analysis_frame_size: libc::c_int,
-            frame_size: libc::c_int,
-            c1: libc::c_int,
-            c2: libc::c_int,
-            C: libc::c_int,
-            Fs: i32,
-            lsb_depth: libc::c_int,
-            downmix: downmix_func,
-            analysis_info: *mut AnalysisInfo,
-        );
-        #[c2rust::src_loc = "89:1"]
-        pub fn tonality_analysis_init(analysis: *mut TonalityAnalysisState, Fs: i32);
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/opus_private.h:42"]
 pub mod opus_private_h {
     #[derive(Copy, Clone)]
@@ -363,18 +247,6 @@ pub mod opus_private_h {
         pub i: i32,
         pub v: opus_val32,
     }
-    #[c2rust::src_loc = "135:1"]
-    pub type downmix_func = Option<
-        unsafe extern "C" fn(
-            *const libc::c_void,
-            *mut opus_val32,
-            libc::c_int,
-            libc::c_int,
-            libc::c_int,
-            libc::c_int,
-            libc::c_int,
-        ) -> (),
-    >;
     #[c2rust::src_loc = "108:9"]
     pub const MODE_SILK_ONLY: libc::c_int = 1000 as libc::c_int;
     #[c2rust::src_loc = "109:9"]
@@ -927,13 +799,10 @@ pub mod define_h {
     #[c2rust::src_loc = "58:9"]
     pub const DTX_ACTIVITY_THRESHOLD: libc::c_float = 0.1f32;
 }
-pub use self::analysis_h::{
-    run_analysis, tonality_analysis_init, tonality_analysis_reset, TonalityAnalysisState,
-};
 pub use self::arch_h::{opus_val16, opus_val32, CELT_SIG_SCALE, EPSILON, Q15ONE, VERY_SMALL};
 pub use self::celt_h::{
-    celt_encode_with_ec, celt_encoder_ctl, celt_encoder_get_size, celt_encoder_init, AnalysisInfo,
-    SILKInfo, CELT_GET_MODE_REQUEST, CELT_SET_ANALYSIS_REQUEST, CELT_SET_CHANNELS_REQUEST,
+    celt_encode_with_ec, celt_encoder_ctl, celt_encoder_get_size, celt_encoder_init, SILKInfo,
+    CELT_GET_MODE_REQUEST, CELT_SET_ANALYSIS_REQUEST, CELT_SET_CHANNELS_REQUEST,
     CELT_SET_END_BAND_REQUEST, CELT_SET_PREDICTION_REQUEST, CELT_SET_SIGNALLING_REQUEST,
     CELT_SET_SILK_INFO_REQUEST, CELT_SET_START_BAND_REQUEST, OPUS_SET_ENERGY_MASK_REQUEST,
     OPUS_SET_LFE_REQUEST,
@@ -946,7 +815,6 @@ pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::limits_h::CHAR_BIT;
 pub use self::mdct_h::mdct_lookup;
-pub use self::modes_h::{OpusCustomMode, PulseCache};
 use self::opus_custom_h::{opus_custom_encoder_ctl, OpusCustomEncoder};
 pub use self::opus_defines_h::{
     OPUS_ALLOC_FAIL, OPUS_APPLICATION_AUDIO, OPUS_APPLICATION_RESTRICTED_LOWDELAY,
@@ -972,7 +840,7 @@ pub use self::opus_defines_h::{
     OPUS_SET_VBR_REQUEST, OPUS_SIGNAL_MUSIC, OPUS_SIGNAL_VOICE, OPUS_UNIMPLEMENTED,
 };
 pub use self::opus_private_h::{
-    align, downmix_func, foo, C2RustUnnamed, MODE_CELT_ONLY, MODE_HYBRID, MODE_SILK_ONLY,
+    align, foo, C2RustUnnamed, MODE_CELT_ONLY, MODE_HYBRID, MODE_SILK_ONLY,
     OPUS_GET_VOICE_RATIO_REQUEST, OPUS_SET_FORCE_MODE_REQUEST, OPUS_SET_VOICE_RATIO_REQUEST,
 };
 pub use self::resampler_structs_h::{
@@ -997,7 +865,12 @@ pub use self::mathops_h::celt_maxabs16;
 pub use self::pitch_h::celt_inner_prod_c;
 use self::API_h::{silk_Encode, silk_Get_Encoder_Size, silk_InitEncoder};
 use self::SigProc_FIX_h::{silk_lin2log, silk_log2lin};
+use crate::celt::modes::OpusCustomMode;
 use crate::externs::{memcpy, memmove, memset};
+use crate::src::analysis::{
+    downmix_func, run_analysis, tonality_analysis_init, tonality_analysis_reset, AnalysisInfo,
+    TonalityAnalysisState,
+};
 use crate::{
     opus_packet_pad, opus_repacketizer_cat, opus_repacketizer_init,
     opus_repacketizer_out_range_impl, OpusRepacketizer,

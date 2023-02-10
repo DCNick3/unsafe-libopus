@@ -61,18 +61,6 @@ pub mod opus_private_h {
         pub i: i32,
         pub v: opus_val32,
     }
-    #[c2rust::src_loc = "135:1"]
-    pub type downmix_func = Option<
-        unsafe extern "C" fn(
-            *const libc::c_void,
-            *mut opus_val32,
-            libc::c_int,
-            libc::c_int,
-            libc::c_int,
-            libc::c_int,
-            libc::c_int,
-        ) -> (),
-    >;
     #[c2rust::src_loc = "88:1"]
     pub type opus_copy_channel_in_func = Option<
         unsafe extern "C" fn(
@@ -101,7 +89,9 @@ pub mod opus_private_h {
     }
 
     use super::arch_h::{opus_val16, opus_val32};
+    use crate::src::analysis::downmix_func;
     use crate::OpusEncoder;
+
     extern "C" {
         #[c2rust::src_loc = "136:1"]
         pub fn downmix_float(
@@ -496,11 +486,11 @@ pub use self::opus_defines_h::{
 };
 pub use self::opus_multistream_h::OPUS_MULTISTREAM_GET_ENCODER_STATE_REQUEST;
 pub use self::opus_private_h::{
-    align, downmix_float, downmix_func, downmix_int, foo, frame_size_select, get_left_channel,
-    get_mono_channel, get_right_channel, opus_copy_channel_in_func, opus_encode_native,
-    validate_layout, C2RustUnnamed, ChannelLayout, MappingType, OpusMSEncoder,
-    MAPPING_TYPE_AMBISONICS, MAPPING_TYPE_NONE, MAPPING_TYPE_SURROUND,
-    OPUS_GET_VOICE_RATIO_REQUEST, OPUS_SET_FORCE_MODE_REQUEST,
+    align, downmix_float, downmix_int, foo, frame_size_select, get_left_channel, get_mono_channel,
+    get_right_channel, opus_copy_channel_in_func, opus_encode_native, validate_layout,
+    C2RustUnnamed, ChannelLayout, MappingType, OpusMSEncoder, MAPPING_TYPE_AMBISONICS,
+    MAPPING_TYPE_NONE, MAPPING_TYPE_SURROUND, OPUS_GET_VOICE_RATIO_REQUEST,
+    OPUS_SET_FORCE_MODE_REQUEST,
 };
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
@@ -512,6 +502,7 @@ use self::mathops_h::isqrt32;
 pub use self::pitch_h::celt_inner_prod_c;
 use self::quant_bands_h::amp2Log2;
 use crate::externs::{memcpy, memset};
+use crate::src::analysis::downmix_func;
 use crate::{
     opus_encoder_ctl, opus_encoder_get_size, opus_encoder_init, opus_repacketizer_cat,
     opus_repacketizer_get_nb_frames, opus_repacketizer_init, opus_repacketizer_out_range_impl,

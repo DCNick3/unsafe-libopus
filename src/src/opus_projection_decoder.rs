@@ -46,12 +46,6 @@ pub mod opus_private_h {
         pub nb_coupled_streams: libc::c_int,
         pub mapping: [libc::c_uchar; 256],
     }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "73:8"]
-    pub struct OpusMSDecoder {
-        pub layout: ChannelLayout,
-    }
     #[c2rust::src_loc = "98:1"]
     pub type opus_copy_channel_out_func = Option<
         unsafe extern "C" fn(
@@ -90,27 +84,6 @@ pub mod opus_private_h {
             .wrapping_mul(alignment) as libc::c_int;
     }
     use super::arch_h::{opus_val16, opus_val32};
-
-    extern "C" {
-        #[c2rust::src_loc = "189:1"]
-        pub fn opus_multistream_decode_native(
-            st: *mut OpusMSDecoder,
-            data: *const libc::c_uchar,
-            len: i32,
-            pcm: *mut libc::c_void,
-            copy_channel_out: opus_copy_channel_out_func,
-            frame_size: libc::c_int,
-            decode_fec: libc::c_int,
-            soft_clip: libc::c_int,
-            user_data: *mut libc::c_void,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "80:1"]
-        pub fn opus_multistream_decoder_ctl_va_list(
-            st: *mut OpusMSDecoder,
-            request: libc::c_int,
-            ap: ::core::ffi::VaList,
-        ) -> libc::c_int;
-    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/mapping_matrix.h:38"]
 pub mod mapping_matrix_h {
@@ -166,26 +139,6 @@ pub mod opus_defines_h {
     #[c2rust::src_loc = "46:9"]
     pub const OPUS_OK: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_multistream.h:36"]
-pub mod opus_multistream_h {
-    use super::opus_private_h::OpusMSDecoder;
-    extern "C" {
-        #[c2rust::src_loc = "470:1"]
-        pub fn opus_multistream_decoder_get_size(
-            streams: libc::c_int,
-            coupled_streams: libc::c_int,
-        ) -> i32;
-        #[c2rust::src_loc = "547:1"]
-        pub fn opus_multistream_decoder_init(
-            st: *mut OpusMSDecoder,
-            Fs: i32,
-            channels: libc::c_int,
-            streams: libc::c_int,
-            coupled_streams: libc::c_int,
-            mapping: *const libc::c_uchar,
-        ) -> libc::c_int;
-    }
-}
 pub use self::arch_h::{opus_val16, opus_val32};
 pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::mapping_matrix_h::{
@@ -194,15 +147,17 @@ pub use self::mapping_matrix_h::{
 };
 pub use self::opus_defines_h::{OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_OK};
 pub use self::opus_private_h::{
-    align, foo, opus_copy_channel_out_func, opus_multistream_decode_native,
-    opus_multistream_decoder_ctl_va_list, C2RustUnnamed, ChannelLayout, OpusMSDecoder,
+    align, foo, opus_copy_channel_out_func, C2RustUnnamed, ChannelLayout,
 };
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 
 use crate::externs::memset;
+use crate::src::opus_multistream_decoder::{
+    opus_multistream_decode_native, opus_multistream_decoder_ctl_va_list,
+};
+use crate::{opus_multistream_decoder_get_size, opus_multistream_decoder_init, OpusMSDecoder};
 
-use self::opus_multistream_h::{opus_multistream_decoder_get_size, opus_multistream_decoder_init};
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "41:8"]

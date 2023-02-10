@@ -8,87 +8,11 @@ pub mod arch_h {
     #[c2rust::src_loc = "181:1"]
     pub type opus_val64 = libc::c_float;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/kiss_fft.h:37"]
-pub mod kiss_fft_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "65:9"]
-    pub struct kiss_fft_cpx {
-        pub r: libc::c_float,
-        pub i: libc::c_float,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "70:9"]
-    pub struct kiss_twiddle_cpx {
-        pub r: libc::c_float,
-        pub i: libc::c_float,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "81:16"]
-    pub struct arch_fft_state {
-        pub is_supported: libc::c_int,
-        pub priv_0: *mut libc::c_void,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "86:16"]
-    pub struct kiss_fft_state {
-        pub nfft: libc::c_int,
-        pub scale: opus_val16,
-        pub shift: libc::c_int,
-        pub factors: [i16; 16],
-        pub bitrev: *const i16,
-        pub twiddles: *const kiss_twiddle_cpx,
-        pub arch_fft: *mut arch_fft_state,
-    }
-    use super::arch_h::opus_val16;
-    extern "C" {
-        #[c2rust::src_loc = "142:1"]
-        pub fn opus_fft_c(
-            cfg: *const kiss_fft_state,
-            fin: *const kiss_fft_cpx,
-            fout: *mut kiss_fft_cpx,
-        );
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/modes.h:39"]
-pub mod modes_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "52:8"]
-    pub struct OpusCustomMode {
-        pub Fs: i32,
-        pub overlap: libc::c_int,
-        pub nbEBands: libc::c_int,
-        pub effEBands: libc::c_int,
-        pub preemph: [opus_val16; 4],
-        pub eBands: *const i16,
-        pub maxLM: libc::c_int,
-        pub nbShortMdcts: libc::c_int,
-        pub shortMdctSize: libc::c_int,
-        pub nbAllocVectors: libc::c_int,
-        pub allocVectors: *const libc::c_uchar,
-        pub logN: *const i16,
-        pub window: *const opus_val16,
-        pub mdct: mdct_lookup,
-        pub cache: PulseCache,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "42:9"]
-    pub struct PulseCache {
-        pub size: libc::c_int,
-        pub index: *const i16,
-        pub bits: *const libc::c_uchar,
-        pub caps: *const libc::c_uchar,
-    }
-    use super::arch_h::opus_val16;
-    use super::mdct_h::mdct_lookup;
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:39"]
 pub mod mdct_h {
+    use crate::celt::kiss_fft::kiss_fft_state;
+
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "49:9"]
@@ -98,55 +22,40 @@ pub mod mdct_h {
         pub kfft: [*const kiss_fft_state; 4],
         pub trig: *const libc::c_float,
     }
-    use super::kiss_fft_h::kiss_fft_state;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/celt.h:38"]
-pub mod celt_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "55:9"]
-    pub struct AnalysisInfo {
-        pub valid: libc::c_int,
-        pub tonality: libc::c_float,
-        pub tonality_slope: libc::c_float,
-        pub noisiness: libc::c_float,
-        pub activity: libc::c_float,
-        pub music_prob: libc::c_float,
-        pub music_prob_min: libc::c_float,
-        pub music_prob_max: libc::c_float,
-        pub bandwidth: libc::c_int,
-        pub activity_probability: libc::c_float,
-        pub max_pitch_ratio: libc::c_float,
-        pub leak_boost: [libc::c_uchar; 19],
-    }
-    #[c2rust::src_loc = "53:9"]
-    pub const LEAK_BANDS: libc::c_int = 19 as libc::c_int;
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "55:9"]
+pub struct AnalysisInfo {
+    pub valid: libc::c_int,
+    pub tonality: libc::c_float,
+    pub tonality_slope: libc::c_float,
+    pub noisiness: libc::c_float,
+    pub activity: libc::c_float,
+    pub music_prob: libc::c_float,
+    pub music_prob_min: libc::c_float,
+    pub music_prob_max: libc::c_float,
+    pub bandwidth: libc::c_int,
+    pub activity_probability: libc::c_float,
+    pub max_pitch_ratio: libc::c_float,
+    pub leak_boost: [libc::c_uchar; 19],
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/opus_private.h:42"]
-pub mod opus_private_h {
-    #[c2rust::src_loc = "135:1"]
-    pub type downmix_func = Option<
-        unsafe extern "C" fn(
-            *const libc::c_void,
-            *mut opus_val32,
-            libc::c_int,
-            libc::c_int,
-            libc::c_int,
-            libc::c_int,
-            libc::c_int,
-        ) -> (),
-    >;
-    use super::arch_h::{opus_val16, opus_val32};
-    extern "C" {
-        #[c2rust::src_loc = "138:1"]
-        pub fn is_digital_silence(
-            pcm: *const opus_val16,
-            frame_size: libc::c_int,
-            channels: libc::c_int,
-            lsb_depth: libc::c_int,
-        ) -> libc::c_int;
-    }
-}
+#[c2rust::src_loc = "53:9"]
+pub const LEAK_BANDS: libc::c_int = 19 as libc::c_int;
+
+#[c2rust::src_loc = "135:1"]
+pub type downmix_func = Option<
+    unsafe extern "C" fn(
+        *const libc::c_void,
+        *mut opus_val32,
+        libc::c_int,
+        libc::c_int,
+        libc::c_int,
+        libc::c_int,
+        libc::c_int,
+    ) -> (),
+>;
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/mlp.h:42"]
 pub mod mlp_h {
     #[derive(Copy, Clone)]
@@ -190,56 +99,51 @@ pub mod mlp_h {
         );
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/analysis.h:42"]
-pub mod analysis_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "47:9"]
-    pub struct TonalityAnalysisState {
-        pub arch: libc::c_int,
-        pub application: libc::c_int,
-        pub Fs: i32,
-        pub angle: [libc::c_float; 240],
-        pub d_angle: [libc::c_float; 240],
-        pub d2_angle: [libc::c_float; 240],
-        pub inmem: [opus_val32; 720],
-        pub mem_fill: libc::c_int,
-        pub prev_band_tonality: [libc::c_float; 18],
-        pub prev_tonality: libc::c_float,
-        pub prev_bandwidth: libc::c_int,
-        pub E: [[libc::c_float; 18]; 8],
-        pub logE: [[libc::c_float; 18]; 8],
-        pub lowE: [libc::c_float; 18],
-        pub highE: [libc::c_float; 18],
-        pub meanE: [libc::c_float; 19],
-        pub mem: [libc::c_float; 32],
-        pub cmean: [libc::c_float; 8],
-        pub std: [libc::c_float; 9],
-        pub Etracker: libc::c_float,
-        pub lowECount: libc::c_float,
-        pub E_count: libc::c_int,
-        pub count: libc::c_int,
-        pub analysis_offset: libc::c_int,
-        pub write_pos: libc::c_int,
-        pub read_pos: libc::c_int,
-        pub read_subframe: libc::c_int,
-        pub hp_ener_accum: libc::c_float,
-        pub initialized: libc::c_int,
-        pub rnn_state: [libc::c_float; 32],
-        pub downmix_state: [opus_val32; 3],
-        pub info: [AnalysisInfo; 100],
-    }
-    #[c2rust::src_loc = "37:9"]
-    pub const ANALYSIS_BUF_SIZE: libc::c_int = 720 as libc::c_int;
-    #[c2rust::src_loc = "42:9"]
-    pub const DETECT_SIZE: libc::c_int = 100 as libc::c_int;
-    #[c2rust::src_loc = "35:9"]
-    pub const NB_FRAMES: libc::c_int = 8 as libc::c_int;
-    #[c2rust::src_loc = "36:9"]
-    pub const NB_TBANDS: libc::c_int = 18 as libc::c_int;
-    use super::arch_h::opus_val32;
-    use super::celt_h::AnalysisInfo;
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "47:9"]
+pub struct TonalityAnalysisState {
+    pub arch: libc::c_int,
+    pub application: libc::c_int,
+    pub Fs: i32,
+    pub angle: [libc::c_float; 240],
+    pub d_angle: [libc::c_float; 240],
+    pub d2_angle: [libc::c_float; 240],
+    pub inmem: [opus_val32; 720],
+    pub mem_fill: libc::c_int,
+    pub prev_band_tonality: [libc::c_float; 18],
+    pub prev_tonality: libc::c_float,
+    pub prev_bandwidth: libc::c_int,
+    pub E: [[libc::c_float; 18]; 8],
+    pub logE: [[libc::c_float; 18]; 8],
+    pub lowE: [libc::c_float; 18],
+    pub highE: [libc::c_float; 18],
+    pub meanE: [libc::c_float; 19],
+    pub mem: [libc::c_float; 32],
+    pub cmean: [libc::c_float; 8],
+    pub std: [libc::c_float; 9],
+    pub Etracker: libc::c_float,
+    pub lowECount: libc::c_float,
+    pub E_count: libc::c_int,
+    pub count: libc::c_int,
+    pub analysis_offset: libc::c_int,
+    pub write_pos: libc::c_int,
+    pub read_pos: libc::c_int,
+    pub read_subframe: libc::c_int,
+    pub hp_ener_accum: libc::c_float,
+    pub initialized: libc::c_int,
+    pub rnn_state: [libc::c_float; 32],
+    pub downmix_state: [opus_val32; 3],
+    pub info: [AnalysisInfo; 100],
 }
+#[c2rust::src_loc = "37:9"]
+pub const ANALYSIS_BUF_SIZE: libc::c_int = 720 as libc::c_int;
+#[c2rust::src_loc = "42:9"]
+pub const DETECT_SIZE: libc::c_int = 100 as libc::c_int;
+#[c2rust::src_loc = "35:9"]
+pub const NB_FRAMES: libc::c_int = 8 as libc::c_int;
+#[c2rust::src_loc = "36:9"]
+pub const NB_TBANDS: libc::c_int = 18 as libc::c_int;
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:45"]
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]
@@ -320,26 +224,21 @@ pub mod float_cast_h {
     }
     use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
 }
-pub use self::analysis_h::{
-    TonalityAnalysisState, ANALYSIS_BUF_SIZE, DETECT_SIZE, NB_FRAMES, NB_TBANDS,
-};
 pub use self::arch_h::{opus_val16, opus_val32, opus_val64};
-pub use self::celt_h::{AnalysisInfo, LEAK_BANDS};
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::float_cast_h::float2int;
-pub use self::kiss_fft_h::{
-    arch_fft_state, kiss_fft_cpx, kiss_fft_state, kiss_twiddle_cpx, opus_fft_c,
-};
 pub use self::math_h::M_PI;
 pub use self::mathops_h::{cA, cB, cC, cE, fast_atan2f, PI};
 pub use self::mdct_h::mdct_lookup;
 pub use self::mlp_h::{compute_dense, compute_gru, layer0, layer1, layer2, DenseLayer, GRULayer};
-pub use self::modes_h::{OpusCustomMode, PulseCache};
-pub use self::opus_private_h::{downmix_func, is_digital_silence};
 pub use self::stddef_h::NULL;
 use crate::celt::celt::celt_fatal;
+use crate::celt::kiss_fft::{kiss_fft_cpx, kiss_fft_state, opus_fft_c};
+use crate::celt::modes::OpusCustomMode;
 
 use crate::externs::{memcpy, memmove, memset};
+use crate::src::opus_encoder::is_digital_silence;
+
 #[c2rust::src_loc = "55:20"]
 static mut dct_table: [libc::c_float; 128] = [
     0.250000f32,

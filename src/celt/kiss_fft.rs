@@ -9,45 +9,40 @@ pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = libc::c_float;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/kiss_fft.h:38"]
-pub mod kiss_fft_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "65:9"]
-    pub struct kiss_fft_cpx {
-        pub r: libc::c_float,
-        pub i: libc::c_float,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "70:9"]
-    pub struct kiss_twiddle_cpx {
-        pub r: libc::c_float,
-        pub i: libc::c_float,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "81:16"]
-    pub struct arch_fft_state {
-        pub is_supported: libc::c_int,
-        pub priv_0: *mut libc::c_void,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "86:16"]
-    pub struct kiss_fft_state {
-        pub nfft: libc::c_int,
-        pub scale: opus_val16,
-        pub shift: libc::c_int,
-        pub factors: [i16; 16],
-        pub bitrev: *const i16,
-        pub twiddles: *const kiss_twiddle_cpx,
-        pub arch_fft: *mut arch_fft_state,
-    }
-    use super::arch_h::opus_val16;
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "65:9"]
+pub struct kiss_fft_cpx {
+    pub r: libc::c_float,
+    pub i: libc::c_float,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "70:9"]
+pub struct kiss_twiddle_cpx {
+    pub r: libc::c_float,
+    pub i: libc::c_float,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "81:16"]
+pub struct arch_fft_state {
+    pub is_supported: libc::c_int,
+    pub priv_0: *mut libc::c_void,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "86:16"]
+pub struct kiss_fft_state {
+    pub nfft: libc::c_int,
+    pub scale: opus_val16,
+    pub shift: libc::c_int,
+    pub factors: [i16; 16],
+    pub bitrev: *const i16,
+    pub twiddles: *const kiss_twiddle_cpx,
+    pub arch_fft: *mut arch_fft_state,
 }
 pub use self::arch_h::opus_val16;
-pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_cpx, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::stddef_h::size_t;
 use crate::celt::celt::celt_fatal;
 

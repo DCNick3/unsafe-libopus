@@ -15,6 +15,14 @@ pub mod internal {
         pub reg_save_area: *mut libc::c_void,
     }
 }
+
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "73:8"]
+pub struct OpusMSDecoder {
+    pub layout: ChannelLayout,
+}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/opus_private.h:34"]
 pub mod opus_private_h {
     #[derive(Copy, Clone)]
@@ -25,12 +33,6 @@ pub mod opus_private_h {
         pub nb_streams: libc::c_int,
         pub nb_coupled_streams: libc::c_int,
         pub mapping: [libc::c_uchar; 256],
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "73:8"]
-    pub struct OpusMSDecoder {
-        pub layout: ChannelLayout,
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -227,7 +229,6 @@ pub use self::opus_multistream_h::OPUS_MULTISTREAM_GET_DECODER_STATE_REQUEST;
 pub use self::opus_private_h::{
     align, foo, get_left_channel, get_mono_channel, get_right_channel, opus_copy_channel_out_func,
     opus_decode_native, opus_packet_parse_impl, validate_layout, C2RustUnnamed, ChannelLayout,
-    OpusMSDecoder,
 };
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};

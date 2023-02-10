@@ -78,18 +78,6 @@ pub mod opus_private_h {
             *mut libc::c_void,
         ) -> (),
     >;
-    #[c2rust::src_loc = "135:1"]
-    pub type downmix_func = Option<
-        unsafe extern "C" fn(
-            *const libc::c_void,
-            *mut opus_val32,
-            libc::c_int,
-            libc::c_int,
-            libc::c_int,
-            libc::c_int,
-            libc::c_int,
-        ) -> (),
-    >;
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "156:12"]
@@ -115,7 +103,9 @@ pub mod opus_private_h {
             .wrapping_div(alignment)
             .wrapping_mul(alignment) as libc::c_int;
     }
+
     use super::arch_h::{opus_val16, opus_val32};
+    use crate::src::analysis::downmix_func;
 
     extern "C" {
         #[c2rust::src_loc = "78:1"]
@@ -292,7 +282,7 @@ pub use self::mapping_matrix_h::{
 use self::mathops_h::isqrt32;
 pub use self::opus_defines_h::{OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_OK, OPUS_UNIMPLEMENTED};
 pub use self::opus_private_h::{
-    align, downmix_float, downmix_func, downmix_int, foo, opus_copy_channel_in_func,
+    align, downmix_float, downmix_int, foo, opus_copy_channel_in_func,
     opus_multistream_encode_native, opus_multistream_encoder_ctl_va_list, C2RustUnnamed,
     ChannelLayout, MappingType, OpusMSEncoder, MAPPING_TYPE_AMBISONICS, MAPPING_TYPE_NONE,
     MAPPING_TYPE_SURROUND,

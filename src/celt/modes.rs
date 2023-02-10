@@ -1,37 +1,33 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/modes.h:35"]
-pub mod modes_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "52:8"]
-    pub struct OpusCustomMode {
-        pub Fs: i32,
-        pub overlap: libc::c_int,
-        pub nbEBands: libc::c_int,
-        pub effEBands: libc::c_int,
-        pub preemph: [opus_val16; 4],
-        pub eBands: *const i16,
-        pub maxLM: libc::c_int,
-        pub nbShortMdcts: libc::c_int,
-        pub shortMdctSize: libc::c_int,
-        pub nbAllocVectors: libc::c_int,
-        pub allocVectors: *const libc::c_uchar,
-        pub logN: *const i16,
-        pub window: *const opus_val16,
-        pub mdct: mdct_lookup,
-        pub cache: PulseCache,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "42:9"]
-    pub struct PulseCache {
-        pub size: libc::c_int,
-        pub index: *const i16,
-        pub bits: *const libc::c_uchar,
-        pub caps: *const libc::c_uchar,
-    }
-    use super::arch_h::opus_val16;
-    use super::mdct_h::mdct_lookup;
+
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "52:8"]
+pub struct OpusCustomMode {
+    pub Fs: i32,
+    pub overlap: libc::c_int,
+    pub nbEBands: libc::c_int,
+    pub effEBands: libc::c_int,
+    pub preemph: [opus_val16; 4],
+    pub eBands: *const i16,
+    pub maxLM: libc::c_int,
+    pub nbShortMdcts: libc::c_int,
+    pub shortMdctSize: libc::c_int,
+    pub nbAllocVectors: libc::c_int,
+    pub allocVectors: *const libc::c_uchar,
+    pub logN: *const i16,
+    pub window: *const opus_val16,
+    pub mdct: mdct_lookup,
+    pub cache: PulseCache,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "42:9"]
+pub struct PulseCache {
+    pub size: libc::c_int,
+    pub index: *const i16,
+    pub bits: *const libc::c_uchar,
+    pub caps: *const libc::c_uchar,
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:35"]
 pub mod mdct_h {
@@ -44,37 +40,8 @@ pub mod mdct_h {
         pub kfft: [*const kiss_fft_state; 4],
         pub trig: *const libc::c_float,
     }
-    use super::kiss_fft_h::kiss_fft_state;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/kiss_fft.h:35"]
-pub mod kiss_fft_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "86:16"]
-    pub struct kiss_fft_state {
-        pub nfft: libc::c_int,
-        pub scale: opus_val16,
-        pub shift: libc::c_int,
-        pub factors: [i16; 16],
-        pub bitrev: *const i16,
-        pub twiddles: *const kiss_twiddle_cpx,
-        pub arch_fft: *mut arch_fft_state,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "81:16"]
-    pub struct arch_fft_state {
-        pub is_supported: libc::c_int,
-        pub priv_0: *mut libc::c_void,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "70:9"]
-    pub struct kiss_twiddle_cpx {
-        pub r: libc::c_float,
-        pub i: libc::c_float,
-    }
-    use super::arch_h::opus_val16;
+
+    use crate::celt::kiss_fft::kiss_fft_state;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:34"]
 pub mod arch_h {
@@ -7171,17 +7138,16 @@ pub mod static_modes_float_h {
     #[c2rust::src_loc = "886:31"]
     pub static mut static_mode_list: [*const OpusCustomMode; 1] =
         unsafe { [&mode48000_960_120 as *const OpusCustomMode] };
+
     use super::arch_h::opus_val16;
-    use super::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
     use super::mdct_h::mdct_lookup;
-    use super::modes_h::{OpusCustomMode, PulseCache};
     use super::stddef_h::NULL;
     use super::{band_allocation, eband5ms};
+    use crate::celt::kiss_fft::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
+    use crate::celt::modes::{OpusCustomMode, PulseCache};
 }
 pub use self::arch_h::opus_val16;
-pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::mdct_h::mdct_lookup;
-pub use self::modes_h::{OpusCustomMode, PulseCache};
 pub use self::opus_defines_h::{OPUS_BAD_ARG, OPUS_OK};
 pub use self::static_modes_float_h::{
     cache_bits50, cache_caps50, cache_index50, fft_bitrev120, fft_bitrev240, fft_bitrev480,
