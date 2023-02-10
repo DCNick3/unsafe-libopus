@@ -321,17 +321,7 @@ pub mod define_h {
     #[c2rust::src_loc = "75:9"]
     pub const CODE_INDEPENDENTLY: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
+
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:32"]
 pub mod limits_h {
     #[c2rust::src_loc = "63:9"]
@@ -488,7 +478,6 @@ pub mod tables_h {
         pub static silk_Quantization_Offsets_Q10: [[i16; 2]; 2];
     }
 }
-use self::arch_h::celt_fatal;
 pub use self::control_h::silk_EncControlStruct;
 pub use self::define_h::{
     CODE_CONDITIONALLY, CODE_INDEPENDENTLY, CODE_INDEPENDENTLY_NO_LTP_SCALING,
@@ -511,6 +500,7 @@ use self::main_h::{
 pub use self::resampler_structs_h::{
     silk_resampler_state_struct, C2RustUnnamed, _silk_resampler_state_struct,
 };
+use crate::celt::celt::celt_fatal;
 
 pub use self::structs_FLP_h::{silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP};
 pub use self::structs_h::{

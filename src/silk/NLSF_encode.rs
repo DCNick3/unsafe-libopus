@@ -19,17 +19,7 @@ pub mod structs_h {
         pub deltaMin_Q15: *const i16,
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
+
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:32"]
 pub mod limits_h {
     #[c2rust::src_loc = "63:9"]
@@ -182,13 +172,13 @@ pub mod internal {
     #[c2rust::src_loc = "36:9"]
     pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
 }
-use self::arch_h::celt_fatal;
 pub use self::define_h::MAX_LPC_ORDER;
 pub use self::ecintrin_h::EC_CLZ0;
 pub use self::internal::__CHAR_BIT__;
 pub use self::limits_h::CHAR_BIT;
 pub use self::macros_h::silk_CLZ32;
 use self::main_h::{silk_NLSF_VQ, silk_NLSF_decode, silk_NLSF_del_dec_quant, silk_NLSF_unpack};
+use crate::celt::celt::celt_fatal;
 
 pub use self::structs_h::silk_NLSF_CB_struct;
 

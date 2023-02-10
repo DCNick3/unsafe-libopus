@@ -282,16 +282,7 @@ pub mod SigProc_FIX_h {
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
+pub mod arch_h {}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:33"]
 pub mod limits_h {
     #[c2rust::src_loc = "63:9"]
@@ -441,7 +432,6 @@ pub mod internal {
     #[c2rust::src_loc = "36:9"]
     pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
 }
-use self::arch_h::celt_fatal;
 pub use self::define_h::{
     CODE_CONDITIONALLY, LA_SHAPE_MS, MAX_CONSECUTIVE_DTX, NB_SPEECH_FRAMES_BEFORE_DTX,
     N_LEVELS_QGAIN, TYPE_NO_VOICE_ACTIVITY, TYPE_UNVOICED, VAD_NO_ACTIVITY,
@@ -461,6 +451,7 @@ use self::main_h::{
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
+use crate::celt::celt::celt_fatal;
 
 use self::stdlib_h::abs;
 pub use self::structs_FLP_h::{

@@ -17,14 +17,6 @@ pub mod arch_h {
     pub const NORM_SCALING: libc::c_float = 1.0f32;
     #[c2rust::src_loc = "207:9"]
     pub const EPSILON: libc::c_float = 1e-15f32;
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/modes.h:35"]
 pub mod modes_h {
@@ -408,8 +400,7 @@ pub mod pitch_h {
     use super::arch_h::{opus_val16, opus_val32};
 }
 pub use self::arch_h::{
-    celt_ener, celt_fatal, celt_norm, celt_sig, opus_val16, opus_val32, EPSILON, NORM_SCALING,
-    Q15ONE,
+    celt_ener, celt_norm, celt_sig, opus_val16, opus_val32, EPSILON, NORM_SCALING, Q15ONE,
 };
 pub use self::bands_h::{SPREAD_AGGRESSIVE, SPREAD_LIGHT, SPREAD_NONE, SPREAD_NORMAL};
 pub use self::ecintrin_h::EC_CLZ0;
@@ -431,6 +422,7 @@ pub use self::rate_h::{
 };
 pub use self::stack_alloc_h::ALLOC_NONE;
 pub use self::stddef_h::NULL;
+use crate::celt::celt::celt_fatal;
 
 use self::vq_h::{alg_quant, alg_unquant, renormalise_vector, stereo_itheta};
 use crate::externs::{memcpy, memset};

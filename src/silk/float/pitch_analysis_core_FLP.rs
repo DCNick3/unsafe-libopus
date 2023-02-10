@@ -5,14 +5,6 @@ pub mod arch_h {
     pub type opus_val16 = libc::c_float;
     #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = libc::c_float;
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:35"]
 pub mod xmmintrin_h {
@@ -191,7 +183,8 @@ pub mod pitch_h {
         );
     }
 }
-pub use self::arch_h::{celt_fatal, opus_val16, opus_val32};
+pub use self::arch_h::{opus_val16, opus_val32};
+use crate::celt::celt::celt_fatal;
 
 pub use self::float_cast_h::float2int;
 pub use self::pitch_est_defines_h::{

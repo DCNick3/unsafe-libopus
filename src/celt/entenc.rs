@@ -1,4 +1,6 @@
+use crate::celt::celt::celt_fatal;
 use ::libc;
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:33"]
 pub mod entcode_h {
     #[c2rust::src_loc = "45:1"]
@@ -34,17 +36,6 @@ pub mod entcode_h {
         ::core::mem::size_of::<ec_window>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:33"]
 pub mod limits_h {
     #[c2rust::src_loc = "63:9"]
@@ -79,7 +70,7 @@ pub mod internal {
     #[c2rust::src_loc = "36:9"]
     pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
 }
-use self::arch_h::celt_fatal;
+
 pub use self::ecintrin_h::EC_CLZ0;
 pub use self::entcode_h::{celt_udiv, ec_ctx, ec_enc, ec_window, EC_UINT_BITS, EC_WINDOW_SIZE};
 pub use self::internal::__CHAR_BIT__;

@@ -28,17 +28,7 @@ pub mod resampler_structs_h {
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
     #[c2rust::src_loc = "44:9"]
@@ -68,7 +58,6 @@ pub mod resampler_private_h {
         );
     }
 }
-use self::arch_h::celt_fatal;
 use self::resampler_private_h::silk_resampler_private_AR2;
 pub use self::resampler_rom_h::{
     RESAMPLER_DOWN_ORDER_FIR0, RESAMPLER_DOWN_ORDER_FIR1, RESAMPLER_DOWN_ORDER_FIR2,
@@ -76,6 +65,7 @@ pub use self::resampler_rom_h::{
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
+use crate::celt::celt::celt_fatal;
 
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 

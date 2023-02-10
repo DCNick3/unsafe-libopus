@@ -232,17 +232,7 @@ pub mod structs_FLP_h {
     }
     use super::structs_h::silk_encoder_state;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:32"]
 pub mod SigProc_FLP_h {
     extern "C" {
@@ -334,7 +324,6 @@ pub mod define_h {
     #[c2rust::src_loc = "72:9"]
     pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
 }
-use self::arch_h::celt_fatal;
 pub use self::define_h::{
     MAX_PREDICTION_POWER_GAIN, MAX_PREDICTION_POWER_GAIN_AFTER_RESET, TYPE_VOICED,
 };
@@ -345,6 +334,7 @@ use self::main_FLP_h::{
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
+use crate::celt::celt::celt_fatal;
 
 pub use self::structs_FLP_h::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,

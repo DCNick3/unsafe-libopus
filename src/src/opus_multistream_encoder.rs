@@ -221,14 +221,6 @@ pub mod arch_h {
     pub type celt_ener = libc::c_float;
     #[c2rust::src_loc = "183:1"]
     pub type celt_sig = libc::c_float;
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:34"]
 pub mod stddef_h {
@@ -523,7 +515,7 @@ pub mod pitch_h {
     }
     use super::arch_h::{opus_val16, opus_val32};
 }
-pub use self::arch_h::{celt_ener, celt_fatal, celt_sig, opus_val16, opus_val32};
+pub use self::arch_h::{celt_ener, celt_sig, opus_val16, opus_val32};
 pub use self::celt_h::{
     celt_preemphasis, resampling_factor, CELT_GET_MODE_REQUEST, OPUS_SET_ENERGY_MASK_REQUEST,
     OPUS_SET_LFE_REQUEST,
@@ -564,6 +556,7 @@ pub use self::opus_private_h::{
 };
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
+use crate::celt::celt::celt_fatal;
 
 use self::bands_h::compute_band_energies;
 pub use self::cpu_support_h::opus_select_arch;

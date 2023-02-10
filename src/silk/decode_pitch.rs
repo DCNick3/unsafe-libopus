@@ -1,15 +1,6 @@
 use ::libc;
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:35"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
+pub mod arch_h {}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/pitch_est_defines.h:36"]
 pub mod pitch_est_defines_h {
     #[c2rust::src_loc = "39:9"]
@@ -33,12 +24,12 @@ pub mod pitch_est_defines_h {
         pub static silk_CB_lags_stage3_10_ms: [[i8; 12]; 2];
     }
 }
-use self::arch_h::celt_fatal;
 pub use self::pitch_est_defines_h::{
     silk_CB_lags_stage2, silk_CB_lags_stage2_10_ms, silk_CB_lags_stage3, silk_CB_lags_stage3_10_ms,
     PE_MAX_NB_SUBFR, PE_NB_CBKS_STAGE2_10MS, PE_NB_CBKS_STAGE2_EXT, PE_NB_CBKS_STAGE3_10MS,
     PE_NB_CBKS_STAGE3_MAX,
 };
+use crate::celt::celt::celt_fatal;
 
 #[no_mangle]
 #[c2rust::src_loc = "38:1"]

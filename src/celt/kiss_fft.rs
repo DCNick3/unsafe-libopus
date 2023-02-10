@@ -8,14 +8,6 @@ pub mod stddef_h {
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = libc::c_float;
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/kiss_fft.h:38"]
 pub mod kiss_fft_h {
@@ -54,9 +46,10 @@ pub mod kiss_fft_h {
     }
     use super::arch_h::opus_val16;
 }
-pub use self::arch_h::{celt_fatal, opus_val16};
+pub use self::arch_h::opus_val16;
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_cpx, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::stddef_h::size_t;
+use crate::celt::celt::celt_fatal;
 
 #[c2rust::src_loc = "48:1"]
 unsafe extern "C" fn kf_bfly2(mut Fout: *mut kiss_fft_cpx, m: libc::c_int, N: libc::c_int) {

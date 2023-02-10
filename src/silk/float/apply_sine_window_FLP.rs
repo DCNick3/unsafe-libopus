@@ -1,22 +1,12 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:32"]
 pub mod SigProc_FLP_h {
     #[c2rust::src_loc = "143:9"]
     pub const PI: libc::c_float = 3.1415926536f32;
 }
-use self::arch_h::celt_fatal;
 pub use self::SigProc_FLP_h::PI;
+use crate::celt::celt::celt_fatal;
 #[no_mangle]
 #[c2rust::src_loc = "38:1"]
 pub unsafe extern "C" fn silk_apply_sine_window_FLP(

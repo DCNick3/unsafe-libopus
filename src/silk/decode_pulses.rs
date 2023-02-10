@@ -23,17 +23,7 @@ pub mod entcode_h {
     #[c2rust::src_loc = "48:1"]
     pub type ec_dec = ec_ctx;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entdec.h:32"]
 pub mod entdec_h {
     use super::entcode_h::ec_dec;
@@ -83,11 +73,11 @@ pub mod define_h {
     #[c2rust::src_loc = "176:9"]
     pub const SILK_MAX_PULSES: libc::c_int = 16 as libc::c_int;
 }
-use self::arch_h::celt_fatal;
 pub use self::define_h::{N_RATE_LEVELS, SHELL_CODEC_FRAME_LENGTH, SILK_MAX_PULSES};
 pub use self::entcode_h::{ec_ctx, ec_dec, ec_window};
 use self::entdec_h::ec_dec_icdf;
 use self::main_h::{silk_decode_signs, silk_shell_decoder};
+use crate::celt::celt::celt_fatal;
 
 use self::tables_h::{silk_lsb_iCDF, silk_pulses_per_block_iCDF, silk_rate_levels_iCDF};
 

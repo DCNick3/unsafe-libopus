@@ -165,17 +165,7 @@ pub mod structs_h {
     }
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/control.h:32"]
 pub mod control_h {
     #[c2rust::src_loc = "39:9"]
@@ -247,7 +237,6 @@ pub mod PLC_h {
         );
     }
 }
-use self::arch_h::celt_fatal;
 pub use self::control_h::{FLAG_DECODE_LBRR, FLAG_DECODE_NORMAL};
 pub use self::entcode_h::{ec_ctx, ec_dec, ec_window};
 use self::main_h::{
@@ -256,6 +245,7 @@ use self::main_h::{
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
+use crate::celt::celt::celt_fatal;
 
 pub use self::structs_h::{
     silk_CNG_struct, silk_NLSF_CB_struct, silk_PLC_struct, silk_decoder_control,

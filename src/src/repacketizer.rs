@@ -60,21 +60,12 @@ pub mod opus_h {
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
-use self::arch_h::celt_fatal;
+pub mod arch_h {}
 pub use self::opus_defines_h::{OPUS_BAD_ARG, OPUS_BUFFER_TOO_SMALL, OPUS_INVALID_PACKET, OPUS_OK};
 use self::opus_h::{opus_packet_get_nb_frames, opus_packet_get_samples_per_frame};
 pub use self::opus_private_h::{encode_size, opus_packet_parse_impl, OpusRepacketizer};
 pub use self::stddef_h::{size_t, NULL};
+use crate::celt::celt::celt_fatal;
 
 use crate::externs::memmove;
 

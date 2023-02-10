@@ -121,14 +121,6 @@ pub mod arch_h {
     pub type opus_val32 = libc::c_float;
     #[c2rust::src_loc = "57:9"]
     pub const CELT_SIG_SCALE: libc::c_float = 32768.0f32;
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:41"]
 pub mod stddef_h {
@@ -426,7 +418,7 @@ pub mod float_cast_h {
     use super::arch_h::CELT_SIG_SCALE;
     use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
 }
-pub use self::arch_h::{celt_fatal, opus_val16, opus_val32, CELT_SIG_SCALE};
+pub use self::arch_h::{opus_val16, opus_val32, CELT_SIG_SCALE};
 pub use self::celt_h::{
     celt_decode_with_ec, celt_decoder_ctl, celt_decoder_get_size, celt_decoder_init,
     CELT_SET_SIGNALLING_REQUEST,
@@ -457,6 +449,7 @@ pub use self::opus_private_h::{
 };
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
+use crate::celt::celt::celt_fatal;
 
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::float_cast_h::{float2int, FLOAT2INT16};

@@ -9,14 +9,6 @@ pub mod arch_h {
     pub type celt_sig = libc::c_float;
     #[c2rust::src_loc = "203:9"]
     pub const Q15ONE: libc::c_float = 1.0f32;
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:38"]
 pub mod entcode_h {
@@ -219,8 +211,10 @@ pub mod pitch_h {
         }
         return xy;
     }
-    use super::arch_h::{celt_fatal, opus_val16, opus_val32};
+
+    use super::arch_h::{opus_val16, opus_val32};
     use super::celt_pitch_xcorr_c;
+    use crate::celt::celt::celt_fatal;
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:38"]
 pub mod stddef_h {
@@ -245,11 +239,12 @@ pub mod celt_lpc_h {
         ) -> libc::c_int;
     }
 }
-pub use self::arch_h::{celt_fatal, celt_sig, opus_val16, opus_val32, Q15ONE};
+pub use self::arch_h::{celt_sig, opus_val16, opus_val32, Q15ONE};
 use self::celt_lpc_h::{_celt_autocorr, _celt_lpc};
 pub use self::entcode_h::celt_udiv;
 pub use self::pitch_h::{celt_inner_prod_c, celt_pitch_xcorr, dual_inner_prod_c, xcorr_kernel_c};
 pub use self::stddef_h::NULL;
+use crate::celt::celt::celt_fatal;
 
 #[c2rust::src_loc = "45:1"]
 unsafe extern "C" fn find_best_pitch(

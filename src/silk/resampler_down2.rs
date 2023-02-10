@@ -1,15 +1,5 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
     #[c2rust::src_loc = "45:9"]
@@ -25,8 +15,8 @@ pub mod resampler_rom_h {
     pub static mut silk_resampler_down2_1: i16 =
         (39809 as libc::c_int - 65536 as libc::c_int) as i16;
 }
-use self::arch_h::celt_fatal;
 pub use self::resampler_rom_h::{silk_resampler_down2_0, silk_resampler_down2_1};
+use crate::celt::celt::celt_fatal;
 
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 

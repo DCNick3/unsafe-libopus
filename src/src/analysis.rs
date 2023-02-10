@@ -7,14 +7,6 @@ pub mod arch_h {
     pub type opus_val32 = libc::c_float;
     #[c2rust::src_loc = "181:1"]
     pub type opus_val64 = libc::c_float;
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/kiss_fft.h:37"]
 pub mod kiss_fft_h {
@@ -331,7 +323,7 @@ pub mod float_cast_h {
 pub use self::analysis_h::{
     TonalityAnalysisState, ANALYSIS_BUF_SIZE, DETECT_SIZE, NB_FRAMES, NB_TBANDS,
 };
-pub use self::arch_h::{celt_fatal, opus_val16, opus_val32, opus_val64};
+pub use self::arch_h::{opus_val16, opus_val32, opus_val64};
 pub use self::celt_h::{AnalysisInfo, LEAK_BANDS};
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::float_cast_h::float2int;
@@ -345,6 +337,7 @@ pub use self::mlp_h::{compute_dense, compute_gru, layer0, layer1, layer2, DenseL
 pub use self::modes_h::{OpusCustomMode, PulseCache};
 pub use self::opus_private_h::{downmix_func, is_digital_silence};
 pub use self::stddef_h::NULL;
+use crate::celt::celt::celt_fatal;
 
 use crate::externs::{memcpy, memmove, memset};
 #[c2rust::src_loc = "55:20"]

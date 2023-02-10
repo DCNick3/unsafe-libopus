@@ -250,16 +250,7 @@ pub mod structs_FLP_h {
     use super::structs_h::silk_encoder_state;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:35"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
+pub mod arch_h {}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:35"]
 pub mod SigProc_FIX_h {
     #[inline]
@@ -414,7 +405,6 @@ pub mod pitch_est_defines_h {
     #[c2rust::src_loc = "74:9"]
     pub const SILK_PE_MAX_COMPLEX: libc::c_int = 2 as libc::c_int;
 }
-use self::arch_h::celt_fatal;
 pub use self::control_h::silk_EncControlStruct;
 pub use self::define_h::{
     LA_SHAPE_MS, MAX_DEL_DEC_STATES, MAX_LPC_ORDER, MAX_NB_SUBFR, MIN_LPC_ORDER,
@@ -429,6 +419,7 @@ pub use self::pitch_est_defines_h::{
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
+use crate::celt::celt::celt_fatal;
 
 pub use self::structs_FLP_h::{silk_encoder_state_FLP, silk_shape_state_FLP};
 pub use self::structs_h::{

@@ -3,14 +3,6 @@ use ::libc;
 pub mod arch_h {
     #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = libc::c_float;
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:35"]
 pub mod entcode_h {
@@ -54,10 +46,11 @@ pub mod entdec_h {
         pub fn ec_dec_uint(_this: *mut ec_dec, _ft: u32) -> u32;
     }
 }
-pub use self::arch_h::{celt_fatal, opus_val32};
+pub use self::arch_h::opus_val32;
 pub use self::entcode_h::{ec_ctx, ec_dec, ec_enc, ec_window};
 use self::entdec_h::ec_dec_uint;
 use self::entenc_h::ec_enc_uint;
+use crate::celt::celt::celt_fatal;
 
 #[c2rust::src_loc = "213:26"]
 static mut CELT_PVQ_U_DATA: [u32; 1272] = [

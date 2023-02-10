@@ -32,17 +32,7 @@ pub mod control_h {
         pub offset: libc::c_int,
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/errors.h:32"]
 pub mod errors_h {
     #[c2rust::src_loc = "39:9"]
@@ -69,7 +59,6 @@ pub mod define_h {
     #[c2rust::src_loc = "40:9"]
     pub const ENCODER_NUM_CHANNELS: libc::c_int = 2 as libc::c_int;
 }
-use self::arch_h::celt_fatal;
 pub use self::control_h::silk_EncControlStruct;
 pub use self::define_h::ENCODER_NUM_CHANNELS;
 pub use self::errors_h::{
@@ -77,6 +66,7 @@ pub use self::errors_h::{
     SILK_ENC_INVALID_DTX_SETTING, SILK_ENC_INVALID_INBAND_FEC_SETTING, SILK_ENC_INVALID_LOSS_RATE,
     SILK_ENC_INVALID_NUMBER_OF_CHANNELS_ERROR, SILK_ENC_PACKET_SIZE_NOT_SUPPORTED, SILK_NO_ERROR,
 };
+use crate::celt::celt::celt_fatal;
 
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]

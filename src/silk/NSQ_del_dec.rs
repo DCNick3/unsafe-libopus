@@ -197,17 +197,7 @@ pub mod typedef_h {
     #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
+
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:32"]
 pub mod limits_h {
     #[c2rust::src_loc = "63:9"]
@@ -473,7 +463,6 @@ pub mod internal {
     #[c2rust::src_loc = "36:9"]
     pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
 }
-use self::arch_h::celt_fatal;
 pub use self::define_h::{
     DECISION_DELAY, HARM_SHAPE_FIR_TAPS, LTP_ORDER, MAX_LPC_ORDER, MAX_SHAPE_LPC_ORDER,
     NSQ_LPC_BUF_LENGTH, TYPE_VOICED,
@@ -485,6 +474,7 @@ pub use self::macros_h::silk_CLZ32;
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
+use crate::celt::celt::celt_fatal;
 
 pub use self::structs_h::{
     silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,

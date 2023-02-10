@@ -9,14 +9,6 @@ pub mod arch_h {
     pub type celt_norm = libc::c_float;
     #[c2rust::src_loc = "207:9"]
     pub const EPSILON: libc::c_float = 1e-15f32;
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:33"]
 pub mod entcode_h {
@@ -141,12 +133,13 @@ pub mod pitch_h {
     }
     use super::arch_h::{opus_val16, opus_val32};
 }
-pub use self::arch_h::{celt_fatal, celt_norm, opus_val16, opus_val32, EPSILON};
+pub use self::arch_h::{celt_norm, opus_val16, opus_val32, EPSILON};
 pub use self::bands_h::SPREAD_NONE;
 use self::cwrs_h::{decode_pulses, encode_pulses};
 pub use self::entcode_h::{celt_udiv, ec_ctx, ec_dec, ec_enc, ec_window};
 pub use self::mathops_h::{cA, cB, cC, cE, fast_atan2f, PI};
 pub use self::pitch_h::celt_inner_prod_c;
+use crate::celt::celt::celt_fatal;
 
 #[c2rust::src_loc = "47:1"]
 unsafe extern "C" fn exp_rotation1(

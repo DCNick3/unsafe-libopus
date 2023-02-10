@@ -23,17 +23,7 @@ pub mod entcode_h {
     #[c2rust::src_loc = "47:1"]
     pub type ec_enc = ec_ctx;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:32"]
 pub mod entenc_h {
     use super::entcode_h::ec_enc;
@@ -60,9 +50,9 @@ pub mod tables_h {
         pub static silk_stereo_only_code_mid_iCDF: [u8; 2];
     }
 }
-use self::arch_h::celt_fatal;
 pub use self::entcode_h::{ec_ctx, ec_enc, ec_window};
 use self::entenc_h::ec_enc_icdf;
+use crate::celt::celt::celt_fatal;
 
 use self::tables_h::{
     silk_stereo_only_code_mid_iCDF, silk_stereo_pred_joint_iCDF, silk_uniform3_iCDF,

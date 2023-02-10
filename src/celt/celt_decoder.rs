@@ -39,14 +39,6 @@ pub mod arch_h {
     pub const VERY_SMALL: libc::c_float = 1e-30f32;
     #[c2rust::src_loc = "57:9"]
     pub const CELT_SIG_SCALE: libc::c_float = 32768.0f32;
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/kiss_fft.h:38"]
 pub mod kiss_fft_h {
@@ -551,8 +543,7 @@ pub mod vq_h {
     }
 }
 pub use self::arch_h::{
-    celt_ener, celt_fatal, celt_norm, celt_sig, opus_val16, opus_val32, CELT_SIG_SCALE, Q15ONE,
-    VERY_SMALL,
+    celt_ener, celt_norm, celt_sig, opus_val16, opus_val32, CELT_SIG_SCALE, Q15ONE, VERY_SMALL,
 };
 pub use self::bands_h::{
     anti_collapse, celt_lcg_rand, denormalise_bands, quant_all_bands, SPREAD_NORMAL,
@@ -583,6 +574,7 @@ use self::quant_bands_h::{unquant_coarse_energy, unquant_energy_finalise, unquan
 use self::rate_h::clt_compute_allocation;
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::NULL;
+use crate::celt::celt::celt_fatal;
 
 use self::vq_h::renormalise_vector;
 use crate::externs::{memcpy, memmove, memset};

@@ -29,16 +29,7 @@ pub mod resampler_structs_h {
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:50"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
+pub mod arch_h {}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_rom.h:50"]
 pub mod resampler_rom_h {
     #[c2rust::src_loc = "41:9"]
@@ -90,7 +81,6 @@ pub mod resampler_private_h {
         );
     }
 }
-use self::arch_h::celt_fatal;
 pub use self::resampler_private_h::{
     silk_resampler_private_IIR_FIR, silk_resampler_private_down_FIR,
     silk_resampler_private_up2_HQ_wrapper, RESAMPLER_MAX_BATCH_SIZE_MS,
@@ -103,6 +93,7 @@ pub use self::resampler_rom_h::{
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
+use crate::celt::celt::celt_fatal;
 
 use crate::externs::{memcpy, memset};
 #[c2rust::src_loc = "53:24"]

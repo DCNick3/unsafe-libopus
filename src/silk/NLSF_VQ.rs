@@ -1,16 +1,6 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
-use self::arch_h::celt_fatal;
+
+use crate::celt::celt::celt_fatal;
 
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]

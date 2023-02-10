@@ -1,4 +1,6 @@
+use crate::celt::celt::celt_fatal;
 use ::libc;
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:33"]
 pub mod entcode_h {
     #[c2rust::src_loc = "45:1"]
@@ -53,18 +55,7 @@ pub mod entenc_h {
         );
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
-use self::arch_h::celt_fatal;
+
 pub use self::entcode_h::{ec_ctx, ec_dec, ec_enc, ec_window};
 use self::entdec_h::{ec_dec_update, ec_decode_bin};
 use self::entenc_h::ec_encode_bin;

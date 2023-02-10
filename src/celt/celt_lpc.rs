@@ -5,14 +5,6 @@ pub mod arch_h {
     pub type opus_val16 = libc::c_float;
     #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = libc::c_float;
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/pitch.h:35"]
 pub mod pitch_h {
@@ -169,7 +161,8 @@ pub mod pitch_h {
                 *sum.offset(3 as libc::c_int as isize) + tmp_2 * y_1;
         }
     }
-    use super::arch_h::{celt_fatal, opus_val16, opus_val32};
+    use super::arch_h::{opus_val16, opus_val32};
+    use crate::celt::celt::celt_fatal;
     extern "C" {
         #[c2rust::src_loc = "183:1"]
         pub fn celt_pitch_xcorr_c(
@@ -182,8 +175,9 @@ pub mod pitch_h {
         );
     }
 }
-pub use self::arch_h::{celt_fatal, opus_val16, opus_val32};
+pub use self::arch_h::{opus_val16, opus_val32};
 pub use self::pitch_h::{celt_pitch_xcorr, celt_pitch_xcorr_c, xcorr_kernel_c};
+use crate::celt::celt::celt_fatal;
 use crate::externs::memset;
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]

@@ -127,14 +127,6 @@ pub mod arch_h {
     pub const EPSILON: libc::c_float = 1e-15f32;
     #[c2rust::src_loc = "208:9"]
     pub const VERY_SMALL: libc::c_float = 1e-30f32;
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:33"]
 pub mod stddef_h {
@@ -976,9 +968,7 @@ pub mod define_h {
 pub use self::analysis_h::{
     run_analysis, tonality_analysis_init, tonality_analysis_reset, TonalityAnalysisState,
 };
-pub use self::arch_h::{
-    celt_fatal, opus_val16, opus_val32, CELT_SIG_SCALE, EPSILON, Q15ONE, VERY_SMALL,
-};
+pub use self::arch_h::{opus_val16, opus_val32, CELT_SIG_SCALE, EPSILON, Q15ONE, VERY_SMALL};
 pub use self::celt_h::{
     celt_encode_with_ec, celt_encoder_ctl, celt_encoder_get_size, celt_encoder_init, AnalysisInfo,
     SILKInfo, CELT_GET_MODE_REQUEST, CELT_SET_ANALYSIS_REQUEST, CELT_SET_CHANNELS_REQUEST,
@@ -1029,6 +1019,7 @@ pub use self::resampler_structs_h::{
 };
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
+use crate::celt::celt::celt_fatal;
 
 pub use self::structs_FLP_h::{silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP};
 pub use self::structs_h::{

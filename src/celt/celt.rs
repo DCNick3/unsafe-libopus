@@ -10,9 +10,8 @@ pub mod arch_h {
     pub type opus_val16 = libc::c_float;
     #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = libc::c_float;
-    #[no_mangle]
     #[c2rust::src_loc = "71:1"]
-    pub unsafe extern "C" fn celt_fatal(
+    pub unsafe fn celt_fatal(
         str: *const libc::c_char,
         file: *const libc::c_char,
         line: libc::c_int,

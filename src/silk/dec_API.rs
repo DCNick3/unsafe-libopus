@@ -207,16 +207,7 @@ pub mod entdec_h {
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:31"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
+pub mod arch_h {}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
 pub mod define_h {
     #[c2rust::src_loc = "77:9"]
@@ -311,7 +302,6 @@ pub mod SigProc_FIX_h {
         ) -> libc::c_int;
     }
 }
-use self::arch_h::celt_fatal;
 pub use self::control_h::{
     silk_DecControlStruct, FLAG_DECODE_LBRR, FLAG_DECODE_NORMAL, FLAG_PACKET_LOST,
 };
@@ -331,6 +321,7 @@ use self::main_h::{
 pub use self::resampler_structs_h::{
     silk_resampler_state_struct, C2RustUnnamed, _silk_resampler_state_struct,
 };
+use crate::celt::celt::celt_fatal;
 
 pub use self::structs_h::{
     silk_CNG_struct, silk_NLSF_CB_struct, silk_PLC_struct, silk_decoder_state, stereo_dec_state,

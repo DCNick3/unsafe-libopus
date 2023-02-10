@@ -37,14 +37,6 @@ pub mod arch_h {
     pub const CELT_SIG_SCALE: libc::c_float = 32768.0f32;
     #[c2rust::src_loc = "207:9"]
     pub const EPSILON: libc::c_float = 1e-15f32;
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/kiss_fft.h:38"]
 pub mod kiss_fft_h {
@@ -639,7 +631,7 @@ pub mod mathops_h {
     use super::arch_h::{opus_val16, opus_val32};
 }
 pub use self::arch_h::{
-    celt_ener, celt_fatal, celt_norm, celt_sig, opus_val16, opus_val32, CELT_SIG_SCALE, EPSILON,
+    celt_ener, celt_norm, celt_sig, opus_val16, opus_val32, CELT_SIG_SCALE, EPSILON,
 };
 pub use self::bands_h::{
     compute_band_energies, haar1, hysteresis_decision, normalise_bands, quant_all_bands,
@@ -679,6 +671,7 @@ use self::quant_bands_h::{
 use self::rate_h::clt_compute_allocation;
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::NULL;
+use crate::celt::celt::celt_fatal;
 
 use self::stdlib_h::abs;
 

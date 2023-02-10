@@ -5,16 +5,7 @@ pub mod typedef_h {
     pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
+pub mod arch_h {}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:33"]
 pub mod SigProc_FIX_h {
     #[inline]
@@ -28,7 +19,7 @@ pub mod SigProc_FIX_h {
         return if a > b { a } else { b };
     }
 }
-use self::arch_h::celt_fatal;
+use crate::celt::celt::celt_fatal;
 
 pub use self::typedef_h::silk_int16_MAX;
 

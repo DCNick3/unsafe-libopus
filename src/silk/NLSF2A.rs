@@ -1,15 +1,6 @@
 use ::libc;
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:38"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
+pub mod arch_h {}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:38"]
 pub mod SigProc_FIX_h {
     extern "C" {
@@ -39,8 +30,8 @@ pub mod tables_h {
         pub static silk_LSFCosTab_FIX_Q12: [i16; 129];
     }
 }
-use self::arch_h::celt_fatal;
 pub use self::define_h::MAX_LPC_STABILIZE_ITERATIONS;
+use crate::celt::celt::celt_fatal;
 
 use self::tables_h::silk_LSFCosTab_FIX_Q12;
 

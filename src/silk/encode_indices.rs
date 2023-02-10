@@ -212,17 +212,7 @@ pub mod structs_h {
     }
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
 pub mod define_h {
     #[c2rust::src_loc = "208:9"]
@@ -293,7 +283,6 @@ pub mod main_h {
         );
     }
 }
-use self::arch_h::celt_fatal;
 pub use self::define_h::{
     CODE_CONDITIONALLY, CODE_INDEPENDENTLY, MAX_NB_SUBFR, NLSF_QUANT_MAX_AMPLITUDE, TYPE_VOICED,
 };
@@ -303,6 +292,7 @@ use self::main_h::silk_NLSF_unpack;
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
+use crate::celt::celt::celt_fatal;
 
 pub use self::structs_h::{
     silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,

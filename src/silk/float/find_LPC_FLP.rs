@@ -206,16 +206,7 @@ pub mod define_h {
     pub const MAX_NB_SUBFR: libc::c_int = 4 as libc::c_int;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
-pub mod arch_h {
-    extern "C" {
-        #[c2rust::src_loc = "63:1"]
-        pub fn celt_fatal(
-            str: *const libc::c_char,
-            file: *const libc::c_char,
-            line: libc::c_int,
-        ) -> !;
-    }
-}
+pub mod arch_h {}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:33"]
 pub mod SigProc_FLP_h {
     extern "C" {
@@ -277,7 +268,6 @@ pub mod internal {
     #[c2rust::src_loc = "133:9"]
     pub const __FLT_MAX__: libc::c_float = 3.40282347e+38f32;
 }
-use self::arch_h::celt_fatal;
 pub use self::define_h::MAX_NB_SUBFR;
 pub use self::float_h::FLT_MAX;
 pub use self::internal::__FLT_MAX__;
@@ -286,6 +276,7 @@ use self::main_h::silk_interpolate;
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
+use crate::celt::celt::celt_fatal;
 
 pub use self::structs_h::{
     silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
