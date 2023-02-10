@@ -13,7 +13,7 @@
 #![register_tool(c2rust)]
 
 extern crate libc;
-pub mod celt {
+mod celt {
     pub mod bands;
     pub mod celt;
     pub mod celt_decoder;
@@ -43,7 +43,7 @@ pub mod celt {
     // } // mod tests
     pub mod vq;
 } // mod celt
-pub mod silk {
+mod silk {
     pub mod A2NLSF;
     pub mod CNG;
     pub mod HP_variable_cutoff;
@@ -155,7 +155,7 @@ pub mod silk {
         pub mod test_unit_LPC_inv_pred_gain;
     } // mod tests
 } // mod silk
-pub mod src {
+mod src {
     pub mod analysis;
     pub mod mapping_matrix;
     pub mod mlp;
@@ -172,11 +172,70 @@ pub mod src {
     pub mod repacketizer;
     pub mod repacketizer_demo;
 } // mod src
-  // pub mod tests {
-  //     pub mod opus_encode_regressions;
-  //     pub mod test_opus_api;
-  //     pub mod test_opus_decode;
-  //     pub mod test_opus_encode;
-  //     pub mod test_opus_padding;
-  //     pub mod test_opus_projection;
-  // } // mod tests
+
+// TODO: copy over the docs
+// =====
+// opus.h
+// =====
+
+// opus_encoder
+pub use crate::src::opus_encoder::{
+    opus_encode, opus_encode_float, opus_encoder_create, opus_encoder_ctl, opus_encoder_destroy,
+    opus_encoder_get_size, opus_encoder_init, OpusEncoder,
+};
+// opus_decoder
+pub use crate::src::opus_decoder::{
+    opus_decode, opus_decode_float, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy,
+    opus_decoder_get_nb_samples, opus_decoder_get_size, opus_decoder_init,
+    opus_packet_get_bandwidth, opus_packet_get_nb_channels, opus_packet_get_nb_frames,
+    opus_packet_get_nb_samples, OpusDecoder,
+};
+
+pub use crate::src::opus::{
+    opus_packet_get_samples_per_frame, opus_packet_parse, opus_pcm_soft_clip,
+};
+// opus_repacketizer
+pub use crate::src::repacketizer::{
+    opus_multistream_packet_pad, opus_multistream_packet_unpad, opus_packet_pad, opus_packet_unpad,
+    opus_repacketizer_cat, opus_repacketizer_create, opus_repacketizer_destroy,
+    opus_repacketizer_get_nb_frames, opus_repacketizer_get_size, opus_repacketizer_init,
+    opus_repacketizer_out, opus_repacketizer_out_range, opus_repacketizer_out_range_impl,
+    OpusRepacketizer,
+};
+
+// =====
+// opus_defines.h
+// =====
+// TODO: error codes (the defines were eaten by c2rust)
+// opus_libinfo
+pub use crate::celt::celt::{opus_get_version_string, opus_strerror};
+
+// =====
+// opus_multistream.h
+// =====
+pub use crate::src::opus_multistream_decoder::{
+    opus_multistream_decode, opus_multistream_decode_float, opus_multistream_decoder_create,
+    opus_multistream_decoder_ctl, opus_multistream_decoder_destroy,
+    opus_multistream_decoder_get_size, opus_multistream_decoder_init, OpusMSDecoder,
+};
+pub use crate::src::opus_multistream_encoder::{
+    opus_multistream_encode, opus_multistream_encode_float, opus_multistream_encoder_create,
+    opus_multistream_encoder_ctl, opus_multistream_encoder_destroy,
+    opus_multistream_encoder_get_size, opus_multistream_encoder_init,
+    opus_multistream_surround_encoder_create, opus_multistream_surround_encoder_get_size,
+    opus_multistream_surround_encoder_init, OpusMSEncoder,
+};
+
+// =====
+// opus_projection.h
+// =====
+pub use crate::src::opus_projection_decoder::{
+    opus_projection_decode, opus_projection_decode_float, opus_projection_decoder_create,
+    opus_projection_decoder_ctl, opus_projection_decoder_destroy, opus_projection_decoder_get_size,
+    opus_projection_decoder_init, OpusProjectionDecoder,
+};
+pub use crate::src::opus_projection_encoder::{
+    opus_projection_ambisonics_encoder_create, opus_projection_ambisonics_encoder_get_size,
+    opus_projection_ambisonics_encoder_init, opus_projection_encode, opus_projection_encode_float,
+    opus_projection_encoder_ctl, opus_projection_encoder_destroy, OpusProjectionEncoder,
+};

@@ -355,7 +355,7 @@ pub mod test_opus_common_h {
     use super::stdio_h::{fprintf, stderr};
     use super::stdlib_h::{abort, free, malloc};
     use super::string_h::memset;
-    use libopus_unsafe::celt::celt::opus_get_version_string;
+    use libopus_unsafe::opus_get_version_string;
 }
 pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32};
 use self::stdio_h::{fprintf, printf, stderr, stdout};
@@ -366,11 +366,10 @@ use self::time_h::time;
 pub use self::time_t_h::time_t;
 use self::unistd_h::getpid;
 
-use libopus_unsafe::celt::celt::opus_get_version_string;
-use libopus_unsafe::src::opus::opus_pcm_soft_clip;
-use libopus_unsafe::src::opus_decoder::{
+use libopus_unsafe::{
     opus_decode, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy,
-    opus_decoder_get_nb_samples, opus_decoder_get_size, opus_packet_get_nb_channels, OpusDecoder,
+    opus_decoder_get_nb_samples, opus_decoder_get_size, opus_get_version_string,
+    opus_packet_get_nb_channels, opus_pcm_soft_clip, OpusDecoder,
 };
 #[no_mangle]
 #[c2rust::src_loc = "51:1"]

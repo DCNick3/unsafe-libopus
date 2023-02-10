@@ -227,13 +227,10 @@ use self::stdio_h::{fclose, fopen, fprintf, fread, fseek, ftell, fwrite, printf,
 pub use self::stdlib_h::{abs, atoi, atol, calloc, free, malloc, rand};
 use self::string_h::strcmp;
 pub use self::FILE_h::FILE;
-use libopus_unsafe::src::opus::opus_packet_get_samples_per_frame;
-use libopus_unsafe::src::opus_decoder::{
-    opus_decode, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy,
-    opus_packet_get_nb_frames, OpusDecoder,
-};
-use libopus_unsafe::src::opus_encoder::{
-    opus_encode, opus_encoder_create, opus_encoder_ctl, opus_encoder_destroy, OpusEncoder,
+use libopus_unsafe::{
+    opus_decode, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy, opus_encode,
+    opus_encoder_create, opus_encoder_ctl, opus_encoder_destroy, opus_packet_get_nb_frames,
+    opus_packet_get_samples_per_frame, OpusDecoder, OpusEncoder,
 };
 #[no_mangle]
 #[c2rust::src_loc = "45:1"]

@@ -123,63 +123,6 @@ pub mod xmmintrin_h {
     #[cfg(target_arch = "x86_64")]
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_projection.h:40"]
-pub mod opus_projection_h {
-    use super::opus_types_h::{opus_int16, opus_int32};
-    extern "C" {
-        #[c2rust::src_loc = "100:16"]
-        pub type OpusProjectionEncoder;
-        #[c2rust::src_loc = "109:16"]
-        pub type OpusProjectionDecoder;
-        #[c2rust::src_loc = "397:1"]
-        pub fn opus_projection_decoder_create(
-            Fs: opus_int32,
-            channels: libc::c_int,
-            streams: libc::c_int,
-            coupled_streams: libc::c_int,
-            demixing_matrix: *mut libc::c_uchar,
-            demixing_matrix_size: opus_int32,
-            error: *mut libc::c_int,
-        ) -> *mut OpusProjectionDecoder;
-        #[c2rust::src_loc = "161:1"]
-        pub fn opus_projection_ambisonics_encoder_create(
-            Fs: opus_int32,
-            channels: libc::c_int,
-            mapping_family: libc::c_int,
-            streams: *mut libc::c_int,
-            coupled_streams: *mut libc::c_int,
-            application: libc::c_int,
-            error: *mut libc::c_int,
-        ) -> *mut OpusProjectionEncoder;
-        #[c2rust::src_loc = "255:1"]
-        pub fn opus_projection_encode(
-            st: *mut OpusProjectionEncoder,
-            pcm: *const opus_int16,
-            frame_size: libc::c_int,
-            data: *mut libc::c_uchar,
-            max_data_bytes: opus_int32,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "314:1"]
-        pub fn opus_projection_encoder_destroy(st: *mut OpusProjectionEncoder);
-        #[c2rust::src_loc = "331:1"]
-        pub fn opus_projection_encoder_ctl(
-            st: *mut OpusProjectionEncoder,
-            request: libc::c_int,
-            _: ...
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "487:1"]
-        pub fn opus_projection_decode(
-            st: *mut OpusProjectionDecoder,
-            data: *const libc::c_uchar,
-            len: opus_int32,
-            pcm: *mut opus_int16,
-            frame_size: libc::c_int,
-            decode_fec: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "557:1"]
-        pub fn opus_projection_decoder_destroy(st: *mut OpusProjectionDecoder);
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/mapping_matrix.h:42"]
 pub mod mapping_matrix_h {
     #[derive(Copy, Clone)]
@@ -302,13 +245,6 @@ pub mod float_cast_h {
     use super::opus_types_h::{opus_int16, opus_int32};
     use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:37"]
-pub mod opus_defines_h {
-    extern "C" {
-        #[c2rust::src_loc = "792:1"]
-        pub fn opus_get_version_string() -> *const libc::c_char;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/tests/test_opus_common.h:39"]
 pub mod test_opus_common_h {
     #[c2rust::src_loc = "56:20"]
@@ -369,10 +305,11 @@ pub mod test_opus_common_h {
         );
         abort();
     }
-    use super::opus_defines_h::opus_get_version_string;
+
     use super::opus_types_h::opus_uint32;
     use super::stdio_h::{fprintf, stderr};
     use super::stdlib_h::abort;
+    use libopus_unsafe::opus_get_version_string;
 }
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:41"]
 pub mod mathcalls_h {
@@ -399,32 +336,28 @@ pub mod os_support_h {
     use super::stdlib_h::{free, malloc};
 }
 pub use self::arch_h::opus_val16;
-pub use self::float_cast_h::{float2int, FLOAT2INT16};
+pub use self::float_cast_h::FLOAT2INT16;
+// NOTE: this is kinda internal, but it's used by the test suite
+// How should I handle this?
 pub use self::mapping_matrix_h::{
     mapping_matrix_get_size, mapping_matrix_init, mapping_matrix_multiply_channel_in_float,
     mapping_matrix_multiply_channel_in_short, mapping_matrix_multiply_channel_out_float,
     mapping_matrix_multiply_channel_out_short, MappingMatrix,
 };
 use self::mathcalls_h::{floor, sqrt};
-use self::opus_defines_h::opus_get_version_string;
-use self::opus_projection_h::{
-    opus_projection_ambisonics_encoder_create, opus_projection_decode,
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32};
+pub use self::os_support_h::{opus_alloc, opus_free};
+pub use self::stddef_h::size_t;
+use self::stdio_h::{fprintf, stderr};
+use self::stdlib_h::{abs, free, malloc};
+use self::string_h::memset;
+pub use self::test_opus_common_h::{_test_failed, fast_rand};
+use libopus_unsafe::{
+    opus_get_version_string, opus_projection_ambisonics_encoder_create, opus_projection_decode,
     opus_projection_decoder_create, opus_projection_decoder_destroy, opus_projection_encode,
     opus_projection_encoder_ctl, opus_projection_encoder_destroy, OpusProjectionDecoder,
     OpusProjectionEncoder,
 };
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32};
-pub use self::os_support_h::{opus_alloc, opus_free};
-pub use self::stddef_h::size_t;
-pub use self::stdint_intn_h::{int16_t, int32_t};
-pub use self::stdint_uintn_h::uint32_t;
-use self::stdio_h::{fprintf, stderr};
-use self::stdlib_h::{abort, abs, free, malloc};
-use self::string_h::memset;
-pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
-pub use self::test_opus_common_h::{Rw, Rz, _test_failed, fast_rand, iseed};
-pub use self::types_h::{__int16_t, __int32_t, __off64_t, __off_t, __uint32_t};
-pub use self::FILE_h::FILE;
 #[no_mangle]
 #[c2rust::src_loc = "55:1"]
 pub unsafe extern "C" fn assert_is_equal(

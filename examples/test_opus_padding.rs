@@ -111,31 +111,6 @@ pub mod opus_types_h {
     use super::stdint_intn_h::{int16_t, int32_t};
     use super::stdint_uintn_h::uint32_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus.h:35"]
-pub mod opus_h {
-    use super::opus_types_h::{opus_int16, opus_int32};
-    extern "C" {
-        #[c2rust::src_loc = "399:16"]
-        pub type OpusDecoder;
-        #[c2rust::src_loc = "462:13"]
-        pub fn opus_decode(
-            st: *mut OpusDecoder,
-            data: *const libc::c_uchar,
-            len: opus_int32,
-            pcm: *mut opus_int16,
-            frame_size: libc::c_int,
-            decode_fec: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "423:13"]
-        pub fn opus_decoder_create(
-            Fs: opus_int32,
-            channels: libc::c_int,
-            error: *mut libc::c_int,
-        ) -> *mut OpusDecoder;
-        #[c2rust::src_loc = "512:13"]
-        pub fn opus_decoder_destroy(st: *mut OpusDecoder);
-    }
-}
 #[c2rust::header_src = "/usr/include/stdio.h:32"]
 pub mod stdio_h {
     use super::FILE_h::FILE;
@@ -162,13 +137,6 @@ pub mod string_h {
     extern "C" {
         #[c2rust::src_loc = "61:14"]
         pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:35"]
-pub mod opus_defines_h {
-    extern "C" {
-        #[c2rust::src_loc = "792:13"]
-        pub fn opus_get_version_string() -> *const libc::c_char;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/tests/test_opus_common.h:36"]
@@ -216,24 +184,20 @@ pub mod test_opus_common_h {
         );
         abort();
     }
-    use super::opus_defines_h::opus_get_version_string;
+
     use super::opus_types_h::opus_uint32;
     use super::stdio_h::{fprintf, stderr};
     use super::stdlib_h::abort;
+    use libopus_unsafe::opus_get_version_string;
 }
-use self::opus_defines_h::opus_get_version_string;
-use self::opus_h::{opus_decode, opus_decoder_create, opus_decoder_destroy, OpusDecoder};
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32};
-pub use self::stddef_h::size_t;
-pub use self::stdint_intn_h::{int16_t, int32_t};
-pub use self::stdint_uintn_h::uint32_t;
+pub use self::opus_types_h::{opus_int16, opus_uint32};
 use self::stdio_h::{fprintf, stderr};
-use self::stdlib_h::{abort, free, malloc};
+use self::stdlib_h::{free, malloc};
 use self::string_h::memset;
-pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
 pub use self::test_opus_common_h::{_test_failed, iseed};
-pub use self::types_h::{__int16_t, __int32_t, __off64_t, __off_t, __uint32_t};
-pub use self::FILE_h::FILE;
+use libopus_unsafe::{
+    opus_decode, opus_decoder_create, opus_decoder_destroy, opus_get_version_string, OpusDecoder,
+};
 #[no_mangle]
 #[c2rust::src_loc = "42:1"]
 pub unsafe extern "C" fn test_overflow() -> libc::c_int {

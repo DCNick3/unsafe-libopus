@@ -111,231 +111,6 @@ pub mod opus_types_h {
     use super::stdint_intn_h::{int16_t, int32_t};
     use super::stdint_uintn_h::uint32_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus.h:53"]
-pub mod opus_h {
-    use super::opus_types_h::{opus_int16, opus_int32};
-    extern "C" {
-        #[c2rust::src_loc = "164:16"]
-        pub type OpusEncoder;
-        #[c2rust::src_loc = "399:16"]
-        pub type OpusDecoder;
-        #[c2rust::src_loc = "754:16"]
-        pub type OpusRepacketizer;
-        #[c2rust::src_loc = "171:1"]
-        pub fn opus_encoder_get_size(channels: libc::c_int) -> libc::c_int;
-        #[c2rust::src_loc = "208:1"]
-        pub fn opus_encoder_create(
-            Fs: opus_int32,
-            channels: libc::c_int,
-            application: libc::c_int,
-            error: *mut libc::c_int,
-        ) -> *mut OpusEncoder;
-        #[c2rust::src_loc = "228:1"]
-        pub fn opus_encoder_init(
-            st: *mut OpusEncoder,
-            Fs: opus_int32,
-            channels: libc::c_int,
-            application: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "263:1"]
-        pub fn opus_encode(
-            st: *mut OpusEncoder,
-            pcm: *const opus_int16,
-            frame_size: libc::c_int,
-            data: *mut libc::c_uchar,
-            max_data_bytes: opus_int32,
-        ) -> opus_int32;
-        #[c2rust::src_loc = "304:1"]
-        pub fn opus_encode_float(
-            st: *mut OpusEncoder,
-            pcm: *const libc::c_float,
-            frame_size: libc::c_int,
-            data: *mut libc::c_uchar,
-            max_data_bytes: opus_int32,
-        ) -> opus_int32;
-        #[c2rust::src_loc = "315:1"]
-        pub fn opus_encoder_destroy(st: *mut OpusEncoder);
-        #[c2rust::src_loc = "328:1"]
-        pub fn opus_encoder_ctl(st: *mut OpusEncoder, request: libc::c_int, _: ...) -> libc::c_int;
-        #[c2rust::src_loc = "406:1"]
-        pub fn opus_decoder_get_size(channels: libc::c_int) -> libc::c_int;
-        #[c2rust::src_loc = "423:1"]
-        pub fn opus_decoder_create(
-            Fs: opus_int32,
-            channels: libc::c_int,
-            error: *mut libc::c_int,
-        ) -> *mut OpusDecoder;
-        #[c2rust::src_loc = "440:1"]
-        pub fn opus_decoder_init(
-            st: *mut OpusDecoder,
-            Fs: opus_int32,
-            channels: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "462:1"]
-        pub fn opus_decode(
-            st: *mut OpusDecoder,
-            data: *const libc::c_uchar,
-            len: opus_int32,
-            pcm: *mut opus_int16,
-            frame_size: libc::c_int,
-            decode_fec: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "487:1"]
-        pub fn opus_decode_float(
-            st: *mut OpusDecoder,
-            data: *const libc::c_uchar,
-            len: opus_int32,
-            pcm: *mut libc::c_float,
-            frame_size: libc::c_int,
-            decode_fec: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "507:1"]
-        pub fn opus_decoder_ctl(st: *mut OpusDecoder, request: libc::c_int, _: ...) -> libc::c_int;
-        #[c2rust::src_loc = "512:1"]
-        pub fn opus_decoder_destroy(st: *mut OpusDecoder);
-        #[c2rust::src_loc = "527:1"]
-        pub fn opus_packet_parse(
-            data: *const libc::c_uchar,
-            len: opus_int32,
-            out_toc: *mut libc::c_uchar,
-            frames: *mut *const libc::c_uchar,
-            size: *mut opus_int16,
-            payload_offset: *mut libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "545:1"]
-        pub fn opus_packet_get_bandwidth(data: *const libc::c_uchar) -> libc::c_int;
-        #[c2rust::src_loc = "556:1"]
-        pub fn opus_packet_get_samples_per_frame(
-            data: *const libc::c_uchar,
-            Fs: opus_int32,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "572:1"]
-        pub fn opus_packet_get_nb_frames(
-            packet: *const libc::c_uchar,
-            len: opus_int32,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "584:1"]
-        pub fn opus_packet_get_nb_samples(
-            packet: *const libc::c_uchar,
-            len: opus_int32,
-            Fs: opus_int32,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "594:1"]
-        pub fn opus_decoder_get_nb_samples(
-            dec: *const OpusDecoder,
-            packet: *const libc::c_uchar,
-            len: opus_int32,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "759:1"]
-        pub fn opus_repacketizer_get_size() -> libc::c_int;
-        #[c2rust::src_loc = "778:1"]
-        pub fn opus_repacketizer_init(rp: *mut OpusRepacketizer) -> *mut OpusRepacketizer;
-        #[c2rust::src_loc = "783:1"]
-        pub fn opus_repacketizer_create() -> *mut OpusRepacketizer;
-        #[c2rust::src_loc = "789:1"]
-        pub fn opus_repacketizer_destroy(rp: *mut OpusRepacketizer);
-        #[c2rust::src_loc = "838:1"]
-        pub fn opus_repacketizer_cat(
-            rp: *mut OpusRepacketizer,
-            data: *const libc::c_uchar,
-            len: opus_int32,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "872:1"]
-        pub fn opus_repacketizer_out_range(
-            rp: *mut OpusRepacketizer,
-            begin: libc::c_int,
-            end: libc::c_int,
-            data: *mut libc::c_uchar,
-            maxlen: opus_int32,
-        ) -> opus_int32;
-        #[c2rust::src_loc = "884:1"]
-        pub fn opus_repacketizer_get_nb_frames(rp: *mut OpusRepacketizer) -> libc::c_int;
-        #[c2rust::src_loc = "915:1"]
-        pub fn opus_repacketizer_out(
-            rp: *mut OpusRepacketizer,
-            data: *mut libc::c_uchar,
-            maxlen: opus_int32,
-        ) -> opus_int32;
-        #[c2rust::src_loc = "929:1"]
-        pub fn opus_packet_pad(
-            data: *mut libc::c_uchar,
-            len: opus_int32,
-            new_len: opus_int32,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "942:1"]
-        pub fn opus_packet_unpad(data: *mut libc::c_uchar, len: opus_int32) -> opus_int32;
-        #[c2rust::src_loc = "958:1"]
-        pub fn opus_multistream_packet_pad(
-            data: *mut libc::c_uchar,
-            len: opus_int32,
-            new_len: opus_int32,
-            nb_streams: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "973:1"]
-        pub fn opus_multistream_packet_unpad(
-            data: *mut libc::c_uchar,
-            len: opus_int32,
-            nb_streams: libc::c_int,
-        ) -> opus_int32;
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_multistream.h:53"]
-pub mod opus_multistream_h {
-    use super::opus_types_h::{opus_int16, opus_int32};
-    extern "C" {
-        #[c2rust::src_loc = "183:16"]
-        pub type OpusMSDecoder;
-        #[c2rust::src_loc = "644:1"]
-        pub fn opus_multistream_decoder_ctl(
-            st: *mut OpusMSDecoder,
-            request: libc::c_int,
-            _: ...
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "623:1"]
-        pub fn opus_multistream_decode_float(
-            st: *mut OpusMSDecoder,
-            data: *const libc::c_uchar,
-            len: opus_int32,
-            pcm: *mut libc::c_float,
-            frame_size: libc::c_int,
-            decode_fec: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "585:1"]
-        pub fn opus_multistream_decode(
-            st: *mut OpusMSDecoder,
-            data: *const libc::c_uchar,
-            len: opus_int32,
-            pcm: *mut opus_int16,
-            frame_size: libc::c_int,
-            decode_fec: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "547:1"]
-        pub fn opus_multistream_decoder_init(
-            st: *mut OpusMSDecoder,
-            Fs: opus_int32,
-            channels: libc::c_int,
-            streams: libc::c_int,
-            coupled_streams: libc::c_int,
-            mapping: *const libc::c_uchar,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "470:1"]
-        pub fn opus_multistream_decoder_get_size(
-            streams: libc::c_int,
-            coupled_streams: libc::c_int,
-        ) -> opus_int32;
-        #[c2rust::src_loc = "504:1"]
-        pub fn opus_multistream_decoder_create(
-            Fs: opus_int32,
-            channels: libc::c_int,
-            streams: libc::c_int,
-            coupled_streams: libc::c_int,
-            mapping: *const libc::c_uchar,
-            error: *mut libc::c_int,
-        ) -> *mut OpusMSDecoder;
-        #[c2rust::src_loc = "650:1"]
-        pub fn opus_multistream_decoder_destroy(st: *mut OpusMSDecoder);
-    }
-}
 #[c2rust::header_src = "/usr/include/stdio.h:48"]
 pub mod stdio_h {
     use super::FILE_h::FILE;
@@ -382,15 +157,7 @@ pub mod string_h {
         pub fn strlen(_: *const libc::c_char) -> libc::c_ulong;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:52"]
-pub mod opus_defines_h {
-    extern "C" {
-        #[c2rust::src_loc = "782:1"]
-        pub fn opus_strerror(error: libc::c_int) -> *const libc::c_char;
-        #[c2rust::src_loc = "792:1"]
-        pub fn opus_get_version_string() -> *const libc::c_char;
-    }
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/tests/test_opus_common.h:55"]
 pub mod test_opus_common_h {
     #[c2rust::src_loc = "63:20"]
@@ -436,29 +203,12 @@ pub mod test_opus_common_h {
         );
         abort();
     }
-    use super::opus_defines_h::opus_get_version_string;
+
     use super::opus_types_h::opus_uint32;
     use super::stdio_h::{fprintf, stderr};
     use super::stdlib_h::abort;
+    use libopus_unsafe::opus_get_version_string;
 }
-use self::opus_defines_h::{opus_get_version_string, opus_strerror};
-use self::opus_h::{
-    opus_decode, opus_decode_float, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy,
-    opus_decoder_get_nb_samples, opus_decoder_get_size, opus_decoder_init, opus_encode,
-    opus_encode_float, opus_encoder_create, opus_encoder_ctl, opus_encoder_destroy,
-    opus_encoder_get_size, opus_encoder_init, opus_multistream_packet_pad,
-    opus_multistream_packet_unpad, opus_packet_get_bandwidth, opus_packet_get_nb_frames,
-    opus_packet_get_nb_samples, opus_packet_get_samples_per_frame, opus_packet_pad,
-    opus_packet_parse, opus_packet_unpad, opus_repacketizer_cat, opus_repacketizer_create,
-    opus_repacketizer_destroy, opus_repacketizer_get_nb_frames, opus_repacketizer_get_size,
-    opus_repacketizer_init, opus_repacketizer_out, opus_repacketizer_out_range, OpusDecoder,
-    OpusEncoder, OpusRepacketizer,
-};
-use self::opus_multistream_h::{
-    opus_multistream_decode, opus_multistream_decode_float, opus_multistream_decoder_create,
-    opus_multistream_decoder_ctl, opus_multistream_decoder_destroy,
-    opus_multistream_decoder_get_size, opus_multistream_decoder_init, OpusMSDecoder,
-};
 pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32};
 pub use self::stddef_h::size_t;
 pub use self::stdint_intn_h::{int16_t, int32_t};
@@ -470,6 +220,21 @@ pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data
 pub use self::test_opus_common_h::{_test_failed, iseed};
 pub use self::types_h::{__int16_t, __int32_t, __off64_t, __off_t, __uint32_t};
 pub use self::FILE_h::FILE;
+use libopus_unsafe::{
+    opus_decode, opus_decode_float, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy,
+    opus_decoder_get_nb_samples, opus_decoder_get_size, opus_decoder_init, opus_encode,
+    opus_encode_float, opus_encoder_create, opus_encoder_ctl, opus_encoder_destroy,
+    opus_encoder_get_size, opus_encoder_init, opus_get_version_string, opus_multistream_decode,
+    opus_multistream_decode_float, opus_multistream_decoder_create, opus_multistream_decoder_ctl,
+    opus_multistream_decoder_destroy, opus_multistream_decoder_get_size,
+    opus_multistream_decoder_init, opus_multistream_packet_pad, opus_multistream_packet_unpad,
+    opus_packet_get_bandwidth, opus_packet_get_nb_frames, opus_packet_get_nb_samples,
+    opus_packet_get_samples_per_frame, opus_packet_pad, opus_packet_parse, opus_packet_unpad,
+    opus_repacketizer_cat, opus_repacketizer_create, opus_repacketizer_destroy,
+    opus_repacketizer_get_nb_frames, opus_repacketizer_get_size, opus_repacketizer_init,
+    opus_repacketizer_out, opus_repacketizer_out_range, opus_strerror, OpusDecoder, OpusEncoder,
+    OpusMSDecoder, OpusRepacketizer,
+};
 #[no_mangle]
 #[c2rust::src_loc = "81:13"]
 pub static mut null_int_ptr: *mut opus_int32 =

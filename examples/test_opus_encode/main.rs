@@ -121,127 +121,6 @@ pub mod opus_types_h {
     use super::stdint_intn_h::{int16_t, int32_t};
     use super::stdint_uintn_h::uint32_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus.h:45"]
-pub mod opus_h {
-    use super::opus_types_h::{opus_int16, opus_int32};
-    extern "C" {
-        #[c2rust::src_loc = "164:16"]
-        pub type OpusEncoder;
-        #[c2rust::src_loc = "399:16"]
-        pub type OpusDecoder;
-        #[c2rust::src_loc = "171:1"]
-        pub fn opus_encoder_get_size(channels: libc::c_int) -> libc::c_int;
-        #[c2rust::src_loc = "208:1"]
-        pub fn opus_encoder_create(
-            Fs: opus_int32,
-            channels: libc::c_int,
-            application: libc::c_int,
-            error: *mut libc::c_int,
-        ) -> *mut OpusEncoder;
-        #[c2rust::src_loc = "263:1"]
-        pub fn opus_encode(
-            st: *mut OpusEncoder,
-            pcm: *const opus_int16,
-            frame_size: libc::c_int,
-            data: *mut libc::c_uchar,
-            max_data_bytes: opus_int32,
-        ) -> opus_int32;
-        #[c2rust::src_loc = "315:1"]
-        pub fn opus_encoder_destroy(st: *mut OpusEncoder);
-        #[c2rust::src_loc = "328:1"]
-        pub fn opus_encoder_ctl(st: *mut OpusEncoder, request: libc::c_int, _: ...) -> libc::c_int;
-        #[c2rust::src_loc = "406:1"]
-        pub fn opus_decoder_get_size(channels: libc::c_int) -> libc::c_int;
-        #[c2rust::src_loc = "423:1"]
-        pub fn opus_decoder_create(
-            Fs: opus_int32,
-            channels: libc::c_int,
-            error: *mut libc::c_int,
-        ) -> *mut OpusDecoder;
-        #[c2rust::src_loc = "462:1"]
-        pub fn opus_decode(
-            st: *mut OpusDecoder,
-            data: *const libc::c_uchar,
-            len: opus_int32,
-            pcm: *mut opus_int16,
-            frame_size: libc::c_int,
-            decode_fec: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "507:1"]
-        pub fn opus_decoder_ctl(st: *mut OpusDecoder, request: libc::c_int, _: ...) -> libc::c_int;
-        #[c2rust::src_loc = "512:1"]
-        pub fn opus_decoder_destroy(st: *mut OpusDecoder);
-        #[c2rust::src_loc = "527:1"]
-        pub fn opus_packet_parse(
-            data: *const libc::c_uchar,
-            len: opus_int32,
-            out_toc: *mut libc::c_uchar,
-            frames: *mut *const libc::c_uchar,
-            size: *mut opus_int16,
-            payload_offset: *mut libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "929:1"]
-        pub fn opus_packet_pad(
-            data: *mut libc::c_uchar,
-            len: opus_int32,
-            new_len: opus_int32,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "942:1"]
-        pub fn opus_packet_unpad(data: *mut libc::c_uchar, len: opus_int32) -> opus_int32;
-        #[c2rust::src_loc = "958:1"]
-        pub fn opus_multistream_packet_pad(
-            data: *mut libc::c_uchar,
-            len: opus_int32,
-            new_len: opus_int32,
-            nb_streams: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "973:1"]
-        pub fn opus_multistream_packet_unpad(
-            data: *mut libc::c_uchar,
-            len: opus_int32,
-            nb_streams: libc::c_int,
-        ) -> opus_int32;
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/opus_private.h:47"]
-pub mod opus_private_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "60:8"]
-    pub struct OpusMSEncoder {
-        pub layout: ChannelLayout,
-        pub arch: libc::c_int,
-        pub lfe_stream: libc::c_int,
-        pub application: libc::c_int,
-        pub variable_duration: libc::c_int,
-        pub mapping_type: MappingType,
-        pub bitrate_bps: opus_int32,
-    }
-    #[c2rust::src_loc = "54:9"]
-    pub type MappingType = libc::c_uint;
-    #[c2rust::src_loc = "57:3"]
-    pub const MAPPING_TYPE_AMBISONICS: MappingType = 2;
-    #[c2rust::src_loc = "56:3"]
-    pub const MAPPING_TYPE_SURROUND: MappingType = 1;
-    #[c2rust::src_loc = "55:3"]
-    pub const MAPPING_TYPE_NONE: MappingType = 0;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "47:16"]
-    pub struct ChannelLayout {
-        pub nb_channels: libc::c_int,
-        pub nb_streams: libc::c_int,
-        pub nb_coupled_streams: libc::c_int,
-        pub mapping: [libc::c_uchar; 256],
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "73:8"]
-    pub struct OpusMSDecoder {
-        pub layout: ChannelLayout,
-    }
-    use super::opus_types_h::opus_int32;
-}
 #[c2rust::header_src = "/usr/include/stdio.h:32"]
 pub mod stdio_h {
     use super::FILE_h::FILE;
@@ -311,72 +190,6 @@ pub mod unistd_h {
     extern "C" {
         #[c2rust::src_loc = "650:1"]
         pub fn getpid() -> __pid_t;
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_multistream.h:45"]
-pub mod opus_multistream_h {
-    use super::opus_private_h::{OpusMSDecoder, OpusMSEncoder};
-    use super::opus_types_h::{opus_int16, opus_int32};
-    extern "C" {
-        #[c2rust::src_loc = "257:1"]
-        pub fn opus_multistream_encoder_create(
-            Fs: opus_int32,
-            channels: libc::c_int,
-            streams: libc::c_int,
-            coupled_streams: libc::c_int,
-            mapping: *const libc::c_uchar,
-            application: libc::c_int,
-            error: *mut libc::c_int,
-        ) -> *mut OpusMSEncoder;
-        #[c2rust::src_loc = "377:1"]
-        pub fn opus_multistream_encode(
-            st: *mut OpusMSEncoder,
-            pcm: *const opus_int16,
-            frame_size: libc::c_int,
-            data: *mut libc::c_uchar,
-            max_data_bytes: opus_int32,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "434:1"]
-        pub fn opus_multistream_encoder_destroy(st: *mut OpusMSEncoder);
-        #[c2rust::src_loc = "448:1"]
-        pub fn opus_multistream_encoder_ctl(
-            st: *mut OpusMSEncoder,
-            request: libc::c_int,
-            _: ...
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "504:1"]
-        pub fn opus_multistream_decoder_create(
-            Fs: opus_int32,
-            channels: libc::c_int,
-            streams: libc::c_int,
-            coupled_streams: libc::c_int,
-            mapping: *const libc::c_uchar,
-            error: *mut libc::c_int,
-        ) -> *mut OpusMSDecoder;
-        #[c2rust::src_loc = "585:1"]
-        pub fn opus_multistream_decode(
-            st: *mut OpusMSDecoder,
-            data: *const libc::c_uchar,
-            len: opus_int32,
-            pcm: *mut opus_int16,
-            frame_size: libc::c_int,
-            decode_fec: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "644:1"]
-        pub fn opus_multistream_decoder_ctl(
-            st: *mut OpusMSDecoder,
-            request: libc::c_int,
-            _: ...
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "650:1"]
-        pub fn opus_multistream_decoder_destroy(st: *mut OpusMSDecoder);
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:45"]
-pub mod opus_defines_h {
-    extern "C" {
-        #[c2rust::src_loc = "792:1"]
-        pub fn opus_get_version_string() -> *const libc::c_char;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/tests/test_opus_common.h:48"]
@@ -490,49 +303,35 @@ pub mod test_opus_common_h {
         );
         abort();
     }
-    use super::opus_defines_h::opus_get_version_string;
+
     use super::opus_types_h::opus_uint32;
     use super::stdio_h::{fprintf, stderr};
     use super::stdlib_h::{abort, free, malloc};
     use super::string_h::memset;
-    extern "C" {
-        #[c2rust::src_loc = "82:1"]
-        pub fn regression_test();
-    }
+    use libopus_unsafe::opus_get_version_string;
 }
-use self::opus_defines_h::opus_get_version_string;
-use self::opus_h::{
-    opus_decode, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy,
-    opus_decoder_get_size, opus_encode, opus_encoder_create, opus_encoder_ctl,
-    opus_encoder_destroy, opus_encoder_get_size, opus_multistream_packet_pad,
-    opus_multistream_packet_unpad, opus_packet_pad, opus_packet_parse, opus_packet_unpad,
-    OpusDecoder, OpusEncoder,
-};
-use self::opus_multistream_h::{
-    opus_multistream_decode, opus_multistream_decoder_create, opus_multistream_decoder_ctl,
-    opus_multistream_decoder_destroy, opus_multistream_encode, opus_multistream_encoder_create,
-    opus_multistream_encoder_ctl, opus_multistream_encoder_destroy,
-};
-pub use self::opus_private_h::{
-    ChannelLayout, MappingType, OpusMSDecoder, OpusMSEncoder, MAPPING_TYPE_AMBISONICS,
-    MAPPING_TYPE_NONE, MAPPING_TYPE_SURROUND,
-};
 pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32};
-pub use self::stddef_h::size_t;
-pub use self::stdint_intn_h::{int16_t, int32_t};
-pub use self::stdint_uintn_h::uint32_t;
 use self::stdio_h::{fprintf, stderr, stdout};
-pub use self::stdlib_h::{abort, atoi, free, getenv, malloc, strtol};
+pub use self::stdlib_h::{atoi, free, getenv, malloc, strtol};
 use self::string_h::{memcpy, memset, strcmp};
-pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
-pub use self::test_opus_common_h::{
-    deb2_impl, debruijn2, Rw, Rz, _test_failed, fast_rand, iseed, regression_test,
-};
+pub use self::test_opus_common_h::{debruijn2, Rw, Rz, _test_failed, fast_rand, iseed};
 use self::time_h::time;
 pub use self::time_t_h::time_t;
-pub use self::types_h::{__int16_t, __int32_t, __off64_t, __off_t, __pid_t, __time_t, __uint32_t};
 use self::unistd_h::getpid;
-pub use self::FILE_h::FILE;
+use libopus_unsafe::{
+    opus_decode, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy,
+    opus_decoder_get_size, opus_encode, opus_encoder_create, opus_encoder_ctl,
+    opus_encoder_destroy, opus_encoder_get_size, opus_get_version_string, opus_multistream_decode,
+    opus_multistream_decoder_create, opus_multistream_decoder_ctl,
+    opus_multistream_decoder_destroy, opus_multistream_encode, opus_multistream_encoder_create,
+    opus_multistream_encoder_ctl, opus_multistream_encoder_destroy, opus_multistream_packet_pad,
+    opus_multistream_packet_unpad, opus_packet_pad, opus_packet_parse, opus_packet_unpad,
+    OpusDecoder, OpusEncoder, OpusMSDecoder, OpusMSEncoder,
+};
+
+mod opus_encode_regressions;
+use opus_encode_regressions::regression_test;
+
 #[no_mangle]
 #[c2rust::src_loc = "57:1"]
 pub unsafe extern "C" fn generate_music(mut buf: *mut libc::c_short, mut len: opus_int32) {
