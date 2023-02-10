@@ -54,6 +54,12 @@ pub unsafe extern "C" fn ec_tell(mut _this: *mut ec_ctx) -> libc::c_int {
 pub unsafe extern "C" fn celt_udiv(n: u32, d: u32) -> u32 {
     return n.wrapping_div(d);
 }
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:35"]
+#[inline]
+#[c2rust::src_loc = "140:1"]
+pub unsafe extern "C" fn celt_sudiv(n: i32, d: i32) -> i32 {
+    return n / d;
+}
 
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:32"]
 pub mod ecintrin_h {

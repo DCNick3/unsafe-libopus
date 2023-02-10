@@ -32,36 +32,6 @@ pub mod control_h {
         pub offset: libc::c_int,
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:32"]
-pub mod entcode_h {
-    #[c2rust::src_loc = "45:1"]
-    pub type ec_window = u32;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "62:8"]
-    pub struct ec_ctx {
-        pub buf: *mut libc::c_uchar,
-        pub storage: u32,
-        pub end_offs: u32,
-        pub end_window: ec_window,
-        pub nend_bits: libc::c_int,
-        pub nbits_total: libc::c_int,
-        pub offs: u32,
-        pub rng: u32,
-        pub val: u32,
-        pub ext: u32,
-        pub rem: libc::c_int,
-        pub error: libc::c_int,
-    }
-    #[c2rust::src_loc = "47:1"]
-    pub type ec_enc = ec_ctx;
-    #[inline]
-    #[c2rust::src_loc = "111:1"]
-    pub unsafe extern "C" fn ec_tell(mut _this: *mut ec_ctx) -> libc::c_int {
-        return (*_this).nbits_total - (EC_CLZ0 - ((*_this).rng).leading_zeros() as i32);
-    }
-    use super::ecintrin_h::EC_CLZ0;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:41"]
 pub mod structs_FLP_h {
     #[derive(Copy, Clone)]
@@ -335,25 +305,6 @@ pub mod ecintrin_h {
         ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:32"]
-pub mod entenc_h {
-    use super::entcode_h::ec_enc;
-    extern "C" {
-        #[c2rust::src_loc = "65:1"]
-        pub fn ec_enc_icdf(
-            _this: *mut ec_enc,
-            _s: libc::c_int,
-            _icdf: *const libc::c_uchar,
-            _ftb: libc::c_uint,
-        );
-        #[c2rust::src_loc = "93:1"]
-        pub fn ec_enc_patch_initial_bits(
-            _this: *mut ec_enc,
-            _val: libc::c_uint,
-            _nbits: libc::c_uint,
-        );
-    }
-}
 #[c2rust::header_src = "internal:0"]
 pub mod internal {
     #[c2rust::src_loc = "36:9"]
@@ -375,8 +326,8 @@ pub mod SigProc_FIX_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:41"]
 pub mod main_h {
     use super::control_h::silk_EncControlStruct;
-    use super::entcode_h::ec_enc;
     use super::structs_h::{silk_encoder_state, stereo_enc_state};
+    use crate::celt::entenc::ec_enc;
     extern "C" {
         #[c2rust::src_loc = "135:1"]
         pub fn check_control_input(encControl: *mut silk_EncControlStruct) -> libc::c_int;
@@ -437,9 +388,10 @@ pub mod main_FLP_h {
         libc::c_int,
         libc::c_int,
     ) -> libc::c_int = silk_encode_frame_FLP;
+
     use super::control_h::silk_EncControlStruct;
-    use super::entcode_h::ec_enc;
     use super::structs_FLP_h::silk_encoder_state_FLP;
+    use crate::celt::entenc::ec_enc;
     extern "C" {
         #[c2rust::src_loc = "80:1"]
         pub fn silk_control_encoder(
@@ -484,8 +436,6 @@ pub use self::define_h::{
     ENCODER_NUM_CHANNELS, TYPE_NO_VOICE_ACTIVITY,
 };
 pub use self::ecintrin_h::EC_CLZ0;
-pub use self::entcode_h::{ec_ctx, ec_enc, ec_tell, ec_window};
-use self::entenc_h::{ec_enc_icdf, ec_enc_patch_initial_bits};
 pub use self::errors_h::{SILK_ENC_INPUT_INVALID_NO_OF_SAMPLES, SILK_NO_ERROR};
 pub use self::internal::__CHAR_BIT__;
 pub use self::limits_h::CHAR_BIT;
@@ -501,6 +451,8 @@ pub use self::resampler_structs_h::{
     silk_resampler_state_struct, C2RustUnnamed, _silk_resampler_state_struct,
 };
 use crate::celt::celt::celt_fatal;
+use crate::celt::entcode::ec_tell;
+use crate::celt::entenc::{ec_enc, ec_enc_icdf, ec_enc_patch_initial_bits};
 
 pub use self::structs_FLP_h::{silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP};
 pub use self::structs_h::{

@@ -46,36 +46,6 @@ pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
     pub const NULL: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:33"]
-pub mod entcode_h {
-    #[c2rust::src_loc = "45:1"]
-    pub type ec_window = u32;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "62:8"]
-    pub struct ec_ctx {
-        pub buf: *mut libc::c_uchar,
-        pub storage: u32,
-        pub end_offs: u32,
-        pub end_window: ec_window,
-        pub nend_bits: libc::c_int,
-        pub nbits_total: libc::c_int,
-        pub offs: u32,
-        pub rng: u32,
-        pub val: u32,
-        pub ext: u32,
-        pub rem: libc::c_int,
-        pub error: libc::c_int,
-    }
-    #[c2rust::src_loc = "47:1"]
-    pub type ec_enc = ec_ctx;
-    #[inline]
-    #[c2rust::src_loc = "111:1"]
-    pub unsafe extern "C" fn ec_tell(mut _this: *mut ec_ctx) -> libc::c_int {
-        return (*_this).nbits_total - (EC_CLZ0 - ((*_this).rng).leading_zeros() as i32);
-    }
-    use super::ecintrin_h::EC_CLZ0;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/celt.h:33"]
 pub mod celt_h {
     #[derive(Copy, Clone)]
@@ -113,8 +83,9 @@ pub mod celt_h {
     ) -> libc::c_int = opus_custom_encoder_ctl;
 
     use super::arch_h::opus_val16;
-    use super::entcode_h::ec_enc;
     use crate::celt::celt_encoder::{opus_custom_encoder_ctl, OpusCustomEncoder};
+    use crate::celt::entenc::ec_enc;
+
     extern "C" {
         #[c2rust::src_loc = "140:1"]
         pub fn celt_encoder_init(
@@ -589,22 +560,6 @@ pub mod opus_defines_h {
     #[c2rust::src_loc = "46:9"]
     pub const OPUS_OK: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:33"]
-pub mod entenc_h {
-    use super::entcode_h::ec_enc;
-    extern "C" {
-        #[c2rust::src_loc = "108:1"]
-        pub fn ec_enc_done(_this: *mut ec_enc);
-        #[c2rust::src_loc = "103:1"]
-        pub fn ec_enc_shrink(_this: *mut ec_enc, _size: u32);
-        #[c2rust::src_loc = "71:1"]
-        pub fn ec_enc_uint(_this: *mut ec_enc, _fl: u32, _ft: u32);
-        #[c2rust::src_loc = "56:1"]
-        pub fn ec_enc_bit_logp(_this: *mut ec_enc, _val: libc::c_int, _logp: libc::c_uint);
-        #[c2rust::src_loc = "36:1"]
-        pub fn ec_enc_init(_this: *mut ec_enc, _buf: *mut libc::c_uchar, _size: u32);
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:33"]
 pub mod ecintrin_h {
     #[c2rust::src_loc = "69:11"]
@@ -630,7 +585,7 @@ pub mod cpu_support_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/API.h:36"]
 pub mod API_h {
     use super::control_h::silk_EncControlStruct;
-    use super::entcode_h::ec_enc;
+    use crate::celt::entenc::ec_enc;
     extern "C" {
         #[c2rust::src_loc = "58:1"]
         pub fn silk_Get_Encoder_Size(encSizeBytes: *mut libc::c_int) -> libc::c_int;
@@ -755,8 +710,6 @@ pub use self::celt_h::{
 };
 pub use self::control_h::silk_EncControlStruct;
 pub use self::ecintrin_h::EC_CLZ0;
-pub use self::entcode_h::{ec_ctx, ec_enc, ec_tell, ec_window};
-use self::entenc_h::{ec_enc_bit_logp, ec_enc_done, ec_enc_init, ec_enc_shrink, ec_enc_uint};
 pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
 pub use self::limits_h::CHAR_BIT;
 pub use self::opus_defines_h::{
@@ -792,6 +745,9 @@ pub use self::resampler_structs_h::{
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 use crate::celt::celt::celt_fatal;
+use crate::celt::entcode::ec_tell;
+use crate::celt::entenc::ec_enc;
+use crate::celt::entenc::{ec_enc_bit_logp, ec_enc_done, ec_enc_init, ec_enc_shrink, ec_enc_uint};
 
 pub use self::structs_FLP_h::{silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP};
 pub use self::structs_h::{

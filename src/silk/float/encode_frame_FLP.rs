@@ -28,36 +28,6 @@ pub mod resampler_structs_h {
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:33"]
-pub mod entcode_h {
-    #[c2rust::src_loc = "45:1"]
-    pub type ec_window = u32;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "62:8"]
-    pub struct ec_ctx {
-        pub buf: *mut libc::c_uchar,
-        pub storage: u32,
-        pub end_offs: u32,
-        pub end_window: ec_window,
-        pub nend_bits: libc::c_int,
-        pub nbits_total: libc::c_int,
-        pub offs: u32,
-        pub rng: u32,
-        pub val: u32,
-        pub ext: u32,
-        pub rem: libc::c_int,
-        pub error: libc::c_int,
-    }
-    #[c2rust::src_loc = "47:1"]
-    pub type ec_enc = ec_ctx;
-    #[inline]
-    #[c2rust::src_loc = "111:1"]
-    pub unsafe extern "C" fn ec_tell(mut _this: *mut ec_ctx) -> libc::c_int {
-        return (*_this).nbits_total - (EC_CLZ0 - ((*_this).rng).leading_zeros() as i32);
-    }
-    use super::ecintrin_h::EC_CLZ0;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:33"]
 pub mod structs_h {
     #[derive(Copy, Clone)]
@@ -379,8 +349,8 @@ pub mod SigProc_FLP_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:33"]
 pub mod main_h {
-    use super::entcode_h::ec_enc;
     use super::structs_h::{silk_LP_state, silk_encoder_state};
+    use crate::celt::entenc::ec_enc;
     extern "C" {
         #[c2rust::src_loc = "156:1"]
         pub fn silk_encode_pulses(
@@ -437,7 +407,6 @@ pub use self::define_h::{
     N_LEVELS_QGAIN, TYPE_NO_VOICE_ACTIVITY, TYPE_UNVOICED, VAD_NO_ACTIVITY,
 };
 pub use self::ecintrin_h::EC_CLZ0;
-pub use self::entcode_h::{ec_ctx, ec_enc, ec_tell, ec_window};
 pub use self::internal::__CHAR_BIT__;
 pub use self::limits_h::CHAR_BIT;
 use self::main_FLP_h::{
@@ -452,6 +421,8 @@ pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
 use crate::celt::celt::celt_fatal;
+use crate::celt::entcode::ec_tell;
+use crate::celt::entenc::ec_enc;
 
 use self::stdlib_h::abs;
 pub use self::structs_FLP_h::{

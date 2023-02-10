@@ -1,42 +1,5 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:32"]
-pub mod entcode_h {
-    #[c2rust::src_loc = "45:1"]
-    pub type ec_window = u32;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "62:8"]
-    pub struct ec_ctx {
-        pub buf: *mut libc::c_uchar,
-        pub storage: u32,
-        pub end_offs: u32,
-        pub end_window: ec_window,
-        pub nend_bits: libc::c_int,
-        pub nbits_total: libc::c_int,
-        pub offs: u32,
-        pub rng: u32,
-        pub val: u32,
-        pub ext: u32,
-        pub rem: libc::c_int,
-        pub error: libc::c_int,
-    }
-    #[c2rust::src_loc = "47:1"]
-    pub type ec_enc = ec_ctx;
-}
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:32"]
-pub mod entenc_h {
-    use super::entcode_h::ec_enc;
-    extern "C" {
-        #[c2rust::src_loc = "65:1"]
-        pub fn ec_enc_icdf(
-            _this: *mut ec_enc,
-            _s: libc::c_int,
-            _icdf: *const libc::c_uchar,
-            _ftb: libc::c_uint,
-        );
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
 pub mod tables_h {
     extern "C" {
@@ -56,7 +19,8 @@ pub mod tables_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
-    use super::entcode_h::ec_enc;
+    use crate::celt::entenc::ec_enc;
+
     extern "C" {
         #[c2rust::src_loc = "115:1"]
         pub fn silk_encode_signs(
@@ -86,10 +50,9 @@ pub mod typedef_h {
     pub const silk_int32_MAX: libc::c_int = 0x7fffffff as libc::c_int;
 }
 pub use self::define_h::{N_RATE_LEVELS, SHELL_CODEC_FRAME_LENGTH, SILK_MAX_PULSES};
-pub use self::entcode_h::{ec_ctx, ec_enc, ec_window};
-use self::entenc_h::ec_enc_icdf;
 use self::main_h::{silk_encode_signs, silk_shell_encoder};
 use crate::celt::celt::celt_fatal;
+use crate::celt::entenc::{ec_enc, ec_enc_icdf};
 
 use self::tables_h::{
     silk_lsb_iCDF, silk_max_pulses_table, silk_pulses_per_block_BITS_Q5,

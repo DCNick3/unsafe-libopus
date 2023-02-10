@@ -10,37 +10,6 @@ pub mod arch_h {
     #[c2rust::src_loc = "207:9"]
     pub const EPSILON: libc::c_float = 1e-15f32;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:33"]
-pub mod entcode_h {
-    #[c2rust::src_loc = "45:1"]
-    pub type ec_window = u32;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "62:8"]
-    pub struct ec_ctx {
-        pub buf: *mut libc::c_uchar,
-        pub storage: u32,
-        pub end_offs: u32,
-        pub end_window: ec_window,
-        pub nend_bits: libc::c_int,
-        pub nbits_total: libc::c_int,
-        pub offs: u32,
-        pub rng: u32,
-        pub val: u32,
-        pub ext: u32,
-        pub rem: libc::c_int,
-        pub error: libc::c_int,
-    }
-    #[c2rust::src_loc = "47:1"]
-    pub type ec_enc = ec_ctx;
-    #[c2rust::src_loc = "48:1"]
-    pub type ec_dec = ec_ctx;
-    #[inline]
-    #[c2rust::src_loc = "124:1"]
-    pub unsafe extern "C" fn celt_udiv(n: u32, d: u32) -> u32 {
-        return n.wrapping_div(d);
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.h:33"]
 pub mod mathops_h {
     #[c2rust::src_loc = "50:9"]
@@ -90,7 +59,9 @@ pub mod mathops_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cwrs.h:34"]
 pub mod cwrs_h {
     use super::arch_h::opus_val32;
-    use super::entcode_h::{ec_dec, ec_enc};
+    use crate::celt::entdec::ec_dec;
+    use crate::celt::entenc::ec_enc;
+
     extern "C" {
         #[c2rust::src_loc = "46:1"]
         pub fn decode_pulses(
@@ -136,10 +107,12 @@ pub mod pitch_h {
 pub use self::arch_h::{celt_norm, opus_val16, opus_val32, EPSILON};
 pub use self::bands_h::SPREAD_NONE;
 use self::cwrs_h::{decode_pulses, encode_pulses};
-pub use self::entcode_h::{celt_udiv, ec_ctx, ec_dec, ec_enc, ec_window};
 pub use self::mathops_h::{cA, cB, cC, cE, fast_atan2f, PI};
 pub use self::pitch_h::celt_inner_prod_c;
 use crate::celt::celt::celt_fatal;
+use crate::celt::entcode::celt_udiv;
+use crate::celt::entdec::ec_dec;
+use crate::celt::entenc::ec_enc;
 
 #[c2rust::src_loc = "47:1"]
 unsafe extern "C" fn exp_rotation1(

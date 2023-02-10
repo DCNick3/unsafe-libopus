@@ -4,53 +4,10 @@ pub mod arch_h {
     #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = libc::c_float;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:35"]
-pub mod entcode_h {
-    #[c2rust::src_loc = "45:1"]
-    pub type ec_window = u32;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "62:8"]
-    pub struct ec_ctx {
-        pub buf: *mut libc::c_uchar,
-        pub storage: u32,
-        pub end_offs: u32,
-        pub end_window: ec_window,
-        pub nend_bits: libc::c_int,
-        pub nbits_total: libc::c_int,
-        pub offs: u32,
-        pub rng: u32,
-        pub val: u32,
-        pub ext: u32,
-        pub rem: libc::c_int,
-        pub error: libc::c_int,
-    }
-    #[c2rust::src_loc = "47:1"]
-    pub type ec_enc = ec_ctx;
-    #[c2rust::src_loc = "48:1"]
-    pub type ec_dec = ec_ctx;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:35"]
-pub mod entenc_h {
-    use super::entcode_h::ec_enc;
-    extern "C" {
-        #[c2rust::src_loc = "71:1"]
-        pub fn ec_enc_uint(_this: *mut ec_enc, _fl: u32, _ft: u32);
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entdec.h:35"]
-pub mod entdec_h {
-    use super::entcode_h::ec_dec;
-    extern "C" {
-        #[c2rust::src_loc = "90:1"]
-        pub fn ec_dec_uint(_this: *mut ec_dec, _ft: u32) -> u32;
-    }
-}
 pub use self::arch_h::opus_val32;
-pub use self::entcode_h::{ec_ctx, ec_dec, ec_enc, ec_window};
-use self::entdec_h::ec_dec_uint;
-use self::entenc_h::ec_enc_uint;
 use crate::celt::celt::celt_fatal;
+use crate::celt::entdec::{ec_dec, ec_dec_uint};
+use crate::celt::entenc::{ec_enc, ec_enc_uint};
 
 #[c2rust::src_loc = "213:26"]
 static mut CELT_PVQ_U_DATA: [u32; 1272] = [

@@ -28,30 +28,6 @@ pub mod resampler_structs_h {
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:32"]
-pub mod entcode_h {
-    #[c2rust::src_loc = "45:1"]
-    pub type ec_window = u32;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "62:8"]
-    pub struct ec_ctx {
-        pub buf: *mut libc::c_uchar,
-        pub storage: u32,
-        pub end_offs: u32,
-        pub end_window: ec_window,
-        pub nend_bits: libc::c_int,
-        pub nbits_total: libc::c_int,
-        pub offs: u32,
-        pub rng: u32,
-        pub val: u32,
-        pub ext: u32,
-        pub rem: libc::c_int,
-        pub error: libc::c_int,
-    }
-    #[c2rust::src_loc = "48:1"]
-    pub type ec_dec = ec_ctx;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
 pub mod structs_h {
     #[derive(Copy, Clone)]
@@ -175,8 +151,8 @@ pub mod control_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
-    use super::entcode_h::ec_dec;
     use super::structs_h::{silk_decoder_control, silk_decoder_state};
+    use crate::celt::entdec::ec_dec;
     extern "C" {
         #[c2rust::src_loc = "417:1"]
         pub fn silk_decode_indices(
@@ -238,7 +214,6 @@ pub mod PLC_h {
     }
 }
 pub use self::control_h::{FLAG_DECODE_LBRR, FLAG_DECODE_NORMAL};
-pub use self::entcode_h::{ec_ctx, ec_dec, ec_window};
 use self::main_h::{
     silk_CNG, silk_decode_core, silk_decode_indices, silk_decode_parameters, silk_decode_pulses,
 };
@@ -246,6 +221,7 @@ pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
 use crate::celt::celt::celt_fatal;
+use crate::celt::entdec::ec_dec;
 
 pub use self::structs_h::{
     silk_CNG_struct, silk_NLSF_CB_struct, silk_PLC_struct, silk_decoder_control,

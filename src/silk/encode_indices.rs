@@ -28,30 +28,6 @@ pub mod resampler_structs_h {
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:32"]
-pub mod entcode_h {
-    #[c2rust::src_loc = "45:1"]
-    pub type ec_window = u32;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "62:8"]
-    pub struct ec_ctx {
-        pub buf: *mut libc::c_uchar,
-        pub storage: u32,
-        pub end_offs: u32,
-        pub end_window: ec_window,
-        pub nend_bits: libc::c_int,
-        pub nbits_total: libc::c_int,
-        pub offs: u32,
-        pub rng: u32,
-        pub val: u32,
-        pub ext: u32,
-        pub rem: libc::c_int,
-        pub error: libc::c_int,
-    }
-    #[c2rust::src_loc = "47:1"]
-    pub type ec_enc = ec_ctx;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
 pub mod structs_h {
     #[derive(Copy, Clone)]
@@ -226,19 +202,6 @@ pub mod define_h {
     #[c2rust::src_loc = "72:9"]
     pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:32"]
-pub mod entenc_h {
-    use super::entcode_h::ec_enc;
-    extern "C" {
-        #[c2rust::src_loc = "65:1"]
-        pub fn ec_enc_icdf(
-            _this: *mut ec_enc,
-            _s: libc::c_int,
-            _icdf: *const libc::c_uchar,
-            _ftb: libc::c_uint,
-        );
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
 pub mod tables_h {
     extern "C" {
@@ -286,13 +249,12 @@ pub mod main_h {
 pub use self::define_h::{
     CODE_CONDITIONALLY, CODE_INDEPENDENTLY, MAX_NB_SUBFR, NLSF_QUANT_MAX_AMPLITUDE, TYPE_VOICED,
 };
-pub use self::entcode_h::{ec_ctx, ec_enc, ec_window};
-use self::entenc_h::ec_enc_icdf;
 use self::main_h::silk_NLSF_unpack;
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
 use crate::celt::celt::celt_fatal;
+use crate::celt::entenc::{ec_enc, ec_enc_icdf};
 
 pub use self::structs_h::{
     silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,

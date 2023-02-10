@@ -19,30 +19,6 @@ pub mod control_h {
     #[c2rust::src_loc = "40:9"]
     pub const FLAG_PACKET_LOST: libc::c_int = 1 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:31"]
-pub mod entcode_h {
-    #[c2rust::src_loc = "45:1"]
-    pub type ec_window = u32;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "62:8"]
-    pub struct ec_ctx {
-        pub buf: *mut libc::c_uchar,
-        pub storage: u32,
-        pub end_offs: u32,
-        pub end_window: ec_window,
-        pub nend_bits: libc::c_int,
-        pub nbits_total: libc::c_int,
-        pub offs: u32,
-        pub rng: u32,
-        pub val: u32,
-        pub ext: u32,
-        pub rem: libc::c_int,
-        pub error: libc::c_int,
-    }
-    #[c2rust::src_loc = "48:1"]
-    pub type ec_dec = ec_ctx;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
 pub mod structs_h {
     #[derive(Copy, Clone)]
@@ -192,20 +168,6 @@ pub mod errors_h {
     #[c2rust::src_loc = "92:9"]
     pub const SILK_DEC_INVALID_FRAME_SIZE: libc::c_int = -(203 as libc::c_int);
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entdec.h:31"]
-pub mod entdec_h {
-    use super::entcode_h::ec_dec;
-    extern "C" {
-        #[c2rust::src_loc = "82:1"]
-        pub fn ec_dec_icdf(
-            _this: *mut ec_dec,
-            _icdf: *const libc::c_uchar,
-            _ftb: libc::c_uint,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "72:1"]
-        pub fn ec_dec_bit_logp(_this: *mut ec_dec, _logp: libc::c_uint) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:31"]
 pub mod arch_h {}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
@@ -227,8 +189,8 @@ pub mod define_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
-    use super::entcode_h::ec_dec;
     use super::structs_h::{silk_decoder_state, stereo_dec_state};
+    use crate::celt::entdec::ec_dec;
     extern "C" {
         #[c2rust::src_loc = "109:1"]
         pub fn silk_stereo_decode_mid_only(
@@ -309,8 +271,6 @@ pub use self::define_h::{
     CODE_CONDITIONALLY, CODE_INDEPENDENTLY, CODE_INDEPENDENTLY_NO_LTP_SCALING,
     DECODER_NUM_CHANNELS, MAX_API_FS_KHZ, TYPE_NO_VOICE_ACTIVITY, TYPE_VOICED,
 };
-pub use self::entcode_h::{ec_ctx, ec_dec, ec_window};
-use self::entdec_h::{ec_dec_bit_logp, ec_dec_icdf};
 pub use self::errors_h::{
     SILK_DEC_INVALID_FRAME_SIZE, SILK_DEC_INVALID_SAMPLING_FREQUENCY, SILK_NO_ERROR,
 };
@@ -322,6 +282,7 @@ pub use self::resampler_structs_h::{
     silk_resampler_state_struct, C2RustUnnamed, _silk_resampler_state_struct,
 };
 use crate::celt::celt::celt_fatal;
+use crate::celt::entdec::{ec_dec, ec_dec_bit_logp, ec_dec_icdf};
 
 pub use self::structs_h::{
     silk_CNG_struct, silk_NLSF_CB_struct, silk_PLC_struct, silk_decoder_state, stereo_dec_state,

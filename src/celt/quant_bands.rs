@@ -1,3 +1,6 @@
+use crate::celt::entcode::{ec_get_buffer, ec_range_bytes, ec_tell, ec_tell_frac};
+use crate::celt::entdec::{ec_dec, ec_dec_bit_logp, ec_dec_bits, ec_dec_icdf};
+use crate::celt::entenc::{ec_enc, ec_enc_bit_logp, ec_enc_bits, ec_enc_icdf};
 use crate::celt::modes::OpusCustomMode;
 use crate::celt::rate::MAX_FINE_BITS;
 use ::libc;
@@ -12,53 +15,6 @@ pub mod arch_h {
     pub type celt_ener = libc::c_float;
 }
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:33"]
-pub mod entcode_h {
-    #[c2rust::src_loc = "45:1"]
-    pub type ec_window = u32;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "62:8"]
-    pub struct ec_ctx {
-        pub buf: *mut libc::c_uchar,
-        pub storage: u32,
-        pub end_offs: u32,
-        pub end_window: ec_window,
-        pub nend_bits: libc::c_int,
-        pub nbits_total: libc::c_int,
-        pub offs: u32,
-        pub rng: u32,
-        pub val: u32,
-        pub ext: u32,
-        pub rem: libc::c_int,
-        pub error: libc::c_int,
-    }
-    #[c2rust::src_loc = "47:1"]
-    pub type ec_enc = ec_ctx;
-    #[c2rust::src_loc = "48:1"]
-    pub type ec_dec = ec_ctx;
-    #[inline]
-    #[c2rust::src_loc = "93:1"]
-    pub unsafe extern "C" fn ec_range_bytes(mut _this: *mut ec_ctx) -> u32 {
-        return (*_this).offs;
-    }
-    #[inline]
-    #[c2rust::src_loc = "97:1"]
-    pub unsafe extern "C" fn ec_get_buffer(mut _this: *mut ec_ctx) -> *mut libc::c_uchar {
-        return (*_this).buf;
-    }
-    #[inline]
-    #[c2rust::src_loc = "111:1"]
-    pub unsafe extern "C" fn ec_tell(mut _this: *mut ec_ctx) -> libc::c_int {
-        return (*_this).nbits_total - (EC_CLZ0 - ((*_this).rng).leading_zeros() as i32);
-    }
-
-    use super::ecintrin_h::EC_CLZ0;
-    extern "C" {
-        #[c2rust::src_loc = "121:1"]
-        pub fn ec_tell_frac(_this: *mut ec_ctx) -> u32;
-    }
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:33"]
 pub mod limits_h {
     #[c2rust::src_loc = "63:9"]
@@ -72,43 +28,12 @@ pub mod ecintrin_h {
         ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:33"]
-pub mod entenc_h {
-    use super::entcode_h::ec_enc;
-    extern "C" {
-        #[c2rust::src_loc = "56:1"]
-        pub fn ec_enc_bit_logp(_this: *mut ec_enc, _val: libc::c_int, _logp: libc::c_uint);
-        #[c2rust::src_loc = "65:1"]
-        pub fn ec_enc_icdf(
-            _this: *mut ec_enc,
-            _s: libc::c_int,
-            _icdf: *const libc::c_uchar,
-            _ftb: libc::c_uint,
-        );
-        #[c2rust::src_loc = "77:1"]
-        pub fn ec_enc_bits(_this: *mut ec_enc, _fl: u32, _ftb: libc::c_uint);
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entdec.h:33"]
-pub mod entdec_h {
-    use super::entcode_h::ec_dec;
-    extern "C" {
-        #[c2rust::src_loc = "72:1"]
-        pub fn ec_dec_bit_logp(_this: *mut ec_dec, _logp: libc::c_uint) -> libc::c_int;
-        #[c2rust::src_loc = "82:1"]
-        pub fn ec_dec_icdf(
-            _this: *mut ec_dec,
-            _icdf: *const libc::c_uchar,
-            _ftb: libc::c_uint,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "98:1"]
-        pub fn ec_dec_bits(_this: *mut ec_dec, _ftb: libc::c_uint) -> u32;
-    }
-}
 
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/laplace.h:34"]
 pub mod laplace_h {
-    use super::entcode_h::{ec_dec, ec_enc};
+    use crate::celt::entdec::ec_dec;
+    use crate::celt::entenc::ec_enc;
+
     extern "C" {
         #[c2rust::src_loc = "39:1"]
         pub fn ec_laplace_encode(
@@ -137,11 +62,6 @@ pub mod stack_alloc_h {
 }
 pub use self::arch_h::{celt_ener, opus_val16, opus_val32};
 pub use self::ecintrin_h::EC_CLZ0;
-pub use self::entcode_h::{
-    ec_ctx, ec_dec, ec_enc, ec_get_buffer, ec_range_bytes, ec_tell, ec_tell_frac, ec_window,
-};
-use self::entdec_h::{ec_dec_bit_logp, ec_dec_bits, ec_dec_icdf};
-use self::entenc_h::{ec_enc_bit_logp, ec_enc_bits, ec_enc_icdf};
 pub use self::internal::__CHAR_BIT__;
 use self::laplace_h::{ec_laplace_decode, ec_laplace_encode};
 pub use self::limits_h::CHAR_BIT;

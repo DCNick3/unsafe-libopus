@@ -10,14 +10,6 @@ pub mod arch_h {
     #[c2rust::src_loc = "203:9"]
     pub const Q15ONE: libc::c_float = 1.0f32;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:38"]
-pub mod entcode_h {
-    #[inline]
-    #[c2rust::src_loc = "124:1"]
-    pub unsafe extern "C" fn celt_udiv(n: u32, d: u32) -> u32 {
-        return n.wrapping_div(d);
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/pitch.h:38"]
 pub mod pitch_h {
     #[inline]
@@ -241,10 +233,10 @@ pub mod celt_lpc_h {
 }
 pub use self::arch_h::{celt_sig, opus_val16, opus_val32, Q15ONE};
 use self::celt_lpc_h::{_celt_autocorr, _celt_lpc};
-pub use self::entcode_h::celt_udiv;
 pub use self::pitch_h::{celt_inner_prod_c, celt_pitch_xcorr, dual_inner_prod_c, xcorr_kernel_c};
 pub use self::stddef_h::NULL;
 use crate::celt::celt::celt_fatal;
+use crate::celt::entcode::celt_udiv;
 
 #[c2rust::src_loc = "45:1"]
 unsafe extern "C" fn find_best_pitch(

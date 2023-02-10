@@ -1,64 +1,8 @@
 use crate::celt::celt::celt_fatal;
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:33"]
-pub mod entcode_h {
-    #[c2rust::src_loc = "45:1"]
-    pub type ec_window = u32;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "62:8"]
-    pub struct ec_ctx {
-        pub buf: *mut libc::c_uchar,
-        pub storage: u32,
-        pub end_offs: u32,
-        pub end_window: ec_window,
-        pub nend_bits: libc::c_int,
-        pub nbits_total: libc::c_int,
-        pub offs: u32,
-        pub rng: u32,
-        pub val: u32,
-        pub ext: u32,
-        pub rem: libc::c_int,
-        pub error: libc::c_int,
-    }
-    #[c2rust::src_loc = "47:1"]
-    pub type ec_enc = ec_ctx;
-    #[c2rust::src_loc = "48:1"]
-    pub type ec_dec = ec_ctx;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entdec.h:33"]
-pub mod entdec_h {
-    use super::entcode_h::ec_dec;
-    extern "C" {
-        #[c2rust::src_loc = "69:1"]
-        pub fn ec_dec_update(
-            _this: *mut ec_dec,
-            _fl: libc::c_uint,
-            _fh: libc::c_uint,
-            _ft: libc::c_uint,
-        );
-        #[c2rust::src_loc = "54:1"]
-        pub fn ec_decode_bin(_this: *mut ec_dec, _bits: libc::c_uint) -> libc::c_uint;
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:33"]
-pub mod entenc_h {
-    use super::entcode_h::ec_enc;
-    extern "C" {
-        #[c2rust::src_loc = "53:1"]
-        pub fn ec_encode_bin(
-            _this: *mut ec_enc,
-            _fl: libc::c_uint,
-            _fh: libc::c_uint,
-            _bits: libc::c_uint,
-        );
-    }
-}
-
-pub use self::entcode_h::{ec_ctx, ec_dec, ec_enc, ec_window};
-use self::entdec_h::{ec_dec_update, ec_decode_bin};
-use self::entenc_h::ec_encode_bin;
+use crate::celt::entdec::{ec_dec, ec_dec_update, ec_decode_bin};
+use crate::celt::entenc::{ec_enc, ec_encode_bin};
 
 #[c2rust::src_loc = "37:9"]
 pub const LAPLACE_LOG_MINP: libc::c_int = 0 as libc::c_int;
