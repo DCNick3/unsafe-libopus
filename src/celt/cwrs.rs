@@ -38,13 +38,6 @@ pub mod entcode_h {
     #[c2rust::src_loc = "48:1"]
     pub type ec_dec = ec_ctx;
 }
-#[c2rust::header_src = "/usr/include/stdlib.h:34"]
-pub mod stdlib_h {
-    extern "C" {
-        #[c2rust::src_loc = "861:12"]
-        pub fn abs(_: libc::c_int) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:35"]
 pub mod entenc_h {
     use super::entcode_h::ec_enc;
@@ -65,8 +58,6 @@ pub use self::arch_h::{celt_fatal, opus_val32};
 pub use self::entcode_h::{ec_ctx, ec_dec, ec_enc, ec_window};
 use self::entdec_h::ec_dec_uint;
 use self::entenc_h::ec_enc_uint;
-
-use self::stdlib_h::abs;
 
 #[c2rust::src_loc = "213:26"]
 static mut CELT_PVQ_U_DATA: [u32; 1272] = [
@@ -1359,14 +1350,14 @@ unsafe extern "C" fn icwrs(mut _n: libc::c_int, mut _y: *const libc::c_int) -> u
     }
     j = _n - 1 as libc::c_int;
     i = (*_y.offset(j as isize) < 0 as libc::c_int) as libc::c_int as u32;
-    k = abs(*_y.offset(j as isize));
+    k = (*_y.offset(j as isize)).abs();
     loop {
         j -= 1;
         i = (i as libc::c_uint).wrapping_add(
             *(CELT_PVQ_U_ROW[(if _n - j < k { _n - j } else { k }) as usize])
                 .offset((if _n - j > k { _n - j } else { k }) as isize),
         ) as u32 as u32;
-        k += abs(*_y.offset(j as isize));
+        k += (*_y.offset(j as isize)).abs();
         if *_y.offset(j as isize) < 0 as libc::c_int {
             i = (i as libc::c_uint).wrapping_add(
                 *(CELT_PVQ_U_ROW[(if _n - j < k + 1 as libc::c_int {

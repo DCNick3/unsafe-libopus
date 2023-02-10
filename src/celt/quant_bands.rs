@@ -178,13 +178,7 @@ pub mod entdec_h {
         pub fn ec_dec_bits(_this: *mut ec_dec, _ftb: libc::c_uint) -> u32;
     }
 }
-#[c2rust::header_src = "/usr/include/stdlib.h:33"]
-pub mod stdlib_h {
-    extern "C" {
-        #[c2rust::src_loc = "861:12"]
-        pub fn abs(_: libc::c_int) -> libc::c_int;
-    }
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/laplace.h:34"]
 pub mod laplace_h {
     use super::entcode_h::{ec_dec, ec_enc};
@@ -234,8 +228,6 @@ pub use self::mdct_h::mdct_lookup;
 pub use self::modes_h::{OpusCustomMode, PulseCache};
 pub use self::rate_h::MAX_FINE_BITS;
 pub use self::stack_alloc_h::ALLOC_NONE;
-
-use self::stdlib_h::abs;
 
 use crate::externs::memcpy;
 #[no_mangle]
@@ -826,7 +818,7 @@ unsafe extern "C" fn quant_coarse_energy_impl(
                 qi = -(1 as libc::c_int);
             }
             *error.offset((i + c * (*m).nbEBands) as isize) = f - qi as libc::c_float;
-            badness += abs(qi0 - qi);
+            badness += (qi0 - qi).abs();
             q = qi as opus_val32;
             tmp = coef * oldE + prev[c as usize] + q;
             *oldEBands.offset((i + c * (*m).nbEBands) as isize) = tmp;

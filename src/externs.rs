@@ -143,14 +143,6 @@ pub unsafe fn strncmp(
     }
 }
 
-pub fn abs(v: libc::c_int) -> libc::c_int {
-    if v < 0 {
-        -v
-    } else {
-        v
-    }
-}
-
 // macro_rules! __assert {
 //     (false $(,)?) => {
 //         $crate::externs::__assert_fail(stringify!(false), file!(), line!())

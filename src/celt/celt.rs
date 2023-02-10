@@ -19,16 +19,13 @@ pub mod arch_h {
     ) -> ! {
         let str = std::ffi::CStr::from_ptr(str);
         let file = std::ffi::CStr::from_ptr(file);
-        eprintln!(
+        panic!(
             "Fatal (internal) error in {}, line {}: {}",
             file.to_str().unwrap(),
             line,
             str.to_str().unwrap()
         );
-
-        abort();
     }
-    use super::stdlib_h::abort;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/kiss_fft.h:37"]
 pub mod kiss_fft_h {
@@ -106,13 +103,6 @@ pub mod modes_h {
     }
     use super::arch_h::opus_val16;
     use super::mdct_h::mdct_lookup;
-}
-#[c2rust::header_src = "/usr/include/stdlib.h:36"]
-pub mod stdlib_h {
-    extern "C" {
-        #[c2rust::src_loc = "611:13"]
-        pub fn abort() -> !;
-    }
 }
 pub use self::arch_h::{celt_fatal, opus_val16, opus_val32};
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};

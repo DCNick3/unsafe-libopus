@@ -227,13 +227,6 @@ pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
     pub const NULL: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/usr/include/stdlib.h:38"]
-pub mod stdlib_h {
-    extern "C" {
-        #[c2rust::src_loc = "861:12"]
-        pub fn abs(_: libc::c_int) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/celt_lpc.h:43"]
 pub mod celt_lpc_h {
     use super::arch_h::{opus_val16, opus_val32};
@@ -257,8 +250,6 @@ use self::celt_lpc_h::{_celt_autocorr, _celt_lpc};
 pub use self::entcode_h::celt_udiv;
 pub use self::pitch_h::{celt_inner_prod_c, celt_pitch_xcorr, dual_inner_prod_c, xcorr_kernel_c};
 pub use self::stddef_h::NULL;
-
-use self::stdlib_h::abs;
 
 #[c2rust::src_loc = "45:1"]
 unsafe extern "C" fn find_best_pitch(
@@ -547,8 +538,10 @@ pub unsafe extern "C" fn pitch_search(
     while i < max_pitch >> 1 as libc::c_int {
         let mut sum: opus_val32 = 0.;
         *xcorr.as_mut_ptr().offset(i as isize) = 0 as libc::c_int as opus_val32;
-        if !(abs(i - 2 as libc::c_int * best_pitch[0 as libc::c_int as usize]) > 2 as libc::c_int
-            && abs(i - 2 as libc::c_int * best_pitch[1 as libc::c_int as usize]) > 2 as libc::c_int)
+        if !((i - 2 as libc::c_int * best_pitch[0 as libc::c_int as usize]).abs()
+            > 2 as libc::c_int
+            && (i - 2 as libc::c_int * best_pitch[1 as libc::c_int as usize]).abs()
+                > 2 as libc::c_int)
         {
             sum = celt_inner_prod_c(x_lp, y.offset(i as isize), len >> 1 as libc::c_int);
             *xcorr.as_mut_ptr().offset(i as isize) = if -(1 as libc::c_int) as libc::c_float > sum {
@@ -721,9 +714,9 @@ pub unsafe extern "C" fn remove_doubling(
             * (*yy_lookup.as_mut_ptr().offset(T1 as isize)
                 + *yy_lookup.as_mut_ptr().offset(T1b as isize));
         g1 = compute_pitch_gain(xy, xx, yy);
-        if abs(T1 - prev_period) <= 1 as libc::c_int {
+        if (T1 - prev_period).abs() <= 1 as libc::c_int {
             cont = prev_gain;
-        } else if abs(T1 - prev_period) <= 2 as libc::c_int && 5 as libc::c_int * k * k < T0 {
+        } else if (T1 - prev_period).abs() <= 2 as libc::c_int && 5 as libc::c_int * k * k < T0 {
             cont = 0.5f32 * prev_gain;
         } else {
             cont = 0 as libc::c_int as opus_val16;
