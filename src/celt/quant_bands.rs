@@ -1,4 +1,6 @@
+use crate::celt::modes::OpusCustomMode;
 use ::libc;
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
@@ -7,40 +9,6 @@ pub mod arch_h {
     pub type opus_val32 = libc::c_float;
     #[c2rust::src_loc = "185:1"]
     pub type celt_ener = libc::c_float;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/modes.h:33"]
-pub mod modes_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "52:8"]
-    pub struct OpusCustomMode {
-        pub Fs: i32,
-        pub overlap: libc::c_int,
-        pub nbEBands: libc::c_int,
-        pub effEBands: libc::c_int,
-        pub preemph: [opus_val16; 4],
-        pub eBands: *const i16,
-        pub maxLM: libc::c_int,
-        pub nbShortMdcts: libc::c_int,
-        pub shortMdctSize: libc::c_int,
-        pub nbAllocVectors: libc::c_int,
-        pub allocVectors: *const libc::c_uchar,
-        pub logN: *const i16,
-        pub window: *const opus_val16,
-        pub mdct: mdct_lookup,
-        pub cache: PulseCache,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "42:9"]
-    pub struct PulseCache {
-        pub size: libc::c_int,
-        pub index: *const i16,
-        pub bits: *const libc::c_uchar,
-        pub caps: *const libc::c_uchar,
-    }
-    use super::arch_h::opus_val16;
-    use crate::celt::mdct::mdct_lookup;
 }
 
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:33"]
@@ -181,7 +149,6 @@ use self::entenc_h::{ec_enc_bit_logp, ec_enc_bits, ec_enc_icdf};
 pub use self::internal::__CHAR_BIT__;
 use self::laplace_h::{ec_laplace_decode, ec_laplace_encode};
 pub use self::limits_h::CHAR_BIT;
-pub use self::modes_h::{OpusCustomMode, PulseCache};
 pub use self::rate_h::MAX_FINE_BITS;
 pub use self::stack_alloc_h::ALLOC_NONE;
 

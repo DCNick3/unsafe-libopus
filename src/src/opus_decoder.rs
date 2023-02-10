@@ -23,53 +23,6 @@ pub mod stdarg_h {
     pub type va_list = __builtin_va_list;
     use super::internal::__builtin_va_list;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_custom.h:41"]
-pub mod opus_custom_h {
-    extern "C" {
-        #[c2rust::src_loc = "102:16"]
-        pub type OpusCustomDecoder;
-        #[c2rust::src_loc = "334:20"]
-        pub fn opus_custom_decoder_ctl(
-            st: *mut OpusCustomDecoder,
-            request: libc::c_int,
-            _: ...
-        ) -> libc::c_int;
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/modes.h:44"]
-pub mod modes_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "52:8"]
-    pub struct OpusCustomMode {
-        pub Fs: i32,
-        pub overlap: libc::c_int,
-        pub nbEBands: libc::c_int,
-        pub effEBands: libc::c_int,
-        pub preemph: [opus_val16; 4],
-        pub eBands: *const i16,
-        pub maxLM: libc::c_int,
-        pub nbShortMdcts: libc::c_int,
-        pub shortMdctSize: libc::c_int,
-        pub nbAllocVectors: libc::c_int,
-        pub allocVectors: *const libc::c_uchar,
-        pub logN: *const i16,
-        pub window: *const opus_val16,
-        pub mdct: mdct_lookup,
-        pub cache: PulseCache,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "42:9"]
-    pub struct PulseCache {
-        pub size: libc::c_int,
-        pub index: *const i16,
-        pub bits: *const libc::c_uchar,
-        pub caps: *const libc::c_uchar,
-    }
-    use super::arch_h::opus_val16;
-    use crate::celt::mdct::mdct_lookup;
-}
 
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:41"]
 pub mod arch_h {
@@ -244,9 +197,10 @@ pub mod celt_h {
     ) -> libc::c_int = opus_custom_decoder_ctl;
     #[c2rust::src_loc = "114:9"]
     pub const CELT_SET_SIGNALLING_REQUEST: libc::c_int = 10016 as libc::c_int;
+
     use super::arch_h::opus_val16;
     use super::entcode_h::ec_dec;
-    use super::opus_custom_h::{opus_custom_decoder_ctl, OpusCustomDecoder};
+    use crate::celt::celt_decoder::{opus_custom_decoder_ctl, OpusCustomDecoder};
     extern "C" {
         #[c2rust::src_loc = "152:1"]
         pub fn celt_decode_with_ec(
@@ -370,8 +324,6 @@ pub use self::entcode_h::{ec_ctx, ec_dec, ec_tell, ec_window};
 use self::entdec_h::{ec_dec_bit_logp, ec_dec_init, ec_dec_uint};
 pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
 pub use self::limits_h::CHAR_BIT;
-pub use self::modes_h::{OpusCustomMode, PulseCache};
-use self::opus_custom_h::{opus_custom_decoder_ctl, OpusCustomDecoder};
 pub use self::opus_defines_h::{
     OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_BANDWIDTH_FULLBAND, OPUS_BANDWIDTH_MEDIUMBAND,
     OPUS_BANDWIDTH_NARROWBAND, OPUS_BANDWIDTH_SUPERWIDEBAND, OPUS_BANDWIDTH_WIDEBAND,
@@ -393,6 +345,8 @@ pub use self::cpu_support_h::opus_select_arch;
 pub use self::float_cast_h::{float2int, FLOAT2INT16};
 pub use self::stack_alloc_h::{_opus_false, ALLOC_NONE};
 use self::API_h::{silk_Decode, silk_Get_Decoder_Size, silk_InitDecoder};
+use crate::celt::celt_decoder::{opus_custom_decoder_ctl, OpusCustomDecoder};
+use crate::celt::modes::OpusCustomMode;
 use crate::externs::memset;
 use crate::{opus_packet_get_samples_per_frame, opus_pcm_soft_clip};
 

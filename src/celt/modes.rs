@@ -29,6 +29,7 @@ pub struct PulseCache {
     pub bits: *const libc::c_uchar,
     pub caps: *const libc::c_uchar,
 }
+pub const MAX_PERIOD: libc::c_int = 1024;
 
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:34"]
 pub mod arch_h {

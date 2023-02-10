@@ -18,41 +18,6 @@ pub mod arch_h {
     #[c2rust::src_loc = "207:9"]
     pub const EPSILON: libc::c_float = 1e-15f32;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/modes.h:35"]
-pub mod modes_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "52:8"]
-    pub struct OpusCustomMode {
-        pub Fs: i32,
-        pub overlap: libc::c_int,
-        pub nbEBands: libc::c_int,
-        pub effEBands: libc::c_int,
-        pub preemph: [opus_val16; 4],
-        pub eBands: *const i16,
-        pub maxLM: libc::c_int,
-        pub nbShortMdcts: libc::c_int,
-        pub shortMdctSize: libc::c_int,
-        pub nbAllocVectors: libc::c_int,
-        pub allocVectors: *const libc::c_uchar,
-        pub logN: *const i16,
-        pub window: *const opus_val16,
-        pub mdct: mdct_lookup,
-        pub cache: PulseCache,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "42:9"]
-    pub struct PulseCache {
-        pub size: libc::c_int,
-        pub index: *const i16,
-        pub bits: *const libc::c_uchar,
-        pub caps: *const libc::c_uchar,
-    }
-
-    use super::arch_h::opus_val16;
-    use crate::celt::mdct::mdct_lookup;
-}
 
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:35"]
 pub mod entcode_h {
@@ -151,6 +116,8 @@ pub mod entdec_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/rate.h:35"]
 pub mod rate_h {
+    use crate::celt::modes::OpusCustomMode;
+
     #[inline]
     #[c2rust::src_loc = "48:1"]
     pub unsafe extern "C" fn get_pulses(i: libc::c_int) -> libc::c_int {
@@ -229,7 +196,6 @@ pub mod rate_h {
     pub const QTHETA_OFFSET_TWOPHASE: libc::c_int = 16 as libc::c_int;
     #[c2rust::src_loc = "40:9"]
     pub const QTHETA_OFFSET: libc::c_int = 4 as libc::c_int;
-    use super::modes_h::OpusCustomMode;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/bands.h:35"]
 pub mod bands_h {
@@ -371,7 +337,6 @@ use self::entenc_h::{ec_enc_bit_logp, ec_enc_bits, ec_enc_uint, ec_encode};
 pub use self::internal::__CHAR_BIT__;
 pub use self::limits_h::CHAR_BIT;
 use self::mathops_h::isqrt32;
-pub use self::modes_h::{OpusCustomMode, PulseCache};
 pub use self::pitch_h::{celt_inner_prod_c, dual_inner_prod_c};
 use self::quant_bands_h::eMeans;
 pub use self::rate_h::{
@@ -380,6 +345,7 @@ pub use self::rate_h::{
 pub use self::stack_alloc_h::ALLOC_NONE;
 pub use self::stddef_h::NULL;
 use crate::celt::celt::celt_fatal;
+use crate::celt::modes::OpusCustomMode;
 
 use self::vq_h::{alg_quant, alg_unquant, renormalise_vector, stereo_itheta};
 use crate::externs::{memcpy, memset};

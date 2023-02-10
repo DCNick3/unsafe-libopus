@@ -23,19 +23,6 @@ pub mod stdarg_h {
     pub type va_list = __builtin_va_list;
     use super::internal::__builtin_va_list;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_custom.h:33"]
-pub mod opus_custom_h {
-    extern "C" {
-        #[c2rust::src_loc = "95:16"]
-        pub type OpusCustomEncoder;
-        #[c2rust::src_loc = "238:20"]
-        pub fn opus_custom_encoder_ctl(
-            st: *mut OpusCustomEncoder,
-            request: libc::c_int,
-            _: ...
-        ) -> libc::c_int;
-    }
-}
 
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
 pub mod arch_h {
@@ -124,9 +111,10 @@ pub mod celt_h {
         libc::c_int,
         ...
     ) -> libc::c_int = opus_custom_encoder_ctl;
+
     use super::arch_h::opus_val16;
     use super::entcode_h::ec_enc;
-    use super::opus_custom_h::{opus_custom_encoder_ctl, OpusCustomEncoder};
+    use crate::celt::celt_encoder::{opus_custom_encoder_ctl, OpusCustomEncoder};
     extern "C" {
         #[c2rust::src_loc = "140:1"]
         pub fn celt_encoder_init(
@@ -771,7 +759,6 @@ pub use self::entcode_h::{ec_ctx, ec_enc, ec_tell, ec_window};
 use self::entenc_h::{ec_enc_bit_logp, ec_enc_done, ec_enc_init, ec_enc_shrink, ec_enc_uint};
 pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
 pub use self::limits_h::CHAR_BIT;
-use self::opus_custom_h::{opus_custom_encoder_ctl, OpusCustomEncoder};
 pub use self::opus_defines_h::{
     OPUS_ALLOC_FAIL, OPUS_APPLICATION_AUDIO, OPUS_APPLICATION_RESTRICTED_LOWDELAY,
     OPUS_APPLICATION_VOIP, OPUS_AUTO, OPUS_BAD_ARG, OPUS_BANDWIDTH_FULLBAND,
@@ -821,6 +808,7 @@ pub use self::mathops_h::celt_maxabs16;
 pub use self::pitch_h::celt_inner_prod_c;
 use self::API_h::{silk_Encode, silk_Get_Encoder_Size, silk_InitEncoder};
 use self::SigProc_FIX_h::{silk_lin2log, silk_log2lin};
+use crate::celt::celt_encoder::{opus_custom_encoder_ctl, OpusCustomEncoder};
 use crate::celt::modes::OpusCustomMode;
 use crate::externs::{memcpy, memmove, memset};
 use crate::src::analysis::{

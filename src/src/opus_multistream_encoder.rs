@@ -171,40 +171,6 @@ pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
     pub const NULL: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/modes.h:41"]
-pub mod modes_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "52:8"]
-    pub struct OpusCustomMode {
-        pub Fs: i32,
-        pub overlap: libc::c_int,
-        pub nbEBands: libc::c_int,
-        pub effEBands: libc::c_int,
-        pub preemph: [opus_val16; 4],
-        pub eBands: *const i16,
-        pub maxLM: libc::c_int,
-        pub nbShortMdcts: libc::c_int,
-        pub shortMdctSize: libc::c_int,
-        pub nbAllocVectors: libc::c_int,
-        pub allocVectors: *const libc::c_uchar,
-        pub logN: *const i16,
-        pub window: *const opus_val16,
-        pub mdct: mdct_lookup,
-        pub cache: PulseCache,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "42:9"]
-    pub struct PulseCache {
-        pub size: libc::c_int,
-        pub index: *const i16,
-        pub bits: *const libc::c_uchar,
-        pub caps: *const libc::c_uchar,
-    }
-    use super::arch_h::opus_val16;
-    use crate::celt::mdct::mdct_lookup;
-}
 
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stdarg.h:34"]
 pub mod stdarg_h {
@@ -351,7 +317,7 @@ pub mod cpu_support_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/bands.h:42"]
 pub mod bands_h {
     use super::arch_h::{celt_ener, celt_sig};
-    use super::modes_h::OpusCustomMode;
+    use crate::celt::modes::OpusCustomMode;
     extern "C" {
         #[c2rust::src_loc = "47:1"]
         pub fn compute_band_energies(
@@ -368,7 +334,7 @@ pub mod bands_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/quant_bands.h:43"]
 pub mod quant_bands_h {
     use super::arch_h::{celt_ener, opus_val16};
-    use super::modes_h::OpusCustomMode;
+    use crate::celt::modes::OpusCustomMode;
     extern "C" {
         #[c2rust::src_loc = "44:1"]
         pub fn amp2Log2(
@@ -407,7 +373,6 @@ pub use self::celt_h::{
     OPUS_SET_LFE_REQUEST,
 };
 pub use self::internal::{__builtin_va_list, __va_list_tag};
-pub use self::modes_h::{OpusCustomMode, PulseCache};
 pub use self::opus_defines_h::{
     OPUS_ALLOC_FAIL, OPUS_AUTO, OPUS_BAD_ARG, OPUS_BITRATE_MAX, OPUS_BUFFER_TOO_SMALL,
     OPUS_FRAMESIZE_ARG, OPUS_GET_APPLICATION_REQUEST, OPUS_GET_BANDWIDTH_REQUEST,
@@ -444,6 +409,7 @@ use self::mathops_h::isqrt32;
 pub use self::pitch_h::celt_inner_prod_c;
 use self::quant_bands_h::amp2Log2;
 use crate::celt::mdct::clt_mdct_forward_c;
+use crate::celt::modes::OpusCustomMode;
 use crate::externs::{memcpy, memset};
 use crate::src::analysis::downmix_func;
 use crate::{

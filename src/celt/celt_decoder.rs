@@ -41,43 +41,6 @@ pub mod arch_h {
     pub const CELT_SIG_SCALE: libc::c_float = 32768.0f32;
 }
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/modes.h:41"]
-pub mod modes_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "52:8"]
-    pub struct OpusCustomMode {
-        pub Fs: i32,
-        pub overlap: libc::c_int,
-        pub nbEBands: libc::c_int,
-        pub effEBands: libc::c_int,
-        pub preemph: [opus_val16; 4],
-        pub eBands: *const i16,
-        pub maxLM: libc::c_int,
-        pub nbShortMdcts: libc::c_int,
-        pub shortMdctSize: libc::c_int,
-        pub nbAllocVectors: libc::c_int,
-        pub allocVectors: *const libc::c_uchar,
-        pub logN: *const i16,
-        pub window: *const opus_val16,
-        pub mdct: mdct_lookup,
-        pub cache: PulseCache,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "42:9"]
-    pub struct PulseCache {
-        pub size: libc::c_int,
-        pub index: *const i16,
-        pub bits: *const libc::c_uchar,
-        pub caps: *const libc::c_uchar,
-    }
-    #[c2rust::src_loc = "40:9"]
-    pub const MAX_PERIOD: libc::c_int = 1024 as libc::c_int;
-
-    use super::arch_h::opus_val16;
-    use crate::celt::mdct::mdct_lookup;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:40"]
 pub mod entcode_h {
     #[c2rust::src_loc = "45:1"]
@@ -219,8 +182,9 @@ pub mod celt_h {
         2 as libc::c_int as libc::c_uchar,
         0 as libc::c_int as libc::c_uchar,
     ];
+
     use super::arch_h::{opus_val16, opus_val32};
-    use super::modes_h::OpusCustomMode;
+    use crate::celt::modes::OpusCustomMode;
     extern "C" {
         #[c2rust::src_loc = "210:26"]
         pub static tf_select_table: [[libc::c_schar; 8]; 4];
@@ -263,18 +227,6 @@ pub mod ecintrin_h {
         ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_custom.h:40"]
-pub mod opus_custom_h {
-    use super::modes_h::OpusCustomMode;
-    extern "C" {
-        #[c2rust::src_loc = "121:20"]
-        pub fn opus_custom_mode_create(
-            Fs: i32,
-            frame_size: libc::c_int,
-            error: *mut libc::c_int,
-        ) -> *mut OpusCustomMode;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/pitch.h:41"]
 pub mod pitch_h {
     use super::arch_h::{celt_sig, opus_val16};
@@ -302,9 +254,10 @@ pub mod pitch_h {
 pub mod bands_h {
     #[c2rust::src_loc = "70:9"]
     pub const SPREAD_NORMAL: libc::c_int = 2 as libc::c_int;
+
     use super::arch_h::{celt_ener, celt_norm, celt_sig, opus_val16};
     use super::entcode_h::ec_ctx;
-    use super::modes_h::OpusCustomMode;
+    use crate::celt::modes::OpusCustomMode;
     extern "C" {
         #[c2rust::src_loc = "64:1"]
         pub fn denormalise_bands(
@@ -368,7 +321,7 @@ pub mod bands_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/rate.h:42"]
 pub mod rate_h {
     use super::entcode_h::ec_ctx;
-    use super::modes_h::OpusCustomMode;
+    use crate::celt::modes::OpusCustomMode;
     extern "C" {
         #[c2rust::src_loc = "98:1"]
         pub fn clt_compute_allocation(
@@ -398,7 +351,7 @@ pub mod rate_h {
 pub mod quant_bands_h {
     use super::arch_h::opus_val16;
     use super::entcode_h::ec_dec;
-    use super::modes_h::OpusCustomMode;
+    use crate::celt::modes::OpusCustomMode;
     extern "C" {
         #[c2rust::src_loc = "62:1"]
         pub fn unquant_fine_energy(
@@ -505,8 +458,6 @@ pub use self::entcode_h::{ec_ctx, ec_dec, ec_get_error, ec_tell, ec_tell_frac, e
 use self::entdec_h::{ec_dec_bit_logp, ec_dec_bits, ec_dec_icdf, ec_dec_init, ec_dec_uint};
 pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
 pub use self::limits_h::CHAR_BIT;
-pub use self::modes_h::{OpusCustomMode, PulseCache, MAX_PERIOD};
-use self::opus_custom_h::opus_custom_mode_create;
 pub use self::opus_defines_h::{
     OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_GET_FINAL_RANGE_REQUEST, OPUS_GET_LOOKAHEAD_REQUEST,
     OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_GET_PITCH_REQUEST, OPUS_INTERNAL_ERROR,
@@ -519,6 +470,7 @@ pub use self::stdarg_h::va_list;
 pub use self::stddef_h::NULL;
 use crate::celt::celt::celt_fatal;
 use crate::celt::mdct::clt_mdct_backward_c;
+use crate::celt::modes::{opus_custom_mode_create, OpusCustomMode, MAX_PERIOD};
 
 use self::vq_h::renormalise_vector;
 use crate::externs::{memcpy, memmove, memset};
