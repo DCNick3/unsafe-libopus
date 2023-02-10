@@ -1,0 +1,244 @@
+use ::libc;
+#[c2rust::header_src = "/usr/include/bits/types.h:38"]
+pub mod types_h {
+    #[c2rust::src_loc = "39:1"]
+    pub type __int16_t = libc::c_short;
+    #[c2rust::src_loc = "41:1"]
+    pub type __int32_t = libc::c_int;
+    #[c2rust::src_loc = "42:1"]
+    pub type __uint32_t = libc::c_uint;
+    #[c2rust::src_loc = "44:1"]
+    pub type __int64_t = libc::c_long;
+}
+#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:38"]
+pub mod stdint_intn_h {
+    #[c2rust::src_loc = "25:1"]
+    pub type int16_t = __int16_t;
+    #[c2rust::src_loc = "26:1"]
+    pub type int32_t = __int32_t;
+    #[c2rust::src_loc = "27:1"]
+    pub type int64_t = __int64_t;
+    use super::types_h::{__int16_t, __int32_t, __int64_t};
+}
+#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:38"]
+pub mod stdint_uintn_h {
+    #[c2rust::src_loc = "26:1"]
+    pub type uint32_t = __uint32_t;
+    use super::types_h::__uint32_t;
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:38"]
+pub mod opus_types_h {
+    #[c2rust::src_loc = "53:4"]
+    pub type opus_int16 = int16_t;
+    #[c2rust::src_loc = "55:4"]
+    pub type opus_int32 = int32_t;
+    #[c2rust::src_loc = "56:4"]
+    pub type opus_uint32 = uint32_t;
+    #[c2rust::src_loc = "57:4"]
+    pub type opus_int64 = int64_t;
+    use super::stdint_intn_h::{int16_t, int32_t, int64_t};
+    use super::stdint_uintn_h::uint32_t;
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:38"]
+pub mod structs_h {
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "77:9"]
+    pub struct silk_LP_state {
+        pub In_LP_State: [opus_int32; 2],
+        pub transition_frame_no: opus_int32,
+        pub mode: libc::c_int,
+        pub saved_fs_kHz: opus_int32,
+    }
+    use super::opus_types_h::opus_int32;
+}
+#[c2rust::header_src = "/usr/include/string.h:38"]
+pub mod string_h {
+    extern "C" {
+        #[c2rust::src_loc = "43:14"]
+        pub fn memcpy(
+            _: *mut libc::c_void,
+            _: *const libc::c_void,
+            _: libc::c_ulong,
+        ) -> *mut libc::c_void;
+    }
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:38"]
+pub mod SigProc_FIX_h {
+    use super::opus_types_h::{opus_int16, opus_int32};
+    extern "C" {
+        #[c2rust::src_loc = "104:1"]
+        pub fn silk_biquad_alt_stride1(
+            in_0: *const opus_int16,
+            B_Q28: *const opus_int32,
+            A_Q28: *const opus_int32,
+            S: *mut opus_int32,
+            out: *mut opus_int16,
+            len: opus_int32,
+        );
+    }
+}
+#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:38"]
+pub mod tables_h {
+    use super::opus_types_h::opus_int32;
+    extern "C" {
+        #[c2rust::src_loc = "104:26"]
+        pub static silk_Transition_LP_B_Q28: [[opus_int32; 3]; 5];
+        #[c2rust::src_loc = "105:26"]
+        pub static silk_Transition_LP_A_Q28: [[opus_int32; 2]; 5];
+    }
+}
+pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
+pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
+pub use self::stdint_uintn_h::uint32_t;
+use self::string_h::memcpy;
+pub use self::structs_h::silk_LP_state;
+use self::tables_h::{silk_Transition_LP_A_Q28, silk_Transition_LP_B_Q28};
+pub use self::types_h::{__int16_t, __int32_t, __int64_t, __uint32_t};
+use self::SigProc_FIX_h::silk_biquad_alt_stride1;
+#[inline]
+#[c2rust::src_loc = "41:1"]
+unsafe extern "C" fn silk_LP_interpolate_filter_taps(
+    mut B_Q28: *mut opus_int32,
+    mut A_Q28: *mut opus_int32,
+    ind: libc::c_int,
+    fac_Q16: opus_int32,
+) {
+    let mut nb: libc::c_int = 0;
+    let mut na: libc::c_int = 0;
+    if ind < 5 as libc::c_int - 1 as libc::c_int {
+        if fac_Q16 > 0 as libc::c_int {
+            if fac_Q16 < 32768 as libc::c_int {
+                nb = 0 as libc::c_int;
+                while nb < 3 as libc::c_int {
+                    *B_Q28.offset(nb as isize) =
+                        (silk_Transition_LP_B_Q28[ind as usize][nb as usize] as libc::c_long
+                            + ((silk_Transition_LP_B_Q28[(ind + 1 as libc::c_int) as usize]
+                                [nb as usize]
+                                - silk_Transition_LP_B_Q28[ind as usize][nb as usize])
+                                as libc::c_long
+                                * fac_Q16 as opus_int16 as opus_int64
+                                >> 16 as libc::c_int)) as opus_int32;
+                    nb += 1;
+                }
+                na = 0 as libc::c_int;
+                while na < 2 as libc::c_int {
+                    *A_Q28.offset(na as isize) =
+                        (silk_Transition_LP_A_Q28[ind as usize][na as usize] as libc::c_long
+                            + ((silk_Transition_LP_A_Q28[(ind + 1 as libc::c_int) as usize]
+                                [na as usize]
+                                - silk_Transition_LP_A_Q28[ind as usize][na as usize])
+                                as libc::c_long
+                                * fac_Q16 as opus_int16 as opus_int64
+                                >> 16 as libc::c_int)) as opus_int32;
+                    na += 1;
+                }
+            } else {
+                nb = 0 as libc::c_int;
+                while nb < 3 as libc::c_int {
+                    *B_Q28.offset(nb as isize) =
+                        (silk_Transition_LP_B_Q28[(ind + 1 as libc::c_int) as usize][nb as usize]
+                            as libc::c_long
+                            + ((silk_Transition_LP_B_Q28[(ind + 1 as libc::c_int) as usize]
+                                [nb as usize]
+                                - silk_Transition_LP_B_Q28[ind as usize][nb as usize])
+                                as libc::c_long
+                                * (fac_Q16 - ((1 as libc::c_int) << 16 as libc::c_int))
+                                    as opus_int16 as opus_int64
+                                >> 16 as libc::c_int)) as opus_int32;
+                    nb += 1;
+                }
+                na = 0 as libc::c_int;
+                while na < 2 as libc::c_int {
+                    *A_Q28.offset(na as isize) =
+                        (silk_Transition_LP_A_Q28[(ind + 1 as libc::c_int) as usize][na as usize]
+                            as libc::c_long
+                            + ((silk_Transition_LP_A_Q28[(ind + 1 as libc::c_int) as usize]
+                                [na as usize]
+                                - silk_Transition_LP_A_Q28[ind as usize][na as usize])
+                                as libc::c_long
+                                * (fac_Q16 - ((1 as libc::c_int) << 16 as libc::c_int))
+                                    as opus_int16 as opus_int64
+                                >> 16 as libc::c_int)) as opus_int32;
+                    na += 1;
+                }
+            }
+        } else {
+            memcpy(
+                B_Q28 as *mut libc::c_void,
+                (silk_Transition_LP_B_Q28[ind as usize]).as_ptr() as *const libc::c_void,
+                (3 as libc::c_int as libc::c_ulong)
+                    .wrapping_mul(::core::mem::size_of::<opus_int32>() as libc::c_ulong),
+            );
+            memcpy(
+                A_Q28 as *mut libc::c_void,
+                (silk_Transition_LP_A_Q28[ind as usize]).as_ptr() as *const libc::c_void,
+                (2 as libc::c_int as libc::c_ulong)
+                    .wrapping_mul(::core::mem::size_of::<opus_int32>() as libc::c_ulong),
+            );
+        }
+    } else {
+        memcpy(
+            B_Q28 as *mut libc::c_void,
+            (silk_Transition_LP_B_Q28[(5 as libc::c_int - 1 as libc::c_int) as usize]).as_ptr()
+                as *const libc::c_void,
+            (3 as libc::c_int as libc::c_ulong)
+                .wrapping_mul(::core::mem::size_of::<opus_int32>() as libc::c_ulong),
+        );
+        memcpy(
+            A_Q28 as *mut libc::c_void,
+            (silk_Transition_LP_A_Q28[(5 as libc::c_int - 1 as libc::c_int) as usize]).as_ptr()
+                as *const libc::c_void,
+            (2 as libc::c_int as libc::c_ulong)
+                .wrapping_mul(::core::mem::size_of::<opus_int32>() as libc::c_ulong),
+        );
+    };
+}
+#[no_mangle]
+#[c2rust::src_loc = "100:1"]
+pub unsafe extern "C" fn silk_LP_variable_cutoff(
+    mut psLP: *mut silk_LP_state,
+    mut frame: *mut opus_int16,
+    frame_length: libc::c_int,
+) {
+    let mut B_Q28: [opus_int32; 3] = [0; 3];
+    let mut A_Q28: [opus_int32; 2] = [0; 2];
+    let mut fac_Q16: opus_int32 = 0 as libc::c_int;
+    let mut ind: libc::c_int = 0 as libc::c_int;
+    if (*psLP).mode != 0 as libc::c_int {
+        fac_Q16 = (((5120 as libc::c_int / (5 as libc::c_int * 4 as libc::c_int)
+            - (*psLP).transition_frame_no) as opus_uint32)
+            << 16 as libc::c_int - 6 as libc::c_int) as opus_int32;
+        ind = fac_Q16 >> 16 as libc::c_int;
+        fac_Q16 -= ((ind as opus_uint32) << 16 as libc::c_int) as opus_int32;
+        silk_LP_interpolate_filter_taps(B_Q28.as_mut_ptr(), A_Q28.as_mut_ptr(), ind, fac_Q16);
+        (*psLP).transition_frame_no =
+            if 0 as libc::c_int > 5120 as libc::c_int / (5 as libc::c_int * 4 as libc::c_int) {
+                if (*psLP).transition_frame_no + (*psLP).mode > 0 as libc::c_int {
+                    0 as libc::c_int
+                } else if (*psLP).transition_frame_no + (*psLP).mode
+                    < 5120 as libc::c_int / (5 as libc::c_int * 4 as libc::c_int)
+                {
+                    5120 as libc::c_int / (5 as libc::c_int * 4 as libc::c_int)
+                } else {
+                    (*psLP).transition_frame_no + (*psLP).mode
+                }
+            } else if (*psLP).transition_frame_no + (*psLP).mode
+                > 5120 as libc::c_int / (5 as libc::c_int * 4 as libc::c_int)
+            {
+                5120 as libc::c_int / (5 as libc::c_int * 4 as libc::c_int)
+            } else if (*psLP).transition_frame_no + (*psLP).mode < 0 as libc::c_int {
+                0 as libc::c_int
+            } else {
+                (*psLP).transition_frame_no + (*psLP).mode
+            };
+        silk_biquad_alt_stride1(
+            frame,
+            B_Q28.as_mut_ptr(),
+            A_Q28.as_mut_ptr(),
+            ((*psLP).In_LP_State).as_mut_ptr(),
+            frame,
+            frame_length,
+        );
+    }
+}
