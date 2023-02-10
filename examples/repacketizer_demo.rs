@@ -140,11 +140,11 @@ pub mod stdlib_h {
     #[inline]
     #[c2rust::src_loc = "361:1"]
     pub unsafe extern "C" fn atoi(mut __nptr: *const libc::c_char) -> libc::c_int {
-        return strtol(
+        strtol(
             __nptr,
-            0 as *mut libc::c_void as *mut *mut libc::c_char,
+            std::ptr::null_mut::<libc::c_void>() as *mut *mut libc::c_char,
             10 as libc::c_int,
-        ) as libc::c_int;
+        ) as libc::c_int
     }
     extern "C" {
         #[c2rust::src_loc = "177:17"]
@@ -193,21 +193,21 @@ unsafe extern "C" fn int_to_char(mut i: opus_uint32, mut ch: *mut libc::c_uchar)
 }
 #[c2rust::src_loc = "52:1"]
 unsafe extern "C" fn char_to_int(mut ch: *mut libc::c_uchar) -> opus_uint32 {
-    return (*ch.offset(0 as libc::c_int as isize) as opus_uint32) << 24 as libc::c_int
+    (*ch.offset(0 as libc::c_int as isize) as opus_uint32) << 24 as libc::c_int
         | (*ch.offset(1 as libc::c_int as isize) as opus_uint32) << 16 as libc::c_int
         | (*ch.offset(2 as libc::c_int as isize) as opus_uint32) << 8 as libc::c_int
-        | *ch.offset(3 as libc::c_int as isize) as opus_uint32;
+        | *ch.offset(3 as libc::c_int as isize) as opus_uint32
 }
 #[c2rust::src_loc = "58:1"]
 unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> libc::c_int {
     let mut i: libc::c_int = 0;
     let mut eof: libc::c_int = 0 as libc::c_int;
-    let mut fin: *mut FILE = 0 as *mut FILE;
-    let mut fout: *mut FILE = 0 as *mut FILE;
+    let mut fin: *mut FILE = std::ptr::null_mut::<FILE>();
+    let mut fout: *mut FILE = std::ptr::null_mut::<FILE>();
     let mut packets: [[libc::c_uchar; 1500]; 48] = [[0; 1500]; 48];
     let mut len: [libc::c_int; 48] = [0; 48];
     let mut rng: [libc::c_int; 48] = [0; 48];
-    let mut rp: *mut OpusRepacketizer = 0 as *mut OpusRepacketizer;
+    let mut rp: *mut OpusRepacketizer = std::ptr::null_mut::<OpusRepacketizer>();
     let mut output_packet: [libc::c_uchar; 32000] = [0; 32000];
     let mut merge: libc::c_int = 1 as libc::c_int;
     let mut split: libc::c_int = 0 as libc::c_int;
@@ -480,7 +480,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
     }
     fclose(fin);
     fclose(fout);
-    return 0 as libc::c_int;
+    0 as libc::c_int
 }
 pub fn main() {
     let mut args: Vec<*mut libc::c_char> = Vec::new();
