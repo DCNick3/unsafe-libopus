@@ -100,17 +100,6 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     use super::types_h::__uint32_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:35"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "53:4"]
-    pub type opus_int16 = int16_t;
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    #[c2rust::src_loc = "56:4"]
-    pub type opus_uint32 = uint32_t;
-    use super::stdint_intn_h::{int16_t, int32_t};
-    use super::stdint_uintn_h::uint32_t;
-}
 #[c2rust::header_src = "/usr/include/stdio.h:32"]
 pub mod stdio_h {
     use super::FILE_h::FILE;
@@ -142,7 +131,7 @@ pub mod string_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/tests/test_opus_common.h:36"]
 pub mod test_opus_common_h {
     #[c2rust::src_loc = "63:20"]
-    pub static mut iseed: opus_uint32 = 0;
+    pub static mut iseed: u32 = 0;
     #[inline]
     #[c2rust::src_loc = "66:1"]
     pub unsafe extern "C" fn _test_failed(
@@ -185,12 +174,10 @@ pub mod test_opus_common_h {
         abort();
     }
 
-    use super::opus_types_h::opus_uint32;
     use super::stdio_h::{fprintf, stderr};
     use super::stdlib_h::abort;
     use libopus_unsafe::opus_get_version_string;
 }
-pub use self::opus_types_h::{opus_int16, opus_uint32};
 use self::stdio_h::{fprintf, stderr};
 use self::stdlib_h::{free, malloc};
 use self::string_h::memset;
@@ -206,10 +193,10 @@ pub unsafe extern "C" fn test_overflow() -> libc::c_int {
     let mut error: libc::c_int = 0;
     let mut in_0: *mut libc::c_uchar =
         malloc(16909318 as libc::c_int as libc::c_ulong) as *mut libc::c_uchar;
-    let mut out: *mut opus_int16 = malloc(
+    let mut out: *mut i16 = malloc(
         ((5760 as libc::c_int * 2 as libc::c_int) as libc::c_ulong)
-            .wrapping_mul(::core::mem::size_of::<opus_int16>() as libc::c_ulong),
-    ) as *mut opus_int16;
+            .wrapping_mul(::core::mem::size_of::<i16>() as libc::c_ulong),
+    ) as *mut i16;
     fprintf(
         stderr,
         b"  Checking for padding overflow... \0" as *const u8 as *const libc::c_char,
@@ -256,7 +243,7 @@ pub unsafe extern "C" fn test_overflow() -> libc::c_int {
 unsafe fn main_0() -> libc::c_int {
     let mut oversion: *const libc::c_char = std::ptr::null::<libc::c_char>();
     let mut tests: libc::c_int = 0 as libc::c_int;
-    iseed = 0 as libc::c_int as opus_uint32;
+    iseed = 0 as libc::c_int as u32;
     oversion = opus_get_version_string();
     if oversion.is_null() {
         _test_failed(

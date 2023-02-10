@@ -26,48 +26,34 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     use super::types_h::__uint8_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "51:4"]
-    pub type opus_int8 = int8_t;
-    #[c2rust::src_loc = "52:4"]
-    pub type opus_uint8 = uint8_t;
-    #[c2rust::src_loc = "53:4"]
-    pub type opus_int16 = int16_t;
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::{int16_t, int32_t, int8_t};
-    use super::stdint_uintn_h::uint8_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:32"]
 pub mod resampler_structs_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "38:16"]
     pub struct _silk_resampler_state_struct {
-        pub sIIR: [opus_int32; 6],
+        pub sIIR: [i32; 6],
         pub sFIR: C2RustUnnamed,
-        pub delayBuf: [opus_int16; 48],
+        pub delayBuf: [i16; 48],
         pub resampler_function: libc::c_int,
         pub batchSize: libc::c_int,
-        pub invRatio_Q16: opus_int32,
+        pub invRatio_Q16: i32,
         pub FIR_Order: libc::c_int,
         pub FIR_Fracs: libc::c_int,
         pub Fs_in_kHz: libc::c_int,
         pub Fs_out_kHz: libc::c_int,
         pub inputDelay: libc::c_int,
-        pub Coefs: *const opus_int16,
+        pub Coefs: *const i16,
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "40:5"]
     pub union C2RustUnnamed {
-        pub i32_0: [opus_int32; 36],
-        pub i16_0: [opus_int16; 36],
+        pub i32_0: [i32; 36],
+        pub i16_0: [i16; 36],
     }
     #[c2rust::src_loc = "38:1"]
     pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
 pub mod structs_h {
@@ -75,49 +61,49 @@ pub mod structs_h {
     #[repr(C)]
     #[c2rust::src_loc = "85:9"]
     pub struct silk_NLSF_CB_struct {
-        pub nVectors: opus_int16,
-        pub order: opus_int16,
-        pub quantStepSize_Q16: opus_int16,
-        pub invQuantStepSize_Q6: opus_int16,
-        pub CB1_NLSF_Q8: *const opus_uint8,
-        pub CB1_Wght_Q9: *const opus_int16,
-        pub CB1_iCDF: *const opus_uint8,
-        pub pred_Q8: *const opus_uint8,
-        pub ec_sel: *const opus_uint8,
-        pub ec_iCDF: *const opus_uint8,
-        pub ec_Rates_Q5: *const opus_uint8,
-        pub deltaMin_Q15: *const opus_int16,
+        pub nVectors: i16,
+        pub order: i16,
+        pub quantStepSize_Q16: i16,
+        pub invQuantStepSize_Q6: i16,
+        pub CB1_NLSF_Q8: *const u8,
+        pub CB1_Wght_Q9: *const i16,
+        pub CB1_iCDF: *const u8,
+        pub pred_Q8: *const u8,
+        pub ec_sel: *const u8,
+        pub ec_iCDF: *const u8,
+        pub ec_Rates_Q5: *const u8,
+        pub deltaMin_Q15: *const i16,
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "118:9"]
     pub struct SideInfoIndices {
-        pub GainsIndices: [opus_int8; 4],
-        pub LTPIndex: [opus_int8; 4],
-        pub NLSFIndices: [opus_int8; 17],
-        pub lagIndex: opus_int16,
-        pub contourIndex: opus_int8,
-        pub signalType: opus_int8,
-        pub quantOffsetType: opus_int8,
-        pub NLSFInterpCoef_Q2: opus_int8,
-        pub PERIndex: opus_int8,
-        pub LTP_scaleIndex: opus_int8,
-        pub Seed: opus_int8,
+        pub GainsIndices: [i8; 4],
+        pub LTPIndex: [i8; 4],
+        pub NLSFIndices: [i8; 17],
+        pub lagIndex: i16,
+        pub contourIndex: i8,
+        pub signalType: i8,
+        pub quantOffsetType: i8,
+        pub NLSFInterpCoef_Q2: i8,
+        pub PERIndex: i8,
+        pub LTP_scaleIndex: i8,
+        pub Seed: i8,
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "232:9"]
     pub struct silk_PLC_struct {
-        pub pitchL_Q8: opus_int32,
-        pub LTPCoef_Q14: [opus_int16; 5],
-        pub prevLPC_Q12: [opus_int16; 16],
+        pub pitchL_Q8: i32,
+        pub LTPCoef_Q14: [i16; 5],
+        pub prevLPC_Q12: [i16; 16],
         pub last_frame_lost: libc::c_int,
-        pub rand_seed: opus_int32,
-        pub randScale_Q14: opus_int16,
-        pub conc_energy: opus_int32,
+        pub rand_seed: i32,
+        pub randScale_Q14: i16,
+        pub conc_energy: i32,
         pub conc_energy_shift: libc::c_int,
-        pub prevLTP_scale_Q14: opus_int16,
-        pub prevGain_Q16: [opus_int32; 2],
+        pub prevLTP_scale_Q14: i16,
+        pub prevGain_Q16: [i32; 2],
         pub fs_kHz: libc::c_int,
         pub nb_subfr: libc::c_int,
         pub subfr_length: libc::c_int,
@@ -126,38 +112,38 @@ pub mod structs_h {
     #[repr(C)]
     #[c2rust::src_loc = "249:9"]
     pub struct silk_CNG_struct {
-        pub CNG_exc_buf_Q14: [opus_int32; 320],
-        pub CNG_smth_NLSF_Q15: [opus_int16; 16],
-        pub CNG_synth_state: [opus_int32; 16],
-        pub CNG_smth_Gain_Q16: opus_int32,
-        pub rand_seed: opus_int32,
+        pub CNG_exc_buf_Q14: [i32; 320],
+        pub CNG_smth_NLSF_Q15: [i16; 16],
+        pub CNG_synth_state: [i32; 16],
+        pub CNG_smth_Gain_Q16: i32,
+        pub rand_seed: i32,
         pub fs_kHz: libc::c_int,
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "261:9"]
     pub struct silk_decoder_state {
-        pub prev_gain_Q16: opus_int32,
-        pub exc_Q14: [opus_int32; 320],
-        pub sLPC_Q14_buf: [opus_int32; 16],
-        pub outBuf: [opus_int16; 480],
+        pub prev_gain_Q16: i32,
+        pub exc_Q14: [i32; 320],
+        pub sLPC_Q14_buf: [i32; 16],
+        pub outBuf: [i16; 480],
         pub lagPrev: libc::c_int,
-        pub LastGainIndex: opus_int8,
+        pub LastGainIndex: i8,
         pub fs_kHz: libc::c_int,
-        pub fs_API_hz: opus_int32,
+        pub fs_API_hz: i32,
         pub nb_subfr: libc::c_int,
         pub frame_length: libc::c_int,
         pub subfr_length: libc::c_int,
         pub ltp_mem_length: libc::c_int,
         pub LPC_order: libc::c_int,
-        pub prevNLSF_Q15: [opus_int16; 16],
+        pub prevNLSF_Q15: [i16; 16],
         pub first_frame_after_reset: libc::c_int,
-        pub pitch_lag_low_bits_iCDF: *const opus_uint8,
-        pub pitch_contour_iCDF: *const opus_uint8,
+        pub pitch_lag_low_bits_iCDF: *const u8,
+        pub pitch_contour_iCDF: *const u8,
         pub nFramesDecoded: libc::c_int,
         pub nFramesPerPacket: libc::c_int,
         pub ec_prevSignalType: libc::c_int,
-        pub ec_prevLagIndex: opus_int16,
+        pub ec_prevLagIndex: i16,
         pub VAD_flags: [libc::c_int; 3],
         pub LBRR_flag: libc::c_int,
         pub LBRR_flags: [libc::c_int; 3],
@@ -170,7 +156,6 @@ pub mod structs_h {
         pub arch: libc::c_int,
         pub sPLC: silk_PLC_struct,
     }
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/usr/include/string.h:32"]
@@ -206,7 +191,6 @@ pub mod main_h {
 }
 pub use self::cpu_support_h::opus_select_arch;
 use self::main_h::silk_CNG_Reset;
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };

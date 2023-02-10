@@ -10,12 +10,6 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     use super::types_h::__uint32_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:38"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "56:4"]
-    pub type opus_uint32 = uint32_t;
-    use super::stdint_uintn_h::uint32_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:38"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
@@ -46,10 +40,9 @@ pub mod mathcalls_h {
 pub mod entcode_h {
     #[inline]
     #[c2rust::src_loc = "124:1"]
-    pub unsafe extern "C" fn celt_udiv(n: opus_uint32, d: opus_uint32) -> opus_uint32 {
+    pub unsafe extern "C" fn celt_udiv(n: u32, d: u32) -> u32 {
         return n.wrapping_div(d);
     }
-    use super::opus_types_h::opus_uint32;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/pitch.h:38"]
 pub mod pitch_h {
@@ -281,7 +274,6 @@ pub use self::arch_h::{celt_fatal, celt_sig, opus_val16, opus_val32, Q15ONE};
 use self::celt_lpc_h::{_celt_autocorr, _celt_lpc};
 pub use self::entcode_h::celt_udiv;
 use self::mathcalls_h::sqrt;
-pub use self::opus_types_h::opus_uint32;
 pub use self::pitch_h::{celt_inner_prod_c, celt_pitch_xcorr, dual_inner_prod_c, xcorr_kernel_c};
 pub use self::stddef_h::NULL;
 pub use self::stdint_uintn_h::uint32_t;
@@ -718,8 +710,8 @@ pub unsafe extern "C" fn remove_doubling(
         let mut cont: opus_val16 = 0 as libc::c_int as opus_val16;
         let mut thresh: opus_val16 = 0.;
         T1 = celt_udiv(
-            (2 as libc::c_int * T0 + k) as opus_uint32,
-            (2 as libc::c_int * k) as opus_uint32,
+            (2 as libc::c_int * T0 + k) as u32,
+            (2 as libc::c_int * k) as u32,
         ) as libc::c_int;
         if T1 < minperiod {
             break;
@@ -732,8 +724,8 @@ pub unsafe extern "C" fn remove_doubling(
             }
         } else {
             T1b = celt_udiv(
-                (2 as libc::c_int * second_check[k as usize] * T0 + k) as opus_uint32,
-                (2 as libc::c_int * k) as opus_uint32,
+                (2 as libc::c_int * second_check[k as usize] * T0 + k) as u32,
+                (2 as libc::c_int * k) as u32,
             ) as libc::c_int;
         }
         dual_inner_prod_c(

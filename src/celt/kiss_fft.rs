@@ -15,12 +15,6 @@ pub mod stdint_intn_h {
     pub type int16_t = __int16_t;
     use super::types_h::__int16_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:38"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "53:4"]
-    pub type opus_int16 = int16_t;
-    use super::stdint_intn_h::int16_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:38"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
@@ -64,17 +58,15 @@ pub mod kiss_fft_h {
         pub nfft: libc::c_int,
         pub scale: opus_val16,
         pub shift: libc::c_int,
-        pub factors: [opus_int16; 16],
-        pub bitrev: *const opus_int16,
+        pub factors: [i16; 16],
+        pub bitrev: *const i16,
         pub twiddles: *const kiss_twiddle_cpx,
         pub arch_fft: *mut arch_fft_state,
     }
     use super::arch_h::opus_val16;
-    use super::opus_types_h::opus_int16;
 }
 pub use self::arch_h::{celt_fatal, opus_val16};
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_cpx, kiss_fft_state, kiss_twiddle_cpx};
-pub use self::opus_types_h::opus_int16;
 pub use self::stddef_h::size_t;
 pub use self::stdint_intn_h::int16_t;
 pub use self::types_h::__int16_t;

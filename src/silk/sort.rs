@@ -14,14 +14,6 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     use super::types_h::{__int16_t, __int32_t};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:38"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "53:4"]
-    pub type opus_int16 = int16_t;
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::{int16_t, int32_t};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:38"]
 pub mod arch_h {
     extern "C" {
@@ -34,18 +26,17 @@ pub mod arch_h {
     }
 }
 use self::arch_h::celt_fatal;
-pub use self::opus_types_h::{opus_int16, opus_int32};
 pub use self::stdint_intn_h::{int16_t, int32_t};
 pub use self::types_h::{__int16_t, __int32_t};
 #[no_mangle]
 #[c2rust::src_loc = "40:1"]
 pub unsafe extern "C" fn silk_insertion_sort_increasing(
-    a: *mut opus_int32,
+    a: *mut i32,
     idx: *mut libc::c_int,
     L: libc::c_int,
     K: libc::c_int,
 ) {
-    let mut value: opus_int32 = 0;
+    let mut value: i32 = 0;
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     if !(K > 0 as libc::c_int) {
@@ -106,7 +97,7 @@ pub unsafe extern "C" fn silk_insertion_sort_increasing(
 #[no_mangle]
 #[c2rust::src_loc = "135:1"]
 pub unsafe extern "C" fn silk_insertion_sort_increasing_all_values_int16(
-    a: *mut opus_int16,
+    a: *mut i16,
     L: libc::c_int,
 ) {
     let mut value: libc::c_int = 0;
@@ -127,7 +118,7 @@ pub unsafe extern "C" fn silk_insertion_sort_increasing_all_values_int16(
             *a.offset((j + 1 as libc::c_int) as isize) = *a.offset(j as isize);
             j -= 1;
         }
-        *a.offset((j + 1 as libc::c_int) as isize) = value as opus_int16;
+        *a.offset((j + 1 as libc::c_int) as isize) = value as i16;
         i += 1;
     }
 }

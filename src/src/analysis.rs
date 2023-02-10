@@ -18,16 +18,6 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     use super::types_h::{__int16_t, __int32_t, __int8_t};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:36"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "51:4"]
-    pub type opus_int8 = int8_t;
-    #[c2rust::src_loc = "53:4"]
-    pub type opus_int16 = int16_t;
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::{int16_t, int32_t, int8_t};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:36"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
@@ -75,13 +65,12 @@ pub mod kiss_fft_h {
         pub nfft: libc::c_int,
         pub scale: opus_val16,
         pub shift: libc::c_int,
-        pub factors: [opus_int16; 16],
-        pub bitrev: *const opus_int16,
+        pub factors: [i16; 16],
+        pub bitrev: *const i16,
         pub twiddles: *const kiss_twiddle_cpx,
         pub arch_fft: *mut arch_fft_state,
     }
     use super::arch_h::opus_val16;
-    use super::opus_types_h::opus_int16;
     extern "C" {
         #[c2rust::src_loc = "142:1"]
         pub fn opus_fft_c(
@@ -97,18 +86,18 @@ pub mod modes_h {
     #[repr(C)]
     #[c2rust::src_loc = "52:8"]
     pub struct OpusCustomMode {
-        pub Fs: opus_int32,
+        pub Fs: i32,
         pub overlap: libc::c_int,
         pub nbEBands: libc::c_int,
         pub effEBands: libc::c_int,
         pub preemph: [opus_val16; 4],
-        pub eBands: *const opus_int16,
+        pub eBands: *const i16,
         pub maxLM: libc::c_int,
         pub nbShortMdcts: libc::c_int,
         pub shortMdctSize: libc::c_int,
         pub nbAllocVectors: libc::c_int,
         pub allocVectors: *const libc::c_uchar,
-        pub logN: *const opus_int16,
+        pub logN: *const i16,
         pub window: *const opus_val16,
         pub mdct: mdct_lookup,
         pub cache: PulseCache,
@@ -118,13 +107,12 @@ pub mod modes_h {
     #[c2rust::src_loc = "42:9"]
     pub struct PulseCache {
         pub size: libc::c_int,
-        pub index: *const opus_int16,
+        pub index: *const i16,
         pub bits: *const libc::c_uchar,
         pub caps: *const libc::c_uchar,
     }
     use super::arch_h::opus_val16;
     use super::mdct_h::mdct_lookup;
-    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:39"]
 pub mod mdct_h {
@@ -192,8 +180,8 @@ pub mod mlp_h {
     #[repr(C)]
     #[c2rust::src_loc = "36:9"]
     pub struct DenseLayer {
-        pub bias: *const opus_int8,
-        pub input_weights: *const opus_int8,
+        pub bias: *const i8,
+        pub input_weights: *const i8,
         pub nb_inputs: libc::c_int,
         pub nb_neurons: libc::c_int,
         pub sigmoid: libc::c_int,
@@ -202,13 +190,12 @@ pub mod mlp_h {
     #[repr(C)]
     #[c2rust::src_loc = "44:9"]
     pub struct GRULayer {
-        pub bias: *const opus_int8,
-        pub input_weights: *const opus_int8,
-        pub recurrent_weights: *const opus_int8,
+        pub bias: *const i8,
+        pub input_weights: *const i8,
+        pub recurrent_weights: *const i8,
         pub nb_inputs: libc::c_int,
         pub nb_neurons: libc::c_int,
     }
-    use super::opus_types_h::opus_int8;
     extern "C" {
         #[c2rust::src_loc = "52:25"]
         pub static layer0: DenseLayer;
@@ -238,7 +225,7 @@ pub mod analysis_h {
     pub struct TonalityAnalysisState {
         pub arch: libc::c_int,
         pub application: libc::c_int,
-        pub Fs: opus_int32,
+        pub Fs: i32,
         pub angle: [libc::c_float; 240],
         pub d_angle: [libc::c_float; 240],
         pub d2_angle: [libc::c_float; 240],
@@ -279,7 +266,6 @@ pub mod analysis_h {
     pub const NB_TBANDS: libc::c_int = 18 as libc::c_int;
     use super::arch_h::opus_val32;
     use super::celt_h::AnalysisInfo;
-    use super::opus_types_h::opus_int32;
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:45"]
 pub mod xmmintrin_h {
@@ -390,10 +376,9 @@ pub mod cpu_support_h {
 pub mod float_cast_h {
     #[inline]
     #[c2rust::src_loc = "68:1"]
-    pub unsafe extern "C" fn float2int(x: libc::c_float) -> opus_int32 {
+    pub unsafe extern "C" fn float2int(x: libc::c_float) -> i32 {
         return _mm_cvt_ss2si(_mm_set_ss(x));
     }
-    use super::opus_types_h::opus_int32;
     use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
 }
 pub use self::analysis_h::{
@@ -413,7 +398,6 @@ pub use self::mdct_h::mdct_lookup;
 pub use self::mlp_h::{compute_dense, compute_gru, layer0, layer1, layer2, DenseLayer, GRULayer};
 pub use self::modes_h::{OpusCustomMode, PulseCache};
 pub use self::opus_private_h::{downmix_func, is_digital_silence};
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_int8};
 pub use self::stddef_h::NULL;
 pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
 use self::string_h::{memcpy, memmove, memset};
@@ -934,10 +918,7 @@ unsafe extern "C" fn downmix_and_resample(
 }
 #[no_mangle]
 #[c2rust::src_loc = "215:1"]
-pub unsafe extern "C" fn tonality_analysis_init(
-    mut tonal: *mut TonalityAnalysisState,
-    Fs: opus_int32,
-) {
+pub unsafe extern "C" fn tonality_analysis_init(mut tonal: *mut TonalityAnalysisState, Fs: i32) {
     (*tonal).arch = opus_select_arch();
     (*tonal).Fs = Fs;
     tonality_analysis_reset(tonal);
@@ -2002,7 +1983,7 @@ pub unsafe extern "C" fn run_analysis(
     c1: libc::c_int,
     c2: libc::c_int,
     C: libc::c_int,
-    Fs: opus_int32,
+    Fs: i32,
     lsb_depth: libc::c_int,
     downmix: downmix_func,
     analysis_info: *mut AnalysisInfo,

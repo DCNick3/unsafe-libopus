@@ -14,14 +14,6 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     use super::types_h::{__int16_t, __int32_t};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "53:4"]
-    pub type opus_int16 = int16_t;
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::{int16_t, int32_t};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/opus_private.h:33"]
 pub mod opus_private_h {
     #[derive(Copy, Clone)]
@@ -31,21 +23,20 @@ pub mod opus_private_h {
         pub toc: libc::c_uchar,
         pub nb_frames: libc::c_int,
         pub frames: [*const libc::c_uchar; 48],
-        pub len: [opus_int16; 48],
+        pub len: [i16; 48],
         pub framesize: libc::c_int,
     }
-    use super::opus_types_h::{opus_int16, opus_int32};
     extern "C" {
         #[c2rust::src_loc = "165:1"]
         pub fn opus_packet_parse_impl(
             data: *const libc::c_uchar,
-            len: opus_int32,
+            len: i32,
             self_delimited: libc::c_int,
             out_toc: *mut libc::c_uchar,
             frames: *mut *const libc::c_uchar,
-            size: *mut opus_int16,
+            size: *mut i16,
             payload_offset: *mut libc::c_int,
-            packet_offset: *mut opus_int32,
+            packet_offset: *mut i32,
         ) -> libc::c_int;
         #[c2rust::src_loc = "140:1"]
         pub fn encode_size(size: libc::c_int, data: *mut libc::c_uchar) -> libc::c_int;
@@ -71,18 +62,14 @@ pub mod opus_defines_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus.h:32"]
 pub mod opus_h {
-    use super::opus_types_h::opus_int32;
     extern "C" {
         #[c2rust::src_loc = "556:1"]
         pub fn opus_packet_get_samples_per_frame(
             data: *const libc::c_uchar,
-            Fs: opus_int32,
+            Fs: i32,
         ) -> libc::c_int;
         #[c2rust::src_loc = "572:1"]
-        pub fn opus_packet_get_nb_frames(
-            packet: *const libc::c_uchar,
-            len: opus_int32,
-        ) -> libc::c_int;
+        pub fn opus_packet_get_nb_frames(packet: *const libc::c_uchar, len: i32) -> libc::c_int;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
@@ -135,7 +122,6 @@ use self::arch_h::celt_fatal;
 pub use self::opus_defines_h::{OPUS_BAD_ARG, OPUS_BUFFER_TOO_SMALL, OPUS_INVALID_PACKET, OPUS_OK};
 use self::opus_h::{opus_packet_get_nb_frames, opus_packet_get_samples_per_frame};
 pub use self::opus_private_h::{encode_size, opus_packet_parse_impl, OpusRepacketizer};
-pub use self::opus_types_h::{opus_int16, opus_int32};
 pub use self::os_support_h::{opus_alloc, opus_free};
 pub use self::stddef_h::{size_t, NULL};
 pub use self::stdint_intn_h::{int16_t, int32_t};
@@ -174,7 +160,7 @@ pub unsafe extern "C" fn opus_repacketizer_destroy(rp: *mut OpusRepacketizer) {
 unsafe extern "C" fn opus_repacketizer_cat_impl(
     mut rp: *mut OpusRepacketizer,
     data: *const libc::c_uchar,
-    len: opus_int32,
+    len: i32,
     self_delimited: libc::c_int,
 ) -> libc::c_int {
     let mut tmp_toc: libc::c_uchar = 0;
@@ -206,7 +192,7 @@ unsafe extern "C" fn opus_repacketizer_cat_impl(
         &mut *((*rp).frames).as_mut_ptr().offset((*rp).nb_frames as isize),
         &mut *((*rp).len).as_mut_ptr().offset((*rp).nb_frames as isize),
         NULL as *mut libc::c_int,
-        NULL as *mut opus_int32,
+        NULL as *mut i32,
     );
     if ret < 1 as libc::c_int {
         return ret;
@@ -219,7 +205,7 @@ unsafe extern "C" fn opus_repacketizer_cat_impl(
 pub unsafe extern "C" fn opus_repacketizer_cat(
     rp: *mut OpusRepacketizer,
     data: *const libc::c_uchar,
-    len: opus_int32,
+    len: i32,
 ) -> libc::c_int {
     return opus_repacketizer_cat_impl(rp, data, len, 0 as libc::c_int);
 }
@@ -235,14 +221,14 @@ pub unsafe extern "C" fn opus_repacketizer_out_range_impl(
     begin: libc::c_int,
     end: libc::c_int,
     data: *mut libc::c_uchar,
-    maxlen: opus_int32,
+    maxlen: i32,
     self_delimited: libc::c_int,
     pad: libc::c_int,
-) -> opus_int32 {
+) -> i32 {
     let mut i: libc::c_int = 0;
     let mut count: libc::c_int = 0;
-    let mut tot_size: opus_int32 = 0;
-    let mut len: *mut opus_int16 = 0 as *mut opus_int16;
+    let mut tot_size: i32 = 0;
+    let mut len: *mut i16 = 0 as *mut i16;
     let mut frames: *mut *const libc::c_uchar = 0 as *mut *const libc::c_uchar;
     let mut ptr: *mut libc::c_uchar = 0 as *mut libc::c_uchar;
     if begin < 0 as libc::c_int || begin >= end || end > (*rp).nb_frames {
@@ -425,8 +411,8 @@ pub unsafe extern "C" fn opus_repacketizer_out_range(
     begin: libc::c_int,
     end: libc::c_int,
     data: *mut libc::c_uchar,
-    maxlen: opus_int32,
-) -> opus_int32 {
+    maxlen: i32,
+) -> i32 {
     return opus_repacketizer_out_range_impl(
         rp,
         begin,
@@ -442,8 +428,8 @@ pub unsafe extern "C" fn opus_repacketizer_out_range(
 pub unsafe extern "C" fn opus_repacketizer_out(
     rp: *mut OpusRepacketizer,
     data: *mut libc::c_uchar,
-    maxlen: opus_int32,
-) -> opus_int32 {
+    maxlen: i32,
+) -> i32 {
     return opus_repacketizer_out_range_impl(
         rp,
         0 as libc::c_int,
@@ -458,8 +444,8 @@ pub unsafe extern "C" fn opus_repacketizer_out(
 #[c2rust::src_loc = "240:1"]
 pub unsafe extern "C" fn opus_packet_pad(
     data: *mut libc::c_uchar,
-    len: opus_int32,
-    new_len: opus_int32,
+    len: i32,
+    new_len: i32,
 ) -> libc::c_int {
     let mut rp: OpusRepacketizer = OpusRepacketizer {
         toc: 0,
@@ -468,7 +454,7 @@ pub unsafe extern "C" fn opus_packet_pad(
         len: [0; 48],
         framesize: 0,
     };
-    let mut ret: opus_int32 = 0;
+    let mut ret: i32 = 0;
     if len < 1 as libc::c_int {
         return OPUS_BAD_ARG;
     }
@@ -518,10 +504,7 @@ pub unsafe extern "C" fn opus_packet_pad(
 }
 #[no_mangle]
 #[c2rust::src_loc = "263:1"]
-pub unsafe extern "C" fn opus_packet_unpad(
-    data: *mut libc::c_uchar,
-    len: opus_int32,
-) -> opus_int32 {
+pub unsafe extern "C" fn opus_packet_unpad(data: *mut libc::c_uchar, len: i32) -> i32 {
     let mut rp: OpusRepacketizer = OpusRepacketizer {
         toc: 0,
         nb_frames: 0,
@@ -529,7 +512,7 @@ pub unsafe extern "C" fn opus_packet_unpad(
         len: [0; 48],
         framesize: 0,
     };
-    let mut ret: opus_int32 = 0;
+    let mut ret: i32 = 0;
     if len < 1 as libc::c_int {
         return OPUS_BAD_ARG;
     }
@@ -560,16 +543,16 @@ pub unsafe extern "C" fn opus_packet_unpad(
 #[c2rust::src_loc = "278:1"]
 pub unsafe extern "C" fn opus_multistream_packet_pad(
     mut data: *mut libc::c_uchar,
-    mut len: opus_int32,
-    new_len: opus_int32,
+    mut len: i32,
+    new_len: i32,
     nb_streams: libc::c_int,
 ) -> libc::c_int {
     let mut s: libc::c_int = 0;
     let mut count: libc::c_int = 0;
     let mut toc: libc::c_uchar = 0;
-    let mut size: [opus_int16; 48] = [0; 48];
-    let mut packet_offset: opus_int32 = 0;
-    let mut amount: opus_int32 = 0;
+    let mut size: [i16; 48] = [0; 48];
+    let mut packet_offset: i32 = 0;
+    let mut amount: i32 = 0;
     if len < 1 as libc::c_int {
         return OPUS_BAD_ARG;
     }
@@ -609,13 +592,13 @@ pub unsafe extern "C" fn opus_multistream_packet_pad(
 #[c2rust::src_loc = "309:1"]
 pub unsafe extern "C" fn opus_multistream_packet_unpad(
     mut data: *mut libc::c_uchar,
-    mut len: opus_int32,
+    mut len: i32,
     nb_streams: libc::c_int,
-) -> opus_int32 {
+) -> i32 {
     let mut s: libc::c_int = 0;
     let mut toc: libc::c_uchar = 0;
-    let mut size: [opus_int16; 48] = [0; 48];
-    let mut packet_offset: opus_int32 = 0;
+    let mut size: [i16; 48] = [0; 48];
+    let mut packet_offset: i32 = 0;
     let mut rp: OpusRepacketizer = OpusRepacketizer {
         toc: 0,
         nb_frames: 0,
@@ -624,7 +607,7 @@ pub unsafe extern "C" fn opus_multistream_packet_unpad(
         framesize: 0,
     };
     let mut dst: *mut libc::c_uchar = 0 as *mut libc::c_uchar;
-    let mut dst_len: opus_int32 = 0;
+    let mut dst_len: i32 = 0;
     if len < 1 as libc::c_int {
         return OPUS_BAD_ARG;
     }
@@ -632,7 +615,7 @@ pub unsafe extern "C" fn opus_multistream_packet_unpad(
     dst_len = 0 as libc::c_int;
     s = 0 as libc::c_int;
     while s < nb_streams {
-        let mut ret: opus_int32 = 0;
+        let mut ret: i32 = 0;
         let self_delimited: libc::c_int = (s != nb_streams - 1 as libc::c_int) as libc::c_int;
         if len <= 0 as libc::c_int {
             return OPUS_INVALID_PACKET;

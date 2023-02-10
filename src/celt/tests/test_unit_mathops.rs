@@ -78,14 +78,6 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     use super::types_h::{__int16_t, __int32_t};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:39"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "53:4"]
-    pub type opus_int16 = int16_t;
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::{int16_t, int32_t};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:39"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
@@ -118,10 +110,9 @@ pub mod mathcalls_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/bands.h:40"]
 pub mod bands_h {
-    use super::opus_types_h::opus_int16;
     extern "C" {
         #[c2rust::src_loc = "39:1"]
-        pub fn bitexact_cos(x: opus_int16) -> opus_int16;
+        pub fn bitexact_cos(x: i16) -> i16;
         #[c2rust::src_loc = "40:1"]
         pub fn bitexact_log2tan(isin: libc::c_int, icos: libc::c_int) -> libc::c_int;
     }
@@ -129,7 +120,6 @@ pub mod bands_h {
 pub use self::arch_h::{opus_val16, opus_val32};
 use self::bands_h::{bitexact_cos, bitexact_log2tan};
 use self::mathcalls_h::{exp, fabs, log, sqrt};
-pub use self::opus_types_h::{opus_int16, opus_int32};
 pub use self::stddef_h::size_t;
 pub use self::stdint_intn_h::{int16_t, int32_t};
 use self::stdio_h::{fprintf, stderr};
@@ -142,7 +132,7 @@ pub static mut ret: libc::c_int = 0 as libc::c_int;
 #[no_mangle]
 #[c2rust::src_loc = "50:1"]
 pub unsafe extern "C" fn testdiv() {
-    let mut i: opus_int32 = 0;
+    let mut i: i32 = 0;
     i = 1 as libc::c_int;
     while i <= 327670 as libc::c_int {
         let mut prod: libc::c_double = 0.;
@@ -165,7 +155,7 @@ pub unsafe extern "C" fn testdiv() {
 #[no_mangle]
 #[c2rust::src_loc = "71:1"]
 pub unsafe extern "C" fn testsqrt() {
-    let mut i: opus_int32 = 0;
+    let mut i: i32 = 0;
     i = 1 as libc::c_int;
     while i <= 1000000000 as libc::c_int {
         let mut ratio: libc::c_double = 0.;
@@ -193,18 +183,18 @@ pub unsafe extern "C" fn testsqrt() {
 #[c2rust::src_loc = "89:1"]
 pub unsafe extern "C" fn testbitexactcos() {
     let mut i: libc::c_int = 0;
-    let mut min_d: opus_int32 = 0;
-    let mut max_d: opus_int32 = 0;
-    let mut last: opus_int32 = 0;
-    let mut chk: opus_int32 = 0;
+    let mut min_d: i32 = 0;
+    let mut max_d: i32 = 0;
+    let mut last: i32 = 0;
+    let mut chk: i32 = 0;
     max_d = 0 as libc::c_int;
     chk = max_d;
     min_d = 32767 as libc::c_int;
     last = min_d;
     i = 64 as libc::c_int;
     while i <= 16320 as libc::c_int {
-        let mut d: opus_int32 = 0;
-        let mut q: opus_int32 = bitexact_cos(i as opus_int16) as opus_int32;
+        let mut d: i32 = 0;
+        let mut q: i32 = bitexact_cos(i as i16) as i32;
         chk ^= q * i;
         d = last - q;
         if d > max_d {
@@ -219,9 +209,9 @@ pub unsafe extern "C" fn testbitexactcos() {
     if chk != 89408644 as libc::c_int
         || max_d != 5 as libc::c_int
         || min_d != 0 as libc::c_int
-        || bitexact_cos(64 as libc::c_int as opus_int16) as libc::c_int != 32767 as libc::c_int
-        || bitexact_cos(16320 as libc::c_int as opus_int16) as libc::c_int != 200 as libc::c_int
-        || bitexact_cos(8192 as libc::c_int as opus_int16) as libc::c_int != 23171 as libc::c_int
+        || bitexact_cos(64 as libc::c_int as i16) as libc::c_int != 32767 as libc::c_int
+        || bitexact_cos(16320 as libc::c_int as i16) as libc::c_int != 200 as libc::c_int
+        || bitexact_cos(8192 as libc::c_int as i16) as libc::c_int != 23171 as libc::c_int
     {
         fprintf(
             stderr,
@@ -235,10 +225,10 @@ pub unsafe extern "C" fn testbitexactcos() {
 pub unsafe extern "C" fn testbitexactlog2tan() {
     let mut i: libc::c_int = 0;
     let mut fail: libc::c_int = 0;
-    let mut min_d: opus_int32 = 0;
-    let mut max_d: opus_int32 = 0;
-    let mut last: opus_int32 = 0;
-    let mut chk: opus_int32 = 0;
+    let mut min_d: i32 = 0;
+    let mut max_d: i32 = 0;
+    let mut last: i32 = 0;
+    let mut chk: i32 = 0;
     max_d = 0 as libc::c_int;
     chk = max_d;
     fail = chk;
@@ -246,11 +236,10 @@ pub unsafe extern "C" fn testbitexactlog2tan() {
     last = min_d;
     i = 64 as libc::c_int;
     while i < 8193 as libc::c_int {
-        let mut d: opus_int32 = 0;
-        let mut mid: opus_int32 = bitexact_cos(i as opus_int16) as opus_int32;
-        let mut side: opus_int32 =
-            bitexact_cos((16384 as libc::c_int - i) as opus_int16) as opus_int32;
-        let mut q: opus_int32 = bitexact_log2tan(mid, side);
+        let mut d: i32 = 0;
+        let mut mid: i32 = bitexact_cos(i as i16) as i32;
+        let mut side: i32 = bitexact_cos((16384 as libc::c_int - i) as i16) as i32;
+        let mut q: i32 = bitexact_log2tan(mid, side);
         chk ^= q * i;
         d = last - q;
         if q != -(1 as libc::c_int) * bitexact_log2tan(side, mid) {

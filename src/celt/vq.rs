@@ -10,12 +10,6 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     use super::types_h::__uint32_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:33"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "56:4"]
-    pub type opus_uint32 = uint32_t;
-    use super::stdint_uintn_h::uint32_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
@@ -38,21 +32,21 @@ pub mod arch_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:33"]
 pub mod entcode_h {
     #[c2rust::src_loc = "45:1"]
-    pub type ec_window = opus_uint32;
+    pub type ec_window = u32;
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "62:8"]
     pub struct ec_ctx {
         pub buf: *mut libc::c_uchar,
-        pub storage: opus_uint32,
-        pub end_offs: opus_uint32,
+        pub storage: u32,
+        pub end_offs: u32,
         pub end_window: ec_window,
         pub nend_bits: libc::c_int,
         pub nbits_total: libc::c_int,
-        pub offs: opus_uint32,
-        pub rng: opus_uint32,
-        pub val: opus_uint32,
-        pub ext: opus_uint32,
+        pub offs: u32,
+        pub rng: u32,
+        pub val: u32,
+        pub ext: u32,
         pub rem: libc::c_int,
         pub error: libc::c_int,
     }
@@ -62,10 +56,9 @@ pub mod entcode_h {
     pub type ec_dec = ec_ctx;
     #[inline]
     #[c2rust::src_loc = "124:1"]
-    pub unsafe extern "C" fn celt_udiv(n: opus_uint32, d: opus_uint32) -> opus_uint32 {
+    pub unsafe extern "C" fn celt_udiv(n: u32, d: u32) -> u32 {
         return n.wrapping_div(d);
     }
-    use super::opus_types_h::opus_uint32;
 }
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:33"]
 pub mod mathcalls_h {
@@ -178,7 +171,6 @@ use self::cwrs_h::{decode_pulses, encode_pulses};
 pub use self::entcode_h::{celt_udiv, ec_ctx, ec_dec, ec_enc, ec_window};
 use self::mathcalls_h::{cos, fabs, floor, sqrt};
 pub use self::mathops_h::{cA, cB, cC, cE, fast_atan2f, PI};
-pub use self::opus_types_h::opus_uint32;
 pub use self::pitch_h::celt_inner_prod_c;
 pub use self::stdint_uintn_h::uint32_t;
 pub use self::types_h::__uint32_t;
@@ -255,7 +247,7 @@ pub unsafe extern "C" fn exp_rotation(
             stride2 += 1;
         }
     }
-    len = celt_udiv(len as opus_uint32, stride as opus_uint32) as libc::c_int;
+    len = celt_udiv(len as u32, stride as u32) as libc::c_int;
     i = 0 as libc::c_int;
     while i < stride {
         if dir < 0 as libc::c_int {
@@ -306,7 +298,7 @@ unsafe extern "C" fn extract_collapse_mask(
     if B <= 1 as libc::c_int {
         return 1 as libc::c_int as libc::c_uint;
     }
-    N0 = celt_udiv(N as opus_uint32, B as opus_uint32) as libc::c_int;
+    N0 = celt_udiv(N as u32, B as u32) as libc::c_int;
     collapse_mask = 0 as libc::c_int as libc::c_uint;
     i = 0 as libc::c_int;
     loop {

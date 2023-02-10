@@ -10,20 +10,14 @@ pub mod stdint_intn_h {
     pub type int8_t = __int8_t;
     use super::types_h::__int8_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:33"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "51:4"]
-    pub type opus_int8 = int8_t;
-    use super::stdint_intn_h::int8_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/mlp.h:37"]
 pub mod mlp_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "36:9"]
     pub struct DenseLayer {
-        pub bias: *const opus_int8,
-        pub input_weights: *const opus_int8,
+        pub bias: *const i8,
+        pub input_weights: *const i8,
         pub nb_inputs: libc::c_int,
         pub nb_neurons: libc::c_int,
         pub sigmoid: libc::c_int,
@@ -32,15 +26,14 @@ pub mod mlp_h {
     #[repr(C)]
     #[c2rust::src_loc = "44:9"]
     pub struct GRULayer {
-        pub bias: *const opus_int8,
-        pub input_weights: *const opus_int8,
-        pub recurrent_weights: *const opus_int8,
+        pub bias: *const i8,
+        pub input_weights: *const i8,
+        pub recurrent_weights: *const i8,
         pub nb_inputs: libc::c_int,
         pub nb_neurons: libc::c_int,
     }
     #[c2rust::src_loc = "32:9"]
     pub const WEIGHTS_SCALE: libc::c_float = 1.0f32 / 128 as libc::c_int as libc::c_float;
-    use super::opus_types_h::opus_int8;
 }
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:32"]
 pub mod mathcalls_h {
@@ -258,7 +251,6 @@ pub mod tansig_table_h {
 }
 use self::mathcalls_h::floor;
 pub use self::mlp_h::{DenseLayer, GRULayer, WEIGHTS_SCALE};
-pub use self::opus_types_h::opus_int8;
 pub use self::stdint_intn_h::int8_t;
 pub use self::tansig_table_h::tansig_table;
 pub use self::types_h::__int8_t;
@@ -297,7 +289,7 @@ unsafe extern "C" fn sigmoid_approx(x: libc::c_float) -> libc::c_float {
 #[c2rust::src_loc = "72:1"]
 unsafe extern "C" fn gemm_accum(
     out: *mut libc::c_float,
-    weights: *const opus_int8,
+    weights: *const i8,
     rows: libc::c_int,
     cols: libc::c_int,
     col_stride: libc::c_int,

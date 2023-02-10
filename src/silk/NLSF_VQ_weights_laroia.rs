@@ -14,14 +14,6 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     use super::types_h::{__int16_t, __int32_t};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "53:4"]
-    pub type opus_int16 = int16_t;
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::{int16_t, int32_t};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
     #[c2rust::src_loc = "44:9"]
@@ -52,7 +44,6 @@ pub mod SigProc_FIX_h {
     }
 }
 use self::arch_h::celt_fatal;
-pub use self::opus_types_h::{opus_int16, opus_int32};
 pub use self::stdint_intn_h::{int16_t, int32_t};
 pub use self::typedef_h::silk_int16_MAX;
 pub use self::types_h::{__int16_t, __int32_t};
@@ -60,13 +51,13 @@ pub use self::SigProc_FIX_h::{silk_max_int, silk_min_int};
 #[no_mangle]
 #[c2rust::src_loc = "42:1"]
 pub unsafe extern "C" fn silk_NLSF_VQ_weights_laroia(
-    pNLSFW_Q_OUT: *mut opus_int16,
-    pNLSF_Q15: *const opus_int16,
+    pNLSFW_Q_OUT: *mut i16,
+    pNLSF_Q15: *const i16,
     D: libc::c_int,
 ) {
     let mut k: libc::c_int = 0;
-    let mut tmp1_int: opus_int32 = 0;
-    let mut tmp2_int: opus_int32 = 0;
+    let mut tmp1_int: i32 = 0;
+    let mut tmp2_int: i32 = 0;
     if !(D > 0 as libc::c_int) {
         celt_fatal(
             b"assertion failed: D > 0\0" as *const u8 as *const libc::c_char,
@@ -93,7 +84,7 @@ pub unsafe extern "C" fn silk_NLSF_VQ_weights_laroia(
     );
     tmp2_int = ((1 as libc::c_int) << 15 as libc::c_int + 2 as libc::c_int) / tmp2_int;
     *pNLSFW_Q_OUT.offset(0 as libc::c_int as isize) =
-        silk_min_int(tmp1_int + tmp2_int, silk_int16_MAX) as opus_int16;
+        silk_min_int(tmp1_int + tmp2_int, silk_int16_MAX) as i16;
     k = 1 as libc::c_int;
     while k < D - 1 as libc::c_int {
         tmp1_int = silk_max_int(
@@ -102,8 +93,7 @@ pub unsafe extern "C" fn silk_NLSF_VQ_weights_laroia(
             1 as libc::c_int,
         );
         tmp1_int = ((1 as libc::c_int) << 15 as libc::c_int + 2 as libc::c_int) / tmp1_int;
-        *pNLSFW_Q_OUT.offset(k as isize) =
-            silk_min_int(tmp1_int + tmp2_int, silk_int16_MAX) as opus_int16;
+        *pNLSFW_Q_OUT.offset(k as isize) = silk_min_int(tmp1_int + tmp2_int, silk_int16_MAX) as i16;
         tmp2_int = silk_max_int(
             *pNLSF_Q15.offset((k + 2 as libc::c_int) as isize) as libc::c_int
                 - *pNLSF_Q15.offset((k + 1 as libc::c_int) as isize) as libc::c_int,
@@ -111,7 +101,7 @@ pub unsafe extern "C" fn silk_NLSF_VQ_weights_laroia(
         );
         tmp2_int = ((1 as libc::c_int) << 15 as libc::c_int + 2 as libc::c_int) / tmp2_int;
         *pNLSFW_Q_OUT.offset((k + 1 as libc::c_int) as isize) =
-            silk_min_int(tmp1_int + tmp2_int, silk_int16_MAX) as opus_int16;
+            silk_min_int(tmp1_int + tmp2_int, silk_int16_MAX) as i16;
         k += 2 as libc::c_int;
     }
     tmp1_int = silk_max_int(
@@ -121,5 +111,5 @@ pub unsafe extern "C" fn silk_NLSF_VQ_weights_laroia(
     );
     tmp1_int = ((1 as libc::c_int) << 15 as libc::c_int + 2 as libc::c_int) / tmp1_int;
     *pNLSFW_Q_OUT.offset((D - 1 as libc::c_int) as isize) =
-        silk_min_int(tmp1_int + tmp2_int, silk_int16_MAX) as opus_int16;
+        silk_min_int(tmp1_int + tmp2_int, silk_int16_MAX) as i16;
 }

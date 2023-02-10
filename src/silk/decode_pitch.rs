@@ -18,16 +18,6 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     use super::types_h::{__int16_t, __int32_t, __int8_t};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:35"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "51:4"]
-    pub type opus_int8 = int8_t;
-    #[c2rust::src_loc = "53:4"]
-    pub type opus_int16 = int16_t;
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::{int16_t, int32_t, int8_t};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:35"]
 pub mod arch_h {
     extern "C" {
@@ -51,20 +41,18 @@ pub mod pitch_est_defines_h {
     pub const PE_NB_CBKS_STAGE3_10MS: libc::c_int = 12 as libc::c_int;
     #[c2rust::src_loc = "66:9"]
     pub const PE_NB_CBKS_STAGE2_10MS: libc::c_int = 3 as libc::c_int;
-    use super::opus_types_h::opus_int8;
     extern "C" {
         #[c2rust::src_loc = "77:24"]
-        pub static silk_CB_lags_stage2: [[opus_int8; 11]; 4];
+        pub static silk_CB_lags_stage2: [[i8; 11]; 4];
         #[c2rust::src_loc = "78:24"]
-        pub static silk_CB_lags_stage3: [[opus_int8; 34]; 4];
+        pub static silk_CB_lags_stage3: [[i8; 34]; 4];
         #[c2rust::src_loc = "83:24"]
-        pub static silk_CB_lags_stage2_10_ms: [[opus_int8; 3]; 2];
+        pub static silk_CB_lags_stage2_10_ms: [[i8; 3]; 2];
         #[c2rust::src_loc = "84:24"]
-        pub static silk_CB_lags_stage3_10_ms: [[opus_int8; 12]; 2];
+        pub static silk_CB_lags_stage3_10_ms: [[i8; 12]; 2];
     }
 }
 use self::arch_h::celt_fatal;
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_int8};
 pub use self::pitch_est_defines_h::{
     silk_CB_lags_stage2, silk_CB_lags_stage2_10_ms, silk_CB_lags_stage3, silk_CB_lags_stage3_10_ms,
     PE_MAX_NB_SUBFR, PE_NB_CBKS_STAGE2_10MS, PE_NB_CBKS_STAGE2_EXT, PE_NB_CBKS_STAGE3_10MS,
@@ -75,8 +63,8 @@ pub use self::types_h::{__int16_t, __int32_t, __int8_t};
 #[no_mangle]
 #[c2rust::src_loc = "38:1"]
 pub unsafe extern "C" fn silk_decode_pitch(
-    lagIndex: opus_int16,
-    contourIndex: opus_int8,
+    lagIndex: i16,
+    contourIndex: i8,
     pitch_lags: *mut libc::c_int,
     Fs_kHz: libc::c_int,
     nb_subfr: libc::c_int,
@@ -86,14 +74,14 @@ pub unsafe extern "C" fn silk_decode_pitch(
     let mut min_lag: libc::c_int = 0;
     let mut max_lag: libc::c_int = 0;
     let mut cbk_size: libc::c_int = 0;
-    let mut Lag_CB_ptr: *const opus_int8 = 0 as *const opus_int8;
+    let mut Lag_CB_ptr: *const i8 = 0 as *const i8;
     if Fs_kHz == 8 as libc::c_int {
         if nb_subfr == PE_MAX_NB_SUBFR {
             Lag_CB_ptr = &*(*silk_CB_lags_stage2
                 .as_ptr()
                 .offset(0 as libc::c_int as isize))
             .as_ptr()
-            .offset(0 as libc::c_int as isize) as *const opus_int8;
+            .offset(0 as libc::c_int as isize) as *const i8;
             cbk_size = PE_NB_CBKS_STAGE2_EXT;
         } else {
             if !(nb_subfr == 4 as libc::c_int >> 1 as libc::c_int) {
@@ -108,7 +96,7 @@ pub unsafe extern "C" fn silk_decode_pitch(
                 .as_ptr()
                 .offset(0 as libc::c_int as isize))
             .as_ptr()
-            .offset(0 as libc::c_int as isize) as *const opus_int8;
+            .offset(0 as libc::c_int as isize) as *const i8;
             cbk_size = PE_NB_CBKS_STAGE2_10MS;
         }
     } else if nb_subfr == PE_MAX_NB_SUBFR {
@@ -116,7 +104,7 @@ pub unsafe extern "C" fn silk_decode_pitch(
             .as_ptr()
             .offset(0 as libc::c_int as isize))
         .as_ptr()
-        .offset(0 as libc::c_int as isize) as *const opus_int8;
+        .offset(0 as libc::c_int as isize) as *const i8;
         cbk_size = PE_NB_CBKS_STAGE3_MAX;
     } else {
         if !(nb_subfr == 4 as libc::c_int >> 1 as libc::c_int) {
@@ -131,11 +119,11 @@ pub unsafe extern "C" fn silk_decode_pitch(
             .as_ptr()
             .offset(0 as libc::c_int as isize))
         .as_ptr()
-        .offset(0 as libc::c_int as isize) as *const opus_int8;
+        .offset(0 as libc::c_int as isize) as *const i8;
         cbk_size = PE_NB_CBKS_STAGE3_10MS;
     }
-    min_lag = 2 as libc::c_int as opus_int16 as opus_int32 * Fs_kHz as opus_int16 as opus_int32;
-    max_lag = 18 as libc::c_int as opus_int16 as opus_int32 * Fs_kHz as opus_int16 as opus_int32;
+    min_lag = 2 as libc::c_int as i16 as i32 * Fs_kHz as i16 as i32;
+    max_lag = 18 as libc::c_int as i16 as i32 * Fs_kHz as i16 as i32;
     lag = min_lag + lagIndex as libc::c_int;
     k = 0 as libc::c_int;
     while k < nb_subfr {

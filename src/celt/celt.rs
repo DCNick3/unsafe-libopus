@@ -18,14 +18,6 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     use super::types_h::{__int16_t, __int32_t};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:36"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "53:4"]
-    pub type opus_int16 = int16_t;
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::{int16_t, int32_t};
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:36"]
 pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]
@@ -134,13 +126,12 @@ pub mod kiss_fft_h {
         pub nfft: libc::c_int,
         pub scale: opus_val16,
         pub shift: libc::c_int,
-        pub factors: [opus_int16; 16],
-        pub bitrev: *const opus_int16,
+        pub factors: [i16; 16],
+        pub bitrev: *const i16,
         pub twiddles: *const kiss_twiddle_cpx,
         pub arch_fft: *mut arch_fft_state,
     }
     use super::arch_h::opus_val16;
-    use super::opus_types_h::opus_int16;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:37"]
 pub mod mdct_h {
@@ -161,18 +152,18 @@ pub mod modes_h {
     #[repr(C)]
     #[c2rust::src_loc = "52:8"]
     pub struct OpusCustomMode {
-        pub Fs: opus_int32,
+        pub Fs: i32,
         pub overlap: libc::c_int,
         pub nbEBands: libc::c_int,
         pub effEBands: libc::c_int,
         pub preemph: [opus_val16; 4],
-        pub eBands: *const opus_int16,
+        pub eBands: *const i16,
         pub maxLM: libc::c_int,
         pub nbShortMdcts: libc::c_int,
         pub shortMdctSize: libc::c_int,
         pub nbAllocVectors: libc::c_int,
         pub allocVectors: *const libc::c_uchar,
-        pub logN: *const opus_int16,
+        pub logN: *const i16,
         pub window: *const opus_val16,
         pub mdct: mdct_lookup,
         pub cache: PulseCache,
@@ -182,13 +173,12 @@ pub mod modes_h {
     #[c2rust::src_loc = "42:9"]
     pub struct PulseCache {
         pub size: libc::c_int,
-        pub index: *const opus_int16,
+        pub index: *const i16,
         pub bits: *const libc::c_uchar,
         pub caps: *const libc::c_uchar,
     }
     use super::arch_h::opus_val16;
     use super::mdct_h::mdct_lookup;
-    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/usr/include/stdio.h:36"]
 pub mod stdio_h {
@@ -222,7 +212,6 @@ pub use self::arch_h::{celt_fatal, opus_val16, opus_val32};
 pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::mdct_h::mdct_lookup;
 pub use self::modes_h::{OpusCustomMode, PulseCache};
-pub use self::opus_types_h::{opus_int16, opus_int32};
 pub use self::stddef_h::size_t;
 pub use self::stdint_intn_h::{int16_t, int32_t};
 pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
@@ -233,7 +222,7 @@ use self::string_h::memmove;
 
 #[no_mangle]
 #[c2rust::src_loc = "62:1"]
-pub unsafe extern "C" fn resampling_factor(rate: opus_int32) -> libc::c_int {
+pub unsafe extern "C" fn resampling_factor(rate: i32) -> libc::c_int {
     let mut ret: libc::c_int = 0;
     match rate {
         48000 => {

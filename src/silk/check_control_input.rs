@@ -10,26 +10,20 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     use super::types_h::__int32_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::int32_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/control.h:32"]
 pub mod control_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "46:9"]
     pub struct silk_EncControlStruct {
-        pub nChannelsAPI: opus_int32,
-        pub nChannelsInternal: opus_int32,
-        pub API_sampleRate: opus_int32,
-        pub maxInternalSampleRate: opus_int32,
-        pub minInternalSampleRate: opus_int32,
-        pub desiredInternalSampleRate: opus_int32,
+        pub nChannelsAPI: i32,
+        pub nChannelsInternal: i32,
+        pub API_sampleRate: i32,
+        pub maxInternalSampleRate: i32,
+        pub minInternalSampleRate: i32,
+        pub desiredInternalSampleRate: i32,
         pub payloadSize_ms: libc::c_int,
-        pub bitRate: opus_int32,
+        pub bitRate: i32,
         pub packetLossPercentage: libc::c_int,
         pub complexity: libc::c_int,
         pub useInBandFEC: libc::c_int,
@@ -40,7 +34,7 @@ pub mod control_h {
         pub toMono: libc::c_int,
         pub opusCanSwitch: libc::c_int,
         pub reducedDependency: libc::c_int,
-        pub internalSampleRate: opus_int32,
+        pub internalSampleRate: i32,
         pub allowBandwidthSwitch: libc::c_int,
         pub inWBmodeWithoutVariableLP: libc::c_int,
         pub stereoWidth_Q14: libc::c_int,
@@ -48,7 +42,6 @@ pub mod control_h {
         pub signalType: libc::c_int,
         pub offset: libc::c_int,
     }
-    use super::opus_types_h::opus_int32;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
 pub mod arch_h {
@@ -95,7 +88,6 @@ pub use self::errors_h::{
     SILK_ENC_INVALID_DTX_SETTING, SILK_ENC_INVALID_INBAND_FEC_SETTING, SILK_ENC_INVALID_LOSS_RATE,
     SILK_ENC_INVALID_NUMBER_OF_CHANNELS_ERROR, SILK_ENC_PACKET_SIZE_NOT_SUPPORTED, SILK_NO_ERROR,
 };
-pub use self::opus_types_h::opus_int32;
 pub use self::stdint_intn_h::int32_t;
 pub use self::types_h::__int32_t;
 #[no_mangle]

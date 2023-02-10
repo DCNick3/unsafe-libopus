@@ -10,12 +10,6 @@ pub mod stdint_intn_h {
     pub type int16_t = __int16_t;
     use super::types_h::__int16_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:48"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "53:4"]
-    pub type opus_int16 = int16_t;
-    use super::stdint_intn_h::int16_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:48"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
@@ -51,13 +45,12 @@ pub mod kiss_fft_h {
         pub nfft: libc::c_int,
         pub scale: opus_val16,
         pub shift: libc::c_int,
-        pub factors: [opus_int16; 16],
-        pub bitrev: *const opus_int16,
+        pub factors: [i16; 16],
+        pub bitrev: *const i16,
         pub twiddles: *const kiss_twiddle_cpx,
         pub arch_fft: *mut arch_fft_state,
     }
     use super::arch_h::opus_val16;
-    use super::opus_types_h::opus_int16;
     extern "C" {
         #[c2rust::src_loc = "145:1"]
         pub fn opus_fft_impl(st: *const kiss_fft_state, fout: *mut kiss_fft_cpx);
@@ -81,7 +74,6 @@ pub use self::kiss_fft_h::{
     arch_fft_state, kiss_fft_cpx, kiss_fft_state, kiss_twiddle_cpx, opus_fft_impl,
 };
 pub use self::mdct_h::mdct_lookup;
-pub use self::opus_types_h::opus_int16;
 pub use self::stdint_intn_h::int16_t;
 pub use self::types_h::__int16_t;
 #[no_mangle]
@@ -250,7 +242,7 @@ pub unsafe extern "C" fn clt_mdct_backward_c(
     let mut xp2: *const libc::c_float = in_0.offset((stride * (N2 - 1 as libc::c_int)) as isize);
     let yp: *mut libc::c_float = out.offset((overlap >> 1 as libc::c_int) as isize);
     let t: *const libc::c_float = &*trig.offset(0 as libc::c_int as isize) as *const libc::c_float;
-    let mut bitrev: *const opus_int16 = (*(*l).kfft[shift as usize]).bitrev;
+    let mut bitrev: *const i16 = (*(*l).kfft[shift as usize]).bitrev;
     i = 0 as libc::c_int;
     while i < N4 {
         let mut rev: libc::c_int = 0;

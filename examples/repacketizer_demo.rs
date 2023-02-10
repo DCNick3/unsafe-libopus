@@ -36,15 +36,6 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     use super::types_h::__uint32_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    #[c2rust::src_loc = "56:4"]
-    pub type opus_uint32 = uint32_t;
-    use super::stdint_intn_h::int32_t;
-    use super::stdint_uintn_h::uint32_t;
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:33"]
 pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]
@@ -162,7 +153,6 @@ pub mod string_h {
         pub fn strcmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
     }
 }
-pub use self::opus_types_h::opus_uint32;
 use self::stdio_h::{fclose, feof, fopen, fprintf, fread, fwrite, stderr};
 pub use self::stdlib_h::atoi;
 use self::string_h::strcmp;
@@ -182,7 +172,7 @@ pub unsafe extern "C" fn usage(mut argv0: *mut libc::c_char) {
     );
 }
 #[c2rust::src_loc = "44:1"]
-unsafe extern "C" fn int_to_char(mut i: opus_uint32, mut ch: *mut libc::c_uchar) {
+unsafe extern "C" fn int_to_char(mut i: u32, mut ch: *mut libc::c_uchar) {
     *ch.offset(0 as libc::c_int as isize) = (i >> 24 as libc::c_int) as libc::c_uchar;
     *ch.offset(1 as libc::c_int as isize) =
         (i >> 16 as libc::c_int & 0xff as libc::c_int as libc::c_uint) as libc::c_uchar;
@@ -192,11 +182,11 @@ unsafe extern "C" fn int_to_char(mut i: opus_uint32, mut ch: *mut libc::c_uchar)
         (i & 0xff as libc::c_int as libc::c_uint) as libc::c_uchar;
 }
 #[c2rust::src_loc = "52:1"]
-unsafe extern "C" fn char_to_int(mut ch: *mut libc::c_uchar) -> opus_uint32 {
-    (*ch.offset(0 as libc::c_int as isize) as opus_uint32) << 24 as libc::c_int
-        | (*ch.offset(1 as libc::c_int as isize) as opus_uint32) << 16 as libc::c_int
-        | (*ch.offset(2 as libc::c_int as isize) as opus_uint32) << 8 as libc::c_int
-        | *ch.offset(3 as libc::c_int as isize) as opus_uint32
+unsafe extern "C" fn char_to_int(mut ch: *mut libc::c_uchar) -> u32 {
+    (*ch.offset(0 as libc::c_int as isize) as u32) << 24 as libc::c_int
+        | (*ch.offset(1 as libc::c_int as isize) as u32) << 16 as libc::c_int
+        | (*ch.offset(2 as libc::c_int as isize) as u32) << 8 as libc::c_int
+        | *ch.offset(3 as libc::c_int as isize) as u32
 }
 #[c2rust::src_loc = "58:1"]
 unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> libc::c_int {
@@ -354,7 +344,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
             err = opus_repacketizer_out(rp, output_packet.as_mut_ptr(), 32000 as libc::c_int);
             if err > 0 as libc::c_int {
                 let mut int_field: [libc::c_uchar; 4] = [0; 4];
-                int_to_char(err as opus_uint32, int_field.as_mut_ptr());
+                int_to_char(err as u32, int_field.as_mut_ptr());
                 if fwrite(
                     int_field.as_mut_ptr() as *const libc::c_void,
                     1 as libc::c_int as libc::c_ulong,
@@ -369,7 +359,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                     return 1 as libc::c_int;
                 }
                 int_to_char(
-                    rng[(nb_packets - 1 as libc::c_int) as usize] as opus_uint32,
+                    rng[(nb_packets - 1 as libc::c_int) as usize] as u32,
                     int_field.as_mut_ptr(),
                 );
                 if fwrite(
@@ -418,7 +408,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                 );
                 if err > 0 as libc::c_int {
                     let mut int_field_0: [libc::c_uchar; 4] = [0; 4];
-                    int_to_char(err as opus_uint32, int_field_0.as_mut_ptr());
+                    int_to_char(err as u32, int_field_0.as_mut_ptr());
                     if fwrite(
                         int_field_0.as_mut_ptr() as *const libc::c_void,
                         1 as libc::c_int as libc::c_ulong,
@@ -434,11 +424,11 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                     }
                     if i == nb_frames - 1 as libc::c_int {
                         int_to_char(
-                            rng[(nb_packets - 1 as libc::c_int) as usize] as opus_uint32,
+                            rng[(nb_packets - 1 as libc::c_int) as usize] as u32,
                             int_field_0.as_mut_ptr(),
                         );
                     } else {
-                        int_to_char(0 as libc::c_int as opus_uint32, int_field_0.as_mut_ptr());
+                        int_to_char(0 as libc::c_int as u32, int_field_0.as_mut_ptr());
                     }
                     if fwrite(
                         int_field_0.as_mut_ptr() as *const libc::c_void,

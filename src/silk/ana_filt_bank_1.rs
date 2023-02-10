@@ -26,19 +26,6 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     use super::types_h::__uint32_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "53:4"]
-    pub type opus_int16 = int16_t;
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    #[c2rust::src_loc = "56:4"]
-    pub type opus_uint32 = uint32_t;
-    #[c2rust::src_loc = "57:4"]
-    pub type opus_int64 = int64_t;
-    use super::stdint_intn_h::{int16_t, int32_t, int64_t};
-    use super::stdint_uintn_h::uint32_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
     #[c2rust::src_loc = "45:9"]
@@ -46,45 +33,42 @@ pub mod typedef_h {
     #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
 }
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
 pub use self::stdint_uintn_h::uint32_t;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 pub use self::types_h::{__int16_t, __int32_t, __int64_t, __uint32_t};
 #[c2rust::src_loc = "35:19"]
-static mut A_fb1_20: opus_int16 = ((5394 as libc::c_int) << 1 as libc::c_int) as opus_int16;
+static mut A_fb1_20: i16 = ((5394 as libc::c_int) << 1 as libc::c_int) as i16;
 #[c2rust::src_loc = "36:19"]
-static mut A_fb1_21: opus_int16 = -(24290 as libc::c_int) as opus_int16;
+static mut A_fb1_21: i16 = -(24290 as libc::c_int) as i16;
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_ana_filt_bank_1(
-    in_0: *const opus_int16,
-    S: *mut opus_int32,
-    outL: *mut opus_int16,
-    outH: *mut opus_int16,
-    N: opus_int32,
+    in_0: *const i16,
+    S: *mut i32,
+    outL: *mut i16,
+    outH: *mut i16,
+    N: i32,
 ) {
     let mut k: libc::c_int = 0;
     let N2: libc::c_int = N >> 1 as libc::c_int;
-    let mut in32: opus_int32 = 0;
-    let mut X: opus_int32 = 0;
-    let mut Y: opus_int32 = 0;
-    let mut out_1: opus_int32 = 0;
-    let mut out_2: opus_int32 = 0;
+    let mut in32: i32 = 0;
+    let mut X: i32 = 0;
+    let mut Y: i32 = 0;
+    let mut out_1: i32 = 0;
+    let mut out_2: i32 = 0;
     k = 0 as libc::c_int;
     while k < N2 {
-        in32 = ((*in_0.offset((2 as libc::c_int * k) as isize) as opus_int32 as opus_uint32)
-            << 10 as libc::c_int) as opus_int32;
+        in32 = ((*in_0.offset((2 as libc::c_int * k) as isize) as i32 as u32) << 10 as libc::c_int)
+            as i32;
         Y = in32 - *S.offset(0 as libc::c_int as isize);
-        X = (Y as libc::c_long + (Y as libc::c_long * A_fb1_21 as opus_int64 >> 16 as libc::c_int))
-            as opus_int32;
+        X = (Y as libc::c_long + (Y as libc::c_long * A_fb1_21 as i64 >> 16 as libc::c_int)) as i32;
         out_1 = *S.offset(0 as libc::c_int as isize) + X;
         *S.offset(0 as libc::c_int as isize) = in32 + X;
-        in32 = ((*in_0.offset((2 as libc::c_int * k + 1 as libc::c_int) as isize) as opus_int32
-            as opus_uint32)
-            << 10 as libc::c_int) as opus_int32;
+        in32 = ((*in_0.offset((2 as libc::c_int * k + 1 as libc::c_int) as isize) as i32 as u32)
+            << 10 as libc::c_int) as i32;
         Y = in32 - *S.offset(1 as libc::c_int as isize);
-        X = (Y as libc::c_long * A_fb1_20 as opus_int64 >> 16 as libc::c_int) as opus_int32;
+        X = (Y as libc::c_long * A_fb1_20 as i64 >> 16 as libc::c_int) as i32;
         out_2 = *S.offset(1 as libc::c_int as isize) + X;
         *S.offset(1 as libc::c_int as isize) = in32 + X;
         *outL.offset(k as isize) = (if (if 11 as libc::c_int == 1 as libc::c_int {
@@ -108,7 +92,7 @@ pub unsafe extern "C" fn silk_ana_filt_bank_1(
         } else {
             (out_2 + out_1 >> 11 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                 >> 1 as libc::c_int
-        }) as opus_int16;
+        }) as i16;
         *outH.offset(k as isize) = (if (if 11 as libc::c_int == 1 as libc::c_int {
             (out_2 - out_1 >> 1 as libc::c_int) + (out_2 - out_1 & 1 as libc::c_int)
         } else {
@@ -130,7 +114,7 @@ pub unsafe extern "C" fn silk_ana_filt_bank_1(
         } else {
             (out_2 - out_1 >> 11 as libc::c_int - 1 as libc::c_int) + 1 as libc::c_int
                 >> 1 as libc::c_int
-        }) as opus_int16;
+        }) as i16;
         k += 1;
     }
 }

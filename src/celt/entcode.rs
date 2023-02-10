@@ -10,36 +10,29 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     use super::types_h::__uint32_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "56:4"]
-    pub type opus_uint32 = uint32_t;
-    use super::stdint_uintn_h::uint32_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:32"]
 pub mod entcode_h {
     #[c2rust::src_loc = "45:1"]
-    pub type ec_window = opus_uint32;
+    pub type ec_window = u32;
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "62:8"]
     pub struct ec_ctx {
         pub buf: *mut libc::c_uchar,
-        pub storage: opus_uint32,
-        pub end_offs: opus_uint32,
+        pub storage: u32,
+        pub end_offs: u32,
         pub end_window: ec_window,
         pub nend_bits: libc::c_int,
         pub nbits_total: libc::c_int,
-        pub offs: opus_uint32,
-        pub rng: opus_uint32,
-        pub val: opus_uint32,
-        pub ext: opus_uint32,
+        pub offs: u32,
+        pub rng: u32,
+        pub val: u32,
+        pub ext: u32,
         pub rem: libc::c_int,
         pub error: libc::c_int,
     }
     #[c2rust::src_loc = "57:10"]
     pub const BITRES: libc::c_int = 3 as libc::c_int;
-    use super::opus_types_h::opus_uint32;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:32"]
 pub mod ecintrin_h {
@@ -64,12 +57,11 @@ pub use self::ecintrin_h::EC_CLZ0;
 pub use self::entcode_h::{ec_ctx, ec_window, BITRES};
 pub use self::internal::__CHAR_BIT__;
 pub use self::limits_h::CHAR_BIT;
-pub use self::opus_types_h::opus_uint32;
 pub use self::stdint_uintn_h::uint32_t;
 pub use self::types_h::__uint32_t;
 #[no_mangle]
 #[c2rust::src_loc = "69:1"]
-pub unsafe extern "C" fn ec_tell_frac(mut _this: *mut ec_ctx) -> opus_uint32 {
+pub unsafe extern "C" fn ec_tell_frac(mut _this: *mut ec_ctx) -> u32 {
     static mut correction: [libc::c_uint; 8] = [
         35733 as libc::c_int as libc::c_uint,
         38967 as libc::c_int as libc::c_uint,
@@ -80,11 +72,11 @@ pub unsafe extern "C" fn ec_tell_frac(mut _this: *mut ec_ctx) -> opus_uint32 {
         60097 as libc::c_int as libc::c_uint,
         65535 as libc::c_int as libc::c_uint,
     ];
-    let mut nbits: opus_uint32 = 0;
-    let mut r: opus_uint32 = 0;
+    let mut nbits: u32 = 0;
+    let mut r: u32 = 0;
     let mut l: libc::c_int = 0;
     let mut b: libc::c_uint = 0;
-    nbits = ((*_this).nbits_total << BITRES) as opus_uint32;
+    nbits = ((*_this).nbits_total << BITRES) as u32;
     l = EC_CLZ0 - ((*_this).rng).leading_zeros() as i32;
     r = (*_this).rng >> l - 16 as libc::c_int;
     b = (r >> 12 as libc::c_int).wrapping_sub(8 as libc::c_int as libc::c_uint);

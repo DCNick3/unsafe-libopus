@@ -26,43 +26,29 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     use super::types_h::{__uint32_t, __uint8_t};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "51:4"]
-    pub type opus_int8 = int8_t;
-    #[c2rust::src_loc = "52:4"]
-    pub type opus_uint8 = uint8_t;
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    #[c2rust::src_loc = "56:4"]
-    pub type opus_uint32 = uint32_t;
-    use super::stdint_intn_h::{int32_t, int8_t};
-    use super::stdint_uintn_h::{uint32_t, uint8_t};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:32"]
 pub mod entcode_h {
     #[c2rust::src_loc = "45:1"]
-    pub type ec_window = opus_uint32;
+    pub type ec_window = u32;
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "62:8"]
     pub struct ec_ctx {
         pub buf: *mut libc::c_uchar,
-        pub storage: opus_uint32,
-        pub end_offs: opus_uint32,
+        pub storage: u32,
+        pub end_offs: u32,
         pub end_window: ec_window,
         pub nend_bits: libc::c_int,
         pub nbits_total: libc::c_int,
-        pub offs: opus_uint32,
-        pub rng: opus_uint32,
-        pub val: opus_uint32,
-        pub ext: opus_uint32,
+        pub offs: u32,
+        pub rng: u32,
+        pub val: u32,
+        pub ext: u32,
         pub rem: libc::c_int,
         pub error: libc::c_int,
     }
     #[c2rust::src_loc = "47:1"]
     pub type ec_enc = ec_ctx;
-    use super::opus_types_h::opus_uint32;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
 pub mod arch_h {
@@ -97,31 +83,29 @@ pub mod entenc_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
 pub mod tables_h {
-    use super::opus_types_h::opus_uint8;
     extern "C" {
         #[c2rust::src_loc = "50:26"]
-        pub static silk_pulses_per_block_iCDF: [[opus_uint8; 18]; 10];
+        pub static silk_pulses_per_block_iCDF: [[u8; 18]; 10];
         #[c2rust::src_loc = "51:26"]
-        pub static silk_pulses_per_block_BITS_Q5: [[opus_uint8; 18]; 9];
+        pub static silk_pulses_per_block_BITS_Q5: [[u8; 18]; 9];
         #[c2rust::src_loc = "53:26"]
-        pub static silk_rate_levels_iCDF: [[opus_uint8; 9]; 2];
+        pub static silk_rate_levels_iCDF: [[u8; 9]; 2];
         #[c2rust::src_loc = "54:26"]
-        pub static silk_rate_levels_BITS_Q5: [[opus_uint8; 9]; 2];
+        pub static silk_rate_levels_BITS_Q5: [[u8; 9]; 2];
         #[c2rust::src_loc = "56:26"]
-        pub static silk_max_pulses_table: [opus_uint8; 4];
+        pub static silk_max_pulses_table: [u8; 4];
         #[c2rust::src_loc = "64:26"]
-        pub static silk_lsb_iCDF: [opus_uint8; 2];
+        pub static silk_lsb_iCDF: [u8; 2];
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
     use super::entcode_h::ec_enc;
-    use super::opus_types_h::opus_int8;
     extern "C" {
         #[c2rust::src_loc = "115:1"]
         pub fn silk_encode_signs(
             psRangeEnc: *mut ec_enc,
-            pulses: *const opus_int8,
+            pulses: *const i8,
             length: libc::c_int,
             signalType: libc::c_int,
             quantOffsetType: libc::c_int,
@@ -150,7 +134,6 @@ pub use self::define_h::{N_RATE_LEVELS, SHELL_CODEC_FRAME_LENGTH, SILK_MAX_PULSE
 pub use self::entcode_h::{ec_ctx, ec_enc, ec_window};
 use self::entenc_h::ec_enc_icdf;
 use self::main_h::{silk_encode_signs, silk_shell_encoder};
-pub use self::opus_types_h::{opus_int32, opus_int8, opus_uint32, opus_uint8};
 pub use self::stdint_intn_h::{int32_t, int8_t};
 pub use self::stdint_uintn_h::{uint32_t, uint8_t};
 use self::string_h::memset;
@@ -188,7 +171,7 @@ pub unsafe extern "C" fn silk_encode_pulses(
     psRangeEnc: *mut ec_enc,
     signalType: libc::c_int,
     quantOffsetType: libc::c_int,
-    pulses: *mut opus_int8,
+    pulses: *mut i8,
     frame_length: libc::c_int,
 ) {
     let mut i: libc::c_int = 0;
@@ -199,14 +182,14 @@ pub unsafe extern "C" fn silk_encode_pulses(
     let mut nLS: libc::c_int = 0;
     let mut scale_down: libc::c_int = 0;
     let mut RateLevelIndex: libc::c_int = 0 as libc::c_int;
-    let mut abs_q: opus_int32 = 0;
-    let mut minSumBits_Q5: opus_int32 = 0;
-    let mut sumBits_Q5: opus_int32 = 0;
+    let mut abs_q: i32 = 0;
+    let mut minSumBits_Q5: i32 = 0;
+    let mut sumBits_Q5: i32 = 0;
     let mut pulses_comb: [libc::c_int; 8] = [0; 8];
     let mut abs_pulses_ptr: *mut libc::c_int = 0 as *mut libc::c_int;
-    let mut pulses_ptr: *const opus_int8 = 0 as *const opus_int8;
-    let mut cdf_ptr: *const opus_uint8 = 0 as *const opus_uint8;
-    let mut nBits_ptr: *const opus_uint8 = 0 as *const opus_uint8;
+    let mut pulses_ptr: *const i8 = 0 as *const i8;
+    let mut cdf_ptr: *const u8 = 0 as *const u8;
+    let mut nBits_ptr: *const u8 = 0 as *const u8;
     memset(
         pulses_comb.as_mut_ptr() as *mut libc::c_void,
         0 as libc::c_int,
@@ -224,10 +207,10 @@ pub unsafe extern "C" fn silk_encode_pulses(
         }
         iter += 1;
         memset(
-            &mut *pulses.offset(frame_length as isize) as *mut opus_int8 as *mut libc::c_void,
+            &mut *pulses.offset(frame_length as isize) as *mut i8 as *mut libc::c_void,
             0 as libc::c_int,
             (16 as libc::c_int as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<opus_int8>() as libc::c_ulong),
+                .wrapping_mul(::core::mem::size_of::<i8>() as libc::c_ulong),
         );
     }
     let vla = (iter * 16 as libc::c_int) as usize;
@@ -320,8 +303,8 @@ pub unsafe extern "C" fn silk_encode_pulses(
     k = 0 as libc::c_int;
     while k < N_RATE_LEVELS - 1 as libc::c_int {
         nBits_ptr = (silk_pulses_per_block_BITS_Q5[k as usize]).as_ptr();
-        sumBits_Q5 = silk_rate_levels_BITS_Q5[(signalType >> 1 as libc::c_int) as usize][k as usize]
-            as opus_int32;
+        sumBits_Q5 =
+            silk_rate_levels_BITS_Q5[(signalType >> 1 as libc::c_int) as usize][k as usize] as i32;
         i = 0 as libc::c_int;
         while i < iter {
             if *nRshifts.as_mut_ptr().offset(i as isize) > 0 as libc::c_int {
@@ -398,8 +381,7 @@ pub unsafe extern "C" fn silk_encode_pulses(
     i = 0 as libc::c_int;
     while i < iter {
         if *nRshifts.as_mut_ptr().offset(i as isize) > 0 as libc::c_int {
-            pulses_ptr =
-                &mut *pulses.offset((i * SHELL_CODEC_FRAME_LENGTH) as isize) as *mut opus_int8;
+            pulses_ptr = &mut *pulses.offset((i * SHELL_CODEC_FRAME_LENGTH) as isize) as *mut i8;
             nLS = *nRshifts.as_mut_ptr().offset(i as isize) - 1 as libc::c_int;
             k = 0 as libc::c_int;
             while k < SHELL_CODEC_FRAME_LENGTH {
@@ -407,7 +389,7 @@ pub unsafe extern "C" fn silk_encode_pulses(
                     *pulses_ptr.offset(k as isize) as libc::c_int
                 } else {
                     -(*pulses_ptr.offset(k as isize) as libc::c_int)
-                }) as opus_int8 as opus_int32;
+                }) as i8 as i32;
                 j = nLS;
                 while j > 0 as libc::c_int {
                     bit = abs_q >> j & 1 as libc::c_int;
@@ -433,7 +415,7 @@ pub unsafe extern "C" fn silk_encode_pulses(
     }
     silk_encode_signs(
         psRangeEnc,
-        pulses as *const opus_int8,
+        pulses as *const i8,
         frame_length,
         signalType,
         quantOffsetType,

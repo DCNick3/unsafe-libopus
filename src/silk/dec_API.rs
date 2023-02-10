@@ -30,31 +30,16 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     use super::types_h::{__uint32_t, __uint8_t};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:31"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "51:4"]
-    pub type opus_int8 = int8_t;
-    #[c2rust::src_loc = "52:4"]
-    pub type opus_uint8 = uint8_t;
-    #[c2rust::src_loc = "53:4"]
-    pub type opus_int16 = int16_t;
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    #[c2rust::src_loc = "56:4"]
-    pub type opus_uint32 = uint32_t;
-    use super::stdint_intn_h::{int16_t, int32_t, int8_t};
-    use super::stdint_uintn_h::{uint32_t, uint8_t};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/control.h:31"]
 pub mod control_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "126:9"]
     pub struct silk_DecControlStruct {
-        pub nChannelsAPI: opus_int32,
-        pub nChannelsInternal: opus_int32,
-        pub API_sampleRate: opus_int32,
-        pub internalSampleRate: opus_int32,
+        pub nChannelsAPI: i32,
+        pub nChannelsInternal: i32,
+        pub API_sampleRate: i32,
+        pub internalSampleRate: i32,
         pub payloadSize_ms: libc::c_int,
         pub prevPitchLag: libc::c_int,
     }
@@ -64,32 +49,30 @@ pub mod control_h {
     pub const FLAG_DECODE_LBRR: libc::c_int = 2 as libc::c_int;
     #[c2rust::src_loc = "40:9"]
     pub const FLAG_PACKET_LOST: libc::c_int = 1 as libc::c_int;
-    use super::opus_types_h::opus_int32;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:31"]
 pub mod entcode_h {
     #[c2rust::src_loc = "45:1"]
-    pub type ec_window = opus_uint32;
+    pub type ec_window = u32;
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "62:8"]
     pub struct ec_ctx {
         pub buf: *mut libc::c_uchar,
-        pub storage: opus_uint32,
-        pub end_offs: opus_uint32,
+        pub storage: u32,
+        pub end_offs: u32,
         pub end_window: ec_window,
         pub nend_bits: libc::c_int,
         pub nbits_total: libc::c_int,
-        pub offs: opus_uint32,
-        pub rng: opus_uint32,
-        pub val: opus_uint32,
-        pub ext: opus_uint32,
+        pub offs: u32,
+        pub rng: u32,
+        pub val: u32,
+        pub ext: u32,
         pub rem: libc::c_int,
         pub error: libc::c_int,
     }
     #[c2rust::src_loc = "48:1"]
     pub type ec_dec = ec_ctx;
-    use super::opus_types_h::opus_uint32;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
 pub mod structs_h {
@@ -97,35 +80,35 @@ pub mod structs_h {
     #[repr(C)]
     #[c2rust::src_loc = "112:9"]
     pub struct stereo_dec_state {
-        pub pred_prev_Q13: [opus_int16; 2],
-        pub sMid: [opus_int16; 2],
-        pub sSide: [opus_int16; 2],
+        pub pred_prev_Q13: [i16; 2],
+        pub sMid: [i16; 2],
+        pub sSide: [i16; 2],
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "261:9"]
     pub struct silk_decoder_state {
-        pub prev_gain_Q16: opus_int32,
-        pub exc_Q14: [opus_int32; 320],
-        pub sLPC_Q14_buf: [opus_int32; 16],
-        pub outBuf: [opus_int16; 480],
+        pub prev_gain_Q16: i32,
+        pub exc_Q14: [i32; 320],
+        pub sLPC_Q14_buf: [i32; 16],
+        pub outBuf: [i16; 480],
         pub lagPrev: libc::c_int,
-        pub LastGainIndex: opus_int8,
+        pub LastGainIndex: i8,
         pub fs_kHz: libc::c_int,
-        pub fs_API_hz: opus_int32,
+        pub fs_API_hz: i32,
         pub nb_subfr: libc::c_int,
         pub frame_length: libc::c_int,
         pub subfr_length: libc::c_int,
         pub ltp_mem_length: libc::c_int,
         pub LPC_order: libc::c_int,
-        pub prevNLSF_Q15: [opus_int16; 16],
+        pub prevNLSF_Q15: [i16; 16],
         pub first_frame_after_reset: libc::c_int,
-        pub pitch_lag_low_bits_iCDF: *const opus_uint8,
-        pub pitch_contour_iCDF: *const opus_uint8,
+        pub pitch_lag_low_bits_iCDF: *const u8,
+        pub pitch_contour_iCDF: *const u8,
         pub nFramesDecoded: libc::c_int,
         pub nFramesPerPacket: libc::c_int,
         pub ec_prevSignalType: libc::c_int,
-        pub ec_prevLagIndex: opus_int16,
+        pub ec_prevLagIndex: i16,
         pub VAD_flags: [libc::c_int; 3],
         pub LBRR_flag: libc::c_int,
         pub LBRR_flags: [libc::c_int; 3],
@@ -142,16 +125,16 @@ pub mod structs_h {
     #[repr(C)]
     #[c2rust::src_loc = "232:9"]
     pub struct silk_PLC_struct {
-        pub pitchL_Q8: opus_int32,
-        pub LTPCoef_Q14: [opus_int16; 5],
-        pub prevLPC_Q12: [opus_int16; 16],
+        pub pitchL_Q8: i32,
+        pub LTPCoef_Q14: [i16; 5],
+        pub prevLPC_Q12: [i16; 16],
         pub last_frame_lost: libc::c_int,
-        pub rand_seed: opus_int32,
-        pub randScale_Q14: opus_int16,
-        pub conc_energy: opus_int32,
+        pub rand_seed: i32,
+        pub randScale_Q14: i16,
+        pub conc_energy: i32,
         pub conc_energy_shift: libc::c_int,
-        pub prevLTP_scale_Q14: opus_int16,
-        pub prevGain_Q16: [opus_int32; 2],
+        pub prevLTP_scale_Q14: i16,
+        pub prevGain_Q16: [i32; 2],
         pub fs_kHz: libc::c_int,
         pub nb_subfr: libc::c_int,
         pub subfr_length: libc::c_int,
@@ -160,47 +143,46 @@ pub mod structs_h {
     #[repr(C)]
     #[c2rust::src_loc = "249:9"]
     pub struct silk_CNG_struct {
-        pub CNG_exc_buf_Q14: [opus_int32; 320],
-        pub CNG_smth_NLSF_Q15: [opus_int16; 16],
-        pub CNG_synth_state: [opus_int32; 16],
-        pub CNG_smth_Gain_Q16: opus_int32,
-        pub rand_seed: opus_int32,
+        pub CNG_exc_buf_Q14: [i32; 320],
+        pub CNG_smth_NLSF_Q15: [i16; 16],
+        pub CNG_synth_state: [i32; 16],
+        pub CNG_smth_Gain_Q16: i32,
+        pub rand_seed: i32,
         pub fs_kHz: libc::c_int,
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "118:9"]
     pub struct SideInfoIndices {
-        pub GainsIndices: [opus_int8; 4],
-        pub LTPIndex: [opus_int8; 4],
-        pub NLSFIndices: [opus_int8; 17],
-        pub lagIndex: opus_int16,
-        pub contourIndex: opus_int8,
-        pub signalType: opus_int8,
-        pub quantOffsetType: opus_int8,
-        pub NLSFInterpCoef_Q2: opus_int8,
-        pub PERIndex: opus_int8,
-        pub LTP_scaleIndex: opus_int8,
-        pub Seed: opus_int8,
+        pub GainsIndices: [i8; 4],
+        pub LTPIndex: [i8; 4],
+        pub NLSFIndices: [i8; 17],
+        pub lagIndex: i16,
+        pub contourIndex: i8,
+        pub signalType: i8,
+        pub quantOffsetType: i8,
+        pub NLSFInterpCoef_Q2: i8,
+        pub PERIndex: i8,
+        pub LTP_scaleIndex: i8,
+        pub Seed: i8,
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "85:9"]
     pub struct silk_NLSF_CB_struct {
-        pub nVectors: opus_int16,
-        pub order: opus_int16,
-        pub quantStepSize_Q16: opus_int16,
-        pub invQuantStepSize_Q6: opus_int16,
-        pub CB1_NLSF_Q8: *const opus_uint8,
-        pub CB1_Wght_Q9: *const opus_int16,
-        pub CB1_iCDF: *const opus_uint8,
-        pub pred_Q8: *const opus_uint8,
-        pub ec_sel: *const opus_uint8,
-        pub ec_iCDF: *const opus_uint8,
-        pub ec_Rates_Q5: *const opus_uint8,
-        pub deltaMin_Q15: *const opus_int16,
+        pub nVectors: i16,
+        pub order: i16,
+        pub quantStepSize_Q16: i16,
+        pub invQuantStepSize_Q6: i16,
+        pub CB1_NLSF_Q8: *const u8,
+        pub CB1_Wght_Q9: *const i16,
+        pub CB1_iCDF: *const u8,
+        pub pred_Q8: *const u8,
+        pub ec_sel: *const u8,
+        pub ec_iCDF: *const u8,
+        pub ec_Rates_Q5: *const u8,
+        pub deltaMin_Q15: *const i16,
     }
-    use super::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint8};
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:32"]
@@ -211,27 +193,26 @@ pub mod resampler_structs_h {
     #[repr(C)]
     #[c2rust::src_loc = "38:16"]
     pub struct _silk_resampler_state_struct {
-        pub sIIR: [opus_int32; 6],
+        pub sIIR: [i32; 6],
         pub sFIR: C2RustUnnamed,
-        pub delayBuf: [opus_int16; 48],
+        pub delayBuf: [i16; 48],
         pub resampler_function: libc::c_int,
         pub batchSize: libc::c_int,
-        pub invRatio_Q16: opus_int32,
+        pub invRatio_Q16: i32,
         pub FIR_Order: libc::c_int,
         pub FIR_Fracs: libc::c_int,
         pub Fs_in_kHz: libc::c_int,
         pub Fs_out_kHz: libc::c_int,
         pub inputDelay: libc::c_int,
-        pub Coefs: *const opus_int16,
+        pub Coefs: *const i16,
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "40:5"]
     pub union C2RustUnnamed {
-        pub i32_0: [opus_int32; 36],
-        pub i16_0: [opus_int16; 36],
+        pub i32_0: [i32; 36],
+        pub i16_0: [i16; 36],
     }
-    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/errors.h:31"]
 pub mod errors_h {
@@ -287,7 +268,6 @@ pub mod define_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
     use super::entcode_h::ec_dec;
-    use super::opus_types_h::{opus_int16, opus_int32};
     use super::structs_h::{silk_decoder_state, stereo_dec_state};
     extern "C" {
         #[c2rust::src_loc = "109:1"]
@@ -296,11 +276,11 @@ pub mod main_h {
             decode_only_mid: *mut libc::c_int,
         );
         #[c2rust::src_loc = "103:1"]
-        pub fn silk_stereo_decode_pred(psRangeDec: *mut ec_dec, pred_Q13: *mut opus_int32);
+        pub fn silk_stereo_decode_pred(psRangeDec: *mut ec_dec, pred_Q13: *mut i32);
         #[c2rust::src_loc = "442:1"]
         pub fn silk_decode_pulses(
             psRangeDec: *mut ec_dec,
-            pulses: *mut opus_int16,
+            pulses: *mut i16,
             signalType: libc::c_int,
             quantOffsetType: libc::c_int,
             frame_length: libc::c_int,
@@ -317,14 +297,14 @@ pub mod main_h {
         pub fn silk_decoder_set_fs(
             psDec: *mut silk_decoder_state,
             fs_kHz: libc::c_int,
-            fs_API_Hz: opus_int32,
+            fs_API_Hz: i32,
         ) -> libc::c_int;
         #[c2rust::src_loc = "65:1"]
         pub fn silk_stereo_MS_to_LR(
             state: *mut stereo_dec_state,
-            x1: *mut opus_int16,
-            x2: *mut opus_int16,
-            pred_Q13: *const opus_int32,
+            x1: *mut i16,
+            x2: *mut i16,
+            pred_Q13: *const i32,
             fs_kHz: libc::c_int,
             frame_length: libc::c_int,
         );
@@ -334,8 +314,8 @@ pub mod main_h {
         pub fn silk_decode_frame(
             psDec: *mut silk_decoder_state,
             psRangeDec: *mut ec_dec,
-            pOut: *mut opus_int16,
-            pN: *mut opus_int32,
+            pOut: *mut i16,
+            pN: *mut i32,
             lostFlag: libc::c_int,
             condCoding: libc::c_int,
             arch: libc::c_int,
@@ -344,10 +324,9 @@ pub mod main_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
 pub mod tables_h {
-    use super::opus_types_h::opus_uint8;
     extern "C" {
         #[c2rust::src_loc = "93:34"]
-        pub static silk_LBRR_flags_iCDF_ptr: [*const opus_uint8; 2];
+        pub static silk_LBRR_flags_iCDF_ptr: [*const u8; 2];
     }
 }
 #[c2rust::header_src = "/usr/include/string.h:32"]
@@ -365,15 +344,14 @@ pub mod string_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
 pub mod SigProc_FIX_h {
-    use super::opus_types_h::{opus_int16, opus_int32};
     use super::resampler_structs_h::silk_resampler_state_struct;
     extern "C" {
         #[c2rust::src_loc = "72:1"]
         pub fn silk_resampler(
             S: *mut silk_resampler_state_struct,
-            out: *mut opus_int16,
-            in_0: *const opus_int16,
-            inLen: opus_int32,
+            out: *mut i16,
+            in_0: *const i16,
+            inLen: i32,
         ) -> libc::c_int;
     }
 }
@@ -394,7 +372,6 @@ use self::main_h::{
     silk_decode_frame, silk_decode_indices, silk_decode_pulses, silk_decoder_set_fs,
     silk_init_decoder, silk_stereo_MS_to_LR, silk_stereo_decode_mid_only, silk_stereo_decode_pred,
 };
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_int8, opus_uint32, opus_uint8};
 pub use self::resampler_structs_h::{
     silk_resampler_state_struct, C2RustUnnamed, _silk_resampler_state_struct,
 };
@@ -454,19 +431,19 @@ pub unsafe extern "C" fn silk_Decode(
     lostFlag: libc::c_int,
     newPacketFlag: libc::c_int,
     psRangeDec: *mut ec_dec,
-    samplesOut: *mut opus_int16,
-    nSamplesOut: *mut opus_int32,
+    samplesOut: *mut i16,
+    nSamplesOut: *mut i32,
     arch: libc::c_int,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
     let mut n: libc::c_int = 0;
     let mut decode_only_middle: libc::c_int = 0 as libc::c_int;
     let mut ret: libc::c_int = SILK_NO_ERROR;
-    let mut nSamplesOutDec: opus_int32 = 0;
-    let mut LBRR_symbol: opus_int32 = 0;
-    let mut samplesOut1_tmp: [*mut opus_int16; 2] = [0 as *mut opus_int16; 2];
-    let mut MS_pred_Q13: [opus_int32; 2] = [0 as libc::c_int, 0];
-    let mut resample_out_ptr: *mut opus_int16 = 0 as *mut opus_int16;
+    let mut nSamplesOutDec: i32 = 0;
+    let mut LBRR_symbol: i32 = 0;
+    let mut samplesOut1_tmp: [*mut i16; 2] = [0 as *mut i16; 2];
+    let mut MS_pred_Q13: [i32; 2] = [0 as libc::c_int, 0];
+    let mut resample_out_ptr: *mut i16 = 0 as *mut i16;
     let mut psDec: *mut silk_decoder = decState as *mut silk_decoder;
     let channel_state: *mut silk_decoder_state = ((*psDec).channel_state).as_mut_ptr();
     let mut has_side: libc::c_int = 0;
@@ -556,12 +533,12 @@ pub unsafe extern "C" fn silk_Decode(
         memset(
             ((*psDec).sStereo.pred_prev_Q13).as_mut_ptr() as *mut libc::c_void,
             0 as libc::c_int,
-            ::core::mem::size_of::<[opus_int16; 2]>() as libc::c_ulong,
+            ::core::mem::size_of::<[i16; 2]>() as libc::c_ulong,
         );
         memset(
             ((*psDec).sStereo.sSide).as_mut_ptr() as *mut libc::c_void,
             0 as libc::c_int,
-            ::core::mem::size_of::<[opus_int16; 2]>() as libc::c_ulong,
+            ::core::mem::size_of::<[i16; 2]>() as libc::c_ulong,
         );
         memcpy(
             &mut (*channel_state.offset(1 as libc::c_int as isize)).resampler_state
@@ -630,7 +607,7 @@ pub unsafe extern "C" fn silk_Decode(
                 n = 0 as libc::c_int;
                 while n < (*decControl).nChannelsInternal {
                     if (*channel_state.offset(n as isize)).LBRR_flags[i as usize] != 0 {
-                        let mut pulses: [opus_int16; 320] = [0; 320];
+                        let mut pulses: [i16; 320] = [0; 320];
                         let mut condCoding: libc::c_int = 0;
                         if (*decControl).nChannelsInternal == 2 as libc::c_int
                             && n == 0 as libc::c_int
@@ -698,7 +675,7 @@ pub unsafe extern "C" fn silk_Decode(
         } else {
             n = 0 as libc::c_int;
             while n < 2 as libc::c_int {
-                MS_pred_Q13[n as usize] = (*psDec).sStereo.pred_prev_Q13[n as usize] as opus_int32;
+                MS_pred_Q13[n as usize] = (*psDec).sStereo.pred_prev_Q13[n as usize] as i32;
                 n += 1;
             }
         }
@@ -711,17 +688,16 @@ pub unsafe extern "C" fn silk_Decode(
             ((*psDec).channel_state[1 as libc::c_int as usize].outBuf).as_mut_ptr()
                 as *mut libc::c_void,
             0 as libc::c_int,
-            ::core::mem::size_of::<[opus_int16; 480]>() as libc::c_ulong,
+            ::core::mem::size_of::<[i16; 480]>() as libc::c_ulong,
         );
         memset(
             ((*psDec).channel_state[1 as libc::c_int as usize].sLPC_Q14_buf).as_mut_ptr()
                 as *mut libc::c_void,
             0 as libc::c_int,
-            ::core::mem::size_of::<[opus_int32; 16]>() as libc::c_ulong,
+            ::core::mem::size_of::<[i32; 16]>() as libc::c_ulong,
         );
         (*psDec).channel_state[1 as libc::c_int as usize].lagPrev = 100 as libc::c_int;
-        (*psDec).channel_state[1 as libc::c_int as usize].LastGainIndex =
-            10 as libc::c_int as opus_int8;
+        (*psDec).channel_state[1 as libc::c_int as usize].LastGainIndex = 10 as libc::c_int as i8;
         (*psDec).channel_state[1 as libc::c_int as usize].prevSignalType = TYPE_NO_VOICE_ACTIVITY;
         (*psDec).channel_state[1 as libc::c_int as usize].first_frame_after_reset =
             1 as libc::c_int;
@@ -735,7 +711,7 @@ pub unsafe extern "C" fn silk_Decode(
         (*decControl).nChannelsInternal
             * ((*channel_state.offset(0 as libc::c_int as isize)).frame_length + 2 as libc::c_int)
     }) as usize;
-    let mut samplesOut1_tmp_storage1: Vec<opus_int16> = ::std::vec::from_elem(0, vla);
+    let mut samplesOut1_tmp_storage1: Vec<i16> = ::std::vec::from_elem(0, vla);
     if delay_stack_alloc != 0 {
         samplesOut1_tmp[0 as libc::c_int as usize] = samplesOut;
         samplesOut1_tmp[1 as libc::c_int as usize] = samplesOut
@@ -793,11 +769,11 @@ pub unsafe extern "C" fn silk_Decode(
         } else {
             memset(
                 &mut *(*samplesOut1_tmp.as_mut_ptr().offset(n as isize))
-                    .offset(2 as libc::c_int as isize) as *mut opus_int16
+                    .offset(2 as libc::c_int as isize) as *mut i16
                     as *mut libc::c_void,
                 0 as libc::c_int,
                 (nSamplesOutDec as libc::c_ulong)
-                    .wrapping_mul(::core::mem::size_of::<opus_int16>() as libc::c_ulong),
+                    .wrapping_mul(::core::mem::size_of::<i16>() as libc::c_ulong),
             );
         }
         let ref mut fresh0 = (*channel_state.offset(n as isize)).nFramesDecoded;
@@ -811,7 +787,7 @@ pub unsafe extern "C" fn silk_Decode(
             &mut (*psDec).sStereo,
             samplesOut1_tmp[0 as libc::c_int as usize],
             samplesOut1_tmp[1 as libc::c_int as usize],
-            MS_pred_Q13.as_mut_ptr() as *const opus_int32,
+            MS_pred_Q13.as_mut_ptr() as *const i32,
             (*channel_state.offset(0 as libc::c_int as isize)).fs_kHz,
             nSamplesOutDec,
         );
@@ -820,27 +796,27 @@ pub unsafe extern "C" fn silk_Decode(
             samplesOut1_tmp[0 as libc::c_int as usize] as *mut libc::c_void,
             ((*psDec).sStereo.sMid).as_mut_ptr() as *const libc::c_void,
             (2 as libc::c_int as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<opus_int16>() as libc::c_ulong),
+                .wrapping_mul(::core::mem::size_of::<i16>() as libc::c_ulong),
         );
         memcpy(
             ((*psDec).sStereo.sMid).as_mut_ptr() as *mut libc::c_void,
             &mut *(*samplesOut1_tmp
                 .as_mut_ptr()
                 .offset(0 as libc::c_int as isize))
-            .offset(nSamplesOutDec as isize) as *mut opus_int16 as *const libc::c_void,
+            .offset(nSamplesOutDec as isize) as *mut i16 as *const libc::c_void,
             (2 as libc::c_int as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<opus_int16>() as libc::c_ulong),
+                .wrapping_mul(::core::mem::size_of::<i16>() as libc::c_ulong),
         );
     }
     *nSamplesOut = nSamplesOutDec * (*decControl).API_sampleRate
-        / ((*channel_state.offset(0 as libc::c_int as isize)).fs_kHz as opus_int16 as opus_int32
-            * 1000 as libc::c_int as opus_int16 as opus_int32);
+        / ((*channel_state.offset(0 as libc::c_int as isize)).fs_kHz as i16 as i32
+            * 1000 as libc::c_int as i16 as i32);
     let vla_0 = (if (*decControl).nChannelsAPI == 2 as libc::c_int {
         *nSamplesOut
     } else {
         1 as libc::c_int
     }) as usize;
-    let mut samplesOut2_tmp: Vec<opus_int16> = ::std::vec::from_elem(0, vla_0);
+    let mut samplesOut2_tmp: Vec<i16> = ::std::vec::from_elem(0, vla_0);
     if (*decControl).nChannelsAPI == 2 as libc::c_int {
         resample_out_ptr = samplesOut2_tmp.as_mut_ptr();
     } else {
@@ -852,7 +828,7 @@ pub unsafe extern "C" fn silk_Decode(
     } else {
         1 as libc::c_int
     }) as usize;
-    let mut samplesOut1_tmp_storage2: Vec<opus_int16> = ::std::vec::from_elem(0, vla_1);
+    let mut samplesOut1_tmp_storage2: Vec<i16> = ::std::vec::from_elem(0, vla_1);
     if delay_stack_alloc != 0 {
         memcpy(
             samplesOut1_tmp_storage2.as_mut_ptr() as *mut libc::c_void,
@@ -860,7 +836,7 @@ pub unsafe extern "C" fn silk_Decode(
             (((*decControl).nChannelsInternal
                 * ((*channel_state.offset(0 as libc::c_int as isize)).frame_length
                     + 2 as libc::c_int)) as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<opus_int16>() as libc::c_ulong)
+                .wrapping_mul(::core::mem::size_of::<i16>() as libc::c_ulong)
                 .wrapping_add(
                     (0 as libc::c_int as libc::c_long
                         * samplesOut1_tmp_storage2
@@ -887,8 +863,7 @@ pub unsafe extern "C" fn silk_Decode(
             &mut (*channel_state.offset(n as isize)).resampler_state,
             resample_out_ptr,
             &mut *(*samplesOut1_tmp.as_mut_ptr().offset(n as isize))
-                .offset(1 as libc::c_int as isize) as *mut opus_int16
-                as *const opus_int16,
+                .offset(1 as libc::c_int as isize) as *mut i16 as *const i16,
             nSamplesOutDec,
         );
         if (*decControl).nChannelsAPI == 2 as libc::c_int {
@@ -911,8 +886,7 @@ pub unsafe extern "C" fn silk_Decode(
                 &mut *(*samplesOut1_tmp
                     .as_mut_ptr()
                     .offset(0 as libc::c_int as isize))
-                .offset(1 as libc::c_int as isize) as *mut opus_int16
-                    as *const opus_int16,
+                .offset(1 as libc::c_int as isize) as *mut i16 as *const i16,
                 nSamplesOutDec,
             );
             i = 0 as libc::c_int;
@@ -942,7 +916,7 @@ pub unsafe extern "C" fn silk_Decode(
     if lostFlag == FLAG_PACKET_LOST {
         i = 0 as libc::c_int;
         while i < (*psDec).nChannelsInternal {
-            (*psDec).channel_state[i as usize].LastGainIndex = 10 as libc::c_int as opus_int8;
+            (*psDec).channel_state[i as usize].LastGainIndex = 10 as libc::c_int as i8;
             i += 1;
         }
     } else {

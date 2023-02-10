@@ -111,28 +111,16 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     use super::types_h::__uint32_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:45"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "53:4"]
-    pub type opus_int16 = int16_t;
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    #[c2rust::src_loc = "56:4"]
-    pub type opus_uint32 = uint32_t;
-    use super::stdint_intn_h::{int16_t, int32_t};
-    use super::stdint_uintn_h::uint32_t;
-}
 // #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus.h:45"]
 // pub mod opus_h {
-//     use super::opus_types_h::{opus_int16, opus_int32};
-//     extern "C" {
+//    //     extern "C" {
 //         #[c2rust::src_loc = "399:16"]
 //         pub type OpusDecoder;
 //         #[c2rust::src_loc = "406:1"]
 //         pub fn opus_decoder_get_size(channels: libc::c_int) -> libc::c_int;
 //         #[c2rust::src_loc = "423:1"]
 //         pub fn opus_decoder_create(
-//             Fs: opus_int32,
+//             Fs: i32,
 //             channels: libc::c_int,
 //             error: *mut libc::c_int,
 //         ) -> *mut OpusDecoder;
@@ -140,8 +128,8 @@ pub mod opus_types_h {
 //         pub fn opus_decode(
 //             st: *mut OpusDecoder,
 //             data: *const libc::c_uchar,
-//             len: opus_int32,
-//             pcm: *mut opus_int16,
+//             len: i32,
+//             pcm: *mut i16,
 //             frame_size: libc::c_int,
 //             decode_fec: libc::c_int,
 //         ) -> libc::c_int;
@@ -155,7 +143,7 @@ pub mod opus_types_h {
 //         pub fn opus_decoder_get_nb_samples(
 //             dec: *const OpusDecoder,
 //             packet: *const libc::c_uchar,
-//             len: opus_int32,
+//             len: i32,
 //         ) -> libc::c_int;
 //         #[c2rust::src_loc = "606:1"]
 //         pub fn opus_pcm_soft_clip(
@@ -293,12 +281,12 @@ pub mod test_opus_common_h {
         free(t as *mut libc::c_void);
     }
     #[c2rust::src_loc = "56:20"]
-    pub static mut Rz: opus_uint32 = 0;
+    pub static mut Rz: u32 = 0;
     #[c2rust::src_loc = "56:24"]
-    pub static mut Rw: opus_uint32 = 0;
+    pub static mut Rw: u32 = 0;
     #[inline]
     #[c2rust::src_loc = "57:1"]
-    pub unsafe extern "C" fn fast_rand() -> opus_uint32 {
+    pub unsafe extern "C" fn fast_rand() -> u32 {
         Rz = (36969 as libc::c_int as libc::c_uint)
             .wrapping_mul(Rz & 65535 as libc::c_int as libc::c_uint)
             .wrapping_add(Rz >> 16 as libc::c_int);
@@ -308,7 +296,7 @@ pub mod test_opus_common_h {
         (Rz << 16 as libc::c_int).wrapping_add(Rw)
     }
     #[c2rust::src_loc = "63:20"]
-    pub static mut iseed: opus_uint32 = 0;
+    pub static mut iseed: u32 = 0;
     #[inline]
     #[c2rust::src_loc = "66:1"]
     pub unsafe extern "C" fn _test_failed(
@@ -351,13 +339,11 @@ pub mod test_opus_common_h {
         abort();
     }
 
-    use super::opus_types_h::opus_uint32;
     use super::stdio_h::{fprintf, stderr};
     use super::stdlib_h::{abort, free, malloc};
     use super::string_h::memset;
     use libopus_unsafe::opus_get_version_string;
 }
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32};
 use self::stdio_h::{fprintf, printf, stderr, stdout};
 pub use self::stdlib_h::{atoi, free, getenv, malloc, rand};
 use self::string_h::{memcpy, memset};
@@ -374,7 +360,7 @@ use libopus_unsafe::{
 #[no_mangle]
 #[c2rust::src_loc = "51:1"]
 pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c_int {
-    static mut fsv: [opus_int32; 5] = [
+    static mut fsv: [i32; 5] = [
         48000 as libc::c_int,
         24000 as libc::c_int,
         16000 as libc::c_int,
@@ -387,18 +373,18 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
     let mut out_samples: libc::c_int = 0;
     let mut fec: libc::c_int = 0;
     let mut t: libc::c_int = 0;
-    let mut i: opus_int32 = 0;
+    let mut i: i32 = 0;
     let mut dec: [*mut OpusDecoder; 10] = [std::ptr::null_mut::<OpusDecoder>(); 10];
-    let mut decsize: opus_int32 = 0;
+    let mut decsize: i32 = 0;
     let mut decbak: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
-    let mut dec_final_range1: opus_uint32 = 0;
-    let mut dec_final_range2: opus_uint32 = 0;
-    let mut dec_final_acc: opus_uint32 = 0;
+    let mut dec_final_range1: u32 = 0;
+    let mut dec_final_range2: u32 = 0;
+    let mut dec_final_acc: u32 = 0;
     let mut packet: *mut libc::c_uchar = std::ptr::null_mut::<libc::c_uchar>();
     let mut modes: [libc::c_uchar; 4096] = [0; 4096];
     let mut outbuf_int: *mut libc::c_short = std::ptr::null_mut::<libc::c_short>();
     let mut outbuf: *mut libc::c_short = std::ptr::null_mut::<libc::c_short>();
-    dec_final_range2 = 2 as libc::c_int as opus_uint32;
+    dec_final_range2 = 2 as libc::c_int as u32;
     dec_final_range1 = dec_final_range2;
     packet = malloc(
         (::core::mem::size_of::<libc::c_uchar>() as libc::c_ulong)
@@ -481,7 +467,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
         let mut factor: libc::c_int = 48000 as libc::c_int / fsv[(t >> 1 as libc::c_int) as usize];
         fec = 0 as libc::c_int;
         while fec < 2 as libc::c_int {
-            let mut dur: opus_int32 = 0;
+            let mut dur: i32 = 0;
             out_samples = opus_decode(
                 dec[t as usize],
                 std::ptr::null::<libc::c_uchar>(),
@@ -499,9 +485,9 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
             if opus_decoder_ctl(
                 dec[t as usize],
                 4039 as libc::c_int,
-                (&mut dur as *mut opus_int32).offset(
-                    (&mut dur as *mut opus_int32).offset_from(&mut dur as *mut opus_int32)
-                        as libc::c_long as isize,
+                (&mut dur as *mut i32).offset(
+                    (&mut dur as *mut i32).offset_from(&mut dur as *mut i32) as libc::c_long
+                        as isize,
                 ),
             ) != 0 as libc::c_int
             {
@@ -575,7 +561,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
             out_samples = opus_decode(
                 dec[t as usize],
                 std::ptr::null::<libc::c_uchar>(),
-                fast_rand() as opus_int32,
+                fast_rand() as i32,
                 outbuf,
                 120 as libc::c_int / factor,
                 fec,
@@ -589,9 +575,9 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
             if opus_decoder_ctl(
                 dec[t as usize],
                 4039 as libc::c_int,
-                (&mut dur as *mut opus_int32).offset(
-                    (&mut dur as *mut opus_int32).offset_from(&mut dur as *mut opus_int32)
-                        as libc::c_long as isize,
+                (&mut dur as *mut i32).offset(
+                    (&mut dur as *mut i32).offset_from(&mut dur as *mut i32) as libc::c_long
+                        as isize,
                 ),
             ) != 0 as libc::c_int
             {
@@ -639,7 +625,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
                 dec[t as usize],
                 packet,
                 0 as libc::c_int,
-                std::ptr::null_mut::<opus_int16>(),
+                std::ptr::null_mut::<i16>(),
                 0 as libc::c_int,
                 fec,
             );
@@ -731,7 +717,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
     );
     i = 0 as libc::c_int;
     while i < 64 as libc::c_int {
-        let mut dur_0: opus_int32 = 0;
+        let mut dur_0: i32 = 0;
         let mut j: libc::c_int = 0;
         let mut expected: [libc::c_int; 10] = [0; 10];
         *packet.offset(0 as libc::c_int as isize) = (i << 2 as libc::c_int) as libc::c_uchar;
@@ -781,10 +767,9 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
                 if opus_decoder_ctl(
                     dec[t as usize],
                     4039 as libc::c_int,
-                    (&mut dur_0 as *mut opus_int32).offset(
-                        (&mut dur_0 as *mut opus_int32).offset_from(&mut dur_0 as *mut opus_int32)
-                            as libc::c_long as isize,
-                    ),
+                    (&mut dur_0 as *mut i32)
+                        .offset((&mut dur_0 as *mut i32).offset_from(&mut dur_0 as *mut i32)
+                            as libc::c_long as isize),
                 ) != 0 as libc::c_int
                 {
                     _test_failed(
@@ -801,9 +786,9 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
                 opus_decoder_ctl(
                     dec[t as usize],
                     4031 as libc::c_int,
-                    (&mut dec_final_range1 as *mut opus_uint32).offset(
-                        (&mut dec_final_range1 as *mut opus_uint32)
-                            .offset_from(&mut dec_final_range1 as *mut opus_uint32)
+                    (&mut dec_final_range1 as *mut u32).offset(
+                        (&mut dec_final_range1 as *mut u32)
+                            .offset_from(&mut dec_final_range1 as *mut u32)
                             as libc::c_long as isize,
                     ),
                 );
@@ -842,10 +827,9 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
                 if opus_decoder_ctl(
                     dec[t as usize],
                     4039 as libc::c_int,
-                    (&mut dur_0 as *mut opus_int32).offset(
-                        (&mut dur_0 as *mut opus_int32).offset_from(&mut dur_0 as *mut opus_int32)
-                            as libc::c_long as isize,
-                    ),
+                    (&mut dur_0 as *mut i32)
+                        .offset((&mut dur_0 as *mut i32).offset_from(&mut dur_0 as *mut i32)
+                            as libc::c_long as isize),
                 ) != 0 as libc::c_int
                 {
                     _test_failed(
@@ -879,10 +863,9 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
                 if opus_decoder_ctl(
                     dec[t as usize],
                     4039 as libc::c_int,
-                    (&mut dur_0 as *mut opus_int32).offset(
-                        (&mut dur_0 as *mut opus_int32).offset_from(&mut dur_0 as *mut opus_int32)
-                            as libc::c_long as isize,
-                    ),
+                    (&mut dur_0 as *mut i32)
+                        .offset((&mut dur_0 as *mut i32).offset_from(&mut dur_0 as *mut i32)
+                            as libc::c_long as isize),
                 ) != 0 as libc::c_int
                 {
                     _test_failed(
@@ -962,23 +945,23 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
         24 as libc::c_int,
         28 as libc::c_int,
     ];
-    static mut cres: [opus_uint32; 4] = [
-        116290185 as libc::c_int as opus_uint32,
+    static mut cres: [u32; 4] = [
+        116290185 as libc::c_int as u32,
         2172123586 as libc::c_uint,
         2172123586 as libc::c_uint,
         2172123586 as libc::c_uint,
     ];
-    static mut lres: [opus_uint32; 3] = [
+    static mut lres: [u32; 3] = [
         3285687739 as libc::c_uint,
-        1481572662 as libc::c_int as opus_uint32,
-        694350475 as libc::c_int as opus_uint32,
+        1481572662 as libc::c_int as u32,
+        694350475 as libc::c_int as u32,
     ];
     static mut lmodes: [libc::c_int; 3] = [0 as libc::c_int, 4 as libc::c_int, 8 as libc::c_int];
     let mut mode: libc::c_int =
         (fast_rand()).wrapping_rem(4 as libc::c_int as libc::c_uint) as libc::c_int;
     *packet.offset(0 as libc::c_int as isize) =
         (cmodes[mode as usize] << 3 as libc::c_int) as libc::c_uchar;
-    dec_final_acc = 0 as libc::c_int as opus_uint32;
+    dec_final_acc = 0 as libc::c_int as u32;
     t = (fast_rand()).wrapping_rem(10 as libc::c_int as libc::c_uint) as libc::c_int;
     i = 0 as libc::c_int;
     while i < 65536 as libc::c_int {
@@ -1004,14 +987,13 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
         opus_decoder_ctl(
             dec[t as usize],
             4031 as libc::c_int,
-            (&mut dec_final_range1 as *mut opus_uint32).offset(
-                (&mut dec_final_range1 as *mut opus_uint32)
-                    .offset_from(&mut dec_final_range1 as *mut opus_uint32)
+            (&mut dec_final_range1 as *mut u32).offset(
+                (&mut dec_final_range1 as *mut u32).offset_from(&mut dec_final_range1 as *mut u32)
                     as libc::c_long as isize,
             ),
         );
-        dec_final_acc = (dec_final_acc as libc::c_uint).wrapping_add(dec_final_range1)
-            as opus_uint32 as opus_uint32;
+        dec_final_acc =
+            (dec_final_acc as libc::c_uint).wrapping_add(dec_final_range1) as u32 as u32;
         i += 1;
     }
     if dec_final_acc != cres[mode as usize] {
@@ -1030,7 +1012,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
     mode = (fast_rand()).wrapping_rem(3 as libc::c_int as libc::c_uint) as libc::c_int;
     *packet.offset(0 as libc::c_int as isize) =
         (lmodes[mode as usize] << 3 as libc::c_int) as libc::c_uchar;
-    dec_final_acc = 0 as libc::c_int as opus_uint32;
+    dec_final_acc = 0 as libc::c_int as u32;
     t = (fast_rand()).wrapping_rem(10 as libc::c_int as libc::c_uint) as libc::c_int;
     i = 0 as libc::c_int;
     while i < 65536 as libc::c_int {
@@ -1056,14 +1038,13 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
         opus_decoder_ctl(
             dec[t as usize],
             4031 as libc::c_int,
-            (&mut dec_final_range1 as *mut opus_uint32).offset(
-                (&mut dec_final_range1 as *mut opus_uint32)
-                    .offset_from(&mut dec_final_range1 as *mut opus_uint32)
+            (&mut dec_final_range1 as *mut u32).offset(
+                (&mut dec_final_range1 as *mut u32).offset_from(&mut dec_final_range1 as *mut u32)
                     as libc::c_long as isize,
             ),
         );
-        dec_final_acc = (dec_final_acc as libc::c_uint).wrapping_add(dec_final_range1)
-            as opus_uint32 as opus_uint32;
+        dec_final_acc =
+            (dec_final_acc as libc::c_uint).wrapping_add(dec_final_range1) as u32 as u32;
         i += 1;
     }
     if dec_final_acc != lres[mode as usize] {
@@ -1122,9 +1103,9 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
                 opus_decoder_ctl(
                     dec[t as usize],
                     4031 as libc::c_int,
-                    (&mut dec_final_range1 as *mut opus_uint32).offset(
-                        (&mut dec_final_range1 as *mut opus_uint32)
-                            .offset_from(&mut dec_final_range1 as *mut opus_uint32)
+                    (&mut dec_final_range1 as *mut u32).offset(
+                        (&mut dec_final_range1 as *mut u32)
+                            .offset_from(&mut dec_final_range1 as *mut u32)
                             as libc::c_long as isize,
                     ),
                 );
@@ -1232,7 +1213,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
         }
         t = 0 as libc::c_int;
         while t < 5 as libc::c_int * 2 as libc::c_int {
-            let mut dur_1: opus_int32 = 0;
+            let mut dur_1: i32 = 0;
             out_samples = opus_decode(
                 dec[t as usize],
                 packet,
@@ -1258,10 +1239,9 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
             if opus_decoder_ctl(
                 dec[t as usize],
                 4039 as libc::c_int,
-                (&mut dur_1 as *mut opus_int32).offset(
-                    (&mut dur_1 as *mut opus_int32).offset_from(&mut dur_1 as *mut opus_int32)
-                        as libc::c_long as isize,
-                ),
+                (&mut dur_1 as *mut i32)
+                    .offset((&mut dur_1 as *mut i32).offset_from(&mut dur_1 as *mut i32)
+                        as libc::c_long as isize),
             ) != 0 as libc::c_int
             {
                 _test_failed(
@@ -1336,9 +1316,9 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
         plen + 1 as libc::c_int,
     );
     let mut tmodes: [libc::c_int; 1] = [(25 as libc::c_int) << 2 as libc::c_int];
-    let mut tseeds: [opus_uint32; 1] = [140441 as libc::c_int as opus_uint32];
+    let mut tseeds: [u32; 1] = [140441 as libc::c_int as u32];
     let mut tlen: [libc::c_int; 1] = [157 as libc::c_int];
-    let mut tret: [opus_int32; 1] = [480 as libc::c_int];
+    let mut tret: [i32; 1] = [480 as libc::c_int];
     t = (fast_rand() & 1 as libc::c_int as libc::c_uint) as libc::c_int;
     i = 0 as libc::c_int;
     while i < 1 as libc::c_int {
@@ -1537,13 +1517,13 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
     env_used = 0 as libc::c_int;
     env_seed = getenv(b"SEED\0" as *const u8 as *const libc::c_char);
     if _argc > 1 as libc::c_int {
-        iseed = atoi(*_argv.offset(1 as libc::c_int as isize)) as opus_uint32;
+        iseed = atoi(*_argv.offset(1 as libc::c_int as isize)) as u32;
     } else if !env_seed.is_null() {
-        iseed = atoi(env_seed) as opus_uint32;
+        iseed = atoi(env_seed) as u32;
         env_used = 1 as libc::c_int;
     } else {
-        iseed = time(std::ptr::null_mut::<time_t>()) as opus_uint32
-            ^ (getpid() as opus_uint32 & 65535 as libc::c_int as libc::c_uint) << 16 as libc::c_int;
+        iseed = time(std::ptr::null_mut::<time_t>()) as u32
+            ^ (getpid() as u32 & 65535 as libc::c_int as libc::c_uint) << 16 as libc::c_int;
     }
     Rz = iseed;
     Rw = Rz;

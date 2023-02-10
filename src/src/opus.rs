@@ -14,14 +14,6 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     use super::types_h::{__int16_t, __int32_t};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "53:4"]
-    pub type opus_int16 = int16_t;
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::{int16_t, int32_t};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:32"]
 pub mod opus_defines_h {
     #[c2rust::src_loc = "54:9"]
@@ -43,7 +35,6 @@ pub mod stddef_h {
 }
 use self::mathcalls_h::fabs;
 pub use self::opus_defines_h::{OPUS_BAD_ARG, OPUS_INVALID_PACKET};
-pub use self::opus_types_h::{opus_int16, opus_int32};
 pub use self::stddef_h::NULL;
 pub use self::stdint_intn_h::{int16_t, int32_t};
 pub use self::types_h::{__int16_t, __int32_t};
@@ -204,21 +195,21 @@ pub unsafe extern "C" fn encode_size(size: libc::c_int, data: *mut libc::c_uchar
 #[c2rust::src_loc = "153:1"]
 unsafe extern "C" fn parse_size(
     data: *const libc::c_uchar,
-    len: opus_int32,
-    size: *mut opus_int16,
+    len: i32,
+    size: *mut i16,
 ) -> libc::c_int {
     if len < 1 as libc::c_int {
-        *size = -(1 as libc::c_int) as opus_int16;
+        *size = -(1 as libc::c_int) as i16;
         return -(1 as libc::c_int);
     } else if (*data.offset(0 as libc::c_int as isize) as libc::c_int) < 252 as libc::c_int {
-        *size = *data.offset(0 as libc::c_int as isize) as opus_int16;
+        *size = *data.offset(0 as libc::c_int as isize) as i16;
         return 1 as libc::c_int;
     } else if len < 2 as libc::c_int {
-        *size = -(1 as libc::c_int) as opus_int16;
+        *size = -(1 as libc::c_int) as i16;
         return -(1 as libc::c_int);
     } else {
         *size = (4 as libc::c_int * *data.offset(1 as libc::c_int as isize) as libc::c_int
-            + *data.offset(0 as libc::c_int as isize) as libc::c_int) as opus_int16;
+            + *data.offset(0 as libc::c_int as isize) as libc::c_int) as i16;
         return 2 as libc::c_int;
     };
 }
@@ -226,7 +217,7 @@ unsafe extern "C" fn parse_size(
 #[c2rust::src_loc = "173:1"]
 pub unsafe extern "C" fn opus_packet_get_samples_per_frame(
     data: *const libc::c_uchar,
-    Fs: opus_int32,
+    Fs: i32,
 ) -> libc::c_int {
     let mut audiosize: libc::c_int = 0;
     if *data.offset(0 as libc::c_int as isize) as libc::c_int & 0x80 as libc::c_int != 0 {
@@ -257,13 +248,13 @@ pub unsafe extern "C" fn opus_packet_get_samples_per_frame(
 #[c2rust::src_loc = "194:1"]
 pub unsafe extern "C" fn opus_packet_parse_impl(
     mut data: *const libc::c_uchar,
-    mut len: opus_int32,
+    mut len: i32,
     self_delimited: libc::c_int,
     out_toc: *mut libc::c_uchar,
     frames: *mut *const libc::c_uchar,
-    size: *mut opus_int16,
+    size: *mut i16,
     payload_offset: *mut libc::c_int,
-    packet_offset: *mut opus_int32,
+    packet_offset: *mut i32,
 ) -> libc::c_int {
     let mut i: libc::c_int = 0;
     let mut bytes: libc::c_int = 0;
@@ -272,8 +263,8 @@ pub unsafe extern "C" fn opus_packet_parse_impl(
     let mut ch: libc::c_uchar = 0;
     let mut toc: libc::c_uchar = 0;
     let mut framesize: libc::c_int = 0;
-    let mut last_size: opus_int32 = 0;
-    let mut pad: opus_int32 = 0 as libc::c_int;
+    let mut last_size: i32 = 0;
+    let mut pad: i32 = 0 as libc::c_int;
     let data0: *const libc::c_uchar = data;
     if size.is_null() || len < 0 as libc::c_int {
         return OPUS_BAD_ARG;
@@ -300,7 +291,7 @@ pub unsafe extern "C" fn opus_packet_parse_impl(
                     return OPUS_INVALID_PACKET;
                 }
                 last_size = len / 2 as libc::c_int;
-                *size.offset(0 as libc::c_int as isize) = last_size as opus_int16;
+                *size.offset(0 as libc::c_int as isize) = last_size as i16;
             }
         }
         2 => {
@@ -379,7 +370,7 @@ pub unsafe extern "C" fn opus_packet_parse_impl(
                 }
                 i = 0 as libc::c_int;
                 while i < count - 1 as libc::c_int {
-                    *size.offset(i as isize) = last_size as opus_int16;
+                    *size.offset(i as isize) = last_size as i16;
                     i += 1;
                 }
             }
@@ -417,7 +408,7 @@ pub unsafe extern "C" fn opus_packet_parse_impl(
         if last_size > 1275 as libc::c_int {
             return OPUS_INVALID_PACKET;
         }
-        *size.offset((count - 1 as libc::c_int) as isize) = last_size as opus_int16;
+        *size.offset((count - 1 as libc::c_int) as isize) = last_size as i16;
     }
     if !payload_offset.is_null() {
         *payload_offset = data.offset_from(data0) as libc::c_long as libc::c_int;
@@ -432,7 +423,7 @@ pub unsafe extern "C" fn opus_packet_parse_impl(
         i += 1;
     }
     if !packet_offset.is_null() {
-        *packet_offset = pad + data.offset_from(data0) as libc::c_long as opus_int32;
+        *packet_offset = pad + data.offset_from(data0) as libc::c_long as i32;
     }
     if !out_toc.is_null() {
         *out_toc = toc;
@@ -443,10 +434,10 @@ pub unsafe extern "C" fn opus_packet_parse_impl(
 #[c2rust::src_loc = "349:1"]
 pub unsafe extern "C" fn opus_packet_parse(
     data: *const libc::c_uchar,
-    len: opus_int32,
+    len: i32,
     out_toc: *mut libc::c_uchar,
     frames: *mut *const libc::c_uchar,
-    size: *mut opus_int16,
+    size: *mut i16,
     payload_offset: *mut libc::c_int,
 ) -> libc::c_int {
     return opus_packet_parse_impl(
@@ -457,6 +448,6 @@ pub unsafe extern "C" fn opus_packet_parse(
         frames,
         size,
         payload_offset,
-        NULL as *mut opus_int32,
+        NULL as *mut i32,
     );
 }

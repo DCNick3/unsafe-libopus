@@ -10,12 +10,6 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     use super::types_h::__int32_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::int32_t;
-}
 #[c2rust::header_src = "/usr/include/string.h:32"]
 pub mod string_h {
     extern "C" {
@@ -33,7 +27,6 @@ pub mod define_h {
     pub const MAX_PREDICTION_POWER_GAIN: libc::c_float = 1e4f32;
 }
 pub use self::define_h::MAX_PREDICTION_POWER_GAIN;
-pub use self::opus_types_h::opus_int32;
 pub use self::stdint_intn_h::int32_t;
 use self::string_h::memcpy;
 pub use self::types_h::__int32_t;
@@ -41,7 +34,7 @@ pub use self::types_h::__int32_t;
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_LPC_inverse_pred_gain_FLP(
     A: *const libc::c_float,
-    order: opus_int32,
+    order: i32,
 ) -> libc::c_float {
     let mut k: libc::c_int = 0;
     let mut n: libc::c_int = 0;

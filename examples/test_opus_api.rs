@@ -100,17 +100,6 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     use super::types_h::__uint32_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:52"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "53:4"]
-    pub type opus_int16 = int16_t;
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    #[c2rust::src_loc = "56:4"]
-    pub type opus_uint32 = uint32_t;
-    use super::stdint_intn_h::{int16_t, int32_t};
-    use super::stdint_uintn_h::uint32_t;
-}
 #[c2rust::header_src = "/usr/include/stdio.h:48"]
 pub mod stdio_h {
     use super::FILE_h::FILE;
@@ -161,7 +150,7 @@ pub mod string_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/tests/test_opus_common.h:55"]
 pub mod test_opus_common_h {
     #[c2rust::src_loc = "63:20"]
-    pub static mut iseed: opus_uint32 = 0;
+    pub static mut iseed: u32 = 0;
     #[inline]
     #[c2rust::src_loc = "66:1"]
     pub unsafe extern "C" fn _test_failed(
@@ -204,12 +193,10 @@ pub mod test_opus_common_h {
         abort();
     }
 
-    use super::opus_types_h::opus_uint32;
     use super::stdio_h::{fprintf, stderr};
     use super::stdlib_h::abort;
     use libopus_unsafe::opus_get_version_string;
 }
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_uint32};
 pub use self::stddef_h::size_t;
 pub use self::stdint_intn_h::{int16_t, int32_t};
 pub use self::stdint_uintn_h::uint32_t;
@@ -237,14 +224,12 @@ use libopus_unsafe::{
 };
 #[no_mangle]
 #[c2rust::src_loc = "81:13"]
-pub static mut null_int_ptr: *mut opus_int32 =
-    0 as *const libc::c_void as *mut libc::c_void as *mut opus_int32;
+pub static mut null_int_ptr: *mut i32 = 0 as *const libc::c_void as *mut libc::c_void as *mut i32;
 #[no_mangle]
 #[c2rust::src_loc = "82:14"]
-pub static mut null_uint_ptr: *mut opus_uint32 =
-    0 as *const libc::c_void as *mut libc::c_void as *mut opus_uint32;
+pub static mut null_uint_ptr: *mut u32 = 0 as *const libc::c_void as *mut libc::c_void as *mut u32;
 #[c2rust::src_loc = "84:25"]
-static mut opus_rates: [opus_int32; 5] = [
+static mut opus_rates: [i32; 5] = [
     48000 as libc::c_int,
     24000 as libc::c_int,
     16000 as libc::c_int,
@@ -253,13 +238,13 @@ static mut opus_rates: [opus_int32; 5] = [
 ];
 #[no_mangle]
 #[c2rust::src_loc = "86:1"]
-pub unsafe extern "C" fn test_dec_api() -> opus_int32 {
-    let mut dec_final_range: opus_uint32 = 0;
+pub unsafe extern "C" fn test_dec_api() -> i32 {
+    let mut dec_final_range: u32 = 0;
     let mut dec: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
     let mut dec2: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
-    let mut i: opus_int32 = 0;
-    let mut j: opus_int32 = 0;
-    let mut cfgs: opus_int32 = 0;
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut cfgs: i32 = 0;
     let mut packet: [libc::c_uchar; 1276] = [0; 1276];
     let mut fbuf: [libc::c_float; 1920] = [0.; 1920];
     let mut sbuf: [libc::c_short; 1920] = [0; 1920];
@@ -399,10 +384,9 @@ pub unsafe extern "C" fn test_dec_api() -> opus_int32 {
     err = opus_decoder_ctl(
         dec,
         4031 as libc::c_int,
-        (&mut dec_final_range as *mut opus_uint32).offset(
-            (&mut dec_final_range as *mut opus_uint32)
-                .offset_from(&mut dec_final_range as *mut opus_uint32) as libc::c_long
-                as isize,
+        (&mut dec_final_range as *mut u32).offset(
+            (&mut dec_final_range as *mut u32).offset_from(&mut dec_final_range as *mut u32)
+                as libc::c_long as isize,
         ),
     );
     if err != 0 as libc::c_int {
@@ -444,10 +428,8 @@ pub unsafe extern "C" fn test_dec_api() -> opus_int32 {
     err = opus_decoder_ctl(
         dec,
         4009 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != 0 as libc::c_int {
         _test_failed(
@@ -475,10 +457,8 @@ pub unsafe extern "C" fn test_dec_api() -> opus_int32 {
     err = opus_decoder_ctl(
         dec,
         4029 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != 48000 as libc::c_int {
         _test_failed(
@@ -507,10 +487,8 @@ pub unsafe extern "C" fn test_dec_api() -> opus_int32 {
     err = opus_decoder_ctl(
         dec,
         4033 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i > 0 as libc::c_int || i < -(1 as libc::c_int) {
         _test_failed(
@@ -540,10 +518,8 @@ pub unsafe extern "C" fn test_dec_api() -> opus_int32 {
     err = opus_decoder_ctl(
         dec,
         4033 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i > 0 as libc::c_int || i < -(1 as libc::c_int) {
         _test_failed(
@@ -571,10 +547,8 @@ pub unsafe extern "C" fn test_dec_api() -> opus_int32 {
     err = opus_decoder_ctl(
         dec,
         4033 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i > 0 as libc::c_int || i < -(1 as libc::c_int) {
         _test_failed(
@@ -602,10 +576,8 @@ pub unsafe extern "C" fn test_dec_api() -> opus_int32 {
     err = opus_decoder_ctl(
         dec,
         4039 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != 960 as libc::c_int {
         _test_failed(
@@ -622,10 +594,8 @@ pub unsafe extern "C" fn test_dec_api() -> opus_int32 {
     err = opus_decoder_ctl(
         dec,
         4045 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != 0 as libc::c_int {
         _test_failed(
@@ -673,10 +643,8 @@ pub unsafe extern "C" fn test_dec_api() -> opus_int32 {
     err = opus_decoder_ctl(
         dec,
         4045 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != -(15 as libc::c_int) {
         _test_failed(
@@ -1084,13 +1052,13 @@ pub unsafe extern "C" fn test_dec_api() -> opus_int32 {
 }
 #[no_mangle]
 #[c2rust::src_loc = "343:1"]
-pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
-    let mut dec_final_range: opus_uint32 = 0;
+pub unsafe extern "C" fn test_msdec_api() -> i32 {
+    let mut dec_final_range: u32 = 0;
     let mut dec: *mut OpusMSDecoder = std::ptr::null_mut::<OpusMSDecoder>();
     let mut streamdec: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
-    let mut i: opus_int32 = 0;
-    let mut j: opus_int32 = 0;
-    let mut cfgs: opus_int32 = 0;
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut cfgs: i32 = 0;
     let mut packet: [libc::c_uchar; 1276] = [0; 1276];
     let mut mapping: [libc::c_uchar; 256] = [0; 256];
     let mut fbuf: [libc::c_float; 1920] = [0.; 1920];
@@ -1560,10 +1528,9 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
     err = opus_multistream_decoder_ctl(
         dec,
         4031 as libc::c_int,
-        (&mut dec_final_range as *mut opus_uint32).offset(
-            (&mut dec_final_range as *mut opus_uint32)
-                .offset_from(&mut dec_final_range as *mut opus_uint32) as libc::c_long
-                as isize,
+        (&mut dec_final_range as *mut u32).offset(
+            (&mut dec_final_range as *mut u32).offset_from(&mut dec_final_range as *mut u32)
+                as libc::c_long as isize,
         ),
     );
     if err != 0 as libc::c_int {
@@ -1673,9 +1640,8 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
         err = opus_decoder_ctl(
             od,
             4045 as libc::c_int,
-            (&mut i as *mut opus_int32).offset(
-                (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                    as isize,
+            (&mut i as *mut i32).offset(
+                (&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize
             ),
         );
         if err != 0 as libc::c_int || i != 0 as libc::c_int {
@@ -1720,9 +1686,8 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
         err = opus_decoder_ctl(
             od_0,
             4045 as libc::c_int,
-            (&mut i as *mut opus_int32).offset(
-                (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                    as isize,
+            (&mut i as *mut i32).offset(
+                (&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize
             ),
         );
         if err != 0 as libc::c_int || i != 15 as libc::c_int {
@@ -1742,10 +1707,8 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
     err = opus_multistream_decoder_ctl(
         dec,
         4009 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != 0 as libc::c_int {
         _test_failed(
@@ -1955,14 +1918,14 @@ pub unsafe extern "C" fn test_msdec_api() -> opus_int32 {
 }
 #[no_mangle]
 #[c2rust::src_loc = "707:1"]
-pub unsafe extern "C" fn test_parse() -> opus_int32 {
-    let mut i: opus_int32 = 0;
-    let mut j: opus_int32 = 0;
-    let mut jj: opus_int32 = 0;
-    let mut sz: opus_int32 = 0;
+pub unsafe extern "C" fn test_parse() -> i32 {
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut jj: i32 = 0;
+    let mut sz: i32 = 0;
     let mut packet: [libc::c_uchar; 1276] = [0; 1276];
-    let mut cfgs: opus_int32 = 0;
-    let mut cfgs_total: opus_int32 = 0;
+    let mut cfgs: i32 = 0;
+    let mut cfgs_total: i32 = 0;
     let mut toc: libc::c_uchar = 0;
     let mut frames: [*const libc::c_uchar; 48] = [std::ptr::null::<libc::c_uchar>(); 48];
     let mut size: [libc::c_short; 48] = [0; 48];
@@ -1989,7 +1952,7 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
         1 as libc::c_int,
         &mut toc,
         frames.as_mut_ptr(),
-        std::ptr::null_mut::<opus_int16>(),
+        std::ptr::null_mut::<i16>(),
         &mut payload_offset,
     ) != -(1 as libc::c_int)
     {
@@ -3085,11 +3048,11 @@ pub unsafe extern "C" fn test_parse() -> opus_int32 {
 }
 #[no_mangle]
 #[c2rust::src_loc = "1065:1"]
-pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
-    let mut enc_final_range: opus_uint32 = 0;
+pub unsafe extern "C" fn test_enc_api() -> i32 {
+    let mut enc_final_range: u32 = 0;
     let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
-    let mut i: opus_int32 = 0;
-    let mut j: opus_int32 = 0;
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
     let mut packet: [libc::c_uchar; 1276] = [0; 1276];
     let mut fbuf: [libc::c_float; 1920] = [0.; 1920];
     let mut sbuf: [libc::c_short; 1920] = [0; 1920];
@@ -3260,10 +3223,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4027 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i < 0 as libc::c_int || i > 32766 as libc::c_int {
         _test_failed(
@@ -3289,10 +3250,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4027 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i < 0 as libc::c_int || i > 32766 as libc::c_int {
         _test_failed(
@@ -3329,10 +3288,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4027 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i < 0 as libc::c_int || i > 32766 as libc::c_int {
         _test_failed(
@@ -3361,10 +3318,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4029 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != 48000 as libc::c_int {
         _test_failed(
@@ -3440,10 +3395,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4001 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -3468,10 +3421,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4001 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -3507,10 +3458,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     if opus_encoder_ctl(
         enc,
         4003 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     ) != 0 as libc::c_int
     {
         _test_failed(
@@ -3551,10 +3500,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4003 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -3579,10 +3526,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4003 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -3634,10 +3579,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4023 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -3662,10 +3605,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4023 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -3736,10 +3677,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4009 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int
         || i != 1101 as libc::c_int
@@ -3835,10 +3774,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4005 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int
         || i != 1101 as libc::c_int
@@ -3907,10 +3844,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4017 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -3935,10 +3870,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4017 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -3990,10 +3923,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4011 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -4018,10 +3949,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4011 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -4073,10 +4002,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4013 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -4101,10 +4028,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4013 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -4156,10 +4081,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4015 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -4184,10 +4107,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4015 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -4239,10 +4160,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4007 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -4267,10 +4186,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4007 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -4322,10 +4239,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4021 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -4350,10 +4265,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4021 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -4405,10 +4318,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4025 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -4433,10 +4344,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4025 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -4488,10 +4397,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4037 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -4516,10 +4423,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4037 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -4536,10 +4441,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4043 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if i != 0 as libc::c_int {
         _test_failed(
@@ -4586,10 +4489,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4043 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -4614,10 +4515,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4043 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -4741,10 +4640,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4041 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -4769,10 +4666,8 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     err = opus_encoder_ctl(
         enc,
         4041 as libc::c_int,
-        (&mut i as *mut opus_int32).offset(
-            (&mut i as *mut opus_int32).offset_from(&mut i as *mut opus_int32) as libc::c_long
-                as isize,
-        ),
+        (&mut i as *mut i32)
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
     );
     if err != 0 as libc::c_int || i != j {
         _test_failed(
@@ -4801,10 +4696,9 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
     if opus_encoder_ctl(
         enc,
         4031 as libc::c_int,
-        (&mut enc_final_range as *mut opus_uint32).offset(
-            (&mut enc_final_range as *mut opus_uint32)
-                .offset_from(&mut enc_final_range as *mut opus_uint32) as libc::c_long
-                as isize,
+        (&mut enc_final_range as *mut u32).offset(
+            (&mut enc_final_range as *mut u32).offset_from(&mut enc_final_range as *mut u32)
+                as libc::c_long as isize,
         ),
     ) != 0 as libc::c_int
     {
@@ -4843,10 +4737,10 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
         sbuf.as_mut_ptr(),
         960 as libc::c_int,
         packet.as_mut_ptr(),
-        ::core::mem::size_of::<[libc::c_uchar; 1276]>() as libc::c_ulong as opus_int32,
+        ::core::mem::size_of::<[libc::c_uchar; 1276]>() as libc::c_ulong as i32,
     );
     if i < 1 as libc::c_int
-        || i > ::core::mem::size_of::<[libc::c_uchar; 1276]>() as libc::c_ulong as opus_int32
+        || i > ::core::mem::size_of::<[libc::c_uchar; 1276]>() as libc::c_ulong as i32
     {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -4871,10 +4765,10 @@ pub unsafe extern "C" fn test_enc_api() -> opus_int32 {
         fbuf.as_mut_ptr(),
         960 as libc::c_int,
         packet.as_mut_ptr(),
-        ::core::mem::size_of::<[libc::c_uchar; 1276]>() as libc::c_ulong as opus_int32,
+        ::core::mem::size_of::<[libc::c_uchar; 1276]>() as libc::c_ulong as i32,
     );
     if i < 1 as libc::c_int
-        || i > ::core::mem::size_of::<[libc::c_uchar; 1276]>() as libc::c_ulong as opus_int32
+        || i > ::core::mem::size_of::<[libc::c_uchar; 1276]>() as libc::c_ulong as i32
     {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -5122,8 +5016,8 @@ pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
                 / (i * opus_packet_get_samples_per_frame(packet, 8000 as libc::c_int));
             k = 0 as libc::c_int;
             while k <= 1275 as libc::c_int + 75 as libc::c_int {
-                let mut cnt: opus_int32 = 0;
-                let mut rcnt: opus_int32 = 0;
+                let mut cnt: i32 = 0;
+                let mut rcnt: i32 = 0;
                 if k % i == 0 as libc::c_int {
                     cnt = 0 as libc::c_int;
                     while cnt < maxp + 2 as libc::c_int {
@@ -5934,7 +5828,7 @@ pub unsafe extern "C" fn test_malloc_fail() -> libc::c_int {
 }
 #[c2rust::src_loc = "1875:1"]
 unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> libc::c_int {
-    let mut total: opus_int32 = 0;
+    let mut total: i32 = 0;
     let mut oversion: *const libc::c_char = std::ptr::null::<libc::c_char>();
     if _argc > 1 as libc::c_int {
         fprintf(
@@ -5944,7 +5838,7 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> l
         );
         return 1 as libc::c_int;
     }
-    iseed = 0 as libc::c_int as opus_uint32;
+    iseed = 0 as libc::c_int as u32;
     oversion = opus_get_version_string();
     if oversion.is_null() {
         _test_failed(

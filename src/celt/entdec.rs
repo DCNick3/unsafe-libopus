@@ -10,30 +10,24 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     use super::types_h::__uint32_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:33"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "56:4"]
-    pub type opus_uint32 = uint32_t;
-    use super::stdint_uintn_h::uint32_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:35"]
 pub mod entcode_h {
     #[c2rust::src_loc = "45:1"]
-    pub type ec_window = opus_uint32;
+    pub type ec_window = u32;
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "62:8"]
     pub struct ec_ctx {
         pub buf: *mut libc::c_uchar,
-        pub storage: opus_uint32,
-        pub end_offs: opus_uint32,
+        pub storage: u32,
+        pub end_offs: u32,
         pub end_window: ec_window,
         pub nend_bits: libc::c_int,
         pub nbits_total: libc::c_int,
-        pub offs: opus_uint32,
-        pub rng: opus_uint32,
-        pub val: opus_uint32,
-        pub ext: opus_uint32,
+        pub offs: u32,
+        pub rng: u32,
+        pub val: u32,
+        pub ext: u32,
         pub rem: libc::c_int,
         pub error: libc::c_int,
     }
@@ -46,10 +40,9 @@ pub mod entcode_h {
         ::core::mem::size_of::<ec_window>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     #[inline]
     #[c2rust::src_loc = "124:1"]
-    pub unsafe extern "C" fn celt_udiv(n: opus_uint32, d: opus_uint32) -> opus_uint32 {
+    pub unsafe extern "C" fn celt_udiv(n: u32, d: u32) -> u32 {
         return n.wrapping_div(d);
     }
-    use super::opus_types_h::opus_uint32;
 
     use super::limits_h::CHAR_BIT;
 }
@@ -92,13 +85,12 @@ pub mod mfrngcod_h {
     pub const EC_SYM_MAX: libc::c_uint =
         ((1 as libc::c_uint) << EC_SYM_BITS).wrapping_sub(1 as libc::c_int as libc::c_uint);
     #[c2rust::src_loc = "43:10"]
-    pub const EC_CODE_TOP: opus_uint32 = (1 as libc::c_uint) << EC_CODE_BITS - 1 as libc::c_int;
+    pub const EC_CODE_TOP: u32 = (1 as libc::c_uint) << EC_CODE_BITS - 1 as libc::c_int;
     #[c2rust::src_loc = "45:10"]
-    pub const EC_CODE_BOT: opus_uint32 = EC_CODE_TOP >> EC_SYM_BITS;
+    pub const EC_CODE_BOT: u32 = EC_CODE_TOP >> EC_SYM_BITS;
     #[c2rust::src_loc = "47:10"]
     pub const EC_CODE_EXTRA: libc::c_int =
         (EC_CODE_BITS - 2 as libc::c_int) % EC_SYM_BITS + 1 as libc::c_int;
-    use super::opus_types_h::opus_uint32;
 }
 use self::arch_h::celt_fatal;
 pub use self::ecintrin_h::EC_CLZ0;
@@ -108,7 +100,6 @@ pub use self::limits_h::CHAR_BIT;
 pub use self::mfrngcod_h::{
     EC_CODE_BITS, EC_CODE_BOT, EC_CODE_EXTRA, EC_CODE_TOP, EC_SYM_BITS, EC_SYM_MAX,
 };
-pub use self::opus_types_h::opus_uint32;
 pub use self::stdint_uintn_h::uint32_t;
 pub use self::types_h::__uint32_t;
 #[c2rust::src_loc = "91:1"]
@@ -150,16 +141,16 @@ unsafe extern "C" fn ec_dec_normalize(mut _this: *mut ec_dec) {
 pub unsafe extern "C" fn ec_dec_init(
     mut _this: *mut ec_dec,
     mut _buf: *mut libc::c_uchar,
-    mut _storage: opus_uint32,
+    mut _storage: u32,
 ) {
     (*_this).buf = _buf;
     (*_this).storage = _storage;
-    (*_this).end_offs = 0 as libc::c_int as opus_uint32;
+    (*_this).end_offs = 0 as libc::c_int as u32;
     (*_this).end_window = 0 as libc::c_int as ec_window;
     (*_this).nend_bits = 0 as libc::c_int;
     (*_this).nbits_total = EC_CODE_BITS + 1 as libc::c_int
         - (EC_CODE_BITS - EC_CODE_EXTRA) / EC_SYM_BITS * EC_SYM_BITS;
-    (*_this).offs = 0 as libc::c_int as opus_uint32;
+    (*_this).offs = 0 as libc::c_int as u32;
     (*_this).rng = (1 as libc::c_uint) << EC_CODE_EXTRA;
     (*_this).rem = ec_read_byte(_this);
     (*_this).val = ((*_this).rng)
@@ -208,9 +199,9 @@ pub unsafe extern "C" fn ec_dec_update(
     mut _fh: libc::c_uint,
     mut _ft: libc::c_uint,
 ) {
-    let mut s: opus_uint32 = 0;
+    let mut s: u32 = 0;
     s = ((*_this).ext).wrapping_mul(_ft.wrapping_sub(_fh));
-    (*_this).val = ((*_this).val as libc::c_uint).wrapping_sub(s) as opus_uint32 as opus_uint32;
+    (*_this).val = ((*_this).val as libc::c_uint).wrapping_sub(s) as u32 as u32;
     (*_this).rng = if _fl > 0 as libc::c_int as libc::c_uint {
         ((*_this).ext).wrapping_mul(_fh.wrapping_sub(_fl))
     } else {
@@ -224,9 +215,9 @@ pub unsafe extern "C" fn ec_dec_bit_logp(
     mut _this: *mut ec_dec,
     mut _logp: libc::c_uint,
 ) -> libc::c_int {
-    let mut r: opus_uint32 = 0;
-    let mut d: opus_uint32 = 0;
-    let mut s: opus_uint32 = 0;
+    let mut r: u32 = 0;
+    let mut d: u32 = 0;
+    let mut s: u32 = 0;
     let mut ret: libc::c_int = 0;
     r = (*_this).rng;
     d = (*_this).val;
@@ -246,10 +237,10 @@ pub unsafe extern "C" fn ec_dec_icdf(
     mut _icdf: *const libc::c_uchar,
     mut _ftb: libc::c_uint,
 ) -> libc::c_int {
-    let mut r: opus_uint32 = 0;
-    let mut d: opus_uint32 = 0;
-    let mut s: opus_uint32 = 0;
-    let mut t: opus_uint32 = 0;
+    let mut r: u32 = 0;
+    let mut d: u32 = 0;
+    let mut s: u32 = 0;
+    let mut t: u32 = 0;
     let mut ret: libc::c_int = 0;
     s = (*_this).rng;
     d = (*_this).val;
@@ -270,7 +261,7 @@ pub unsafe extern "C" fn ec_dec_icdf(
 }
 #[no_mangle]
 #[c2rust::src_loc = "198:1"]
-pub unsafe extern "C" fn ec_dec_uint(mut _this: *mut ec_dec, mut _ft: opus_uint32) -> opus_uint32 {
+pub unsafe extern "C" fn ec_dec_uint(mut _this: *mut ec_dec, mut _ft: u32) -> u32 {
     let mut ft: libc::c_uint = 0;
     let mut s: libc::c_uint = 0;
     let mut ftb: libc::c_int = 0;
@@ -284,7 +275,7 @@ pub unsafe extern "C" fn ec_dec_uint(mut _this: *mut ec_dec, mut _ft: opus_uint3
     _ft = _ft.wrapping_sub(1);
     ftb = EC_CLZ0 - _ft.leading_zeros() as i32;
     if ftb > EC_UINT_BITS {
-        let mut t: opus_uint32 = 0;
+        let mut t: u32 = 0;
         ftb -= EC_UINT_BITS;
         ft = (_ft >> ftb).wrapping_add(1 as libc::c_int as libc::c_uint);
         s = ec_decode(_this, ft);
@@ -314,13 +305,10 @@ pub unsafe extern "C" fn ec_dec_uint(mut _this: *mut ec_dec, mut _ft: opus_uint3
 }
 #[no_mangle]
 #[c2rust::src_loc = "225:1"]
-pub unsafe extern "C" fn ec_dec_bits(
-    mut _this: *mut ec_dec,
-    mut _bits: libc::c_uint,
-) -> opus_uint32 {
+pub unsafe extern "C" fn ec_dec_bits(mut _this: *mut ec_dec, mut _bits: libc::c_uint) -> u32 {
     let mut window: ec_window = 0;
     let mut available: libc::c_int = 0;
-    let mut ret: opus_uint32 = 0;
+    let mut ret: u32 = 0;
     window = (*_this).end_window;
     available = (*_this).nend_bits;
     if (available as libc::c_uint) < _bits {
@@ -332,7 +320,7 @@ pub unsafe extern "C" fn ec_dec_bits(
             }
         }
     }
-    ret = window & ((1 as libc::c_int as opus_uint32) << _bits).wrapping_sub(1 as libc::c_uint);
+    ret = window & ((1 as libc::c_int as u32) << _bits).wrapping_sub(1 as libc::c_uint);
     window >>= _bits;
     available = (available as libc::c_uint).wrapping_sub(_bits) as libc::c_int as libc::c_int;
     (*_this).end_window = window;

@@ -40,23 +40,9 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     use super::types_h::__uint32_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:32"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "53:4"]
-    pub type opus_int16 = int16_t;
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    #[c2rust::src_loc = "56:4"]
-    pub type opus_uint32 = uint32_t;
-    #[c2rust::src_loc = "57:4"]
-    pub type opus_int64 = int64_t;
-    use super::stdint_intn_h::{int16_t, int32_t, int64_t};
-    use super::stdint_uintn_h::uint32_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus.h:32"]
 pub mod opus_h {
     use super::opus_private_h::OpusRepacketizer;
-    use super::opus_types_h::opus_int32;
     extern "C" {
         #[c2rust::src_loc = "164:16"]
         pub type OpusEncoder;
@@ -65,7 +51,7 @@ pub mod opus_h {
         #[c2rust::src_loc = "228:1"]
         pub fn opus_encoder_init(
             st: *mut OpusEncoder,
-            Fs: opus_int32,
+            Fs: i32,
             channels: libc::c_int,
             application: libc::c_int,
         ) -> libc::c_int;
@@ -75,7 +61,7 @@ pub mod opus_h {
         pub fn opus_repacketizer_cat(
             rp: *mut OpusRepacketizer,
             data: *const libc::c_uchar,
-            len: opus_int32,
+            len: i32,
         ) -> libc::c_int;
         #[c2rust::src_loc = "778:1"]
         pub fn opus_repacketizer_init(rp: *mut OpusRepacketizer) -> *mut OpusRepacketizer;
@@ -92,7 +78,7 @@ pub mod opus_private_h {
         pub toc: libc::c_uchar,
         pub nb_frames: libc::c_int,
         pub frames: [*const libc::c_uchar; 48],
-        pub len: [opus_int16; 48],
+        pub len: [i16; 48],
         pub framesize: libc::c_int,
     }
     #[derive(Copy, Clone)]
@@ -105,7 +91,7 @@ pub mod opus_private_h {
         pub application: libc::c_int,
         pub variable_duration: libc::c_int,
         pub mapping_type: MappingType,
-        pub bitrate_bps: opus_int32,
+        pub bitrate_bps: i32,
     }
     #[c2rust::src_loc = "54:9"]
     pub type MappingType = libc::c_uint;
@@ -136,7 +122,7 @@ pub mod opus_private_h {
     #[c2rust::src_loc = "156:25"]
     pub union C2RustUnnamed {
         pub p: *mut libc::c_void,
-        pub i: opus_int32,
+        pub i: i32,
         pub v: opus_val32,
     }
     #[c2rust::src_loc = "135:1"]
@@ -179,7 +165,6 @@ pub mod opus_private_h {
     }
     use super::arch_h::{opus_val16, opus_val32};
     use super::opus_h::OpusEncoder;
-    use super::opus_types_h::{opus_int16, opus_int32};
     extern "C" {
         #[c2rust::src_loc = "136:1"]
         pub fn downmix_float(
@@ -192,37 +177,33 @@ pub mod opus_private_h {
             C: libc::c_int,
         );
         #[c2rust::src_loc = "142:1"]
-        pub fn frame_size_select(
-            frame_size: opus_int32,
-            variable_duration: libc::c_int,
-            Fs: opus_int32,
-        ) -> opus_int32;
+        pub fn frame_size_select(frame_size: i32, variable_duration: libc::c_int, Fs: i32) -> i32;
         #[c2rust::src_loc = "144:1"]
         pub fn opus_encode_native(
             st: *mut OpusEncoder,
             pcm: *const opus_val16,
             frame_size: libc::c_int,
             data: *mut libc::c_uchar,
-            out_data_bytes: opus_int32,
+            out_data_bytes: i32,
             lsb_depth: libc::c_int,
             analysis_pcm: *const libc::c_void,
-            analysis_size: opus_int32,
+            analysis_size: i32,
             c1: libc::c_int,
             c2: libc::c_int,
             analysis_channels: libc::c_int,
             downmix: downmix_func,
             float_api: libc::c_int,
-        ) -> opus_int32;
+        ) -> i32;
         #[c2rust::src_loc = "170:1"]
         pub fn opus_repacketizer_out_range_impl(
             rp: *mut OpusRepacketizer,
             begin: libc::c_int,
             end: libc::c_int,
             data: *mut libc::c_uchar,
-            maxlen: opus_int32,
+            maxlen: i32,
             self_delimited: libc::c_int,
             pad: libc::c_int,
-        ) -> opus_int32;
+        ) -> i32;
         #[c2rust::src_loc = "137:1"]
         pub fn downmix_int(
             _x: *const libc::c_void,
@@ -287,18 +268,18 @@ pub mod modes_h {
     #[repr(C)]
     #[c2rust::src_loc = "52:8"]
     pub struct OpusCustomMode {
-        pub Fs: opus_int32,
+        pub Fs: i32,
         pub overlap: libc::c_int,
         pub nbEBands: libc::c_int,
         pub effEBands: libc::c_int,
         pub preemph: [opus_val16; 4],
-        pub eBands: *const opus_int16,
+        pub eBands: *const i16,
         pub maxLM: libc::c_int,
         pub nbShortMdcts: libc::c_int,
         pub shortMdctSize: libc::c_int,
         pub nbAllocVectors: libc::c_int,
         pub allocVectors: *const libc::c_uchar,
-        pub logN: *const opus_int16,
+        pub logN: *const i16,
         pub window: *const opus_val16,
         pub mdct: mdct_lookup,
         pub cache: PulseCache,
@@ -308,13 +289,12 @@ pub mod modes_h {
     #[c2rust::src_loc = "42:9"]
     pub struct PulseCache {
         pub size: libc::c_int,
-        pub index: *const opus_int16,
+        pub index: *const i16,
         pub bits: *const libc::c_uchar,
         pub caps: *const libc::c_uchar,
     }
     use super::arch_h::opus_val16;
     use super::mdct_h::mdct_lookup;
-    use super::opus_types_h::{opus_int16, opus_int32};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:40"]
 pub mod mdct_h {
@@ -352,8 +332,8 @@ pub mod kiss_fft_h {
         pub nfft: libc::c_int,
         pub scale: opus_val16,
         pub shift: libc::c_int,
-        pub factors: [opus_int16; 16],
-        pub bitrev: *const opus_int16,
+        pub factors: [i16; 16],
+        pub bitrev: *const i16,
         pub twiddles: *const kiss_twiddle_cpx,
         pub arch_fft: *mut arch_fft_state,
     }
@@ -372,7 +352,6 @@ pub mod kiss_fft_h {
         pub i: libc::c_float,
     }
     use super::arch_h::opus_val16;
-    use super::opus_types_h::opus_int16;
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stdarg.h:34"]
 pub mod stdarg_h {
@@ -494,10 +473,9 @@ pub mod celt_h {
     #[c2rust::src_loc = "125:9"]
     pub const OPUS_SET_LFE_REQUEST: libc::c_int = 10024 as libc::c_int;
     use super::arch_h::{celt_sig, opus_val16};
-    use super::opus_types_h::opus_int32;
     extern "C" {
         #[c2rust::src_loc = "219:1"]
-        pub fn resampling_factor(rate: opus_int32) -> libc::c_int;
+        pub fn resampling_factor(rate: i32) -> libc::c_int;
         #[c2rust::src_loc = "221:1"]
         pub fn celt_preemphasis(
             pcmp: *const opus_val16,
@@ -550,10 +528,9 @@ pub mod os_support_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.h:39"]
 pub mod mathops_h {
-    use super::opus_types_h::opus_uint32;
     extern "C" {
         #[c2rust::src_loc = "46:1"]
-        pub fn isqrt32(_val: opus_uint32) -> libc::c_uint;
+        pub fn isqrt32(_val: u32) -> libc::c_uint;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cpu_support.h:40"]
@@ -657,7 +634,6 @@ pub use self::opus_private_h::{
     OpusMSEncoder, OpusRepacketizer, MAPPING_TYPE_AMBISONICS, MAPPING_TYPE_NONE,
     MAPPING_TYPE_SURROUND, OPUS_GET_VOICE_RATIO_REQUEST, OPUS_SET_FORCE_MODE_REQUEST,
 };
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
@@ -868,7 +844,7 @@ unsafe extern "C" fn validate_ambisonics(
     if nb_channels < 1 as libc::c_int || nb_channels > 227 as libc::c_int {
         return 0 as libc::c_int;
     }
-    order_plus_one = isqrt32(nb_channels as opus_uint32) as libc::c_int;
+    order_plus_one = isqrt32(nb_channels as u32) as libc::c_int;
     acn_channels = order_plus_one * order_plus_one;
     nondiegetic_channels = nb_channels - acn_channels;
     if nondiegetic_channels != 0 as libc::c_int && nondiegetic_channels != 2 as libc::c_int {
@@ -1278,7 +1254,7 @@ pub unsafe extern "C" fn surround_analysis(
 pub unsafe extern "C" fn opus_multistream_encoder_get_size(
     nb_streams: libc::c_int,
     nb_coupled_streams: libc::c_int,
-) -> opus_int32 {
+) -> i32 {
     let mut coupled_size: libc::c_int = 0;
     let mut mono_size: libc::c_int = 0;
     if nb_streams < 1 as libc::c_int
@@ -1298,10 +1274,10 @@ pub unsafe extern "C" fn opus_multistream_encoder_get_size(
 pub unsafe extern "C" fn opus_multistream_surround_encoder_get_size(
     channels: libc::c_int,
     mapping_family: libc::c_int,
-) -> opus_int32 {
+) -> i32 {
     let mut nb_streams: libc::c_int = 0;
     let mut nb_coupled_streams: libc::c_int = 0;
-    let mut size: opus_int32 = 0;
+    let mut size: i32 = 0;
     if mapping_family == 0 as libc::c_int {
         if channels == 1 as libc::c_int {
             nb_streams = 1 as libc::c_int;
@@ -1337,14 +1313,14 @@ pub unsafe extern "C" fn opus_multistream_surround_encoder_get_size(
                     .wrapping_mul(::core::mem::size_of::<opus_val32>() as libc::c_ulong)
                     .wrapping_add(::core::mem::size_of::<opus_val32>() as libc::c_ulong),
             ),
-        ) as opus_int32 as opus_int32;
+        ) as i32 as i32;
     }
     return size;
 }
 #[c2rust::src_loc = "429:1"]
 unsafe extern "C" fn opus_multistream_encoder_init_impl(
     mut st: *mut OpusMSEncoder,
-    Fs: opus_int32,
+    Fs: i32,
     channels: libc::c_int,
     streams: libc::c_int,
     coupled_streams: libc::c_int,
@@ -1455,7 +1431,7 @@ unsafe extern "C" fn opus_multistream_encoder_init_impl(
 #[c2rust::src_loc = "497:1"]
 pub unsafe extern "C" fn opus_multistream_encoder_init(
     st: *mut OpusMSEncoder,
-    Fs: opus_int32,
+    Fs: i32,
     channels: libc::c_int,
     streams: libc::c_int,
     coupled_streams: libc::c_int,
@@ -1477,7 +1453,7 @@ pub unsafe extern "C" fn opus_multistream_encoder_init(
 #[c2rust::src_loc = "512:1"]
 pub unsafe extern "C" fn opus_multistream_surround_encoder_init(
     mut st: *mut OpusMSEncoder,
-    Fs: opus_int32,
+    Fs: i32,
     channels: libc::c_int,
     mapping_family: libc::c_int,
     streams: *mut libc::c_int,
@@ -1569,7 +1545,7 @@ pub unsafe extern "C" fn opus_multistream_surround_encoder_init(
 #[no_mangle]
 #[c2rust::src_loc = "585:1"]
 pub unsafe extern "C" fn opus_multistream_encoder_create(
-    Fs: opus_int32,
+    Fs: i32,
     channels: libc::c_int,
     streams: libc::c_int,
     coupled_streams: libc::c_int,
@@ -1620,7 +1596,7 @@ pub unsafe extern "C" fn opus_multistream_encoder_create(
 #[no_mangle]
 #[c2rust::src_loc = "622:1"]
 pub unsafe extern "C" fn opus_multistream_surround_encoder_create(
-    Fs: opus_int32,
+    Fs: i32,
     channels: libc::c_int,
     mapping_family: libc::c_int,
     streams: *mut libc::c_int,
@@ -1630,7 +1606,7 @@ pub unsafe extern "C" fn opus_multistream_surround_encoder_create(
     error: *mut libc::c_int,
 ) -> *mut OpusMSEncoder {
     let mut ret: libc::c_int = 0;
-    let mut size: opus_int32 = 0;
+    let mut size: i32 = 0;
     let mut st: *mut OpusMSEncoder = 0 as *mut OpusMSEncoder;
     if channels > 255 as libc::c_int || channels < 1 as libc::c_int {
         if !error.is_null() {
@@ -1674,12 +1650,12 @@ pub unsafe extern "C" fn opus_multistream_surround_encoder_create(
 #[c2rust::src_loc = "667:1"]
 unsafe extern "C" fn surround_rate_allocation(
     st: *mut OpusMSEncoder,
-    rate: *mut opus_int32,
+    rate: *mut i32,
     frame_size: libc::c_int,
-    Fs: opus_int32,
+    Fs: i32,
 ) {
     let mut i: libc::c_int = 0;
-    let mut channel_rate: opus_int32 = 0;
+    let mut channel_rate: i32 = 0;
     let mut stream_offset: libc::c_int = 0;
     let mut lfe_offset: libc::c_int = 0;
     let mut coupled_ratio: libc::c_int = 0;
@@ -1688,8 +1664,8 @@ unsafe extern "C" fn surround_rate_allocation(
     let mut nb_uncoupled: libc::c_int = 0;
     let mut nb_coupled: libc::c_int = 0;
     let mut nb_normal: libc::c_int = 0;
-    let mut channel_offset: opus_int32 = 0;
-    let mut bitrate: opus_int32 = 0;
+    let mut channel_offset: i32 = 0;
+    let mut bitrate: i32 = 0;
     let mut total: libc::c_int = 0;
     nb_lfe = ((*st).lfe_stream != -(1 as libc::c_int)) as libc::c_int;
     nb_coupled = (*st).layout.nb_coupled_streams;
@@ -1740,8 +1716,8 @@ unsafe extern "C" fn surround_rate_allocation(
         * (bitrate
             - lfe_offset * nb_lfe
             - stream_offset * (nb_coupled + nb_uncoupled)
-            - channel_offset * nb_normal) as opus_int64
-        / total as libc::c_long) as opus_int32;
+            - channel_offset * nb_normal) as i64
+        / total as libc::c_long) as i32;
     i = 0 as libc::c_int;
     while i < (*st).layout.nb_streams {
         if i < (*st).layout.nb_coupled_streams {
@@ -1774,13 +1750,13 @@ unsafe extern "C" fn surround_rate_allocation(
 #[c2rust::src_loc = "736:1"]
 unsafe extern "C" fn ambisonics_rate_allocation(
     st: *mut OpusMSEncoder,
-    rate: *mut opus_int32,
+    rate: *mut i32,
     frame_size: libc::c_int,
-    Fs: opus_int32,
+    Fs: i32,
 ) {
     let mut i: libc::c_int = 0;
-    let mut total_rate: opus_int32 = 0;
-    let mut per_stream_rate: opus_int32 = 0;
+    let mut total_rate: i32 = 0;
+    let mut per_stream_rate: i32 = 0;
     let nb_channels: libc::c_int = (*st).layout.nb_streams + (*st).layout.nb_coupled_streams;
     if (*st).bitrate_bps == OPUS_AUTO {
         total_rate = ((*st).layout.nb_coupled_streams + (*st).layout.nb_streams)
@@ -1801,12 +1777,12 @@ unsafe extern "C" fn ambisonics_rate_allocation(
 #[c2rust::src_loc = "770:1"]
 unsafe extern "C" fn rate_allocation(
     st: *mut OpusMSEncoder,
-    rate: *mut opus_int32,
+    rate: *mut i32,
     frame_size: libc::c_int,
-) -> opus_int32 {
+) -> i32 {
     let mut i: libc::c_int = 0;
-    let mut rate_sum: opus_int32 = 0 as libc::c_int;
-    let mut Fs: opus_int32 = 0;
+    let mut rate_sum: i32 = 0 as libc::c_int;
+    let mut Fs: i32 = 0;
     let mut ptr: *mut libc::c_char = 0 as *mut libc::c_char;
     ptr = (st as *mut libc::c_char).offset(align(
         ::core::mem::size_of::<OpusMSEncoder>() as libc::c_ulong as libc::c_int
@@ -1814,9 +1790,8 @@ unsafe extern "C" fn rate_allocation(
     opus_encoder_ctl(
         ptr as *mut OpusEncoder,
         OPUS_GET_SAMPLE_RATE_REQUEST,
-        (&mut Fs as *mut opus_int32).offset(
-            (&mut Fs as *mut opus_int32).offset_from(&mut Fs as *mut opus_int32) as libc::c_long
-                as isize,
+        (&mut Fs as *mut i32).offset(
+            (&mut Fs as *mut i32).offset_from(&mut Fs as *mut i32) as libc::c_long as isize
         ),
     );
     if (*st).mapping_type as libc::c_uint == MAPPING_TYPE_AMBISONICS as libc::c_int as libc::c_uint
@@ -1845,13 +1820,13 @@ pub unsafe extern "C" fn opus_multistream_encode_native(
     pcm: *const libc::c_void,
     analysis_frame_size: libc::c_int,
     mut data: *mut libc::c_uchar,
-    mut max_data_bytes: opus_int32,
+    mut max_data_bytes: i32,
     lsb_depth: libc::c_int,
     downmix: downmix_func,
     float_api: libc::c_int,
     user_data: *mut libc::c_void,
 ) -> libc::c_int {
-    let mut Fs: opus_int32 = 0;
+    let mut Fs: i32 = 0;
     let mut coupled_size: libc::c_int = 0;
     let mut mono_size: libc::c_int = 0;
     let mut s: libc::c_int = 0;
@@ -1865,15 +1840,15 @@ pub unsafe extern "C" fn opus_multistream_encode_native(
         len: [0; 48],
         framesize: 0,
     };
-    let mut vbr: opus_int32 = 0;
+    let mut vbr: i32 = 0;
     let mut celt_mode: *const OpusCustomMode = 0 as *const OpusCustomMode;
-    let mut bitrates: [opus_int32; 256] = [0; 256];
+    let mut bitrates: [i32; 256] = [0; 256];
     let mut bandLogE: [opus_val16; 42] = [0.; 42];
     let mut mem: *mut opus_val32 = NULL as *mut opus_val32;
     let mut preemph_mem: *mut opus_val32 = NULL as *mut opus_val32;
     let mut frame_size: libc::c_int = 0;
-    let mut rate_sum: opus_int32 = 0;
-    let mut smallest_packet: opus_int32 = 0;
+    let mut rate_sum: i32 = 0;
+    let mut smallest_packet: i32 = 0;
     if (*st).mapping_type as libc::c_uint == MAPPING_TYPE_SURROUND as libc::c_int as libc::c_uint {
         preemph_mem = ms_get_preemph_mem(st);
         mem = ms_get_window_mem(st);
@@ -1884,17 +1859,15 @@ pub unsafe extern "C" fn opus_multistream_encode_native(
     opus_encoder_ctl(
         ptr as *mut OpusEncoder,
         OPUS_GET_SAMPLE_RATE_REQUEST,
-        (&mut Fs as *mut opus_int32).offset(
-            (&mut Fs as *mut opus_int32).offset_from(&mut Fs as *mut opus_int32) as libc::c_long
-                as isize,
+        (&mut Fs as *mut i32).offset(
+            (&mut Fs as *mut i32).offset_from(&mut Fs as *mut i32) as libc::c_long as isize
         ),
     );
     opus_encoder_ctl(
         ptr as *mut OpusEncoder,
         OPUS_GET_VBR_REQUEST,
-        (&mut vbr as *mut opus_int32).offset(
-            (&mut vbr as *mut opus_int32).offset_from(&mut vbr as *mut opus_int32) as libc::c_long
-                as isize,
+        (&mut vbr as *mut i32).offset(
+            (&mut vbr as *mut i32).offset_from(&mut vbr as *mut i32) as libc::c_long as isize
         ),
     );
     opus_encoder_ctl(
@@ -1989,7 +1962,7 @@ pub unsafe extern "C" fn opus_multistream_encode_native(
         if (*st).mapping_type as libc::c_uint
             == MAPPING_TYPE_SURROUND as libc::c_int as libc::c_uint
         {
-            let mut equiv_rate: opus_int32 = 0;
+            let mut equiv_rate: i32 = 0;
             equiv_rate = (*st).bitrate_bps;
             if (frame_size * 50 as libc::c_int) < Fs {
                 equiv_rate -= 60 as libc::c_int
@@ -2191,7 +2164,7 @@ unsafe extern "C" fn opus_copy_channel_in_float(
     _user_data: *mut libc::c_void,
 ) {
     let mut float_src: *const libc::c_float = 0 as *const libc::c_float;
-    let mut i: opus_int32 = 0;
+    let mut i: i32 = 0;
     float_src = src as *const libc::c_float;
     i = 0 as libc::c_int;
     while i < frame_size {
@@ -2210,9 +2183,9 @@ unsafe extern "C" fn opus_copy_channel_in_short(
     frame_size: libc::c_int,
     _user_data: *mut libc::c_void,
 ) {
-    let mut short_src: *const opus_int16 = 0 as *const opus_int16;
-    let mut i: opus_int32 = 0;
-    short_src = src as *const opus_int16;
+    let mut short_src: *const i16 = 0 as *const i16;
+    let mut i: i32 = 0;
+    short_src = src as *const i16;
     i = 0 as libc::c_int;
     while i < frame_size {
         *dst.offset((i * dst_stride) as isize) = 1 as libc::c_int as libc::c_float / 32768.0f32
@@ -2228,7 +2201,7 @@ pub unsafe extern "C" fn opus_multistream_encode_float(
     pcm: *const opus_val16,
     frame_size: libc::c_int,
     data: *mut libc::c_uchar,
-    max_data_bytes: opus_int32,
+    max_data_bytes: i32,
 ) -> libc::c_int {
     return opus_multistream_encode_native(
         st,
@@ -2269,10 +2242,10 @@ pub unsafe extern "C" fn opus_multistream_encode_float(
 #[c2rust::src_loc = "1103:1"]
 pub unsafe extern "C" fn opus_multistream_encode(
     st: *mut OpusMSEncoder,
-    pcm: *const opus_int16,
+    pcm: *const i16,
     frame_size: libc::c_int,
     data: *mut libc::c_uchar,
-    max_data_bytes: opus_int32,
+    max_data_bytes: i32,
 ) -> libc::c_int {
     return opus_multistream_encode_native(
         st,
@@ -2328,7 +2301,7 @@ pub unsafe extern "C" fn opus_multistream_encoder_ctl_va_list(
     ) as isize);
     match request {
         OPUS_SET_BITRATE_REQUEST => {
-            let mut value: opus_int32 = ap.arg::<opus_int32>();
+            let mut value: i32 = ap.arg::<i32>();
             if value != OPUS_AUTO && value != OPUS_BITRATE_MAX {
                 if value <= 0 as libc::c_int {
                     current_block = 11382675479785311092;
@@ -2360,14 +2333,14 @@ pub unsafe extern "C" fn opus_multistream_encoder_ctl_va_list(
         }
         OPUS_GET_BITRATE_REQUEST => {
             let mut s: libc::c_int = 0;
-            let value_0: *mut opus_int32 = ap.arg::<*mut opus_int32>();
+            let value_0: *mut i32 = ap.arg::<*mut i32>();
             if value_0.is_null() {
                 current_block = 11382675479785311092;
             } else {
                 *value_0 = 0 as libc::c_int;
                 s = 0 as libc::c_int;
                 while s < (*st).layout.nb_streams {
-                    let mut rate: opus_int32 = 0;
+                    let mut rate: i32 = 0;
                     let mut enc: *mut OpusEncoder = 0 as *mut OpusEncoder;
                     enc = ptr as *mut OpusEncoder;
                     if s < (*st).layout.nb_coupled_streams {
@@ -2375,7 +2348,7 @@ pub unsafe extern "C" fn opus_multistream_encoder_ctl_va_list(
                     } else {
                         ptr = ptr.offset(align(mono_size) as isize);
                     }
-                    opus_encoder_ctl(enc, request, &mut rate as *mut opus_int32);
+                    opus_encoder_ctl(enc, request, &mut rate as *mut i32);
                     *value_0 += rate;
                     s += 1;
                 }
@@ -2399,19 +2372,19 @@ pub unsafe extern "C" fn opus_multistream_encoder_ctl_va_list(
         | OPUS_GET_PREDICTION_DISABLED_REQUEST
         | OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST => {
             let mut enc_0: *mut OpusEncoder = 0 as *mut OpusEncoder;
-            let value_1: *mut opus_int32 = ap.arg::<*mut opus_int32>();
+            let value_1: *mut i32 = ap.arg::<*mut i32>();
             enc_0 = ptr as *mut OpusEncoder;
             ret = opus_encoder_ctl(enc_0, request, value_1);
             current_block = 2616667235040759262;
         }
         OPUS_GET_FINAL_RANGE_REQUEST => {
             let mut s_0: libc::c_int = 0;
-            let value_2: *mut opus_uint32 = ap.arg::<*mut opus_uint32>();
-            let mut tmp: opus_uint32 = 0;
+            let value_2: *mut u32 = ap.arg::<*mut u32>();
+            let mut tmp: u32 = 0;
             if value_2.is_null() {
                 current_block = 11382675479785311092;
             } else {
-                *value_2 = 0 as libc::c_int as opus_uint32;
+                *value_2 = 0 as libc::c_int as u32;
                 s_0 = 0 as libc::c_int;
                 while s_0 < (*st).layout.nb_streams {
                     let mut enc_1: *mut OpusEncoder = 0 as *mut OpusEncoder;
@@ -2421,7 +2394,7 @@ pub unsafe extern "C" fn opus_multistream_encoder_ctl_va_list(
                     } else {
                         ptr = ptr.offset(align(mono_size) as isize);
                     }
-                    ret = opus_encoder_ctl(enc_1, request, &mut tmp as *mut opus_uint32);
+                    ret = opus_encoder_ctl(enc_1, request, &mut tmp as *mut u32);
                     if ret != OPUS_OK {
                         break;
                     }
@@ -2447,7 +2420,7 @@ pub unsafe extern "C" fn opus_multistream_encoder_ctl_va_list(
         | OPUS_SET_PREDICTION_DISABLED_REQUEST
         | OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST => {
             let mut s_1: libc::c_int = 0;
-            let value_3: opus_int32 = ap.arg::<opus_int32>();
+            let value_3: i32 = ap.arg::<i32>();
             s_1 = 0 as libc::c_int;
             while s_1 < (*st).layout.nb_streams {
                 let mut enc_2: *mut OpusEncoder = 0 as *mut OpusEncoder;
@@ -2467,9 +2440,9 @@ pub unsafe extern "C" fn opus_multistream_encoder_ctl_va_list(
         }
         OPUS_MULTISTREAM_GET_ENCODER_STATE_REQUEST => {
             let mut s_2: libc::c_int = 0;
-            let mut stream_id: opus_int32 = 0;
+            let mut stream_id: i32 = 0;
             let mut value_4: *mut *mut OpusEncoder = 0 as *mut *mut OpusEncoder;
-            stream_id = ap.arg::<opus_int32>();
+            stream_id = ap.arg::<i32>();
             if stream_id < 0 as libc::c_int || stream_id >= (*st).layout.nb_streams {
                 current_block = 11382675479785311092;
             } else {
@@ -2492,12 +2465,12 @@ pub unsafe extern "C" fn opus_multistream_encoder_ctl_va_list(
             }
         }
         OPUS_SET_EXPERT_FRAME_DURATION_REQUEST => {
-            let value_5: opus_int32 = ap.arg::<opus_int32>();
+            let value_5: i32 = ap.arg::<i32>();
             (*st).variable_duration = value_5;
             current_block = 2616667235040759262;
         }
         OPUS_GET_EXPERT_FRAME_DURATION_REQUEST => {
-            let value_6: *mut opus_int32 = ap.arg::<*mut opus_int32>();
+            let value_6: *mut i32 = ap.arg::<*mut i32>();
             if value_6.is_null() {
                 current_block = 11382675479785311092;
             } else {

@@ -105,19 +105,6 @@ pub mod stdint_uintn_h {
     pub type uint64_t = __uint64_t;
     use super::types_h::{__uint32_t, __uint64_t};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:37"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "53:4"]
-    pub type opus_int16 = int16_t;
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    #[c2rust::src_loc = "56:4"]
-    pub type opus_uint32 = uint32_t;
-    #[c2rust::src_loc = "58:4"]
-    pub type opus_uint64 = uint64_t;
-    use super::stdint_intn_h::{int16_t, int32_t};
-    use super::stdint_uintn_h::{uint32_t, uint64_t};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus.h:37"]
 #[c2rust::header_src = "/usr/include/stdio.h:33"]
 pub mod stdio_h {
@@ -221,7 +208,6 @@ pub mod opus_defines_h {
 }
 use self::mathcalls_h::sqrt;
 use self::opus_defines_h::{opus_get_version_string, opus_strerror};
-pub use self::opus_types_h::{opus_int32, opus_uint32, opus_uint64};
 pub use self::stddef_h::size_t;
 use self::stdio_h::{fclose, fopen, fprintf, fread, fseek, ftell, fwrite, printf, stderr};
 pub use self::stdlib_h::{abs, atoi, atol, calloc, free, malloc, rand};
@@ -317,7 +303,7 @@ pub unsafe extern "C" fn print_usage(mut argv: *mut *mut libc::c_char) {
     );
 }
 #[c2rust::src_loc = "68:1"]
-unsafe extern "C" fn int_to_char(mut i: opus_uint32, mut ch: *mut libc::c_uchar) {
+unsafe extern "C" fn int_to_char(mut i: u32, mut ch: *mut libc::c_uchar) {
     *ch.offset(0 as libc::c_int as isize) = (i >> 24 as libc::c_int) as libc::c_uchar;
     *ch.offset(1 as libc::c_int as isize) =
         (i >> 16 as libc::c_int & 0xff as libc::c_int as libc::c_uint) as libc::c_uchar;
@@ -327,11 +313,11 @@ unsafe extern "C" fn int_to_char(mut i: opus_uint32, mut ch: *mut libc::c_uchar)
         (i & 0xff as libc::c_int as libc::c_uint) as libc::c_uchar;
 }
 #[c2rust::src_loc = "76:1"]
-unsafe extern "C" fn char_to_int(mut ch: *mut libc::c_uchar) -> opus_uint32 {
-    (*ch.offset(0 as libc::c_int as isize) as opus_uint32) << 24 as libc::c_int
-        | (*ch.offset(1 as libc::c_int as isize) as opus_uint32) << 16 as libc::c_int
-        | (*ch.offset(2 as libc::c_int as isize) as opus_uint32) << 8 as libc::c_int
-        | *ch.offset(3 as libc::c_int as isize) as opus_uint32
+unsafe extern "C" fn char_to_int(mut ch: *mut libc::c_uchar) -> u32 {
+    (*ch.offset(0 as libc::c_int as isize) as u32) << 24 as libc::c_int
+        | (*ch.offset(1 as libc::c_int as isize) as u32) << 16 as libc::c_int
+        | (*ch.offset(2 as libc::c_int as isize) as u32) << 8 as libc::c_int
+        | *ch.offset(3 as libc::c_int as isize) as u32
 }
 #[c2rust::src_loc = "84:18"]
 static mut silk8_test: [[libc::c_int; 4]; 8] = [
@@ -776,13 +762,13 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
     let mut len: [libc::c_int; 2] = [0; 2];
     let mut frame_size: libc::c_int = 0;
     let mut channels: libc::c_int = 0;
-    let mut bitrate_bps: opus_int32 = 0 as libc::c_int;
+    let mut bitrate_bps: i32 = 0 as libc::c_int;
     let mut data: [*mut libc::c_uchar; 2] = [
         std::ptr::null_mut::<libc::c_uchar>(),
         std::ptr::null_mut::<libc::c_uchar>(),
     ];
     let mut fbytes: *mut libc::c_uchar = std::ptr::null_mut::<libc::c_uchar>();
-    let mut sampling_rate: opus_int32 = 0;
+    let mut sampling_rate: i32 = 0;
     let mut use_vbr: libc::c_int = 0;
     let mut max_payload_bytes: libc::c_int = 0;
     let mut complexity: libc::c_int = 0;
@@ -791,10 +777,10 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
     let mut forcechannels: libc::c_int = 0;
     let mut cvbr: libc::c_int = 0 as libc::c_int;
     let mut packet_loss_perc: libc::c_int = 0;
-    let mut count: opus_int32 = 0 as libc::c_int;
-    let mut count_act: opus_int32 = 0 as libc::c_int;
+    let mut count: i32 = 0 as libc::c_int;
+    let mut count_act: i32 = 0 as libc::c_int;
     let mut k: libc::c_int = 0;
-    let mut skip: opus_int32 = 0 as libc::c_int;
+    let mut skip: i32 = 0 as libc::c_int;
     let mut stop: libc::c_int = 0 as libc::c_int;
     let mut in_0: *mut libc::c_short = std::ptr::null_mut::<libc::c_short>();
     let mut out: *mut libc::c_short = std::ptr::null_mut::<libc::c_short>();
@@ -805,15 +791,15 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
     let mut bits2: libc::c_double = 0.0f64;
     let mut nrg: libc::c_double = 0.;
     let mut tot_samples: libc::c_double = 0 as libc::c_int as libc::c_double;
-    let mut tot_in: opus_uint64 = 0;
-    let mut tot_out: opus_uint64 = 0;
+    let mut tot_in: u64 = 0;
+    let mut tot_out: u64 = 0;
     let mut bandwidth: libc::c_int = -(1000 as libc::c_int);
     let mut bandwidth_string: *const libc::c_char = std::ptr::null::<libc::c_char>();
     let mut lost: libc::c_int = 0 as libc::c_int;
     let mut lost_prev: libc::c_int = 1 as libc::c_int;
     let mut toggle: libc::c_int = 0 as libc::c_int;
-    let mut enc_final_range: [opus_uint32; 2] = [0; 2];
-    let mut dec_final_range: opus_uint32 = 0;
+    let mut enc_final_range: [u32; 2] = [0; 2];
+    let mut dec_final_range: u32 = 0;
     let mut encode_only: libc::c_int = 0 as libc::c_int;
     let mut decode_only: libc::c_int = 0 as libc::c_int;
     let mut max_frame_size: libc::c_int = 48000 as libc::c_int * 2 as libc::c_int;
@@ -839,7 +825,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
     if argc < 5 as libc::c_int {
         print_usage(argv);
     } else {
-        tot_out = 0 as libc::c_int as opus_uint64;
+        tot_out = 0 as libc::c_int as u64;
         tot_in = tot_out;
         fprintf(
             stderr,
@@ -908,7 +894,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
             match current_block {
                 14460699602747363466 => {}
                 _ => {
-                    sampling_rate = atol(*argv.offset(args as isize)) as opus_int32;
+                    sampling_rate = atol(*argv.offset(args as isize)) as i32;
                     args += 1;
                     if sampling_rate != 8000 as libc::c_int
                         && sampling_rate != 12000 as libc::c_int
@@ -933,7 +919,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                             );
                         } else {
                             if decode_only == 0 {
-                                bitrate_bps = atol(*argv.offset(args as isize)) as opus_int32;
+                                bitrate_bps = atol(*argv.offset(args as isize)) as i32;
                                 args += 1;
                             }
                             use_vbr = 1 as libc::c_int;
@@ -1602,12 +1588,10 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                         opus_encoder_ctl(
                                                             enc,
                                                             4027 as libc::c_int,
-                                                            (&mut skip as *mut opus_int32).offset(
-                                                                (&mut skip as *mut opus_int32)
-                                                                    .offset_from(
-                                                                        &mut skip
-                                                                            as *mut opus_int32,
-                                                                    )
+                                                            (&mut skip as *mut i32).offset(
+                                                                (&mut skip as *mut i32).offset_from(
+                                                                    &mut skip as *mut i32,
+                                                                )
                                                                     as libc::c_long
                                                                     as isize,
                                                             ),
@@ -2012,14 +1996,13 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                         curr_read =
                                                                             num_read as libc::c_int;
                                                                         tot_in = (tot_in as libc::c_ulong)
-                                                                            .wrapping_add(curr_read as libc::c_ulong) as opus_uint64
-                                                                            as opus_uint64;
+                                                                            .wrapping_add(curr_read as libc::c_ulong) as u64
+                                                                            as u64;
                                                                         i = 0 as libc::c_int;
                                                                         while i < curr_read
                                                                             * channels
                                                                         {
-                                                                            let mut s: opus_int32 =
-                                                                                0;
+                                                                            let mut s: i32 = 0;
                                                                             s = (*fbytes
                                                                                 .offset((2 as libc::c_int * i + 1 as libc::c_int) as isize)
                                                                                 as libc::c_int) << 8 as libc::c_int
@@ -2120,13 +2103,13 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                             enc,
                                                                             4031 as libc::c_int,
                                                                             (&mut *enc_final_range.as_mut_ptr().offset(toggle as isize)
-                                                                                as *mut opus_uint32)
+                                                                                as *mut u32)
                                                                                 .offset(
                                                                                     (&mut *enc_final_range.as_mut_ptr().offset(toggle as isize)
-                                                                                        as *mut opus_uint32)
+                                                                                        as *mut u32)
                                                                                         .offset_from(
                                                                                             &mut *enc_final_range.as_mut_ptr().offset(toggle as isize)
-                                                                                                as *mut opus_uint32,
+                                                                                                as *mut u32,
                                                                                         ) as libc::c_long as isize,
                                                                                 ),
                                                                         );
@@ -2156,7 +2139,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                         let mut int_field: [libc::c_uchar; 4] = [0; 4];
                                                                         int_to_char(
                                                                             len[toggle as usize]
-                                                                                as opus_uint32,
+                                                                                as u32,
                                                                             int_field.as_mut_ptr(),
                                                                         );
                                                                         if fwrite(
@@ -2208,7 +2191,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                             }
                                                                         }
                                                                     } else {
-                                                                        let mut output_samples: opus_int32 = 0;
+                                                                        let mut output_samples: i32 = 0;
                                                                         lost = (len[toggle as usize] == 0 as libc::c_int
                                                                             || packet_loss_perc > 0 as libc::c_int
                                                                                 && (rand() % 100 as libc::c_int) < packet_loss_perc)
@@ -2217,10 +2200,10 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                             opus_decoder_ctl(
                                                                                 dec,
                                                                                 4039 as libc::c_int,
-                                                                                (&mut output_samples as *mut opus_int32)
+                                                                                (&mut output_samples as *mut i32)
                                                                                     .offset(
-                                                                                        (&mut output_samples as *mut opus_int32)
-                                                                                            .offset_from(&mut output_samples as *mut opus_int32)
+                                                                                        (&mut output_samples as *mut i32)
+                                                                                            .offset_from(&mut output_samples as *mut i32)
                                                                                             as libc::c_long as isize,
                                                                                     ),
                                                                             );
@@ -2234,10 +2217,10 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                                     opus_decoder_ctl(
                                                                                         dec,
                                                                                         4039 as libc::c_int,
-                                                                                        (&mut output_samples as *mut opus_int32)
+                                                                                        (&mut output_samples as *mut i32)
                                                                                             .offset(
-                                                                                                (&mut output_samples as *mut opus_int32)
-                                                                                                    .offset_from(&mut output_samples as *mut opus_int32)
+                                                                                                (&mut output_samples as *mut i32)
+                                                                                                    .offset_from(&mut output_samples as *mut i32)
                                                                                                     as libc::c_long as isize,
                                                                                             ),
                                                                                     );
@@ -2286,7 +2269,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                                         > tot_in
                                                                                 {
                                                                                     stop = 1 as libc::c_int;
-                                                                                    output_samples = tot_in.wrapping_sub(tot_out) as opus_int32;
+                                                                                    output_samples = tot_in.wrapping_sub(tot_out) as i32;
                                                                                 }
                                                                                 if output_samples
                                                                                     > skip
@@ -2326,7 +2309,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                                     } else {
                                                                                         tot_out = (tot_out as libc::c_ulong)
                                                                                             .wrapping_add((output_samples - skip) as libc::c_ulong)
-                                                                                            as opus_uint64 as opus_uint64;
+                                                                                            as u64 as u64;
                                                                                     }
                                                                                 }
                                                                                 if output_samples
@@ -2351,10 +2334,10 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                         opus_decoder_ctl(
                                                                             dec,
                                                                             4031 as libc::c_int,
-                                                                            (&mut dec_final_range as *mut opus_uint32)
+                                                                            (&mut dec_final_range as *mut u32)
                                                                                 .offset(
-                                                                                    (&mut dec_final_range as *mut opus_uint32)
-                                                                                        .offset_from(&mut dec_final_range as *mut opus_uint32)
+                                                                                    (&mut dec_final_range as *mut u32)
+                                                                                        .offset_from(&mut dec_final_range as *mut u32)
                                                                                         as libc::c_long as isize,
                                                                                 ),
                                                                         );

@@ -26,19 +26,6 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     use super::types_h::__uint32_t;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:38"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "53:4"]
-    pub type opus_int16 = int16_t;
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    #[c2rust::src_loc = "56:4"]
-    pub type opus_uint32 = uint32_t;
-    #[c2rust::src_loc = "57:4"]
-    pub type opus_int64 = int64_t;
-    use super::stdint_intn_h::{int16_t, int32_t, int64_t};
-    use super::stdint_uintn_h::uint32_t;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:38"]
 pub mod arch_h {
     extern "C" {
@@ -52,19 +39,15 @@ pub mod arch_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:38"]
 pub mod SigProc_FIX_h {
-    use super::opus_types_h::{opus_int16, opus_int32};
     extern "C" {
         #[c2rust::src_loc = "140:1"]
-        pub fn silk_bwexpander_32(ar: *mut opus_int32, d: libc::c_int, chirp_Q16: opus_int32);
+        pub fn silk_bwexpander_32(ar: *mut i32, d: libc::c_int, chirp_Q16: i32);
         #[c2rust::src_loc = "148:1"]
-        pub fn silk_LPC_inverse_pred_gain_c(
-            A_Q12: *const opus_int16,
-            order: libc::c_int,
-        ) -> opus_int32;
+        pub fn silk_LPC_inverse_pred_gain_c(A_Q12: *const i16, order: libc::c_int) -> i32;
         #[c2rust::src_loc = "294:1"]
         pub fn silk_LPC_fit(
-            a_QOUT: *mut opus_int16,
-            a_QIN: *mut opus_int32,
+            a_QOUT: *mut i16,
+            a_QIN: *mut i32,
             QOUT: libc::c_int,
             QIN: libc::c_int,
             d: libc::c_int,
@@ -78,15 +61,13 @@ pub mod define_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:39"]
 pub mod tables_h {
-    use super::opus_types_h::opus_int16;
     extern "C" {
         #[c2rust::src_loc = "108:26"]
-        pub static silk_LSFCosTab_FIX_Q12: [opus_int16; 129];
+        pub static silk_LSFCosTab_FIX_Q12: [i16; 129];
     }
 }
 use self::arch_h::celt_fatal;
 pub use self::define_h::MAX_LPC_STABILIZE_ITERATIONS;
-pub use self::opus_types_h::{opus_int16, opus_int32, opus_int64, opus_uint32};
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
 pub use self::stdint_uintn_h::uint32_t;
 use self::tables_h::silk_LSFCosTab_FIX_Q12;
@@ -96,52 +77,44 @@ use self::SigProc_FIX_h::{silk_LPC_fit, silk_LPC_inverse_pred_gain_c, silk_bwexp
 pub const QA: libc::c_int = 16 as libc::c_int;
 #[inline]
 #[c2rust::src_loc = "44:1"]
-unsafe extern "C" fn silk_NLSF2A_find_poly(
-    out: *mut opus_int32,
-    cLSF: *const opus_int32,
-    dd: libc::c_int,
-) {
+unsafe extern "C" fn silk_NLSF2A_find_poly(out: *mut i32, cLSF: *const i32, dd: libc::c_int) {
     let mut k: libc::c_int = 0;
     let mut n: libc::c_int = 0;
-    let mut ftmp: opus_int32 = 0;
+    let mut ftmp: i32 = 0;
     *out.offset(0 as libc::c_int as isize) =
-        ((1 as libc::c_int as opus_uint32) << 16 as libc::c_int) as opus_int32;
+        ((1 as libc::c_int as u32) << 16 as libc::c_int) as i32;
     *out.offset(1 as libc::c_int as isize) = -*cLSF.offset(0 as libc::c_int as isize);
     k = 1 as libc::c_int;
     while k < dd {
         ftmp = *cLSF.offset((2 as libc::c_int * k) as isize);
         *out.offset((k + 1 as libc::c_int) as isize) =
-            ((*out.offset((k - 1 as libc::c_int) as isize) as opus_uint32) << 1 as libc::c_int)
-                as opus_int32
+            ((*out.offset((k - 1 as libc::c_int) as isize) as u32) << 1 as libc::c_int) as i32
                 - (if 16 as libc::c_int == 1 as libc::c_int {
-                    (ftmp as opus_int64 * *out.offset(k as isize) as libc::c_long
-                        >> 1 as libc::c_int)
-                        + (ftmp as opus_int64 * *out.offset(k as isize) as libc::c_long
+                    (ftmp as i64 * *out.offset(k as isize) as libc::c_long >> 1 as libc::c_int)
+                        + (ftmp as i64 * *out.offset(k as isize) as libc::c_long
                             & 1 as libc::c_int as libc::c_long)
                 } else {
-                    (ftmp as opus_int64 * *out.offset(k as isize) as libc::c_long
+                    (ftmp as i64 * *out.offset(k as isize) as libc::c_long
                         >> 16 as libc::c_int - 1 as libc::c_int)
                         + 1 as libc::c_int as libc::c_long
                         >> 1 as libc::c_int
-                }) as opus_int32;
+                }) as i32;
         n = k;
         while n > 1 as libc::c_int {
             let ref mut fresh0 = *out.offset(n as isize);
             *fresh0 += *out.offset((n - 2 as libc::c_int) as isize)
                 - (if 16 as libc::c_int == 1 as libc::c_int {
-                    (ftmp as opus_int64
-                        * *out.offset((n - 1 as libc::c_int) as isize) as libc::c_long
+                    (ftmp as i64 * *out.offset((n - 1 as libc::c_int) as isize) as libc::c_long
                         >> 1 as libc::c_int)
-                        + (ftmp as opus_int64
+                        + (ftmp as i64
                             * *out.offset((n - 1 as libc::c_int) as isize) as libc::c_long
                             & 1 as libc::c_int as libc::c_long)
                 } else {
-                    (ftmp as opus_int64
-                        * *out.offset((n - 1 as libc::c_int) as isize) as libc::c_long
+                    (ftmp as i64 * *out.offset((n - 1 as libc::c_int) as isize) as libc::c_long
                         >> 16 as libc::c_int - 1 as libc::c_int)
                         + 1 as libc::c_int as libc::c_long
                         >> 1 as libc::c_int
-                }) as opus_int32;
+                }) as i32;
             n -= 1;
         }
         let ref mut fresh1 = *out.offset(1 as libc::c_int as isize);
@@ -152,8 +125,8 @@ unsafe extern "C" fn silk_NLSF2A_find_poly(
 #[no_mangle]
 #[c2rust::src_loc = "66:1"]
 pub unsafe extern "C" fn silk_NLSF2A(
-    a_Q12: *mut opus_int16,
-    NLSF: *const opus_int16,
+    a_Q12: *mut i16,
+    NLSF: *const i16,
     d: libc::c_int,
     _arch: libc::c_int,
 ) {
@@ -191,16 +164,16 @@ pub unsafe extern "C" fn silk_NLSF2A(
     let mut k: libc::c_int = 0;
     let mut i: libc::c_int = 0;
     let mut dd: libc::c_int = 0;
-    let mut cos_LSF_QA: [opus_int32; 24] = [0; 24];
-    let mut P: [opus_int32; 13] = [0; 13];
-    let mut Q: [opus_int32; 13] = [0; 13];
-    let mut Ptmp: opus_int32 = 0;
-    let mut Qtmp: opus_int32 = 0;
-    let mut f_int: opus_int32 = 0;
-    let mut f_frac: opus_int32 = 0;
-    let mut cos_val: opus_int32 = 0;
-    let mut delta: opus_int32 = 0;
-    let mut a32_QA1: [opus_int32; 24] = [0; 24];
+    let mut cos_LSF_QA: [i32; 24] = [0; 24];
+    let mut P: [i32; 13] = [0; 13];
+    let mut Q: [i32; 13] = [0; 13];
+    let mut Ptmp: i32 = 0;
+    let mut Qtmp: i32 = 0;
+    let mut f_int: i32 = 0;
+    let mut f_frac: i32 = 0;
+    let mut cos_val: i32 = 0;
+    let mut delta: i32 = 0;
+    let mut a32_QA1: [i32; 24] = [0; 24];
     if !(d == 10 as libc::c_int || d == 16 as libc::c_int) {
         celt_fatal(
             b"assertion failed: d==10 || d==16\0" as *const u8 as *const libc::c_char,
@@ -217,23 +190,21 @@ pub unsafe extern "C" fn silk_NLSF2A(
     while k < d {
         f_int = *NLSF.offset(k as isize) as libc::c_int >> 15 as libc::c_int - 7 as libc::c_int;
         f_frac = *NLSF.offset(k as isize) as libc::c_int
-            - ((f_int as opus_uint32) << 15 as libc::c_int - 7 as libc::c_int) as opus_int32;
-        cos_val = silk_LSFCosTab_FIX_Q12[f_int as usize] as opus_int32;
+            - ((f_int as u32) << 15 as libc::c_int - 7 as libc::c_int) as i32;
+        cos_val = silk_LSFCosTab_FIX_Q12[f_int as usize] as i32;
         delta =
             silk_LSFCosTab_FIX_Q12[(f_int + 1 as libc::c_int) as usize] as libc::c_int - cos_val;
-        cos_LSF_QA[*ordering.offset(k as isize) as usize] = if 20 as libc::c_int - 16 as libc::c_int
-            == 1 as libc::c_int
-        {
-            (((cos_val as opus_uint32) << 8 as libc::c_int) as opus_int32 + delta * f_frac
-                >> 1 as libc::c_int)
-                + (((cos_val as opus_uint32) << 8 as libc::c_int) as opus_int32 + delta * f_frac
-                    & 1 as libc::c_int)
-        } else {
-            (((cos_val as opus_uint32) << 8 as libc::c_int) as opus_int32 + delta * f_frac
-                >> 20 as libc::c_int - 16 as libc::c_int - 1 as libc::c_int)
-                + 1 as libc::c_int
-                >> 1 as libc::c_int
-        };
+        cos_LSF_QA[*ordering.offset(k as isize) as usize] =
+            if 20 as libc::c_int - 16 as libc::c_int == 1 as libc::c_int {
+                (((cos_val as u32) << 8 as libc::c_int) as i32 + delta * f_frac >> 1 as libc::c_int)
+                    + (((cos_val as u32) << 8 as libc::c_int) as i32 + delta * f_frac
+                        & 1 as libc::c_int)
+            } else {
+                (((cos_val as u32) << 8 as libc::c_int) as i32 + delta * f_frac
+                    >> 20 as libc::c_int - 16 as libc::c_int - 1 as libc::c_int)
+                    + 1 as libc::c_int
+                    >> 1 as libc::c_int
+            };
         k += 1;
     }
     dd = d >> 1 as libc::c_int;
@@ -269,7 +240,7 @@ pub unsafe extern "C" fn silk_NLSF2A(
         silk_bwexpander_32(
             a32_QA1.as_mut_ptr(),
             d,
-            65536 as libc::c_int - ((2 as libc::c_int as opus_uint32) << i) as opus_int32,
+            65536 as libc::c_int - ((2 as libc::c_int as u32) << i) as i32,
         );
         k = 0 as libc::c_int;
         while k < d {
@@ -282,7 +253,7 @@ pub unsafe extern "C" fn silk_NLSF2A(
                     >> 16 as libc::c_int + 1 as libc::c_int - 12 as libc::c_int - 1 as libc::c_int)
                     + 1 as libc::c_int
                     >> 1 as libc::c_int
-            }) as opus_int16;
+            }) as i16;
             k += 1;
         }
         i += 1;

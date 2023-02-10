@@ -78,14 +78,6 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     use super::types_h::{__int16_t, __int32_t};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_types.h:34"]
-pub mod opus_types_h {
-    #[c2rust::src_loc = "53:4"]
-    pub type opus_int16 = int16_t;
-    #[c2rust::src_loc = "55:4"]
-    pub type opus_int32 = int32_t;
-    use super::stdint_intn_h::{int16_t, int32_t};
-}
 #[c2rust::header_src = "/usr/include/stdio.h:32"]
 pub mod stdio_h {
     use super::FILE_h::FILE;
@@ -124,18 +116,13 @@ pub mod mathcalls_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:36"]
 pub mod SigProc_FIX_h {
-    use super::opus_types_h::{opus_int16, opus_int32};
     extern "C" {
         #[c2rust::src_loc = "148:1"]
-        pub fn silk_LPC_inverse_pred_gain_c(
-            A_Q12: *const opus_int16,
-            order: libc::c_int,
-        ) -> opus_int32;
+        pub fn silk_LPC_inverse_pred_gain_c(A_Q12: *const i16, order: libc::c_int) -> i32;
     }
 }
 pub use self::cpu_support_h::opus_select_arch;
 use self::mathcalls_h::fabs;
-pub use self::opus_types_h::{opus_int16, opus_int32};
 pub use self::stddef_h::size_t;
 pub use self::stdint_intn_h::{int16_t, int32_t};
 use self::stdio_h::{fprintf, printf, stderr};
@@ -146,10 +133,7 @@ pub use self::FILE_h::FILE;
 use self::SigProc_FIX_h::silk_LPC_inverse_pred_gain_c;
 #[no_mangle]
 #[c2rust::src_loc = "42:1"]
-pub unsafe extern "C" fn check_stability(
-    A_Q12: *mut opus_int16,
-    order: libc::c_int,
-) -> libc::c_int {
+pub unsafe extern "C" fn check_stability(A_Q12: *mut i16, order: libc::c_int) -> libc::c_int {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     let mut sum_a: libc::c_int = 0;
@@ -248,16 +232,15 @@ unsafe fn main_0() -> libc::c_int {
         let mut i: libc::c_uint = 0;
         let mut order: libc::c_int = 0;
         let mut shift: libc::c_uint = 0;
-        let mut A_Q12: [opus_int16; 24] = [0; 24];
-        let mut gain: opus_int32 = 0;
+        let mut A_Q12: [i16; 24] = [0; 24];
+        let mut gain: i32 = 0;
         order = 2 as libc::c_int;
         while order <= 24 as libc::c_int {
             shift = 0 as libc::c_int as libc::c_uint;
             while shift < 16 as libc::c_int as libc::c_uint {
                 i = 0 as libc::c_int as libc::c_uint;
                 while i < 24 as libc::c_int as libc::c_uint {
-                    A_Q12[i as usize] =
-                        (rand() as opus_int16 as libc::c_int >> shift) as opus_int16;
+                    A_Q12[i as usize] = (rand() as i16 as libc::c_int >> shift) as i16;
                     i = i.wrapping_add(1);
                 }
                 gain = silk_LPC_inverse_pred_gain_c(A_Q12.as_mut_ptr(), order);
