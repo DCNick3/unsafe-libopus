@@ -373,19 +373,6 @@ pub mod vq_h {
         ) -> libc::c_int;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:40"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.h:41"]
 pub mod mathops_h {
     extern "C" {
@@ -469,9 +456,9 @@ pub use self::stack_alloc_h::ALLOC_NONE;
 pub use self::stddef_h::NULL;
 pub use self::stdint_intn_h::{int16_t, int32_t};
 pub use self::stdint_uintn_h::uint32_t;
-use self::string_h::{memcpy, memset};
 pub use self::types_h::{__int16_t, __int32_t, __uint32_t};
 use self::vq_h::{alg_quant, alg_unquant, renormalise_vector, stereo_itheta};
+use crate::externs::{memcpy, memset};
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "673:8"]

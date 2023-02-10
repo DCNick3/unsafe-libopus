@@ -187,19 +187,6 @@ pub mod arch_h {
         ) -> !;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:32"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/PLC.h:32"]
 pub mod PLC_h {
     #[c2rust::src_loc = "38:9"]
@@ -433,7 +420,6 @@ pub use self::resampler_structs_h::{
 };
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
 pub use self::stdint_uintn_h::{uint32_t, uint8_t};
-use self::string_h::{memcpy, memset};
 pub use self::structs_h::{
     silk_CNG_struct, silk_NLSF_CB_struct, silk_PLC_struct, silk_decoder_control,
     silk_decoder_state, SideInfoIndices,
@@ -448,6 +434,7 @@ pub use self::SigProc_FIX_h::{
     silk_LPC_analysis_filter, silk_LPC_inverse_pred_gain_c, silk_ROR32, silk_bwexpander,
     silk_max_16, silk_max_32, silk_max_int, silk_min_32, silk_min_int, silk_sum_sqr_shift,
 };
+use crate::externs::{memcpy, memset};
 #[c2rust::src_loc = "36:9"]
 pub const NB_ATT: libc::c_int = 2 as libc::c_int;
 #[c2rust::src_loc = "37:25"]

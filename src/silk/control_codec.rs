@@ -349,13 +349,6 @@ pub mod errors_h {
     #[c2rust::src_loc = "39:9"]
     pub const SILK_NO_ERROR: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/usr/include/string.h:35"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/float_cast.h:35"]
 pub mod float_cast_h {
     #[inline]
@@ -473,7 +466,6 @@ pub use self::resampler_structs_h::{
 };
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
 pub use self::stdint_uintn_h::{uint32_t, uint8_t};
-use self::string_h::memset;
 pub use self::structs_FLP_h::{silk_encoder_state_FLP, silk_shape_state_FLP};
 pub use self::structs_h::{
     silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
@@ -488,6 +480,7 @@ pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 pub use self::types_h::{__int16_t, __int32_t, __int64_t, __int8_t, __uint32_t, __uint8_t};
 pub use self::SigProc_FIX_h::{silk_max_int, silk_min_int, silk_resampler, silk_resampler_init};
 pub use self::SigProc_FLP_h::{silk_float2short_array, silk_short2float_array};
+use crate::externs::memset;
 #[no_mangle]
 #[c2rust::src_loc = "65:1"]
 pub unsafe extern "C" fn silk_control_encoder(

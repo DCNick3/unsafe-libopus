@@ -69,17 +69,6 @@ pub mod arch_h {
         ) -> !;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:32"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:32"]
 pub mod limits_h {
     #[c2rust::src_loc = "63:9"]
@@ -241,13 +230,13 @@ pub use self::macros_h::silk_CLZ32;
 use self::main_h::{silk_NLSF_VQ, silk_NLSF_decode, silk_NLSF_del_dec_quant, silk_NLSF_unpack};
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
 pub use self::stdint_uintn_h::{uint16_t, uint32_t, uint8_t};
-use self::string_h::memcpy;
 pub use self::structs_h::silk_NLSF_CB_struct;
 pub use self::types_h::{
     __int16_t, __int32_t, __int64_t, __int8_t, __uint16_t, __uint32_t, __uint8_t,
 };
 pub use self::Inlines_h::silk_DIV32_varQ;
 use self::SigProc_FIX_h::{silk_NLSF_stabilize, silk_insertion_sort_increasing, silk_lin2log};
+use crate::externs::memcpy;
 #[no_mangle]
 #[c2rust::src_loc = "38:1"]
 pub unsafe extern "C" fn silk_NLSF_encode(

@@ -10,19 +10,6 @@ pub mod arch_h {
         ) -> !;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:32"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:32"]
 pub mod SigProc_FLP_h {
     extern "C" {
@@ -43,9 +30,9 @@ pub mod tuning_parameters_h {
     pub const FIND_LPC_COND_FAC: libc::c_float = 1e-5f32;
 }
 use self::arch_h::celt_fatal;
-use self::string_h::{memcpy, memset};
 pub use self::tuning_parameters_h::FIND_LPC_COND_FAC;
 use self::SigProc_FLP_h::{silk_energy_FLP, silk_inner_product_FLP};
+use crate::externs::{memcpy, memset};
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_burg_modified_FLP(

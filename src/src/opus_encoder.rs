@@ -962,25 +962,6 @@ pub mod pitch_h {
     }
     use super::arch_h::{opus_val16, opus_val32};
 }
-#[c2rust::header_src = "/usr/include/string.h:43"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-        #[c2rust::src_loc = "47:14"]
-        pub fn memmove(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.h:46"]
 pub mod mathops_h {
     #[inline]
@@ -1100,9 +1081,9 @@ pub use self::float_cast_h::{float2int, FLOAT2INT16};
 pub use self::mathops_h::celt_maxabs16;
 use self::opus_h::{opus_packet_pad, opus_repacketizer_cat, opus_repacketizer_init};
 pub use self::pitch_h::celt_inner_prod_c;
-use self::string_h::{memcpy, memmove, memset};
 use self::API_h::{silk_Encode, silk_Get_Encoder_Size, silk_InitEncoder};
 use self::SigProc_FIX_h::{silk_lin2log, silk_log2lin};
+use crate::externs::{memcpy, memmove, memset};
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "66:8"]

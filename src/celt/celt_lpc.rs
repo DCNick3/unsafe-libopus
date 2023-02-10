@@ -14,13 +14,6 @@ pub mod arch_h {
         ) -> !;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:34"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/pitch.h:35"]
 pub mod pitch_h {
     #[c2rust::src_loc = "189:10"]
@@ -191,7 +184,7 @@ pub mod pitch_h {
 }
 pub use self::arch_h::{celt_fatal, opus_val16, opus_val32};
 pub use self::pitch_h::{celt_pitch_xcorr, celt_pitch_xcorr_c, xcorr_kernel_c};
-use self::string_h::memset;
+use crate::externs::memset;
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn _celt_lpc(

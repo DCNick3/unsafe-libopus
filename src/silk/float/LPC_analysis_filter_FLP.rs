@@ -10,15 +10,8 @@ pub mod arch_h {
         ) -> !;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:33"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
 use self::arch_h::celt_fatal;
-use self::string_h::memset;
+use crate::externs::memset;
 #[inline]
 #[c2rust::src_loc = "43:1"]
 unsafe extern "C" fn silk_LPC_analysis_filter16_FLP(

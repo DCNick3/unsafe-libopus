@@ -290,17 +290,6 @@ pub mod define_h {
     #[c2rust::src_loc = "72:9"]
     pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
 }
-#[c2rust::header_src = "/usr/include/string.h:32"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:32"]
 pub mod SigProc_FLP_h {
     #[inline]
@@ -372,7 +361,6 @@ pub use self::resampler_structs_h::{
 };
 pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
 pub use self::stdint_uintn_h::uint8_t;
-use self::string_h::memcpy;
 pub use self::structs_FLP_h::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
 };
@@ -391,6 +379,7 @@ pub use self::SigProc_FLP_h::{
     silk_autocorrelation_FLP, silk_bwexpander_FLP, silk_energy_FLP, silk_k2a_FLP, silk_log2,
     silk_schur_FLP, silk_sigmoid,
 };
+use crate::externs::memcpy;
 #[inline]
 #[c2rust::src_loc = "39:1"]
 unsafe extern "C" fn warped_gain(

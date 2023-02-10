@@ -169,13 +169,6 @@ pub mod arch_h {
         ) -> !;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:32"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
 pub mod SigProc_FIX_h {
     use super::resampler_structs_h::silk_resampler_state_struct;
@@ -231,7 +224,6 @@ pub use self::resampler_structs_h::{
 };
 pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
 pub use self::stdint_uintn_h::uint8_t;
-use self::string_h::memset;
 pub use self::structs_h::{
     silk_CNG_struct, silk_NLSF_CB_struct, silk_PLC_struct, silk_decoder_state, SideInfoIndices,
 };
@@ -242,6 +234,7 @@ use self::tables_h::{
 };
 pub use self::types_h::{__int16_t, __int32_t, __int8_t, __uint8_t};
 use self::SigProc_FIX_h::silk_resampler_init;
+use crate::externs::memset;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_decoder_set_fs(

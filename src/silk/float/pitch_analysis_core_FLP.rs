@@ -67,13 +67,6 @@ pub mod SigProc_FIX_h {
         pub fn silk_resampler_down2_3(S: *mut i32, out: *mut i16, in_0: *const i16, inLen: i32);
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:35"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:35"]
 pub mod SigProc_FLP_h {
     #[inline]
@@ -240,7 +233,6 @@ pub use self::pitch_est_defines_h::{
     PE_SUBFR_LENGTH_MS, SILK_PE_MIN_COMPLEX,
 };
 pub use self::pitch_h::{celt_pitch_xcorr, celt_pitch_xcorr_c};
-use self::string_h::memset;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 pub use self::SigProc_FIX_h::{
     silk_max_int, silk_min_int, silk_resampler_down2, silk_resampler_down2_3,
@@ -249,6 +241,7 @@ pub use self::SigProc_FLP_h::{
     silk_energy_FLP, silk_float2short_array, silk_inner_product_FLP,
     silk_insertion_sort_decreasing_FLP, silk_log2, silk_short2float_array,
 };
+use crate::externs::memset;
 #[no_mangle]
 #[c2rust::src_loc = "67:1"]
 pub unsafe extern "C" fn silk_pitch_analysis_core_FLP(

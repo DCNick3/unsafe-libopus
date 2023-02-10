@@ -201,17 +201,6 @@ pub mod entdec_h {
         pub fn ec_dec_bits(_this: *mut ec_dec, _ftb: libc::c_uint) -> u32;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:33"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/usr/include/stdlib.h:33"]
 pub mod stdlib_h {
     extern "C" {
@@ -271,8 +260,8 @@ pub use self::stack_alloc_h::ALLOC_NONE;
 pub use self::stdint_intn_h::{int16_t, int32_t};
 pub use self::stdint_uintn_h::uint32_t;
 use self::stdlib_h::abs;
-use self::string_h::memcpy;
 pub use self::types_h::{__int16_t, __int32_t, __uint32_t};
+use crate::externs::memcpy;
 #[no_mangle]
 #[c2rust::src_loc = "53:18"]
 pub static mut eMeans: [opus_val16; 25] = [

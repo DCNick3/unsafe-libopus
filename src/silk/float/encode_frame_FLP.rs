@@ -340,23 +340,6 @@ pub mod ecintrin_h {
         ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
-#[c2rust::header_src = "/usr/include/string.h:33"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "47:14"]
-        pub fn memmove(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:33"]
 pub mod define_h {
     #[c2rust::src_loc = "112:9"]
@@ -516,7 +499,6 @@ pub use self::resampler_structs_h::{
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
 pub use self::stdint_uintn_h::{uint32_t, uint8_t};
 use self::stdlib_h::abs;
-use self::string_h::{memcpy, memmove};
 pub use self::structs_FLP_h::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
 };
@@ -527,6 +509,7 @@ pub use self::structs_h::{
 pub use self::types_h::{__int16_t, __int32_t, __int64_t, __int8_t, __uint32_t, __uint8_t};
 pub use self::SigProc_FIX_h::{silk_log2lin, silk_min_int};
 pub use self::SigProc_FLP_h::silk_short2float_array;
+use crate::externs::{memcpy, memmove};
 #[no_mangle]
 #[c2rust::src_loc = "44:1"]
 pub unsafe extern "C" fn silk_encode_do_VAD_FLP(

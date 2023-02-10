@@ -482,19 +482,6 @@ pub mod celt_h {
         );
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:38"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.h:39"]
 pub mod mathops_h {
     extern "C" {
@@ -613,7 +600,7 @@ pub use self::cpu_support_h::opus_select_arch;
 use self::mathops_h::isqrt32;
 pub use self::pitch_h::celt_inner_prod_c;
 use self::quant_bands_h::amp2Log2;
-use self::string_h::{memcpy, memset};
+use crate::externs::{memcpy, memset};
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "46:9"]

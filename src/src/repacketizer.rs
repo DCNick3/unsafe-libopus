@@ -85,25 +85,14 @@ pub mod arch_h {
         ) -> !;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:34"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "47:14"]
-        pub fn memmove(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-    }
-}
 use self::arch_h::celt_fatal;
 pub use self::opus_defines_h::{OPUS_BAD_ARG, OPUS_BUFFER_TOO_SMALL, OPUS_INVALID_PACKET, OPUS_OK};
 use self::opus_h::{opus_packet_get_nb_frames, opus_packet_get_samples_per_frame};
 pub use self::opus_private_h::{encode_size, opus_packet_parse_impl, OpusRepacketizer};
 pub use self::stddef_h::{size_t, NULL};
 pub use self::stdint_intn_h::{int16_t, int32_t};
-use self::string_h::memmove;
 pub use self::types_h::{__int16_t, __int32_t};
+use crate::externs::memmove;
 
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]

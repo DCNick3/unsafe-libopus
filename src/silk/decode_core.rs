@@ -187,19 +187,6 @@ pub mod arch_h {
         ) -> !;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:32"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:32"]
 pub mod limits_h {
     #[c2rust::src_loc = "63:9"]
@@ -400,7 +387,6 @@ pub use self::resampler_structs_h::{
 };
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
 pub use self::stdint_uintn_h::{uint32_t, uint8_t};
-use self::string_h::{memcpy, memset};
 pub use self::structs_h::{
     silk_CNG_struct, silk_NLSF_CB_struct, silk_PLC_struct, silk_decoder_control,
     silk_decoder_state, SideInfoIndices,
@@ -410,6 +396,7 @@ pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN, silk_int32_MAX, silk_i
 pub use self::types_h::{__int16_t, __int32_t, __int64_t, __int8_t, __uint32_t, __uint8_t};
 pub use self::Inlines_h::{silk_DIV32_varQ, silk_INVERSE32_varQ};
 use self::SigProc_FIX_h::silk_LPC_analysis_filter;
+use crate::externs::{memcpy, memset};
 #[no_mangle]
 #[c2rust::src_loc = "38:1"]
 pub unsafe extern "C" fn silk_decode_core(

@@ -183,19 +183,6 @@ pub mod time_h {
         pub fn time(__timer: *mut time_t) -> time_t;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:41"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "47:14"]
-        pub fn memmove(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.c:43"]
 pub mod entenc_c {
     #[c2rust::src_loc = "60:1"]
@@ -588,7 +575,7 @@ pub mod entenc_c {
             as libc::c_int as libc::c_int;
     }
     use super::entcode_h::{celt_udiv, ec_enc, ec_window};
-    use super::string_h::{memmove, memset};
+    use crate::externs::{memmove, memset};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entdec.c:44"]
 pub mod entdec_c {
@@ -887,12 +874,12 @@ pub use self::stddef_h::size_t;
 pub use self::stdint_uintn_h::uint32_t;
 use self::stdio_h::{fprintf, stderr};
 pub use self::stdlib_h::{atoi, free, getenv, malloc, rand, srand, strtol};
-use self::string_h::{memmove, memset};
 pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
 use self::time_h::time;
 pub use self::time_t_h::time_t;
 pub use self::types_h::{__off64_t, __off_t, __time_t, __uint32_t};
 pub use self::FILE_h::FILE;
+use crate::externs::{memmove, memset};
 #[c2rust::src_loc = "53:1"]
 unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> libc::c_int {
     let mut enc: ec_enc = ec_enc {

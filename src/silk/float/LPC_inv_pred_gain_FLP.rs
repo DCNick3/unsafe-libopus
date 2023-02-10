@@ -10,17 +10,6 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     use super::types_h::__int32_t;
 }
-#[c2rust::header_src = "/usr/include/string.h:32"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:34"]
 pub mod define_h {
     #[c2rust::src_loc = "139:9"]
@@ -28,8 +17,8 @@ pub mod define_h {
 }
 pub use self::define_h::MAX_PREDICTION_POWER_GAIN;
 pub use self::stdint_intn_h::int32_t;
-use self::string_h::memcpy;
 pub use self::types_h::__int32_t;
+use crate::externs::memcpy;
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_LPC_inverse_pred_gain_FLP(

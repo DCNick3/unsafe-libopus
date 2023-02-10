@@ -259,17 +259,6 @@ pub mod structs_FLP_h {
     }
     use super::structs_h::silk_encoder_state;
 }
-#[c2rust::header_src = "/usr/include/string.h:32"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:32"]
 pub mod SigProc_FLP_h {
     #[inline]
@@ -327,7 +316,6 @@ pub use self::resampler_structs_h::{
 };
 pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
 pub use self::stdint_uintn_h::uint8_t;
-use self::string_h::memcpy;
 pub use self::structs_FLP_h::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
 };
@@ -342,6 +330,7 @@ pub use self::tuning_parameters_h::{
 };
 pub use self::types_h::{__int16_t, __int32_t, __int8_t, __uint8_t};
 pub use self::SigProc_FLP_h::silk_sigmoid;
+use crate::externs::memcpy;
 #[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_process_gains_FLP(
@@ -364,9 +353,9 @@ pub unsafe extern "C" fn silk_process_gains_FLP(
             k += 1;
         }
     }
-    InvMaxSqrVal = (2.0f32
+    InvMaxSqrVal = 2.0f32
         .powf(0.33f32 * (21.0f32 - (*psEnc).sCmn.SNR_dB_Q7 as f32 * (1.0 / 128.0)))
-        / (*psEnc).sCmn.subfr_length as f32);
+        / (*psEnc).sCmn.subfr_length as f32;
     k = 0 as libc::c_int;
     while k < (*psEnc).sCmn.nb_subfr {
         gain = (*psEncCtrl).Gains[k as usize];

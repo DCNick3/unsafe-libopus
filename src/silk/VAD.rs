@@ -234,13 +234,6 @@ pub mod arch_h {
         ) -> !;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:32"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:32"]
 pub mod limits_h {
     #[c2rust::src_loc = "63:9"]
@@ -387,7 +380,6 @@ pub use self::resampler_structs_h::{
 };
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
 pub use self::stdint_uintn_h::{uint32_t, uint8_t};
-use self::string_h::memset;
 pub use self::structs_h::{
     silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
     SideInfoIndices,
@@ -399,6 +391,7 @@ pub use self::SigProc_FIX_h::{
     silk_ROR32, silk_ana_filt_bank_1, silk_lin2log, silk_max_32, silk_max_int, silk_min_int,
     silk_sigm_Q15,
 };
+use crate::externs::memset;
 #[no_mangle]
 #[c2rust::src_loc = "46:1"]
 pub unsafe extern "C" fn silk_VAD_Init(mut psSilk_VAD: *mut silk_VAD_state) -> libc::c_int {

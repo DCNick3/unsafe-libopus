@@ -194,19 +194,6 @@ pub mod stdlib_h {
         pub fn getenv(__name: *const libc::c_char) -> *mut libc::c_char;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:37"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/usr/include/time.h:38"]
 pub mod time_h {
     use super::time_t_h::time_t;
@@ -337,17 +324,17 @@ pub mod test_opus_common_h {
 
     use super::stdio_h::{fprintf, stderr};
     use super::stdlib_h::abort;
-    use super::string_h::memset;
+    use libopus_unsafe::externs::memset;
     use libopus_unsafe::externs::{free, malloc};
     use libopus_unsafe::opus_get_version_string;
 }
 use self::stdio_h::{fprintf, printf, stderr, stdout};
 pub use self::stdlib_h::{atoi, getenv, rand};
-use self::string_h::{memcpy, memset};
 pub use self::test_opus_common_h::{debruijn2, Rw, Rz, _test_failed, fast_rand, iseed};
 use self::time_h::time;
 pub use self::time_t_h::time_t;
 use self::unistd_h::getpid;
+use libopus_unsafe::externs::{memcpy, memset};
 
 use libopus_unsafe::externs::{free, malloc};
 use libopus_unsafe::{

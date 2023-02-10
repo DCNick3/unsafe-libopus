@@ -70,19 +70,6 @@ pub mod arch_h {
         ) -> !;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:50"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_rom.h:50"]
 pub mod resampler_rom_h {
     #[c2rust::src_loc = "41:9"]
@@ -149,8 +136,8 @@ pub use self::resampler_structs_h::{
 };
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
 pub use self::stdint_uintn_h::uint32_t;
-use self::string_h::{memcpy, memset};
 pub use self::types_h::{__int16_t, __int32_t, __int64_t, __int8_t, __uint32_t};
+use crate::externs::{memcpy, memset};
 #[c2rust::src_loc = "53:24"]
 static mut delay_matrix_enc: [[i8; 3]; 5] = [
     [

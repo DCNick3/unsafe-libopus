@@ -190,17 +190,6 @@ pub mod stdio_h {
         pub fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:36"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "47:14"]
-        pub fn memmove(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/usr/include/stdlib.h:36"]
 pub mod stdlib_h {
     extern "C" {
@@ -218,7 +207,7 @@ pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data
 pub use self::types_h::{__int16_t, __int32_t, __off64_t, __off_t};
 pub use self::FILE_h::FILE;
 
-use self::string_h::memmove;
+use crate::externs::memmove;
 
 #[no_mangle]
 #[c2rust::src_loc = "62:1"]

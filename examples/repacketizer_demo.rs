@@ -146,17 +146,10 @@ pub mod stdlib_h {
         ) -> libc::c_long;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:35"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "156:12"]
-        pub fn strcmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
-    }
-}
 use self::stdio_h::{fclose, feof, fopen, fprintf, fread, fwrite, stderr};
 pub use self::stdlib_h::atoi;
-use self::string_h::strcmp;
 pub use self::FILE_h::FILE;
+use libopus_unsafe::externs::strcmp;
 use libopus_unsafe::{
     opus_repacketizer_cat, opus_repacketizer_create, opus_repacketizer_get_nb_frames,
     opus_repacketizer_init, opus_repacketizer_out, opus_repacketizer_out_range, opus_strerror,

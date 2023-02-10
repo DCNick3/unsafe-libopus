@@ -177,13 +177,6 @@ pub mod stdlib_h {
         pub fn abs(_: libc::c_int) -> libc::c_int;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:36"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "156:12"]
-        pub fn strcmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:37"]
 pub mod opus_defines_h {
     extern "C" {
@@ -197,8 +190,8 @@ use self::opus_defines_h::{opus_get_version_string, opus_strerror};
 pub use self::stddef_h::size_t;
 use self::stdio_h::{fclose, fopen, fprintf, fread, fseek, ftell, fwrite, printf, stderr};
 pub use self::stdlib_h::{abs, atoi, atol, rand};
-use self::string_h::strcmp;
 pub use self::FILE_h::FILE;
+use libopus_unsafe::externs::strcmp;
 use libopus_unsafe::externs::{calloc, free, malloc};
 use libopus_unsafe::{
     opus_decode, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy, opus_encode,

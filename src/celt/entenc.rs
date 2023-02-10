@@ -45,19 +45,6 @@ pub mod entcode_h {
         ::core::mem::size_of::<ec_window>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
-#[c2rust::header_src = "/usr/include/string.h:31"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "47:14"]
-        pub fn memmove(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
 pub mod arch_h {
     extern "C" {
@@ -112,8 +99,8 @@ pub use self::mfrngcod_h::{
     EC_CODE_BITS, EC_CODE_BOT, EC_CODE_SHIFT, EC_CODE_TOP, EC_SYM_BITS, EC_SYM_MAX,
 };
 pub use self::stdint_uintn_h::uint32_t;
-use self::string_h::{memmove, memset};
 pub use self::types_h::__uint32_t;
+use crate::externs::{memmove, memset};
 #[c2rust::src_loc = "60:1"]
 unsafe extern "C" fn ec_write_byte(
     mut _this: *mut ec_enc,

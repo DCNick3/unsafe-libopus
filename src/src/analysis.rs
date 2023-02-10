@@ -284,25 +284,6 @@ pub mod math_h {
     #[c2rust::src_loc = "1151:10"]
     pub const M_PI: libc::c_double = 3.14159265358979323846f64;
 }
-#[c2rust::header_src = "/usr/include/string.h:36"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-        #[c2rust::src_loc = "47:14"]
-        pub fn memmove(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.h:36"]
 pub mod mathops_h {
     #[inline]
@@ -384,8 +365,8 @@ pub use self::modes_h::{OpusCustomMode, PulseCache};
 pub use self::opus_private_h::{downmix_func, is_digital_silence};
 pub use self::stddef_h::NULL;
 pub use self::stdint_intn_h::{int16_t, int32_t, int8_t};
-use self::string_h::{memcpy, memmove, memset};
 pub use self::types_h::{__int16_t, __int32_t, __int8_t};
+use crate::externs::{memcpy, memmove, memset};
 #[c2rust::src_loc = "55:20"]
 static mut dct_table: [libc::c_float; 128] = [
     0.250000f32,

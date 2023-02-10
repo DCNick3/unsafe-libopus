@@ -449,13 +449,6 @@ pub mod float_cast_h {
     use super::arch_h::CELT_SIG_SCALE;
     use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
 }
-#[c2rust::header_src = "/usr/include/string.h:49"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
 pub use self::arch_h::{celt_fatal, opus_val16, opus_val32, CELT_SIG_SCALE};
 pub use self::celt_h::{
     celt_decode_with_ec, celt_decoder_ctl, celt_decoder_get_size, celt_decoder_init,
@@ -494,8 +487,8 @@ pub use self::types_h::{__int16_t, __int32_t, __uint32_t};
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::float_cast_h::{float2int, FLOAT2INT16};
 pub use self::stack_alloc_h::{_opus_false, ALLOC_NONE};
-use self::string_h::memset;
 use self::API_h::{silk_Decode, silk_Get_Decoder_Size, silk_InitDecoder};
+use crate::externs::memset;
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "55:8"]

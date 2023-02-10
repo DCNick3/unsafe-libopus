@@ -223,23 +223,6 @@ pub mod structs_h {
     }
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
-#[c2rust::header_src = "/usr/include/string.h:32"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-        #[c2rust::src_loc = "47:14"]
-        pub fn memmove(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
 pub mod arch_h {
     extern "C" {
@@ -570,7 +553,6 @@ pub use self::resampler_structs_h::{
 };
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
 pub use self::stdint_uintn_h::{uint32_t, uint8_t};
-use self::string_h::{memcpy, memmove};
 pub use self::structs_h::{
     silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
     SideInfoIndices,
@@ -583,6 +565,7 @@ pub use self::NSQ_h::{
     silk_NSQ_noise_shape_feedback_loop_c, silk_noise_shape_quantizer_short_prediction_c,
 };
 use self::SigProc_FIX_h::silk_LPC_analysis_filter;
+use crate::externs::{memcpy, memmove};
 #[no_mangle]
 #[c2rust::src_loc = "76:1"]
 pub unsafe extern "C" fn silk_NSQ_c(

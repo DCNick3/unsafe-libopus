@@ -61,13 +61,6 @@ pub mod arch_h {
         ) -> !;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:32"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.h:32"]
 pub mod entenc_h {
     use super::entcode_h::ec_enc;
@@ -136,13 +129,13 @@ use self::entenc_h::ec_enc_icdf;
 use self::main_h::{silk_encode_signs, silk_shell_encoder};
 pub use self::stdint_intn_h::{int32_t, int8_t};
 pub use self::stdint_uintn_h::{uint32_t, uint8_t};
-use self::string_h::memset;
 use self::tables_h::{
     silk_lsb_iCDF, silk_max_pulses_table, silk_pulses_per_block_BITS_Q5,
     silk_pulses_per_block_iCDF, silk_rate_levels_BITS_Q5, silk_rate_levels_iCDF,
 };
 pub use self::typedef_h::silk_int32_MAX;
 pub use self::types_h::{__int32_t, __int8_t, __uint32_t, __uint8_t};
+use crate::externs::memset;
 #[inline]
 #[c2rust::src_loc = "39:1"]
 unsafe extern "C" fn combine_and_check(

@@ -181,13 +181,6 @@ pub mod opus_defines_h {
     #[c2rust::src_loc = "46:9"]
     pub const OPUS_OK: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/usr/include/string.h:32"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_multistream.h:36"]
 pub mod opus_multistream_h {
     use super::opus_private_h::OpusMSDecoder;
@@ -222,8 +215,8 @@ pub use self::opus_private_h::{
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 pub use self::stdint_intn_h::{int16_t, int32_t};
-use self::string_h::memset;
 pub use self::types_h::{__int16_t, __int32_t};
+use crate::externs::memset;
 
 use self::opus_multistream_h::{opus_multistream_decoder_get_size, opus_multistream_decoder_init};
 #[derive(Copy, Clone)]

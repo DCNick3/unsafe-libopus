@@ -18,17 +18,6 @@ pub mod stdint_intn_h {
     pub type int64_t = __int64_t;
     use super::types_h::{__int16_t, __int32_t, __int64_t};
 }
-#[c2rust::header_src = "/usr/include/string.h:32"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
     #[c2rust::src_loc = "45:9"]
@@ -59,9 +48,9 @@ pub mod resampler_private_h {
 use self::resampler_private_h::silk_resampler_private_AR2;
 use self::resampler_rom_h::silk_Resampler_2_3_COEFS_LQ;
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
-use self::string_h::memcpy;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 pub use self::types_h::{__int16_t, __int32_t, __int64_t};
+use crate::externs::memcpy;
 #[c2rust::src_loc = "36:9"]
 pub const ORDER_FIR: libc::c_int = 4 as libc::c_int;
 #[no_mangle]

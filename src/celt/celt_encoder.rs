@@ -347,25 +347,6 @@ pub mod opus_defines_h {
     #[c2rust::src_loc = "144:9"]
     pub const OPUS_SET_PACKET_LOSS_PERC_REQUEST: libc::c_int = 4014;
 }
-#[c2rust::header_src = "/usr/include/string.h:37"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-        #[c2rust::src_loc = "47:14"]
-        pub fn memmove(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/usr/include/stdlib.h:37"]
 pub mod stdlib_h {
     extern "C" {
@@ -724,8 +705,8 @@ pub use self::stddef_h::NULL;
 pub use self::stdint_intn_h::{int16_t, int32_t};
 pub use self::stdint_uintn_h::uint32_t;
 use self::stdlib_h::abs;
-use self::string_h::{memcpy, memmove, memset};
 pub use self::types_h::{__int16_t, __int32_t, __uint32_t};
+use crate::externs::{memcpy, memmove, memset};
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "58:8"]

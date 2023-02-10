@@ -111,20 +111,13 @@ pub mod stdlib_h {
         pub fn exit(_: libc::c_int) -> !;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:31"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "156:12"]
-        pub fn strcmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
-    }
-}
 pub use self::stddef_h::size_t;
 use self::stdio_h::{fclose, fopen, fprintf, fread, stderr};
 pub use self::stdlib_h::{atoi, exit, strtol};
-use self::string_h::strcmp;
 pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
 pub use self::types_h::{__off64_t, __off_t};
 pub use self::FILE_h::FILE;
+use crate::externs::strcmp;
 #[c2rust::src_loc = "38:1"]
 unsafe extern "C" fn check_alloc(mut _ptr: *mut libc::c_void) -> *mut libc::c_void {
     if _ptr.is_null() {

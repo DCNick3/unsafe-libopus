@@ -47,17 +47,6 @@ pub mod structs_h {
         pub mid_only_flags: [i8; 3],
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:32"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:32"]
 pub mod limits_h {
     #[c2rust::src_loc = "63:9"]
@@ -194,12 +183,12 @@ pub use self::macros_h::silk_CLZ32;
 use self::main_h::{silk_stereo_find_predictor, silk_stereo_quant_pred};
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
 pub use self::stdint_uintn_h::uint32_t;
-use self::string_h::memcpy;
 pub use self::structs_h::stereo_enc_state;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 pub use self::types_h::{__int16_t, __int32_t, __int64_t, __int8_t, __uint32_t};
 pub use self::Inlines_h::silk_DIV32_varQ;
 pub use self::SigProc_FIX_h::silk_max_int;
+use crate::externs::memcpy;
 #[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_stereo_LR_to_MS(

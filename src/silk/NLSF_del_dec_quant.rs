@@ -34,17 +34,6 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     use super::types_h::{__uint32_t, __uint8_t};
 }
-#[c2rust::header_src = "/usr/include/string.h:32"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "43:14"]
-        pub fn memcpy(
-            _: *mut libc::c_void,
-            _: *const libc::c_void,
-            _: libc::c_ulong,
-        ) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
 pub mod define_h {
     #[c2rust::src_loc = "211:9"]
@@ -68,9 +57,9 @@ pub use self::define_h::{
 };
 pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
 pub use self::stdint_uintn_h::{uint32_t, uint8_t};
-use self::string_h::memcpy;
 pub use self::typedef_h::silk_int32_MAX;
 pub use self::types_h::{__int16_t, __int32_t, __int64_t, __int8_t, __uint32_t, __uint8_t};
+use crate::externs::memcpy;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_NLSF_del_dec_quant(

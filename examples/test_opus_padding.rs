@@ -117,13 +117,6 @@ pub mod stdlib_h {
         pub fn abort() -> !;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:34"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/tests/test_opus_common.h:36"]
 pub mod test_opus_common_h {
     #[c2rust::src_loc = "63:20"]
@@ -175,8 +168,8 @@ pub mod test_opus_common_h {
     use libopus_unsafe::opus_get_version_string;
 }
 use self::stdio_h::{fprintf, stderr};
-use self::string_h::memset;
 pub use self::test_opus_common_h::{_test_failed, iseed};
+use libopus_unsafe::externs::memset;
 use libopus_unsafe::externs::{free, malloc};
 use libopus_unsafe::{
     opus_decode, opus_decoder_create, opus_decoder_destroy, opus_get_version_string, OpusDecoder,

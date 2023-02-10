@@ -196,13 +196,6 @@ pub mod stdlib_h {
         pub fn abs(_: libc::c_int) -> libc::c_int;
     }
 }
-#[c2rust::header_src = "/usr/include/string.h:36"]
-pub mod string_h {
-    extern "C" {
-        #[c2rust::src_loc = "61:14"]
-        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/float_cast.h:37"]
 pub mod float_cast_h {
     #[inline]
@@ -322,8 +315,8 @@ pub use self::os_support_h::{opus_alloc, opus_free};
 pub use self::stddef_h::size_t;
 use self::stdio_h::{fprintf, stderr};
 use self::stdlib_h::abs;
-use self::string_h::memset;
 pub use self::test_opus_common_h::{_test_failed, fast_rand};
+use libopus_unsafe::externs::memset;
 use libopus_unsafe::externs::{free, malloc};
 use libopus_unsafe::{
     opus_projection_ambisonics_encoder_create, opus_projection_decode,
