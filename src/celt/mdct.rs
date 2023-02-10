@@ -1,52 +1,15 @@
+use crate::celt::kiss_fft::{kiss_fft_cpx, kiss_fft_state, opus_fft_impl};
 use ::libc;
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:48"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = libc::c_float;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/kiss_fft.h:48"]
-pub mod kiss_fft_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "65:9"]
-    pub struct kiss_fft_cpx {
-        pub r: libc::c_float,
-        pub i: libc::c_float,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "70:9"]
-    pub struct kiss_twiddle_cpx {
-        pub r: libc::c_float,
-        pub i: libc::c_float,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "81:16"]
-    pub struct arch_fft_state {
-        pub is_supported: libc::c_int,
-        pub priv_0: *mut libc::c_void,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "86:16"]
-    pub struct kiss_fft_state {
-        pub nfft: libc::c_int,
-        pub scale: opus_val16,
-        pub shift: libc::c_int,
-        pub factors: [i16; 16],
-        pub bitrev: *const i16,
-        pub twiddles: *const kiss_twiddle_cpx,
-        pub arch_fft: *mut arch_fft_state,
-    }
-    use super::arch_h::opus_val16;
-    extern "C" {
-        #[c2rust::src_loc = "145:1"]
-        pub fn opus_fft_impl(st: *const kiss_fft_state, fout: *mut kiss_fft_cpx);
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:48"]
 pub mod mdct_h {
+    use crate::celt::kiss_fft::kiss_fft_state;
+
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "49:9"]
@@ -56,12 +19,8 @@ pub mod mdct_h {
         pub kfft: [*const kiss_fft_state; 4],
         pub trig: *const libc::c_float,
     }
-    use super::kiss_fft_h::kiss_fft_state;
 }
 pub use self::arch_h::opus_val16;
-pub use self::kiss_fft_h::{
-    arch_fft_state, kiss_fft_cpx, kiss_fft_state, kiss_twiddle_cpx, opus_fft_impl,
-};
 pub use self::mdct_h::mdct_lookup;
 
 #[no_mangle]

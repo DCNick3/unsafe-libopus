@@ -38,36 +38,7 @@ pub mod arch_h {
     #[c2rust::src_loc = "207:9"]
     pub const EPSILON: libc::c_float = 1e-15f32;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/kiss_fft.h:38"]
-pub mod kiss_fft_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "70:9"]
-    pub struct kiss_twiddle_cpx {
-        pub r: libc::c_float,
-        pub i: libc::c_float,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "81:16"]
-    pub struct arch_fft_state {
-        pub is_supported: libc::c_int,
-        pub priv_0: *mut libc::c_void,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "86:16"]
-    pub struct kiss_fft_state {
-        pub nfft: libc::c_int,
-        pub scale: opus_val16,
-        pub shift: libc::c_int,
-        pub factors: [i16; 16],
-        pub bitrev: *const i16,
-        pub twiddles: *const kiss_twiddle_cpx,
-        pub arch_fft: *mut arch_fft_state,
-    }
-    use super::arch_h::opus_val16;
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:38"]
 pub mod mdct_h {
     #[derive(Copy, Clone)]
@@ -80,7 +51,7 @@ pub mod mdct_h {
         pub trig: *const libc::c_float,
     }
     use super::arch_h::opus_val16;
-    use super::kiss_fft_h::kiss_fft_state;
+    use crate::celt::kiss_fft::kiss_fft_state;
     extern "C" {
         #[c2rust::src_loc = "65:1"]
         pub fn clt_mdct_forward_c(
@@ -103,23 +74,6 @@ pub mod celt_h {
     pub struct SILKInfo {
         pub signalType: libc::c_int,
         pub offset: libc::c_int,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "55:9"]
-    pub struct AnalysisInfo {
-        pub valid: libc::c_int,
-        pub tonality: libc::c_float,
-        pub tonality_slope: libc::c_float,
-        pub noisiness: libc::c_float,
-        pub activity: libc::c_float,
-        pub music_prob: libc::c_float,
-        pub music_prob_min: libc::c_float,
-        pub music_prob_max: libc::c_float,
-        pub bandwidth: libc::c_int,
-        pub activity_probability: libc::c_float,
-        pub max_pitch_ratio: libc::c_float,
-        pub leak_boost: [libc::c_uchar; 19],
     }
     #[c2rust::src_loc = "165:28"]
     pub static mut trim_icdf: [libc::c_uchar; 11] = [
@@ -639,7 +593,7 @@ pub use self::bands_h::{
 };
 pub use self::celt_h::{
     comb_filter, init_caps, resampling_factor, spread_icdf, tapset_icdf, tf_select_table,
-    trim_icdf, AnalysisInfo, SILKInfo, CELT_GET_MODE_REQUEST, CELT_SET_ANALYSIS_REQUEST,
+    trim_icdf, SILKInfo, CELT_GET_MODE_REQUEST, CELT_SET_ANALYSIS_REQUEST,
     CELT_SET_CHANNELS_REQUEST, CELT_SET_END_BAND_REQUEST, CELT_SET_PREDICTION_REQUEST,
     CELT_SET_SIGNALLING_REQUEST, CELT_SET_SILK_INFO_REQUEST, CELT_SET_START_BAND_REQUEST,
     COMBFILTER_MAXPERIOD, COMBFILTER_MINPERIOD, OPUS_SET_ENERGY_MASK_REQUEST, OPUS_SET_LFE_REQUEST,
@@ -650,7 +604,6 @@ use self::entenc_h::{
     ec_enc_bit_logp, ec_enc_bits, ec_enc_done, ec_enc_icdf, ec_enc_init, ec_enc_shrink, ec_enc_uint,
 };
 pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
-pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::limits_h::CHAR_BIT;
 pub use self::mathops_h::celt_maxabs16;
 pub use self::mdct_h::{clt_mdct_forward_c, mdct_lookup};
@@ -676,6 +629,8 @@ use crate::celt::celt::celt_fatal;
 use self::stdlib_h::abs;
 
 use crate::externs::{memcpy, memmove, memset};
+use crate::src::analysis::AnalysisInfo;
+
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "58:8"]

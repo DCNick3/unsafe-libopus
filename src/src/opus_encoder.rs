@@ -38,6 +38,8 @@ pub mod opus_custom_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:35"]
 pub mod mdct_h {
+    use crate::celt::kiss_fft::kiss_fft_state;
+
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "49:9"]
@@ -47,38 +49,8 @@ pub mod mdct_h {
         pub kfft: [*const kiss_fft_state; 4],
         pub trig: *const libc::c_float,
     }
-    use super::kiss_fft_h::kiss_fft_state;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/kiss_fft.h:35"]
-pub mod kiss_fft_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "86:16"]
-    pub struct kiss_fft_state {
-        pub nfft: libc::c_int,
-        pub scale: opus_val16,
-        pub shift: libc::c_int,
-        pub factors: [i16; 16],
-        pub bitrev: *const i16,
-        pub twiddles: *const kiss_twiddle_cpx,
-        pub arch_fft: *mut arch_fft_state,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "81:16"]
-    pub struct arch_fft_state {
-        pub is_supported: libc::c_int,
-        pub priv_0: *mut libc::c_void,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "70:9"]
-    pub struct kiss_twiddle_cpx {
-        pub r: libc::c_float,
-        pub i: libc::c_float,
-    }
-    use super::arch_h::opus_val16;
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
@@ -812,7 +784,6 @@ pub use self::ecintrin_h::EC_CLZ0;
 pub use self::entcode_h::{ec_ctx, ec_enc, ec_tell, ec_window};
 use self::entenc_h::{ec_enc_bit_logp, ec_enc_done, ec_enc_init, ec_enc_shrink, ec_enc_uint};
 pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
-pub use self::kiss_fft_h::{arch_fft_state, kiss_fft_state, kiss_twiddle_cpx};
 pub use self::limits_h::CHAR_BIT;
 pub use self::mdct_h::mdct_lookup;
 use self::opus_custom_h::{opus_custom_encoder_ctl, OpusCustomEncoder};
