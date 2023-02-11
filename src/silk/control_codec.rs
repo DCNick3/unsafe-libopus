@@ -80,18 +80,6 @@ pub mod typedef_h {
     #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:35"]
-pub mod main_h {
-    use crate::silk::enc_API::silk_EncControlStruct;
-    use crate::silk::structs::silk_encoder_state;
-    extern "C" {
-        #[c2rust::src_loc = "140:1"]
-        pub fn silk_control_audio_bandwidth(
-            psEncC: *mut silk_encoder_state,
-            encControl: *mut silk_EncControlStruct,
-        ) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/pitch_est_defines.h:40"]
 pub mod pitch_est_defines_h {
     #[c2rust::src_loc = "72:9"]
@@ -102,7 +90,6 @@ pub mod pitch_est_defines_h {
     pub const SILK_PE_MAX_COMPLEX: libc::c_int = 2 as libc::c_int;
 }
 pub use self::errors_h::{SILK_ENC_PACKET_SIZE_NOT_SUPPORTED, SILK_NO_ERROR};
-use self::main_h::silk_control_audio_bandwidth;
 pub use self::pitch_est_defines_h::{
     SILK_PE_MAX_COMPLEX, SILK_PE_MID_COMPLEX, SILK_PE_MIN_COMPLEX,
 };
@@ -111,6 +98,7 @@ pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 pub use self::SigProc_FLP_h::{silk_float2short_array, silk_short2float_array};
 use crate::celt::celt::celt_fatal;
 use crate::externs::memset;
+use crate::silk::control_audio_bandwidth::silk_control_audio_bandwidth;
 use crate::silk::define::{
     LA_SHAPE_MS, MAX_DEL_DEC_STATES, MAX_LPC_ORDER, MAX_NB_SUBFR, MIN_LPC_ORDER,
     SUB_FRAME_LENGTH_MS, TYPE_NO_VOICE_ACTIVITY,

@@ -72,55 +72,6 @@ pub mod errors_h {
     #[c2rust::src_loc = "39:9"]
     pub const SILK_NO_ERROR: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:41"]
-pub mod main_h {
-    use super::silk_EncControlStruct;
-    use crate::celt::entenc::ec_enc;
-    use crate::silk::structs::{silk_encoder_state, stereo_enc_state};
-    extern "C" {
-        #[c2rust::src_loc = "135:1"]
-        pub fn check_control_input(encControl: *mut silk_EncControlStruct) -> libc::c_int;
-        #[c2rust::src_loc = "468:1"]
-        pub fn silk_encode_indices(
-            psEncC: *mut silk_encoder_state,
-            psRangeEnc: *mut ec_enc,
-            FrameIndex: libc::c_int,
-            encode_LBRR: libc::c_int,
-            condCoding: libc::c_int,
-        );
-        #[c2rust::src_loc = "156:1"]
-        pub fn silk_encode_pulses(
-            psRangeEnc: *mut ec_enc,
-            signalType: libc::c_int,
-            quantOffsetType: libc::c_int,
-            pulses: *mut i8,
-            frame_length: libc::c_int,
-        );
-        #[c2rust::src_loc = "50:1"]
-        pub fn silk_stereo_LR_to_MS(
-            state: *mut stereo_enc_state,
-            x1: *mut i16,
-            x2: *mut i16,
-            ix: *mut [i8; 3],
-            mid_only_flag: *mut i8,
-            mid_side_rates_bps: *mut i32,
-            total_rate_bps: i32,
-            prev_speech_act_Q8: libc::c_int,
-            toMono: libc::c_int,
-            fs_kHz: libc::c_int,
-            frame_length: libc::c_int,
-        );
-        #[c2rust::src_loc = "91:1"]
-        pub fn silk_stereo_encode_pred(psRangeEnc: *mut ec_enc, ix: *mut [i8; 3]);
-        #[c2rust::src_loc = "97:1"]
-        pub fn silk_stereo_encode_mid_only(psRangeEnc: *mut ec_enc, mid_only_flag: i8);
-        #[c2rust::src_loc = "146:1"]
-        pub fn silk_control_SNR(
-            psEncC: *mut silk_encoder_state,
-            TargetRate_bps: i32,
-        ) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/main_FLP.h:41"]
 pub mod main_FLP_h {
     #[c2rust::src_loc = "45:9"]
@@ -175,21 +126,23 @@ pub use self::main_FLP_h::{
     silk_HP_variable_cutoff, silk_control_encoder, silk_encode_do_VAD_FLP, silk_encode_do_VAD_Fxx,
     silk_encode_frame_FLP, silk_encode_frame_Fxx, silk_init_encoder,
 };
-use self::main_h::{
-    check_control_input, silk_control_SNR, silk_encode_indices, silk_encode_pulses,
-    silk_stereo_LR_to_MS, silk_stereo_encode_mid_only, silk_stereo_encode_pred,
-};
 pub use self::structs_FLP_h::{silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP};
 use crate::celt::celt::celt_fatal;
 use crate::celt::entcode::ec_tell;
 use crate::celt::entenc::{ec_enc, ec_enc_icdf, ec_enc_patch_initial_bits};
 use crate::externs::{memcpy, memset};
+use crate::silk::check_control_input::check_control_input;
+use crate::silk::control_SNR::silk_control_SNR;
 use crate::silk::define::{
     CODE_CONDITIONALLY, CODE_INDEPENDENTLY, CODE_INDEPENDENTLY_NO_LTP_SCALING,
     ENCODER_NUM_CHANNELS, TYPE_NO_VOICE_ACTIVITY,
 };
+use crate::silk::encode_indices::silk_encode_indices;
+use crate::silk::encode_pulses::silk_encode_pulses;
 use crate::silk::resampler::silk_resampler;
 use crate::silk::resampler_structs::silk_resampler_state_struct;
+use crate::silk::stereo_LR_to_MS::silk_stereo_LR_to_MS;
+use crate::silk::stereo_encode_pred::{silk_stereo_encode_mid_only, silk_stereo_encode_pred};
 use crate::silk::structs::{silk_LP_state, silk_nsq_state};
 use crate::silk::tables_other::{silk_LBRR_flags_iCDF_ptr, silk_Quantization_Offsets_Q10};
 

@@ -1,58 +1,15 @@
-use ::libc;
-
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
-pub mod main_h {
-    use super::{silk_decoder_control, silk_decoder_state};
-    use crate::celt::entdec::ec_dec;
-    extern "C" {
-        #[c2rust::src_loc = "417:1"]
-        pub fn silk_decode_indices(
-            psDec: *mut silk_decoder_state,
-            psRangeDec: *mut ec_dec,
-            FrameIndex: libc::c_int,
-            decode_LBRR: libc::c_int,
-            condCoding: libc::c_int,
-        );
-        #[c2rust::src_loc = "442:1"]
-        pub fn silk_decode_pulses(
-            psRangeDec: *mut ec_dec,
-            pulses: *mut i16,
-            signalType: libc::c_int,
-            quantOffsetType: libc::c_int,
-            frame_length: libc::c_int,
-        );
-        #[c2rust::src_loc = "426:1"]
-        pub fn silk_decode_parameters(
-            psDec: *mut silk_decoder_state,
-            psDecCtrl: *mut silk_decoder_control,
-            condCoding: libc::c_int,
-        );
-        #[c2rust::src_loc = "433:1"]
-        pub fn silk_decode_core(
-            psDec: *mut silk_decoder_state,
-            psDecCtrl: *mut silk_decoder_control,
-            xq: *mut i16,
-            pulses: *const i16,
-            arch: libc::c_int,
-        );
-        #[c2rust::src_loc = "460:1"]
-        pub fn silk_CNG(
-            psDec: *mut silk_decoder_state,
-            psDecCtrl: *mut silk_decoder_control,
-            frame: *mut i16,
-            length: libc::c_int,
-        );
-    }
-}
-use self::main_h::{
-    silk_CNG, silk_decode_core, silk_decode_indices, silk_decode_parameters, silk_decode_pulses,
-};
 use crate::celt::celt::celt_fatal;
 use crate::celt::entdec::ec_dec;
 use crate::externs::{memcpy, memmove};
 use crate::silk::dec_API::{FLAG_DECODE_LBRR, FLAG_DECODE_NORMAL};
+use crate::silk::decode_core::silk_decode_core;
+use crate::silk::decode_indices::silk_decode_indices;
+use crate::silk::decode_parameters::silk_decode_parameters;
+use crate::silk::decode_pulses::silk_decode_pulses;
 use crate::silk::structs::{silk_decoder_control, silk_decoder_state};
+use crate::silk::CNG::silk_CNG;
 use crate::silk::PLC::{silk_PLC, silk_PLC_glue_frames};
+use ::libc;
 
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]

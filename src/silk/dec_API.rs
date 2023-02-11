@@ -25,79 +25,25 @@ pub mod errors_h {
     #[c2rust::src_loc = "92:9"]
     pub const SILK_DEC_INVALID_FRAME_SIZE: libc::c_int = -(203 as libc::c_int);
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
-pub mod main_h {
-    use crate::celt::entdec::ec_dec;
-    use crate::silk::structs::{silk_decoder_state, stereo_dec_state};
-    extern "C" {
-        #[c2rust::src_loc = "109:1"]
-        pub fn silk_stereo_decode_mid_only(
-            psRangeDec: *mut ec_dec,
-            decode_only_mid: *mut libc::c_int,
-        );
-        #[c2rust::src_loc = "103:1"]
-        pub fn silk_stereo_decode_pred(psRangeDec: *mut ec_dec, pred_Q13: *mut i32);
-        #[c2rust::src_loc = "442:1"]
-        pub fn silk_decode_pulses(
-            psRangeDec: *mut ec_dec,
-            pulses: *mut i16,
-            signalType: libc::c_int,
-            quantOffsetType: libc::c_int,
-            frame_length: libc::c_int,
-        );
-        #[c2rust::src_loc = "417:1"]
-        pub fn silk_decode_indices(
-            psDec: *mut silk_decoder_state,
-            psRangeDec: *mut ec_dec,
-            FrameIndex: libc::c_int,
-            decode_LBRR: libc::c_int,
-            condCoding: libc::c_int,
-        );
-        #[c2rust::src_loc = "397:1"]
-        pub fn silk_decoder_set_fs(
-            psDec: *mut silk_decoder_state,
-            fs_kHz: libc::c_int,
-            fs_API_Hz: i32,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "65:1"]
-        pub fn silk_stereo_MS_to_LR(
-            state: *mut stereo_dec_state,
-            x1: *mut i16,
-            x2: *mut i16,
-            pred_Q13: *const i32,
-            fs_kHz: libc::c_int,
-            frame_length: libc::c_int,
-        );
-        #[c2rust::src_loc = "392:1"]
-        pub fn silk_init_decoder(psDec: *mut silk_decoder_state) -> libc::c_int;
-        #[c2rust::src_loc = "406:1"]
-        pub fn silk_decode_frame(
-            psDec: *mut silk_decoder_state,
-            psRangeDec: *mut ec_dec,
-            pOut: *mut i16,
-            pN: *mut i32,
-            lostFlag: libc::c_int,
-            condCoding: libc::c_int,
-            arch: libc::c_int,
-        ) -> libc::c_int;
-    }
-}
 use self::errors_h::{
     SILK_DEC_INVALID_FRAME_SIZE, SILK_DEC_INVALID_SAMPLING_FREQUENCY, SILK_NO_ERROR,
-};
-use self::main_h::{
-    silk_decode_frame, silk_decode_indices, silk_decode_pulses, silk_decoder_set_fs,
-    silk_init_decoder, silk_stereo_MS_to_LR, silk_stereo_decode_mid_only, silk_stereo_decode_pred,
 };
 use crate::celt::celt::celt_fatal;
 use crate::celt::entdec::{ec_dec, ec_dec_bit_logp, ec_dec_icdf};
 use crate::externs::{memcpy, memset};
+use crate::silk::decode_frame::silk_decode_frame;
+use crate::silk::decode_indices::silk_decode_indices;
+use crate::silk::decode_pulses::silk_decode_pulses;
+use crate::silk::decoder_set_fs::silk_decoder_set_fs;
 use crate::silk::define::{
     CODE_CONDITIONALLY, CODE_INDEPENDENTLY, CODE_INDEPENDENTLY_NO_LTP_SCALING,
     DECODER_NUM_CHANNELS, MAX_API_FS_KHZ, TYPE_NO_VOICE_ACTIVITY, TYPE_VOICED,
 };
+use crate::silk::init_decoder::silk_init_decoder;
 use crate::silk::resampler::silk_resampler;
 use crate::silk::resampler_structs::silk_resampler_state_struct;
+use crate::silk::stereo_MS_to_LR::silk_stereo_MS_to_LR;
+use crate::silk::stereo_decode_pred::{silk_stereo_decode_mid_only, silk_stereo_decode_pred};
 use crate::silk::structs::{silk_decoder_state, stereo_dec_state};
 use crate::silk::tables_other::silk_LBRR_flags_iCDF_ptr;
 

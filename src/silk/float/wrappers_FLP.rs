@@ -62,77 +62,18 @@ pub mod SigProc_FLP_h {
     }
     use crate::celt::float_cast::float2int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
-pub mod main_h {
-    use crate::silk::structs::{silk_encoder_state, silk_nsq_state, SideInfoIndices};
-    extern "C" {
-        #[c2rust::src_loc = "211:1"]
-        pub fn silk_quant_LTP_gains(
-            B_Q14: *mut i16,
-            cbk_index: *mut i8,
-            periodicity_index: *mut i8,
-            sum_gain_dB_Q7: *mut i32,
-            pred_gain_dB_Q7: *mut libc::c_int,
-            XX_Q17: *const i32,
-            xX_Q17: *const i32,
-            subfr_len: libc::c_int,
-            nb_subfr: libc::c_int,
-            arch: libc::c_int,
-        );
-        #[c2rust::src_loc = "249:1"]
-        pub fn silk_NSQ_c(
-            psEncC: *const silk_encoder_state,
-            NSQ: *mut silk_nsq_state,
-            psIndices: *mut SideInfoIndices,
-            x16: *const i16,
-            pulses: *mut i8,
-            PredCoef_Q12: *const i16,
-            LTPCoef_Q14: *const i16,
-            AR_Q13: *const i16,
-            HarmShapeGain_Q14: *const libc::c_int,
-            Tilt_Q14: *const libc::c_int,
-            LF_shp_Q14: *const i32,
-            Gains_Q16: *const i32,
-            pitchL: *const libc::c_int,
-            Lambda_Q10: libc::c_int,
-            LTP_scale_Q14: libc::c_int,
-        );
-        #[c2rust::src_loc = "275:1"]
-        pub fn silk_NSQ_del_dec_c(
-            psEncC: *const silk_encoder_state,
-            NSQ: *mut silk_nsq_state,
-            psIndices: *mut SideInfoIndices,
-            x16: *const i16,
-            pulses: *mut i8,
-            PredCoef_Q12: *const i16,
-            LTPCoef_Q14: *const i16,
-            AR_Q13: *const i16,
-            HarmShapeGain_Q14: *const libc::c_int,
-            Tilt_Q14: *const libc::c_int,
-            LF_shp_Q14: *const i32,
-            Gains_Q16: *const i32,
-            pitchL: *const libc::c_int,
-            Lambda_Q10: libc::c_int,
-            LTP_scale_Q14: libc::c_int,
-        );
-        #[c2rust::src_loc = "331:1"]
-        pub fn silk_process_NLSFs(
-            psEncC: *mut silk_encoder_state,
-            PredCoef_Q12: *mut [i16; 16],
-            pNLSF_Q15: *mut i16,
-            prev_NLSFq_Q15: *const i16,
-        );
-    }
-}
 
-use self::main_h::{silk_NSQ_c, silk_NSQ_del_dec_c, silk_process_NLSFs, silk_quant_LTP_gains};
 pub use self::structs_FLP_h::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
 };
 pub use self::SigProc_FLP_h::silk_float2int;
 use crate::silk::define::{LTP_ORDER, MAX_SHAPE_LPC_ORDER, TYPE_VOICED};
+use crate::silk::process_NLSFs::silk_process_NLSFs;
+use crate::silk::quant_LTP_gains::silk_quant_LTP_gains;
 use crate::silk::structs::{silk_encoder_state, silk_nsq_state, SideInfoIndices};
 use crate::silk::tables_other::silk_LTPScales_table_Q14;
+use crate::silk::NSQ_del_dec::silk_NSQ_del_dec_c;
+use crate::silk::NSQ::silk_NSQ_c;
 
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]

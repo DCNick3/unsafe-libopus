@@ -29,19 +29,6 @@ pub mod SigProc_FLP_h {
             -> libc::c_double;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:33"]
-pub mod main_h {
-    extern "C" {
-        #[c2rust::src_loc = "202:1"]
-        pub fn silk_interpolate(
-            xi: *mut i16,
-            x0: *const i16,
-            x1: *const i16,
-            ifact_Q2: libc::c_int,
-            d: libc::c_int,
-        );
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/main_FLP.h:33"]
 pub mod main_FLP_h {
     extern "C" {
@@ -76,11 +63,11 @@ pub mod internal {
 pub use self::float_h::FLT_MAX;
 pub use self::internal::__FLT_MAX__;
 use self::main_FLP_h::{silk_A2NLSF_FLP, silk_LPC_analysis_filter_FLP, silk_NLSF2A_FLP};
-use self::main_h::silk_interpolate;
 pub use self::typedef_h::silk_float_MAX;
 use self::SigProc_FLP_h::{silk_burg_modified_FLP, silk_energy_FLP};
 use crate::celt::celt::celt_fatal;
 use crate::silk::define::MAX_NB_SUBFR;
+use crate::silk::interpolate::silk_interpolate;
 use crate::silk::structs::silk_encoder_state;
 
 #[no_mangle]

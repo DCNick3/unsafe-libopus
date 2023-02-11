@@ -1,34 +1,17 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
-pub mod main_h {
-    use crate::celt::entenc::ec_enc;
-
-    extern "C" {
-        #[c2rust::src_loc = "115:1"]
-        pub fn silk_encode_signs(
-            psRangeEnc: *mut ec_enc,
-            pulses: *const i8,
-            length: libc::c_int,
-            signalType: libc::c_int,
-            quantOffsetType: libc::c_int,
-            sum_pulses: *const libc::c_int,
-        );
-        #[c2rust::src_loc = "165:1"]
-        pub fn silk_shell_encoder(psRangeEnc: *mut ec_enc, pulses0: *const libc::c_int);
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
     #[c2rust::src_loc = "42:9"]
     pub const silk_int32_MAX: libc::c_int = 0x7fffffff as libc::c_int;
 }
-use self::main_h::{silk_encode_signs, silk_shell_encoder};
 pub use self::typedef_h::silk_int32_MAX;
 use crate::celt::celt::celt_fatal;
 use crate::celt::entenc::{ec_enc, ec_enc_icdf};
 use crate::externs::memset;
+use crate::silk::code_signs::silk_encode_signs;
 use crate::silk::define::{N_RATE_LEVELS, SHELL_CODEC_FRAME_LENGTH, SILK_MAX_PULSES};
+use crate::silk::shell_coder::silk_shell_encoder;
 use crate::silk::tables_other::silk_lsb_iCDF;
 use crate::silk::tables_pulses_per_block::{
     silk_max_pulses_table, silk_pulses_per_block_BITS_Q5, silk_pulses_per_block_iCDF,

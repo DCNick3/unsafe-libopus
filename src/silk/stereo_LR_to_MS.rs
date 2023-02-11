@@ -7,26 +7,11 @@ pub mod typedef_h {
     #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
-pub mod main_h {
-    extern "C" {
-        #[c2rust::src_loc = "85:1"]
-        pub fn silk_stereo_quant_pred(pred_Q13: *mut i32, ix: *mut [i8; 3]);
-        #[c2rust::src_loc = "75:1"]
-        pub fn silk_stereo_find_predictor(
-            ratio_Q14: *mut i32,
-            x: *const i16,
-            y: *const i16,
-            mid_res_amp_Q0: *mut i32,
-            length: libc::c_int,
-            smooth_coef_Q16: libc::c_int,
-        ) -> i32;
-    }
-}
-use self::main_h::{silk_stereo_find_predictor, silk_stereo_quant_pred};
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 use crate::externs::memcpy;
 use crate::silk::define::{LA_SHAPE_MS, STEREO_INTERP_LEN_MS};
+use crate::silk::stereo_find_predictor::silk_stereo_find_predictor;
+use crate::silk::stereo_quant_pred::silk_stereo_quant_pred;
 use crate::silk::structs::stereo_enc_state;
 use crate::silk::Inlines::silk_DIV32_varQ;
 use crate::silk::SigProc_FIX::silk_max_int;

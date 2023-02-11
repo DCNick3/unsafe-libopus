@@ -5,27 +5,6 @@ pub mod typedef_h {
     #[c2rust::src_loc = "42:9"]
     pub const silk_int32_MAX: libc::c_int = 0x7fffffff as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
-pub mod main_h {
-    extern "C" {
-        #[c2rust::src_loc = "225:1"]
-        pub fn silk_VQ_WMat_EC_c(
-            ind: *mut i8,
-            res_nrg_Q15: *mut i32,
-            rate_dist_Q8: *mut i32,
-            gain_Q7: *mut libc::c_int,
-            XX_Q17: *const i32,
-            xX_Q17: *const i32,
-            cb_Q7: *const i8,
-            cb_gain_Q7: *const u8,
-            cl_Q5: *const u8,
-            subfr_len: libc::c_int,
-            max_gain_Q7: i32,
-            L: libc::c_int,
-        );
-    }
-}
-use self::main_h::silk_VQ_WMat_EC_c;
 pub use self::typedef_h::silk_int32_MAX;
 use crate::externs::memcpy;
 use crate::silk::define::LTP_ORDER;
@@ -34,6 +13,7 @@ use crate::silk::log2lin::silk_log2lin;
 use crate::silk::tables_LTP::{
     silk_LTP_gain_BITS_Q5_ptrs, silk_LTP_vq_gain_ptrs_Q7, silk_LTP_vq_ptrs_Q7, silk_LTP_vq_sizes,
 };
+use crate::silk::VQ_WMat_EC::silk_VQ_WMat_EC_c;
 
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]

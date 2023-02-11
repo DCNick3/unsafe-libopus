@@ -113,63 +113,9 @@ pub mod SigProc_FLP_h {
         }
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:33"]
-pub mod main_h {
-    use crate::celt::entenc::ec_enc;
-    use crate::silk::structs::{silk_LP_state, silk_encoder_state};
-    extern "C" {
-        #[c2rust::src_loc = "156:1"]
-        pub fn silk_encode_pulses(
-            psRangeEnc: *mut ec_enc,
-            signalType: libc::c_int,
-            quantOffsetType: libc::c_int,
-            pulses: *mut i8,
-            frame_length: libc::c_int,
-        );
-        #[c2rust::src_loc = "178:1"]
-        pub fn silk_gains_quant(
-            ind: *mut i8,
-            gain_Q16: *mut i32,
-            prev_ind: *mut i8,
-            conditional: libc::c_int,
-            nb_subfr: libc::c_int,
-        );
-        #[c2rust::src_loc = "187:1"]
-        pub fn silk_gains_dequant(
-            gain_Q16: *mut i32,
-            ind: *const i8,
-            prev_ind: *mut i8,
-            conditional: libc::c_int,
-            nb_subfr: libc::c_int,
-        );
-        #[c2rust::src_loc = "196:1"]
-        pub fn silk_gains_ID(ind: *const i8, nb_subfr: libc::c_int) -> i32;
-        #[c2rust::src_loc = "309:1"]
-        pub fn silk_VAD_GetSA_Q8_c(psEncC: *mut silk_encoder_state, pIn: *const i16)
-            -> libc::c_int;
-        #[c2rust::src_loc = "321:1"]
-        pub fn silk_LP_variable_cutoff(
-            psLP: *mut silk_LP_state,
-            frame: *mut i16,
-            frame_length: libc::c_int,
-        );
-        #[c2rust::src_loc = "468:1"]
-        pub fn silk_encode_indices(
-            psEncC: *mut silk_encoder_state,
-            psRangeEnc: *mut ec_enc,
-            FrameIndex: libc::c_int,
-            encode_LBRR: libc::c_int,
-            condCoding: libc::c_int,
-        );
-    }
-}
 use self::main_FLP_h::{
     silk_NSQ_wrapper_FLP, silk_find_pitch_lags_FLP, silk_find_pred_coefs_FLP,
     silk_noise_shape_analysis_FLP, silk_process_gains_FLP,
-};
-use self::main_h::{
-    silk_LP_variable_cutoff, silk_VAD_GetSA_Q8_c, silk_encode_indices, silk_encode_pulses,
-    silk_gains_ID, silk_gains_dequant, silk_gains_quant,
 };
 use self::stdlib_h::abs;
 pub use self::structs_FLP_h::{
@@ -184,9 +130,14 @@ use crate::silk::define::{
     CODE_CONDITIONALLY, LA_SHAPE_MS, MAX_CONSECUTIVE_DTX, NB_SPEECH_FRAMES_BEFORE_DTX,
     N_LEVELS_QGAIN, TYPE_NO_VOICE_ACTIVITY, TYPE_UNVOICED, VAD_NO_ACTIVITY,
 };
+use crate::silk::encode_indices::silk_encode_indices;
+use crate::silk::encode_pulses::silk_encode_pulses;
+use crate::silk::gain_quant::{silk_gains_ID, silk_gains_dequant, silk_gains_quant};
 use crate::silk::log2lin::silk_log2lin;
 use crate::silk::structs::{silk_nsq_state, SideInfoIndices};
+use crate::silk::LP_variable_cutoff::silk_LP_variable_cutoff;
 use crate::silk::SigProc_FIX::silk_min_int;
+use crate::silk::VAD::silk_VAD_GetSA_Q8_c;
 
 #[no_mangle]
 #[c2rust::src_loc = "44:1"]

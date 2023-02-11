@@ -1,28 +1,11 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
-pub mod main_h {
-    use crate::celt::entdec::ec_dec;
-
-    extern "C" {
-        #[c2rust::src_loc = "125:1"]
-        pub fn silk_decode_signs(
-            psRangeDec: *mut ec_dec,
-            pulses: *mut i16,
-            length: libc::c_int,
-            signalType: libc::c_int,
-            quantOffsetType: libc::c_int,
-            sum_pulses: *const libc::c_int,
-        );
-        #[c2rust::src_loc = "171:1"]
-        pub fn silk_shell_decoder(pulses0: *mut i16, psRangeDec: *mut ec_dec, pulses4: libc::c_int);
-    }
-}
-use self::main_h::{silk_decode_signs, silk_shell_decoder};
 use crate::celt::celt::celt_fatal;
 use crate::celt::entdec::{ec_dec, ec_dec_icdf};
 use crate::externs::memset;
+use crate::silk::code_signs::silk_decode_signs;
 use crate::silk::define::{N_RATE_LEVELS, SHELL_CODEC_FRAME_LENGTH, SILK_MAX_PULSES};
+use crate::silk::shell_coder::silk_shell_decoder;
 use crate::silk::tables_other::silk_lsb_iCDF;
 use crate::silk::tables_pulses_per_block::{silk_pulses_per_block_iCDF, silk_rate_levels_iCDF};
 

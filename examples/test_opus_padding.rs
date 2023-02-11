@@ -130,7 +130,7 @@ pub unsafe extern "C" fn test_overflow() -> libc::c_int {
 #[c2rust::src_loc = "78:1"]
 unsafe fn main_0() -> libc::c_int {
     let mut oversion: *const libc::c_char = std::ptr::null::<libc::c_char>();
-    let mut tests: libc::c_int = 0 as libc::c_int;
+    let mut _tests: libc::c_int = 0 as libc::c_int;
     iseed = 0 as libc::c_int as u32;
     oversion = opus_get_version_string();
     if oversion.is_null() {
@@ -144,7 +144,7 @@ unsafe fn main_0() -> libc::c_int {
         b"Testing %s padding.\n\0" as *const u8 as *const libc::c_char,
         oversion,
     );
-    tests += test_overflow();
+    _tests += test_overflow();
     fprintf(
         stderr(),
         b"All padding tests passed.\n\0" as *const u8 as *const libc::c_char,

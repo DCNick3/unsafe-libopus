@@ -7,18 +7,11 @@ pub mod cpu_support_h {
         return 0 as libc::c_int;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
-pub mod main_h {
-    use super::silk_decoder_state;
-    extern "C" {
-        #[c2rust::src_loc = "455:1"]
-        pub fn silk_CNG_Reset(psDec: *mut silk_decoder_state);
-    }
-}
-pub use self::cpu_support_h::opus_select_arch;
-use self::main_h::silk_CNG_Reset;
+
+use self::cpu_support_h::opus_select_arch;
 use crate::externs::memset;
 use crate::silk::structs::silk_decoder_state;
+use crate::silk::CNG::silk_CNG_Reset;
 use crate::silk::PLC::silk_PLC_Reset;
 
 #[no_mangle]

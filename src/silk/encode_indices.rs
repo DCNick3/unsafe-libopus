@@ -1,19 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
-pub mod main_h {
-    use crate::silk::structs::silk_NLSF_CB_struct;
-    extern "C" {
-        #[c2rust::src_loc = "373:1"]
-        pub fn silk_NLSF_unpack(
-            ec_ix: *mut i16,
-            pred_Q8: *mut u8,
-            psNLSF_CB: *const silk_NLSF_CB_struct,
-            CB1_index: libc::c_int,
-        );
-    }
-}
-use self::main_h::silk_NLSF_unpack;
 use crate::celt::celt::celt_fatal;
 use crate::celt::entenc::{ec_enc, ec_enc_icdf};
 use crate::silk::define::{
@@ -28,6 +14,7 @@ use crate::silk::tables_other::{
     silk_uniform8_iCDF,
 };
 use crate::silk::tables_pitch_lag::{silk_pitch_delta_iCDF, silk_pitch_lag_iCDF};
+use crate::silk::NLSF_unpack::silk_NLSF_unpack;
 
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]

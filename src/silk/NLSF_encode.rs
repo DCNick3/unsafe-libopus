@@ -1,47 +1,3 @@
-use ::libc;
-
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
-pub mod main_h {
-    use crate::silk::structs::silk_NLSF_CB_struct;
-    extern "C" {
-        #[c2rust::src_loc = "383:1"]
-        pub fn silk_NLSF_decode(
-            pNLSF_Q15: *mut i16,
-            NLSFIndices: *mut i8,
-            psNLSF_CB: *const silk_NLSF_CB_struct,
-        );
-        #[c2rust::src_loc = "359:1"]
-        pub fn silk_NLSF_del_dec_quant(
-            indices: *mut i8,
-            x_Q10: *const i16,
-            w_Q5: *const i16,
-            pred_coef_Q8: *const u8,
-            ec_ix: *const i16,
-            ec_rates_Q5: *const u8,
-            quant_step_size_Q16: libc::c_int,
-            inv_quant_step_size_Q6: i16,
-            mu_Q20: i32,
-            order: i16,
-        ) -> i32;
-        #[c2rust::src_loc = "373:1"]
-        pub fn silk_NLSF_unpack(
-            ec_ix: *mut i16,
-            pred_Q8: *mut u8,
-            psNLSF_CB: *const silk_NLSF_CB_struct,
-            CB1_index: libc::c_int,
-        );
-        #[c2rust::src_loc = "349:1"]
-        pub fn silk_NLSF_VQ(
-            err_Q26: *mut i32,
-            in_Q15: *const i16,
-            pCB_Q8: *const u8,
-            pWght_Q9: *const i16,
-            K: libc::c_int,
-            LPC_order: libc::c_int,
-        );
-    }
-}
-use self::main_h::{silk_NLSF_VQ, silk_NLSF_decode, silk_NLSF_del_dec_quant, silk_NLSF_unpack};
 use crate::celt::celt::celt_fatal;
 use crate::externs::memcpy;
 use crate::silk::define::MAX_LPC_ORDER;
@@ -49,7 +5,12 @@ use crate::silk::lin2log::silk_lin2log;
 use crate::silk::sort::silk_insertion_sort_increasing;
 use crate::silk::structs::silk_NLSF_CB_struct;
 use crate::silk::Inlines::silk_DIV32_varQ;
+use crate::silk::NLSF_decode::silk_NLSF_decode;
+use crate::silk::NLSF_del_dec_quant::silk_NLSF_del_dec_quant;
 use crate::silk::NLSF_stabilize::silk_NLSF_stabilize;
+use crate::silk::NLSF_unpack::silk_NLSF_unpack;
+use crate::silk::NLSF_VQ::silk_NLSF_VQ;
+use ::libc;
 
 #[no_mangle]
 #[c2rust::src_loc = "38:1"]

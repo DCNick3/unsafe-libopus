@@ -1,35 +1,11 @@
-use ::libc;
-
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
-pub mod main_h {
-    use crate::silk::structs::silk_NLSF_CB_struct;
-    extern "C" {
-        #[c2rust::src_loc = "202:1"]
-        pub fn silk_interpolate(
-            xi: *mut i16,
-            x0: *const i16,
-            x1: *const i16,
-            ifact_Q2: libc::c_int,
-            d: libc::c_int,
-        );
-        #[c2rust::src_loc = "338:1"]
-        pub fn silk_NLSF_encode(
-            NLSFIndices: *mut i8,
-            pNLSF_Q15: *mut i16,
-            psNLSF_CB: *const silk_NLSF_CB_struct,
-            pW_QW: *const i16,
-            NLSF_mu_Q20: libc::c_int,
-            nSurvivors: libc::c_int,
-            signalType: libc::c_int,
-        ) -> i32;
-    }
-}
-use self::main_h::{silk_NLSF_encode, silk_interpolate};
 use crate::celt::celt::celt_fatal;
 use crate::externs::memcpy;
+use crate::silk::interpolate::silk_interpolate;
 use crate::silk::structs::silk_encoder_state;
 use crate::silk::NLSF_VQ_weights_laroia::silk_NLSF_VQ_weights_laroia;
+use crate::silk::NLSF_encode::silk_NLSF_encode;
 use crate::silk::NLSF2A::silk_NLSF2A;
+use ::libc;
 
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
