@@ -42,49 +42,6 @@ pub type downmix_func = Option<
     ) -> (),
 >;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/mlp.h:42"]
-pub mod mlp_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "36:9"]
-    pub struct DenseLayer {
-        pub bias: *const i8,
-        pub input_weights: *const i8,
-        pub nb_inputs: libc::c_int,
-        pub nb_neurons: libc::c_int,
-        pub sigmoid: libc::c_int,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "44:9"]
-    pub struct GRULayer {
-        pub bias: *const i8,
-        pub input_weights: *const i8,
-        pub recurrent_weights: *const i8,
-        pub nb_inputs: libc::c_int,
-        pub nb_neurons: libc::c_int,
-    }
-    extern "C" {
-        #[c2rust::src_loc = "52:25"]
-        pub static layer0: DenseLayer;
-        #[c2rust::src_loc = "53:23"]
-        pub static layer1: GRULayer;
-        #[c2rust::src_loc = "54:25"]
-        pub static layer2: DenseLayer;
-        #[c2rust::src_loc = "56:1"]
-        pub fn compute_dense(
-            layer: *const DenseLayer,
-            output: *mut libc::c_float,
-            input: *const libc::c_float,
-        );
-        #[c2rust::src_loc = "58:1"]
-        pub fn compute_gru(
-            gru: *const GRULayer,
-            state: *mut libc::c_float,
-            input: *const libc::c_float,
-        );
-    }
-}
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "47:9"]
@@ -158,7 +115,6 @@ pub mod cpu_support_h {
 pub use self::arch_h::{opus_val16, opus_val32, opus_val64};
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::math_h::M_PI;
-pub use self::mlp_h::{compute_dense, compute_gru, layer0, layer1, layer2, DenseLayer, GRULayer};
 pub use self::stddef_h::NULL;
 use crate::celt::celt::celt_fatal;
 use crate::celt::float_cast::float2int;
@@ -167,6 +123,8 @@ use crate::celt::mathops::fast_atan2f;
 use crate::celt::modes::OpusCustomMode;
 
 use crate::externs::{memcpy, memmove, memset};
+use crate::src::mlp::{compute_dense, compute_gru};
+use crate::src::mlp_data::{layer0, layer1, layer2};
 use crate::src::opus_encoder::is_digital_silence;
 
 #[c2rust::src_loc = "55:20"]
