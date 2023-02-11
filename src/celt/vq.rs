@@ -11,63 +11,20 @@ pub mod arch_h {
     #[c2rust::src_loc = "207:9"]
     pub const EPSILON: libc::c_float = 1e-15f32;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cwrs.h:34"]
-pub mod cwrs_h {
-    use super::arch_h::opus_val32;
-    use crate::celt::entdec::ec_dec;
-    use crate::celt::entenc::ec_enc;
-
-    extern "C" {
-        #[c2rust::src_loc = "46:1"]
-        pub fn decode_pulses(
-            _y: *mut libc::c_int,
-            N: libc::c_int,
-            K: libc::c_int,
-            dec: *mut ec_dec,
-        ) -> opus_val32;
-        #[c2rust::src_loc = "44:1"]
-        pub fn encode_pulses(
-            _y: *const libc::c_int,
-            N: libc::c_int,
-            K: libc::c_int,
-            enc: *mut ec_enc,
-        );
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/bands.h:38"]
 pub mod bands_h {
     #[c2rust::src_loc = "68:9"]
     pub const SPREAD_NONE: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/pitch.h:40"]
-pub mod pitch_h {
-    #[inline]
-    #[c2rust::src_loc = "159:1"]
-    pub unsafe extern "C" fn celt_inner_prod_c(
-        x: *const opus_val16,
-        y: *const opus_val16,
-        N: libc::c_int,
-    ) -> opus_val32 {
-        let mut i: libc::c_int = 0;
-        let mut xy: opus_val32 = 0 as libc::c_int as opus_val32;
-        i = 0 as libc::c_int;
-        while i < N {
-            xy = xy + *x.offset(i as isize) * *y.offset(i as isize);
-            i += 1;
-        }
-        return xy;
-    }
-    use super::arch_h::{opus_val16, opus_val32};
-}
 pub use self::arch_h::{celt_norm, opus_val16, opus_val32, EPSILON};
 pub use self::bands_h::SPREAD_NONE;
-use self::cwrs_h::{decode_pulses, encode_pulses};
-pub use self::pitch_h::celt_inner_prod_c;
 use crate::celt::celt::celt_fatal;
+use crate::celt::cwrs::{decode_pulses, encode_pulses};
 use crate::celt::entcode::celt_udiv;
 use crate::celt::entdec::ec_dec;
 use crate::celt::entenc::ec_enc;
 use crate::celt::mathops::fast_atan2f;
+use crate::celt::pitch::celt_inner_prod_c;
 
 #[c2rust::src_loc = "47:1"]
 unsafe extern "C" fn exp_rotation1(

@@ -341,26 +341,6 @@ pub mod float_cast_h {
     use super::arch_h::CELT_SIG_SCALE;
     use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/pitch.h:41"]
-pub mod pitch_h {
-    #[inline]
-    #[c2rust::src_loc = "159:1"]
-    pub unsafe extern "C" fn celt_inner_prod_c(
-        x: *const opus_val16,
-        y: *const opus_val16,
-        N: libc::c_int,
-    ) -> opus_val32 {
-        let mut i: libc::c_int = 0;
-        let mut xy: opus_val32 = 0 as libc::c_int as opus_val32;
-        i = 0 as libc::c_int;
-        while i < N {
-            xy = xy + *x.offset(i as isize) * *y.offset(i as isize);
-            i += 1;
-        }
-        return xy;
-    }
-    use super::arch_h::{opus_val16, opus_val32};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:51"]
 pub mod define_h {
     #[c2rust::src_loc = "56:9"]
@@ -409,7 +389,6 @@ pub use self::opus_defines_h::{
     OPUS_SET_PREDICTION_DISABLED_REQUEST, OPUS_SET_SIGNAL_REQUEST, OPUS_SET_VBR_CONSTRAINT_REQUEST,
     OPUS_SET_VBR_REQUEST, OPUS_SIGNAL_MUSIC, OPUS_SIGNAL_VOICE, OPUS_UNIMPLEMENTED,
 };
-pub use self::pitch_h::celt_inner_prod_c;
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 pub use self::structs_FLP_h::{silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP};
@@ -421,6 +400,7 @@ use crate::celt::entenc::ec_enc;
 use crate::celt::entenc::{ec_enc_bit_logp, ec_enc_done, ec_enc_init, ec_enc_shrink, ec_enc_uint};
 use crate::celt::mathops::celt_maxabs16;
 use crate::celt::modes::OpusCustomMode;
+use crate::celt::pitch::celt_inner_prod_c;
 use crate::externs::{memcpy, memmove, memset};
 use crate::silk::enc_API::silk_EncControlStruct;
 use crate::silk::lin2log::silk_lin2log;

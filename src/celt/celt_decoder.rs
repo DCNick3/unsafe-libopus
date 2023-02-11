@@ -150,29 +150,6 @@ pub mod celt_h {
         );
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/pitch.h:41"]
-pub mod pitch_h {
-    use super::arch_h::{celt_sig, opus_val16};
-    extern "C" {
-        #[c2rust::src_loc = "53:1"]
-        pub fn pitch_downsample(
-            x: *mut *mut celt_sig,
-            x_lp: *mut opus_val16,
-            len: libc::c_int,
-            C: libc::c_int,
-            arch: libc::c_int,
-        );
-        #[c2rust::src_loc = "56:1"]
-        pub fn pitch_search(
-            x_lp: *const opus_val16,
-            y: *mut opus_val16,
-            len: libc::c_int,
-            max_pitch: libc::c_int,
-            pitch: *mut libc::c_int,
-            arch: libc::c_int,
-        );
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/bands.h:42"]
 pub mod bands_h {
     #[c2rust::src_loc = "70:9"]
@@ -340,7 +317,6 @@ pub use self::opus_defines_h::{
     OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_GET_PITCH_REQUEST, OPUS_INTERNAL_ERROR,
     OPUS_OK, OPUS_RESET_STATE, OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_UNIMPLEMENTED,
 };
-use self::pitch_h::{pitch_downsample, pitch_search};
 use self::quant_bands_h::{unquant_coarse_energy, unquant_energy_finalise, unquant_fine_energy};
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::NULL;
@@ -351,6 +327,7 @@ use crate::celt::entdec::{
 };
 use crate::celt::mdct::clt_mdct_backward_c;
 use crate::celt::modes::{opus_custom_mode_create, OpusCustomMode, MAX_PERIOD};
+use crate::celt::pitch::{pitch_downsample, pitch_search};
 use crate::celt::rate::clt_compute_allocation;
 use crate::celt::vq::renormalise_vector;
 use crate::externs::{memcpy, memmove, memset};

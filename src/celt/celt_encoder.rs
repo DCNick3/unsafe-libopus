@@ -178,56 +178,6 @@ pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
     pub const NULL: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/pitch.h:41"]
-pub mod pitch_h {
-    #[inline]
-    #[c2rust::src_loc = "159:1"]
-    pub unsafe extern "C" fn celt_inner_prod_c(
-        x: *const opus_val16,
-        y: *const opus_val16,
-        N: libc::c_int,
-    ) -> opus_val32 {
-        let mut i: libc::c_int = 0;
-        let mut xy: opus_val32 = 0 as libc::c_int as opus_val32;
-        i = 0 as libc::c_int;
-        while i < N {
-            xy = xy + *x.offset(i as isize) * *y.offset(i as isize);
-            i += 1;
-        }
-        return xy;
-    }
-    use super::arch_h::{celt_sig, opus_val16, opus_val32};
-    extern "C" {
-        #[c2rust::src_loc = "53:1"]
-        pub fn pitch_downsample(
-            x: *mut *mut celt_sig,
-            x_lp: *mut opus_val16,
-            len: libc::c_int,
-            C: libc::c_int,
-            arch: libc::c_int,
-        );
-        #[c2rust::src_loc = "56:1"]
-        pub fn pitch_search(
-            x_lp: *const opus_val16,
-            y: *mut opus_val16,
-            len: libc::c_int,
-            max_pitch: libc::c_int,
-            pitch: *mut libc::c_int,
-            arch: libc::c_int,
-        );
-        #[c2rust::src_loc = "59:1"]
-        pub fn remove_doubling(
-            x: *mut opus_val16,
-            maxperiod: libc::c_int,
-            minperiod: libc::c_int,
-            N: libc::c_int,
-            T0: *mut libc::c_int,
-            prev_period: libc::c_int,
-            prev_gain: opus_val16,
-            arch: libc::c_int,
-        ) -> opus_val16;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/bands.h:42"]
 pub mod bands_h {
     #[c2rust::src_loc = "71:9"]
@@ -399,7 +349,6 @@ pub use self::opus_defines_h::{
     OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_SET_VBR_CONSTRAINT_REQUEST,
     OPUS_SET_VBR_REQUEST, OPUS_UNIMPLEMENTED,
 };
-pub use self::pitch_h::{celt_inner_prod_c, pitch_downsample, pitch_search, remove_doubling};
 use self::quant_bands_h::{
     amp2Log2, eMeans, quant_coarse_energy, quant_energy_finalise, quant_fine_energy,
 };
@@ -414,6 +363,7 @@ use crate::celt::entenc::{
 use crate::celt::mathops::celt_maxabs16;
 use crate::celt::mdct::clt_mdct_forward_c;
 use crate::celt::modes::{opus_custom_mode_create, OpusCustomMode};
+use crate::celt::pitch::{celt_inner_prod_c, pitch_downsample, pitch_search, remove_doubling};
 use crate::celt::rate::clt_compute_allocation;
 
 use self::stdlib_h::abs;

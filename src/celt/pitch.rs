@@ -10,204 +10,6 @@ pub mod arch_h {
     #[c2rust::src_loc = "203:9"]
     pub const Q15ONE: libc::c_float = 1.0f32;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/pitch.h:38"]
-pub mod pitch_h {
-    #[inline]
-    #[c2rust::src_loc = "137:1"]
-    pub unsafe extern "C" fn dual_inner_prod_c(
-        x: *const opus_val16,
-        y01: *const opus_val16,
-        y02: *const opus_val16,
-        N: libc::c_int,
-        xy1: *mut opus_val32,
-        xy2: *mut opus_val32,
-    ) {
-        let mut i: libc::c_int = 0;
-        let mut xy01: opus_val32 = 0 as libc::c_int as opus_val32;
-        let mut xy02: opus_val32 = 0 as libc::c_int as opus_val32;
-        i = 0 as libc::c_int;
-        while i < N {
-            xy01 = xy01 + *x.offset(i as isize) * *y01.offset(i as isize);
-            xy02 = xy02 + *x.offset(i as isize) * *y02.offset(i as isize);
-            i += 1;
-        }
-        *xy1 = xy01;
-        *xy2 = xy02;
-    }
-    #[c2rust::src_loc = "189:10"]
-    pub const celt_pitch_xcorr: unsafe extern "C" fn(
-        *const opus_val16,
-        *const opus_val16,
-        *mut opus_val32,
-        libc::c_int,
-        libc::c_int,
-        libc::c_int,
-    ) -> () = celt_pitch_xcorr_c;
-    #[inline]
-    #[c2rust::src_loc = "65:1"]
-    pub unsafe extern "C" fn xcorr_kernel_c(
-        mut x: *const opus_val16,
-        mut y: *const opus_val16,
-        sum: *mut opus_val32,
-        len: libc::c_int,
-    ) {
-        let mut j: libc::c_int = 0;
-        let mut y_0: opus_val16 = 0.;
-        let mut y_1: opus_val16 = 0.;
-        let mut y_2: opus_val16 = 0.;
-        let mut y_3: opus_val16 = 0.;
-        if !(len >= 3 as libc::c_int) {
-            celt_fatal(
-                b"assertion failed: len>=3\0" as *const u8 as *const libc::c_char,
-                b"./celt/pitch.h\0" as *const u8 as *const libc::c_char,
-                69 as libc::c_int,
-            );
-        }
-        y_3 = 0 as libc::c_int as opus_val16;
-        let fresh0 = y;
-        y = y.offset(1);
-        y_0 = *fresh0;
-        let fresh1 = y;
-        y = y.offset(1);
-        y_1 = *fresh1;
-        let fresh2 = y;
-        y = y.offset(1);
-        y_2 = *fresh2;
-        j = 0 as libc::c_int;
-        while j < len - 3 as libc::c_int {
-            let mut tmp: opus_val16 = 0.;
-            let fresh3 = x;
-            x = x.offset(1);
-            tmp = *fresh3;
-            let fresh4 = y;
-            y = y.offset(1);
-            y_3 = *fresh4;
-            *sum.offset(0 as libc::c_int as isize) =
-                *sum.offset(0 as libc::c_int as isize) + tmp * y_0;
-            *sum.offset(1 as libc::c_int as isize) =
-                *sum.offset(1 as libc::c_int as isize) + tmp * y_1;
-            *sum.offset(2 as libc::c_int as isize) =
-                *sum.offset(2 as libc::c_int as isize) + tmp * y_2;
-            *sum.offset(3 as libc::c_int as isize) =
-                *sum.offset(3 as libc::c_int as isize) + tmp * y_3;
-            let fresh5 = x;
-            x = x.offset(1);
-            tmp = *fresh5;
-            let fresh6 = y;
-            y = y.offset(1);
-            y_0 = *fresh6;
-            *sum.offset(0 as libc::c_int as isize) =
-                *sum.offset(0 as libc::c_int as isize) + tmp * y_1;
-            *sum.offset(1 as libc::c_int as isize) =
-                *sum.offset(1 as libc::c_int as isize) + tmp * y_2;
-            *sum.offset(2 as libc::c_int as isize) =
-                *sum.offset(2 as libc::c_int as isize) + tmp * y_3;
-            *sum.offset(3 as libc::c_int as isize) =
-                *sum.offset(3 as libc::c_int as isize) + tmp * y_0;
-            let fresh7 = x;
-            x = x.offset(1);
-            tmp = *fresh7;
-            let fresh8 = y;
-            y = y.offset(1);
-            y_1 = *fresh8;
-            *sum.offset(0 as libc::c_int as isize) =
-                *sum.offset(0 as libc::c_int as isize) + tmp * y_2;
-            *sum.offset(1 as libc::c_int as isize) =
-                *sum.offset(1 as libc::c_int as isize) + tmp * y_3;
-            *sum.offset(2 as libc::c_int as isize) =
-                *sum.offset(2 as libc::c_int as isize) + tmp * y_0;
-            *sum.offset(3 as libc::c_int as isize) =
-                *sum.offset(3 as libc::c_int as isize) + tmp * y_1;
-            let fresh9 = x;
-            x = x.offset(1);
-            tmp = *fresh9;
-            let fresh10 = y;
-            y = y.offset(1);
-            y_2 = *fresh10;
-            *sum.offset(0 as libc::c_int as isize) =
-                *sum.offset(0 as libc::c_int as isize) + tmp * y_3;
-            *sum.offset(1 as libc::c_int as isize) =
-                *sum.offset(1 as libc::c_int as isize) + tmp * y_0;
-            *sum.offset(2 as libc::c_int as isize) =
-                *sum.offset(2 as libc::c_int as isize) + tmp * y_1;
-            *sum.offset(3 as libc::c_int as isize) =
-                *sum.offset(3 as libc::c_int as isize) + tmp * y_2;
-            j += 4 as libc::c_int;
-        }
-        let fresh11 = j;
-        j = j + 1;
-        if fresh11 < len {
-            let fresh12 = x;
-            x = x.offset(1);
-            let tmp_0: opus_val16 = *fresh12;
-            let fresh13 = y;
-            y = y.offset(1);
-            y_3 = *fresh13;
-            *sum.offset(0 as libc::c_int as isize) =
-                *sum.offset(0 as libc::c_int as isize) + tmp_0 * y_0;
-            *sum.offset(1 as libc::c_int as isize) =
-                *sum.offset(1 as libc::c_int as isize) + tmp_0 * y_1;
-            *sum.offset(2 as libc::c_int as isize) =
-                *sum.offset(2 as libc::c_int as isize) + tmp_0 * y_2;
-            *sum.offset(3 as libc::c_int as isize) =
-                *sum.offset(3 as libc::c_int as isize) + tmp_0 * y_3;
-        }
-        let fresh14 = j;
-        j = j + 1;
-        if fresh14 < len {
-            let fresh15 = x;
-            x = x.offset(1);
-            let tmp_1: opus_val16 = *fresh15;
-            let fresh16 = y;
-            y = y.offset(1);
-            y_0 = *fresh16;
-            *sum.offset(0 as libc::c_int as isize) =
-                *sum.offset(0 as libc::c_int as isize) + tmp_1 * y_1;
-            *sum.offset(1 as libc::c_int as isize) =
-                *sum.offset(1 as libc::c_int as isize) + tmp_1 * y_2;
-            *sum.offset(2 as libc::c_int as isize) =
-                *sum.offset(2 as libc::c_int as isize) + tmp_1 * y_3;
-            *sum.offset(3 as libc::c_int as isize) =
-                *sum.offset(3 as libc::c_int as isize) + tmp_1 * y_0;
-        }
-        if j < len {
-            let fresh17 = x;
-            x = x.offset(1);
-            let tmp_2: opus_val16 = *fresh17;
-            let fresh18 = y;
-            y = y.offset(1);
-            y_1 = *fresh18;
-            *sum.offset(0 as libc::c_int as isize) =
-                *sum.offset(0 as libc::c_int as isize) + tmp_2 * y_2;
-            *sum.offset(1 as libc::c_int as isize) =
-                *sum.offset(1 as libc::c_int as isize) + tmp_2 * y_3;
-            *sum.offset(2 as libc::c_int as isize) =
-                *sum.offset(2 as libc::c_int as isize) + tmp_2 * y_0;
-            *sum.offset(3 as libc::c_int as isize) =
-                *sum.offset(3 as libc::c_int as isize) + tmp_2 * y_1;
-        }
-    }
-    #[inline]
-    #[c2rust::src_loc = "159:1"]
-    pub unsafe extern "C" fn celt_inner_prod_c(
-        x: *const opus_val16,
-        y: *const opus_val16,
-        N: libc::c_int,
-    ) -> opus_val32 {
-        let mut i: libc::c_int = 0;
-        let mut xy: opus_val32 = 0 as libc::c_int as opus_val32;
-        i = 0 as libc::c_int;
-        while i < N {
-            xy = xy + *x.offset(i as isize) * *y.offset(i as isize);
-            i += 1;
-        }
-        return xy;
-    }
-
-    use super::arch_h::{opus_val16, opus_val32};
-    use super::celt_pitch_xcorr_c;
-    use crate::celt::celt::celt_fatal;
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:38"]
 pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
@@ -233,10 +35,185 @@ pub mod celt_lpc_h {
 }
 pub use self::arch_h::{celt_sig, opus_val16, opus_val32, Q15ONE};
 use self::celt_lpc_h::{_celt_autocorr, _celt_lpc};
-pub use self::pitch_h::{celt_inner_prod_c, celt_pitch_xcorr, dual_inner_prod_c, xcorr_kernel_c};
 pub use self::stddef_h::NULL;
 use crate::celt::celt::celt_fatal;
 use crate::celt::entcode::celt_udiv;
+
+#[inline]
+#[c2rust::src_loc = "137:1"]
+pub unsafe extern "C" fn dual_inner_prod_c(
+    x: *const opus_val16,
+    y01: *const opus_val16,
+    y02: *const opus_val16,
+    N: libc::c_int,
+    xy1: *mut opus_val32,
+    xy2: *mut opus_val32,
+) {
+    let mut i: libc::c_int = 0;
+    let mut xy01: opus_val32 = 0 as libc::c_int as opus_val32;
+    let mut xy02: opus_val32 = 0 as libc::c_int as opus_val32;
+    i = 0 as libc::c_int;
+    while i < N {
+        xy01 = xy01 + *x.offset(i as isize) * *y01.offset(i as isize);
+        xy02 = xy02 + *x.offset(i as isize) * *y02.offset(i as isize);
+        i += 1;
+    }
+    *xy1 = xy01;
+    *xy2 = xy02;
+}
+#[c2rust::src_loc = "189:10"]
+pub const celt_pitch_xcorr: unsafe extern "C" fn(
+    *const opus_val16,
+    *const opus_val16,
+    *mut opus_val32,
+    libc::c_int,
+    libc::c_int,
+    libc::c_int,
+) -> () = celt_pitch_xcorr_c;
+#[inline]
+#[c2rust::src_loc = "65:1"]
+pub unsafe extern "C" fn xcorr_kernel_c(
+    mut x: *const opus_val16,
+    mut y: *const opus_val16,
+    sum: *mut opus_val32,
+    len: libc::c_int,
+) {
+    let mut j: libc::c_int = 0;
+    let mut y_0: opus_val16 = 0.;
+    let mut y_1: opus_val16 = 0.;
+    let mut y_2: opus_val16 = 0.;
+    let mut y_3: opus_val16 = 0.;
+    if !(len >= 3 as libc::c_int) {
+        celt_fatal(
+            b"assertion failed: len>=3\0" as *const u8 as *const libc::c_char,
+            b"./celt/pitch.h\0" as *const u8 as *const libc::c_char,
+            69 as libc::c_int,
+        );
+    }
+    y_3 = 0 as libc::c_int as opus_val16;
+    let fresh0 = y;
+    y = y.offset(1);
+    y_0 = *fresh0;
+    let fresh1 = y;
+    y = y.offset(1);
+    y_1 = *fresh1;
+    let fresh2 = y;
+    y = y.offset(1);
+    y_2 = *fresh2;
+    j = 0 as libc::c_int;
+    while j < len - 3 as libc::c_int {
+        let mut tmp: opus_val16 = 0.;
+        let fresh3 = x;
+        x = x.offset(1);
+        tmp = *fresh3;
+        let fresh4 = y;
+        y = y.offset(1);
+        y_3 = *fresh4;
+        *sum.offset(0 as libc::c_int as isize) = *sum.offset(0 as libc::c_int as isize) + tmp * y_0;
+        *sum.offset(1 as libc::c_int as isize) = *sum.offset(1 as libc::c_int as isize) + tmp * y_1;
+        *sum.offset(2 as libc::c_int as isize) = *sum.offset(2 as libc::c_int as isize) + tmp * y_2;
+        *sum.offset(3 as libc::c_int as isize) = *sum.offset(3 as libc::c_int as isize) + tmp * y_3;
+        let fresh5 = x;
+        x = x.offset(1);
+        tmp = *fresh5;
+        let fresh6 = y;
+        y = y.offset(1);
+        y_0 = *fresh6;
+        *sum.offset(0 as libc::c_int as isize) = *sum.offset(0 as libc::c_int as isize) + tmp * y_1;
+        *sum.offset(1 as libc::c_int as isize) = *sum.offset(1 as libc::c_int as isize) + tmp * y_2;
+        *sum.offset(2 as libc::c_int as isize) = *sum.offset(2 as libc::c_int as isize) + tmp * y_3;
+        *sum.offset(3 as libc::c_int as isize) = *sum.offset(3 as libc::c_int as isize) + tmp * y_0;
+        let fresh7 = x;
+        x = x.offset(1);
+        tmp = *fresh7;
+        let fresh8 = y;
+        y = y.offset(1);
+        y_1 = *fresh8;
+        *sum.offset(0 as libc::c_int as isize) = *sum.offset(0 as libc::c_int as isize) + tmp * y_2;
+        *sum.offset(1 as libc::c_int as isize) = *sum.offset(1 as libc::c_int as isize) + tmp * y_3;
+        *sum.offset(2 as libc::c_int as isize) = *sum.offset(2 as libc::c_int as isize) + tmp * y_0;
+        *sum.offset(3 as libc::c_int as isize) = *sum.offset(3 as libc::c_int as isize) + tmp * y_1;
+        let fresh9 = x;
+        x = x.offset(1);
+        tmp = *fresh9;
+        let fresh10 = y;
+        y = y.offset(1);
+        y_2 = *fresh10;
+        *sum.offset(0 as libc::c_int as isize) = *sum.offset(0 as libc::c_int as isize) + tmp * y_3;
+        *sum.offset(1 as libc::c_int as isize) = *sum.offset(1 as libc::c_int as isize) + tmp * y_0;
+        *sum.offset(2 as libc::c_int as isize) = *sum.offset(2 as libc::c_int as isize) + tmp * y_1;
+        *sum.offset(3 as libc::c_int as isize) = *sum.offset(3 as libc::c_int as isize) + tmp * y_2;
+        j += 4 as libc::c_int;
+    }
+    let fresh11 = j;
+    j = j + 1;
+    if fresh11 < len {
+        let fresh12 = x;
+        x = x.offset(1);
+        let tmp_0: opus_val16 = *fresh12;
+        let fresh13 = y;
+        y = y.offset(1);
+        y_3 = *fresh13;
+        *sum.offset(0 as libc::c_int as isize) =
+            *sum.offset(0 as libc::c_int as isize) + tmp_0 * y_0;
+        *sum.offset(1 as libc::c_int as isize) =
+            *sum.offset(1 as libc::c_int as isize) + tmp_0 * y_1;
+        *sum.offset(2 as libc::c_int as isize) =
+            *sum.offset(2 as libc::c_int as isize) + tmp_0 * y_2;
+        *sum.offset(3 as libc::c_int as isize) =
+            *sum.offset(3 as libc::c_int as isize) + tmp_0 * y_3;
+    }
+    let fresh14 = j;
+    j = j + 1;
+    if fresh14 < len {
+        let fresh15 = x;
+        x = x.offset(1);
+        let tmp_1: opus_val16 = *fresh15;
+        let fresh16 = y;
+        y = y.offset(1);
+        y_0 = *fresh16;
+        *sum.offset(0 as libc::c_int as isize) =
+            *sum.offset(0 as libc::c_int as isize) + tmp_1 * y_1;
+        *sum.offset(1 as libc::c_int as isize) =
+            *sum.offset(1 as libc::c_int as isize) + tmp_1 * y_2;
+        *sum.offset(2 as libc::c_int as isize) =
+            *sum.offset(2 as libc::c_int as isize) + tmp_1 * y_3;
+        *sum.offset(3 as libc::c_int as isize) =
+            *sum.offset(3 as libc::c_int as isize) + tmp_1 * y_0;
+    }
+    if j < len {
+        let fresh17 = x;
+        x = x.offset(1);
+        let tmp_2: opus_val16 = *fresh17;
+        let fresh18 = y;
+        y = y.offset(1);
+        y_1 = *fresh18;
+        *sum.offset(0 as libc::c_int as isize) =
+            *sum.offset(0 as libc::c_int as isize) + tmp_2 * y_2;
+        *sum.offset(1 as libc::c_int as isize) =
+            *sum.offset(1 as libc::c_int as isize) + tmp_2 * y_3;
+        *sum.offset(2 as libc::c_int as isize) =
+            *sum.offset(2 as libc::c_int as isize) + tmp_2 * y_0;
+        *sum.offset(3 as libc::c_int as isize) =
+            *sum.offset(3 as libc::c_int as isize) + tmp_2 * y_1;
+    }
+}
+#[inline]
+#[c2rust::src_loc = "159:1"]
+pub unsafe extern "C" fn celt_inner_prod_c(
+    x: *const opus_val16,
+    y: *const opus_val16,
+    N: libc::c_int,
+) -> opus_val32 {
+    let mut i: libc::c_int = 0;
+    let mut xy: opus_val32 = 0 as libc::c_int as opus_val32;
+    i = 0 as libc::c_int;
+    while i < N {
+        xy = xy + *x.offset(i as isize) * *y.offset(i as isize);
+        i += 1;
+    }
+    return xy;
+}
 
 #[c2rust::src_loc = "45:1"]
 unsafe extern "C" fn find_best_pitch(

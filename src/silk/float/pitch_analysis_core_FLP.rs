@@ -140,31 +140,7 @@ pub mod pitch_est_defines_h {
         pub static silk_Lag_range_stage3_10_ms: [[i8; 2]; 2];
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/pitch.h:38"]
-pub mod pitch_h {
-    #[c2rust::src_loc = "189:10"]
-    pub const celt_pitch_xcorr: unsafe extern "C" fn(
-        *const opus_val16,
-        *const opus_val16,
-        *mut opus_val32,
-        libc::c_int,
-        libc::c_int,
-        libc::c_int,
-    ) -> () = celt_pitch_xcorr_c;
-    use super::arch_h::{opus_val16, opus_val32};
-    extern "C" {
-        #[c2rust::src_loc = "183:1"]
-        pub fn celt_pitch_xcorr_c(
-            _x: *const opus_val16,
-            _y: *const opus_val16,
-            xcorr: *mut opus_val32,
-            len: libc::c_int,
-            max_pitch: libc::c_int,
-            arch: libc::c_int,
-        );
-    }
-}
-pub use self::arch_h::{opus_val16, opus_val32};
+use self::arch_h::opus_val32;
 use crate::celt::celt::celt_fatal;
 
 pub use self::float_cast_h::float2int;
@@ -176,12 +152,12 @@ pub use self::pitch_est_defines_h::{
     PE_NB_CBKS_STAGE3_MAX, PE_NB_STAGE3_LAGS, PE_PREVLAG_BIAS, PE_SHORTLAG_BIAS,
     PE_SUBFR_LENGTH_MS, SILK_PE_MIN_COMPLEX,
 };
-pub use self::pitch_h::{celt_pitch_xcorr, celt_pitch_xcorr_c};
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 pub use self::SigProc_FLP_h::{
     silk_energy_FLP, silk_float2short_array, silk_inner_product_FLP,
     silk_insertion_sort_decreasing_FLP, silk_log2, silk_short2float_array,
 };
+use crate::celt::pitch::celt_pitch_xcorr_c;
 use crate::externs::memset;
 use crate::silk::resampler_down2::silk_resampler_down2;
 use crate::silk::resampler_down2_3::silk_resampler_down2_3;

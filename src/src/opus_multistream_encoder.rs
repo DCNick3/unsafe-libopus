@@ -234,26 +234,6 @@ pub mod quant_bands_h {
         );
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/pitch.h:44"]
-pub mod pitch_h {
-    #[inline]
-    #[c2rust::src_loc = "159:1"]
-    pub unsafe extern "C" fn celt_inner_prod_c(
-        x: *const opus_val16,
-        y: *const opus_val16,
-        N: libc::c_int,
-    ) -> opus_val32 {
-        let mut i: libc::c_int = 0;
-        let mut xy: opus_val32 = 0 as libc::c_int as opus_val32;
-        i = 0 as libc::c_int;
-        while i < N {
-            xy = xy + *x.offset(i as isize) * *y.offset(i as isize);
-            i += 1;
-        }
-        return xy;
-    }
-    use super::arch_h::{opus_val16, opus_val32};
-}
 pub use self::arch_h::{celt_ener, celt_sig, opus_val16, opus_val32};
 use self::bands_h::compute_band_energies;
 pub use self::celt_h::{
@@ -281,7 +261,6 @@ pub use self::opus_defines_h::{
     OPUS_UNIMPLEMENTED,
 };
 pub use self::opus_multistream_h::OPUS_MULTISTREAM_GET_ENCODER_STATE_REQUEST;
-pub use self::pitch_h::celt_inner_prod_c;
 use self::quant_bands_h::amp2Log2;
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
@@ -289,6 +268,7 @@ use crate::celt::celt::celt_fatal;
 use crate::celt::mathops::isqrt32;
 use crate::celt::mdct::clt_mdct_forward_c;
 use crate::celt::modes::OpusCustomMode;
+use crate::celt::pitch::celt_inner_prod_c;
 use crate::externs::{memcpy, memset};
 use crate::src::analysis::downmix_func;
 use crate::src::opus_encoder::{downmix_float, downmix_int, frame_size_select, opus_encode_native};
