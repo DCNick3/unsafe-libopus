@@ -6,13 +6,6 @@ pub mod typedef_h {
     #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_rom.h:33"]
-pub mod resampler_rom_h {
-    extern "C" {
-        #[c2rust::src_loc = "59:25"]
-        pub static silk_Resampler_2_3_COEFS_LQ: [i16; 6];
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_private.h:33"]
 pub mod resampler_private_h {
     extern "C" {
@@ -27,11 +20,11 @@ pub mod resampler_private_h {
     }
 }
 use self::resampler_private_h::silk_resampler_private_AR2;
-use self::resampler_rom_h::silk_Resampler_2_3_COEFS_LQ;
-
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 
 use crate::externs::memcpy;
+use crate::silk::resampler_rom::silk_Resampler_2_3_COEFS_LQ;
+
 #[c2rust::src_loc = "36:9"]
 pub const ORDER_FIR: libc::c_int = 4 as libc::c_int;
 #[no_mangle]

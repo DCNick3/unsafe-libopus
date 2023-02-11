@@ -1,12 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/usr/include/stdlib.h:32"]
-pub mod stdlib_h {
-    extern "C" {
-        #[c2rust::src_loc = "861:12"]
-        pub fn abs(_: libc::c_int) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:33"]
 pub mod SigProc_FLP_h {
     #[inline]
@@ -24,7 +17,6 @@ pub mod SigProc_FLP_h {
         }
     }
 }
-use self::stdlib_h::abs;
 pub use self::SigProc_FLP_h::silk_short2float_array;
 use crate::celt::celt::celt_fatal;
 use crate::celt::entcode::ec_tell;
@@ -467,7 +459,7 @@ pub unsafe extern "C" fn silk_encode_frame_FLP(
                         let mut sum: libc::c_int = 0 as libc::c_int;
                         j = i * (*psEnc).sCmn.subfr_length;
                         while j < (i + 1 as libc::c_int) * (*psEnc).sCmn.subfr_length {
-                            sum += abs((*psEnc).sCmn.pulses[j as usize] as libc::c_int);
+                            sum += ((*psEnc).sCmn.pulses[j as usize] as libc::c_int).abs();
                             j += 1;
                         }
                         if iter == 0 as libc::c_int

@@ -6,15 +6,6 @@ pub mod typedef_h {
     #[c2rust::src_loc = "45:9"]
     pub const silk_int16_MIN: libc::c_int = 0x8000 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_rom.h:33"]
-pub mod resampler_rom_h {
-    #[c2rust::src_loc = "42:9"]
-    pub const RESAMPLER_ORDER_FIR_12: libc::c_int = 8 as libc::c_int;
-    extern "C" {
-        #[c2rust::src_loc = "62:25"]
-        pub static silk_resampler_frac_FIR_12: [[i16; 4]; 12];
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_private.h:33"]
 pub mod resampler_private_h {
     extern "C" {
@@ -28,12 +19,13 @@ pub mod resampler_private_h {
     }
 }
 use self::resampler_private_h::silk_resampler_private_up2_HQ;
-pub use self::resampler_rom_h::{silk_resampler_frac_FIR_12, RESAMPLER_ORDER_FIR_12};
 use crate::silk::resampler_structs::silk_resampler_state_struct;
 
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 
 use crate::externs::memcpy;
+use crate::silk::resampler_rom::{silk_resampler_frac_FIR_12, RESAMPLER_ORDER_FIR_12};
+
 #[inline]
 #[c2rust::src_loc = "36:1"]
 unsafe extern "C" fn silk_resampler_private_IIR_FIR_INTERPOL(

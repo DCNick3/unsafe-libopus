@@ -1,4 +1,6 @@
+use crate::silk::resampler_rom::{silk_resampler_up2_hq_0, silk_resampler_up2_hq_1};
 use ::libc;
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
     #[c2rust::src_loc = "44:9"]
@@ -6,22 +8,6 @@ pub mod typedef_h {
     #[c2rust::src_loc = "45:9"]
     pub const silk_int16_MIN: libc::c_int = 0x8000 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_rom.h:33"]
-pub mod resampler_rom_h {
-    #[c2rust::src_loc = "49:25"]
-    pub static mut silk_resampler_up2_hq_0: [i16; 3] = [
-        1746 as libc::c_int as i16,
-        14986 as libc::c_int as i16,
-        (39083 as libc::c_int - 65536 as libc::c_int) as i16,
-    ];
-    #[c2rust::src_loc = "50:25"]
-    pub static mut silk_resampler_up2_hq_1: [i16; 3] = [
-        6854 as libc::c_int as i16,
-        25769 as libc::c_int as i16,
-        (55542 as libc::c_int - 65536 as libc::c_int) as i16,
-    ];
-}
-pub use self::resampler_rom_h::{silk_resampler_up2_hq_0, silk_resampler_up2_hq_1};
 use crate::silk::resampler_structs::silk_resampler_state_struct;
 
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};

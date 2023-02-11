@@ -7,18 +7,9 @@ pub mod typedef_h {
     #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_rom.h:33"]
-pub mod resampler_rom_h {
-    #[c2rust::src_loc = "45:25"]
-    pub static mut silk_resampler_down2_0: i16 = 9872 as libc::c_int as i16;
-    #[c2rust::src_loc = "46:25"]
-    pub static mut silk_resampler_down2_1: i16 =
-        (39809 as libc::c_int - 65536 as libc::c_int) as i16;
-}
-pub use self::resampler_rom_h::{silk_resampler_down2_0, silk_resampler_down2_1};
-use crate::celt::celt::celt_fatal;
-
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
+use crate::celt::celt::celt_fatal;
+use crate::silk::resampler_rom::{silk_resampler_down2_0, silk_resampler_down2_1};
 
 #[no_mangle]
 #[c2rust::src_loc = "36:1"]

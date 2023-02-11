@@ -1,28 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_rom.h:50"]
-pub mod resampler_rom_h {
-    #[c2rust::src_loc = "41:9"]
-    pub const RESAMPLER_DOWN_ORDER_FIR2: libc::c_int = 36 as libc::c_int;
-    #[c2rust::src_loc = "40:9"]
-    pub const RESAMPLER_DOWN_ORDER_FIR1: libc::c_int = 24 as libc::c_int;
-    #[c2rust::src_loc = "39:9"]
-    pub const RESAMPLER_DOWN_ORDER_FIR0: libc::c_int = 18 as libc::c_int;
-    extern "C" {
-        #[c2rust::src_loc = "58:25"]
-        pub static silk_Resampler_1_6_COEFS: [i16; 20];
-        #[c2rust::src_loc = "57:25"]
-        pub static silk_Resampler_1_4_COEFS: [i16; 20];
-        #[c2rust::src_loc = "56:25"]
-        pub static silk_Resampler_1_3_COEFS: [i16; 20];
-        #[c2rust::src_loc = "55:25"]
-        pub static silk_Resampler_1_2_COEFS: [i16; 14];
-        #[c2rust::src_loc = "54:25"]
-        pub static silk_Resampler_2_3_COEFS: [i16; 20];
-        #[c2rust::src_loc = "53:25"]
-        pub static silk_Resampler_3_4_COEFS: [i16; 29];
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_private.h:50"]
 pub mod resampler_private_h {
     #[c2rust::src_loc = "40:9"]
@@ -55,15 +32,16 @@ pub use self::resampler_private_h::{
     silk_resampler_private_IIR_FIR, silk_resampler_private_down_FIR,
     silk_resampler_private_up2_HQ_wrapper, RESAMPLER_MAX_BATCH_SIZE_MS,
 };
-pub use self::resampler_rom_h::{
-    silk_Resampler_1_2_COEFS, silk_Resampler_1_3_COEFS, silk_Resampler_1_4_COEFS,
-    silk_Resampler_1_6_COEFS, silk_Resampler_2_3_COEFS, silk_Resampler_3_4_COEFS,
-    RESAMPLER_DOWN_ORDER_FIR0, RESAMPLER_DOWN_ORDER_FIR1, RESAMPLER_DOWN_ORDER_FIR2,
-};
 use crate::celt::celt::celt_fatal;
 use crate::silk::resampler_structs::silk_resampler_state_struct;
 
 use crate::externs::{memcpy, memset};
+use crate::silk::resampler_rom::{
+    silk_Resampler_1_2_COEFS, silk_Resampler_1_3_COEFS, silk_Resampler_1_4_COEFS,
+    silk_Resampler_1_6_COEFS, silk_Resampler_2_3_COEFS, silk_Resampler_3_4_COEFS,
+    RESAMPLER_DOWN_ORDER_FIR0, RESAMPLER_DOWN_ORDER_FIR1, RESAMPLER_DOWN_ORDER_FIR2,
+};
+
 #[c2rust::src_loc = "53:24"]
 static mut delay_matrix_enc: [[i8; 3]; 5] = [
     [

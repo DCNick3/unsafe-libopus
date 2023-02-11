@@ -7,15 +7,6 @@ pub mod typedef_h {
     #[c2rust::src_loc = "45:9"]
     pub const silk_int16_MIN: libc::c_int = 0x8000 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_rom.h:33"]
-pub mod resampler_rom_h {
-    #[c2rust::src_loc = "39:9"]
-    pub const RESAMPLER_DOWN_ORDER_FIR0: libc::c_int = 18;
-    #[c2rust::src_loc = "40:9"]
-    pub const RESAMPLER_DOWN_ORDER_FIR1: libc::c_int = 24;
-    #[c2rust::src_loc = "41:9"]
-    pub const RESAMPLER_DOWN_ORDER_FIR2: libc::c_int = 36;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_private.h:33"]
 pub mod resampler_private_h {
     extern "C" {
@@ -30,15 +21,14 @@ pub mod resampler_private_h {
     }
 }
 use self::resampler_private_h::silk_resampler_private_AR2;
-pub use self::resampler_rom_h::{
+pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
+use crate::celt::celt::celt_fatal;
+use crate::externs::memcpy;
+use crate::silk::resampler_rom::{
     RESAMPLER_DOWN_ORDER_FIR0, RESAMPLER_DOWN_ORDER_FIR1, RESAMPLER_DOWN_ORDER_FIR2,
 };
-use crate::celt::celt::celt_fatal;
 use crate::silk::resampler_structs::silk_resampler_state_struct;
 
-pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
-
-use crate::externs::memcpy;
 #[inline]
 #[c2rust::src_loc = "36:1"]
 unsafe extern "C" fn silk_resampler_private_down_FIR_INTERPOL(
