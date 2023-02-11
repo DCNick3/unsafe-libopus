@@ -193,13 +193,6 @@ pub mod celt_h {
         );
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.h:39"]
-pub mod mathops_h {
-    extern "C" {
-        #[c2rust::src_loc = "46:1"]
-        pub fn isqrt32(_val: u32) -> libc::c_uint;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cpu_support.h:40"]
 pub mod cpu_support_h {
     #[inline]
@@ -269,7 +262,6 @@ pub use self::celt_h::{
 };
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::internal::{__builtin_va_list, __va_list_tag};
-use self::mathops_h::isqrt32;
 pub use self::opus_defines_h::{
     OPUS_ALLOC_FAIL, OPUS_AUTO, OPUS_BAD_ARG, OPUS_BITRATE_MAX, OPUS_BUFFER_TOO_SMALL,
     OPUS_FRAMESIZE_ARG, OPUS_GET_APPLICATION_REQUEST, OPUS_GET_BANDWIDTH_REQUEST,
@@ -294,6 +286,7 @@ use self::quant_bands_h::amp2Log2;
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 use crate::celt::celt::celt_fatal;
+use crate::celt::mathops::isqrt32;
 use crate::celt::mdct::clt_mdct_forward_c;
 use crate::celt::modes::OpusCustomMode;
 use crate::externs::{memcpy, memset};

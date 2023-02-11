@@ -321,19 +321,6 @@ pub mod celt_lpc_h {
         ) -> libc::c_int;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/vq.h:52"]
-pub mod vq_h {
-    use super::arch_h::{celt_norm, opus_val16};
-    extern "C" {
-        #[c2rust::src_loc = "75:1"]
-        pub fn renormalise_vector(
-            X: *mut celt_norm,
-            N: libc::c_int,
-            gain: opus_val16,
-            arch: libc::c_int,
-        );
-    }
-}
 pub use self::arch_h::{
     celt_ener, celt_norm, celt_sig, opus_val16, opus_val32, CELT_SIG_SCALE, Q15ONE, VERY_SMALL,
 };
@@ -365,9 +352,9 @@ use crate::celt::entdec::{
 use crate::celt::mdct::clt_mdct_backward_c;
 use crate::celt::modes::{opus_custom_mode_create, OpusCustomMode, MAX_PERIOD};
 use crate::celt::rate::clt_compute_allocation;
-
-use self::vq_h::renormalise_vector;
+use crate::celt::vq::renormalise_vector;
 use crate::externs::{memcpy, memmove, memset};
+
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "75:8"]

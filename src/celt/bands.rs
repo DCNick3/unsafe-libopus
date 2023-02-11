@@ -39,58 +39,6 @@ pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
     pub const NULL: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/vq.h:37"]
-pub mod vq_h {
-    use super::arch_h::{celt_norm, opus_val16};
-    use crate::celt::entdec::ec_dec;
-    use crate::celt::entenc::ec_enc;
-    extern "C" {
-        #[c2rust::src_loc = "62:1"]
-        pub fn alg_quant(
-            X: *mut celt_norm,
-            N: libc::c_int,
-            K: libc::c_int,
-            spread: libc::c_int,
-            B: libc::c_int,
-            enc: *mut ec_enc,
-            gain: opus_val16,
-            resynth: libc::c_int,
-            arch: libc::c_int,
-        ) -> libc::c_uint;
-        #[c2rust::src_loc = "72:1"]
-        pub fn alg_unquant(
-            X: *mut celt_norm,
-            N: libc::c_int,
-            K: libc::c_int,
-            spread: libc::c_int,
-            B: libc::c_int,
-            dec: *mut ec_dec,
-            gain: opus_val16,
-        ) -> libc::c_uint;
-        #[c2rust::src_loc = "75:1"]
-        pub fn renormalise_vector(
-            X: *mut celt_norm,
-            N: libc::c_int,
-            gain: opus_val16,
-            arch: libc::c_int,
-        );
-        #[c2rust::src_loc = "77:1"]
-        pub fn stereo_itheta(
-            X: *const celt_norm,
-            Y: *const celt_norm,
-            stereo: libc::c_int,
-            N: libc::c_int,
-            arch: libc::c_int,
-        ) -> libc::c_int;
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.h:41"]
-pub mod mathops_h {
-    extern "C" {
-        #[c2rust::src_loc = "46:1"]
-        pub fn isqrt32(_val: u32) -> libc::c_uint;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/quant_bands.h:43"]
 pub mod quant_bands_h {
     use super::arch_h::opus_val16;
@@ -145,7 +93,6 @@ pub use self::arch_h::{
     celt_ener, celt_norm, celt_sig, opus_val16, opus_val32, EPSILON, NORM_SCALING, Q15ONE,
 };
 pub use self::bands_h::{SPREAD_AGGRESSIVE, SPREAD_LIGHT, SPREAD_NONE, SPREAD_NORMAL};
-use self::mathops_h::isqrt32;
 pub use self::pitch_h::{celt_inner_prod_c, dual_inner_prod_c};
 use self::quant_bands_h::eMeans;
 pub use self::stack_alloc_h::ALLOC_NONE;
@@ -154,12 +101,12 @@ use crate::celt::celt::celt_fatal;
 use crate::celt::entcode::{celt_sudiv, celt_udiv, ec_ctx, ec_tell_frac, BITRES};
 use crate::celt::entdec::{ec_dec_bit_logp, ec_dec_bits, ec_dec_uint, ec_dec_update, ec_decode};
 use crate::celt::entenc::{ec_enc_bit_logp, ec_enc_bits, ec_enc_uint, ec_encode};
+use crate::celt::mathops::isqrt32;
 use crate::celt::modes::OpusCustomMode;
 use crate::celt::rate::{
     bits2pulses, get_pulses, pulses2bits, QTHETA_OFFSET, QTHETA_OFFSET_TWOPHASE,
 };
-
-use self::vq_h::{alg_quant, alg_unquant, renormalise_vector, stereo_itheta};
+use crate::celt::vq::{alg_quant, alg_unquant, renormalise_vector, stereo_itheta};
 use crate::externs::{memcpy, memset};
 use crate::silk::macros::EC_CLZ0;
 

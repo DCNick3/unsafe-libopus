@@ -376,32 +376,6 @@ pub mod quant_bands_h {
         );
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.h:45"]
-pub mod mathops_h {
-    #[inline]
-    #[c2rust::src_loc = "80:1"]
-    pub unsafe extern "C" fn celt_maxabs16(x: *const opus_val16, len: libc::c_int) -> opus_val32 {
-        let mut i: libc::c_int = 0;
-        let mut maxval: opus_val16 = 0 as libc::c_int as opus_val16;
-        let mut minval: opus_val16 = 0 as libc::c_int as opus_val16;
-        i = 0 as libc::c_int;
-        while i < len {
-            maxval = if maxval > *x.offset(i as isize) {
-                maxval
-            } else {
-                *x.offset(i as isize)
-            };
-            minval = if minval < *x.offset(i as isize) {
-                minval
-            } else {
-                *x.offset(i as isize)
-            };
-            i += 1;
-        }
-        return if maxval > -minval { maxval } else { -minval };
-    }
-    use super::arch_h::{opus_val16, opus_val32};
-}
 pub use self::arch_h::{
     celt_ener, celt_norm, celt_sig, opus_val16, opus_val32, CELT_SIG_SCALE, EPSILON,
 };
@@ -417,7 +391,6 @@ pub use self::celt_h::{
     COMBFILTER_MAXPERIOD, COMBFILTER_MINPERIOD, OPUS_SET_ENERGY_MASK_REQUEST, OPUS_SET_LFE_REQUEST,
 };
 pub use self::internal::{__builtin_va_list, __va_list_tag};
-pub use self::mathops_h::celt_maxabs16;
 pub use self::opus_defines_h::{
     OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_BITRATE_MAX, OPUS_GET_FINAL_RANGE_REQUEST,
     OPUS_GET_LSB_DEPTH_REQUEST, OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_INTERNAL_ERROR,
@@ -438,6 +411,7 @@ use crate::celt::entenc::{
     ec_enc, ec_enc_bit_logp, ec_enc_bits, ec_enc_done, ec_enc_icdf, ec_enc_init, ec_enc_shrink,
     ec_enc_uint,
 };
+use crate::celt::mathops::celt_maxabs16;
 use crate::celt::mdct::clt_mdct_forward_c;
 use crate::celt::modes::{opus_custom_mode_create, OpusCustomMode};
 use crate::celt::rate::clt_compute_allocation;

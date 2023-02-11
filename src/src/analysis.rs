@@ -147,52 +147,6 @@ pub mod math_h {
     #[c2rust::src_loc = "1151:10"]
     pub const M_PI: libc::c_double = 3.14159265358979323846f64;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.h:36"]
-pub mod mathops_h {
-    #[inline]
-    #[c2rust::src_loc = "54:1"]
-    pub unsafe extern "C" fn fast_atan2f(y: libc::c_float, x: libc::c_float) -> libc::c_float {
-        let mut x2: libc::c_float = 0.;
-        let mut y2: libc::c_float = 0.;
-        x2 = x * x;
-        y2 = y * y;
-        if x2 + y2 < 1e-18f32 {
-            return 0 as libc::c_int as libc::c_float;
-        }
-        if x2 < y2 {
-            let den: libc::c_float = (y2 + cB * x2) * (y2 + cC * x2);
-            return -x * y * (y2 + cA * x2) / den
-                + (if y < 0 as libc::c_int as libc::c_float {
-                    -cE
-                } else {
-                    cE
-                });
-        } else {
-            let den_0: libc::c_float = (x2 + cB * y2) * (x2 + cC * y2);
-            return x * y * (x2 + cA * y2) / den_0
-                + (if y < 0 as libc::c_int as libc::c_float {
-                    -cE
-                } else {
-                    cE
-                })
-                - (if x * y < 0 as libc::c_int as libc::c_float {
-                    -cE
-                } else {
-                    cE
-                });
-        };
-    }
-    #[c2rust::src_loc = "41:9"]
-    pub const PI: libc::c_float = 3.141592653f32;
-    #[c2rust::src_loc = "53:9"]
-    pub const cE: libc::c_float = PI / 2 as libc::c_int as libc::c_float;
-    #[c2rust::src_loc = "52:9"]
-    pub const cC: libc::c_float = 0.08595542f32;
-    #[c2rust::src_loc = "51:9"]
-    pub const cB: libc::c_float = 0.67848403f32;
-    #[c2rust::src_loc = "50:9"]
-    pub const cA: libc::c_float = 0.43157974f32;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cpu_support.h:37"]
 pub mod cpu_support_h {
     #[inline]
@@ -214,11 +168,11 @@ pub use self::arch_h::{opus_val16, opus_val32, opus_val64};
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::float_cast_h::float2int;
 pub use self::math_h::M_PI;
-pub use self::mathops_h::{cA, cB, cC, cE, fast_atan2f, PI};
 pub use self::mlp_h::{compute_dense, compute_gru, layer0, layer1, layer2, DenseLayer, GRULayer};
 pub use self::stddef_h::NULL;
 use crate::celt::celt::celt_fatal;
 use crate::celt::kiss_fft::{kiss_fft_cpx, kiss_fft_state, opus_fft_c};
+use crate::celt::mathops::fast_atan2f;
 use crate::celt::modes::OpusCustomMode;
 
 use crate::externs::{memcpy, memmove, memset};

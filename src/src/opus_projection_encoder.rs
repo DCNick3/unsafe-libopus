@@ -123,13 +123,6 @@ pub mod opus_defines_h {
     #[c2rust::src_loc = "46:9"]
     pub const OPUS_OK: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.h:32"]
-pub mod mathops_h {
-    extern "C" {
-        #[c2rust::src_loc = "46:1"]
-        pub fn isqrt32(_val: u32) -> libc::c_uint;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_projection.h:36"]
 pub mod opus_projection_h {
     #[c2rust::src_loc = "48:9"]
@@ -171,10 +164,10 @@ pub use self::mapping_matrix_h::{
     mapping_matrix_toa_demixing, mapping_matrix_toa_demixing_data, mapping_matrix_toa_mixing,
     mapping_matrix_toa_mixing_data, MappingMatrix,
 };
-use self::mathops_h::isqrt32;
 pub use self::opus_defines_h::{OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_OK, OPUS_UNIMPLEMENTED};
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
+use crate::celt::mathops::isqrt32;
 
 use self::opus_multistream_h::{opus_multistream_encoder_get_size, opus_multistream_encoder_init};
 pub use self::opus_projection_h::{
