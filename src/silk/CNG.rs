@@ -13,40 +13,6 @@ pub mod ecintrin_h {
         ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/Inlines.h:32"]
-pub mod Inlines_h {
-    #[inline]
-    #[c2rust::src_loc = "56:1"]
-    pub unsafe extern "C" fn silk_CLZ_FRAC(in_0: i32, lz: *mut i32, frac_Q7: *mut i32) {
-        let lzeros: i32 = silk_CLZ32(in_0);
-        *lz = lzeros;
-        *frac_Q7 = silk_ROR32(in_0, 24 as libc::c_int - lzeros) & 0x7f as libc::c_int;
-    }
-    #[inline]
-    #[c2rust::src_loc = "71:1"]
-    pub unsafe extern "C" fn silk_SQRT_APPROX(x: i32) -> i32 {
-        let mut y: i32 = 0;
-        let mut lz: i32 = 0;
-        let mut frac_Q7: i32 = 0;
-        if x <= 0 as libc::c_int {
-            return 0 as libc::c_int;
-        }
-        silk_CLZ_FRAC(x, &mut lz, &mut frac_Q7);
-        if lz & 1 as libc::c_int != 0 {
-            y = 32768 as libc::c_int;
-        } else {
-            y = 46214 as libc::c_int;
-        }
-        y >>= lz >> 1 as libc::c_int;
-        y = (y as libc::c_long
-            + (y as libc::c_long
-                * (213 as libc::c_int as i16 as i32 * frac_Q7 as i16 as i32) as i16 as i64
-                >> 16 as libc::c_int)) as i32;
-        return y;
-    }
-    use crate::silk::macros::silk_CLZ32;
-    use crate::silk::SigProc_FIX::silk_ROR32;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
 pub mod define_h {
     #[c2rust::src_loc = "70:9"]
@@ -77,10 +43,10 @@ pub use self::ecintrin_h::EC_CLZ0;
 pub use self::internal::__CHAR_BIT__;
 pub use self::limits_h::CHAR_BIT;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN, silk_int32_MAX, silk_int32_MIN};
-pub use self::Inlines_h::{silk_CLZ_FRAC, silk_SQRT_APPROX};
 use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memmove, memset};
 use crate::silk::structs::{silk_CNG_struct, silk_decoder_control, silk_decoder_state};
+use crate::silk::Inlines::silk_SQRT_APPROX;
 use crate::silk::NLSF2A::silk_NLSF2A;
 #[inline]
 #[c2rust::src_loc = "36:1"]

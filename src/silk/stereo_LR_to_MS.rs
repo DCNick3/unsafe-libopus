@@ -12,65 +12,6 @@ pub mod ecintrin_h {
         ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/Inlines.h:32"]
-pub mod Inlines_h {
-    #[inline]
-    #[c2rust::src_loc = "97:1"]
-    pub unsafe extern "C" fn silk_DIV32_varQ(a32: i32, b32: i32, Qres: libc::c_int) -> i32 {
-        let mut a_headrm: libc::c_int = 0;
-        let mut b_headrm: libc::c_int = 0;
-        let mut lshift: libc::c_int = 0;
-        let mut b32_inv: i32 = 0;
-        let mut a32_nrm: i32 = 0;
-        let mut b32_nrm: i32 = 0;
-        let mut result: i32 = 0;
-        a_headrm = silk_CLZ32(if a32 > 0 as libc::c_int { a32 } else { -a32 }) - 1 as libc::c_int;
-        a32_nrm = ((a32 as u32) << a_headrm) as i32;
-        b_headrm = silk_CLZ32(if b32 > 0 as libc::c_int { b32 } else { -b32 }) - 1 as libc::c_int;
-        b32_nrm = ((b32 as u32) << b_headrm) as i32;
-        b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int) / (b32_nrm >> 16 as libc::c_int);
-        result = (a32_nrm as libc::c_long * b32_inv as i16 as i64 >> 16 as libc::c_int) as i32;
-        a32_nrm = (a32_nrm as u32).wrapping_sub(
-            (((b32_nrm as i64 * result as libc::c_long >> 32 as libc::c_int) as i32 as u32)
-                << 3 as libc::c_int) as i32 as u32,
-        ) as i32;
-        result = (result as libc::c_long
-            + (a32_nrm as libc::c_long * b32_inv as i16 as i64 >> 16 as libc::c_int))
-            as i32;
-        lshift = 29 as libc::c_int + a_headrm - b_headrm - Qres;
-        if lshift < 0 as libc::c_int {
-            return (((if 0x80000000 as libc::c_uint as i32 >> -lshift
-                > 0x7fffffff as libc::c_int >> -lshift
-            {
-                if result > 0x80000000 as libc::c_uint as i32 >> -lshift {
-                    0x80000000 as libc::c_uint as i32 >> -lshift
-                } else {
-                    if result < 0x7fffffff as libc::c_int >> -lshift {
-                        0x7fffffff as libc::c_int >> -lshift
-                    } else {
-                        result
-                    }
-                }
-            } else {
-                if result > 0x7fffffff as libc::c_int >> -lshift {
-                    0x7fffffff as libc::c_int >> -lshift
-                } else {
-                    if result < 0x80000000 as libc::c_uint as i32 >> -lshift {
-                        0x80000000 as libc::c_uint as i32 >> -lshift
-                    } else {
-                        result
-                    }
-                }
-            }) as u32)
-                << -lshift) as i32;
-        } else if lshift < 32 as libc::c_int {
-            return result >> lshift;
-        } else {
-            return 0 as libc::c_int;
-        };
-    }
-    use crate::silk::macros::silk_CLZ32;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
     #[c2rust::src_loc = "45:9"]
@@ -112,9 +53,9 @@ pub use self::internal::__CHAR_BIT__;
 pub use self::limits_h::CHAR_BIT;
 use self::main_h::{silk_stereo_find_predictor, silk_stereo_quant_pred};
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
-pub use self::Inlines_h::silk_DIV32_varQ;
 use crate::externs::memcpy;
 use crate::silk::structs::stereo_enc_state;
+use crate::silk::Inlines::silk_DIV32_varQ;
 use crate::silk::SigProc_FIX::silk_max_int;
 
 #[no_mangle]

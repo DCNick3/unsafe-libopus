@@ -19,62 +19,6 @@ pub mod typedef_h {
     #[c2rust::src_loc = "42:9"]
     pub const silk_int32_MAX: libc::c_int = 0x7fffffff as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/Inlines.h:32"]
-pub mod Inlines_h {
-    #[inline]
-    #[c2rust::src_loc = "143:1"]
-    pub unsafe extern "C" fn silk_INVERSE32_varQ(b32: i32, Qres: libc::c_int) -> i32 {
-        let mut b_headrm: libc::c_int = 0;
-        let mut lshift: libc::c_int = 0;
-        let mut b32_inv: i32 = 0;
-        let mut b32_nrm: i32 = 0;
-        let mut err_Q32: i32 = 0;
-        let mut result: i32 = 0;
-        b_headrm = silk_CLZ32(if b32 > 0 as libc::c_int { b32 } else { -b32 }) - 1 as libc::c_int;
-        b32_nrm = ((b32 as u32) << b_headrm) as i32;
-        b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int) / (b32_nrm >> 16 as libc::c_int);
-        result = ((b32_inv as u32) << 16 as libc::c_int) as i32;
-        err_Q32 = (((((1 as libc::c_int) << 29 as libc::c_int)
-            - (b32_nrm as libc::c_long * b32_inv as i16 as i64 >> 16 as libc::c_int) as i32)
-            as u32)
-            << 3 as libc::c_int) as i32;
-        result = (result as libc::c_long
-            + (err_Q32 as i64 * b32_inv as libc::c_long >> 16 as libc::c_int))
-            as i32;
-        lshift = 61 as libc::c_int - b_headrm - Qres;
-        if lshift <= 0 as libc::c_int {
-            return (((if 0x80000000 as libc::c_uint as i32 >> -lshift
-                > 0x7fffffff as libc::c_int >> -lshift
-            {
-                if result > 0x80000000 as libc::c_uint as i32 >> -lshift {
-                    0x80000000 as libc::c_uint as i32 >> -lshift
-                } else {
-                    if result < 0x7fffffff as libc::c_int >> -lshift {
-                        0x7fffffff as libc::c_int >> -lshift
-                    } else {
-                        result
-                    }
-                }
-            } else {
-                if result > 0x7fffffff as libc::c_int >> -lshift {
-                    0x7fffffff as libc::c_int >> -lshift
-                } else {
-                    if result < 0x80000000 as libc::c_uint as i32 >> -lshift {
-                        0x80000000 as libc::c_uint as i32 >> -lshift
-                    } else {
-                        result
-                    }
-                }
-            }) as u32)
-                << -lshift) as i32;
-        } else if lshift < 32 as libc::c_int {
-            return result >> lshift;
-        } else {
-            return 0 as libc::c_int;
-        };
-    }
-    use crate::silk::macros::silk_CLZ32;
-}
 #[c2rust::header_src = "internal:0"]
 pub mod internal {
     #[c2rust::src_loc = "36:9"]
@@ -83,11 +27,10 @@ pub mod internal {
 pub use self::ecintrin_h::EC_CLZ0;
 pub use self::internal::__CHAR_BIT__;
 pub use self::limits_h::CHAR_BIT;
-use crate::silk::macros::silk_CLZ32;
-
 pub use self::typedef_h::{silk_int32_MAX, silk_int32_MIN};
+use crate::silk::macros::silk_CLZ32;
+use crate::silk::Inlines::silk_INVERSE32_varQ;
 
-pub use self::Inlines_h::silk_INVERSE32_varQ;
 #[c2rust::src_loc = "36:9"]
 pub const A_LIMIT: libc::c_double =
     0.99975f64 * ((1 as libc::c_int as i64) << 24 as libc::c_int) as libc::c_double + 0.5f64;

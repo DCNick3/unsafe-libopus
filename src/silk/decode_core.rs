@@ -13,117 +13,6 @@ pub mod ecintrin_h {
         ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/Inlines.h:32"]
-pub mod Inlines_h {
-    #[inline]
-    #[c2rust::src_loc = "97:1"]
-    pub unsafe extern "C" fn silk_DIV32_varQ(a32: i32, b32: i32, Qres: libc::c_int) -> i32 {
-        let mut a_headrm: libc::c_int = 0;
-        let mut b_headrm: libc::c_int = 0;
-        let mut lshift: libc::c_int = 0;
-        let mut b32_inv: i32 = 0;
-        let mut a32_nrm: i32 = 0;
-        let mut b32_nrm: i32 = 0;
-        let mut result: i32 = 0;
-        a_headrm = silk_CLZ32(if a32 > 0 as libc::c_int { a32 } else { -a32 }) - 1 as libc::c_int;
-        a32_nrm = ((a32 as u32) << a_headrm) as i32;
-        b_headrm = silk_CLZ32(if b32 > 0 as libc::c_int { b32 } else { -b32 }) - 1 as libc::c_int;
-        b32_nrm = ((b32 as u32) << b_headrm) as i32;
-        b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int) / (b32_nrm >> 16 as libc::c_int);
-        result = (a32_nrm as libc::c_long * b32_inv as i16 as i64 >> 16 as libc::c_int) as i32;
-        a32_nrm = (a32_nrm as u32).wrapping_sub(
-            (((b32_nrm as i64 * result as libc::c_long >> 32 as libc::c_int) as i32 as u32)
-                << 3 as libc::c_int) as i32 as u32,
-        ) as i32;
-        result = (result as libc::c_long
-            + (a32_nrm as libc::c_long * b32_inv as i16 as i64 >> 16 as libc::c_int))
-            as i32;
-        lshift = 29 as libc::c_int + a_headrm - b_headrm - Qres;
-        if lshift < 0 as libc::c_int {
-            return (((if 0x80000000 as libc::c_uint as i32 >> -lshift
-                > 0x7fffffff as libc::c_int >> -lshift
-            {
-                if result > 0x80000000 as libc::c_uint as i32 >> -lshift {
-                    0x80000000 as libc::c_uint as i32 >> -lshift
-                } else {
-                    if result < 0x7fffffff as libc::c_int >> -lshift {
-                        0x7fffffff as libc::c_int >> -lshift
-                    } else {
-                        result
-                    }
-                }
-            } else {
-                if result > 0x7fffffff as libc::c_int >> -lshift {
-                    0x7fffffff as libc::c_int >> -lshift
-                } else {
-                    if result < 0x80000000 as libc::c_uint as i32 >> -lshift {
-                        0x80000000 as libc::c_uint as i32 >> -lshift
-                    } else {
-                        result
-                    }
-                }
-            }) as u32)
-                << -lshift) as i32;
-        } else if lshift < 32 as libc::c_int {
-            return result >> lshift;
-        } else {
-            return 0 as libc::c_int;
-        };
-    }
-    #[inline]
-    #[c2rust::src_loc = "143:1"]
-    pub unsafe extern "C" fn silk_INVERSE32_varQ(b32: i32, Qres: libc::c_int) -> i32 {
-        let mut b_headrm: libc::c_int = 0;
-        let mut lshift: libc::c_int = 0;
-        let mut b32_inv: i32 = 0;
-        let mut b32_nrm: i32 = 0;
-        let mut err_Q32: i32 = 0;
-        let mut result: i32 = 0;
-        b_headrm = silk_CLZ32(if b32 > 0 as libc::c_int { b32 } else { -b32 }) - 1 as libc::c_int;
-        b32_nrm = ((b32 as u32) << b_headrm) as i32;
-        b32_inv = (0x7fffffff as libc::c_int >> 2 as libc::c_int) / (b32_nrm >> 16 as libc::c_int);
-        result = ((b32_inv as u32) << 16 as libc::c_int) as i32;
-        err_Q32 = (((((1 as libc::c_int) << 29 as libc::c_int)
-            - (b32_nrm as libc::c_long * b32_inv as i16 as i64 >> 16 as libc::c_int) as i32)
-            as u32)
-            << 3 as libc::c_int) as i32;
-        result = (result as libc::c_long
-            + (err_Q32 as i64 * b32_inv as libc::c_long >> 16 as libc::c_int))
-            as i32;
-        lshift = 61 as libc::c_int - b_headrm - Qres;
-        if lshift <= 0 as libc::c_int {
-            return (((if 0x80000000 as libc::c_uint as i32 >> -lshift
-                > 0x7fffffff as libc::c_int >> -lshift
-            {
-                if result > 0x80000000 as libc::c_uint as i32 >> -lshift {
-                    0x80000000 as libc::c_uint as i32 >> -lshift
-                } else {
-                    if result < 0x7fffffff as libc::c_int >> -lshift {
-                        0x7fffffff as libc::c_int >> -lshift
-                    } else {
-                        result
-                    }
-                }
-            } else {
-                if result > 0x7fffffff as libc::c_int >> -lshift {
-                    0x7fffffff as libc::c_int >> -lshift
-                } else {
-                    if result < 0x80000000 as libc::c_uint as i32 >> -lshift {
-                        0x80000000 as libc::c_uint as i32 >> -lshift
-                    } else {
-                        result
-                    }
-                }
-            }) as u32)
-                << -lshift) as i32;
-        } else if lshift < 32 as libc::c_int {
-            return result >> lshift;
-        } else {
-            return 0 as libc::c_int;
-        };
-    }
-    use crate::silk::macros::silk_CLZ32;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
 pub mod tables_h {
     extern "C" {
@@ -168,10 +57,10 @@ pub use self::internal::__CHAR_BIT__;
 pub use self::limits_h::CHAR_BIT;
 use self::tables_h::silk_Quantization_Offsets_Q10;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN, silk_int32_MAX, silk_int32_MIN};
-pub use self::Inlines_h::{silk_DIV32_varQ, silk_INVERSE32_varQ};
 use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memset};
 use crate::silk::structs::{silk_decoder_control, silk_decoder_state};
+use crate::silk::Inlines::{silk_DIV32_varQ, silk_INVERSE32_varQ};
 use crate::silk::LPC_analysis_filter::silk_LPC_analysis_filter;
 
 #[no_mangle]
