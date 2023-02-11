@@ -1207,7 +1207,7 @@ unsafe extern "C" fn quant_band_n1(
     mut ctx: *mut band_ctx,
     X: *mut celt_norm,
     Y: *mut celt_norm,
-    mut b: libc::c_int,
+    mut _b: libc::c_int,
     lowband_out: *mut celt_norm,
 ) -> libc::c_uint {
     let mut c: libc::c_int = 0;
@@ -1230,7 +1230,7 @@ unsafe extern "C" fn quant_band_n1(
                 sign = ec_dec_bits(ec, 1 as libc::c_int as libc::c_uint) as libc::c_int;
             }
             (*ctx).remaining_bits -= (1 as libc::c_int) << BITRES;
-            b -= (1 as libc::c_int) << BITRES;
+            _b -= (1 as libc::c_int) << BITRES;
         }
         if (*ctx).resynth != 0 {
             *x.offset(0 as libc::c_int as isize) = if sign != 0 {
