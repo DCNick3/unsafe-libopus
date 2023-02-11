@@ -188,39 +188,6 @@ pub mod structs_h {
     }
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/control.h:32"]
-pub mod control_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "46:9"]
-    pub struct silk_EncControlStruct {
-        pub nChannelsAPI: i32,
-        pub nChannelsInternal: i32,
-        pub API_sampleRate: i32,
-        pub maxInternalSampleRate: i32,
-        pub minInternalSampleRate: i32,
-        pub desiredInternalSampleRate: i32,
-        pub payloadSize_ms: libc::c_int,
-        pub bitRate: i32,
-        pub packetLossPercentage: libc::c_int,
-        pub complexity: libc::c_int,
-        pub useInBandFEC: libc::c_int,
-        pub LBRR_coded: libc::c_int,
-        pub useDTX: libc::c_int,
-        pub useCBR: libc::c_int,
-        pub maxBits: libc::c_int,
-        pub toMono: libc::c_int,
-        pub opusCanSwitch: libc::c_int,
-        pub reducedDependency: libc::c_int,
-        pub internalSampleRate: i32,
-        pub allowBandwidthSwitch: libc::c_int,
-        pub inWBmodeWithoutVariableLP: libc::c_int,
-        pub stereoWidth_Q14: libc::c_int,
-        pub switchReady: libc::c_int,
-        pub signalType: libc::c_int,
-        pub offset: libc::c_int,
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
 pub mod define_h {
     #[c2rust::src_loc = "90:9"]
@@ -234,13 +201,13 @@ pub mod define_h {
     #[c2rust::src_loc = "219:9"]
     pub const TRANSITION_FRAMES: libc::c_int = TRANSITION_TIME_MS / MAX_FRAME_LENGTH_MS;
 }
-pub use self::control_h::silk_EncControlStruct;
 pub use self::define_h::{
     MAX_FRAME_LENGTH_MS, MAX_NB_SUBFR, SUB_FRAME_LENGTH_MS, TRANSITION_FRAMES, TRANSITION_TIME_MS,
 };
 pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
+use crate::silk::enc_API::silk_EncControlStruct;
 
 pub use self::structs_h::{
     silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,

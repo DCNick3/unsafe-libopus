@@ -1,24 +1,21 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/control.h:31"]
-pub mod control_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "126:9"]
-    pub struct silk_DecControlStruct {
-        pub nChannelsAPI: i32,
-        pub nChannelsInternal: i32,
-        pub API_sampleRate: i32,
-        pub internalSampleRate: i32,
-        pub payloadSize_ms: libc::c_int,
-        pub prevPitchLag: libc::c_int,
-    }
-    #[c2rust::src_loc = "39:9"]
-    pub const FLAG_DECODE_NORMAL: libc::c_int = 0 as libc::c_int;
-    #[c2rust::src_loc = "41:9"]
-    pub const FLAG_DECODE_LBRR: libc::c_int = 2 as libc::c_int;
-    #[c2rust::src_loc = "40:9"]
-    pub const FLAG_PACKET_LOST: libc::c_int = 1 as libc::c_int;
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "126:9"]
+pub struct silk_DecControlStruct {
+    pub nChannelsAPI: i32,
+    pub nChannelsInternal: i32,
+    pub API_sampleRate: i32,
+    pub internalSampleRate: i32,
+    pub payloadSize_ms: libc::c_int,
+    pub prevPitchLag: libc::c_int,
 }
+#[c2rust::src_loc = "39:9"]
+pub const FLAG_DECODE_NORMAL: libc::c_int = 0 as libc::c_int;
+#[c2rust::src_loc = "41:9"]
+pub const FLAG_DECODE_LBRR: libc::c_int = 2 as libc::c_int;
+#[c2rust::src_loc = "40:9"]
+pub const FLAG_PACKET_LOST: libc::c_int = 1 as libc::c_int;
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
 pub mod structs_h {
     #[derive(Copy, Clone)]
@@ -264,9 +261,6 @@ pub mod SigProc_FIX_h {
         ) -> libc::c_int;
     }
 }
-pub use self::control_h::{
-    silk_DecControlStruct, FLAG_DECODE_LBRR, FLAG_DECODE_NORMAL, FLAG_PACKET_LOST,
-};
 pub use self::define_h::{
     CODE_CONDITIONALLY, CODE_INDEPENDENTLY, CODE_INDEPENDENTLY_NO_LTP_SCALING,
     DECODER_NUM_CHANNELS, MAX_API_FS_KHZ, TYPE_NO_VOICE_ACTIVITY, TYPE_VOICED,

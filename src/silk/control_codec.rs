@@ -195,39 +195,6 @@ pub mod structs_h {
     }
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/control.h:35"]
-pub mod control_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "46:9"]
-    pub struct silk_EncControlStruct {
-        pub nChannelsAPI: i32,
-        pub nChannelsInternal: i32,
-        pub API_sampleRate: i32,
-        pub maxInternalSampleRate: i32,
-        pub minInternalSampleRate: i32,
-        pub desiredInternalSampleRate: i32,
-        pub payloadSize_ms: libc::c_int,
-        pub bitRate: i32,
-        pub packetLossPercentage: libc::c_int,
-        pub complexity: libc::c_int,
-        pub useInBandFEC: libc::c_int,
-        pub LBRR_coded: libc::c_int,
-        pub useDTX: libc::c_int,
-        pub useCBR: libc::c_int,
-        pub maxBits: libc::c_int,
-        pub toMono: libc::c_int,
-        pub opusCanSwitch: libc::c_int,
-        pub reducedDependency: libc::c_int,
-        pub internalSampleRate: i32,
-        pub allowBandwidthSwitch: libc::c_int,
-        pub inWBmodeWithoutVariableLP: libc::c_int,
-        pub stereoWidth_Q14: libc::c_int,
-        pub switchReady: libc::c_int,
-        pub signalType: libc::c_int,
-        pub offset: libc::c_int,
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:35"]
 pub mod structs_FLP_h {
     #[derive(Copy, Clone)]
@@ -386,8 +353,8 @@ pub mod tables_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:35"]
 pub mod main_h {
-    use super::control_h::silk_EncControlStruct;
     use super::structs_h::silk_encoder_state;
+    use crate::silk::enc_API::silk_EncControlStruct;
     extern "C" {
         #[c2rust::src_loc = "140:1"]
         pub fn silk_control_audio_bandwidth(
@@ -405,7 +372,6 @@ pub mod pitch_est_defines_h {
     #[c2rust::src_loc = "74:9"]
     pub const SILK_PE_MAX_COMPLEX: libc::c_int = 2 as libc::c_int;
 }
-pub use self::control_h::silk_EncControlStruct;
 pub use self::define_h::{
     LA_SHAPE_MS, MAX_DEL_DEC_STATES, MAX_LPC_ORDER, MAX_NB_SUBFR, MIN_LPC_ORDER,
     SUB_FRAME_LENGTH_MS, TYPE_NO_VOICE_ACTIVITY,
@@ -420,6 +386,7 @@ pub use self::resampler_structs_h::{
     _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
 };
 use crate::celt::celt::celt_fatal;
+use crate::silk::enc_API::silk_EncControlStruct;
 
 pub use self::structs_FLP_h::{silk_encoder_state_FLP, silk_shape_state_FLP};
 pub use self::structs_h::{

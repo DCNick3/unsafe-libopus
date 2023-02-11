@@ -1,37 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/control.h:32"]
-pub mod control_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "46:9"]
-    pub struct silk_EncControlStruct {
-        pub nChannelsAPI: i32,
-        pub nChannelsInternal: i32,
-        pub API_sampleRate: i32,
-        pub maxInternalSampleRate: i32,
-        pub minInternalSampleRate: i32,
-        pub desiredInternalSampleRate: i32,
-        pub payloadSize_ms: libc::c_int,
-        pub bitRate: i32,
-        pub packetLossPercentage: libc::c_int,
-        pub complexity: libc::c_int,
-        pub useInBandFEC: libc::c_int,
-        pub LBRR_coded: libc::c_int,
-        pub useDTX: libc::c_int,
-        pub useCBR: libc::c_int,
-        pub maxBits: libc::c_int,
-        pub toMono: libc::c_int,
-        pub opusCanSwitch: libc::c_int,
-        pub reducedDependency: libc::c_int,
-        pub internalSampleRate: i32,
-        pub allowBandwidthSwitch: libc::c_int,
-        pub inWBmodeWithoutVariableLP: libc::c_int,
-        pub stereoWidth_Q14: libc::c_int,
-        pub switchReady: libc::c_int,
-        pub signalType: libc::c_int,
-        pub offset: libc::c_int,
-    }
-}
 
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/errors.h:32"]
 pub mod errors_h {
@@ -59,7 +26,7 @@ pub mod define_h {
     #[c2rust::src_loc = "40:9"]
     pub const ENCODER_NUM_CHANNELS: libc::c_int = 2 as libc::c_int;
 }
-pub use self::control_h::silk_EncControlStruct;
+
 pub use self::define_h::ENCODER_NUM_CHANNELS;
 pub use self::errors_h::{
     SILK_ENC_FS_NOT_SUPPORTED, SILK_ENC_INVALID_CBR_SETTING, SILK_ENC_INVALID_COMPLEXITY_SETTING,
@@ -67,6 +34,7 @@ pub use self::errors_h::{
     SILK_ENC_INVALID_NUMBER_OF_CHANNELS_ERROR, SILK_ENC_PACKET_SIZE_NOT_SUPPORTED, SILK_NO_ERROR,
 };
 use crate::celt::celt::celt_fatal;
+use crate::silk::enc_API::silk_EncControlStruct;
 
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]

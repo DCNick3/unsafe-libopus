@@ -142,13 +142,6 @@ pub mod structs_h {
     use super::resampler_structs_h::silk_resampler_state_struct;
 }
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/control.h:32"]
-pub mod control_h {
-    #[c2rust::src_loc = "39:9"]
-    pub const FLAG_DECODE_NORMAL: libc::c_int = 0 as libc::c_int;
-    #[c2rust::src_loc = "41:9"]
-    pub const FLAG_DECODE_LBRR: libc::c_int = 2 as libc::c_int;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
     use super::structs_h::{silk_decoder_control, silk_decoder_state};
@@ -213,7 +206,6 @@ pub mod PLC_h {
         );
     }
 }
-pub use self::control_h::{FLAG_DECODE_LBRR, FLAG_DECODE_NORMAL};
 use self::main_h::{
     silk_CNG, silk_decode_core, silk_decode_indices, silk_decode_parameters, silk_decode_pulses,
 };
@@ -222,6 +214,7 @@ pub use self::resampler_structs_h::{
 };
 use crate::celt::celt::celt_fatal;
 use crate::celt::entdec::ec_dec;
+use crate::silk::dec_API::{FLAG_DECODE_LBRR, FLAG_DECODE_NORMAL};
 
 pub use self::structs_h::{
     silk_CNG_struct, silk_NLSF_CB_struct, silk_PLC_struct, silk_decoder_control,

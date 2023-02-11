@@ -1,36 +1,33 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/control.h:32"]
-pub mod control_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "46:9"]
-    pub struct silk_EncControlStruct {
-        pub nChannelsAPI: i32,
-        pub nChannelsInternal: i32,
-        pub API_sampleRate: i32,
-        pub maxInternalSampleRate: i32,
-        pub minInternalSampleRate: i32,
-        pub desiredInternalSampleRate: i32,
-        pub payloadSize_ms: libc::c_int,
-        pub bitRate: i32,
-        pub packetLossPercentage: libc::c_int,
-        pub complexity: libc::c_int,
-        pub useInBandFEC: libc::c_int,
-        pub LBRR_coded: libc::c_int,
-        pub useDTX: libc::c_int,
-        pub useCBR: libc::c_int,
-        pub maxBits: libc::c_int,
-        pub toMono: libc::c_int,
-        pub opusCanSwitch: libc::c_int,
-        pub reducedDependency: libc::c_int,
-        pub internalSampleRate: i32,
-        pub allowBandwidthSwitch: libc::c_int,
-        pub inWBmodeWithoutVariableLP: libc::c_int,
-        pub stereoWidth_Q14: libc::c_int,
-        pub switchReady: libc::c_int,
-        pub signalType: libc::c_int,
-        pub offset: libc::c_int,
-    }
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "46:9"]
+pub struct silk_EncControlStruct {
+    pub nChannelsAPI: i32,
+    pub nChannelsInternal: i32,
+    pub API_sampleRate: i32,
+    pub maxInternalSampleRate: i32,
+    pub minInternalSampleRate: i32,
+    pub desiredInternalSampleRate: i32,
+    pub payloadSize_ms: libc::c_int,
+    pub bitRate: i32,
+    pub packetLossPercentage: libc::c_int,
+    pub complexity: libc::c_int,
+    pub useInBandFEC: libc::c_int,
+    pub LBRR_coded: libc::c_int,
+    pub useDTX: libc::c_int,
+    pub useCBR: libc::c_int,
+    pub maxBits: libc::c_int,
+    pub toMono: libc::c_int,
+    pub opusCanSwitch: libc::c_int,
+    pub reducedDependency: libc::c_int,
+    pub internalSampleRate: i32,
+    pub allowBandwidthSwitch: libc::c_int,
+    pub inWBmodeWithoutVariableLP: libc::c_int,
+    pub stereoWidth_Q14: libc::c_int,
+    pub switchReady: libc::c_int,
+    pub signalType: libc::c_int,
+    pub offset: libc::c_int,
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:41"]
 pub mod structs_FLP_h {
@@ -325,7 +322,7 @@ pub mod SigProc_FIX_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:41"]
 pub mod main_h {
-    use super::control_h::silk_EncControlStruct;
+    use super::silk_EncControlStruct;
     use super::structs_h::{silk_encoder_state, stereo_enc_state};
     use crate::celt::entenc::ec_enc;
     extern "C" {
@@ -389,7 +386,7 @@ pub mod main_FLP_h {
         libc::c_int,
     ) -> libc::c_int = silk_encode_frame_FLP;
 
-    use super::control_h::silk_EncControlStruct;
+    use super::silk_EncControlStruct;
     use super::structs_FLP_h::silk_encoder_state_FLP;
     use crate::celt::entenc::ec_enc;
     extern "C" {
@@ -430,7 +427,6 @@ pub mod tables_h {
         pub static silk_Quantization_Offsets_Q10: [[i16; 2]; 2];
     }
 }
-pub use self::control_h::silk_EncControlStruct;
 pub use self::define_h::{
     CODE_CONDITIONALLY, CODE_INDEPENDENTLY, CODE_INDEPENDENTLY_NO_LTP_SCALING,
     ENCODER_NUM_CHANNELS, TYPE_NO_VOICE_ACTIVITY,
