@@ -1,33 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:32"]
-pub mod resampler_structs_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "38:16"]
-    pub struct _silk_resampler_state_struct {
-        pub sIIR: [i32; 6],
-        pub sFIR: C2RustUnnamed,
-        pub delayBuf: [i16; 48],
-        pub resampler_function: libc::c_int,
-        pub batchSize: libc::c_int,
-        pub invRatio_Q16: i32,
-        pub FIR_Order: libc::c_int,
-        pub FIR_Fracs: libc::c_int,
-        pub Fs_in_kHz: libc::c_int,
-        pub Fs_out_kHz: libc::c_int,
-        pub inputDelay: libc::c_int,
-        pub Coefs: *const i16,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "40:5"]
-    pub union C2RustUnnamed {
-        pub i32_0: [i32; 36],
-        pub i16_0: [i16; 36],
-    }
-    #[c2rust::src_loc = "38:1"]
-    pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:32"]
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]
@@ -193,7 +164,7 @@ pub mod structs_h {
         pub indices_LBRR: [SideInfoIndices; 3],
         pub pulses_LBRR: [[i8; 320]; 3],
     }
-    use super::resampler_structs_h::silk_resampler_state_struct;
+    use crate::silk::resampler_structs::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:32"]
 pub mod structs_FLP_h {
@@ -347,9 +318,6 @@ pub mod define_h {
 pub use self::define_h::{LTP_ORDER, MAX_SHAPE_LPC_ORDER, TYPE_VOICED};
 pub use self::float_cast_h::float2int;
 use self::main_h::{silk_NSQ_c, silk_NSQ_del_dec_c, silk_process_NLSFs, silk_quant_LTP_gains};
-pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
-};
 
 pub use self::structs_FLP_h::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,

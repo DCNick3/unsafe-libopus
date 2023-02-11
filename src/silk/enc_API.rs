@@ -237,36 +237,7 @@ pub mod structs_h {
         pub mode: libc::c_int,
         pub saved_fs_kHz: i32,
     }
-    use super::resampler_structs_h::silk_resampler_state_struct;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:36"]
-pub mod resampler_structs_h {
-    #[c2rust::src_loc = "38:1"]
-    pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "38:16"]
-    pub struct _silk_resampler_state_struct {
-        pub sIIR: [i32; 6],
-        pub sFIR: C2RustUnnamed,
-        pub delayBuf: [i16; 48],
-        pub resampler_function: libc::c_int,
-        pub batchSize: libc::c_int,
-        pub invRatio_Q16: i32,
-        pub FIR_Order: libc::c_int,
-        pub FIR_Fracs: libc::c_int,
-        pub Fs_in_kHz: libc::c_int,
-        pub Fs_out_kHz: libc::c_int,
-        pub inputDelay: libc::c_int,
-        pub Coefs: *const i16,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "40:5"]
-    pub union C2RustUnnamed {
-        pub i32_0: [i32; 36],
-        pub i16_0: [i16; 36],
-    }
+    use crate::silk::resampler_structs::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/errors.h:31"]
 pub mod errors_h {
@@ -309,7 +280,7 @@ pub mod internal {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:36"]
 pub mod SigProc_FIX_h {
-    use super::resampler_structs_h::silk_resampler_state_struct;
+    use crate::silk::resampler_structs::silk_resampler_state_struct;
     extern "C" {
         #[c2rust::src_loc = "72:1"]
         pub fn silk_resampler(
@@ -443,12 +414,10 @@ use self::main_h::{
     check_control_input, silk_control_SNR, silk_encode_indices, silk_encode_pulses,
     silk_stereo_LR_to_MS, silk_stereo_encode_mid_only, silk_stereo_encode_pred,
 };
-pub use self::resampler_structs_h::{
-    silk_resampler_state_struct, C2RustUnnamed, _silk_resampler_state_struct,
-};
 use crate::celt::celt::celt_fatal;
 use crate::celt::entcode::ec_tell;
 use crate::celt::entenc::{ec_enc, ec_enc_icdf, ec_enc_patch_initial_bits};
+use crate::silk::resampler_structs::silk_resampler_state_struct;
 
 pub use self::structs_FLP_h::{silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP};
 pub use self::structs_h::{

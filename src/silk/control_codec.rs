@@ -1,33 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:35"]
-pub mod resampler_structs_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "38:16"]
-    pub struct _silk_resampler_state_struct {
-        pub sIIR: [i32; 6],
-        pub sFIR: C2RustUnnamed,
-        pub delayBuf: [i16; 48],
-        pub resampler_function: libc::c_int,
-        pub batchSize: libc::c_int,
-        pub invRatio_Q16: i32,
-        pub FIR_Order: libc::c_int,
-        pub FIR_Fracs: libc::c_int,
-        pub Fs_in_kHz: libc::c_int,
-        pub Fs_out_kHz: libc::c_int,
-        pub inputDelay: libc::c_int,
-        pub Coefs: *const i16,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "40:5"]
-    pub union C2RustUnnamed {
-        pub i32_0: [i32; 36],
-        pub i16_0: [i16; 36],
-    }
-    #[c2rust::src_loc = "38:1"]
-    pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:35"]
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]
@@ -193,7 +164,7 @@ pub mod structs_h {
         pub indices_LBRR: [SideInfoIndices; 3],
         pub pulses_LBRR: [[i8; 320]; 3],
     }
-    use super::resampler_structs_h::silk_resampler_state_struct;
+    use crate::silk::resampler_structs::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:35"]
 pub mod structs_FLP_h {
@@ -230,7 +201,7 @@ pub mod SigProc_FIX_h {
     pub unsafe extern "C" fn silk_max_int(a: libc::c_int, b: libc::c_int) -> libc::c_int {
         return if a > b { a } else { b };
     }
-    use super::resampler_structs_h::silk_resampler_state_struct;
+    use crate::silk::resampler_structs::silk_resampler_state_struct;
     extern "C" {
         #[c2rust::src_loc = "62:1"]
         pub fn silk_resampler_init(
@@ -382,11 +353,9 @@ use self::main_h::silk_control_audio_bandwidth;
 pub use self::pitch_est_defines_h::{
     SILK_PE_MAX_COMPLEX, SILK_PE_MID_COMPLEX, SILK_PE_MIN_COMPLEX,
 };
-pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
-};
 use crate::celt::celt::celt_fatal;
 use crate::silk::enc_API::silk_EncControlStruct;
+use crate::silk::resampler_structs::silk_resampler_state_struct;
 
 pub use self::structs_FLP_h::{silk_encoder_state_FLP, silk_shape_state_FLP};
 pub use self::structs_h::{
@@ -485,7 +454,7 @@ unsafe extern "C" fn silk_setup_resamplers(
             let mut temp_resampler_state: [silk_resampler_state_struct; 1] =
                 [silk_resampler_state_struct {
                     sIIR: [0; 6],
-                    sFIR: C2RustUnnamed { i32_0: [0; 36] },
+                    sFIR: crate::silk::resampler_structs::sFIR_union { i32_0: [0; 36] },
                     delayBuf: [0; 48],
                     resampler_function: 0,
                     batchSize: 0,

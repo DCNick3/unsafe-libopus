@@ -152,9 +152,9 @@ mod silk {
     pub mod tables_other;
     pub mod tables_pitch_lag;
     pub mod tables_pulses_per_block;
-    pub mod tests {
-        // pub mod test_unit_LPC_inv_pred_gain;
-    } // mod tests
+    // stuff for structs that do not have a clear home
+    pub mod resampler_structs;
+    pub mod structs;
 } // mod silk
 mod src {
     pub mod analysis;

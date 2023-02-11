@@ -327,36 +327,7 @@ pub mod structs_h {
         pub predIx: [[[i8; 3]; 2]; 3],
         pub mid_only_flags: [i8; 3],
     }
-    use super::resampler_structs_h::silk_resampler_state_struct;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:51"]
-pub mod resampler_structs_h {
-    #[c2rust::src_loc = "38:1"]
-    pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "38:16"]
-    pub struct _silk_resampler_state_struct {
-        pub sIIR: [i32; 6],
-        pub sFIR: C2RustUnnamed_0,
-        pub delayBuf: [i16; 48],
-        pub resampler_function: libc::c_int,
-        pub batchSize: libc::c_int,
-        pub invRatio_Q16: i32,
-        pub FIR_Order: libc::c_int,
-        pub FIR_Fracs: libc::c_int,
-        pub Fs_in_kHz: libc::c_int,
-        pub Fs_out_kHz: libc::c_int,
-        pub inputDelay: libc::c_int,
-        pub Coefs: *const i16,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "40:5"]
-    pub union C2RustUnnamed_0 {
-        pub i32_0: [i32; 36],
-        pub i16_0: [i16; 36],
-    }
+    use crate::silk::resampler_structs::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:51"]
 pub mod structs_FLP_h {
@@ -704,9 +675,6 @@ pub use self::opus_defines_h::{
 pub use self::opus_private_h::{
     align, foo, C2RustUnnamed, MODE_CELT_ONLY, MODE_HYBRID, MODE_SILK_ONLY,
     OPUS_GET_VOICE_RATIO_REQUEST, OPUS_SET_FORCE_MODE_REQUEST, OPUS_SET_VOICE_RATIO_REQUEST,
-};
-pub use self::resampler_structs_h::{
-    silk_resampler_state_struct, C2RustUnnamed_0, _silk_resampler_state_struct,
 };
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};

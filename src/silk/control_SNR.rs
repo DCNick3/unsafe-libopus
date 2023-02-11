@@ -1,33 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_structs.h:32"]
-pub mod resampler_structs_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "38:16"]
-    pub struct _silk_resampler_state_struct {
-        pub sIIR: [i32; 6],
-        pub sFIR: C2RustUnnamed,
-        pub delayBuf: [i16; 48],
-        pub resampler_function: libc::c_int,
-        pub batchSize: libc::c_int,
-        pub invRatio_Q16: i32,
-        pub FIR_Order: libc::c_int,
-        pub FIR_Fracs: libc::c_int,
-        pub Fs_in_kHz: libc::c_int,
-        pub Fs_out_kHz: libc::c_int,
-        pub inputDelay: libc::c_int,
-        pub Coefs: *const i16,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "40:5"]
-    pub union C2RustUnnamed {
-        pub i32_0: [i32; 36],
-        pub i16_0: [i16; 36],
-    }
-    #[c2rust::src_loc = "38:1"]
-    pub type silk_resampler_state_struct = _silk_resampler_state_struct;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
 pub mod structs_h {
     #[derive(Copy, Clone)]
@@ -186,7 +157,7 @@ pub mod structs_h {
         pub indices_LBRR: [SideInfoIndices; 3],
         pub pulses_LBRR: [[i8; 320]; 3],
     }
-    use super::resampler_structs_h::silk_resampler_state_struct;
+    use crate::silk::resampler_structs::silk_resampler_state_struct;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/errors.h:32"]
 pub mod errors_h {
@@ -194,9 +165,6 @@ pub mod errors_h {
     pub const SILK_NO_ERROR: libc::c_int = 0 as libc::c_int;
 }
 pub use self::errors_h::SILK_NO_ERROR;
-pub use self::resampler_structs_h::{
-    _silk_resampler_state_struct, silk_resampler_state_struct, C2RustUnnamed,
-};
 
 pub use self::structs_h::{
     silk_LP_state, silk_NLSF_CB_struct, silk_VAD_state, silk_encoder_state, silk_nsq_state,
