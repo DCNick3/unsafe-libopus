@@ -35,51 +35,6 @@ pub mod stdarg_h {
     pub type va_list = __builtin_va_list;
     use super::internal::__builtin_va_list;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/mapping_matrix.h:38"]
-pub mod mapping_matrix_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "43:16"]
-    pub struct MappingMatrix {
-        pub rows: libc::c_int,
-        pub cols: libc::c_int,
-        pub gain: libc::c_int,
-    }
-    use super::arch_h::opus_val16;
-    extern "C" {
-        #[c2rust::src_loc = "51:1"]
-        pub fn mapping_matrix_get_size(rows: libc::c_int, cols: libc::c_int) -> i32;
-        #[c2rust::src_loc = "55:1"]
-        pub fn mapping_matrix_init(
-            matrix: *mut MappingMatrix,
-            rows: libc::c_int,
-            cols: libc::c_int,
-            gain: libc::c_int,
-            data: *const i16,
-            data_size: i32,
-        );
-        #[c2rust::src_loc = "75:1"]
-        pub fn mapping_matrix_multiply_channel_out_float(
-            matrix: *const MappingMatrix,
-            input: *const opus_val16,
-            input_row: libc::c_int,
-            input_rows: libc::c_int,
-            output: *mut libc::c_float,
-            output_rows: libc::c_int,
-            frame_size: libc::c_int,
-        );
-        #[c2rust::src_loc = "96:1"]
-        pub fn mapping_matrix_multiply_channel_out_short(
-            matrix: *const MappingMatrix,
-            input: *const opus_val16,
-            input_row: libc::c_int,
-            input_rows: libc::c_int,
-            output: *mut i16,
-            output_rows: libc::c_int,
-            frame_size: libc::c_int,
-        );
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:32"]
 pub mod opus_defines_h {
     #[c2rust::src_loc = "60:9"]
@@ -91,15 +46,15 @@ pub mod opus_defines_h {
 }
 pub use self::arch_h::{opus_val16, opus_val32};
 pub use self::internal::{__builtin_va_list, __va_list_tag};
-pub use self::mapping_matrix_h::{
-    mapping_matrix_get_size, mapping_matrix_init, mapping_matrix_multiply_channel_out_float,
-    mapping_matrix_multiply_channel_out_short, MappingMatrix,
-};
 pub use self::opus_defines_h::{OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_OK};
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 
 use crate::externs::memset;
+use crate::src::mapping_matrix::{
+    mapping_matrix_get_size, mapping_matrix_init, mapping_matrix_multiply_channel_out_float,
+    mapping_matrix_multiply_channel_out_short, MappingMatrix,
+};
 use crate::src::opus_multistream_decoder::{
     opus_multistream_decode_native, opus_multistream_decoder_ctl_va_list,
 };

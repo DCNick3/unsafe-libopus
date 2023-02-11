@@ -15,22 +15,19 @@ pub mod xmmintrin_h {
     #[cfg(target_arch = "x86_64")]
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/mapping_matrix.h:36"]
-pub mod mapping_matrix_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "43:16"]
-    pub struct MappingMatrix {
-        pub rows: libc::c_int,
-        pub cols: libc::c_int,
-        pub gain: libc::c_int,
-    }
-}
 pub use self::arch_h::{opus_val16, opus_val32, CELT_SIG_SCALE};
-pub use self::mapping_matrix_h::MappingMatrix;
 use crate::celt::celt::celt_fatal;
 use crate::celt::float_cast::FLOAT2INT16;
 use crate::src::opus_private::align;
+
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "43:16"]
+pub struct MappingMatrix {
+    pub rows: libc::c_int,
+    pub cols: libc::c_int,
+    pub gain: libc::c_int,
+}
 
 #[no_mangle]
 #[c2rust::src_loc = "40:1"]
