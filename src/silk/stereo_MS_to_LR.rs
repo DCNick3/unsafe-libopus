@@ -1,15 +1,5 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
-pub mod structs_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "112:9"]
-    pub struct stereo_dec_state {
-        pub pred_prev_Q13: [i16; 2],
-        pub sMid: [i16; 2],
-        pub sSide: [i16; 2],
-    }
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
     #[c2rust::src_loc = "45:9"]
@@ -24,8 +14,8 @@ pub mod define_h {
 }
 pub use self::define_h::STEREO_INTERP_LEN_MS;
 
-pub use self::structs_h::stereo_dec_state;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
+use crate::silk::structs::stereo_dec_state;
 
 use crate::externs::memcpy;
 #[no_mangle]

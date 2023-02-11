@@ -1,21 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
-pub mod structs_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "100:9"]
-    pub struct stereo_enc_state {
-        pub pred_prev_Q13: [i16; 2],
-        pub sMid: [i16; 2],
-        pub sSide: [i16; 2],
-        pub mid_side_amp_Q0: [i32; 4],
-        pub smth_width_Q14: i16,
-        pub width_prev_Q14: i16,
-        pub silent_side_len: i16,
-        pub predIx: [[[i8; 3]; 2]; 3],
-        pub mid_only_flags: [i8; 3],
-    }
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:32"]
 pub mod limits_h {
     #[c2rust::src_loc = "63:9"]
@@ -150,13 +133,11 @@ pub use self::internal::__CHAR_BIT__;
 pub use self::limits_h::CHAR_BIT;
 pub use self::macros_h::silk_CLZ32;
 use self::main_h::{silk_stereo_find_predictor, silk_stereo_quant_pred};
-
-pub use self::structs_h::stereo_enc_state;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
-
 pub use self::Inlines_h::silk_DIV32_varQ;
 pub use self::SigProc_FIX_h::silk_max_int;
 use crate::externs::memcpy;
+use crate::silk::structs::stereo_enc_state;
 #[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_stereo_LR_to_MS(

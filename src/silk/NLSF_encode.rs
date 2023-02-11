@@ -1,24 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
-pub mod structs_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "85:9"]
-    pub struct silk_NLSF_CB_struct {
-        pub nVectors: i16,
-        pub order: i16,
-        pub quantStepSize_Q16: i16,
-        pub invQuantStepSize_Q6: i16,
-        pub CB1_NLSF_Q8: *const u8,
-        pub CB1_Wght_Q9: *const i16,
-        pub CB1_iCDF: *const u8,
-        pub pred_Q8: *const u8,
-        pub ec_sel: *const u8,
-        pub ec_iCDF: *const u8,
-        pub ec_Rates_Q5: *const u8,
-        pub deltaMin_Q15: *const i16,
-    }
-}
 
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:32"]
 pub mod limits_h {
@@ -64,7 +44,7 @@ pub mod SigProc_FIX_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
-    use super::structs_h::silk_NLSF_CB_struct;
+    use crate::silk::structs::silk_NLSF_CB_struct;
     extern "C" {
         #[c2rust::src_loc = "383:1"]
         pub fn silk_NLSF_decode(
@@ -178,13 +158,12 @@ pub use self::internal::__CHAR_BIT__;
 pub use self::limits_h::CHAR_BIT;
 pub use self::macros_h::silk_CLZ32;
 use self::main_h::{silk_NLSF_VQ, silk_NLSF_decode, silk_NLSF_del_dec_quant, silk_NLSF_unpack};
-use crate::celt::celt::celt_fatal;
-
-pub use self::structs_h::silk_NLSF_CB_struct;
-
 pub use self::Inlines_h::silk_DIV32_varQ;
 use self::SigProc_FIX_h::{silk_NLSF_stabilize, silk_insertion_sort_increasing, silk_lin2log};
+use crate::celt::celt::celt_fatal;
 use crate::externs::memcpy;
+use crate::silk::structs::silk_NLSF_CB_struct;
+
 #[no_mangle]
 #[c2rust::src_loc = "38:1"]
 pub unsafe extern "C" fn silk_NLSF_encode(

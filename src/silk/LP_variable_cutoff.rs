@@ -1,16 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:38"]
-pub mod structs_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "77:9"]
-    pub struct silk_LP_state {
-        pub In_LP_State: [i32; 2],
-        pub transition_frame_no: i32,
-        pub mode: libc::c_int,
-        pub saved_fs_kHz: i32,
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:38"]
 pub mod SigProc_FIX_h {
     extern "C" {
@@ -44,12 +32,11 @@ pub mod define_h {
     pub const TRANSITION_INT_NUM: libc::c_int = 5 as libc::c_int;
 }
 pub use self::define_h::{TRANSITION_INT_NUM, TRANSITION_NA, TRANSITION_NB};
-
-pub use self::structs_h::silk_LP_state;
 use self::tables_h::{silk_Transition_LP_A_Q28, silk_Transition_LP_B_Q28};
-
 use self::SigProc_FIX_h::silk_biquad_alt_stride1;
 use crate::externs::memcpy;
+use crate::silk::structs::silk_LP_state;
+
 #[inline]
 #[c2rust::src_loc = "41:1"]
 unsafe extern "C" fn silk_LP_interpolate_filter_taps(

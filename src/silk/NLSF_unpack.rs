@@ -1,26 +1,6 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/structs.h:32"]
-pub mod structs_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "85:9"]
-    pub struct silk_NLSF_CB_struct {
-        pub nVectors: i16,
-        pub order: i16,
-        pub quantStepSize_Q16: i16,
-        pub invQuantStepSize_Q6: i16,
-        pub CB1_NLSF_Q8: *const u8,
-        pub CB1_Wght_Q9: *const i16,
-        pub CB1_iCDF: *const u8,
-        pub pred_Q8: *const u8,
-        pub ec_sel: *const u8,
-        pub ec_iCDF: *const u8,
-        pub ec_Rates_Q5: *const u8,
-        pub deltaMin_Q15: *const i16,
-    }
-}
 
-pub use self::structs_h::silk_NLSF_CB_struct;
+use crate::silk::structs::silk_NLSF_CB_struct;
 
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
