@@ -1,27 +1,7 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:34"]
-pub mod structs_FLP_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "43:9"]
-    pub struct silk_shape_state_FLP {
-        pub LastGainIndex: i8,
-        pub HarmShapeGain_smth: libc::c_float,
-        pub Tilt_smth: libc::c_float,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "52:9"]
-    pub struct silk_encoder_state_FLP {
-        pub sCmn: silk_encoder_state,
-        pub sShape: silk_shape_state_FLP,
-        pub x_buf: [libc::c_float; 720],
-        pub LTPCorr: libc::c_float,
-    }
-    use crate::silk::structs::silk_encoder_state;
-}
-pub use self::structs_FLP_h::{silk_encoder_state_FLP, silk_shape_state_FLP};
+
 use crate::externs::memset;
+use crate::silk::float::structs_FLP::silk_encoder_state_FLP;
 use crate::silk::lin2log::silk_lin2log;
 use crate::silk::VAD::silk_VAD_Init;
 

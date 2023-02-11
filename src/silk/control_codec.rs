@@ -6,27 +6,6 @@ pub mod xmmintrin_h {
     #[cfg(target_arch = "x86_64")]
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:35"]
-pub mod structs_FLP_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "43:9"]
-    pub struct silk_shape_state_FLP {
-        pub LastGainIndex: i8,
-        pub HarmShapeGain_smth: libc::c_float,
-        pub Tilt_smth: libc::c_float,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "52:9"]
-    pub struct silk_encoder_state_FLP {
-        pub sCmn: silk_encoder_state,
-        pub sShape: silk_shape_state_FLP,
-        pub x_buf: [libc::c_float; 720],
-        pub LTPCorr: libc::c_float,
-    }
-    use crate::silk::structs::silk_encoder_state;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/errors.h:35"]
 pub mod errors_h {
     #[c2rust::src_loc = "52:9"]
@@ -81,7 +60,6 @@ pub mod typedef_h {
     pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
 }
 use self::errors_h::{SILK_ENC_PACKET_SIZE_NOT_SUPPORTED, SILK_NO_ERROR};
-pub use self::structs_FLP_h::{silk_encoder_state_FLP, silk_shape_state_FLP};
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 pub use self::SigProc_FLP_h::{silk_float2short_array, silk_short2float_array};
 use crate::celt::celt::celt_fatal;
@@ -92,6 +70,7 @@ use crate::silk::define::{
     SUB_FRAME_LENGTH_MS, TYPE_NO_VOICE_ACTIVITY,
 };
 use crate::silk::enc_API::silk_EncControlStruct;
+use crate::silk::float::structs_FLP::{silk_encoder_state_FLP, silk_shape_state_FLP};
 use crate::silk::pitch_est_tables::{
     SILK_PE_MAX_COMPLEX, SILK_PE_MID_COMPLEX, SILK_PE_MIN_COMPLEX,
 };

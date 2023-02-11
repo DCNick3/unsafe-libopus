@@ -29,42 +29,6 @@ pub struct silk_EncControlStruct {
     pub signalType: libc::c_int,
     pub offset: libc::c_int,
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:41"]
-pub mod structs_FLP_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "95:9"]
-    pub struct silk_encoder {
-        pub state_Fxx: [silk_encoder_state_FLP; 2],
-        pub sStereo: stereo_enc_state,
-        pub nBitsUsedLBRR: i32,
-        pub nBitsExceeded: i32,
-        pub nChannelsAPI: libc::c_int,
-        pub nChannelsInternal: libc::c_int,
-        pub nPrevChannelsInternal: libc::c_int,
-        pub timeSinceSwitchAllowed_ms: libc::c_int,
-        pub allowBandwidthSwitch: libc::c_int,
-        pub prev_decode_only_middle: libc::c_int,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "52:9"]
-    pub struct silk_encoder_state_FLP {
-        pub sCmn: silk_encoder_state,
-        pub sShape: silk_shape_state_FLP,
-        pub x_buf: [libc::c_float; 720],
-        pub LTPCorr: libc::c_float,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "43:9"]
-    pub struct silk_shape_state_FLP {
-        pub LastGainIndex: i8,
-        pub HarmShapeGain_smth: libc::c_float,
-        pub Tilt_smth: libc::c_float,
-    }
-    use crate::silk::structs::{silk_encoder_state, stereo_enc_state};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/errors.h:31"]
 pub mod errors_h {
     #[c2rust::src_loc = "46:9"]
@@ -90,8 +54,8 @@ pub mod main_FLP_h {
     ) -> libc::c_int = silk_encode_frame_FLP;
 
     use super::silk_EncControlStruct;
-    use super::structs_FLP_h::silk_encoder_state_FLP;
     use crate::celt::entenc::ec_enc;
+    use crate::silk::float::structs_FLP::silk_encoder_state_FLP;
     extern "C" {
         #[c2rust::src_loc = "80:1"]
         pub fn silk_control_encoder(
@@ -126,7 +90,6 @@ pub use self::main_FLP_h::{
     silk_HP_variable_cutoff, silk_control_encoder, silk_encode_do_VAD_FLP, silk_encode_do_VAD_Fxx,
     silk_encode_frame_FLP, silk_encode_frame_Fxx, silk_init_encoder,
 };
-pub use self::structs_FLP_h::{silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP};
 use crate::celt::celt::celt_fatal;
 use crate::celt::entcode::ec_tell;
 use crate::celt::entenc::{ec_enc, ec_enc_icdf, ec_enc_patch_initial_bits};
@@ -139,6 +102,7 @@ use crate::silk::define::{
 };
 use crate::silk::encode_indices::silk_encode_indices;
 use crate::silk::encode_pulses::silk_encode_pulses;
+use crate::silk::float::structs_FLP::{silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP};
 use crate::silk::resampler::silk_resampler;
 use crate::silk::resampler_structs::silk_resampler_state_struct;
 use crate::silk::stereo_LR_to_MS::silk_stereo_LR_to_MS;

@@ -51,42 +51,6 @@ pub mod xmmintrin_h {
     #[cfg(target_arch = "x86_64")]
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:51"]
-pub mod structs_FLP_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "52:9"]
-    pub struct silk_encoder_state_FLP {
-        pub sCmn: silk_encoder_state,
-        pub sShape: silk_shape_state_FLP,
-        pub x_buf: [libc::c_float; 720],
-        pub LTPCorr: libc::c_float,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "43:9"]
-    pub struct silk_shape_state_FLP {
-        pub LastGainIndex: i8,
-        pub HarmShapeGain_smth: libc::c_float,
-        pub Tilt_smth: libc::c_float,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "95:9"]
-    pub struct silk_encoder {
-        pub state_Fxx: [silk_encoder_state_FLP; 2],
-        pub sStereo: stereo_enc_state,
-        pub nBitsUsedLBRR: i32,
-        pub nBitsExceeded: i32,
-        pub nChannelsAPI: libc::c_int,
-        pub nChannelsInternal: libc::c_int,
-        pub nPrevChannelsInternal: libc::c_int,
-        pub timeSinceSwitchAllowed_ms: libc::c_int,
-        pub allowBandwidthSwitch: libc::c_int,
-        pub prev_decode_only_middle: libc::c_int,
-    }
-    use crate::silk::structs::{silk_encoder_state, stereo_enc_state};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:33"]
 pub mod opus_defines_h {
     #[c2rust::src_loc = "130:9"]
@@ -256,7 +220,6 @@ pub use self::opus_defines_h::{
 };
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
-pub use self::structs_FLP_h::{silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP};
 use crate::celt::celt::celt_fatal;
 use crate::celt::celt::{
     CELT_GET_MODE_REQUEST, CELT_SET_ANALYSIS_REQUEST, CELT_SET_CHANNELS_REQUEST,
@@ -281,6 +244,7 @@ use crate::silk::define::{
 };
 use crate::silk::enc_API::silk_EncControlStruct;
 use crate::silk::enc_API::{silk_Encode, silk_Get_Encoder_Size, silk_InitEncoder};
+use crate::silk::float::structs_FLP::silk_encoder;
 use crate::silk::lin2log::silk_lin2log;
 use crate::silk::log2lin::silk_log2lin;
 use crate::src::analysis::{

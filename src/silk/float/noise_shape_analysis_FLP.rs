@@ -1,49 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:32"]
-pub mod structs_FLP_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "43:9"]
-    pub struct silk_shape_state_FLP {
-        pub LastGainIndex: i8,
-        pub HarmShapeGain_smth: libc::c_float,
-        pub Tilt_smth: libc::c_float,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "52:9"]
-    pub struct silk_encoder_state_FLP {
-        pub sCmn: silk_encoder_state,
-        pub sShape: silk_shape_state_FLP,
-        pub x_buf: [libc::c_float; 720],
-        pub LTPCorr: libc::c_float,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "64:9"]
-    pub struct silk_encoder_control_FLP {
-        pub Gains: [libc::c_float; 4],
-        pub PredCoef: [[libc::c_float; 16]; 2],
-        pub LTPCoef: [libc::c_float; 20],
-        pub LTP_scale: libc::c_float,
-        pub pitchL: [libc::c_int; 4],
-        pub AR: [libc::c_float; 96],
-        pub LF_MA_shp: [libc::c_float; 4],
-        pub LF_AR_shp: [libc::c_float; 4],
-        pub Tilt: [libc::c_float; 4],
-        pub HarmShapeGain: [libc::c_float; 4],
-        pub Lambda: libc::c_float,
-        pub input_quality: libc::c_float,
-        pub coding_quality: libc::c_float,
-        pub predGain: libc::c_float,
-        pub LTPredCodGain: libc::c_float,
-        pub ResNrg: [libc::c_float; 4],
-        pub GainsUnq_Q16: [i32; 4],
-        pub lastGainIndexPrev: i8,
-    }
-    use crate::silk::structs::silk_encoder_state;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/main_FLP.h:32"]
 pub mod main_FLP_h {
     extern "C" {
@@ -129,16 +85,15 @@ pub mod tuning_parameters_h {
     pub const SUBFR_SMTH_COEF: libc::c_float = 0.4f32;
 }
 use self::main_FLP_h::{silk_apply_sine_window_FLP, silk_warped_autocorrelation_FLP};
-use crate::silk::define::{MAX_SHAPE_LPC_ORDER, MIN_QGAIN_DB, TYPE_VOICED, USE_HARM_SHAPING};
-
-pub use self::structs_FLP_h::{
-    silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
-};
 pub use self::tuning_parameters_h::{
     BG_SNR_DECR_dB, HARM_SNR_INCR_dB, BANDWIDTH_EXPANSION, ENERGY_VARIATION_THRESHOLD_QNT_OFFSET,
     FIND_PITCH_WHITE_NOISE_FRACTION, HARMONIC_SHAPING, HARM_HP_NOISE_COEF,
     HIGH_RATE_OR_LOW_QUALITY_HARMONIC_SHAPING, HP_NOISE_COEF, LOW_FREQ_SHAPING,
     LOW_QUALITY_LOW_FREQ_SHAPING_DECR, SHAPE_WHITE_NOISE_FRACTION, SUBFR_SMTH_COEF,
+};
+use crate::silk::define::{MAX_SHAPE_LPC_ORDER, MIN_QGAIN_DB, TYPE_VOICED, USE_HARM_SHAPING};
+use crate::silk::float::structs_FLP::{
+    silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
 };
 
 pub use self::SigProc_FLP_h::{

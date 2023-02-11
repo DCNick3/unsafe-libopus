@@ -1,49 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:32"]
-pub mod structs_FLP_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "43:9"]
-    pub struct silk_shape_state_FLP {
-        pub LastGainIndex: i8,
-        pub HarmShapeGain_smth: libc::c_float,
-        pub Tilt_smth: libc::c_float,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "52:9"]
-    pub struct silk_encoder_state_FLP {
-        pub sCmn: silk_encoder_state,
-        pub sShape: silk_shape_state_FLP,
-        pub x_buf: [libc::c_float; 720],
-        pub LTPCorr: libc::c_float,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "64:9"]
-    pub struct silk_encoder_control_FLP {
-        pub Gains: [libc::c_float; 4],
-        pub PredCoef: [[libc::c_float; 16]; 2],
-        pub LTPCoef: [libc::c_float; 20],
-        pub LTP_scale: libc::c_float,
-        pub pitchL: [libc::c_int; 4],
-        pub AR: [libc::c_float; 96],
-        pub LF_MA_shp: [libc::c_float; 4],
-        pub LF_AR_shp: [libc::c_float; 4],
-        pub Tilt: [libc::c_float; 4],
-        pub HarmShapeGain: [libc::c_float; 4],
-        pub Lambda: libc::c_float,
-        pub input_quality: libc::c_float,
-        pub coding_quality: libc::c_float,
-        pub predGain: libc::c_float,
-        pub LTPredCodGain: libc::c_float,
-        pub ResNrg: [libc::c_float; 4],
-        pub GainsUnq_Q16: [i32; 4],
-        pub lastGainIndexPrev: i8,
-    }
-    use crate::silk::structs::silk_encoder_state;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:32"]
 pub mod SigProc_FLP_h {
     #[inline]
@@ -68,9 +24,6 @@ pub mod tuning_parameters_h {
     pub const LAMBDA_QUANT_OFFSET: libc::c_float = 0.8f32;
 }
 
-pub use self::structs_FLP_h::{
-    silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
-};
 pub use self::tuning_parameters_h::{
     LAMBDA_CODING_QUALITY, LAMBDA_DELAYED_DECISIONS, LAMBDA_INPUT_QUALITY, LAMBDA_OFFSET,
     LAMBDA_QUANT_OFFSET, LAMBDA_SPEECH_ACT,
@@ -78,6 +31,9 @@ pub use self::tuning_parameters_h::{
 pub use self::SigProc_FLP_h::silk_sigmoid;
 use crate::externs::memcpy;
 use crate::silk::define::{CODE_CONDITIONALLY, TYPE_VOICED};
+use crate::silk::float::structs_FLP::{
+    silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
+};
 use crate::silk::gain_quant::silk_gains_quant;
 use crate::silk::tables_other::silk_Quantization_Offsets_Q10;
 

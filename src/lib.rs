@@ -115,6 +115,7 @@ mod silk {
         pub mod scale_vector_FLP;
         pub mod schur_FLP;
         pub mod sort_FLP;
+        pub mod structs_FLP;
         pub mod warped_autocorrelation_FLP;
         pub mod wrappers_FLP;
     } // mod float
