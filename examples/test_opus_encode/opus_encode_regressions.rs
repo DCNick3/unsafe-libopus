@@ -6,19 +6,6 @@ use libopus_unsafe::{
     opus_multistream_encoder_destroy, opus_multistream_surround_encoder_create, OpusMSEncoder,
 };
 
-#[c2rust::header_src = "/usr/include/assert.h:38"]
-pub mod assert_h {
-    extern "C" {
-        #[c2rust::src_loc = "67:1"]
-        pub fn __assert_fail(
-            __assertion: *const libc::c_char,
-            __file: *const libc::c_char,
-            __line: libc::c_uint,
-            __function: *const libc::c_char,
-        ) -> !;
-    }
-}
-use self::assert_h::__assert_fail;
 use libopus_unsafe::{
     opus_encode, opus_encoder_create, opus_encoder_ctl, opus_encoder_destroy, OpusEncoder,
 };
@@ -383,18 +370,7 @@ unsafe extern "C" fn celt_ec_internal_error() -> libc::c_int {
         data.as_mut_ptr(),
         2460 as libc::c_int,
     );
-    if err > 0 as libc::c_int {
-    } else {
-        __assert_fail(
-            b"err > 0\0" as *const u8 as *const libc::c_char,
-            b"tests/opus_encode_regressions.c\0" as *const u8 as *const libc::c_char,
-            109 as libc::c_int as libc::c_uint,
-            (*::core::mem::transmute::<&[u8; 33], &[libc::c_char; 33]>(
-                b"int celt_ec_internal_error(void)\0",
-            ))
-            .as_ptr(),
-        );
-    }
+    assert!(err > 0);
     opus_multistream_encoder_ctl(enc, 4024 as libc::c_int, 3002 as libc::c_int);
     opus_multistream_encoder_ctl(enc, 4006 as libc::c_int, 0 as libc::c_int);
     opus_multistream_encoder_ctl(enc, 4020 as libc::c_int, 1 as libc::c_int);
@@ -577,18 +553,7 @@ unsafe extern "C" fn celt_ec_internal_error() -> libc::c_int {
         data.as_mut_ptr(),
         2460 as libc::c_int,
     );
-    if err > 0 as libc::c_int {
-    } else {
-        __assert_fail(
-            b"err > 0\0" as *const u8 as *const libc::c_char,
-            b"tests/opus_encode_regressions.c\0" as *const u8 as *const libc::c_char,
-            147 as libc::c_int as libc::c_uint,
-            (*::core::mem::transmute::<&[u8; 33], &[libc::c_char; 33]>(
-                b"int celt_ec_internal_error(void)\0",
-            ))
-            .as_ptr(),
-        );
-    }
+    assert!(err > 0);
     opus_multistream_encoder_ctl(enc, 4024 as libc::c_int, 3002 as libc::c_int);
     opus_multistream_encoder_ctl(enc, 4006 as libc::c_int, 0 as libc::c_int);
     opus_multistream_encoder_ctl(enc, 4020 as libc::c_int, 1 as libc::c_int);
@@ -771,18 +736,7 @@ unsafe extern "C" fn celt_ec_internal_error() -> libc::c_int {
         data.as_mut_ptr(),
         2460 as libc::c_int,
     );
-    if err > 0 as libc::c_int {
-    } else {
-        __assert_fail(
-            b"err > 0\0" as *const u8 as *const libc::c_char,
-            b"tests/opus_encode_regressions.c\0" as *const u8 as *const libc::c_char,
-            185 as libc::c_int as libc::c_uint,
-            (*::core::mem::transmute::<&[u8; 33], &[libc::c_char; 33]>(
-                b"int celt_ec_internal_error(void)\0",
-            ))
-            .as_ptr(),
-        );
-    }
+    assert!(err > 0);
     opus_multistream_encoder_ctl(enc, 4024 as libc::c_int, 3002 as libc::c_int);
     opus_multistream_encoder_ctl(enc, 4006 as libc::c_int, 0 as libc::c_int);
     opus_multistream_encoder_ctl(enc, 4020 as libc::c_int, 1 as libc::c_int);
@@ -965,18 +919,7 @@ unsafe extern "C" fn celt_ec_internal_error() -> libc::c_int {
         data.as_mut_ptr(),
         2460 as libc::c_int,
     );
-    if err > 0 as libc::c_int {
-    } else {
-        __assert_fail(
-            b"err > 0\0" as *const u8 as *const libc::c_char,
-            b"tests/opus_encode_regressions.c\0" as *const u8 as *const libc::c_char,
-            223 as libc::c_int as libc::c_uint,
-            (*::core::mem::transmute::<&[u8; 33], &[libc::c_char; 33]>(
-                b"int celt_ec_internal_error(void)\0",
-            ))
-            .as_ptr(),
-        );
-    }
+    assert!(err > 0);
     opus_multistream_encoder_ctl(enc, 4024 as libc::c_int, 3002 as libc::c_int);
     opus_multistream_encoder_ctl(enc, 4006 as libc::c_int, 0 as libc::c_int);
     opus_multistream_encoder_ctl(enc, 4020 as libc::c_int, 1 as libc::c_int);
@@ -1159,18 +1102,7 @@ unsafe extern "C" fn celt_ec_internal_error() -> libc::c_int {
         data.as_mut_ptr(),
         2460 as libc::c_int,
     );
-    if err > 0 as libc::c_int {
-    } else {
-        __assert_fail(
-            b"err > 0\0" as *const u8 as *const libc::c_char,
-            b"tests/opus_encode_regressions.c\0" as *const u8 as *const libc::c_char,
-            259 as libc::c_int as libc::c_uint,
-            (*::core::mem::transmute::<&[u8; 33], &[libc::c_char; 33]>(
-                b"int celt_ec_internal_error(void)\0",
-            ))
-            .as_ptr(),
-        );
-    }
+    assert!(err > 0);
     opus_multistream_encoder_ctl(enc, 4024 as libc::c_int, 3001 as libc::c_int);
     opus_multistream_encoder_ctl(enc, 4006 as libc::c_int, 0 as libc::c_int);
     opus_multistream_encoder_ctl(enc, 4020 as libc::c_int, 1 as libc::c_int);
@@ -1233,18 +1165,7 @@ unsafe extern "C" fn celt_ec_internal_error() -> libc::c_int {
         data.as_mut_ptr(),
         2460 as libc::c_int,
     );
-    if err > 0 as libc::c_int {
-    } else {
-        __assert_fail(
-            b"err > 0\0" as *const u8 as *const libc::c_char,
-            b"tests/opus_encode_regressions.c\0" as *const u8 as *const libc::c_char,
-            284 as libc::c_int as libc::c_uint,
-            (*::core::mem::transmute::<&[u8; 33], &[libc::c_char; 33]>(
-                b"int celt_ec_internal_error(void)\0",
-            ))
-            .as_ptr(),
-        );
-    }
+    assert!(err > 0);
     opus_multistream_encoder_destroy(enc);
     0 as libc::c_int
 }
@@ -6642,18 +6563,7 @@ unsafe extern "C" fn mscbr_encode_fail10() -> libc::c_int {
         data.as_mut_ptr(),
         627300 as libc::c_int,
     );
-    if err > 0 as libc::c_int {
-    } else {
-        __assert_fail(
-            b"err > 0\0" as *const u8 as *const libc::c_char,
-            b"tests/opus_encode_regressions.c\0" as *const u8 as *const libc::c_char,
-            337 as libc::c_int as libc::c_uint,
-            (*::core::mem::transmute::<&[u8; 30], &[libc::c_char; 30]>(
-                b"int mscbr_encode_fail10(void)\0",
-            ))
-            .as_ptr(),
-        );
-    }
+    assert!(err > 0);
     opus_multistream_encoder_destroy(enc);
     0 as libc::c_int
 }
@@ -10728,18 +10638,7 @@ unsafe extern "C" fn mscbr_encode_fail() -> libc::c_int {
         data.as_mut_ptr(),
         472320 as libc::c_int,
     );
-    if err > 0 as libc::c_int {
-    } else {
-        __assert_fail(
-            b"err > 0\0" as *const u8 as *const libc::c_char,
-            b"tests/opus_encode_regressions.c\0" as *const u8 as *const libc::c_char,
-            387 as libc::c_int as libc::c_uint,
-            (*::core::mem::transmute::<&[u8; 28], &[libc::c_char; 28]>(
-                b"int mscbr_encode_fail(void)\0",
-            ))
-            .as_ptr(),
-        );
-    }
+    assert!(err > 0);
     opus_multistream_encoder_destroy(enc);
     0 as libc::c_int
 }
@@ -13663,18 +13562,7 @@ unsafe extern "C" fn surround_analysis_uninit() -> libc::c_int {
         data.as_mut_ptr(),
         7380 as libc::c_int,
     );
-    if err > 0 as libc::c_int {
-    } else {
-        __assert_fail(
-            b"err > 0\0" as *const u8 as *const libc::c_char,
-            b"tests/opus_encode_regressions.c\0" as *const u8 as *const libc::c_char,
-            743 as libc::c_int as libc::c_uint,
-            (*::core::mem::transmute::<&[u8; 35], &[libc::c_char; 35]>(
-                b"int surround_analysis_uninit(void)\0",
-            ))
-            .as_ptr(),
-        );
-    }
+    assert!(err > 0);
     opus_multistream_encoder_ctl(enc, 4024 as libc::c_int, 3002 as libc::c_int);
     opus_multistream_encoder_ctl(enc, 4006 as libc::c_int, 1 as libc::c_int);
     opus_multistream_encoder_ctl(enc, 4020 as libc::c_int, 0 as libc::c_int);
@@ -18018,18 +17906,7 @@ unsafe extern "C" fn surround_analysis_uninit() -> libc::c_int {
         data.as_mut_ptr(),
         7380 as libc::c_int,
     );
-    if err > 0 as libc::c_int {
-    } else {
-        __assert_fail(
-            b"err > 0\0" as *const u8 as *const libc::c_char,
-            b"tests/opus_encode_regressions.c\0" as *const u8 as *const libc::c_char,
-            888 as libc::c_int as libc::c_uint,
-            (*::core::mem::transmute::<&[u8; 35], &[libc::c_char; 35]>(
-                b"int surround_analysis_uninit(void)\0",
-            ))
-            .as_ptr(),
-        );
-    }
+    assert!(err > 0);
     opus_multistream_encoder_destroy(enc);
     0 as libc::c_int
 }
@@ -24781,18 +24658,7 @@ unsafe extern "C" fn ec_enc_shrink_assert() -> libc::c_int {
         data.as_mut_ptr(),
         2000 as libc::c_int,
     );
-    if data_len > 0 as libc::c_int {
-    } else {
-        __assert_fail(
-            b"data_len > 0\0" as *const u8 as *const libc::c_char,
-            b"tests/opus_encode_regressions.c\0" as *const u8 as *const libc::c_char,
-            938 as libc::c_int as libc::c_uint,
-            (*::core::mem::transmute::<&[u8; 31], &[libc::c_char; 31]>(
-                b"int ec_enc_shrink_assert(void)\0",
-            ))
-            .as_ptr(),
-        );
-    }
+    assert!(data_len > 0);
     opus_encoder_ctl(enc, 4024 as libc::c_int, 3001 as libc::c_int);
     opus_encoder_ctl(enc, 4042 as libc::c_int, 1 as libc::c_int);
     opus_encoder_ctl(enc, 4008 as libc::c_int, 1104 as libc::c_int);
@@ -24805,18 +24671,7 @@ unsafe extern "C" fn ec_enc_shrink_assert() -> libc::c_int {
         data.as_mut_ptr(),
         122 as libc::c_int,
     );
-    if data_len > 0 as libc::c_int {
-    } else {
-        __assert_fail(
-            b"data_len > 0\0" as *const u8 as *const libc::c_char,
-            b"tests/opus_encode_regressions.c\0" as *const u8 as *const libc::c_char,
-            946 as libc::c_int as libc::c_uint,
-            (*::core::mem::transmute::<&[u8; 31], &[libc::c_char; 31]>(
-                b"int ec_enc_shrink_assert(void)\0",
-            ))
-            .as_ptr(),
-        );
-    }
+    assert!(data_len > 0);
     opus_encoder_ctl(enc, 4024 as libc::c_int, 3002 as libc::c_int);
     opus_encoder_ctl(enc, 4002 as libc::c_int, 27000 as libc::c_int);
     data_len = opus_encode(
@@ -24826,18 +24681,7 @@ unsafe extern "C" fn ec_enc_shrink_assert() -> libc::c_int {
         data.as_mut_ptr(),
         122 as libc::c_int,
     );
-    if data_len > 0 as libc::c_int {
-    } else {
-        __assert_fail(
-            b"data_len > 0\0" as *const u8 as *const libc::c_char,
-            b"tests/opus_encode_regressions.c\0" as *const u8 as *const libc::c_char,
-            951 as libc::c_int as libc::c_uint,
-            (*::core::mem::transmute::<&[u8; 31], &[libc::c_char; 31]>(
-                b"int ec_enc_shrink_assert(void)\0",
-            ))
-            .as_ptr(),
-        );
-    }
+    assert!(data_len > 0);
     opus_encoder_destroy(enc);
     0 as libc::c_int
 }
@@ -25827,18 +25671,7 @@ unsafe extern "C" fn ec_enc_shrink_assert2() -> libc::c_int {
         data.as_mut_ptr(),
         2000 as libc::c_int,
     );
-    if data_len > 0 as libc::c_int {
-    } else {
-        __assert_fail(
-            b"data_len > 0\0" as *const u8 as *const libc::c_char,
-            b"tests/opus_encode_regressions.c\0" as *const u8 as *const libc::c_char,
-            973 as libc::c_int as libc::c_uint,
-            (*::core::mem::transmute::<&[u8; 32], &[libc::c_char; 32]>(
-                b"int ec_enc_shrink_assert2(void)\0",
-            ))
-            .as_ptr(),
-        );
-    }
+    assert!(data_len > 0);
     opus_encoder_ctl(enc, 4024 as libc::c_int, 3002 as libc::c_int);
     static mut pcm_0: [libc::c_short; 480] = [
         32767 as libc::c_int as libc::c_short,
@@ -26329,18 +26162,7 @@ unsafe extern "C" fn ec_enc_shrink_assert2() -> libc::c_int {
         data.as_mut_ptr(),
         19 as libc::c_int,
     );
-    if data_len > 0 as libc::c_int {
-    } else {
-        __assert_fail(
-            b"data_len > 0\0" as *const u8 as *const libc::c_char,
-            b"tests/opus_encode_regressions.c\0" as *const u8 as *const libc::c_char,
-            983 as libc::c_int as libc::c_uint,
-            (*::core::mem::transmute::<&[u8; 32], &[libc::c_char; 32]>(
-                b"int ec_enc_shrink_assert2(void)\0",
-            ))
-            .as_ptr(),
-        );
-    }
+    assert!(data_len > 0);
     opus_encoder_destroy(enc);
     0 as libc::c_int
 }
@@ -27490,18 +27312,7 @@ unsafe extern "C" fn silk_gain_assert() -> libc::c_int {
         data.as_mut_ptr(),
         1000 as libc::c_int,
     );
-    if data_len > 0 as libc::c_int {
-    } else {
-        __assert_fail(
-            b"data_len > 0\0" as *const u8 as *const libc::c_char,
-            b"tests/opus_encode_regressions.c\0" as *const u8 as *const libc::c_char,
-            1012 as libc::c_int as libc::c_uint,
-            (*::core::mem::transmute::<&[u8; 27], &[libc::c_char; 27]>(
-                b"int silk_gain_assert(void)\0",
-            ))
-            .as_ptr(),
-        );
-    }
+    assert!(data_len > 0);
     opus_encoder_ctl(enc, 4006 as libc::c_int, 0 as libc::c_int);
     opus_encoder_ctl(enc, 4010 as libc::c_int, 0 as libc::c_int);
     opus_encoder_ctl(enc, 4004 as libc::c_int, 1102 as libc::c_int);
@@ -27513,18 +27324,7 @@ unsafe extern "C" fn silk_gain_assert() -> libc::c_int {
         data.as_mut_ptr(),
         1000 as libc::c_int,
     );
-    if data_len > 0 as libc::c_int {
-    } else {
-        __assert_fail(
-            b"data_len > 0\0" as *const u8 as *const libc::c_char,
-            b"tests/opus_encode_regressions.c\0" as *const u8 as *const libc::c_char,
-            1019 as libc::c_int as libc::c_uint,
-            (*::core::mem::transmute::<&[u8; 27], &[libc::c_char; 27]>(
-                b"int silk_gain_assert(void)\0",
-            ))
-            .as_ptr(),
-        );
-    }
+    assert!(data_len > 0);
     opus_encoder_destroy(enc);
     0 as libc::c_int
 }
