@@ -10,6 +10,10 @@ pub use self::arch_h::{opus_val16, opus_val32};
 use crate::celt::celt::celt_fatal;
 use crate::celt::pitch::{celt_pitch_xcorr_c, xcorr_kernel_c};
 use crate::externs::memset;
+
+#[c2rust::src_loc = "38:9"]
+pub const LPC_ORDER: libc::c_int = 24 as libc::c_int;
+
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn _celt_lpc(

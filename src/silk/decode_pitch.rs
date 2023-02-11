@@ -1,33 +1,10 @@
-use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/pitch_est_defines.h:36"]
-pub mod pitch_est_defines_h {
-    #[c2rust::src_loc = "39:9"]
-    pub const PE_MAX_NB_SUBFR: libc::c_int = 4 as libc::c_int;
-    #[c2rust::src_loc = "59:9"]
-    pub const PE_NB_CBKS_STAGE2_EXT: libc::c_int = 11 as libc::c_int;
-    #[c2rust::src_loc = "61:9"]
-    pub const PE_NB_CBKS_STAGE3_MAX: libc::c_int = 34 as libc::c_int;
-    #[c2rust::src_loc = "65:9"]
-    pub const PE_NB_CBKS_STAGE3_10MS: libc::c_int = 12 as libc::c_int;
-    #[c2rust::src_loc = "66:9"]
-    pub const PE_NB_CBKS_STAGE2_10MS: libc::c_int = 3 as libc::c_int;
-    extern "C" {
-        #[c2rust::src_loc = "77:24"]
-        pub static silk_CB_lags_stage2: [[i8; 11]; 4];
-        #[c2rust::src_loc = "78:24"]
-        pub static silk_CB_lags_stage3: [[i8; 34]; 4];
-        #[c2rust::src_loc = "83:24"]
-        pub static silk_CB_lags_stage2_10_ms: [[i8; 3]; 2];
-        #[c2rust::src_loc = "84:24"]
-        pub static silk_CB_lags_stage3_10_ms: [[i8; 12]; 2];
-    }
-}
-pub use self::pitch_est_defines_h::{
+use crate::celt::celt::celt_fatal;
+use crate::silk::pitch_est_tables::{
     silk_CB_lags_stage2, silk_CB_lags_stage2_10_ms, silk_CB_lags_stage3, silk_CB_lags_stage3_10_ms,
     PE_MAX_NB_SUBFR, PE_NB_CBKS_STAGE2_10MS, PE_NB_CBKS_STAGE2_EXT, PE_NB_CBKS_STAGE3_10MS,
     PE_NB_CBKS_STAGE3_MAX,
 };
-use crate::celt::celt::celt_fatal;
+use ::libc;
 
 #[no_mangle]
 #[c2rust::src_loc = "38:1"]

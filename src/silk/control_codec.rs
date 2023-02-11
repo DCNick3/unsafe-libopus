@@ -80,19 +80,7 @@ pub mod typedef_h {
     #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/pitch_est_defines.h:40"]
-pub mod pitch_est_defines_h {
-    #[c2rust::src_loc = "72:9"]
-    pub const SILK_PE_MIN_COMPLEX: libc::c_int = 0 as libc::c_int;
-    #[c2rust::src_loc = "73:9"]
-    pub const SILK_PE_MID_COMPLEX: libc::c_int = 1 as libc::c_int;
-    #[c2rust::src_loc = "74:9"]
-    pub const SILK_PE_MAX_COMPLEX: libc::c_int = 2 as libc::c_int;
-}
-pub use self::errors_h::{SILK_ENC_PACKET_SIZE_NOT_SUPPORTED, SILK_NO_ERROR};
-pub use self::pitch_est_defines_h::{
-    SILK_PE_MAX_COMPLEX, SILK_PE_MID_COMPLEX, SILK_PE_MIN_COMPLEX,
-};
+use self::errors_h::{SILK_ENC_PACKET_SIZE_NOT_SUPPORTED, SILK_NO_ERROR};
 pub use self::structs_FLP_h::{silk_encoder_state_FLP, silk_shape_state_FLP};
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 pub use self::SigProc_FLP_h::{silk_float2short_array, silk_short2float_array};
@@ -104,6 +92,9 @@ use crate::silk::define::{
     SUB_FRAME_LENGTH_MS, TYPE_NO_VOICE_ACTIVITY,
 };
 use crate::silk::enc_API::silk_EncControlStruct;
+use crate::silk::pitch_est_tables::{
+    SILK_PE_MAX_COMPLEX, SILK_PE_MID_COMPLEX, SILK_PE_MIN_COMPLEX,
+};
 use crate::silk::resampler::{silk_resampler, silk_resampler_init};
 use crate::silk::resampler_structs::silk_resampler_state_struct;
 use crate::silk::structs::{silk_encoder_state, silk_nsq_state};

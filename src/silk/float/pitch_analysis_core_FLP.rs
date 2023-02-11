@@ -82,64 +82,7 @@ pub mod typedef_h {
     #[c2rust::src_loc = "45:9"]
     pub const silk_int16_MIN: libc::c_int = 0x8000 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/pitch_est_defines.h:37"]
-pub mod pitch_est_defines_h {
-    #[c2rust::src_loc = "39:9"]
-    pub const PE_MAX_NB_SUBFR: libc::c_int = 4 as libc::c_int;
-    #[c2rust::src_loc = "40:9"]
-    pub const PE_SUBFR_LENGTH_MS: libc::c_int = 5 as libc::c_int;
-    #[c2rust::src_loc = "42:9"]
-    pub const PE_LTP_MEM_LENGTH_MS: libc::c_int = 4 as libc::c_int * PE_SUBFR_LENGTH_MS;
-    #[c2rust::src_loc = "49:9"]
-    pub const PE_MAX_LAG_MS: libc::c_int = 18 as libc::c_int;
-    #[c2rust::src_loc = "50:9"]
-    pub const PE_MIN_LAG_MS: libc::c_int = 2 as libc::c_int;
-    #[c2rust::src_loc = "56:9"]
-    pub const PE_NB_STAGE3_LAGS: libc::c_int = 5 as libc::c_int;
-    #[c2rust::src_loc = "58:9"]
-    pub const PE_NB_CBKS_STAGE2: libc::c_int = 3 as libc::c_int;
-    #[c2rust::src_loc = "59:9"]
-    pub const PE_NB_CBKS_STAGE2_EXT: libc::c_int = 11 as libc::c_int;
-    #[c2rust::src_loc = "61:9"]
-    pub const PE_NB_CBKS_STAGE3_MAX: libc::c_int = 34 as libc::c_int;
-    #[c2rust::src_loc = "65:9"]
-    pub const PE_NB_CBKS_STAGE3_10MS: libc::c_int = 12 as libc::c_int;
-    #[c2rust::src_loc = "66:9"]
-    pub const PE_NB_CBKS_STAGE2_10MS: libc::c_int = 3 as libc::c_int;
-    #[c2rust::src_loc = "68:9"]
-    pub const PE_SHORTLAG_BIAS: libc::c_float = 0.2f32;
-    #[c2rust::src_loc = "69:9"]
-    pub const PE_PREVLAG_BIAS: libc::c_float = 0.2f32;
-    #[c2rust::src_loc = "70:9"]
-    pub const PE_FLATCONTOUR_BIAS: libc::c_float = 0.05f32;
-    #[c2rust::src_loc = "72:9"]
-    pub const SILK_PE_MIN_COMPLEX: libc::c_int = 0 as libc::c_int;
-    extern "C" {
-        #[c2rust::src_loc = "77:24"]
-        pub static silk_CB_lags_stage2: [[i8; 11]; 4];
-        #[c2rust::src_loc = "78:24"]
-        pub static silk_CB_lags_stage3: [[i8; 34]; 4];
-        #[c2rust::src_loc = "79:24"]
-        pub static silk_Lag_range_stage3: [[[i8; 2]; 4]; 3];
-        #[c2rust::src_loc = "80:24"]
-        pub static silk_nb_cbk_searchs_stage3: [i8; 3];
-        #[c2rust::src_loc = "83:24"]
-        pub static silk_CB_lags_stage2_10_ms: [[i8; 3]; 2];
-        #[c2rust::src_loc = "84:24"]
-        pub static silk_CB_lags_stage3_10_ms: [[i8; 12]; 2];
-        #[c2rust::src_loc = "85:24"]
-        pub static silk_Lag_range_stage3_10_ms: [[i8; 2]; 2];
-    }
-}
 use self::arch_h::opus_val32;
-pub use self::pitch_est_defines_h::{
-    silk_CB_lags_stage2, silk_CB_lags_stage2_10_ms, silk_CB_lags_stage3, silk_CB_lags_stage3_10_ms,
-    silk_Lag_range_stage3, silk_Lag_range_stage3_10_ms, silk_nb_cbk_searchs_stage3,
-    PE_FLATCONTOUR_BIAS, PE_LTP_MEM_LENGTH_MS, PE_MAX_LAG_MS, PE_MAX_NB_SUBFR, PE_MIN_LAG_MS,
-    PE_NB_CBKS_STAGE2, PE_NB_CBKS_STAGE2_10MS, PE_NB_CBKS_STAGE2_EXT, PE_NB_CBKS_STAGE3_10MS,
-    PE_NB_CBKS_STAGE3_MAX, PE_NB_STAGE3_LAGS, PE_PREVLAG_BIAS, PE_SHORTLAG_BIAS,
-    PE_SUBFR_LENGTH_MS, SILK_PE_MIN_COMPLEX,
-};
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 pub use self::SigProc_FLP_h::{
     silk_energy_FLP, silk_float2short_array, silk_inner_product_FLP,
@@ -148,6 +91,14 @@ pub use self::SigProc_FLP_h::{
 use crate::celt::celt::celt_fatal;
 use crate::celt::pitch::celt_pitch_xcorr_c;
 use crate::externs::memset;
+use crate::silk::pitch_est_tables::{
+    silk_CB_lags_stage2, silk_CB_lags_stage2_10_ms, silk_CB_lags_stage3, silk_CB_lags_stage3_10_ms,
+    silk_Lag_range_stage3, silk_Lag_range_stage3_10_ms, silk_nb_cbk_searchs_stage3,
+    PE_FLATCONTOUR_BIAS, PE_LTP_MEM_LENGTH_MS, PE_MAX_LAG_MS, PE_MAX_NB_SUBFR, PE_MIN_LAG_MS,
+    PE_NB_CBKS_STAGE2, PE_NB_CBKS_STAGE2_10MS, PE_NB_CBKS_STAGE2_EXT, PE_NB_CBKS_STAGE3_10MS,
+    PE_NB_CBKS_STAGE3_MAX, PE_NB_STAGE3_LAGS, PE_PREVLAG_BIAS, PE_SHORTLAG_BIAS,
+    PE_SUBFR_LENGTH_MS, SILK_PE_MIN_COMPLEX,
+};
 use crate::silk::resampler_down2::silk_resampler_down2;
 use crate::silk::resampler_down2_3::silk_resampler_down2_3;
 use crate::silk::SigProc_FIX::{silk_max_int, silk_min_int};

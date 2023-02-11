@@ -81,49 +81,9 @@ pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
     pub const NULL: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/celt_lpc.h:51"]
-pub mod celt_lpc_h {
-    #[c2rust::src_loc = "38:9"]
-    pub const LPC_ORDER: libc::c_int = 24 as libc::c_int;
-    use super::arch_h::{opus_val16, opus_val32};
-    extern "C" {
-        #[c2rust::src_loc = "40:1"]
-        pub fn _celt_lpc(_lpc: *mut opus_val16, ac: *const opus_val32, p: libc::c_int);
-        #[c2rust::src_loc = "42:1"]
-        pub fn celt_fir_c(
-            x: *const opus_val16,
-            num: *const opus_val16,
-            y: *mut opus_val16,
-            N: libc::c_int,
-            ord: libc::c_int,
-            arch: libc::c_int,
-        );
-        #[c2rust::src_loc = "55:1"]
-        pub fn celt_iir(
-            x: *const opus_val32,
-            den: *const opus_val16,
-            y: *mut opus_val32,
-            N: libc::c_int,
-            ord: libc::c_int,
-            mem: *mut opus_val16,
-            arch: libc::c_int,
-        );
-        #[c2rust::src_loc = "63:1"]
-        pub fn _celt_autocorr(
-            x: *const opus_val16,
-            ac: *mut opus_val32,
-            window: *const opus_val16,
-            overlap: libc::c_int,
-            lag: libc::c_int,
-            n: libc::c_int,
-            arch: libc::c_int,
-        ) -> libc::c_int;
-    }
-}
 pub use self::arch_h::{
     celt_ener, celt_norm, celt_sig, opus_val16, opus_val32, CELT_SIG_SCALE, Q15ONE, VERY_SMALL,
 };
-pub use self::celt_lpc_h::{_celt_autocorr, _celt_lpc, celt_fir_c, celt_iir, LPC_ORDER};
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::opus_defines_h::{
@@ -141,6 +101,7 @@ use crate::celt::celt::{
     CELT_GET_AND_CLEAR_ERROR_REQUEST, CELT_GET_MODE_REQUEST, CELT_SET_CHANNELS_REQUEST,
     CELT_SET_END_BAND_REQUEST, CELT_SET_SIGNALLING_REQUEST, CELT_SET_START_BAND_REQUEST,
 };
+use crate::celt::celt_lpc::{_celt_autocorr, _celt_lpc, celt_fir_c, celt_iir, LPC_ORDER};
 use crate::celt::entcode::{ec_get_error, ec_tell, ec_tell_frac, BITRES};
 use crate::celt::entdec::{
     ec_dec, ec_dec_bit_logp, ec_dec_bits, ec_dec_icdf, ec_dec_init, ec_dec_uint,

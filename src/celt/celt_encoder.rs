@@ -86,13 +86,6 @@ pub mod opus_defines_h {
     #[c2rust::src_loc = "144:9"]
     pub const OPUS_SET_PACKET_LOSS_PERC_REQUEST: libc::c_int = 4014;
 }
-#[c2rust::header_src = "/usr/include/stdlib.h:37"]
-pub mod stdlib_h {
-    extern "C" {
-        #[c2rust::src_loc = "861:12"]
-        pub fn abs(_: libc::c_int) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:37"]
 pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
@@ -135,9 +128,6 @@ use crate::celt::quant_bands::{
     amp2Log2, eMeans, quant_coarse_energy, quant_energy_finalise, quant_fine_energy,
 };
 use crate::celt::rate::clt_compute_allocation;
-
-use self::stdlib_h::abs;
-
 use crate::externs::{memcpy, memmove, memset};
 use crate::silk::macros::EC_CLZ0;
 use crate::src::analysis::AnalysisInfo;
@@ -987,19 +977,21 @@ unsafe extern "C" fn tf_analysis(
     sel = 0 as libc::c_int;
     while sel < 2 as libc::c_int {
         cost0 = *importance.offset(0 as libc::c_int as isize)
-            * abs(*metric.as_mut_ptr().offset(0 as libc::c_int as isize)
+            * (*metric.as_mut_ptr().offset(0 as libc::c_int as isize)
                 - 2 as libc::c_int
                     * tf_select_table[LM as usize][(4 as libc::c_int * isTransient
                         + 2 as libc::c_int * sel
                         + 0 as libc::c_int)
-                        as usize] as libc::c_int);
+                        as usize] as libc::c_int)
+                .abs();
         cost1 = *importance.offset(0 as libc::c_int as isize)
-            * abs(*metric.as_mut_ptr().offset(0 as libc::c_int as isize)
+            * (*metric.as_mut_ptr().offset(0 as libc::c_int as isize)
                 - 2 as libc::c_int
                     * tf_select_table[LM as usize][(4 as libc::c_int * isTransient
                         + 2 as libc::c_int * sel
                         + 1 as libc::c_int)
                         as usize] as libc::c_int)
+                .abs()
             + (if isTransient != 0 {
                 0 as libc::c_int
             } else {
@@ -1021,20 +1013,22 @@ unsafe extern "C" fn tf_analysis(
             };
             cost0 = curr0
                 + *importance.offset(i as isize)
-                    * abs(*metric.as_mut_ptr().offset(i as isize)
+                    * (*metric.as_mut_ptr().offset(i as isize)
                         - 2 as libc::c_int
                             * tf_select_table[LM as usize][(4 as libc::c_int * isTransient
                                 + 2 as libc::c_int * sel
                                 + 0 as libc::c_int)
-                                as usize] as libc::c_int);
+                                as usize] as libc::c_int)
+                        .abs();
             cost1 = curr1
                 + *importance.offset(i as isize)
-                    * abs(*metric.as_mut_ptr().offset(i as isize)
+                    * (*metric.as_mut_ptr().offset(i as isize)
                         - 2 as libc::c_int
                             * tf_select_table[LM as usize][(4 as libc::c_int * isTransient
                                 + 2 as libc::c_int * sel
                                 + 1 as libc::c_int)
-                                as usize] as libc::c_int);
+                                as usize] as libc::c_int)
+                        .abs();
             i += 1;
         }
         cost0 = if cost0 < cost1 { cost0 } else { cost1 };
@@ -1045,17 +1039,19 @@ unsafe extern "C" fn tf_analysis(
         tf_select = 1 as libc::c_int;
     }
     cost0 = *importance.offset(0 as libc::c_int as isize)
-        * abs(*metric.as_mut_ptr().offset(0 as libc::c_int as isize)
+        * (*metric.as_mut_ptr().offset(0 as libc::c_int as isize)
             - 2 as libc::c_int
                 * tf_select_table[LM as usize][(4 as libc::c_int * isTransient
                     + 2 as libc::c_int * tf_select
-                    + 0 as libc::c_int) as usize] as libc::c_int);
+                    + 0 as libc::c_int) as usize] as libc::c_int)
+            .abs();
     cost1 = *importance.offset(0 as libc::c_int as isize)
-        * abs(*metric.as_mut_ptr().offset(0 as libc::c_int as isize)
+        * (*metric.as_mut_ptr().offset(0 as libc::c_int as isize)
             - 2 as libc::c_int
                 * tf_select_table[LM as usize][(4 as libc::c_int * isTransient
                     + 2 as libc::c_int * tf_select
                     + 1 as libc::c_int) as usize] as libc::c_int)
+            .abs()
         + (if isTransient != 0 {
             0 as libc::c_int
         } else {
@@ -1087,20 +1083,22 @@ unsafe extern "C" fn tf_analysis(
         }
         cost0 = curr0_0
             + *importance.offset(i as isize)
-                * abs(*metric.as_mut_ptr().offset(i as isize)
+                * (*metric.as_mut_ptr().offset(i as isize)
                     - 2 as libc::c_int
                         * tf_select_table[LM as usize][(4 as libc::c_int * isTransient
                             + 2 as libc::c_int * tf_select
                             + 0 as libc::c_int)
-                            as usize] as libc::c_int);
+                            as usize] as libc::c_int)
+                    .abs();
         cost1 = curr1_0
             + *importance.offset(i as isize)
-                * abs(*metric.as_mut_ptr().offset(i as isize)
+                * (*metric.as_mut_ptr().offset(i as isize)
                     - 2 as libc::c_int
                         * tf_select_table[LM as usize][(4 as libc::c_int * isTransient
                             + 2 as libc::c_int * tf_select
                             + 1 as libc::c_int)
-                            as usize] as libc::c_int);
+                            as usize] as libc::c_int)
+                    .abs();
         i += 1;
     }
     *tf_res.offset((len - 1 as libc::c_int) as isize) = if cost0 < cost1 {
@@ -1993,7 +1991,7 @@ unsafe extern "C" fn run_prefilter(
         gain1 = gain1 * (*analysis).max_pitch_ratio;
     }
     pf_threshold = 0.2f32;
-    if abs(pitch_index - (*st).prefilter_period) * 10 as libc::c_int > pitch_index {
+    if (pitch_index - (*st).prefilter_period).abs() * 10 as libc::c_int > pitch_index {
         pf_threshold += 0.2f32;
     }
     if nbAvailableBytes < 25 as libc::c_int {

@@ -15,28 +15,10 @@ pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
     pub const NULL: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/celt_lpc.h:43"]
-pub mod celt_lpc_h {
-    use super::arch_h::{opus_val16, opus_val32};
-    extern "C" {
-        #[c2rust::src_loc = "40:1"]
-        pub fn _celt_lpc(_lpc: *mut opus_val16, ac: *const opus_val32, p: libc::c_int);
-        #[c2rust::src_loc = "63:1"]
-        pub fn _celt_autocorr(
-            x: *const opus_val16,
-            ac: *mut opus_val32,
-            window: *const opus_val16,
-            overlap: libc::c_int,
-            lag: libc::c_int,
-            n: libc::c_int,
-            arch: libc::c_int,
-        ) -> libc::c_int;
-    }
-}
 pub use self::arch_h::{celt_sig, opus_val16, opus_val32, Q15ONE};
-use self::celt_lpc_h::{_celt_autocorr, _celt_lpc};
 pub use self::stddef_h::NULL;
 use crate::celt::celt::celt_fatal;
+use crate::celt::celt_lpc::{_celt_autocorr, _celt_lpc};
 use crate::celt::entcode::celt_udiv;
 
 #[inline]

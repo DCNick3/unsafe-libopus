@@ -1,6 +1,7 @@
 use crate::celt::entcode::{ec_get_buffer, ec_range_bytes, ec_tell, ec_tell_frac};
 use crate::celt::entdec::{ec_dec, ec_dec_bit_logp, ec_dec_bits, ec_dec_icdf};
 use crate::celt::entenc::{ec_enc, ec_enc_bit_logp, ec_enc_bits, ec_enc_icdf};
+use crate::celt::laplace::{ec_laplace_decode, ec_laplace_encode};
 use crate::celt::modes::OpusCustomMode;
 use crate::celt::rate::MAX_FINE_BITS;
 use ::libc;
@@ -15,34 +16,12 @@ pub mod arch_h {
     pub type celt_ener = libc::c_float;
 }
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/laplace.h:34"]
-pub mod laplace_h {
-    use crate::celt::entdec::ec_dec;
-    use crate::celt::entenc::ec_enc;
-
-    extern "C" {
-        #[c2rust::src_loc = "39:1"]
-        pub fn ec_laplace_encode(
-            enc: *mut ec_enc,
-            value: *mut libc::c_int,
-            fs: libc::c_uint,
-            decay: libc::c_int,
-        );
-        #[c2rust::src_loc = "48:1"]
-        pub fn ec_laplace_decode(
-            dec: *mut ec_dec,
-            fs: libc::c_uint,
-            decay: libc::c_int,
-        ) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/stack_alloc.h:39"]
 pub mod stack_alloc_h {
     #[c2rust::src_loc = "99:9"]
     pub const ALLOC_NONE: libc::c_int = 1 as libc::c_int;
 }
 pub use self::arch_h::{celt_ener, opus_val16, opus_val32};
-use self::laplace_h::{ec_laplace_decode, ec_laplace_encode};
 pub use self::stack_alloc_h::ALLOC_NONE;
 
 use crate::externs::memcpy;
