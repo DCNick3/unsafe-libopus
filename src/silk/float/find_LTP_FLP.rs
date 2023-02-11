@@ -5,7 +5,7 @@ use crate::silk::float::scale_vector_FLP::silk_scale_vector_FLP;
 use ::libc;
 
 #[c2rust::src_loc = "35:1"]
-pub unsafe extern "C" fn silk_find_LTP_FLP(
+pub unsafe fn silk_find_LTP_FLP(
     XX: *mut libc::c_float,
     xX: *mut libc::c_float,
     mut r_ptr: *const libc::c_float,

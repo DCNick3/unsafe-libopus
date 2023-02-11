@@ -10,7 +10,7 @@ use crate::silk::tables_other::silk_lsb_iCDF;
 use crate::silk::tables_pulses_per_block::{silk_pulses_per_block_iCDF, silk_rate_levels_iCDF};
 
 #[c2rust::src_loc = "37:1"]
-pub unsafe extern "C" fn silk_decode_pulses(
+pub unsafe fn silk_decode_pulses(
     psRangeDec: *mut ec_dec,
     pulses: *mut i16,
     signalType: libc::c_int,

@@ -1,6 +1,6 @@
 use ::libc;
 #[c2rust::src_loc = "36:1"]
-pub unsafe extern "C" fn silk_resampler_private_AR2(
+pub unsafe fn silk_resampler_private_AR2(
     S: *mut i32,
     out_Q8: *mut i32,
     in_0: *const i16,

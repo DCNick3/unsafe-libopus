@@ -21,7 +21,7 @@ use crate::silk::Inlines::silk_SQRT_APPROX;
 use crate::silk::SigProc_FIX::{silk_max_32, silk_max_int, silk_min_int};
 
 #[c2rust::src_loc = "46:1"]
-pub unsafe extern "C" fn silk_VAD_Init(mut psSilk_VAD: *mut silk_VAD_state) -> libc::c_int {
+pub unsafe fn silk_VAD_Init(mut psSilk_VAD: *mut silk_VAD_state) -> libc::c_int {
     let mut b: libc::c_int = 0;
     let ret: libc::c_int = 0 as libc::c_int;
     memset(
@@ -58,7 +58,7 @@ static mut tiltWeights: [i32; 4] = [
     -(12000 as libc::c_int),
 ];
 #[c2rust::src_loc = "82:1"]
-pub unsafe extern "C" fn silk_VAD_GetSA_Q8_c(
+pub unsafe fn silk_VAD_GetSA_Q8_c(
     mut psEncC: *mut silk_encoder_state,
     pIn: *const i16,
 ) -> libc::c_int {
@@ -310,7 +310,7 @@ pub unsafe extern "C" fn silk_VAD_GetSA_Q8_c(
 }
 #[inline]
 #[c2rust::src_loc = "301:1"]
-unsafe extern "C" fn silk_VAD_GetNoiseLevels(pX: *const i32, mut psSilk_VAD: *mut silk_VAD_state) {
+unsafe fn silk_VAD_GetNoiseLevels(pX: *const i32, mut psSilk_VAD: *mut silk_VAD_state) {
     let mut k: libc::c_int = 0;
     let mut nl: i32 = 0;
     let mut nrg: i32 = 0;

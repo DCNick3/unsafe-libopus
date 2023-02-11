@@ -20,7 +20,7 @@ use libc_stdhandle::{stderr, stdout};
 pub mod test_opus_common_h {
     #[inline]
     #[c2rust::src_loc = "28:1"]
-    pub unsafe extern "C" fn deb2_impl(
+    pub unsafe fn deb2_impl(
         mut _t: *mut libc::c_uchar,
         mut _p: *mut *mut libc::c_uchar,
         mut _k: libc::c_int,
@@ -50,7 +50,7 @@ pub mod test_opus_common_h {
     }
     #[inline]
     #[c2rust::src_loc = "44:1"]
-    pub unsafe extern "C" fn debruijn2(mut _k: libc::c_int, mut _res: *mut libc::c_uchar) {
+    pub unsafe fn debruijn2(mut _k: libc::c_int, mut _res: *mut libc::c_uchar) {
         let mut p: *mut libc::c_uchar = std::ptr::null_mut::<libc::c_uchar>();
         let mut t: *mut libc::c_uchar = std::ptr::null_mut::<libc::c_uchar>();
         t = malloc(
@@ -75,7 +75,7 @@ pub mod test_opus_common_h {
     pub static mut Rw: u32 = 0;
     #[inline]
     #[c2rust::src_loc = "57:1"]
-    pub unsafe extern "C" fn fast_rand() -> u32 {
+    pub unsafe fn fast_rand() -> u32 {
         Rz = (36969 as libc::c_int as libc::c_uint)
             .wrapping_mul(Rz & 65535 as libc::c_int as libc::c_uint)
             .wrapping_add(Rz >> 16 as libc::c_int);
@@ -88,10 +88,7 @@ pub mod test_opus_common_h {
     pub static mut iseed: u32 = 0;
     #[inline]
     #[c2rust::src_loc = "66:1"]
-    pub unsafe extern "C" fn _test_failed(
-        mut file: *const libc::c_char,
-        mut line: libc::c_int,
-    ) -> ! {
+    pub unsafe fn _test_failed(mut file: *const libc::c_char, mut line: libc::c_int) -> ! {
         fprintf(
             stderr(),
             b"\n ***************************************************\n\0" as *const u8
@@ -145,7 +142,7 @@ use libopus_unsafe::{
 };
 
 #[c2rust::src_loc = "51:1"]
-pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c_int {
+pub unsafe fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c_int {
     static mut fsv: [i32; 5] = [
         48000 as libc::c_int,
         24000 as libc::c_int,
@@ -1169,7 +1166,7 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
     0 as libc::c_int
 }
 #[c2rust::src_loc = "384:1"]
-pub unsafe extern "C" fn test_soft_clip() {
+pub unsafe fn test_soft_clip() {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     let mut x: [libc::c_float; 1024] = [0.; 1024];

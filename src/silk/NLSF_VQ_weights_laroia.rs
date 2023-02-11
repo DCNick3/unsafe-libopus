@@ -9,7 +9,7 @@ use crate::celt::celt::celt_fatal;
 use crate::silk::SigProc_FIX::{silk_max_int, silk_min_int};
 
 #[c2rust::src_loc = "42:1"]
-pub unsafe extern "C" fn silk_NLSF_VQ_weights_laroia(
+pub unsafe fn silk_NLSF_VQ_weights_laroia(
     pNLSFW_Q_OUT: *mut i16,
     pNLSF_Q15: *const i16,
     D: libc::c_int,

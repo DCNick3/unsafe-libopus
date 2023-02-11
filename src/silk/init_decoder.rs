@@ -3,7 +3,7 @@ use ::libc;
 pub mod cpu_support_h {
     #[inline]
     #[c2rust::src_loc = "65:1"]
-    pub unsafe extern "C" fn opus_select_arch() -> libc::c_int {
+    pub unsafe fn opus_select_arch() -> libc::c_int {
         return 0 as libc::c_int;
     }
 }
@@ -15,7 +15,7 @@ use crate::silk::CNG::silk_CNG_Reset;
 use crate::silk::PLC::silk_PLC_Reset;
 
 #[c2rust::src_loc = "37:1"]
-pub unsafe extern "C" fn silk_init_decoder(mut psDec: *mut silk_decoder_state) -> libc::c_int {
+pub unsafe fn silk_init_decoder(mut psDec: *mut silk_decoder_state) -> libc::c_int {
     memset(
         psDec as *mut libc::c_void,
         0 as libc::c_int,

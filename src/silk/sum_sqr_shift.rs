@@ -4,7 +4,7 @@ use crate::silk::macros::silk_CLZ32;
 use crate::silk::SigProc_FIX::silk_max_32;
 
 #[c2rust::src_loc = "36:1"]
-pub unsafe extern "C" fn silk_sum_sqr_shift(
+pub unsafe fn silk_sum_sqr_shift(
     energy: *mut i32,
     shift: *mut libc::c_int,
     x: *const i16,

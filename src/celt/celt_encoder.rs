@@ -182,7 +182,7 @@ pub struct OpusCustomEncoder {
     pub in_mem: [celt_sig; 1],
 }
 #[c2rust::src_loc = "130:1"]
-pub unsafe extern "C" fn celt_encoder_get_size(channels: libc::c_int) -> libc::c_int {
+pub unsafe fn celt_encoder_get_size(channels: libc::c_int) -> libc::c_int {
     let mode: *mut OpusCustomMode = opus_custom_mode_create(
         48000 as libc::c_int,
         960 as libc::c_int,
@@ -192,7 +192,7 @@ pub unsafe extern "C" fn celt_encoder_get_size(channels: libc::c_int) -> libc::c
 }
 #[inline]
 #[c2rust::src_loc = "136:1"]
-unsafe extern "C" fn opus_custom_encoder_get_size(
+unsafe fn opus_custom_encoder_get_size(
     mode: *const OpusCustomMode,
     channels: libc::c_int,
 ) -> libc::c_int {
@@ -212,7 +212,7 @@ unsafe extern "C" fn opus_custom_encoder_get_size(
     return size;
 }
 #[c2rust::src_loc = "166:1"]
-unsafe extern "C" fn opus_custom_encoder_init_arch(
+unsafe fn opus_custom_encoder_init_arch(
     mut st: *mut OpusCustomEncoder,
     mode: *const OpusCustomMode,
     channels: libc::c_int,
@@ -249,7 +249,7 @@ unsafe extern "C" fn opus_custom_encoder_init_arch(
     return OPUS_OK;
 }
 #[c2rust::src_loc = "207:1"]
-pub unsafe extern "C" fn celt_encoder_init(
+pub unsafe fn celt_encoder_init(
     mut st: *mut OpusCustomEncoder,
     sampling_rate: i32,
     channels: libc::c_int,
@@ -273,7 +273,7 @@ pub unsafe extern "C" fn celt_encoder_init(
     return OPUS_OK;
 }
 #[c2rust::src_loc = "227:1"]
-unsafe extern "C" fn transient_analysis(
+unsafe fn transient_analysis(
     in_0: *const opus_val32,
     len: libc::c_int,
     C: libc::c_int,
@@ -564,7 +564,7 @@ unsafe extern "C" fn transient_analysis(
     return is_transient;
 }
 #[c2rust::src_loc = "412:1"]
-unsafe extern "C" fn patch_transient_decision(
+unsafe fn patch_transient_decision(
     newE: *mut opus_val16,
     oldE: *mut opus_val16,
     nbEBands: libc::c_int,
@@ -667,7 +667,7 @@ unsafe extern "C" fn patch_transient_decision(
     return (mean_diff > 1.0f32) as libc::c_int;
 }
 #[c2rust::src_loc = "450:1"]
-unsafe extern "C" fn compute_mdcts(
+unsafe fn compute_mdcts(
     mode: *const OpusCustomMode,
     shortBlocks: libc::c_int,
     in_0: *mut celt_sig,
@@ -749,7 +749,7 @@ unsafe extern "C" fn compute_mdcts(
     }
 }
 #[c2rust::src_loc = "496:1"]
-pub unsafe extern "C" fn celt_preemphasis(
+pub unsafe fn celt_preemphasis(
     pcmp: *const opus_val16,
     inp: *mut celt_sig,
     N: libc::c_int,
@@ -822,7 +822,7 @@ pub unsafe extern "C" fn celt_preemphasis(
     *mem = m;
 }
 #[c2rust::src_loc = "571:1"]
-unsafe extern "C" fn l1_metric(
+unsafe fn l1_metric(
     tmp: *const celt_norm,
     N: libc::c_int,
     LM: libc::c_int,
@@ -840,7 +840,7 @@ unsafe extern "C" fn l1_metric(
     return L1;
 }
 #[c2rust::src_loc = "584:1"]
-unsafe extern "C" fn tf_analysis(
+unsafe fn tf_analysis(
     m: *const OpusCustomMode,
     len: libc::c_int,
     isTransient: libc::c_int,
@@ -1117,7 +1117,7 @@ unsafe extern "C" fn tf_analysis(
     return tf_select;
 }
 #[c2rust::src_loc = "745:1"]
-unsafe extern "C" fn tf_encode(
+unsafe fn tf_encode(
     start: libc::c_int,
     end: libc::c_int,
     isTransient: libc::c_int,
@@ -1187,7 +1187,7 @@ unsafe extern "C" fn tf_encode(
     }
 }
 #[c2rust::src_loc = "786:1"]
-unsafe extern "C" fn alloc_trim_analysis(
+unsafe fn alloc_trim_analysis(
     m: *const OpusCustomMode,
     X: *const celt_norm,
     bandLogE: *const opus_val16,
@@ -1340,7 +1340,7 @@ unsafe extern "C" fn alloc_trim_analysis(
     return trim_index;
 }
 #[c2rust::src_loc = "878:1"]
-unsafe extern "C" fn stereo_analysis(
+unsafe fn stereo_analysis(
     m: *const OpusCustomMode,
     X: *const celt_norm,
     LM: libc::c_int,
@@ -1383,7 +1383,7 @@ unsafe extern "C" fn stereo_analysis(
             * sumLR) as libc::c_int;
 }
 #[c2rust::src_loc = "911:1"]
-unsafe extern "C" fn median_of_5(x: *const opus_val16) -> opus_val16 {
+unsafe fn median_of_5(x: *const opus_val16) -> opus_val16 {
     let mut t0: opus_val16 = 0.;
     let mut t1: opus_val16 = 0.;
     let mut t2: opus_val16 = 0.;
@@ -1425,7 +1425,7 @@ unsafe extern "C" fn median_of_5(x: *const opus_val16) -> opus_val16 {
     };
 }
 #[c2rust::src_loc = "950:1"]
-unsafe extern "C" fn median_of_3(x: *const opus_val16) -> opus_val16 {
+unsafe fn median_of_3(x: *const opus_val16) -> opus_val16 {
     let mut t0: opus_val16 = 0.;
     let mut t1: opus_val16 = 0.;
     let mut t2: opus_val16 = 0.;
@@ -1446,7 +1446,7 @@ unsafe extern "C" fn median_of_3(x: *const opus_val16) -> opus_val16 {
     };
 }
 #[c2rust::src_loc = "970:1"]
-unsafe extern "C" fn dynalloc_analysis(
+unsafe fn dynalloc_analysis(
     bandLogE: *const opus_val16,
     bandLogE2: *const opus_val16,
     nbEBands: libc::c_int,
@@ -1870,7 +1870,7 @@ unsafe extern "C" fn dynalloc_analysis(
     return maxDepth;
 }
 #[c2rust::src_loc = "1165:1"]
-unsafe extern "C" fn run_prefilter(
+unsafe fn run_prefilter(
     mut st: *mut OpusCustomEncoder,
     in_0: *mut celt_sig,
     prefilter_mem: *mut celt_sig,
@@ -2169,7 +2169,7 @@ unsafe extern "C" fn run_prefilter(
     return pf_on;
 }
 #[c2rust::src_loc = "1297:1"]
-unsafe extern "C" fn compute_vbr(
+unsafe fn compute_vbr(
     mode: *const OpusCustomMode,
     analysis: *mut AnalysisInfo,
     base_target: i32,
@@ -2316,7 +2316,7 @@ unsafe extern "C" fn compute_vbr(
     return target;
 }
 #[c2rust::src_loc = "1408:1"]
-pub unsafe extern "C" fn celt_encode_with_ec(
+pub unsafe fn celt_encode_with_ec(
     mut st: *mut OpusCustomEncoder,
     pcm: *const opus_val16,
     mut frame_size: libc::c_int,

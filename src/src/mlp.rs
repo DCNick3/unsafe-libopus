@@ -230,7 +230,7 @@ const tansig_table: [libc::c_float; 201] = [
 
 #[inline]
 #[c2rust::src_loc = "39:1"]
-unsafe extern "C" fn tansig_approx(mut x: libc::c_float) -> libc::c_float {
+unsafe fn tansig_approx(mut x: libc::c_float) -> libc::c_float {
     let mut i: libc::c_int = 0;
     let mut y: libc::c_float = 0.;
     let mut dy: libc::c_float = 0.;
@@ -257,11 +257,11 @@ unsafe extern "C" fn tansig_approx(mut x: libc::c_float) -> libc::c_float {
 }
 #[inline]
 #[c2rust::src_loc = "67:1"]
-unsafe extern "C" fn sigmoid_approx(x: libc::c_float) -> libc::c_float {
+unsafe fn sigmoid_approx(x: libc::c_float) -> libc::c_float {
     return 0.5f32 + 0.5f32 * tansig_approx(0.5f32 * x);
 }
 #[c2rust::src_loc = "72:1"]
-unsafe extern "C" fn gemm_accum(
+unsafe fn gemm_accum(
     out: *mut libc::c_float,
     weights: *const i8,
     rows: libc::c_int,
@@ -284,7 +284,7 @@ unsafe extern "C" fn gemm_accum(
     }
 }
 #[c2rust::src_loc = "82:1"]
-pub unsafe extern "C" fn compute_dense(
+pub unsafe fn compute_dense(
     layer: *const DenseLayer,
     output: *mut libc::c_float,
     input: *const libc::c_float,
@@ -322,7 +322,7 @@ pub unsafe extern "C" fn compute_dense(
     };
 }
 #[c2rust::src_loc = "104:1"]
-pub unsafe extern "C" fn compute_gru(
+pub unsafe fn compute_gru(
     gru: *const GRULayer,
     state: *mut libc::c_float,
     input: *const libc::c_float,

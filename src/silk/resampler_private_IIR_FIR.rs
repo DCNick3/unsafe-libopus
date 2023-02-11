@@ -16,7 +16,7 @@ use crate::silk::resampler_rom::{silk_resampler_frac_FIR_12, RESAMPLER_ORDER_FIR
 
 #[inline]
 #[c2rust::src_loc = "36:1"]
-unsafe extern "C" fn silk_resampler_private_IIR_FIR_INTERPOL(
+unsafe fn silk_resampler_private_IIR_FIR_INTERPOL(
     mut out: *mut i16,
     buf: *mut i16,
     max_index_Q16: i32,
@@ -88,7 +88,7 @@ unsafe extern "C" fn silk_resampler_private_IIR_FIR_INTERPOL(
     return out;
 }
 #[c2rust::src_loc = "65:1"]
-pub unsafe extern "C" fn silk_resampler_private_IIR_FIR(
+pub unsafe fn silk_resampler_private_IIR_FIR(
     SS: *mut libc::c_void,
     mut out: *mut i16,
     mut in_0: *const i16,

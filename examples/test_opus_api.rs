@@ -22,10 +22,7 @@ pub mod test_opus_common_h {
     pub static mut iseed: u32 = 0;
     #[inline]
     #[c2rust::src_loc = "66:1"]
-    pub unsafe extern "C" fn _test_failed(
-        mut file: *const libc::c_char,
-        mut line: libc::c_int,
-    ) -> ! {
+    pub unsafe fn _test_failed(mut file: *const libc::c_char, mut line: libc::c_int) -> ! {
         fprintf(
             stderr(),
             b"\n ***************************************************\n\0" as *const u8
@@ -100,7 +97,7 @@ static mut opus_rates: [i32; 5] = [
     8000 as libc::c_int,
 ];
 #[c2rust::src_loc = "86:1"]
-pub unsafe extern "C" fn test_dec_api() -> i32 {
+pub unsafe fn test_dec_api() -> i32 {
     let mut dec_final_range: u32 = 0;
     let mut dec: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
     let mut dec2: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
@@ -913,7 +910,7 @@ pub unsafe extern "C" fn test_dec_api() -> i32 {
     cfgs
 }
 #[c2rust::src_loc = "343:1"]
-pub unsafe extern "C" fn test_msdec_api() -> i32 {
+pub unsafe fn test_msdec_api() -> i32 {
     let mut dec_final_range: u32 = 0;
     let mut dec: *mut OpusMSDecoder = std::ptr::null_mut::<OpusMSDecoder>();
     let mut streamdec: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
@@ -1778,7 +1775,7 @@ pub unsafe extern "C" fn test_msdec_api() -> i32 {
     cfgs
 }
 #[c2rust::src_loc = "707:1"]
-pub unsafe extern "C" fn test_parse() -> i32 {
+pub unsafe fn test_parse() -> i32 {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut jj: i32 = 0;
@@ -2907,7 +2904,7 @@ pub unsafe extern "C" fn test_parse() -> i32 {
     cfgs_total
 }
 #[c2rust::src_loc = "1065:1"]
-pub unsafe extern "C" fn test_enc_api() -> i32 {
+pub unsafe fn test_enc_api() -> i32 {
     let mut enc_final_range: u32 = 0;
     let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
     let mut i: i32 = 0;
@@ -4656,7 +4653,7 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
     cfgs
 }
 #[c2rust::src_loc = "1444:1"]
-pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
+pub unsafe fn test_repacketizer_api() -> libc::c_int {
     let mut ret: libc::c_int = 0;
     let mut cfgs: libc::c_int = 0;
     let mut i: libc::c_int = 0;
@@ -5641,7 +5638,7 @@ pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
     cfgs
 }
 #[c2rust::src_loc = "1766:1"]
-pub unsafe extern "C" fn test_malloc_fail() -> libc::c_int {
+pub unsafe fn test_malloc_fail() -> libc::c_int {
     fprintf(
         stdout(),
         b"\n  malloc() failure tests\n\0" as *const u8 as *const libc::c_char,

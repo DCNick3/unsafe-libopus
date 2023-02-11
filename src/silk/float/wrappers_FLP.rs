@@ -13,7 +13,7 @@ pub mod xmmintrin_h {
 pub mod SigProc_FLP_h {
     #[inline]
     #[c2rust::src_loc = "156:1"]
-    pub unsafe extern "C" fn silk_float2int(x: libc::c_float) -> i32 {
+    pub unsafe fn silk_float2int(x: libc::c_float) -> i32 {
         return float2int(x);
     }
     use crate::celt::float_cast::float2int;
@@ -30,7 +30,7 @@ use crate::silk::NSQ_del_dec::silk_NSQ_del_dec_c;
 use crate::silk::NSQ::silk_NSQ_c;
 
 #[c2rust::src_loc = "37:1"]
-pub unsafe extern "C" fn silk_A2NLSF_FLP(
+pub unsafe fn silk_A2NLSF_FLP(
     NLSF_Q15: *mut i16,
     pAR: *const libc::c_float,
     LPC_order: libc::c_int,
@@ -45,7 +45,7 @@ pub unsafe extern "C" fn silk_A2NLSF_FLP(
     silk_A2NLSF(NLSF_Q15, a_fix_Q16.as_mut_ptr(), LPC_order);
 }
 #[c2rust::src_loc = "54:1"]
-pub unsafe extern "C" fn silk_NLSF2A_FLP(
+pub unsafe fn silk_NLSF2A_FLP(
     pAR: *mut libc::c_float,
     NLSF_Q15: *const i16,
     LPC_order: libc::c_int,
@@ -61,7 +61,7 @@ pub unsafe extern "C" fn silk_NLSF2A_FLP(
     }
 }
 #[c2rust::src_loc = "74:1"]
-pub unsafe extern "C" fn silk_process_NLSFs_FLP(
+pub unsafe fn silk_process_NLSFs_FLP(
     psEncC: *mut silk_encoder_state,
     PredCoef: *mut [libc::c_float; 16],
     NLSF_Q15: *mut i16,
@@ -83,7 +83,7 @@ pub unsafe extern "C" fn silk_process_NLSFs_FLP(
     }
 }
 #[c2rust::src_loc = "96:1"]
-pub unsafe extern "C" fn silk_NSQ_wrapper_FLP(
+pub unsafe fn silk_NSQ_wrapper_FLP(
     psEnc: *mut silk_encoder_state_FLP,
     psEncCtrl: *mut silk_encoder_control_FLP,
     psIndices: *mut SideInfoIndices,
@@ -199,7 +199,7 @@ pub unsafe extern "C" fn silk_NSQ_wrapper_FLP(
     };
 }
 #[c2rust::src_loc = "175:1"]
-pub unsafe extern "C" fn silk_quant_LTP_gains_FLP(
+pub unsafe fn silk_quant_LTP_gains_FLP(
     B: *mut libc::c_float,
     cbk_index: *mut i8,
     periodicity_index: *mut i8,

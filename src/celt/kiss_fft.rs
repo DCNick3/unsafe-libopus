@@ -47,7 +47,7 @@ pub use self::stddef_h::size_t;
 use crate::celt::celt::celt_fatal;
 
 #[c2rust::src_loc = "48:1"]
-unsafe extern "C" fn kf_bfly2(mut Fout: *mut kiss_fft_cpx, m: libc::c_int, N: libc::c_int) {
+unsafe fn kf_bfly2(mut Fout: *mut kiss_fft_cpx, m: libc::c_int, N: libc::c_int) {
     let mut Fout2: *mut kiss_fft_cpx = 0 as *mut kiss_fft_cpx;
     let mut i: libc::c_int = 0;
     let mut tw: opus_val16 = 0.;
@@ -107,7 +107,7 @@ unsafe extern "C" fn kf_bfly2(mut Fout: *mut kiss_fft_cpx, m: libc::c_int, N: li
     }
 }
 #[c2rust::src_loc = "104:1"]
-unsafe extern "C" fn kf_bfly4(
+unsafe fn kf_bfly4(
     mut Fout: *mut kiss_fft_cpx,
     fstride: size_t,
     st: *const kiss_fft_state,
@@ -210,7 +210,7 @@ unsafe extern "C" fn kf_bfly4(
     };
 }
 #[c2rust::src_loc = "176:1"]
-unsafe extern "C" fn kf_bfly3(
+unsafe fn kf_bfly3(
     mut Fout: *mut kiss_fft_cpx,
     fstride: size_t,
     st: *const kiss_fft_state,
@@ -278,7 +278,7 @@ unsafe extern "C" fn kf_bfly3(
     }
 }
 #[c2rust::src_loc = "235:1"]
-unsafe extern "C" fn kf_bfly5(
+unsafe fn kf_bfly5(
     mut Fout: *mut kiss_fft_cpx,
     fstride: size_t,
     st: *const kiss_fft_state,
@@ -449,7 +449,7 @@ unsafe extern "C" fn kf_bfly5(
     }
 }
 #[c2rust::src_loc = "521:1"]
-pub unsafe extern "C" fn opus_fft_impl(st: *const kiss_fft_state, fout: *mut kiss_fft_cpx) {
+pub unsafe fn opus_fft_impl(st: *const kiss_fft_state, fout: *mut kiss_fft_cpx) {
     let mut m2: libc::c_int = 0;
     let mut m: libc::c_int = 0;
     let mut p: libc::c_int = 0;
@@ -522,7 +522,7 @@ pub unsafe extern "C" fn opus_fft_impl(st: *const kiss_fft_state, fout: *mut kis
     }
 }
 #[c2rust::src_loc = "569:1"]
-pub unsafe extern "C" fn opus_fft_c(
+pub unsafe fn opus_fft_c(
     st: *const kiss_fft_state,
     fin: *const kiss_fft_cpx,
     fout: *mut kiss_fft_cpx,
@@ -548,7 +548,7 @@ pub unsafe extern "C" fn opus_fft_c(
     opus_fft_impl(st, fout);
 }
 #[c2rust::src_loc = "592:1"]
-pub unsafe extern "C" fn opus_ifft_c(
+pub unsafe fn opus_ifft_c(
     st: *const kiss_fft_state,
     fin: *const kiss_fft_cpx,
     fout: *mut kiss_fft_cpx,

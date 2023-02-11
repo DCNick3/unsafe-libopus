@@ -20,7 +20,7 @@ use libopus_unsafe::externs::{free, malloc, realloc, strcmp};
 type size_t = libc::c_ulong;
 
 #[c2rust::src_loc = "54:1"]
-unsafe extern "C" fn read_pcm16(
+unsafe fn read_pcm16(
     mut _samples: *mut *mut libc::c_float,
     mut _fin: *mut FILE,
     mut _nchannels: libc::c_int,
@@ -98,7 +98,7 @@ unsafe extern "C" fn read_pcm16(
     return nsamples;
 }
 #[c2rust::src_loc = "88:1"]
-unsafe extern "C" fn band_energy(
+unsafe fn band_energy(
     mut _out: *mut libc::c_float,
     mut _ps: *mut libc::c_float,
     mut _bands: *const libc::c_int,

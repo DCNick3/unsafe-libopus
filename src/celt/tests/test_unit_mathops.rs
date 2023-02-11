@@ -14,7 +14,7 @@ pub mod arch_h {
 #[c2rust::header_src = "/usr/include/stdio.h:37"]
 pub mod stdio_h {
     use super::FILE_h::FILE;
-    extern "C" {
+    {
         #[c2rust::src_loc = "145:14"]
         pub static mut stderr: *mut FILE;
         #[c2rust::src_loc = "350:12"]
@@ -23,7 +23,7 @@ pub mod stdio_h {
 }
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:38"]
 pub mod mathcalls_h {
-    extern "C" {
+    {
         #[c2rust::src_loc = "95:17"]
         pub fn exp(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "104:17"]
@@ -46,7 +46,7 @@ pub use self::FILE_h::FILE;
 #[c2rust::src_loc = "48:5"]
 pub static mut ret: libc::c_int = 0 as libc::c_int;
 #[c2rust::src_loc = "50:1"]
-pub unsafe extern "C" fn testdiv() {
+pub unsafe fn testdiv() {
     let mut i: i32 = 0;
     i = 1 as libc::c_int;
     while i <= 327670 as libc::c_int {
@@ -68,7 +68,7 @@ pub unsafe extern "C" fn testdiv() {
     }
 }
 #[c2rust::src_loc = "71:1"]
-pub unsafe extern "C" fn testsqrt() {
+pub unsafe fn testsqrt() {
     let mut i: i32 = 0;
     i = 1 as libc::c_int;
     while i <= 1000000000 as libc::c_int {
@@ -94,7 +94,7 @@ pub unsafe extern "C" fn testsqrt() {
     }
 }
 #[c2rust::src_loc = "89:1"]
-pub unsafe extern "C" fn testbitexactcos() {
+pub unsafe fn testbitexactcos() {
     let mut i: libc::c_int = 0;
     let mut min_d: i32 = 0;
     let mut max_d: i32 = 0;
@@ -134,7 +134,7 @@ pub unsafe extern "C" fn testbitexactcos() {
     }
 }
 #[c2rust::src_loc = "113:1"]
-pub unsafe extern "C" fn testbitexactlog2tan() {
+pub unsafe fn testbitexactlog2tan() {
     let mut i: libc::c_int = 0;
     let mut fail: libc::c_int = 0;
     let mut min_d: i32 = 0;
@@ -182,7 +182,7 @@ pub unsafe extern "C" fn testbitexactlog2tan() {
     }
 }
 #[c2rust::src_loc = "143:1"]
-pub unsafe extern "C" fn testlog2() {
+pub unsafe fn testlog2() {
     let mut x: libc::c_float = 0.;
     x = 0.001f64 as libc::c_float;
     while (x as libc::c_double) < 1677700.0f64 {
@@ -205,7 +205,7 @@ pub unsafe extern "C" fn testlog2() {
     }
 }
 #[c2rust::src_loc = "157:1"]
-pub unsafe extern "C" fn testexp2() {
+pub unsafe fn testexp2() {
     let mut x: libc::c_float = 0.;
     x = -11.0f64 as libc::c_float;
     while (x as libc::c_double) < 24.0f64 {
@@ -231,7 +231,7 @@ pub unsafe extern "C" fn testexp2() {
     }
 }
 #[c2rust::src_loc = "171:1"]
-pub unsafe extern "C" fn testexp2log2() {
+pub unsafe fn testexp2log2() {
     let mut x: libc::c_float = 0.;
     x = -11.0f64 as libc::c_float;
     while (x as libc::c_double) < 24.0f64 {

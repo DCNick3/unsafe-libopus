@@ -17,11 +17,7 @@ pub mod xmmintrin_h {
 pub mod SigProc_FLP_h {
     #[inline]
     #[c2rust::src_loc = "162:1"]
-    pub unsafe extern "C" fn silk_float2short_array(
-        out: *mut i16,
-        in_0: *const libc::c_float,
-        length: i32,
-    ) {
+    pub unsafe fn silk_float2short_array(out: *mut i16, in_0: *const libc::c_float, length: i32) {
         let mut k: i32 = 0;
         k = length - 1 as libc::c_int;
         while k >= 0 as libc::c_int {
@@ -37,11 +33,7 @@ pub mod SigProc_FLP_h {
     }
     #[inline]
     #[c2rust::src_loc = "175:1"]
-    pub unsafe extern "C" fn silk_short2float_array(
-        out: *mut libc::c_float,
-        in_0: *const i16,
-        length: i32,
-    ) {
+    pub unsafe fn silk_short2float_array(out: *mut libc::c_float, in_0: *const i16, length: i32) {
         let mut k: i32 = 0;
         k = length - 1 as libc::c_int;
         while k >= 0 as libc::c_int {
@@ -51,7 +43,7 @@ pub mod SigProc_FLP_h {
     }
     #[inline]
     #[c2rust::src_loc = "188:1"]
-    pub unsafe extern "C" fn silk_log2(x: libc::c_double) -> libc::c_float {
+    pub unsafe fn silk_log2(x: libc::c_double) -> libc::c_float {
         return (3.32192809488736f64 * x.log10()) as libc::c_float;
     }
     use super::typedef_h::{silk_int16_MAX, silk_int16_MIN};
@@ -86,7 +78,7 @@ use crate::silk::resampler_down2_3::silk_resampler_down2_3;
 use crate::silk::SigProc_FIX::{silk_max_int, silk_min_int};
 
 #[c2rust::src_loc = "67:1"]
-pub unsafe extern "C" fn silk_pitch_analysis_core_FLP(
+pub unsafe fn silk_pitch_analysis_core_FLP(
     frame: *const libc::c_float,
     pitch_out: *mut libc::c_int,
     lagIndex: *mut i16,
@@ -749,7 +741,7 @@ pub unsafe extern "C" fn silk_pitch_analysis_core_FLP(
     return 0 as libc::c_int;
 }
 #[c2rust::src_loc = "492:1"]
-unsafe extern "C" fn silk_P_Ana_calc_corr_st3(
+unsafe fn silk_P_Ana_calc_corr_st3(
     cross_corr_st3: *mut [[libc::c_float; 5]; 34],
     frame: *const libc::c_float,
     start_lag: libc::c_int,
@@ -867,7 +859,7 @@ unsafe extern "C" fn silk_P_Ana_calc_corr_st3(
     }
 }
 #[c2rust::src_loc = "559:1"]
-unsafe extern "C" fn silk_P_Ana_calc_energy_st3(
+unsafe fn silk_P_Ana_calc_energy_st3(
     energies_st3: *mut [[libc::c_float; 5]; 34],
     frame: *const libc::c_float,
     start_lag: libc::c_int,

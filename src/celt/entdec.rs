@@ -11,7 +11,7 @@ use crate::celt::entcode::{
 };
 
 #[c2rust::src_loc = "91:1"]
-unsafe extern "C" fn ec_read_byte(mut _this: *mut ec_dec) -> libc::c_int {
+unsafe fn ec_read_byte(mut _this: *mut ec_dec) -> libc::c_int {
     return if (*_this).offs < (*_this).storage {
         let fresh0 = (*_this).offs;
         (*_this).offs = ((*_this).offs).wrapping_add(1);
@@ -21,7 +21,7 @@ unsafe extern "C" fn ec_read_byte(mut _this: *mut ec_dec) -> libc::c_int {
     };
 }
 #[c2rust::src_loc = "95:1"]
-unsafe extern "C" fn ec_read_byte_from_end(mut _this: *mut ec_dec) -> libc::c_int {
+unsafe fn ec_read_byte_from_end(mut _this: *mut ec_dec) -> libc::c_int {
     return if (*_this).end_offs < (*_this).storage {
         (*_this).end_offs = ((*_this).end_offs).wrapping_add(1);
         *((*_this).buf).offset(((*_this).storage).wrapping_sub((*_this).end_offs) as isize)
@@ -31,7 +31,7 @@ unsafe extern "C" fn ec_read_byte_from_end(mut _this: *mut ec_dec) -> libc::c_in
     };
 }
 #[c2rust::src_loc = "102:1"]
-unsafe extern "C" fn ec_dec_normalize(mut _this: *mut ec_dec) {
+unsafe fn ec_dec_normalize(mut _this: *mut ec_dec) {
     while (*_this).rng <= EC_CODE_BOT {
         let mut sym: libc::c_int = 0;
         (*_this).nbits_total += EC_SYM_BITS;
@@ -45,11 +45,7 @@ unsafe extern "C" fn ec_dec_normalize(mut _this: *mut ec_dec) {
     }
 }
 #[c2rust::src_loc = "119:1"]
-pub unsafe extern "C" fn ec_dec_init(
-    mut _this: *mut ec_dec,
-    mut _buf: *mut libc::c_uchar,
-    mut _storage: u32,
-) {
+pub unsafe fn ec_dec_init(mut _this: *mut ec_dec, mut _buf: *mut libc::c_uchar, mut _storage: u32) {
     (*_this).buf = _buf;
     (*_this).storage = _storage;
     (*_this).end_offs = 0 as libc::c_int as u32;
@@ -67,7 +63,7 @@ pub unsafe extern "C" fn ec_dec_init(
     ec_dec_normalize(_this);
 }
 #[c2rust::src_loc = "139:1"]
-pub unsafe extern "C" fn ec_decode(mut _this: *mut ec_dec, mut _ft: libc::c_uint) -> libc::c_uint {
+pub unsafe fn ec_decode(mut _this: *mut ec_dec, mut _ft: libc::c_uint) -> libc::c_uint {
     let mut s: libc::c_uint = 0;
     (*_this).ext = celt_udiv((*_this).rng, _ft);
     s = ((*_this).val).wrapping_div((*_this).ext);
@@ -81,10 +77,7 @@ pub unsafe extern "C" fn ec_decode(mut _this: *mut ec_dec, mut _ft: libc::c_uint
     );
 }
 #[c2rust::src_loc = "146:1"]
-pub unsafe extern "C" fn ec_decode_bin(
-    mut _this: *mut ec_dec,
-    mut _bits: libc::c_uint,
-) -> libc::c_uint {
+pub unsafe fn ec_decode_bin(mut _this: *mut ec_dec, mut _bits: libc::c_uint) -> libc::c_uint {
     let mut s: libc::c_uint = 0;
     (*_this).ext = (*_this).rng >> _bits;
     s = ((*_this).val).wrapping_div((*_this).ext);
@@ -97,7 +90,7 @@ pub unsafe extern "C" fn ec_decode_bin(
     );
 }
 #[c2rust::src_loc = "153:1"]
-pub unsafe extern "C" fn ec_dec_update(
+pub unsafe fn ec_dec_update(
     mut _this: *mut ec_dec,
     mut _fl: libc::c_uint,
     mut _fh: libc::c_uint,
@@ -114,10 +107,7 @@ pub unsafe extern "C" fn ec_dec_update(
     ec_dec_normalize(_this);
 }
 #[c2rust::src_loc = "162:1"]
-pub unsafe extern "C" fn ec_dec_bit_logp(
-    mut _this: *mut ec_dec,
-    mut _logp: libc::c_uint,
-) -> libc::c_int {
+pub unsafe fn ec_dec_bit_logp(mut _this: *mut ec_dec, mut _logp: libc::c_uint) -> libc::c_int {
     let mut r: u32 = 0;
     let mut d: u32 = 0;
     let mut s: u32 = 0;
@@ -134,7 +124,7 @@ pub unsafe extern "C" fn ec_dec_bit_logp(
     return ret;
 }
 #[c2rust::src_loc = "177:1"]
-pub unsafe extern "C" fn ec_dec_icdf(
+pub unsafe fn ec_dec_icdf(
     mut _this: *mut ec_dec,
     mut _icdf: *const libc::c_uchar,
     mut _ftb: libc::c_uint,
@@ -162,7 +152,7 @@ pub unsafe extern "C" fn ec_dec_icdf(
     return ret;
 }
 #[c2rust::src_loc = "198:1"]
-pub unsafe extern "C" fn ec_dec_uint(mut _this: *mut ec_dec, mut _ft: u32) -> u32 {
+pub unsafe fn ec_dec_uint(mut _this: *mut ec_dec, mut _ft: u32) -> u32 {
     let mut ft: libc::c_uint = 0;
     let mut s: libc::c_uint = 0;
     let mut ftb: libc::c_int = 0;
@@ -205,7 +195,7 @@ pub unsafe extern "C" fn ec_dec_uint(mut _this: *mut ec_dec, mut _ft: u32) -> u3
     };
 }
 #[c2rust::src_loc = "225:1"]
-pub unsafe extern "C" fn ec_dec_bits(mut _this: *mut ec_dec, mut _bits: libc::c_uint) -> u32 {
+pub unsafe fn ec_dec_bits(mut _this: *mut ec_dec, mut _bits: libc::c_uint) -> u32 {
     let mut window: ec_window = 0;
     let mut available: libc::c_int = 0;
     let mut ret: u32 = 0;

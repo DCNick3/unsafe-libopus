@@ -17,7 +17,7 @@ use crate::silk::Inlines::silk_DIV32_varQ;
 use crate::silk::SigProc_FIX::silk_max_int;
 
 #[c2rust::src_loc = "36:1"]
-pub unsafe extern "C" fn silk_stereo_LR_to_MS(
+pub unsafe fn silk_stereo_LR_to_MS(
     mut state: *mut stereo_enc_state,
     x1: *mut i16,
     x2: *mut i16,

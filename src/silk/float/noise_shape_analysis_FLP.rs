@@ -4,12 +4,12 @@ use ::libc;
 pub mod SigProc_FLP_h {
     #[inline]
     #[c2rust::src_loc = "150:1"]
-    pub unsafe extern "C" fn silk_sigmoid(x: libc::c_float) -> libc::c_float {
+    pub unsafe fn silk_sigmoid(x: libc::c_float) -> libc::c_float {
         return (1.0f64 / (1.0f64 + (-x as f64).exp())) as libc::c_float;
     }
     #[inline]
     #[c2rust::src_loc = "188:1"]
-    pub unsafe extern "C" fn silk_log2(x: libc::c_double) -> libc::c_float {
+    pub unsafe fn silk_log2(x: libc::c_double) -> libc::c_float {
         return (3.32192809488736f64 * x.log10()) as libc::c_float;
     }
 }
@@ -65,7 +65,7 @@ use crate::silk::float::warped_autocorrelation_FLP::silk_warped_autocorrelation_
 
 #[inline]
 #[c2rust::src_loc = "39:1"]
-unsafe extern "C" fn warped_gain(
+unsafe fn warped_gain(
     coefs: *const libc::c_float,
     mut lambda: libc::c_float,
     order: libc::c_int,
@@ -83,7 +83,7 @@ unsafe extern "C" fn warped_gain(
 }
 #[inline]
 #[c2rust::src_loc = "57:1"]
-unsafe extern "C" fn warped_true2monic_coefs(
+unsafe fn warped_true2monic_coefs(
     coefs: *mut libc::c_float,
     lambda: libc::c_float,
     limit: libc::c_float,
@@ -155,11 +155,7 @@ unsafe extern "C" fn warped_true2monic_coefs(
 }
 #[inline]
 #[c2rust::src_loc = "116:1"]
-unsafe extern "C" fn limit_coefs(
-    coefs: *mut libc::c_float,
-    limit: libc::c_float,
-    order: libc::c_int,
-) {
+unsafe fn limit_coefs(coefs: *mut libc::c_float, limit: libc::c_float, order: libc::c_int) {
     let mut i: libc::c_int = 0;
     let mut iter: libc::c_int = 0;
     let mut ind: libc::c_int = 0 as libc::c_int;
@@ -189,7 +185,7 @@ unsafe extern "C" fn limit_coefs(
     }
 }
 #[c2rust::src_loc = "147:1"]
-pub unsafe extern "C" fn silk_noise_shape_analysis_FLP(
+pub unsafe fn silk_noise_shape_analysis_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,
     mut psEncCtrl: *mut silk_encoder_control_FLP,
     pitch_res: *const libc::c_float,

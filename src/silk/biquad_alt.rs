@@ -10,7 +10,7 @@ pub mod typedef_h {
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 
 #[c2rust::src_loc = "42:1"]
-pub unsafe extern "C" fn silk_biquad_alt_stride1(
+pub unsafe fn silk_biquad_alt_stride1(
     in_0: *const i16,
     B_Q28: *const i32,
     A_Q28: *const i32,
@@ -95,7 +95,7 @@ pub unsafe extern "C" fn silk_biquad_alt_stride1(
     }
 }
 #[c2rust::src_loc = "79:1"]
-pub unsafe extern "C" fn silk_biquad_alt_stride2_c(
+pub unsafe fn silk_biquad_alt_stride2_c(
     in_0: *const i16,
     B_Q28: *const i32,
     A_Q28: *const i32,

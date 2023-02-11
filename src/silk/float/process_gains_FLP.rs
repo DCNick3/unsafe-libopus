@@ -4,7 +4,7 @@ use ::libc;
 pub mod SigProc_FLP_h {
     #[inline]
     #[c2rust::src_loc = "150:1"]
-    pub unsafe extern "C" fn silk_sigmoid(x: libc::c_float) -> libc::c_float {
+    pub unsafe fn silk_sigmoid(x: libc::c_float) -> libc::c_float {
         return (1.0f64 / (1.0f64 + (-x as f64).exp())) as libc::c_float;
     }
 }
@@ -38,7 +38,7 @@ use crate::silk::gain_quant::silk_gains_quant;
 use crate::silk::tables_other::silk_Quantization_Offsets_Q10;
 
 #[c2rust::src_loc = "36:1"]
-pub unsafe extern "C" fn silk_process_gains_FLP(
+pub unsafe fn silk_process_gains_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,
     mut psEncCtrl: *mut silk_encoder_control_FLP,
     condCoding: libc::c_int,

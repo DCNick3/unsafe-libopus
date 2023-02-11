@@ -5,7 +5,7 @@ use crate::silk::float::structs_FLP::{silk_encoder_control_FLP, silk_encoder_sta
 use crate::silk::tables_other::silk_LTPScales_table_Q14;
 
 #[c2rust::src_loc = "34:1"]
-pub unsafe extern "C" fn silk_LTP_scale_ctrl_FLP(
+pub unsafe fn silk_LTP_scale_ctrl_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,
     mut psEncCtrl: *mut silk_encoder_control_FLP,
     condCoding: libc::c_int,

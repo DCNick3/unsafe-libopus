@@ -32,9 +32,7 @@ use crate::silk::define::ENCODER_NUM_CHANNELS;
 use crate::silk::enc_API::silk_EncControlStruct;
 
 #[c2rust::src_loc = "37:1"]
-pub unsafe extern "C" fn check_control_input(
-    encControl: *mut silk_EncControlStruct,
-) -> libc::c_int {
+pub unsafe fn check_control_input(encControl: *mut silk_EncControlStruct) -> libc::c_int {
     if encControl.is_null() {
         celt_fatal(
             b"assertion failed: encControl != NULL\0" as *const u8 as *const libc::c_char,

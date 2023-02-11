@@ -1287,7 +1287,7 @@ static mut CELT_PVQ_U_DATA: [u32; 1272] = [
 #[c2rust::src_loc = "421:33"]
 static mut CELT_PVQ_U_ROW: [*const u32; 15] = [0 as *const u32; 15];
 #[c2rust::src_loc = "440:1"]
-unsafe extern "C" fn icwrs(mut _n: libc::c_int, mut _y: *const libc::c_int) -> u32 {
+unsafe fn icwrs(mut _n: libc::c_int, mut _y: *const libc::c_int) -> u32 {
     let mut i: u32 = 0;
     let mut j: libc::c_int = 0;
     let mut k: libc::c_int = 0;
@@ -1331,7 +1331,7 @@ unsafe extern "C" fn icwrs(mut _n: libc::c_int, mut _y: *const libc::c_int) -> u
     return i;
 }
 #[c2rust::src_loc = "458:1"]
-pub unsafe extern "C" fn encode_pulses(
+pub unsafe fn encode_pulses(
     mut _y: *const libc::c_int,
     mut _n: libc::c_int,
     mut _k: libc::c_int,
@@ -1366,7 +1366,7 @@ pub unsafe extern "C" fn encode_pulses(
     );
 }
 #[c2rust::src_loc = "463:1"]
-unsafe extern "C" fn cwrsi(
+unsafe fn cwrsi(
     mut _n: libc::c_int,
     mut _k: libc::c_int,
     mut _i: u32,
@@ -1474,7 +1474,7 @@ unsafe extern "C" fn cwrsi(
     return yy;
 }
 #[c2rust::src_loc = "539:1"]
-pub unsafe extern "C" fn decode_pulses(
+pub unsafe fn decode_pulses(
     mut _y: *mut libc::c_int,
     mut _n: libc::c_int,
     mut _k: libc::c_int,
@@ -1505,7 +1505,7 @@ pub unsafe extern "C" fn decode_pulses(
         _y,
     );
 }
-unsafe extern "C" fn run_static_initializers() {
+unsafe fn run_static_initializers() {
     CELT_PVQ_U_ROW = [
         CELT_PVQ_U_DATA.as_ptr().offset(0 as libc::c_int as isize),
         CELT_PVQ_U_DATA.as_ptr().offset(176 as libc::c_int as isize),
@@ -1546,4 +1546,4 @@ unsafe extern "C" fn run_static_initializers() {
 #[cfg_attr(target_os = "linux", link_section = ".init_array")]
 #[cfg_attr(target_os = "windows", link_section = ".CRT$XIB")]
 #[cfg_attr(target_os = "macos", link_section = "__DATA,__mod_init_func")]
-static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+static INIT_ARRAY: [unsafe fn(); 1] = [run_static_initializers];

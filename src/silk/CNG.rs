@@ -20,7 +20,7 @@ use crate::silk::Inlines::silk_SQRT_APPROX;
 use crate::silk::NLSF2A::silk_NLSF2A;
 #[inline]
 #[c2rust::src_loc = "36:1"]
-unsafe extern "C" fn silk_CNG_exc(
+unsafe fn silk_CNG_exc(
     exc_Q14: *mut i32,
     exc_buf_Q14: *mut i32,
     length: libc::c_int,
@@ -47,7 +47,7 @@ unsafe extern "C" fn silk_CNG_exc(
     *rand_seed = seed;
 }
 #[c2rust::src_loc = "62:1"]
-pub unsafe extern "C" fn silk_CNG_Reset(mut psDec: *mut silk_decoder_state) {
+pub unsafe fn silk_CNG_Reset(mut psDec: *mut silk_decoder_state) {
     let mut i: libc::c_int = 0;
     let mut NLSF_step_Q15: libc::c_int = 0;
     let mut NLSF_acc_Q15: libc::c_int = 0;
@@ -63,7 +63,7 @@ pub unsafe extern "C" fn silk_CNG_Reset(mut psDec: *mut silk_decoder_state) {
     (*psDec).sCNG.rand_seed = 3176576 as libc::c_int;
 }
 #[c2rust::src_loc = "79:1"]
-pub unsafe extern "C" fn silk_CNG(
+pub unsafe fn silk_CNG(
     psDec: *mut silk_decoder_state,
     psDecCtrl: *mut silk_decoder_control,
     frame: *mut i16,

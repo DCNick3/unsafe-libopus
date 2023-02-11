@@ -13,7 +13,7 @@ use crate::silk::NLSF_VQ::silk_NLSF_VQ;
 use ::libc;
 
 #[c2rust::src_loc = "38:1"]
-pub unsafe extern "C" fn silk_NLSF_encode(
+pub unsafe fn silk_NLSF_encode(
     NLSFIndices: *mut i8,
     pNLSF_Q15: *mut i16,
     psNLSF_CB: *const silk_NLSF_CB_struct,

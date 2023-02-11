@@ -13,7 +13,7 @@ pub const OPUS_SET_FORCE_MODE_REQUEST: libc::c_int = 11002 as libc::c_int;
 
 #[inline]
 #[c2rust::src_loc = "154:1"]
-pub unsafe extern "C" fn align(i: libc::c_int) -> libc::c_int {
+pub unsafe fn align(i: libc::c_int) -> libc::c_int {
     let alignment: libc::c_uint = 8 as libc::c_ulong as libc::c_uint;
     return (i as libc::c_uint)
         .wrapping_add(alignment)

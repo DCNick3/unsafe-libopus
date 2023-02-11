@@ -8,7 +8,7 @@ use crate::silk::tables_other::{
 };
 
 #[c2rust::src_loc = "35:1"]
-pub unsafe extern "C" fn silk_stereo_encode_pred(psRangeEnc: *mut ec_enc, ix: *mut [i8; 3]) {
+pub unsafe fn silk_stereo_encode_pred(psRangeEnc: *mut ec_enc, ix: *mut [i8; 3]) {
     let mut n: libc::c_int = 0;
     n = 5 as libc::c_int
         * (*ix.offset(0 as libc::c_int as isize))[2 as libc::c_int as usize] as libc::c_int
@@ -63,7 +63,7 @@ pub unsafe extern "C" fn silk_stereo_encode_pred(psRangeEnc: *mut ec_enc, ix: *m
     }
 }
 #[c2rust::src_loc = "55:1"]
-pub unsafe extern "C" fn silk_stereo_encode_mid_only(psRangeEnc: *mut ec_enc, mid_only_flag: i8) {
+pub unsafe fn silk_stereo_encode_mid_only(psRangeEnc: *mut ec_enc, mid_only_flag: i8) {
     ec_enc_icdf(
         psRangeEnc,
         mid_only_flag as libc::c_int,

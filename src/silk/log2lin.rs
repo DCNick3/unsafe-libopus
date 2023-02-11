@@ -8,7 +8,7 @@ pub mod typedef_h {
 pub use self::typedef_h::silk_int32_MAX;
 
 #[c2rust::src_loc = "36:1"]
-pub unsafe extern "C" fn silk_log2lin(inLog_Q7: i32) -> i32 {
+pub unsafe fn silk_log2lin(inLog_Q7: i32) -> i32 {
     let mut out: i32 = 0;
     let mut frac_Q7: i32 = 0;
     if inLog_Q7 < 0 as libc::c_int {

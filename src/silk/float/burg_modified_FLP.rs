@@ -12,7 +12,7 @@ use crate::silk::float::energy_FLP::silk_energy_FLP;
 use crate::silk::float::inner_product_FLP::silk_inner_product_FLP;
 
 #[c2rust::src_loc = "39:1"]
-pub unsafe extern "C" fn silk_burg_modified_FLP(
+pub unsafe fn silk_burg_modified_FLP(
     A: *mut libc::c_float,
     x: *const libc::c_float,
     minInvGain: libc::c_float,

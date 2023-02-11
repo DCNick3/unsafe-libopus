@@ -45,7 +45,7 @@ pub mod kiss_fft_h {
         pub arch_fft: *mut arch_fft_state,
     }
     use super::arch_h::opus_val16;
-    extern "C" {
+    {
         #[c2rust::src_loc = "142:1"]
         pub fn opus_fft_c(
             cfg: *const kiss_fft_state,
@@ -109,14 +109,14 @@ pub mod mdct_h {
 }
 #[c2rust::header_src = "/usr/include/stdio.h:32"]
 pub mod stdio_h {
-    extern "C" {
+    {
         #[c2rust::src_loc = "356:12"]
         pub fn printf(_: *const libc::c_char, _: ...) -> libc::c_int;
     }
 }
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:35"]
 pub mod mathcalls_h {
-    extern "C" {
+    {
         #[c2rust::src_loc = "62:17"]
         pub fn cos(_: libc::c_double) -> libc::c_double;
         #[c2rust::src_loc = "64:17"]
@@ -129,14 +129,14 @@ pub mod mathcalls_h {
 pub mod stdlib_h {
     #[inline]
     #[c2rust::src_loc = "361:1"]
-    pub unsafe extern "C" fn atoi(mut __nptr: *const libc::c_char) -> libc::c_int {
+    pub unsafe fn atoi(mut __nptr: *const libc::c_char) -> libc::c_int {
         return strtol(
             __nptr,
             0 as *mut libc::c_void as *mut *mut libc::c_char,
             10 as libc::c_int,
         ) as libc::c_int;
     }
-    extern "C" {
+    {
         #[c2rust::src_loc = "568:13"]
         pub fn free(_: *mut libc::c_void);
         #[c2rust::src_loc = "553:14"]
@@ -155,14 +155,14 @@ pub mod stdlib_h {
 pub mod cpu_support_h {
     #[inline]
     #[c2rust::src_loc = "65:1"]
-    pub unsafe extern "C" fn opus_select_arch() -> libc::c_int {
+    pub unsafe fn opus_select_arch() -> libc::c_int {
         return 0 as libc::c_int;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_custom.h:37"]
 pub mod opus_custom_h {
     use super::modes_h::OpusCustomMode;
-    extern "C" {
+    {
         #[c2rust::src_loc = "121:20"]
         pub fn opus_custom_mode_create(
             Fs: i32,
@@ -188,7 +188,7 @@ pub use self::stdlib_h::{atoi, free, malloc, rand, strtol};
 #[c2rust::src_loc = "43:5"]
 pub static mut ret: libc::c_int = 0 as libc::c_int;
 #[c2rust::src_loc = "45:1"]
-pub unsafe extern "C" fn check(
+pub unsafe fn check(
     mut in_0: *mut kiss_fft_cpx,
     mut out: *mut kiss_fft_cpx,
     mut nfft: libc::c_int,
@@ -249,7 +249,7 @@ pub unsafe extern "C" fn check(
     }
 }
 #[c2rust::src_loc = "86:1"]
-pub unsafe extern "C" fn test1d(
+pub unsafe fn test1d(
     mut nfft: libc::c_int,
     mut isinverse: libc::c_int,
     mut arch: libc::c_int,

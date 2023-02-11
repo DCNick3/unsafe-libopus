@@ -17,11 +17,7 @@ pub mod errors_h {
 pub mod SigProc_FLP_h {
     #[inline]
     #[c2rust::src_loc = "162:1"]
-    pub unsafe extern "C" fn silk_float2short_array(
-        out: *mut i16,
-        in_0: *const libc::c_float,
-        length: i32,
-    ) {
+    pub unsafe fn silk_float2short_array(out: *mut i16, in_0: *const libc::c_float, length: i32) {
         let mut k: i32 = 0;
         k = length - 1 as libc::c_int;
         while k >= 0 as libc::c_int {
@@ -37,11 +33,7 @@ pub mod SigProc_FLP_h {
     }
     #[inline]
     #[c2rust::src_loc = "175:1"]
-    pub unsafe extern "C" fn silk_short2float_array(
-        out: *mut libc::c_float,
-        in_0: *const i16,
-        length: i32,
-    ) {
+    pub unsafe fn silk_short2float_array(out: *mut libc::c_float, in_0: *const i16, length: i32) {
         let mut k: i32 = 0;
         k = length - 1 as libc::c_int;
         while k >= 0 as libc::c_int {
@@ -87,7 +79,7 @@ use crate::silk::tables_pitch_lag::{
 use crate::silk::SigProc_FIX::{silk_max_int, silk_min_int};
 
 #[c2rust::src_loc = "65:1"]
-pub unsafe extern "C" fn silk_control_encoder(
+pub unsafe fn silk_control_encoder(
     mut psEnc: *mut silk_encoder_state_FLP,
     encControl: *mut silk_EncControlStruct,
     allow_bw_switch: libc::c_int,
@@ -130,7 +122,7 @@ pub unsafe extern "C" fn silk_control_encoder(
     return ret;
 }
 #[c2rust::src_loc = "134:1"]
-unsafe extern "C" fn silk_setup_resamplers(
+unsafe fn silk_setup_resamplers(
     mut psEnc: *mut silk_encoder_state_FLP,
     fs_kHz: libc::c_int,
 ) -> libc::c_int {
@@ -217,7 +209,7 @@ unsafe extern "C" fn silk_setup_resamplers(
     return ret;
 }
 #[c2rust::src_loc = "199:1"]
-unsafe extern "C" fn silk_setup_fs(
+unsafe fn silk_setup_fs(
     mut psEnc: *mut silk_encoder_state_FLP,
     fs_kHz: libc::c_int,
     PacketSize_ms: libc::c_int,
@@ -362,7 +354,7 @@ unsafe extern "C" fn silk_setup_fs(
     return ret;
 }
 #[c2rust::src_loc = "307:1"]
-unsafe extern "C" fn silk_setup_complexity(
+unsafe fn silk_setup_complexity(
     mut psEncC: *mut silk_encoder_state,
     Complexity: libc::c_int,
 ) -> libc::c_int {
@@ -525,7 +517,7 @@ unsafe extern "C" fn silk_setup_complexity(
 }
 #[inline]
 #[c2rust::src_loc = "403:1"]
-unsafe extern "C" fn silk_setup_LBRR(
+unsafe fn silk_setup_LBRR(
     mut psEncC: *mut silk_encoder_state,
     encControl: *const silk_EncControlStruct,
 ) -> libc::c_int {

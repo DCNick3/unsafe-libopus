@@ -68,7 +68,7 @@ pub struct OpusProjectionDecoder {
     pub demixing_matrix_size_in_bytes: i32,
 }
 #[c2rust::src_loc = "48:1"]
-unsafe extern "C" fn opus_projection_copy_channel_out_float(
+unsafe fn opus_projection_copy_channel_out_float(
     dst: *mut libc::c_void,
     dst_stride: libc::c_int,
     dst_channel: libc::c_int,
@@ -102,7 +102,7 @@ unsafe extern "C" fn opus_projection_copy_channel_out_float(
     }
 }
 #[c2rust::src_loc = "71:1"]
-unsafe extern "C" fn opus_projection_copy_channel_out_short(
+unsafe fn opus_projection_copy_channel_out_short(
     dst: *mut libc::c_void,
     dst_stride: libc::c_int,
     dst_channel: libc::c_int,
@@ -136,13 +136,13 @@ unsafe extern "C" fn opus_projection_copy_channel_out_short(
     }
 }
 #[c2rust::src_loc = "92:1"]
-unsafe extern "C" fn get_dec_demixing_matrix(st: *mut OpusProjectionDecoder) -> *mut MappingMatrix {
+unsafe fn get_dec_demixing_matrix(st: *mut OpusProjectionDecoder) -> *mut MappingMatrix {
     return (st as *mut libc::c_char).offset(align(
         ::core::mem::size_of::<OpusProjectionDecoder>() as libc::c_ulong as libc::c_int
     ) as isize) as *mut libc::c_void as *mut MappingMatrix;
 }
 #[c2rust::src_loc = "99:1"]
-unsafe extern "C" fn get_multistream_decoder(st: *mut OpusProjectionDecoder) -> *mut OpusMSDecoder {
+unsafe fn get_multistream_decoder(st: *mut OpusProjectionDecoder) -> *mut OpusMSDecoder {
     return (st as *mut libc::c_char).offset(align(
         (::core::mem::size_of::<OpusProjectionDecoder>() as libc::c_ulong)
             .wrapping_add((*st).demixing_matrix_size_in_bytes as libc::c_ulong)
@@ -150,7 +150,7 @@ unsafe extern "C" fn get_multistream_decoder(st: *mut OpusProjectionDecoder) -> 
     ) as isize) as *mut libc::c_void as *mut OpusMSDecoder;
 }
 #[c2rust::src_loc = "107:1"]
-pub unsafe extern "C" fn opus_projection_decoder_get_size(
+pub unsafe fn opus_projection_decoder_get_size(
     channels: libc::c_int,
     streams: libc::c_int,
     coupled_streams: libc::c_int,
@@ -170,7 +170,7 @@ pub unsafe extern "C" fn opus_projection_decoder_get_size(
         + decoder_size;
 }
 #[c2rust::src_loc = "125:1"]
-pub unsafe extern "C" fn opus_projection_decoder_init(
+pub unsafe fn opus_projection_decoder_init(
     mut st: *mut OpusProjectionDecoder,
     Fs: i32,
     channels: libc::c_int,
@@ -232,7 +232,7 @@ pub unsafe extern "C" fn opus_projection_decoder_init(
     return ret;
 }
 #[c2rust::src_loc = "176:1"]
-pub unsafe extern "C" fn opus_projection_decoder_create(
+pub unsafe fn opus_projection_decoder_create(
     Fs: i32,
     channels: libc::c_int,
     streams: libc::c_int,
@@ -277,7 +277,7 @@ pub unsafe extern "C" fn opus_projection_decoder_create(
     return st;
 }
 #[c2rust::src_loc = "222:1"]
-pub unsafe extern "C" fn opus_projection_decode(
+pub unsafe fn opus_projection_decode(
     st: *mut OpusProjectionDecoder,
     data: *const libc::c_uchar,
     len: i32,
@@ -292,7 +292,7 @@ pub unsafe extern "C" fn opus_projection_decode(
         pcm as *mut libc::c_void,
         Some(
             opus_projection_copy_channel_out_short
-                as unsafe extern "C" fn(
+                as unsafe fn(
                     *mut libc::c_void,
                     libc::c_int,
                     libc::c_int,
@@ -309,7 +309,7 @@ pub unsafe extern "C" fn opus_projection_decode(
     );
 }
 #[c2rust::src_loc = "233:1"]
-pub unsafe extern "C" fn opus_projection_decode_float(
+pub unsafe fn opus_projection_decode_float(
     st: *mut OpusProjectionDecoder,
     data: *const libc::c_uchar,
     len: i32,
@@ -324,7 +324,7 @@ pub unsafe extern "C" fn opus_projection_decode_float(
         pcm as *mut libc::c_void,
         Some(
             opus_projection_copy_channel_out_float
-                as unsafe extern "C" fn(
+                as unsafe fn(
                     *mut libc::c_void,
                     libc::c_int,
                     libc::c_int,
@@ -354,6 +354,6 @@ pub unsafe extern "C" fn opus_projection_decoder_ctl(
     return ret;
 }
 #[c2rust::src_loc = "254:1"]
-pub unsafe extern "C" fn opus_projection_decoder_destroy(st: *mut OpusProjectionDecoder) {
+pub unsafe fn opus_projection_decoder_destroy(st: *mut OpusProjectionDecoder) {
     free(st as *mut libc::c_void);
 }

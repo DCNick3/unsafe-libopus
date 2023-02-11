@@ -470,7 +470,7 @@ static mut silk_TargetRate_WB_21: [libc::c_uchar; 191] = [
     255 as libc::c_int as libc::c_uchar,
 ];
 #[c2rust::src_loc = "82:1"]
-pub unsafe extern "C" fn silk_control_SNR(
+pub unsafe fn silk_control_SNR(
     mut psEncC: *mut silk_encoder_state,
     mut TargetRate_bps: i32,
 ) -> libc::c_int {

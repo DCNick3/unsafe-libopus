@@ -1,6 +1,6 @@
 use ::libc;
 #[c2rust::src_loc = "34:1"]
-pub unsafe extern "C" fn silk_inner_prod_aligned_scale(
+pub unsafe fn silk_inner_prod_aligned_scale(
     inVec1: *const i16,
     inVec2: *const i16,
     scale: libc::c_int,

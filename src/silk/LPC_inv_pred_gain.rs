@@ -15,7 +15,7 @@ use crate::silk::Inlines::silk_INVERSE32_varQ;
 pub const A_LIMIT: libc::c_double =
     0.99975f64 * ((1 as libc::c_int as i64) << 24 as libc::c_int) as libc::c_double + 0.5f64;
 #[c2rust::src_loc = "42:1"]
-unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(A_QA: *mut i32, order: libc::c_int) -> i32 {
+unsafe fn LPC_inverse_pred_gain_QA_c(A_QA: *mut i32, order: libc::c_int) -> i32 {
     let mut k: libc::c_int = 0;
     let mut n: libc::c_int = 0;
     let mut mult2Q: libc::c_int = 0;
@@ -545,10 +545,7 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(A_QA: *mut i32, order: libc::c_i
     return invGain_Q30;
 }
 #[c2rust::src_loc = "122:1"]
-pub unsafe extern "C" fn silk_LPC_inverse_pred_gain_c(
-    A_Q12: *const i16,
-    order: libc::c_int,
-) -> i32 {
+pub unsafe fn silk_LPC_inverse_pred_gain_c(A_Q12: *const i16, order: libc::c_int) -> i32 {
     let mut k: libc::c_int = 0;
     let mut Atmp_QA: [i32; 24] = [0; 24];
     let mut DC_resp: i32 = 0 as libc::c_int;

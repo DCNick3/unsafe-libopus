@@ -37,7 +37,7 @@ pub mod test_opus_common_h {
     pub static mut Rw: u32 = 0;
     #[inline]
     #[c2rust::src_loc = "57:1"]
-    pub unsafe extern "C" fn fast_rand() -> u32 {
+    pub unsafe fn fast_rand() -> u32 {
         Rz = (36969 as libc::c_int as libc::c_uint)
             .wrapping_mul(Rz & 65535 as libc::c_int as libc::c_uint)
             .wrapping_add(Rz >> 16 as libc::c_int);
@@ -50,10 +50,7 @@ pub mod test_opus_common_h {
     pub static mut iseed: u32 = 0;
     #[inline]
     #[c2rust::src_loc = "66:1"]
-    pub unsafe extern "C" fn _test_failed(
-        mut file: *const libc::c_char,
-        mut line: libc::c_int,
-    ) -> ! {
+    pub unsafe fn _test_failed(mut file: *const libc::c_char, mut line: libc::c_int) -> ! {
         fprintf(
             stderr(),
             b"\n ***************************************************\n\0" as *const u8
@@ -106,7 +103,7 @@ use libopus_unsafe::{
 };
 
 #[c2rust::src_loc = "55:1"]
-pub unsafe extern "C" fn assert_is_equal(
+pub unsafe fn assert_is_equal(
     mut a: *const opus_val16,
     mut b: *const i16,
     mut size: libc::c_int,
@@ -127,7 +124,7 @@ pub unsafe extern "C" fn assert_is_equal(
     0 as libc::c_int
 }
 #[c2rust::src_loc = "72:1"]
-pub unsafe extern "C" fn assert_is_equal_short(
+pub unsafe fn assert_is_equal_short(
     mut a: *const i16,
     mut b: *const i16,
     mut size: libc::c_int,
@@ -146,10 +143,7 @@ pub unsafe extern "C" fn assert_is_equal_short(
     0 as libc::c_int
 }
 #[c2rust::src_loc = "189:1"]
-pub unsafe extern "C" fn test_creation_arguments(
-    channels: libc::c_int,
-    mapping_family: libc::c_int,
-) {
+pub unsafe fn test_creation_arguments(channels: libc::c_int, mapping_family: libc::c_int) {
     let mut streams: libc::c_int = 0;
     let mut coupled_streams: libc::c_int = 0;
     let mut enc_error: libc::c_int = 0;
@@ -232,11 +226,7 @@ pub unsafe extern "C" fn test_creation_arguments(
     }
 }
 #[c2rust::src_loc = "249:1"]
-pub unsafe extern "C" fn generate_music(
-    mut buf: *mut libc::c_short,
-    mut len: i32,
-    mut channels: i32,
-) {
+pub unsafe fn generate_music(mut buf: *mut libc::c_short, mut len: i32, mut channels: i32) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
@@ -325,11 +315,7 @@ pub unsafe extern "C" fn generate_music(
     free(d as *mut libc::c_void);
 }
 #[c2rust::src_loc = "285:1"]
-pub unsafe extern "C" fn test_encode_decode(
-    mut bitrate: i32,
-    mut channels: i32,
-    mapping_family: libc::c_int,
-) {
+pub unsafe fn test_encode_decode(mut bitrate: i32, mut channels: i32, mapping_family: libc::c_int) {
     let Fs: i32 = 48000 as libc::c_int;
     let application: libc::c_int = 2049 as libc::c_int;
     let mut st_enc: *mut OpusProjectionEncoder = std::ptr::null_mut::<OpusProjectionEncoder>();

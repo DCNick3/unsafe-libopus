@@ -64,7 +64,7 @@ pub const COMBFILTER_MAXPERIOD: libc::c_int = 1024 as libc::c_int;
 pub const COMBFILTER_MINPERIOD: libc::c_int = 16 as libc::c_int;
 
 #[c2rust::src_loc = "62:1"]
-pub unsafe extern "C" fn resampling_factor(rate: i32) -> libc::c_int {
+pub unsafe fn resampling_factor(rate: i32) -> libc::c_int {
     let mut ret: libc::c_int = 0;
     match rate {
         48000 => {
@@ -96,7 +96,7 @@ pub unsafe extern "C" fn resampling_factor(rate: i32) -> libc::c_int {
     return ret;
 }
 #[c2rust::src_loc = "160:1"]
-unsafe extern "C" fn comb_filter_const_c(
+unsafe fn comb_filter_const_c(
     y: *mut opus_val32,
     x: *mut opus_val32,
     T: libc::c_int,
@@ -129,7 +129,7 @@ unsafe extern "C" fn comb_filter_const_c(
     }
 }
 #[c2rust::src_loc = "190:1"]
-pub unsafe extern "C" fn comb_filter(
+pub unsafe fn comb_filter(
     y: *mut opus_val32,
     x: *mut opus_val32,
     mut T0: libc::c_int,
@@ -251,7 +251,7 @@ pub unsafe extern "C" fn comb_filter(
     );
 }
 #[c2rust::src_loc = "272:1"]
-pub unsafe extern "C" fn init_caps(
+pub unsafe fn init_caps(
     m: *const OpusCustomMode,
     cap: *mut libc::c_int,
     LM: libc::c_int,
@@ -275,7 +275,7 @@ pub unsafe extern "C" fn init_caps(
     }
 }
 #[c2rust::src_loc = "285:1"]
-pub unsafe extern "C" fn opus_strerror(error: libc::c_int) -> *const libc::c_char {
+pub unsafe fn opus_strerror(error: libc::c_int) -> *const libc::c_char {
     static mut error_strings: [*const libc::c_char; 8] = [
         b"success\0" as *const u8 as *const libc::c_char,
         b"invalid argument\0" as *const u8 as *const libc::c_char,
@@ -293,6 +293,6 @@ pub unsafe extern "C" fn opus_strerror(error: libc::c_int) -> *const libc::c_cha
     };
 }
 #[c2rust::src_loc = "303:1"]
-pub unsafe extern "C" fn opus_get_version_string() -> *const libc::c_char {
+pub unsafe fn opus_get_version_string() -> *const libc::c_char {
     return b"libopus 1.3.1\0" as *const u8 as *const libc::c_char;
 }

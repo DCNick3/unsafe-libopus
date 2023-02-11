@@ -20,7 +20,7 @@ use libc_stdhandle::{stderr, stdout};
 pub mod test_opus_common_h {
     #[inline]
     #[c2rust::src_loc = "28:1"]
-    pub unsafe extern "C" fn deb2_impl(
+    pub unsafe fn deb2_impl(
         mut _t: *mut libc::c_uchar,
         mut _p: *mut *mut libc::c_uchar,
         mut _k: libc::c_int,
@@ -50,7 +50,7 @@ pub mod test_opus_common_h {
     }
     #[inline]
     #[c2rust::src_loc = "44:1"]
-    pub unsafe extern "C" fn debruijn2(mut _k: libc::c_int, mut _res: *mut libc::c_uchar) {
+    pub unsafe fn debruijn2(mut _k: libc::c_int, mut _res: *mut libc::c_uchar) {
         let mut p: *mut libc::c_uchar = std::ptr::null_mut::<libc::c_uchar>();
         let mut t: *mut libc::c_uchar = std::ptr::null_mut::<libc::c_uchar>();
         t = malloc(
@@ -75,7 +75,7 @@ pub mod test_opus_common_h {
     pub static mut Rw: u32 = 0;
     #[inline]
     #[c2rust::src_loc = "57:1"]
-    pub unsafe extern "C" fn fast_rand() -> u32 {
+    pub unsafe fn fast_rand() -> u32 {
         Rz = (36969 as libc::c_int as libc::c_uint)
             .wrapping_mul(Rz & 65535 as libc::c_int as libc::c_uint)
             .wrapping_add(Rz >> 16 as libc::c_int);
@@ -88,10 +88,7 @@ pub mod test_opus_common_h {
     pub static mut iseed: u32 = 0;
     #[inline]
     #[c2rust::src_loc = "66:1"]
-    pub unsafe extern "C" fn _test_failed(
-        mut file: *const libc::c_char,
-        mut line: libc::c_int,
-    ) -> ! {
+    pub unsafe fn _test_failed(mut file: *const libc::c_char, mut line: libc::c_int) -> ! {
         fprintf(
             stderr(),
             b"\n ***************************************************\n\0" as *const u8
@@ -152,7 +149,7 @@ mod opus_encode_regressions;
 use opus_encode_regressions::regression_test;
 
 #[c2rust::src_loc = "57:1"]
-pub unsafe extern "C" fn generate_music(mut buf: *mut libc::c_short, mut len: i32) {
+pub unsafe fn generate_music(mut buf: *mut libc::c_short, mut len: i32) {
     let mut a1: i32 = 0;
     let mut b1: i32 = 0;
     let mut a2: i32 = 0;
@@ -233,7 +230,7 @@ pub unsafe extern "C" fn generate_music(mut buf: *mut libc::c_short, mut len: i3
     }
 }
 #[c2rust::src_loc = "115:1"]
-pub unsafe extern "C" fn get_frame_size_enum(
+pub unsafe fn get_frame_size_enum(
     mut frame_size: libc::c_int,
     mut sampling_rate: libc::c_int,
 ) -> libc::c_int {
@@ -265,7 +262,7 @@ pub unsafe extern "C" fn get_frame_size_enum(
     frame_size_enum
 }
 #[c2rust::src_loc = "143:1"]
-pub unsafe extern "C" fn test_encode(
+pub unsafe fn test_encode(
     mut enc: *mut OpusEncoder,
     mut channels: libc::c_int,
     mut frame_size: libc::c_int,
@@ -343,10 +340,7 @@ pub unsafe extern "C" fn test_encode(
     ret
 }
 #[c2rust::src_loc = "185:1"]
-pub unsafe extern "C" fn fuzz_encoder_settings(
-    num_encoders: libc::c_int,
-    num_setting_changes: libc::c_int,
-) {
+pub unsafe fn fuzz_encoder_settings(num_encoders: libc::c_int, num_setting_changes: libc::c_int) {
     let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
     let mut dec: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
     let mut i: libc::c_int = 0;
@@ -639,7 +633,7 @@ pub unsafe extern "C" fn fuzz_encoder_settings(
     }
 }
 #[c2rust::src_loc = "272:1"]
-pub unsafe extern "C" fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
+pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
     static mut fsizes: [libc::c_int; 6] = [
         960 as libc::c_int * 3 as libc::c_int,
         960 as libc::c_int * 2 as libc::c_int,
@@ -2378,7 +2372,7 @@ pub unsafe extern "C" fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
     0 as libc::c_int
 }
 #[c2rust::src_loc = "632:1"]
-pub unsafe extern "C" fn print_usage(mut _argv: *mut *mut libc::c_char) {
+pub unsafe fn print_usage(mut _argv: *mut *mut libc::c_char) {
     fprintf(
         stderr(),
         b"Usage: %s [<seed>] [-fuzz <num_encoders> <num_settings_per_encoder>]\n\0" as *const u8

@@ -3,14 +3,14 @@ use crate::silk::SigProc_FIX::silk_ROR32;
 
 #[inline]
 #[c2rust::src_loc = "56:1"]
-pub unsafe extern "C" fn silk_CLZ_FRAC(in_0: i32, lz: *mut i32, frac_Q7: *mut i32) {
+pub unsafe fn silk_CLZ_FRAC(in_0: i32, lz: *mut i32, frac_Q7: *mut i32) {
     let lzeros: i32 = silk_CLZ32(in_0);
     *lz = lzeros;
     *frac_Q7 = silk_ROR32(in_0, 24 as libc::c_int - lzeros) & 0x7f as libc::c_int;
 }
 #[inline]
 #[c2rust::src_loc = "71:1"]
-pub unsafe extern "C" fn silk_SQRT_APPROX(x: i32) -> i32 {
+pub unsafe fn silk_SQRT_APPROX(x: i32) -> i32 {
     let mut y: i32 = 0;
     let mut lz: i32 = 0;
     let mut frac_Q7: i32 = 0;
@@ -32,7 +32,7 @@ pub unsafe extern "C" fn silk_SQRT_APPROX(x: i32) -> i32 {
 }
 #[inline]
 #[c2rust::src_loc = "97:1"]
-pub unsafe extern "C" fn silk_DIV32_varQ(a32: i32, b32: i32, Qres: libc::c_int) -> i32 {
+pub unsafe fn silk_DIV32_varQ(a32: i32, b32: i32, Qres: libc::c_int) -> i32 {
     let mut a_headrm: libc::c_int = 0;
     let mut b_headrm: libc::c_int = 0;
     let mut lshift: libc::c_int = 0;
@@ -87,7 +87,7 @@ pub unsafe extern "C" fn silk_DIV32_varQ(a32: i32, b32: i32, Qres: libc::c_int) 
 }
 #[inline]
 #[c2rust::src_loc = "143:1"]
-pub unsafe extern "C" fn silk_INVERSE32_varQ(b32: i32, Qres: libc::c_int) -> i32 {
+pub unsafe fn silk_INVERSE32_varQ(b32: i32, Qres: libc::c_int) -> i32 {
     let mut b_headrm: libc::c_int = 0;
     let mut lshift: libc::c_int = 0;
     let mut b32_inv: i32 = 0;

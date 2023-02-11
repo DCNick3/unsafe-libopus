@@ -12,7 +12,7 @@ use crate::silk::PLC::{silk_PLC, silk_PLC_glue_frames};
 use ::libc;
 
 #[c2rust::src_loc = "39:1"]
-pub unsafe extern "C" fn silk_decode_frame(
+pub unsafe fn silk_decode_frame(
     mut psDec: *mut silk_decoder_state,
     psRangeDec: *mut ec_dec,
     pOut: *mut i16,

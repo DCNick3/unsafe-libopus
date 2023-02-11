@@ -5,7 +5,7 @@ use crate::silk::define::TRANSITION_FRAMES;
 use crate::silk::enc_API::silk_EncControlStruct;
 use crate::silk::structs::silk_encoder_state;
 #[c2rust::src_loc = "36:1"]
-pub unsafe extern "C" fn silk_control_audio_bandwidth(
+pub unsafe fn silk_control_audio_bandwidth(
     mut psEncC: *mut silk_encoder_state,
     mut encControl: *mut silk_EncControlStruct,
 ) -> libc::c_int {

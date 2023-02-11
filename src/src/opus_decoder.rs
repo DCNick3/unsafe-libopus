@@ -96,7 +96,7 @@ pub mod opus_defines_h {
 pub mod cpu_support_h {
     #[inline]
     #[c2rust::src_loc = "65:1"]
-    pub unsafe extern "C" fn opus_select_arch() -> libc::c_int {
+    pub unsafe fn opus_select_arch() -> libc::c_int {
         return 0 as libc::c_int;
     }
 }
@@ -106,7 +106,7 @@ pub mod stack_alloc_h {
     pub const ALLOC_NONE: libc::c_int = 1 as libc::c_int;
     #[inline]
     #[c2rust::src_loc = "175:1"]
-    pub unsafe extern "C" fn _opus_false() -> libc::c_int {
+    pub unsafe fn _opus_false() -> libc::c_int {
         return 0 as libc::c_int;
     }
 }
@@ -166,7 +166,7 @@ pub struct OpusDecoder {
     pub(crate) rangeFinal: u32,
 }
 #[c2rust::src_loc = "82:1"]
-unsafe extern "C" fn validate_opus_decoder(st: *mut OpusDecoder) {
+unsafe fn validate_opus_decoder(st: *mut OpusDecoder) {
     if !((*st).channels == 1 as libc::c_int || (*st).channels == 2 as libc::c_int) {
         celt_fatal(
             b"assertion failed: st->channels == 1 || st->channels == 2\0" as *const u8
@@ -264,7 +264,7 @@ unsafe extern "C" fn validate_opus_decoder(st: *mut OpusDecoder) {
     }
 }
 #[c2rust::src_loc = "102:1"]
-pub unsafe extern "C" fn opus_decoder_get_size(channels: libc::c_int) -> libc::c_int {
+pub unsafe fn opus_decoder_get_size(channels: libc::c_int) -> libc::c_int {
     let mut silkDecSizeBytes: libc::c_int = 0;
     let mut celtDecSizeBytes: libc::c_int = 0;
     let mut ret: libc::c_int = 0;
@@ -282,7 +282,7 @@ pub unsafe extern "C" fn opus_decoder_get_size(channels: libc::c_int) -> libc::c
         + celtDecSizeBytes;
 }
 #[c2rust::src_loc = "116:1"]
-pub unsafe extern "C" fn opus_decoder_init(
+pub unsafe fn opus_decoder_init(
     mut st: *mut OpusDecoder,
     Fs: i32,
     channels: libc::c_int,
@@ -338,7 +338,7 @@ pub unsafe extern "C" fn opus_decoder_init(
     return OPUS_OK;
 }
 #[c2rust::src_loc = "159:1"]
-pub unsafe extern "C" fn opus_decoder_create(
+pub unsafe fn opus_decoder_create(
     Fs: i32,
     channels: libc::c_int,
     error: *mut libc::c_int,
@@ -375,7 +375,7 @@ pub unsafe extern "C" fn opus_decoder_create(
     return st;
 }
 #[c2rust::src_loc = "188:1"]
-unsafe extern "C" fn smooth_fade(
+unsafe fn smooth_fade(
     in1: *const opus_val16,
     in2: *const opus_val16,
     out: *mut opus_val16,
@@ -401,7 +401,7 @@ unsafe extern "C" fn smooth_fade(
     }
 }
 #[c2rust::src_loc = "205:1"]
-unsafe extern "C" fn opus_packet_get_mode(data: *const libc::c_uchar) -> libc::c_int {
+unsafe fn opus_packet_get_mode(data: *const libc::c_uchar) -> libc::c_int {
     let mut mode: libc::c_int = 0;
     if *data.offset(0 as libc::c_int as isize) as libc::c_int & 0x80 as libc::c_int != 0 {
         mode = MODE_CELT_ONLY;
@@ -415,7 +415,7 @@ unsafe extern "C" fn opus_packet_get_mode(data: *const libc::c_uchar) -> libc::c
     return mode;
 }
 #[c2rust::src_loc = "220:1"]
-unsafe extern "C" fn opus_decode_frame(
+unsafe fn opus_decode_frame(
     mut st: *mut OpusDecoder,
     mut data: *const libc::c_uchar,
     mut len: i32,
@@ -1027,7 +1027,7 @@ unsafe extern "C" fn opus_decode_frame(
     };
 }
 #[c2rust::src_loc = "626:1"]
-pub unsafe extern "C" fn opus_decode_native(
+pub unsafe fn opus_decode_native(
     mut st: *mut OpusDecoder,
     mut data: *const libc::c_uchar,
     len: i32,
@@ -1225,7 +1225,7 @@ pub unsafe extern "C" fn opus_decode_native(
     return nb_samples;
 }
 #[c2rust::src_loc = "788:1"]
-pub unsafe extern "C" fn opus_decode(
+pub unsafe fn opus_decode(
     st: *mut OpusDecoder,
     data: *const libc::c_uchar,
     len: i32,
@@ -1282,7 +1282,7 @@ pub unsafe extern "C" fn opus_decode(
     return ret;
 }
 #[c2rust::src_loc = "823:1"]
-pub unsafe extern "C" fn opus_decode_float(
+pub unsafe fn opus_decode_float(
     st: *mut OpusDecoder,
     data: *const libc::c_uchar,
     len: i32,
@@ -1449,11 +1449,11 @@ pub unsafe extern "C" fn opus_decoder_ctl(
     };
 }
 #[c2rust::src_loc = "966:1"]
-pub unsafe extern "C" fn opus_decoder_destroy(st: *mut OpusDecoder) {
+pub unsafe fn opus_decoder_destroy(st: *mut OpusDecoder) {
     free(st as *mut libc::c_void);
 }
 #[c2rust::src_loc = "972:1"]
-pub unsafe extern "C" fn opus_packet_get_bandwidth(data: *const libc::c_uchar) -> libc::c_int {
+pub unsafe fn opus_packet_get_bandwidth(data: *const libc::c_uchar) -> libc::c_int {
     let mut bandwidth: libc::c_int = 0;
     if *data.offset(0 as libc::c_int as isize) as libc::c_int & 0x80 as libc::c_int != 0 {
         bandwidth = OPUS_BANDWIDTH_MEDIUMBAND
@@ -1479,7 +1479,7 @@ pub unsafe extern "C" fn opus_packet_get_bandwidth(data: *const libc::c_uchar) -
     return bandwidth;
 }
 #[c2rust::src_loc = "990:1"]
-pub unsafe extern "C" fn opus_packet_get_nb_channels(data: *const libc::c_uchar) -> libc::c_int {
+pub unsafe fn opus_packet_get_nb_channels(data: *const libc::c_uchar) -> libc::c_int {
     return if *data.offset(0 as libc::c_int as isize) as libc::c_int & 0x4 as libc::c_int != 0 {
         2 as libc::c_int
     } else {
@@ -1487,10 +1487,7 @@ pub unsafe extern "C" fn opus_packet_get_nb_channels(data: *const libc::c_uchar)
     };
 }
 #[c2rust::src_loc = "995:1"]
-pub unsafe extern "C" fn opus_packet_get_nb_frames(
-    packet: *const libc::c_uchar,
-    len: i32,
-) -> libc::c_int {
+pub unsafe fn opus_packet_get_nb_frames(packet: *const libc::c_uchar, len: i32) -> libc::c_int {
     let mut count: libc::c_int = 0;
     if len < 1 as libc::c_int {
         return OPUS_BAD_ARG;
@@ -1507,7 +1504,7 @@ pub unsafe extern "C" fn opus_packet_get_nb_frames(
     };
 }
 #[c2rust::src_loc = "1011:1"]
-pub unsafe extern "C" fn opus_packet_get_nb_samples(
+pub unsafe fn opus_packet_get_nb_samples(
     packet: *const libc::c_uchar,
     len: i32,
     Fs: i32,
@@ -1525,7 +1522,7 @@ pub unsafe extern "C" fn opus_packet_get_nb_samples(
     };
 }
 #[c2rust::src_loc = "1028:1"]
-pub unsafe extern "C" fn opus_decoder_get_nb_samples(
+pub unsafe fn opus_decoder_get_nb_samples(
     dec: *const OpusDecoder,
     packet: *const libc::c_uchar,
     len: i32,

@@ -440,7 +440,7 @@ static mut small_energy_icdf: [libc::c_uchar; 3] = [
     0 as libc::c_int as libc::c_uchar,
 ];
 #[c2rust::src_loc = "142:1"]
-unsafe extern "C" fn loss_distortion(
+unsafe fn loss_distortion(
     eBands: *const opus_val16,
     oldEBands: *mut opus_val16,
     start: libc::c_int,
@@ -472,7 +472,7 @@ unsafe extern "C" fn loss_distortion(
     };
 }
 #[c2rust::src_loc = "156:1"]
-unsafe extern "C" fn quant_coarse_energy_impl(
+unsafe fn quant_coarse_energy_impl(
     m: *const OpusCustomMode,
     start: libc::c_int,
     end: libc::c_int,
@@ -627,7 +627,7 @@ unsafe extern "C" fn quant_coarse_energy_impl(
     return if lfe != 0 { 0 as libc::c_int } else { badness };
 }
 #[c2rust::src_loc = "261:1"]
-pub unsafe extern "C" fn quant_coarse_energy(
+pub unsafe fn quant_coarse_energy(
     m: *const OpusCustomMode,
     start: libc::c_int,
     end: libc::c_int,
@@ -857,7 +857,7 @@ pub unsafe extern "C" fn quant_coarse_energy(
     };
 }
 #[c2rust::src_loc = "361:1"]
-pub unsafe extern "C" fn quant_fine_energy(
+pub unsafe fn quant_fine_energy(
     m: *const OpusCustomMode,
     start: libc::c_int,
     end: libc::c_int,
@@ -910,7 +910,7 @@ pub unsafe extern "C" fn quant_fine_energy(
     }
 }
 #[c2rust::src_loc = "398:1"]
-pub unsafe extern "C" fn quant_energy_finalise(
+pub unsafe fn quant_energy_finalise(
     m: *const OpusCustomMode,
     start: libc::c_int,
     end: libc::c_int,
@@ -967,7 +967,7 @@ pub unsafe extern "C" fn quant_energy_finalise(
     }
 }
 #[c2rust::src_loc = "428:1"]
-pub unsafe extern "C" fn unquant_coarse_energy(
+pub unsafe fn unquant_coarse_energy(
     m: *const OpusCustomMode,
     start: libc::c_int,
     end: libc::c_int,
@@ -1050,7 +1050,7 @@ pub unsafe extern "C" fn unquant_coarse_energy(
     }
 }
 #[c2rust::src_loc = "493:1"]
-pub unsafe extern "C" fn unquant_fine_energy(
+pub unsafe fn unquant_fine_energy(
     m: *const OpusCustomMode,
     start: libc::c_int,
     end: libc::c_int,
@@ -1087,7 +1087,7 @@ pub unsafe extern "C" fn unquant_fine_energy(
     }
 }
 #[c2rust::src_loc = "516:1"]
-pub unsafe extern "C" fn unquant_energy_finalise(
+pub unsafe fn unquant_energy_finalise(
     m: *const OpusCustomMode,
     start: libc::c_int,
     end: libc::c_int,
@@ -1134,7 +1134,7 @@ pub unsafe extern "C" fn unquant_energy_finalise(
     }
 }
 #[c2rust::src_loc = "544:1"]
-pub unsafe extern "C" fn amp2Log2(
+pub unsafe fn amp2Log2(
     m: *const OpusCustomMode,
     effEnd: libc::c_int,
     end: libc::c_int,

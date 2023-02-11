@@ -2,7 +2,7 @@ use ::libc;
 
 use crate::celt::celt::celt_fatal;
 #[c2rust::src_loc = "35:1"]
-pub unsafe extern "C" fn silk_warped_autocorrelation_FLP(
+pub unsafe fn silk_warped_autocorrelation_FLP(
     corr: *mut libc::c_float,
     input: *const libc::c_float,
     warping: libc::c_float,

@@ -36,14 +36,14 @@ pub mod entcode_h {
     pub type ec_dec = ec_ctx;
     #[inline]
     #[c2rust::src_loc = "124:1"]
-    pub unsafe extern "C" fn celt_udiv(mut n: u32, mut d: u32) -> u32 {
+    pub unsafe fn celt_udiv(mut n: u32, mut d: u32) -> u32 {
         return n.wrapping_div(d);
     }
 }
 #[c2rust::header_src = "/usr/include/stdio.h:33"]
 pub mod stdio_h {
     use super::FILE_h::FILE;
-    extern "C" {
+    {
         #[c2rust::src_loc = "145:14"]
         pub static mut stderr: *mut FILE;
         #[c2rust::src_loc = "350:12"]
@@ -55,7 +55,7 @@ pub mod stdio_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.c:44"]
 pub mod entenc_c {
     #[c2rust::src_loc = "244:1"]
-    pub unsafe extern "C" fn ec_enc_done(mut _this: *mut ec_enc) {
+    pub unsafe fn ec_enc_done(mut _this: *mut ec_enc) {
         let mut window: ec_window = 0;
         let mut used: libc::c_int = 0;
         let mut msk: u32 = 0;
@@ -132,7 +132,7 @@ pub mod entenc_c {
         }
     }
     #[c2rust::src_loc = "237:1"]
-    pub unsafe extern "C" fn ec_enc_shrink(mut _this: *mut ec_enc, mut _size: u32) {
+    pub unsafe fn ec_enc_shrink(mut _this: *mut ec_enc, mut _size: u32) {
         memmove(
             ((*_this).buf)
                 .offset(_size as isize)
@@ -157,7 +157,7 @@ pub mod entenc_c {
         (*_this).storage = _size;
     }
     #[c2rust::src_loc = "214:1"]
-    pub unsafe extern "C" fn ec_enc_patch_initial_bits(
+    pub unsafe fn ec_enc_patch_initial_bits(
         mut _this: *mut ec_enc,
         mut _val: libc::c_uint,
         mut _nbits: libc::c_uint,
@@ -183,7 +183,7 @@ pub mod entenc_c {
         };
     }
     #[c2rust::src_loc = "66:1"]
-    pub unsafe extern "C" fn ec_write_byte_at_end(
+    pub unsafe fn ec_write_byte_at_end(
         mut _this: *mut ec_enc,
         mut _value: libc::c_uint,
     ) -> libc::c_int {
@@ -196,7 +196,7 @@ pub mod entenc_c {
         return 0 as libc::c_int;
     }
     #[c2rust::src_loc = "193:1"]
-    pub unsafe extern "C" fn ec_enc_bits(
+    pub unsafe fn ec_enc_bits(
         mut _this: *mut ec_enc,
         mut _fl: u32,
         mut _bits: libc::c_uint,
@@ -231,7 +231,7 @@ pub mod entenc_c {
             as libc::c_int as libc::c_int;
     }
     #[c2rust::src_loc = "175:1"]
-    pub unsafe extern "C" fn ec_enc_uint(mut _this: *mut ec_enc, mut _fl: u32, mut _ft: u32) {
+    pub unsafe fn ec_enc_uint(mut _this: *mut ec_enc, mut _fl: u32, mut _ft: u32) {
         let mut ft: libc::c_uint = 0;
         let mut fl: libc::c_uint = 0;
         let mut ftb: libc::c_int = 0;
@@ -264,7 +264,7 @@ pub mod entenc_c {
         };
     }
     #[c2rust::src_loc = "164:1"]
-    pub unsafe extern "C" fn ec_enc_icdf(
+    pub unsafe fn ec_enc_icdf(
         mut _this: *mut ec_enc,
         mut _s: libc::c_int,
         mut _icdf: *const libc::c_uchar,
@@ -288,7 +288,7 @@ pub mod entenc_c {
         ec_enc_normalize(_this);
     }
     #[c2rust::src_loc = "151:1"]
-    pub unsafe extern "C" fn ec_enc_bit_logp(
+    pub unsafe fn ec_enc_bit_logp(
         mut _this: *mut ec_enc,
         mut _val: libc::c_int,
         mut _logp: libc::c_uint,
@@ -307,7 +307,7 @@ pub mod entenc_c {
         ec_enc_normalize(_this);
     }
     #[c2rust::src_loc = "139:1"]
-    pub unsafe extern "C" fn ec_encode_bin(
+    pub unsafe fn ec_encode_bin(
         mut _this: *mut ec_enc,
         mut _fl: libc::c_uint,
         mut _fh: libc::c_uint,
@@ -329,7 +329,7 @@ pub mod entenc_c {
         ec_enc_normalize(_this);
     }
     #[c2rust::src_loc = "60:1"]
-    pub unsafe extern "C" fn ec_write_byte(
+    pub unsafe fn ec_write_byte(
         mut _this: *mut ec_enc,
         mut _value: libc::c_uint,
     ) -> libc::c_int {
@@ -342,7 +342,7 @@ pub mod entenc_c {
         return 0 as libc::c_int;
     }
     #[c2rust::src_loc = "82:1"]
-    pub unsafe extern "C" fn ec_enc_carry_out(mut _this: *mut ec_enc, mut _c: libc::c_int) {
+    pub unsafe fn ec_enc_carry_out(mut _this: *mut ec_enc, mut _c: libc::c_int) {
         if _c as libc::c_uint
             != ((1 as libc::c_uint) << 8 as libc::c_int)
                 .wrapping_sub(1 as libc::c_int as libc::c_uint)
@@ -377,7 +377,7 @@ pub mod entenc_c {
     }
     #[inline]
     #[c2rust::src_loc = "101:1"]
-    pub unsafe extern "C" fn ec_enc_normalize(mut _this: *mut ec_enc) {
+    pub unsafe fn ec_enc_normalize(mut _this: *mut ec_enc) {
         while (*_this).rng
             <= (1 as libc::c_uint) << 32 as libc::c_int - 1 as libc::c_int >> 8 as libc::c_int
         {
@@ -394,7 +394,7 @@ pub mod entenc_c {
         }
     }
     #[c2rust::src_loc = "128:1"]
-    pub unsafe extern "C" fn ec_encode(
+    pub unsafe fn ec_encode(
         mut _this: *mut ec_enc,
         mut _fl: libc::c_uint,
         mut _fh: libc::c_uint,
@@ -415,7 +415,7 @@ pub mod entenc_c {
         ec_enc_normalize(_this);
     }
     #[c2rust::src_loc = "112:1"]
-    pub unsafe extern "C" fn ec_enc_init(
+    pub unsafe fn ec_enc_init(
         mut _this: *mut ec_enc,
         mut _buf: *mut libc::c_uchar,
         mut _size: u32,
@@ -438,7 +438,7 @@ pub mod entenc_c {
 }
 #[c2rust::header_src = "/usr/include/stdlib.h:44"]
 pub mod stdlib_h {
-    extern "C" {
+    {
         #[c2rust::src_loc = "861:12"]
         pub fn abs(_: libc::c_int) -> libc::c_int;
     }
@@ -446,7 +446,7 @@ pub mod stdlib_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entdec.c:45"]
 pub mod entdec_c {
     #[c2rust::src_loc = "91:1"]
-    pub unsafe extern "C" fn ec_read_byte(mut _this: *mut ec_dec) -> libc::c_int {
+    pub unsafe fn ec_read_byte(mut _this: *mut ec_dec) -> libc::c_int {
         return if (*_this).offs < (*_this).storage {
             let fresh2 = (*_this).offs;
             (*_this).offs = ((*_this).offs).wrapping_add(1);
@@ -456,7 +456,7 @@ pub mod entdec_c {
         };
     }
     #[c2rust::src_loc = "95:1"]
-    pub unsafe extern "C" fn ec_read_byte_from_end(mut _this: *mut ec_dec) -> libc::c_int {
+    pub unsafe fn ec_read_byte_from_end(mut _this: *mut ec_dec) -> libc::c_int {
         return if (*_this).end_offs < (*_this).storage {
             (*_this).end_offs = ((*_this).end_offs).wrapping_add(1);
             *((*_this).buf).offset(((*_this).storage).wrapping_sub((*_this).end_offs) as isize)
@@ -466,7 +466,7 @@ pub mod entdec_c {
         };
     }
     #[c2rust::src_loc = "102:1"]
-    pub unsafe extern "C" fn ec_dec_normalize(mut _this: *mut ec_dec) {
+    pub unsafe fn ec_dec_normalize(mut _this: *mut ec_dec) {
         while (*_this).rng
             <= (1 as libc::c_uint) << 32 as libc::c_int - 1 as libc::c_int >> 8 as libc::c_int
         {
@@ -488,7 +488,7 @@ pub mod entdec_c {
         }
     }
     #[c2rust::src_loc = "146:1"]
-    pub unsafe extern "C" fn ec_decode_bin(
+    pub unsafe fn ec_decode_bin(
         mut _this: *mut ec_dec,
         mut _bits: libc::c_uint,
     ) -> libc::c_uint {
@@ -504,7 +504,7 @@ pub mod entdec_c {
         );
     }
     #[c2rust::src_loc = "153:1"]
-    pub unsafe extern "C" fn ec_dec_update(
+    pub unsafe fn ec_dec_update(
         mut _this: *mut ec_dec,
         mut _fl: libc::c_uint,
         mut _fh: libc::c_uint,
@@ -521,7 +521,7 @@ pub mod entdec_c {
         ec_dec_normalize(_this);
     }
     #[c2rust::src_loc = "162:1"]
-    pub unsafe extern "C" fn ec_dec_bit_logp(
+    pub unsafe fn ec_dec_bit_logp(
         mut _this: *mut ec_dec,
         mut _logp: libc::c_uint,
     ) -> libc::c_int {
@@ -541,7 +541,7 @@ pub mod entdec_c {
         return ret;
     }
     #[c2rust::src_loc = "177:1"]
-    pub unsafe extern "C" fn ec_dec_icdf(
+    pub unsafe fn ec_dec_icdf(
         mut _this: *mut ec_dec,
         mut _icdf: *const libc::c_uchar,
         mut _ftb: libc::c_uint,
@@ -569,7 +569,7 @@ pub mod entdec_c {
         return ret;
     }
     #[c2rust::src_loc = "198:1"]
-    pub unsafe extern "C" fn ec_dec_uint(mut _this: *mut ec_dec, mut _ft: u32) -> u32 {
+    pub unsafe fn ec_dec_uint(mut _this: *mut ec_dec, mut _ft: u32) -> u32 {
         let mut ft: libc::c_uint = 0;
         let mut s: libc::c_uint = 0;
         let mut ftb: libc::c_int = 0;
@@ -607,7 +607,7 @@ pub mod entdec_c {
         };
     }
     #[c2rust::src_loc = "225:1"]
-    pub unsafe extern "C" fn ec_dec_bits(mut _this: *mut ec_dec, mut _bits: libc::c_uint) -> u32 {
+    pub unsafe fn ec_dec_bits(mut _this: *mut ec_dec, mut _bits: libc::c_uint) -> u32 {
         let mut window: ec_window = 0;
         let mut available: libc::c_int = 0;
         let mut ret: u32 = 0;
@@ -636,7 +636,7 @@ pub mod entdec_c {
         return ret;
     }
     #[c2rust::src_loc = "139:1"]
-    pub unsafe extern "C" fn ec_decode(
+    pub unsafe fn ec_decode(
         mut _this: *mut ec_dec,
         mut _ft: libc::c_uint,
     ) -> libc::c_uint {
@@ -653,7 +653,7 @@ pub mod entdec_c {
         );
     }
     #[c2rust::src_loc = "119:1"]
-    pub unsafe extern "C" fn ec_dec_init(
+    pub unsafe fn ec_dec_init(
         mut _this: *mut ec_dec,
         mut _buf: *mut libc::c_uchar,
         mut _storage: u32,
@@ -688,7 +688,7 @@ pub mod entdec_c {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.c:46"]
 pub mod entcode_c {
     #[c2rust::src_loc = "69:1"]
-    pub unsafe extern "C" fn ec_tell_frac(mut _this: *mut ec_ctx) -> u32 {
+    pub unsafe fn ec_tell_frac(mut _this: *mut ec_ctx) -> u32 {
         pub static mut correction: [libc::c_uint; 8] = [
             35733 as libc::c_int as libc::c_uint,
             38967 as libc::c_int as libc::c_uint,
@@ -718,7 +718,7 @@ pub mod entcode_c {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cwrs.c:47"]
 pub mod cwrs_c {
     #[c2rust::src_loc = "45:1"]
-    pub unsafe extern "C" fn log2_frac(mut val: u32, mut frac: libc::c_int) -> libc::c_int {
+    pub unsafe fn log2_frac(mut val: u32, mut frac: libc::c_int) -> libc::c_int {
         let mut l: libc::c_int = 0;
         l = ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int
             * 8 as libc::c_int
@@ -2245,7 +2245,7 @@ pub mod cwrs_c {
     #[c2rust::src_loc = "413:33"]
     pub static mut CELT_PVQ_U_ROW: [*const u32; 15] = [0 as *const u32; 15];
     #[c2rust::src_loc = "431:1"]
-    pub unsafe extern "C" fn get_required_bits(
+    pub unsafe fn get_required_bits(
         mut _bits: *mut i16,
         mut _n: libc::c_int,
         mut _maxk: libc::c_int,
@@ -2278,7 +2278,7 @@ pub mod cwrs_c {
         }
     }
     #[c2rust::src_loc = "440:1"]
-    pub unsafe extern "C" fn icwrs(mut _n: libc::c_int, mut _y: *const libc::c_int) -> u32 {
+    pub unsafe fn icwrs(mut _n: libc::c_int, mut _y: *const libc::c_int) -> u32 {
         let mut i: u32 = 0;
         let mut j: libc::c_int = 0;
         let mut k: libc::c_int = 0;
@@ -2315,7 +2315,7 @@ pub mod cwrs_c {
         return i;
     }
     #[c2rust::src_loc = "458:1"]
-    pub unsafe extern "C" fn encode_pulses(
+    pub unsafe fn encode_pulses(
         mut _y: *const libc::c_int,
         mut _n: libc::c_int,
         mut _k: libc::c_int,
@@ -2343,7 +2343,7 @@ pub mod cwrs_c {
         );
     }
     #[c2rust::src_loc = "463:1"]
-    pub unsafe extern "C" fn cwrsi(
+    pub unsafe fn cwrsi(
         mut _n: libc::c_int,
         mut _k: libc::c_int,
         mut _i: u32,
@@ -2437,7 +2437,7 @@ pub mod cwrs_c {
         return yy;
     }
     #[c2rust::src_loc = "539:1"]
-    pub unsafe extern "C" fn decode_pulses(
+    pub unsafe fn decode_pulses(
         mut _y: *mut libc::c_int,
         mut _n: libc::c_int,
         mut _k: libc::c_int,
@@ -2477,7 +2477,7 @@ pub mod cwrs_c {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.c:48"]
 pub mod mathops_c {
     #[c2rust::src_loc = "43:1"]
-    pub unsafe extern "C" fn isqrt32(mut _val: u32) -> libc::c_uint {
+    pub unsafe fn isqrt32(mut _val: u32) -> libc::c_uint {
         let mut b: libc::c_uint = 0;
         let mut g: libc::c_uint = 0;
         let mut bshift: libc::c_int = 0;
@@ -2508,7 +2508,7 @@ pub mod mathops_c {
 pub mod rate_h {
     #[inline]
     #[c2rust::src_loc = "48:1"]
-    pub unsafe extern "C" fn get_pulses(mut i: libc::c_int) -> libc::c_int {
+    pub unsafe fn get_pulses(mut i: libc::c_int) -> libc::c_int {
         return if i < 8 as libc::c_int {
             i
         } else {
@@ -2708,7 +2708,7 @@ unsafe fn main_0() -> libc::c_int {
 pub fn main() {
     unsafe { ::std::process::exit(main_0() as i32) }
 }
-unsafe extern "C" fn run_static_initializers() {
+unsafe fn run_static_initializers() {
     CELT_PVQ_U_ROW = [
         CELT_PVQ_U_DATA.as_ptr().offset(0 as libc::c_int as isize),
         CELT_PVQ_U_DATA.as_ptr().offset(208 as libc::c_int as isize),
@@ -2751,4 +2751,4 @@ unsafe extern "C" fn run_static_initializers() {
 #[cfg_attr(target_os = "linux", link_section = ".init_array")]
 #[cfg_attr(target_os = "windows", link_section = ".CRT$XIB")]
 #[cfg_attr(target_os = "macos", link_section = "__DATA,__mod_init_func")]
-static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+static INIT_ARRAY: [unsafe fn(); 1] = [run_static_initializers];

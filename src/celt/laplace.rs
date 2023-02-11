@@ -11,7 +11,7 @@ pub const LAPLACE_MINP: libc::c_int = (1 as libc::c_int) << LAPLACE_LOG_MINP;
 #[c2rust::src_loc = "41:9"]
 pub const LAPLACE_NMIN: libc::c_int = 16 as libc::c_int;
 #[c2rust::src_loc = "44:1"]
-unsafe extern "C" fn ec_laplace_get_freq1(fs0: libc::c_uint, decay: libc::c_int) -> libc::c_uint {
+unsafe fn ec_laplace_get_freq1(fs0: libc::c_uint, decay: libc::c_int) -> libc::c_uint {
     let mut ft: libc::c_uint = 0;
     ft = ((32768 as libc::c_int - LAPLACE_MINP * (2 as libc::c_int * LAPLACE_NMIN))
         as libc::c_uint)
@@ -19,7 +19,7 @@ unsafe extern "C" fn ec_laplace_get_freq1(fs0: libc::c_uint, decay: libc::c_int)
     return ft.wrapping_mul((16384 as libc::c_int - decay) as libc::c_uint) >> 15 as libc::c_int;
 }
 #[c2rust::src_loc = "51:1"]
-pub unsafe extern "C" fn ec_laplace_encode(
+pub unsafe fn ec_laplace_encode(
     enc: *mut ec_enc,
     value: *mut libc::c_int,
     mut fs: libc::c_uint,
@@ -95,7 +95,7 @@ pub unsafe extern "C" fn ec_laplace_encode(
     );
 }
 #[c2rust::src_loc = "94:1"]
-pub unsafe extern "C" fn ec_laplace_decode(
+pub unsafe fn ec_laplace_decode(
     dec: *mut ec_dec,
     mut fs: libc::c_uint,
     decay: libc::c_int,

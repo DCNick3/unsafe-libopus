@@ -6,7 +6,7 @@ use crate::silk::float::structs_FLP::silk_encoder_state_FLP;
 use crate::silk::structs::silk_encoder_state;
 
 #[c2rust::src_loc = "39:1"]
-pub unsafe extern "C" fn silk_HP_variable_cutoff(state_Fxx: *mut silk_encoder_state_FLP) {
+pub unsafe fn silk_HP_variable_cutoff(state_Fxx: *mut silk_encoder_state_FLP) {
     let mut quality_Q15: libc::c_int = 0;
     let mut pitch_freq_Hz_Q16: i32 = 0;
     let mut pitch_freq_log_Q7: i32 = 0;

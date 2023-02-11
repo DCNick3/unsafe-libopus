@@ -62,13 +62,13 @@ use crate::silk::tables_other::{silk_LBRR_flags_iCDF_ptr, silk_Quantization_Offs
 use crate::silk::HP_variable_cutoff::silk_HP_variable_cutoff;
 
 #[c2rust::src_loc = "56:1"]
-pub unsafe extern "C" fn silk_Get_Encoder_Size(encSizeBytes: *mut libc::c_int) -> libc::c_int {
+pub unsafe fn silk_Get_Encoder_Size(encSizeBytes: *mut libc::c_int) -> libc::c_int {
     let ret: libc::c_int = SILK_NO_ERROR;
     *encSizeBytes = ::core::mem::size_of::<silk_encoder>() as libc::c_ulong as libc::c_int;
     return ret;
 }
 #[c2rust::src_loc = "70:1"]
-pub unsafe extern "C" fn silk_InitEncoder(
+pub unsafe fn silk_InitEncoder(
     encState: *mut libc::c_void,
     arch: libc::c_int,
     encStatus: *mut silk_EncControlStruct,
@@ -114,7 +114,7 @@ pub unsafe extern "C" fn silk_InitEncoder(
     return ret;
 }
 #[c2rust::src_loc = "103:1"]
-unsafe extern "C" fn silk_QueryEncoder(
+unsafe fn silk_QueryEncoder(
     encState: *const libc::c_void,
     mut encStatus: *mut silk_EncControlStruct,
 ) -> libc::c_int {
@@ -166,7 +166,7 @@ unsafe extern "C" fn silk_QueryEncoder(
     return ret;
 }
 #[c2rust::src_loc = "140:1"]
-pub unsafe extern "C" fn silk_Encode(
+pub unsafe fn silk_Encode(
     encState: *mut libc::c_void,
     mut encControl: *mut silk_EncControlStruct,
     mut samplesIn: *const i16,

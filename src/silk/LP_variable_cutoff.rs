@@ -8,7 +8,7 @@ use crate::silk::tables_other::{silk_Transition_LP_A_Q28, silk_Transition_LP_B_Q
 
 #[inline]
 #[c2rust::src_loc = "41:1"]
-unsafe extern "C" fn silk_LP_interpolate_filter_taps(
+unsafe fn silk_LP_interpolate_filter_taps(
     B_Q28: *mut i32,
     A_Q28: *mut i32,
     ind: libc::c_int,
@@ -105,7 +105,7 @@ unsafe extern "C" fn silk_LP_interpolate_filter_taps(
     };
 }
 #[c2rust::src_loc = "100:1"]
-pub unsafe extern "C" fn silk_LP_variable_cutoff(
+pub unsafe fn silk_LP_variable_cutoff(
     mut psLP: *mut silk_LP_state,
     frame: *mut i16,
     frame_length: libc::c_int,

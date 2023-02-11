@@ -6,7 +6,7 @@ use crate::silk::define::SHELL_CODEC_FRAME_LENGTH;
 use crate::silk::tables_pulses_per_block::silk_sign_iCDF;
 
 #[c2rust::src_loc = "41:1"]
-pub unsafe extern "C" fn silk_encode_signs(
+pub unsafe fn silk_encode_signs(
     psRangeEnc: *mut ec_enc,
     pulses: *const i8,
     mut length: libc::c_int,
@@ -56,7 +56,7 @@ pub unsafe extern "C" fn silk_encode_signs(
     }
 }
 #[c2rust::src_loc = "75:1"]
-pub unsafe extern "C" fn silk_decode_signs(
+pub unsafe fn silk_decode_signs(
     psRangeDec: *mut ec_dec,
     pulses: *mut i16,
     mut length: libc::c_int,

@@ -1,6 +1,6 @@
 use ::libc;
 #[c2rust::src_loc = "35:1"]
-pub unsafe extern "C" fn silk_k2a_FLP(A: *mut libc::c_float, rc: *const libc::c_float, order: i32) {
+pub unsafe fn silk_k2a_FLP(A: *mut libc::c_float, rc: *const libc::c_float, order: i32) {
     let mut k: libc::c_int = 0;
     let mut n: libc::c_int = 0;
     let mut rck: libc::c_float = 0.;

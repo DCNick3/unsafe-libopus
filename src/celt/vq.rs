@@ -23,7 +23,7 @@ use crate::celt::mathops::fast_atan2f;
 use crate::celt::pitch::celt_inner_prod_c;
 
 #[c2rust::src_loc = "47:1"]
-unsafe extern "C" fn exp_rotation1(
+unsafe fn exp_rotation1(
     X: *mut celt_norm,
     len: libc::c_int,
     stride: libc::c_int,
@@ -63,7 +63,7 @@ unsafe extern "C" fn exp_rotation1(
     }
 }
 #[c2rust::src_loc = "74:1"]
-pub unsafe extern "C" fn exp_rotation(
+pub unsafe fn exp_rotation(
     X: *mut celt_norm,
     mut len: libc::c_int,
     dir: libc::c_int,
@@ -111,7 +111,7 @@ pub unsafe extern "C" fn exp_rotation(
     }
 }
 #[c2rust::src_loc = "121:1"]
-unsafe extern "C" fn normalise_residual(
+unsafe fn normalise_residual(
     iy: *mut libc::c_int,
     X: *mut celt_norm,
     N: libc::c_int,
@@ -133,7 +133,7 @@ unsafe extern "C" fn normalise_residual(
     }
 }
 #[c2rust::src_loc = "143:1"]
-unsafe extern "C" fn extract_collapse_mask(
+unsafe fn extract_collapse_mask(
     iy: *mut libc::c_int,
     N: libc::c_int,
     B: libc::c_int,
@@ -168,7 +168,7 @@ unsafe extern "C" fn extract_collapse_mask(
     return collapse_mask;
 }
 #[c2rust::src_loc = "165:1"]
-pub unsafe extern "C" fn op_pvq_search_c(
+pub unsafe fn op_pvq_search_c(
     X: *mut celt_norm,
     iy: *mut libc::c_int,
     K: libc::c_int,
@@ -295,7 +295,7 @@ pub unsafe extern "C" fn op_pvq_search_c(
     return yy;
 }
 #[c2rust::src_loc = "330:1"]
-pub unsafe extern "C" fn alg_quant(
+pub unsafe fn alg_quant(
     X: *mut celt_norm,
     N: libc::c_int,
     K: libc::c_int,
@@ -337,7 +337,7 @@ pub unsafe extern "C" fn alg_quant(
     return collapse_mask;
 }
 #[c2rust::src_loc = "363:1"]
-pub unsafe extern "C" fn alg_unquant(
+pub unsafe fn alg_unquant(
     X: *mut celt_norm,
     N: libc::c_int,
     K: libc::c_int,
@@ -373,7 +373,7 @@ pub unsafe extern "C" fn alg_unquant(
     return collapse_mask;
 }
 #[c2rust::src_loc = "383:1"]
-pub unsafe extern "C" fn renormalise_vector(
+pub unsafe fn renormalise_vector(
     X: *mut celt_norm,
     N: libc::c_int,
     gain: opus_val16,
@@ -396,7 +396,7 @@ pub unsafe extern "C" fn renormalise_vector(
     }
 }
 #[c2rust::src_loc = "410:1"]
-pub unsafe extern "C" fn stereo_itheta(
+pub unsafe fn stereo_itheta(
     X: *const celt_norm,
     Y: *const celt_norm,
     stereo: libc::c_int,

@@ -11,7 +11,7 @@ pub mod typedef_h {
 pub mod NSQ_h {
     #[inline]
     #[c2rust::src_loc = "35:1"]
-    pub unsafe extern "C" fn silk_noise_shape_quantizer_short_prediction_c(
+    pub unsafe fn silk_noise_shape_quantizer_short_prediction_c(
         buf32: *const i32,
         coef16: *const i16,
         order: libc::c_int,
@@ -88,7 +88,7 @@ pub mod NSQ_h {
     }
     #[inline]
     #[c2rust::src_loc = "67:1"]
-    pub unsafe extern "C" fn silk_NSQ_noise_shape_feedback_loop_c(
+    pub unsafe fn silk_NSQ_noise_shape_feedback_loop_c(
         data0: *const i32,
         data1: *mut i32,
         coef: *const i16,
@@ -144,7 +144,7 @@ use crate::silk::Inlines::{silk_DIV32_varQ, silk_INVERSE32_varQ};
 use crate::silk::LPC_analysis_filter::silk_LPC_analysis_filter;
 
 #[c2rust::src_loc = "76:1"]
-pub unsafe extern "C" fn silk_NSQ_c(
+pub unsafe fn silk_NSQ_c(
     psEncC: *const silk_encoder_state,
     mut NSQ: *mut silk_nsq_state,
     psIndices: *mut SideInfoIndices,
@@ -295,7 +295,7 @@ pub unsafe extern "C" fn silk_NSQ_c(
 }
 #[inline]
 #[c2rust::src_loc = "181:1"]
-unsafe extern "C" fn silk_noise_shape_quantizer(
+unsafe fn silk_noise_shape_quantizer(
     mut NSQ: *mut silk_nsq_state,
     signalType: libc::c_int,
     x_sc_Q10: *const i32,
@@ -583,7 +583,7 @@ unsafe extern "C" fn silk_noise_shape_quantizer(
 }
 #[inline]
 #[c2rust::src_loc = "368:1"]
-unsafe extern "C" fn silk_nsq_scale_states(
+unsafe fn silk_nsq_scale_states(
     psEncC: *const silk_encoder_state,
     mut NSQ: *mut silk_nsq_state,
     x16: *const i16,

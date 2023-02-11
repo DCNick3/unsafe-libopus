@@ -7,7 +7,7 @@ pub mod stddef_h {
 #[c2rust::header_src = "/usr/include/stdio.h:33"]
 pub mod stdio_h {
     use super::FILE_h::FILE;
-    extern "C" {
+    {
         #[c2rust::src_loc = "145:14"]
         pub static mut stderr: *mut FILE;
         #[c2rust::src_loc = "350:12"]

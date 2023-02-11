@@ -72,7 +72,7 @@ pub mod opus_defines_h {
 pub mod cpu_support_h {
     #[inline]
     #[c2rust::src_loc = "65:1"]
-    pub unsafe extern "C" fn opus_select_arch() -> libc::c_int {
+    pub unsafe fn opus_select_arch() -> libc::c_int {
         return 0 as libc::c_int;
     }
 }
@@ -151,7 +151,7 @@ pub const PLC_PITCH_LAG_MIN: libc::c_int = 100 as libc::c_int;
 #[c2rust::src_loc = "70:9"]
 pub const DECODE_BUFFER_SIZE: libc::c_int = 2048 as libc::c_int;
 #[c2rust::src_loc = "115:1"]
-pub unsafe extern "C" fn validate_celt_decoder(st: *mut OpusCustomDecoder) {
+pub unsafe fn validate_celt_decoder(st: *mut OpusCustomDecoder) {
     if !((*st).mode
         == opus_custom_mode_create(
             48000 as libc::c_int,
@@ -317,7 +317,7 @@ pub unsafe extern "C" fn validate_celt_decoder(st: *mut OpusCustomDecoder) {
     }
 }
 #[c2rust::src_loc = "144:1"]
-pub unsafe extern "C" fn celt_decoder_get_size(channels: libc::c_int) -> libc::c_int {
+pub unsafe fn celt_decoder_get_size(channels: libc::c_int) -> libc::c_int {
     let mode: *const OpusCustomMode = opus_custom_mode_create(
         48000 as libc::c_int,
         960 as libc::c_int,
@@ -327,7 +327,7 @@ pub unsafe extern "C" fn celt_decoder_get_size(channels: libc::c_int) -> libc::c
 }
 #[inline]
 #[c2rust::src_loc = "150:1"]
-unsafe extern "C" fn opus_custom_decoder_get_size(
+unsafe fn opus_custom_decoder_get_size(
     mode: *const OpusCustomMode,
     channels: libc::c_int,
 ) -> libc::c_int {
@@ -348,7 +348,7 @@ unsafe extern "C" fn opus_custom_decoder_get_size(
     return size;
 }
 #[c2rust::src_loc = "176:1"]
-pub unsafe extern "C" fn celt_decoder_init(
+pub unsafe fn celt_decoder_init(
     mut st: *mut OpusCustomDecoder,
     sampling_rate: i32,
     channels: libc::c_int,
@@ -375,7 +375,7 @@ pub unsafe extern "C" fn celt_decoder_init(
 }
 #[inline]
 #[c2rust::src_loc = "189:1"]
-unsafe extern "C" fn opus_custom_decoder_init(
+unsafe fn opus_custom_decoder_init(
     mut st: *mut OpusCustomDecoder,
     mode: *const OpusCustomMode,
     channels: libc::c_int,
@@ -406,7 +406,7 @@ unsafe extern "C" fn opus_custom_decoder_init(
     return OPUS_OK;
 }
 #[c2rust::src_loc = "230:1"]
-unsafe extern "C" fn deemphasis_stereo_simple(
+unsafe fn deemphasis_stereo_simple(
     in_0: *mut *mut celt_sig,
     pcm: *mut opus_val16,
     N: libc::c_int,
@@ -440,7 +440,7 @@ unsafe extern "C" fn deemphasis_stereo_simple(
     *mem.offset(1 as libc::c_int as isize) = m1;
 }
 #[c2rust::src_loc = "258:1"]
-unsafe extern "C" fn deemphasis(
+unsafe fn deemphasis(
     in_0: *mut *mut celt_sig,
     pcm: *mut opus_val16,
     N: libc::c_int,
@@ -513,7 +513,7 @@ unsafe extern "C" fn deemphasis(
     }
 }
 #[c2rust::src_loc = "361:1"]
-unsafe extern "C" fn celt_synthesis(
+unsafe fn celt_synthesis(
     mode: *const OpusCustomMode,
     X: *mut celt_norm,
     out_syn: *mut *mut celt_sig,
@@ -702,7 +702,7 @@ unsafe extern "C" fn celt_synthesis(
     }
 }
 #[c2rust::src_loc = "441:1"]
-unsafe extern "C" fn tf_decode(
+unsafe fn tf_decode(
     start: libc::c_int,
     end: libc::c_int,
     isTransient: libc::c_int,
@@ -769,7 +769,7 @@ unsafe extern "C" fn tf_decode(
     }
 }
 #[c2rust::src_loc = "480:1"]
-unsafe extern "C" fn celt_plc_pitch_search(
+unsafe fn celt_plc_pitch_search(
     decode_mem: *mut *mut celt_sig,
     C: libc::c_int,
     arch: libc::c_int,
@@ -797,11 +797,7 @@ unsafe extern "C" fn celt_plc_pitch_search(
     return pitch_index;
 }
 #[c2rust::src_loc = "496:1"]
-unsafe extern "C" fn celt_decode_lost(
-    mut st: *mut OpusCustomDecoder,
-    N: libc::c_int,
-    LM: libc::c_int,
-) {
+unsafe fn celt_decode_lost(mut st: *mut OpusCustomDecoder, N: libc::c_int, LM: libc::c_int) {
     let mut c: libc::c_int = 0;
     let mut i: libc::c_int = 0;
     let C: libc::c_int = (*st).channels;
@@ -1176,7 +1172,7 @@ unsafe extern "C" fn celt_decode_lost(
     (*st).loss_count = loss_count + 1 as libc::c_int;
 }
 #[c2rust::src_loc = "814:1"]
-pub unsafe extern "C" fn celt_decode_with_ec(
+pub unsafe fn celt_decode_with_ec(
     mut st: *mut OpusCustomDecoder,
     data: *const libc::c_uchar,
     len: libc::c_int,

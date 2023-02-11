@@ -7,7 +7,7 @@ use crate::silk::pitch_est_tables::{
 use ::libc;
 
 #[c2rust::src_loc = "38:1"]
-pub unsafe extern "C" fn silk_decode_pitch(
+pub unsafe fn silk_decode_pitch(
     lagIndex: i16,
     contourIndex: i8,
     pitch_lags: *mut libc::c_int,

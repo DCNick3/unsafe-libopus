@@ -13,7 +13,7 @@ pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 
 use crate::externs::memset;
 #[c2rust::src_loc = "49:1"]
-pub unsafe extern "C" fn silk_LPC_analysis_filter(
+pub unsafe fn silk_LPC_analysis_filter(
     out: *mut i16,
     in_0: *const i16,
     B: *const i16,

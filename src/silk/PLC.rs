@@ -45,7 +45,7 @@ static mut PLC_RAND_ATTENUATE_V_Q15: [i16; 2] =
 static mut PLC_RAND_ATTENUATE_UV_Q15: [i16; 2] =
     [32440 as libc::c_int as i16, 29491 as libc::c_int as i16];
 #[c2rust::src_loc = "54:1"]
-pub unsafe extern "C" fn silk_PLC_Reset(mut psDec: *mut silk_decoder_state) {
+pub unsafe fn silk_PLC_Reset(mut psDec: *mut silk_decoder_state) {
     (*psDec).sPLC.pitchL_Q8 =
         (((*psDec).frame_length as u32) << 8 as libc::c_int - 1 as libc::c_int) as i32;
     (*psDec).sPLC.prevGain_Q16[0 as libc::c_int as usize] = ((1 as libc::c_int as libc::c_long
@@ -60,7 +60,7 @@ pub unsafe extern "C" fn silk_PLC_Reset(mut psDec: *mut silk_decoder_state) {
     (*psDec).sPLC.nb_subfr = 2 as libc::c_int;
 }
 #[c2rust::src_loc = "65:1"]
-pub unsafe extern "C" fn silk_PLC(
+pub unsafe fn silk_PLC(
     mut psDec: *mut silk_decoder_state,
     psDecCtrl: *mut silk_decoder_control,
     frame: *mut i16,
@@ -80,7 +80,7 @@ pub unsafe extern "C" fn silk_PLC(
 }
 #[inline]
 #[c2rust::src_loc = "97:1"]
-unsafe extern "C" fn silk_PLC_update(
+unsafe fn silk_PLC_update(
     mut psDec: *mut silk_decoder_state,
     psDecCtrl: *mut silk_decoder_control,
 ) {
@@ -200,7 +200,7 @@ unsafe extern "C" fn silk_PLC_update(
 }
 #[inline]
 #[c2rust::src_loc = "170:1"]
-unsafe extern "C" fn silk_PLC_energy(
+unsafe fn silk_PLC_energy(
     energy1: *mut i32,
     shift1: *mut libc::c_int,
     energy2: *mut i32,
@@ -260,7 +260,7 @@ unsafe extern "C" fn silk_PLC_energy(
 }
 #[inline]
 #[c2rust::src_loc = "194:1"]
-unsafe extern "C" fn silk_PLC_conceal(
+unsafe fn silk_PLC_conceal(
     psDec: *mut silk_decoder_state,
     mut psDecCtrl: *mut silk_decoder_control,
     frame: *mut i16,
@@ -317,13 +317,13 @@ unsafe extern "C" fn silk_PLC_conceal(
     );
     if energy1 >> shift2 < energy2 >> shift1 {
         rand_ptr = &mut *((*psDec).exc_Q14).as_mut_ptr().offset((silk_max_int
-            as unsafe extern "C" fn(libc::c_int, libc::c_int) -> libc::c_int)(
+            as unsafe fn(libc::c_int, libc::c_int) -> libc::c_int)(
             0 as libc::c_int,
             ((*psPLC).nb_subfr - 1 as libc::c_int) * (*psPLC).subfr_length - RAND_BUF_SIZE,
         ) as isize) as *mut i32;
     } else {
         rand_ptr = &mut *((*psDec).exc_Q14).as_mut_ptr().offset((silk_max_int
-            as unsafe extern "C" fn(libc::c_int, libc::c_int) -> libc::c_int)(
+            as unsafe fn(libc::c_int, libc::c_int) -> libc::c_int)(
             0 as libc::c_int,
             (*psPLC).nb_subfr * (*psPLC).subfr_length - RAND_BUF_SIZE,
         ) as isize) as *mut i32;
@@ -914,7 +914,7 @@ unsafe extern "C" fn silk_PLC_conceal(
     }
 }
 #[c2rust::src_loc = "392:1"]
-pub unsafe extern "C" fn silk_PLC_glue_frames(
+pub unsafe fn silk_PLC_glue_frames(
     psDec: *mut silk_decoder_state,
     frame: *mut i16,
     length: libc::c_int,

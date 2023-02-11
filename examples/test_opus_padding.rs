@@ -22,10 +22,7 @@ pub mod test_opus_common_h {
     pub static mut iseed: u32 = 0;
     #[inline]
     #[c2rust::src_loc = "66:1"]
-    pub unsafe extern "C" fn _test_failed(
-        mut file: *const libc::c_char,
-        mut line: libc::c_int,
-    ) -> ! {
+    pub unsafe fn _test_failed(mut file: *const libc::c_char, mut line: libc::c_int) -> ! {
         fprintf(
             stderr(),
             b"\n ***************************************************\n\0" as *const u8
@@ -74,7 +71,7 @@ use libopus_unsafe::{
 };
 
 #[c2rust::src_loc = "42:1"]
-pub unsafe extern "C" fn test_overflow() -> libc::c_int {
+pub unsafe fn test_overflow() -> libc::c_int {
     let mut decoder: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
     let mut result: libc::c_int = 0;
     let mut error: libc::c_int = 0;

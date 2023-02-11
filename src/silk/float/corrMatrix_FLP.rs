@@ -3,7 +3,7 @@ use crate::silk::float::inner_product_FLP::silk_inner_product_FLP;
 use ::libc;
 
 #[c2rust::src_loc = "39:1"]
-pub unsafe extern "C" fn silk_corrVector_FLP(
+pub unsafe fn silk_corrVector_FLP(
     x: *const libc::c_float,
     t: *const libc::c_float,
     L: libc::c_int,
@@ -21,7 +21,7 @@ pub unsafe extern "C" fn silk_corrVector_FLP(
     }
 }
 #[c2rust::src_loc = "59:1"]
-pub unsafe extern "C" fn silk_corrMatrix_FLP(
+pub unsafe fn silk_corrMatrix_FLP(
     x: *const libc::c_float,
     L: libc::c_int,
     Order: libc::c_int,

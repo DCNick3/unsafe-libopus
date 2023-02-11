@@ -20,7 +20,7 @@ use crate::silk::tables_pulses_per_block::{
 
 #[inline]
 #[c2rust::src_loc = "39:1"]
-unsafe extern "C" fn combine_and_check(
+unsafe fn combine_and_check(
     pulses_comb: *mut libc::c_int,
     pulses_in: *const libc::c_int,
     max_pulses: libc::c_int,
@@ -41,7 +41,7 @@ unsafe extern "C" fn combine_and_check(
     return 0 as libc::c_int;
 }
 #[c2rust::src_loc = "60:1"]
-pub unsafe extern "C" fn silk_encode_pulses(
+pub unsafe fn silk_encode_pulses(
     psRangeEnc: *mut ec_enc,
     signalType: libc::c_int,
     quantOffsetType: libc::c_int,

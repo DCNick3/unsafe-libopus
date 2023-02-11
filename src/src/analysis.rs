@@ -31,7 +31,7 @@ pub const LEAK_BANDS: libc::c_int = 19 as libc::c_int;
 
 #[c2rust::src_loc = "135:1"]
 pub type downmix_func = Option<
-    unsafe extern "C" fn(
+    unsafe fn(
         *const libc::c_void,
         *mut opus_val32,
         libc::c_int,
@@ -108,7 +108,7 @@ pub mod math_h {
 pub mod cpu_support_h {
     #[inline]
     #[c2rust::src_loc = "65:1"]
-    pub unsafe extern "C" fn opus_select_arch() -> libc::c_int {
+    pub unsafe fn opus_select_arch() -> libc::c_int {
         return 0 as libc::c_int;
     }
 }
@@ -526,7 +526,7 @@ static mut tbands: [libc::c_int; 19] = [
 #[c2rust::src_loc = "111:9"]
 pub const NB_TONAL_SKIP_BANDS: libc::c_int = 9 as libc::c_int;
 #[c2rust::src_loc = "113:1"]
-unsafe extern "C" fn silk_resampler_down2_hp(
+unsafe fn silk_resampler_down2_hp(
     S: *mut opus_val32,
     out: *mut opus_val32,
     in_0: *const opus_val32,
@@ -566,7 +566,7 @@ unsafe extern "C" fn silk_resampler_down2_hp(
     return hp_ener;
 }
 #[c2rust::src_loc = "161:1"]
-unsafe extern "C" fn downmix_and_resample(
+unsafe fn downmix_and_resample(
     downmix: downmix_func,
     mut _x: *const libc::c_void,
     y: *mut opus_val32,
@@ -642,13 +642,13 @@ unsafe extern "C" fn downmix_and_resample(
     return ret;
 }
 #[c2rust::src_loc = "215:1"]
-pub unsafe extern "C" fn tonality_analysis_init(mut tonal: *mut TonalityAnalysisState, Fs: i32) {
+pub unsafe fn tonality_analysis_init(mut tonal: *mut TonalityAnalysisState, Fs: i32) {
     (*tonal).arch = opus_select_arch();
     (*tonal).Fs = Fs;
     tonality_analysis_reset(tonal);
 }
 #[c2rust::src_loc = "224:1"]
-pub unsafe extern "C" fn tonality_analysis_reset(tonal: *mut TonalityAnalysisState) {
+pub unsafe fn tonality_analysis_reset(tonal: *mut TonalityAnalysisState) {
     let start: *mut libc::c_char =
         &mut (*tonal).angle as *mut [libc::c_float; 240] as *mut libc::c_char;
     memset(
@@ -662,7 +662,7 @@ pub unsafe extern "C" fn tonality_analysis_reset(tonal: *mut TonalityAnalysisSta
     );
 }
 #[c2rust::src_loc = "231:1"]
-pub unsafe extern "C" fn tonality_get_info(
+pub unsafe fn tonality_get_info(
     mut tonal: *mut TonalityAnalysisState,
     mut info_out: *mut AnalysisInfo,
     len: libc::c_int,
@@ -905,7 +905,7 @@ pub const LEAKAGE_OFFSET: libc::c_float = 2.5f32;
 #[c2rust::src_loc = "415:9"]
 pub const LEAKAGE_SLOPE: libc::c_float = 2.0f32;
 #[c2rust::src_loc = "444:1"]
-unsafe extern "C" fn tonality_analysis(
+unsafe fn tonality_analysis(
     mut tonal: *mut TonalityAnalysisState,
     celt_mode: *const OpusCustomMode,
     x: *const libc::c_void,
@@ -1685,7 +1685,7 @@ unsafe extern "C" fn tonality_analysis(
     (*info).valid = 1 as libc::c_int;
 }
 #[c2rust::src_loc = "953:1"]
-pub unsafe extern "C" fn run_analysis(
+pub unsafe fn run_analysis(
     mut analysis: *mut TonalityAnalysisState,
     celt_mode: *const OpusCustomMode,
     analysis_pcm: *const libc::c_void,

@@ -4,11 +4,7 @@ use ::libc;
 pub mod SigProc_FLP_h {
     #[inline]
     #[c2rust::src_loc = "175:1"]
-    pub unsafe extern "C" fn silk_short2float_array(
-        out: *mut libc::c_float,
-        in_0: *const i16,
-        length: i32,
-    ) {
+    pub unsafe fn silk_short2float_array(out: *mut libc::c_float, in_0: *const i16, length: i32) {
         let mut k: i32 = 0;
         k = length - 1 as libc::c_int;
         while k >= 0 as libc::c_int {
@@ -42,7 +38,7 @@ use crate::silk::SigProc_FIX::silk_min_int;
 use crate::silk::VAD::silk_VAD_GetSA_Q8_c;
 
 #[c2rust::src_loc = "44:1"]
-pub unsafe extern "C" fn silk_encode_do_VAD_FLP(
+pub unsafe fn silk_encode_do_VAD_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,
     activity: libc::c_int,
 ) {
@@ -78,7 +74,7 @@ pub unsafe extern "C" fn silk_encode_do_VAD_FLP(
     };
 }
 #[c2rust::src_loc = "84:1"]
-pub unsafe extern "C" fn silk_encode_frame_FLP(
+pub unsafe fn silk_encode_frame_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,
     pnBytesOut: *mut i32,
     psRangeEnc: *mut ec_enc,
@@ -602,7 +598,7 @@ pub unsafe extern "C" fn silk_encode_frame_FLP(
 }
 #[inline]
 #[c2rust::src_loc = "382:1"]
-unsafe extern "C" fn silk_LBRR_encode_FLP(
+unsafe fn silk_LBRR_encode_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,
     mut psEncCtrl: *mut silk_encoder_control_FLP,
     xfw: *const libc::c_float,

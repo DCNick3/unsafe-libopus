@@ -11,7 +11,7 @@ use libopus_unsafe::{
 };
 
 #[c2rust::src_loc = "44:1"]
-unsafe extern "C" fn celt_ec_internal_error() -> libc::c_int {
+unsafe fn celt_ec_internal_error() -> libc::c_int {
     let mut enc: *mut OpusMSEncoder = std::ptr::null_mut::<OpusMSEncoder>();
     let mut err: libc::c_int = 0;
     let mut data: [libc::c_uchar; 2460] = [0; 2460];
@@ -1170,7 +1170,7 @@ unsafe extern "C" fn celt_ec_internal_error() -> libc::c_int {
     0 as libc::c_int
 }
 #[c2rust::src_loc = "291:1"]
-unsafe extern "C" fn mscbr_encode_fail10() -> libc::c_int {
+unsafe fn mscbr_encode_fail10() -> libc::c_int {
     let mut enc: *mut OpusMSEncoder = std::ptr::null_mut::<OpusMSEncoder>();
     let mut err: libc::c_int = 0;
     let mut data: [libc::c_uchar; 627300] = [0; 627300];
@@ -6568,7 +6568,7 @@ unsafe extern "C" fn mscbr_encode_fail10() -> libc::c_int {
     0 as libc::c_int
 }
 #[c2rust::src_loc = "344:1"]
-unsafe extern "C" fn mscbr_encode_fail() -> libc::c_int {
+unsafe fn mscbr_encode_fail() -> libc::c_int {
     let mut enc: *mut OpusMSEncoder = std::ptr::null_mut::<OpusMSEncoder>();
     let mut err: libc::c_int = 0;
     let mut data: [libc::c_uchar; 472320] = [0; 472320];
@@ -10643,7 +10643,7 @@ unsafe extern "C" fn mscbr_encode_fail() -> libc::c_int {
     0 as libc::c_int
 }
 #[c2rust::src_loc = "394:1"]
-unsafe extern "C" fn surround_analysis_uninit() -> libc::c_int {
+unsafe fn surround_analysis_uninit() -> libc::c_int {
     let mut enc: *mut OpusMSEncoder = std::ptr::null_mut::<OpusMSEncoder>();
     let mut err: libc::c_int = 0;
     let mut data: [libc::c_uchar; 7380] = [0; 7380];
@@ -17911,7 +17911,7 @@ unsafe extern "C" fn surround_analysis_uninit() -> libc::c_int {
     0 as libc::c_int
 }
 #[c2rust::src_loc = "894:1"]
-unsafe extern "C" fn ec_enc_shrink_assert() -> libc::c_int {
+unsafe fn ec_enc_shrink_assert() -> libc::c_int {
     let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
     let mut err: libc::c_int = 0;
     let mut data_len: libc::c_int = 0;
@@ -24686,7 +24686,7 @@ unsafe extern "C" fn ec_enc_shrink_assert() -> libc::c_int {
     0 as libc::c_int
 }
 #[c2rust::src_loc = "957:1"]
-unsafe extern "C" fn ec_enc_shrink_assert2() -> libc::c_int {
+unsafe fn ec_enc_shrink_assert2() -> libc::c_int {
     let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
     let mut err: libc::c_int = 0;
     let mut data_len: libc::c_int = 0;
@@ -26167,7 +26167,7 @@ unsafe extern "C" fn ec_enc_shrink_assert2() -> libc::c_int {
     0 as libc::c_int
 }
 #[c2rust::src_loc = "989:1"]
-unsafe extern "C" fn silk_gain_assert() -> libc::c_int {
+unsafe fn silk_gain_assert() -> libc::c_int {
     let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
     let mut err: libc::c_int = 0;
     let mut data_len: libc::c_int = 0;
@@ -27329,7 +27329,7 @@ unsafe extern "C" fn silk_gain_assert() -> libc::c_int {
     0 as libc::c_int
 }
 #[c2rust::src_loc = "1025:1"]
-pub unsafe extern "C" fn regression_test() {
+pub unsafe fn regression_test() {
     fprintf(
         stderr(),
         b"Running simple tests for bugs that have been fixed previously\n\0" as *const u8

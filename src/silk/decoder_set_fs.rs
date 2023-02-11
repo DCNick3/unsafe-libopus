@@ -14,7 +14,7 @@ use crate::silk::tables_pitch_lag::{
 };
 
 #[c2rust::src_loc = "35:1"]
-pub unsafe extern "C" fn silk_decoder_set_fs(
+pub unsafe fn silk_decoder_set_fs(
     mut psDec: *mut silk_decoder_state,
     fs_kHz: libc::c_int,
     fs_API_Hz: i32,

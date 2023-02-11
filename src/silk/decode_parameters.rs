@@ -12,7 +12,7 @@ use crate::silk::NLSF_decode::silk_NLSF_decode;
 use crate::silk::NLSF2A::silk_NLSF2A;
 
 #[c2rust::src_loc = "35:1"]
-pub unsafe extern "C" fn silk_decode_parameters(
+pub unsafe fn silk_decode_parameters(
     mut psDec: *mut silk_decoder_state,
     mut psDecCtrl: *mut silk_decoder_control,
     condCoding: libc::c_int,

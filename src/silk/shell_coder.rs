@@ -8,11 +8,7 @@ use ::libc;
 
 #[inline]
 #[c2rust::src_loc = "36:1"]
-unsafe extern "C" fn combine_pulses(
-    out: *mut libc::c_int,
-    in_0: *const libc::c_int,
-    len: libc::c_int,
-) {
+unsafe fn combine_pulses(out: *mut libc::c_int, in_0: *const libc::c_int, len: libc::c_int) {
     let mut k: libc::c_int = 0;
     k = 0 as libc::c_int;
     while k < len {
@@ -23,7 +19,7 @@ unsafe extern "C" fn combine_pulses(
 }
 #[inline]
 #[c2rust::src_loc = "48:1"]
-unsafe extern "C" fn encode_split(
+unsafe fn encode_split(
     psRangeEnc: *mut ec_enc,
     p_child1: libc::c_int,
     p: libc::c_int,
@@ -41,7 +37,7 @@ unsafe extern "C" fn encode_split(
 }
 #[inline]
 #[c2rust::src_loc = "60:1"]
-unsafe extern "C" fn decode_split(
+unsafe fn decode_split(
     p_child1: *mut i16,
     p_child2: *mut i16,
     psRangeDec: *mut ec_dec,
@@ -63,7 +59,7 @@ unsafe extern "C" fn decode_split(
     };
 }
 #[c2rust::src_loc = "78:1"]
-pub unsafe extern "C" fn silk_shell_encoder(psRangeEnc: *mut ec_enc, pulses0: *const libc::c_int) {
+pub unsafe fn silk_shell_encoder(psRangeEnc: *mut ec_enc, pulses0: *const libc::c_int) {
     let mut pulses1: [libc::c_int; 8] = [0; 8];
     let mut pulses2: [libc::c_int; 4] = [0; 4];
     let mut pulses3: [libc::c_int; 2] = [0; 2];
@@ -164,11 +160,7 @@ pub unsafe extern "C" fn silk_shell_encoder(psRangeEnc: *mut ec_enc, pulses0: *c
     );
 }
 #[c2rust::src_loc = "119:1"]
-pub unsafe extern "C" fn silk_shell_decoder(
-    pulses0: *mut i16,
-    psRangeDec: *mut ec_dec,
-    pulses4: libc::c_int,
-) {
+pub unsafe fn silk_shell_decoder(pulses0: *mut i16, psRangeDec: *mut ec_dec, pulses4: libc::c_int) {
     let mut pulses3: [i16; 2] = [0; 2];
     let mut pulses2: [i16; 4] = [0; 4];
     let mut pulses1: [i16; 8] = [0; 8];

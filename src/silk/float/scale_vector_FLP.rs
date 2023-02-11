@@ -1,6 +1,6 @@
 use ::libc;
 #[c2rust::src_loc = "35:1"]
-pub unsafe extern "C" fn silk_scale_vector_FLP(
+pub unsafe fn silk_scale_vector_FLP(
     data1: *mut libc::c_float,
     gain: libc::c_float,
     dataSize: libc::c_int,

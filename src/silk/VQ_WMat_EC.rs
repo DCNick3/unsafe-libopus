@@ -10,7 +10,7 @@ pub use self::typedef_h::silk_int32_MAX;
 use crate::silk::define::LTP_ORDER;
 
 #[c2rust::src_loc = "35:1"]
-pub unsafe extern "C" fn silk_VQ_WMat_EC_c(
+pub unsafe fn silk_VQ_WMat_EC_c(
     ind: *mut i8,
     res_nrg_Q15: *mut i32,
     rate_dist_Q8: *mut i32,

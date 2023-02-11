@@ -23,7 +23,7 @@ use libopus_unsafe::{
     OpusRepacketizer,
 };
 #[c2rust::src_loc = "39:1"]
-pub unsafe extern "C" fn usage(mut argv0: *mut libc::c_char) {
+pub unsafe fn usage(mut argv0: *mut libc::c_char) {
     fprintf(
         stderr(),
         b"usage: %s [options] input_file output_file\n\0" as *const u8 as *const libc::c_char,
@@ -31,7 +31,7 @@ pub unsafe extern "C" fn usage(mut argv0: *mut libc::c_char) {
     );
 }
 #[c2rust::src_loc = "44:1"]
-unsafe extern "C" fn int_to_char(mut i: u32, mut ch: *mut libc::c_uchar) {
+unsafe fn int_to_char(mut i: u32, mut ch: *mut libc::c_uchar) {
     *ch.offset(0 as libc::c_int as isize) = (i >> 24 as libc::c_int) as libc::c_uchar;
     *ch.offset(1 as libc::c_int as isize) =
         (i >> 16 as libc::c_int & 0xff as libc::c_int as libc::c_uint) as libc::c_uchar;
@@ -41,7 +41,7 @@ unsafe extern "C" fn int_to_char(mut i: u32, mut ch: *mut libc::c_uchar) {
         (i & 0xff as libc::c_int as libc::c_uint) as libc::c_uchar;
 }
 #[c2rust::src_loc = "52:1"]
-unsafe extern "C" fn char_to_int(mut ch: *mut libc::c_uchar) -> u32 {
+unsafe fn char_to_int(mut ch: *mut libc::c_uchar) -> u32 {
     (*ch.offset(0 as libc::c_int as isize) as u32) << 24 as libc::c_int
         | (*ch.offset(1 as libc::c_int as isize) as u32) << 16 as libc::c_int
         | (*ch.offset(2 as libc::c_int as isize) as u32) << 8 as libc::c_int

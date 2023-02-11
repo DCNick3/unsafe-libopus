@@ -9,7 +9,7 @@ pub struct ChannelLayout {
     pub mapping: [libc::c_uchar; 256],
 }
 #[c2rust::src_loc = "41:1"]
-pub unsafe extern "C" fn validate_layout(layout: *const ChannelLayout) -> libc::c_int {
+pub unsafe fn validate_layout(layout: *const ChannelLayout) -> libc::c_int {
     let mut i: libc::c_int = 0;
     let mut max_channel: libc::c_int = 0;
     max_channel = (*layout).nb_streams + (*layout).nb_coupled_streams;
@@ -28,7 +28,7 @@ pub unsafe extern "C" fn validate_layout(layout: *const ChannelLayout) -> libc::
     return 1 as libc::c_int;
 }
 #[c2rust::src_loc = "57:1"]
-pub unsafe extern "C" fn get_left_channel(
+pub unsafe fn get_left_channel(
     layout: *const ChannelLayout,
     stream_id: libc::c_int,
     prev: libc::c_int,
@@ -48,7 +48,7 @@ pub unsafe extern "C" fn get_left_channel(
     return -(1 as libc::c_int);
 }
 #[c2rust::src_loc = "69:1"]
-pub unsafe extern "C" fn get_right_channel(
+pub unsafe fn get_right_channel(
     layout: *const ChannelLayout,
     stream_id: libc::c_int,
     prev: libc::c_int,
@@ -70,7 +70,7 @@ pub unsafe extern "C" fn get_right_channel(
     return -(1 as libc::c_int);
 }
 #[c2rust::src_loc = "81:1"]
-pub unsafe extern "C" fn get_mono_channel(
+pub unsafe fn get_mono_channel(
     layout: *const ChannelLayout,
     stream_id: libc::c_int,
     prev: libc::c_int,

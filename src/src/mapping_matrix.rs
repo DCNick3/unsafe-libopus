@@ -30,7 +30,7 @@ pub struct MappingMatrix {
 }
 
 #[c2rust::src_loc = "40:1"]
-pub unsafe extern "C" fn mapping_matrix_get_size(rows: libc::c_int, cols: libc::c_int) -> i32 {
+pub unsafe fn mapping_matrix_get_size(rows: libc::c_int, cols: libc::c_int) -> i32 {
     let mut size: i32 = 0;
     if rows > 255 as libc::c_int || cols > 255 as libc::c_int {
         return 0 as libc::c_int;
@@ -44,13 +44,13 @@ pub unsafe extern "C" fn mapping_matrix_get_size(rows: libc::c_int, cols: libc::
         + align(size);
 }
 #[c2rust::src_loc = "57:1"]
-pub unsafe extern "C" fn mapping_matrix_get_data(matrix: *const MappingMatrix) -> *mut i16 {
+pub unsafe fn mapping_matrix_get_data(matrix: *const MappingMatrix) -> *mut i16 {
     return (matrix as *mut libc::c_char).offset(align(
         ::core::mem::size_of::<MappingMatrix>() as libc::c_ulong as libc::c_int
     ) as isize) as *mut libc::c_void as *mut i16;
 }
 #[c2rust::src_loc = "63:1"]
-pub unsafe extern "C" fn mapping_matrix_init(
+pub unsafe fn mapping_matrix_init(
     matrix: *mut MappingMatrix,
     rows: libc::c_int,
     cols: libc::c_int,
@@ -85,7 +85,7 @@ pub unsafe extern "C" fn mapping_matrix_init(
     }
 }
 #[c2rust::src_loc = "85:1"]
-pub unsafe extern "C" fn mapping_matrix_multiply_channel_in_float(
+pub unsafe fn mapping_matrix_multiply_channel_in_float(
     matrix: *const MappingMatrix,
     input: *const libc::c_float,
     input_rows: libc::c_int,
@@ -122,7 +122,7 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_in_float(
     }
 }
 #[c2rust::src_loc = "119:1"]
-pub unsafe extern "C" fn mapping_matrix_multiply_channel_out_float(
+pub unsafe fn mapping_matrix_multiply_channel_out_float(
     matrix: *const MappingMatrix,
     input: *const opus_val16,
     input_row: libc::c_int,
@@ -160,7 +160,7 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_out_float(
     }
 }
 #[c2rust::src_loc = "156:1"]
-pub unsafe extern "C" fn mapping_matrix_multiply_channel_in_short(
+pub unsafe fn mapping_matrix_multiply_channel_in_short(
     matrix: *const MappingMatrix,
     input: *const i16,
     input_rows: libc::c_int,
@@ -198,7 +198,7 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_in_short(
     }
 }
 #[c2rust::src_loc = "196:1"]
-pub unsafe extern "C" fn mapping_matrix_multiply_channel_out_short(
+pub unsafe fn mapping_matrix_multiply_channel_out_short(
     matrix: *const MappingMatrix,
     input: *const opus_val16,
     input_row: libc::c_int,

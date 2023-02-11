@@ -13,10 +13,7 @@ use crate::externs::{memmove, memset};
 use crate::silk::macros::EC_CLZ0;
 
 #[c2rust::src_loc = "60:1"]
-unsafe extern "C" fn ec_write_byte(
-    mut _this: *mut ec_enc,
-    mut _value: libc::c_uint,
-) -> libc::c_int {
+unsafe fn ec_write_byte(mut _this: *mut ec_enc, mut _value: libc::c_uint) -> libc::c_int {
     if ((*_this).offs).wrapping_add((*_this).end_offs) >= (*_this).storage {
         return -(1 as libc::c_int);
     }
@@ -26,10 +23,7 @@ unsafe extern "C" fn ec_write_byte(
     return 0 as libc::c_int;
 }
 #[c2rust::src_loc = "66:1"]
-unsafe extern "C" fn ec_write_byte_at_end(
-    mut _this: *mut ec_enc,
-    mut _value: libc::c_uint,
-) -> libc::c_int {
+unsafe fn ec_write_byte_at_end(mut _this: *mut ec_enc, mut _value: libc::c_uint) -> libc::c_int {
     if ((*_this).offs).wrapping_add((*_this).end_offs) >= (*_this).storage {
         return -(1 as libc::c_int);
     }
@@ -39,7 +33,7 @@ unsafe extern "C" fn ec_write_byte_at_end(
     return 0 as libc::c_int;
 }
 #[c2rust::src_loc = "82:1"]
-unsafe extern "C" fn ec_enc_carry_out(mut _this: *mut ec_enc, mut _c: libc::c_int) {
+unsafe fn ec_enc_carry_out(mut _this: *mut ec_enc, mut _c: libc::c_int) {
     if _c as libc::c_uint != EC_SYM_MAX {
         let mut carry: libc::c_int = 0;
         carry = _c >> EC_SYM_BITS;
@@ -64,7 +58,7 @@ unsafe extern "C" fn ec_enc_carry_out(mut _this: *mut ec_enc, mut _c: libc::c_in
 }
 #[inline]
 #[c2rust::src_loc = "101:1"]
-unsafe extern "C" fn ec_enc_normalize(mut _this: *mut ec_enc) {
+unsafe fn ec_enc_normalize(mut _this: *mut ec_enc) {
     while (*_this).rng <= EC_CODE_BOT {
         ec_enc_carry_out(_this, ((*_this).val >> EC_CODE_SHIFT) as libc::c_int);
         (*_this).val = (*_this).val << EC_SYM_BITS
@@ -74,11 +68,7 @@ unsafe extern "C" fn ec_enc_normalize(mut _this: *mut ec_enc) {
     }
 }
 #[c2rust::src_loc = "112:1"]
-pub unsafe extern "C" fn ec_enc_init(
-    mut _this: *mut ec_enc,
-    mut _buf: *mut libc::c_uchar,
-    mut _size: u32,
-) {
+pub unsafe fn ec_enc_init(mut _this: *mut ec_enc, mut _buf: *mut libc::c_uchar, mut _size: u32) {
     (*_this).buf = _buf;
     (*_this).end_offs = 0 as libc::c_int as u32;
     (*_this).end_window = 0 as libc::c_int as ec_window;
@@ -93,7 +83,7 @@ pub unsafe extern "C" fn ec_enc_init(
     (*_this).error = 0 as libc::c_int;
 }
 #[c2rust::src_loc = "128:1"]
-pub unsafe extern "C" fn ec_encode(
+pub unsafe fn ec_encode(
     mut _this: *mut ec_enc,
     mut _fl: libc::c_uint,
     mut _fh: libc::c_uint,
@@ -114,7 +104,7 @@ pub unsafe extern "C" fn ec_encode(
     ec_enc_normalize(_this);
 }
 #[c2rust::src_loc = "139:1"]
-pub unsafe extern "C" fn ec_encode_bin(
+pub unsafe fn ec_encode_bin(
     mut _this: *mut ec_enc,
     mut _fl: libc::c_uint,
     mut _fh: libc::c_uint,
@@ -136,7 +126,7 @@ pub unsafe extern "C" fn ec_encode_bin(
     ec_enc_normalize(_this);
 }
 #[c2rust::src_loc = "151:1"]
-pub unsafe extern "C" fn ec_enc_bit_logp(
+pub unsafe fn ec_enc_bit_logp(
     mut _this: *mut ec_enc,
     mut _val: libc::c_int,
     mut _logp: libc::c_uint,
@@ -155,7 +145,7 @@ pub unsafe extern "C" fn ec_enc_bit_logp(
     ec_enc_normalize(_this);
 }
 #[c2rust::src_loc = "164:1"]
-pub unsafe extern "C" fn ec_enc_icdf(
+pub unsafe fn ec_enc_icdf(
     mut _this: *mut ec_enc,
     mut _s: libc::c_int,
     mut _icdf: *const libc::c_uchar,
@@ -179,7 +169,7 @@ pub unsafe extern "C" fn ec_enc_icdf(
     ec_enc_normalize(_this);
 }
 #[c2rust::src_loc = "175:1"]
-pub unsafe extern "C" fn ec_enc_uint(mut _this: *mut ec_enc, mut _fl: u32, mut _ft: u32) {
+pub unsafe fn ec_enc_uint(mut _this: *mut ec_enc, mut _fl: u32, mut _ft: u32) {
     let mut ft: libc::c_uint = 0;
     let mut fl: libc::c_uint = 0;
     let mut ftb: libc::c_int = 0;
@@ -217,11 +207,7 @@ pub unsafe extern "C" fn ec_enc_uint(mut _this: *mut ec_enc, mut _fl: u32, mut _
     };
 }
 #[c2rust::src_loc = "193:1"]
-pub unsafe extern "C" fn ec_enc_bits(
-    mut _this: *mut ec_enc,
-    mut _fl: u32,
-    mut _bits: libc::c_uint,
-) {
+pub unsafe fn ec_enc_bits(mut _this: *mut ec_enc, mut _fl: u32, mut _bits: libc::c_uint) {
     let mut window: ec_window = 0;
     let mut used: libc::c_int = 0;
     window = (*_this).end_window;
@@ -251,7 +237,7 @@ pub unsafe extern "C" fn ec_enc_bits(
         ((*_this).nbits_total as libc::c_uint).wrapping_add(_bits) as libc::c_int as libc::c_int;
 }
 #[c2rust::src_loc = "214:1"]
-pub unsafe extern "C" fn ec_enc_patch_initial_bits(
+pub unsafe fn ec_enc_patch_initial_bits(
     mut _this: *mut ec_enc,
     mut _val: libc::c_uint,
     mut _nbits: libc::c_uint,
@@ -280,7 +266,7 @@ pub unsafe extern "C" fn ec_enc_patch_initial_bits(
     };
 }
 #[c2rust::src_loc = "237:1"]
-pub unsafe extern "C" fn ec_enc_shrink(mut _this: *mut ec_enc, mut _size: u32) {
+pub unsafe fn ec_enc_shrink(mut _this: *mut ec_enc, mut _size: u32) {
     if !(((*_this).offs).wrapping_add((*_this).end_offs) <= _size) {
         celt_fatal(
             b"assertion failed: _this->offs+_this->end_offs<=_size\0" as *const u8
@@ -313,7 +299,7 @@ pub unsafe extern "C" fn ec_enc_shrink(mut _this: *mut ec_enc, mut _size: u32) {
     (*_this).storage = _size;
 }
 #[c2rust::src_loc = "244:1"]
-pub unsafe extern "C" fn ec_enc_done(mut _this: *mut ec_enc) {
+pub unsafe fn ec_enc_done(mut _this: *mut ec_enc) {
     let mut window: ec_window = 0;
     let mut used: libc::c_int = 0;
     let mut msk: u32 = 0;

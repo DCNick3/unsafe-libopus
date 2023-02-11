@@ -1,6 +1,6 @@
 use ::libc;
 #[c2rust::src_loc = "35:1"]
-pub unsafe extern "C" fn silk_inner_product_FLP(
+pub unsafe fn silk_inner_product_FLP(
     data1: *const libc::c_float,
     data2: *const libc::c_float,
     dataSize: libc::c_int,

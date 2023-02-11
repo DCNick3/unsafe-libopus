@@ -17,7 +17,7 @@ pub const BIN_DIV_STEPS_A2NLSF_FIX: libc::c_int = 3 as libc::c_int;
 pub const MAX_ITERATIONS_A2NLSF_FIX: libc::c_int = 16 as libc::c_int;
 #[inline]
 #[c2rust::src_loc = "47:1"]
-unsafe extern "C" fn silk_A2NLSF_trans_poly(p: *mut i32, dd: libc::c_int) {
+unsafe fn silk_A2NLSF_trans_poly(p: *mut i32, dd: libc::c_int) {
     let mut k: libc::c_int = 0;
     let mut n: libc::c_int = 0;
     k = 2 as libc::c_int;
@@ -35,7 +35,7 @@ unsafe extern "C" fn silk_A2NLSF_trans_poly(p: *mut i32, dd: libc::c_int) {
 }
 #[inline]
 #[c2rust::src_loc = "63:1"]
-unsafe extern "C" fn silk_A2NLSF_eval_poly(p: *mut i32, x: i32, dd: libc::c_int) -> i32 {
+unsafe fn silk_A2NLSF_eval_poly(p: *mut i32, x: i32, dd: libc::c_int) -> i32 {
     let mut n: libc::c_int = 0;
     let mut x_Q16: i32 = 0;
     let mut y32: i32 = 0;
@@ -71,12 +71,7 @@ unsafe extern "C" fn silk_A2NLSF_eval_poly(p: *mut i32, x: i32, dd: libc::c_int)
 }
 #[inline]
 #[c2rust::src_loc = "95:1"]
-unsafe extern "C" fn silk_A2NLSF_init(
-    a_Q16: *const i32,
-    P: *mut i32,
-    Q: *mut i32,
-    dd: libc::c_int,
-) {
+unsafe fn silk_A2NLSF_init(a_Q16: *const i32, P: *mut i32, Q: *mut i32, dd: libc::c_int) {
     let mut k: libc::c_int = 0;
     *P.offset(dd as isize) = ((1 as libc::c_int as u32) << 16 as libc::c_int) as i32;
     *Q.offset(dd as isize) = ((1 as libc::c_int as u32) << 16 as libc::c_int) as i32;
@@ -100,7 +95,7 @@ unsafe extern "C" fn silk_A2NLSF_init(
     silk_A2NLSF_trans_poly(Q, dd);
 }
 #[c2rust::src_loc = "127:1"]
-pub unsafe extern "C" fn silk_A2NLSF(NLSF: *mut i16, a_Q16: *mut i32, d: libc::c_int) {
+pub unsafe fn silk_A2NLSF(NLSF: *mut i16, a_Q16: *mut i32, d: libc::c_int) {
     let mut i: libc::c_int = 0;
     let mut k: libc::c_int = 0;
     let mut m: libc::c_int = 0;

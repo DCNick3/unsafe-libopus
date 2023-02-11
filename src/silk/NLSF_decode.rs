@@ -6,7 +6,7 @@ use crate::silk::structs::silk_NLSF_CB_struct;
 
 #[inline]
 #[c2rust::src_loc = "35:1"]
-unsafe extern "C" fn silk_NLSF_residual_dequant(
+unsafe fn silk_NLSF_residual_dequant(
     x_Q10: *mut i16,
     indices: *const i8,
     pred_coef_Q8: *const u8,
@@ -39,7 +39,7 @@ unsafe extern "C" fn silk_NLSF_residual_dequant(
     }
 }
 #[c2rust::src_loc = "63:1"]
-pub unsafe extern "C" fn silk_NLSF_decode(
+pub unsafe fn silk_NLSF_decode(
     pNLSF_Q15: *mut i16,
     NLSFIndices: *mut i8,
     psNLSF_CB: *const silk_NLSF_CB_struct,

@@ -6,7 +6,7 @@ use crate::silk::lin2log::silk_lin2log;
 use crate::silk::VAD::silk_VAD_Init;
 
 #[c2rust::src_loc = "42:1"]
-pub unsafe extern "C" fn silk_init_encoder(
+pub unsafe fn silk_init_encoder(
     mut psEnc: *mut silk_encoder_state_FLP,
     arch: libc::c_int,
 ) -> libc::c_int {

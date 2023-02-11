@@ -2,7 +2,7 @@ use ::libc;
 
 use crate::celt::celt::celt_fatal;
 #[c2rust::src_loc = "34:1"]
-pub unsafe extern "C" fn silk_schur_FLP(
+pub unsafe fn silk_schur_FLP(
     refl_coef: *mut libc::c_float,
     auto_corr: *const libc::c_float,
     order: libc::c_int,

@@ -74,7 +74,7 @@ use crate::{_test_failed, assert_is_equal, assert_is_equal_short, opus_val16};
 use libopus_unsafe::externs::{free, malloc};
 
 #[c2rust::src_loc = "82:1"]
-pub unsafe extern "C" fn test_simple_matrix() {
+pub unsafe fn test_simple_matrix() {
     let simple_matrix_params: MappingMatrix = {
         MappingMatrix {
             rows: 4 as libc::c_int,

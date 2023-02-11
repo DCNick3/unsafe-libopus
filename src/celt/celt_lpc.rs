@@ -15,11 +15,7 @@ use crate::externs::memset;
 pub const LPC_ORDER: libc::c_int = 24 as libc::c_int;
 
 #[c2rust::src_loc = "37:1"]
-pub unsafe extern "C" fn _celt_lpc(
-    mut _lpc: *mut opus_val16,
-    ac: *const opus_val32,
-    p: libc::c_int,
-) {
+pub unsafe fn _celt_lpc(mut _lpc: *mut opus_val16, ac: *const opus_val32, p: libc::c_int) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     let mut r: opus_val32 = 0.;
@@ -61,7 +57,7 @@ pub unsafe extern "C" fn _celt_lpc(
     }
 }
 #[c2rust::src_loc = "91:1"]
-pub unsafe extern "C" fn celt_fir_c(
+pub unsafe fn celt_fir_c(
     x: *const opus_val16,
     num: *const opus_val16,
     y: *mut opus_val16,
@@ -117,7 +113,7 @@ pub unsafe extern "C" fn celt_fir_c(
     }
 }
 #[c2rust::src_loc = "129:1"]
-pub unsafe extern "C" fn celt_iir(
+pub unsafe fn celt_iir(
     mut _x: *const opus_val32,
     den: *const opus_val16,
     mut _y: *mut opus_val32,
@@ -213,7 +209,7 @@ pub unsafe extern "C" fn celt_iir(
     }
 }
 #[c2rust::src_loc = "210:1"]
-pub unsafe extern "C" fn _celt_autocorr(
+pub unsafe fn _celt_autocorr(
     x: *const opus_val16,
     ac: *mut opus_val32,
     window: *const opus_val16,

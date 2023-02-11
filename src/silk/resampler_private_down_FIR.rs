@@ -18,7 +18,7 @@ use crate::silk::resampler_structs::silk_resampler_state_struct;
 
 #[inline]
 #[c2rust::src_loc = "36:1"]
-unsafe extern "C" fn silk_resampler_private_down_FIR_INTERPOL(
+unsafe fn silk_resampler_private_down_FIR_INTERPOL(
     mut out: *mut i16,
     buf: *mut i32,
     FIR_Coefs: *const i16,
@@ -399,7 +399,7 @@ unsafe extern "C" fn silk_resampler_private_down_FIR_INTERPOL(
     return out;
 }
 #[c2rust::src_loc = "145:1"]
-pub unsafe extern "C" fn silk_resampler_private_down_FIR(
+pub unsafe fn silk_resampler_private_down_FIR(
     SS: *mut libc::c_void,
     mut out: *mut i16,
     mut in_0: *const i16,

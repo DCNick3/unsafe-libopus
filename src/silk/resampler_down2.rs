@@ -12,12 +12,7 @@ use crate::celt::celt::celt_fatal;
 use crate::silk::resampler_rom::{silk_resampler_down2_0, silk_resampler_down2_1};
 
 #[c2rust::src_loc = "36:1"]
-pub unsafe extern "C" fn silk_resampler_down2(
-    S: *mut i32,
-    out: *mut i16,
-    in_0: *const i16,
-    inLen: i32,
-) {
+pub unsafe fn silk_resampler_down2(S: *mut i32, out: *mut i16, in_0: *const i16, inLen: i32) {
     let mut k: i32 = 0;
     let len2: i32 = inLen >> 1 as libc::c_int;
     let mut in32: i32 = 0;

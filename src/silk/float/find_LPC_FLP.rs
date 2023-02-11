@@ -30,7 +30,7 @@ use crate::silk::interpolate::silk_interpolate;
 use crate::silk::structs::silk_encoder_state;
 
 #[c2rust::src_loc = "37:1"]
-pub unsafe extern "C" fn silk_find_LPC_FLP(
+pub unsafe fn silk_find_LPC_FLP(
     mut psEncC: *mut silk_encoder_state,
     NLSF_Q15: *mut i16,
     x: *const libc::c_float,

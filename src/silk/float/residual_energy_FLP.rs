@@ -10,7 +10,7 @@ pub const MAX_ITERATIONS_RESIDUAL_NRG: libc::c_int = 10 as libc::c_int;
 #[c2rust::src_loc = "35:9"]
 pub const REGULARIZATION_FACTOR: libc::c_float = 1e-8f32;
 #[c2rust::src_loc = "38:1"]
-pub unsafe extern "C" fn silk_residual_energy_covar_FLP(
+pub unsafe fn silk_residual_energy_covar_FLP(
     c: *const libc::c_float,
     wXX: *mut libc::c_float,
     wXx: *const libc::c_float,
@@ -72,7 +72,7 @@ pub unsafe extern "C" fn silk_residual_energy_covar_FLP(
     return nrg;
 }
 #[c2rust::src_loc = "91:1"]
-pub unsafe extern "C" fn silk_residual_energy_FLP(
+pub unsafe fn silk_residual_energy_FLP(
     nrgs: *mut libc::c_float,
     x: *const libc::c_float,
     a: *mut [libc::c_float; 16],

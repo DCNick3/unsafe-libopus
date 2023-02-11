@@ -11,7 +11,7 @@ pub const FINE_OFFSET: libc::c_int = 21 as libc::c_int;
 pub const MAX_FINE_BITS: libc::c_int = 8 as libc::c_int;
 #[inline]
 #[c2rust::src_loc = "48:1"]
-pub unsafe extern "C" fn get_pulses(i: libc::c_int) -> libc::c_int {
+pub unsafe fn get_pulses(i: libc::c_int) -> libc::c_int {
     return if i < 8 as libc::c_int {
         i
     } else {
@@ -20,7 +20,7 @@ pub unsafe extern "C" fn get_pulses(i: libc::c_int) -> libc::c_int {
 }
 #[inline]
 #[c2rust::src_loc = "53:1"]
-pub unsafe extern "C" fn bits2pulses(
+pub unsafe fn bits2pulses(
     m: *const OpusCustomMode,
     band: libc::c_int,
     mut LM: libc::c_int,
@@ -64,7 +64,7 @@ pub unsafe extern "C" fn bits2pulses(
 pub const LOG_MAX_PSEUDO: libc::c_int = 6 as libc::c_int;
 #[inline]
 #[c2rust::src_loc = "80:1"]
-pub unsafe extern "C" fn pulses2bits(
+pub unsafe fn pulses2bits(
     m: *const OpusCustomMode,
     band: libc::c_int,
     mut LM: libc::c_int,
@@ -124,7 +124,7 @@ static mut LOG2_FRAC_TABLE: [libc::c_uchar; 24] = [
 pub const ALLOC_STEPS: libc::c_int = 6 as libc::c_int;
 #[inline]
 #[c2rust::src_loc = "248:1"]
-unsafe extern "C" fn interp_bits2pulses(
+unsafe fn interp_bits2pulses(
     m: *const OpusCustomMode,
     start: libc::c_int,
     end: libc::c_int,
@@ -512,7 +512,7 @@ unsafe extern "C" fn interp_bits2pulses(
     return codedBands;
 }
 #[c2rust::src_loc = "532:1"]
-pub unsafe extern "C" fn clt_compute_allocation(
+pub unsafe fn clt_compute_allocation(
     m: *const OpusCustomMode,
     start: libc::c_int,
     end: libc::c_int,

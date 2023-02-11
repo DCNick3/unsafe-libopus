@@ -7,7 +7,7 @@ pub mod stddef_h {
 #[c2rust::header_src = "/usr/include/stdio.h:32"]
 pub mod stdio_h {
     use super::FILE_h::FILE;
-    extern "C" {
+    {
         #[c2rust::src_loc = "145:14"]
         pub static mut stderr: *mut FILE;
         #[c2rust::src_loc = "350:12"]
@@ -18,7 +18,7 @@ pub mod stdio_h {
 }
 #[c2rust::header_src = "/usr/include/stdlib.h:33"]
 pub mod stdlib_h {
-    extern "C" {
+    {
         #[c2rust::src_loc = "454:1"]
         pub fn rand() -> libc::c_int;
         #[c2rust::src_loc = "456:1"]
@@ -29,13 +29,13 @@ pub mod stdlib_h {
 pub mod cpu_support_h {
     #[inline]
     #[c2rust::src_loc = "65:1"]
-    pub unsafe extern "C" fn opus_select_arch() -> libc::c_int {
+    pub unsafe fn opus_select_arch() -> libc::c_int {
         return 0 as libc::c_int;
     }
 }
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:36"]
 pub mod mathcalls_h {
-    extern "C" {
+    {
         #[c2rust::src_loc = "162:14"]
         pub fn fabs(_: libc::c_double) -> libc::c_double;
     }
@@ -49,7 +49,7 @@ use self::stdlib_h::{rand, srand};
 pub use self::FILE_h::FILE;
 use self::SigProc_FIX_h::silk_LPC_inverse_pred_gain_c;
 #[c2rust::src_loc = "42:1"]
-pub unsafe extern "C" fn check_stability(A_Q12: *mut i16, order: libc::c_int) -> libc::c_int {
+pub unsafe fn check_stability(A_Q12: *mut i16, order: libc::c_int) -> libc::c_int {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     let mut sum_a: libc::c_int = 0;

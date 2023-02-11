@@ -11,7 +11,7 @@ use crate::silk::define::{
 pub const OFFSET: libc::c_int =
     MIN_QGAIN_DB * 128 as libc::c_int / 6 as libc::c_int + 16 as libc::c_int * 128 as libc::c_int;
 #[c2rust::src_loc = "39:1"]
-pub unsafe extern "C" fn silk_gains_quant(
+pub unsafe fn silk_gains_quant(
     ind: *mut i8,
     gain_Q16: *mut i32,
     prev_ind: *mut i8,
@@ -128,7 +128,7 @@ pub unsafe extern "C" fn silk_gains_quant(
     }
 }
 #[c2rust::src_loc = "94:1"]
-pub unsafe extern "C" fn silk_gains_dequant(
+pub unsafe fn silk_gains_dequant(
     gain_Q16: *mut i32,
     ind: *const i8,
     prev_ind: *mut i8,
@@ -185,7 +185,7 @@ pub unsafe extern "C" fn silk_gains_dequant(
     }
 }
 #[c2rust::src_loc = "128:1"]
-pub unsafe extern "C" fn silk_gains_ID(ind: *const i8, nb_subfr: libc::c_int) -> i32 {
+pub unsafe fn silk_gains_ID(ind: *const i8, nb_subfr: libc::c_int) -> i32 {
     let mut k: libc::c_int = 0;
     let mut gainsID: i32 = 0;
     gainsID = 0 as libc::c_int;

@@ -15,7 +15,7 @@ pub use self::opus_defines_h::{OPUS_BAD_ARG, OPUS_INVALID_PACKET};
 pub use self::stddef_h::NULL;
 
 #[c2rust::src_loc = "36:1"]
-pub unsafe extern "C" fn opus_pcm_soft_clip(
+pub unsafe fn opus_pcm_soft_clip(
     mut _x: *mut libc::c_float,
     N: libc::c_int,
     C: libc::c_int,
@@ -150,7 +150,7 @@ pub unsafe extern "C" fn opus_pcm_soft_clip(
     }
 }
 #[c2rust::src_loc = "140:1"]
-pub unsafe extern "C" fn encode_size(size: libc::c_int, data: *mut libc::c_uchar) -> libc::c_int {
+pub unsafe fn encode_size(size: libc::c_int, data: *mut libc::c_uchar) -> libc::c_int {
     if size < 252 as libc::c_int {
         *data.offset(0 as libc::c_int as isize) = size as libc::c_uchar;
         return 1 as libc::c_int;
@@ -164,11 +164,7 @@ pub unsafe extern "C" fn encode_size(size: libc::c_int, data: *mut libc::c_uchar
     };
 }
 #[c2rust::src_loc = "153:1"]
-unsafe extern "C" fn parse_size(
-    data: *const libc::c_uchar,
-    len: i32,
-    size: *mut i16,
-) -> libc::c_int {
+unsafe fn parse_size(data: *const libc::c_uchar, len: i32, size: *mut i16) -> libc::c_int {
     if len < 1 as libc::c_int {
         *size = -(1 as libc::c_int) as i16;
         return -(1 as libc::c_int);
@@ -185,7 +181,7 @@ unsafe extern "C" fn parse_size(
     };
 }
 #[c2rust::src_loc = "173:1"]
-pub unsafe extern "C" fn opus_packet_get_samples_per_frame(
+pub unsafe fn opus_packet_get_samples_per_frame(
     data: *const libc::c_uchar,
     Fs: i32,
 ) -> libc::c_int {
@@ -215,7 +211,7 @@ pub unsafe extern "C" fn opus_packet_get_samples_per_frame(
     return audiosize;
 }
 #[c2rust::src_loc = "194:1"]
-pub unsafe extern "C" fn opus_packet_parse_impl(
+pub unsafe fn opus_packet_parse_impl(
     mut data: *const libc::c_uchar,
     mut len: i32,
     self_delimited: libc::c_int,
@@ -400,7 +396,7 @@ pub unsafe extern "C" fn opus_packet_parse_impl(
     return count;
 }
 #[c2rust::src_loc = "349:1"]
-pub unsafe extern "C" fn opus_packet_parse(
+pub unsafe fn opus_packet_parse(
     data: *const libc::c_uchar,
     len: i32,
     out_toc: *mut libc::c_uchar,

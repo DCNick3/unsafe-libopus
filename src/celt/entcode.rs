@@ -47,40 +47,40 @@ pub const BITRES: libc::c_int = 3 as libc::c_int;
 
 #[inline]
 #[c2rust::src_loc = "101:1"]
-pub unsafe extern "C" fn ec_get_error(mut _this: *mut ec_ctx) -> libc::c_int {
+pub unsafe fn ec_get_error(mut _this: *mut ec_ctx) -> libc::c_int {
     return (*_this).error;
 }
 #[inline]
 #[c2rust::src_loc = "93:1"]
-pub unsafe extern "C" fn ec_range_bytes(mut _this: *mut ec_ctx) -> u32 {
+pub unsafe fn ec_range_bytes(mut _this: *mut ec_ctx) -> u32 {
     return (*_this).offs;
 }
 #[inline]
 #[c2rust::src_loc = "97:1"]
-pub unsafe extern "C" fn ec_get_buffer(mut _this: *mut ec_ctx) -> *mut libc::c_uchar {
+pub unsafe fn ec_get_buffer(mut _this: *mut ec_ctx) -> *mut libc::c_uchar {
     return (*_this).buf;
 }
 #[inline]
 #[c2rust::src_loc = "111:1"]
-pub unsafe extern "C" fn ec_tell(mut _this: *mut ec_ctx) -> libc::c_int {
+pub unsafe fn ec_tell(mut _this: *mut ec_ctx) -> libc::c_int {
     return (*_this).nbits_total - (EC_CLZ0 - ((*_this).rng).leading_zeros() as i32);
 }
 
 #[inline]
 #[c2rust::src_loc = "124:1"]
-pub unsafe extern "C" fn celt_udiv(n: u32, d: u32) -> u32 {
+pub unsafe fn celt_udiv(n: u32, d: u32) -> u32 {
     return n.wrapping_div(d);
 }
 
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.h:35"]
 #[inline]
 #[c2rust::src_loc = "140:1"]
-pub unsafe extern "C" fn celt_sudiv(n: i32, d: i32) -> i32 {
+pub unsafe fn celt_sudiv(n: i32, d: i32) -> i32 {
     return n / d;
 }
 
 #[c2rust::src_loc = "69:1"]
-pub unsafe extern "C" fn ec_tell_frac(mut _this: *mut ec_ctx) -> u32 {
+pub unsafe fn ec_tell_frac(mut _this: *mut ec_ctx) -> u32 {
     static mut correction: [libc::c_uint; 8] = [
         35733 as libc::c_int as libc::c_uint,
         38967 as libc::c_int as libc::c_uint,

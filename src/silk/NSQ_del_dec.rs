@@ -12,7 +12,7 @@ pub mod typedef_h {
 pub mod NSQ_h {
     #[inline]
     #[c2rust::src_loc = "35:1"]
-    pub unsafe extern "C" fn silk_noise_shape_quantizer_short_prediction_c(
+    pub unsafe fn silk_noise_shape_quantizer_short_prediction_c(
         buf32: *const i32,
         coef16: *const i16,
         order: libc::c_int,
@@ -134,7 +134,7 @@ pub struct NSQ_sample_struct {
 #[c2rust::src_loc = "62:1"]
 pub type NSQ_sample_pair = [NSQ_sample_struct; 2];
 #[c2rust::src_loc = "117:1"]
-pub unsafe extern "C" fn silk_NSQ_del_dec_c(
+pub unsafe fn silk_NSQ_del_dec_c(
     psEncC: *const silk_encoder_state,
     mut NSQ: *mut silk_nsq_state,
     mut psIndices: *mut SideInfoIndices,
@@ -568,7 +568,7 @@ pub unsafe extern "C" fn silk_NSQ_del_dec_c(
 }
 #[inline]
 #[c2rust::src_loc = "318:1"]
-unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
+unsafe fn silk_noise_shape_quantizer_del_dec(
     mut NSQ: *mut silk_nsq_state,
     psDelDec: *mut NSQ_del_dec_struct,
     signalType: libc::c_int,
@@ -1097,7 +1097,7 @@ unsafe extern "C" fn silk_noise_shape_quantizer_del_dec(
 }
 #[inline]
 #[c2rust::src_loc = "651:1"]
-unsafe extern "C" fn silk_nsq_del_dec_scale_states(
+unsafe fn silk_nsq_del_dec_scale_states(
     psEncC: *const silk_encoder_state,
     mut NSQ: *mut silk_nsq_state,
     psDelDec: *mut NSQ_del_dec_struct,

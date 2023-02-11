@@ -9,7 +9,7 @@ use crate::silk::define::{STEREO_QUANT_SUB_STEPS, STEREO_QUANT_TAB_SIZE};
 use crate::silk::tables_other::silk_stereo_pred_quant_Q13;
 
 #[c2rust::src_loc = "35:1"]
-pub unsafe extern "C" fn silk_stereo_quant_pred(pred_Q13: *mut i32, ix: *mut [i8; 3]) {
+pub unsafe fn silk_stereo_quant_pred(pred_Q13: *mut i32, ix: *mut [i8; 3]) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     let mut n: libc::c_int = 0;

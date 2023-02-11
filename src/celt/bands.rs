@@ -85,7 +85,7 @@ pub struct split_ctx {
     pub qalloc: libc::c_int,
 }
 #[c2rust::src_loc = "46:1"]
-pub unsafe extern "C" fn hysteresis_decision(
+pub unsafe fn hysteresis_decision(
     val: opus_val16,
     thresholds: *const opus_val16,
     hysteresis: *const opus_val16,
@@ -112,13 +112,13 @@ pub unsafe extern "C" fn hysteresis_decision(
     return i;
 }
 #[c2rust::src_loc = "61:1"]
-pub unsafe extern "C" fn celt_lcg_rand(seed: u32) -> u32 {
+pub unsafe fn celt_lcg_rand(seed: u32) -> u32 {
     return (1664525 as libc::c_int as libc::c_uint)
         .wrapping_mul(seed)
         .wrapping_add(1013904223 as libc::c_int as libc::c_uint);
 }
 #[c2rust::src_loc = "68:1"]
-pub unsafe extern "C" fn bitexact_cos(x: i16) -> i16 {
+pub unsafe fn bitexact_cos(x: i16) -> i16 {
     let mut tmp: i32 = 0;
     let mut x2: i16 = 0;
     tmp = 4096 as libc::c_int + x as i32 * x as libc::c_int >> 13 as libc::c_int;
@@ -139,10 +139,7 @@ pub unsafe extern "C" fn bitexact_cos(x: i16) -> i16 {
     return (1 as libc::c_int + x2 as libc::c_int) as i16;
 }
 #[c2rust::src_loc = "80:1"]
-pub unsafe extern "C" fn bitexact_log2tan(
-    mut isin: libc::c_int,
-    mut icos: libc::c_int,
-) -> libc::c_int {
+pub unsafe fn bitexact_log2tan(mut isin: libc::c_int, mut icos: libc::c_int) -> libc::c_int {
     let mut lc: libc::c_int = 0;
     let mut ls: libc::c_int = 0;
     lc = EC_CLZ0 - (icos as libc::c_uint).leading_zeros() as i32;
@@ -166,7 +163,7 @@ pub unsafe extern "C" fn bitexact_log2tan(
             >> 15 as libc::c_int);
 }
 #[c2rust::src_loc = "159:1"]
-pub unsafe extern "C" fn compute_band_energies(
+pub unsafe fn compute_band_energies(
     m: *const OpusCustomMode,
     X: *const celt_sig,
     bandE: *mut celt_ener,
@@ -207,7 +204,7 @@ pub unsafe extern "C" fn compute_band_energies(
     }
 }
 #[c2rust::src_loc = "177:1"]
-pub unsafe extern "C" fn normalise_bands(
+pub unsafe fn normalise_bands(
     m: *const OpusCustomMode,
     freq: *const celt_sig,
     X: *mut celt_norm,
@@ -242,7 +239,7 @@ pub unsafe extern "C" fn normalise_bands(
     }
 }
 #[c2rust::src_loc = "196:1"]
-pub unsafe extern "C" fn denormalise_bands(
+pub unsafe fn denormalise_bands(
     m: *const OpusCustomMode,
     X: *const celt_norm,
     freq: *mut celt_sig,
@@ -321,7 +318,7 @@ pub unsafe extern "C" fn denormalise_bands(
     );
 }
 #[c2rust::src_loc = "268:1"]
-pub unsafe extern "C" fn anti_collapse(
+pub unsafe fn anti_collapse(
     m: *const OpusCustomMode,
     X_: *mut celt_norm,
     collapse_masks: *mut libc::c_uchar,
@@ -427,11 +424,7 @@ pub unsafe extern "C" fn anti_collapse(
     }
 }
 #[c2rust::src_loc = "371:1"]
-unsafe extern "C" fn compute_channel_weights(
-    mut Ex: celt_ener,
-    mut Ey: celt_ener,
-    w: *mut opus_val16,
-) {
+unsafe fn compute_channel_weights(mut Ex: celt_ener, mut Ey: celt_ener, w: *mut opus_val16) {
     let mut minE: celt_ener = 0.;
     minE = if Ex < Ey { Ex } else { Ey };
     Ex = Ex + minE / 3 as libc::c_int as libc::c_float;
@@ -440,7 +433,7 @@ unsafe extern "C" fn compute_channel_weights(
     *w.offset(1 as libc::c_int as isize) = Ey;
 }
 #[c2rust::src_loc = "388:1"]
-unsafe extern "C" fn intensity_stereo(
+unsafe fn intensity_stereo(
     m: *const OpusCustomMode,
     X: *mut celt_norm,
     Y: *const celt_norm,
@@ -471,7 +464,7 @@ unsafe extern "C" fn intensity_stereo(
     }
 }
 #[c2rust::src_loc = "413:1"]
-unsafe extern "C" fn stereo_split(X: *mut celt_norm, Y: *mut celt_norm, N: libc::c_int) {
+unsafe fn stereo_split(X: *mut celt_norm, Y: *mut celt_norm, N: libc::c_int) {
     let mut j: libc::c_int = 0;
     j = 0 as libc::c_int;
     while j < N {
@@ -485,7 +478,7 @@ unsafe extern "C" fn stereo_split(X: *mut celt_norm, Y: *mut celt_norm, N: libc:
     }
 }
 #[c2rust::src_loc = "426:1"]
-unsafe extern "C" fn stereo_merge(
+unsafe fn stereo_merge(
     X: *mut celt_norm,
     Y: *mut celt_norm,
     mid: opus_val16,
@@ -535,7 +528,7 @@ unsafe extern "C" fn stereo_merge(
     }
 }
 #[c2rust::src_loc = "479:1"]
-pub unsafe extern "C" fn spreading_decision(
+pub unsafe fn spreading_decision(
     m: *const OpusCustomMode,
     X: *const celt_norm,
     average: *mut libc::c_int,
@@ -711,7 +704,7 @@ static mut ordery_table: [libc::c_int; 30] = [
     5 as libc::c_int,
 ];
 #[c2rust::src_loc = "583:1"]
-unsafe extern "C" fn deinterleave_hadamard(
+unsafe fn deinterleave_hadamard(
     X: *mut celt_norm,
     N0: libc::c_int,
     stride: libc::c_int,
@@ -770,7 +763,7 @@ unsafe extern "C" fn deinterleave_hadamard(
     );
 }
 #[c2rust::src_loc = "609:1"]
-unsafe extern "C" fn interleave_hadamard(
+unsafe fn interleave_hadamard(
     X: *mut celt_norm,
     N0: libc::c_int,
     stride: libc::c_int,
@@ -821,7 +814,7 @@ unsafe extern "C" fn interleave_hadamard(
     );
 }
 #[c2rust::src_loc = "632:1"]
-pub unsafe extern "C" fn haar1(X: *mut celt_norm, mut N0: libc::c_int, stride: libc::c_int) {
+pub unsafe fn haar1(X: *mut celt_norm, mut N0: libc::c_int, stride: libc::c_int) {
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     N0 >>= 1 as libc::c_int;
@@ -844,7 +837,7 @@ pub unsafe extern "C" fn haar1(X: *mut celt_norm, mut N0: libc::c_int, stride: l
     }
 }
 #[c2rust::src_loc = "647:1"]
-unsafe extern "C" fn compute_qn(
+unsafe fn compute_qn(
     N: libc::c_int,
     b: libc::c_int,
     offset: libc::c_int,
@@ -895,7 +888,7 @@ unsafe extern "C" fn compute_qn(
     return qn;
 }
 #[c2rust::src_loc = "700:1"]
-unsafe extern "C" fn compute_theta(
+unsafe fn compute_theta(
     ctx: *mut band_ctx,
     mut sctx: *mut split_ctx,
     X: *mut celt_norm,
@@ -1179,7 +1172,7 @@ unsafe extern "C" fn compute_theta(
     (*sctx).qalloc = qalloc;
 }
 #[c2rust::src_loc = "904:1"]
-unsafe extern "C" fn quant_band_n1(
+unsafe fn quant_band_n1(
     mut ctx: *mut band_ctx,
     X: *mut celt_norm,
     Y: *mut celt_norm,
@@ -1227,7 +1220,7 @@ unsafe extern "C" fn quant_band_n1(
     return 1 as libc::c_int as libc::c_uint;
 }
 #[c2rust::src_loc = "944:1"]
-unsafe extern "C" fn quant_partition(
+unsafe fn quant_partition(
     mut ctx: *mut band_ctx,
     X: *mut celt_norm,
     mut N: libc::c_int,
@@ -1440,7 +1433,7 @@ unsafe extern "C" fn quant_partition(
     return cm;
 }
 #[c2rust::src_loc = "1110:1"]
-unsafe extern "C" fn quant_band(
+unsafe fn quant_band(
     ctx: *mut band_ctx,
     X: *mut celt_norm,
     N: libc::c_int,
@@ -1604,7 +1597,7 @@ unsafe extern "C" fn quant_band(
     return cm;
 }
 #[c2rust::src_loc = "1236:1"]
-unsafe extern "C" fn quant_band_stereo(
+unsafe fn quant_band_stereo(
     mut ctx: *mut band_ctx,
     X: *mut celt_norm,
     Y: *mut celt_norm,
@@ -1820,7 +1813,7 @@ unsafe extern "C" fn quant_band_stereo(
     return cm;
 }
 #[c2rust::src_loc = "1384:1"]
-unsafe extern "C" fn special_hybrid_folding(
+unsafe fn special_hybrid_folding(
     m: *const OpusCustomMode,
     norm: *mut celt_norm,
     norm2: *mut celt_norm,
@@ -1867,7 +1860,7 @@ unsafe extern "C" fn special_hybrid_folding(
     }
 }
 #[c2rust::src_loc = "1397:1"]
-pub unsafe extern "C" fn quant_all_bands(
+pub unsafe fn quant_all_bands(
     encode: libc::c_int,
     m: *const OpusCustomMode,
     start: libc::c_int,

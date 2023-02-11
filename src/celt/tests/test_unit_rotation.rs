@@ -14,7 +14,7 @@ pub mod arch_h {
 #[c2rust::header_src = "/usr/include/stdio.h:36"]
 pub mod stdio_h {
     use super::FILE_h::FILE;
-    extern "C" {
+    {
         #[c2rust::src_loc = "145:14"]
         pub static mut stderr: *mut FILE;
         #[c2rust::src_loc = "350:12"]
@@ -25,14 +25,14 @@ pub mod stdio_h {
 }
 #[c2rust::header_src = "/usr/include/stdlib.h:37"]
 pub mod stdlib_h {
-    extern "C" {
+    {
         #[c2rust::src_loc = "454:1"]
         pub fn rand() -> libc::c_int;
     }
 }
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:38"]
 pub mod mathcalls_h {
-    extern "C" {
+    {
         #[c2rust::src_loc = "107:17"]
         pub fn log10(_: libc::c_double) -> libc::c_double;
     }
@@ -40,7 +40,7 @@ pub mod mathcalls_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/vq.h:38"]
 pub mod vq_h {
     use super::arch_h::celt_norm;
-    extern "C" {
+    {
         #[c2rust::src_loc = "44:1"]
         pub fn exp_rotation(
             X: *mut celt_norm,
@@ -64,7 +64,7 @@ pub use self::FILE_h::FILE;
 #[c2rust::src_loc = "46:5"]
 pub static mut ret: libc::c_int = 0 as libc::c_int;
 #[c2rust::src_loc = "47:1"]
-pub unsafe extern "C" fn test_rotation(mut N: libc::c_int, mut K: libc::c_int) {
+pub unsafe fn test_rotation(mut N: libc::c_int, mut K: libc::c_int) {
     let mut i: libc::c_int = 0;
     let mut err: libc::c_double = 0 as libc::c_int as libc::c_double;
     let mut ener: libc::c_double = 0 as libc::c_int as libc::c_double;

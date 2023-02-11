@@ -1,6 +1,6 @@
 use ::libc;
 #[c2rust::src_loc = "35:1"]
-pub unsafe extern "C" fn silk_regularize_correlations_FLP(
+pub unsafe fn silk_regularize_correlations_FLP(
     XX: *mut libc::c_float,
     xx: *mut libc::c_float,
     noise: libc::c_float,

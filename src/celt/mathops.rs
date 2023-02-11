@@ -13,7 +13,7 @@ pub const cC: libc::c_float = 0.08595542f32;
 pub const cE: libc::c_float = PI / 2 as libc::c_int as libc::c_float;
 
 #[c2rust::src_loc = "43:1"]
-pub unsafe extern "C" fn isqrt32(mut _val: u32) -> libc::c_uint {
+pub unsafe fn isqrt32(mut _val: u32) -> libc::c_uint {
     let mut b: libc::c_uint = 0;
     let mut g: libc::c_uint = 0;
     let mut bshift: libc::c_int = 0;
@@ -38,7 +38,7 @@ pub unsafe extern "C" fn isqrt32(mut _val: u32) -> libc::c_uint {
 
 #[inline]
 #[c2rust::src_loc = "54:1"]
-pub unsafe extern "C" fn fast_atan2f(y: libc::c_float, x: libc::c_float) -> libc::c_float {
+pub unsafe fn fast_atan2f(y: libc::c_float, x: libc::c_float) -> libc::c_float {
     let mut x2: libc::c_float = 0.;
     let mut y2: libc::c_float = 0.;
     x2 = x * x;
@@ -75,7 +75,7 @@ pub type opus_val32 = libc::c_float;
 
 #[inline]
 #[c2rust::src_loc = "80:1"]
-pub unsafe extern "C" fn celt_maxabs16(x: *const opus_val16, len: libc::c_int) -> opus_val32 {
+pub unsafe fn celt_maxabs16(x: *const opus_val16, len: libc::c_int) -> opus_val32 {
     let mut i: libc::c_int = 0;
     let mut maxval: opus_val16 = 0 as libc::c_int as opus_val16;
     let mut minval: opus_val16 = 0 as libc::c_int as opus_val16;

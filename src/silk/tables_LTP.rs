@@ -119,7 +119,7 @@ pub static mut silk_LTP_vq_gain_ptrs_Q7: [*const u8; 3] = [0 as *const u8; 3];
 pub static silk_LTP_vq_sizes: [i8; 3] = [8, 16, 32];
 
 // some array shenanigans going on here...
-unsafe extern "C" fn run_static_initializers() {
+unsafe fn run_static_initializers() {
     silk_LTP_vq_ptrs_Q7 = [
         &*(*silk_LTP_gain_vq_0
             .as_ptr()
@@ -153,4 +153,4 @@ unsafe extern "C" fn run_static_initializers() {
 #[cfg_attr(target_os = "linux", link_section = ".init_array")]
 #[cfg_attr(target_os = "windows", link_section = ".CRT$XIB")]
 #[cfg_attr(target_os = "macos", link_section = "__DATA,__mod_init_func")]
-static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [run_static_initializers];
+static INIT_ARRAY: [unsafe fn(); 1] = [run_static_initializers];

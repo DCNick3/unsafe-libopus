@@ -11,7 +11,7 @@ use crate::silk::LPC_inv_pred_gain::silk_LPC_inverse_pred_gain_c;
 pub const QA: libc::c_int = 16 as libc::c_int;
 #[inline]
 #[c2rust::src_loc = "44:1"]
-unsafe extern "C" fn silk_NLSF2A_find_poly(out: *mut i32, cLSF: *const i32, dd: libc::c_int) {
+unsafe fn silk_NLSF2A_find_poly(out: *mut i32, cLSF: *const i32, dd: libc::c_int) {
     let mut k: libc::c_int = 0;
     let mut n: libc::c_int = 0;
     let mut ftmp: i32 = 0;
@@ -57,12 +57,7 @@ unsafe extern "C" fn silk_NLSF2A_find_poly(out: *mut i32, cLSF: *const i32, dd: 
     }
 }
 #[c2rust::src_loc = "66:1"]
-pub unsafe extern "C" fn silk_NLSF2A(
-    a_Q12: *mut i16,
-    NLSF: *const i16,
-    d: libc::c_int,
-    _arch: libc::c_int,
-) {
+pub unsafe fn silk_NLSF2A(a_Q12: *mut i16, NLSF: *const i16, d: libc::c_int, _arch: libc::c_int) {
     static mut ordering16: [libc::c_uchar; 16] = [
         0 as libc::c_int as libc::c_uchar,
         15 as libc::c_int as libc::c_uchar,

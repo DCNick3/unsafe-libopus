@@ -16,7 +16,7 @@ use crate::silk::tables_LTP::{
 use crate::silk::VQ_WMat_EC::silk_VQ_WMat_EC_c;
 
 #[c2rust::src_loc = "35:1"]
-pub unsafe extern "C" fn silk_quant_LTP_gains(
+pub unsafe fn silk_quant_LTP_gains(
     B_Q14: *mut i16,
     cbk_index: *mut i8,
     periodicity_index: *mut i8,

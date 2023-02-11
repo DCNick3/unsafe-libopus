@@ -2,7 +2,7 @@ use crate::silk::float::inner_product_FLP::silk_inner_product_FLP;
 use ::libc;
 
 #[c2rust::src_loc = "36:1"]
-pub unsafe extern "C" fn silk_autocorrelation_FLP(
+pub unsafe fn silk_autocorrelation_FLP(
     results: *mut libc::c_float,
     inputData: *const libc::c_float,
     inputDataSize: libc::c_int,
