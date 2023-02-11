@@ -5,10 +5,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_assignments)]
 #![feature(c_variadic)]
-#![feature(extern_types)]
-#![feature(label_break_value)]
 #![feature(register_tool)]
-#![feature(stdsimd)]
 #![register_tool(c2rust)]
 
 pub mod externs;
