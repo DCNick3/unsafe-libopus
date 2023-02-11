@@ -1,5 +1,7 @@
+use crate::celt::bands::SPREAD_NONE;
 use ::libc;
 use std::f32::consts::PI;
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
@@ -11,13 +13,7 @@ pub mod arch_h {
     #[c2rust::src_loc = "207:9"]
     pub const EPSILON: libc::c_float = 1e-15f32;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/bands.h:38"]
-pub mod bands_h {
-    #[c2rust::src_loc = "68:9"]
-    pub const SPREAD_NONE: libc::c_int = 0 as libc::c_int;
-}
-pub use self::arch_h::{celt_norm, opus_val16, opus_val32, EPSILON};
-pub use self::bands_h::SPREAD_NONE;
+use self::arch_h::{celt_norm, opus_val16, opus_val32, EPSILON};
 use crate::celt::celt::celt_fatal;
 use crate::celt::cwrs::{decode_pulses, encode_pulses};
 use crate::celt::entcode::celt_udiv;
@@ -76,8 +72,7 @@ pub unsafe extern "C" fn exp_rotation(
     K: libc::c_int,
     spread: libc::c_int,
 ) {
-    static mut SPREAD_FACTOR: [libc::c_int; 3] =
-        [15 as libc::c_int, 10 as libc::c_int, 5 as libc::c_int];
+    static SPREAD_FACTOR: [libc::c_int; 3] = [15, 10, 5];
     let mut i: libc::c_int = 0;
     let mut c: opus_val16 = 0.;
     let mut s: opus_val16 = 0.;

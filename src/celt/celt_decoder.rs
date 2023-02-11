@@ -1,4 +1,8 @@
+use crate::celt::bands::{
+    anti_collapse, celt_lcg_rand, denormalise_bands, quant_all_bands, SPREAD_NORMAL,
+};
 use ::libc;
+
 #[c2rust::header_src = "internal:0"]
 pub mod internal {
     #[c2rust::src_loc = "0:0"]
@@ -77,74 +81,6 @@ pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
     pub const NULL: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/bands.h:42"]
-pub mod bands_h {
-    #[c2rust::src_loc = "70:9"]
-    pub const SPREAD_NORMAL: libc::c_int = 2 as libc::c_int;
-
-    use super::arch_h::{celt_ener, celt_norm, celt_sig, opus_val16};
-    use crate::celt::entcode::ec_ctx;
-    use crate::celt::modes::OpusCustomMode;
-    extern "C" {
-        #[c2rust::src_loc = "64:1"]
-        pub fn denormalise_bands(
-            m: *const OpusCustomMode,
-            X: *const celt_norm,
-            freq: *mut celt_sig,
-            bandE: *const opus_val16,
-            start: libc::c_int,
-            end: libc::c_int,
-            M: libc::c_int,
-            downsample: libc::c_int,
-            silence: libc::c_int,
-        );
-        #[c2rust::src_loc = "113:1"]
-        pub fn anti_collapse(
-            m: *const OpusCustomMode,
-            X_: *mut celt_norm,
-            collapse_masks: *mut libc::c_uchar,
-            LM: libc::c_int,
-            C: libc::c_int,
-            size: libc::c_int,
-            start: libc::c_int,
-            end: libc::c_int,
-            logE: *const opus_val16,
-            prev1logE: *const opus_val16,
-            prev2logE: *const opus_val16,
-            pulses: *const libc::c_int,
-            seed: u32,
-            arch: libc::c_int,
-        );
-        #[c2rust::src_loc = "119:1"]
-        pub fn celt_lcg_rand(seed: u32) -> u32;
-        #[c2rust::src_loc = "106:1"]
-        pub fn quant_all_bands(
-            encode: libc::c_int,
-            m: *const OpusCustomMode,
-            start: libc::c_int,
-            end: libc::c_int,
-            X: *mut celt_norm,
-            Y: *mut celt_norm,
-            collapse_masks: *mut libc::c_uchar,
-            bandE: *const celt_ener,
-            pulses: *mut libc::c_int,
-            shortBlocks: libc::c_int,
-            spread: libc::c_int,
-            dual_stereo: libc::c_int,
-            intensity: libc::c_int,
-            tf_res: *mut libc::c_int,
-            total_bits: i32,
-            balance: i32,
-            ec: *mut ec_ctx,
-            M: libc::c_int,
-            codedBands: libc::c_int,
-            seed: *mut u32,
-            complexity: libc::c_int,
-            arch: libc::c_int,
-            disable_inv: libc::c_int,
-        );
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/celt_lpc.h:51"]
 pub mod celt_lpc_h {
     #[c2rust::src_loc = "38:9"]
@@ -186,9 +122,6 @@ pub mod celt_lpc_h {
 }
 pub use self::arch_h::{
     celt_ener, celt_norm, celt_sig, opus_val16, opus_val32, CELT_SIG_SCALE, Q15ONE, VERY_SMALL,
-};
-pub use self::bands_h::{
-    anti_collapse, celt_lcg_rand, denormalise_bands, quant_all_bands, SPREAD_NORMAL,
 };
 pub use self::celt_lpc_h::{_celt_autocorr, _celt_lpc, celt_fir_c, celt_iir, LPC_ORDER};
 pub use self::cpu_support_h::opus_select_arch;

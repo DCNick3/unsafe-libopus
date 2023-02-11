@@ -34,16 +34,7 @@ pub mod mathcalls_h {
         pub fn fabs(_: libc::c_double) -> libc::c_double;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/bands.h:40"]
-pub mod bands_h {
-    extern "C" {
-        #[c2rust::src_loc = "39:1"]
-        pub fn bitexact_cos(x: i16) -> i16;
-        #[c2rust::src_loc = "40:1"]
-        pub fn bitexact_log2tan(isin: libc::c_int, icos: libc::c_int) -> libc::c_int;
-    }
-}
-pub use self::arch_h::{opus_val16, opus_val32};
+use self::arch_h::{opus_val16, opus_val32};
 use self::bands_h::{bitexact_cos, bitexact_log2tan};
 use self::mathcalls_h::{exp, fabs, log, sqrt};
 pub use self::stddef_h::size_t;

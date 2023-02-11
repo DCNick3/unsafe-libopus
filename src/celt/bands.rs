@@ -18,17 +18,6 @@ pub mod arch_h {
     #[c2rust::src_loc = "207:9"]
     pub const EPSILON: libc::c_float = 1e-15f32;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/bands.h:35"]
-pub mod bands_h {
-    #[c2rust::src_loc = "68:9"]
-    pub const SPREAD_NONE: libc::c_int = 0 as libc::c_int;
-    #[c2rust::src_loc = "69:9"]
-    pub const SPREAD_LIGHT: libc::c_int = 1 as libc::c_int;
-    #[c2rust::src_loc = "70:9"]
-    pub const SPREAD_NORMAL: libc::c_int = 2 as libc::c_int;
-    #[c2rust::src_loc = "71:9"]
-    pub const SPREAD_AGGRESSIVE: libc::c_int = 3 as libc::c_int;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/stack_alloc.h:35"]
 pub mod stack_alloc_h {
     #[c2rust::src_loc = "99:9"]
@@ -42,7 +31,6 @@ pub mod stddef_h {
 pub use self::arch_h::{
     celt_ener, celt_norm, celt_sig, opus_val16, opus_val32, EPSILON, NORM_SCALING, Q15ONE,
 };
-pub use self::bands_h::{SPREAD_AGGRESSIVE, SPREAD_LIGHT, SPREAD_NONE, SPREAD_NORMAL};
 pub use self::stack_alloc_h::ALLOC_NONE;
 pub use self::stddef_h::NULL;
 use crate::celt::celt::celt_fatal;
@@ -59,6 +47,11 @@ use crate::celt::rate::{
 use crate::celt::vq::{alg_quant, alg_unquant, renormalise_vector, stereo_itheta};
 use crate::externs::{memcpy, memset};
 use crate::silk::macros::EC_CLZ0;
+
+pub const SPREAD_NONE: libc::c_int = 0 as libc::c_int;
+pub const SPREAD_LIGHT: libc::c_int = 1 as libc::c_int;
+pub const SPREAD_NORMAL: libc::c_int = 2 as libc::c_int;
+pub const SPREAD_AGGRESSIVE: libc::c_int = 3 as libc::c_int;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -848,8 +841,9 @@ pub unsafe extern "C" fn haar1(X: *mut celt_norm, mut N0: libc::c_int, stride: l
         while j < N0 {
             let mut tmp1: opus_val32 = 0.;
             let mut tmp2: opus_val32 = 0.;
-            tmp1 = 0.70710678f32 * *X.offset((stride * 2 as libc::c_int * j + i) as isize);
-            tmp2 = 0.70710678f32
+            tmp1 = std::f32::consts::FRAC_1_SQRT_2
+                * *X.offset((stride * 2 as libc::c_int * j + i) as isize);
+            tmp2 = std::f32::consts::FRAC_1_SQRT_2
                 * *X.offset((stride * (2 as libc::c_int * j + 1 as libc::c_int) + i) as isize);
             *X.offset((stride * 2 as libc::c_int * j + i) as isize) = tmp1 + tmp2;
             *X.offset((stride * (2 as libc::c_int * j + 1 as libc::c_int) + i) as isize) =

@@ -176,25 +176,7 @@ pub mod cpu_support_h {
         return 0 as libc::c_int;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/bands.h:42"]
-pub mod bands_h {
-    use super::arch_h::{celt_ener, celt_sig};
-    use crate::celt::modes::OpusCustomMode;
-    extern "C" {
-        #[c2rust::src_loc = "47:1"]
-        pub fn compute_band_energies(
-            m: *const OpusCustomMode,
-            X: *const celt_sig,
-            bandE: *mut celt_ener,
-            end: libc::c_int,
-            C: libc::c_int,
-            LM: libc::c_int,
-            arch: libc::c_int,
-        );
-    }
-}
 pub use self::arch_h::{celt_ener, celt_sig, opus_val16, opus_val32};
-use self::bands_h::compute_band_energies;
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::opus_defines_h::{
@@ -218,6 +200,7 @@ pub use self::opus_defines_h::{
 pub use self::opus_multistream_h::OPUS_MULTISTREAM_GET_ENCODER_STATE_REQUEST;
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
+use crate::celt::bands::compute_band_energies;
 use crate::celt::celt::{celt_fatal, resampling_factor};
 use crate::celt::celt::{
     CELT_GET_MODE_REQUEST, OPUS_SET_ENERGY_MASK_REQUEST, OPUS_SET_LFE_REQUEST,

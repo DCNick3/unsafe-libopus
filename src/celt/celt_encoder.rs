@@ -1,4 +1,9 @@
+use crate::celt::bands::{
+    compute_band_energies, haar1, hysteresis_decision, normalise_bands, quant_all_bands,
+    spreading_decision, SPREAD_AGGRESSIVE, SPREAD_NONE, SPREAD_NORMAL,
+};
 use ::libc;
+
 #[c2rust::header_src = "internal:0"]
 pub mod internal {
     #[c2rust::src_loc = "0:0"]
@@ -93,97 +98,8 @@ pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
     pub const NULL: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/bands.h:42"]
-pub mod bands_h {
-    #[c2rust::src_loc = "71:9"]
-    pub const SPREAD_AGGRESSIVE: libc::c_int = 3 as libc::c_int;
-    #[c2rust::src_loc = "68:9"]
-    pub const SPREAD_NONE: libc::c_int = 0 as libc::c_int;
-    #[c2rust::src_loc = "70:9"]
-    pub const SPREAD_NORMAL: libc::c_int = 2 as libc::c_int;
-
-    use super::arch_h::{celt_ener, celt_norm, celt_sig, opus_val16};
-    use crate::celt::entcode::ec_ctx;
-    use crate::celt::modes::OpusCustomMode;
-    extern "C" {
-        #[c2rust::src_loc = "121:1"]
-        pub fn hysteresis_decision(
-            val: opus_val16,
-            thresholds: *const opus_val16,
-            hysteresis: *const opus_val16,
-            N: libc::c_int,
-            prev: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "81:1"]
-        pub fn haar1(X: *mut celt_norm, N0: libc::c_int, stride: libc::c_int);
-        #[c2rust::src_loc = "47:1"]
-        pub fn compute_band_energies(
-            m: *const OpusCustomMode,
-            X: *const celt_sig,
-            bandE: *mut celt_ener,
-            end: libc::c_int,
-            C: libc::c_int,
-            LM: libc::c_int,
-            arch: libc::c_int,
-        );
-        #[c2rust::src_loc = "73:1"]
-        pub fn spreading_decision(
-            m: *const OpusCustomMode,
-            X: *const celt_norm,
-            average: *mut libc::c_int,
-            last_decision: libc::c_int,
-            hf_average: *mut libc::c_int,
-            tapset_decision: *mut libc::c_int,
-            update_hf: libc::c_int,
-            end: libc::c_int,
-            C: libc::c_int,
-            M: libc::c_int,
-            spread_weight: *const libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "106:1"]
-        pub fn quant_all_bands(
-            encode: libc::c_int,
-            m: *const OpusCustomMode,
-            start: libc::c_int,
-            end: libc::c_int,
-            X: *mut celt_norm,
-            Y: *mut celt_norm,
-            collapse_masks: *mut libc::c_uchar,
-            bandE: *const celt_ener,
-            pulses: *mut libc::c_int,
-            shortBlocks: libc::c_int,
-            spread: libc::c_int,
-            dual_stereo: libc::c_int,
-            intensity: libc::c_int,
-            tf_res: *mut libc::c_int,
-            total_bits: i32,
-            balance: i32,
-            ec: *mut ec_ctx,
-            M: libc::c_int,
-            codedBands: libc::c_int,
-            seed: *mut u32,
-            complexity: libc::c_int,
-            arch: libc::c_int,
-            disable_inv: libc::c_int,
-        );
-        #[c2rust::src_loc = "57:1"]
-        pub fn normalise_bands(
-            m: *const OpusCustomMode,
-            freq: *const celt_sig,
-            X: *mut celt_norm,
-            bandE: *const celt_ener,
-            end: libc::c_int,
-            C: libc::c_int,
-            M: libc::c_int,
-        );
-    }
-}
 pub use self::arch_h::{
     celt_ener, celt_norm, celt_sig, opus_val16, opus_val32, CELT_SIG_SCALE, EPSILON,
-};
-pub use self::bands_h::{
-    compute_band_energies, haar1, hysteresis_decision, normalise_bands, quant_all_bands,
-    spreading_decision, SPREAD_AGGRESSIVE, SPREAD_NONE, SPREAD_NORMAL,
 };
 pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::opus_defines_h::{
