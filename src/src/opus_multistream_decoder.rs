@@ -99,11 +99,6 @@ pub mod opus_defines_h {
     #[c2rust::src_loc = "60:9"]
     pub const OPUS_ALLOC_FAIL: libc::c_int = -(7 as libc::c_int);
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_multistream.h:32"]
-pub mod opus_multistream_h {
-    #[c2rust::src_loc = "56:9"]
-    pub const OPUS_MULTISTREAM_GET_DECODER_STATE_REQUEST: libc::c_int = 5122;
-}
 use self::arch_h::opus_val16;
 pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::opus_defines_h::{
@@ -113,10 +108,10 @@ pub use self::opus_defines_h::{
     OPUS_INVALID_PACKET, OPUS_OK, OPUS_RESET_STATE, OPUS_SET_GAIN_REQUEST,
     OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_UNIMPLEMENTED,
 };
-pub use self::opus_multistream_h::OPUS_MULTISTREAM_GET_DECODER_STATE_REQUEST;
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 use crate::celt::celt::celt_fatal;
+use crate::celt::float_cast::FLOAT2INT16;
 use crate::src::opus::opus_packet_parse_impl;
 use crate::src::opus_decoder::opus_decode_native;
 use crate::src::opus_multistream::{
@@ -128,7 +123,8 @@ use crate::{
     OpusDecoder,
 };
 
-use crate::celt::float_cast::FLOAT2INT16;
+pub const OPUS_MULTISTREAM_GET_DECODER_STATE_REQUEST: libc::c_int = 5122;
+
 #[c2rust::src_loc = "43:1"]
 unsafe extern "C" fn validate_ms_decoder(st: *mut OpusMSDecoder) {
     validate_layout(&mut (*st).layout);

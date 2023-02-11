@@ -72,11 +72,6 @@ pub mod stdarg_h {
     pub type va_list = __builtin_va_list;
     use super::internal::__builtin_va_list;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_multistream.h:32"]
-pub mod opus_multistream_h {
-    #[c2rust::src_loc = "55:9"]
-    pub const OPUS_MULTISTREAM_GET_ENCODER_STATE_REQUEST: libc::c_int = 5120;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:32"]
 pub mod opus_defines_h {
     #[c2rust::src_loc = "133:9"]
@@ -197,7 +192,6 @@ pub use self::opus_defines_h::{
     OPUS_SET_SIGNAL_REQUEST, OPUS_SET_VBR_CONSTRAINT_REQUEST, OPUS_SET_VBR_REQUEST,
     OPUS_UNIMPLEMENTED,
 };
-pub use self::opus_multistream_h::OPUS_MULTISTREAM_GET_ENCODER_STATE_REQUEST;
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 use crate::celt::bands::compute_band_energies;
@@ -223,6 +217,8 @@ use crate::{
     opus_repacketizer_get_nb_frames, opus_repacketizer_init, opus_repacketizer_out_range_impl,
     OpusEncoder, OpusRepacketizer,
 };
+
+pub const OPUS_MULTISTREAM_GET_ENCODER_STATE_REQUEST: libc::c_int = 5120;
 
 #[derive(Copy, Clone)]
 #[repr(C)]

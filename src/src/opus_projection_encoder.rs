@@ -4,7 +4,7 @@ use crate::src::opus_multistream_encoder::{
     opus_multistream_encode_native, opus_multistream_encoder_ctl_va_list,
 };
 use crate::src::opus_private::align;
-use crate::OpusMSEncoder;
+use crate::{opus_multistream_encoder_get_size, opus_multistream_encoder_init, OpusMSEncoder};
 use ::libc;
 
 #[c2rust::header_src = "internal:0"]
@@ -61,30 +61,13 @@ pub mod opus_projection_h {
     #[c2rust::src_loc = "50:9"]
     pub const OPUS_PROJECTION_GET_DEMIXING_MATRIX_REQUEST: libc::c_int = 6005;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_multistream.h:36"]
-pub mod opus_multistream_h {
-    use crate::OpusMSEncoder;
-    extern "C" {
-        #[c2rust::src_loc = "203:1"]
-        pub fn opus_multistream_encoder_get_size(
-            streams: libc::c_int,
-            coupled_streams: libc::c_int,
-        ) -> i32;
-        #[c2rust::src_loc = "326:1"]
-        pub fn opus_multistream_encoder_init(
-            st: *mut OpusMSEncoder,
-            Fs: i32,
-            channels: libc::c_int,
-            streams: libc::c_int,
-            coupled_streams: libc::c_int,
-            mapping: *const libc::c_uchar,
-            application: libc::c_int,
-        ) -> libc::c_int;
-    }
-}
 pub use self::arch_h::{opus_val16, opus_val32};
 pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::opus_defines_h::{OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_OK, OPUS_UNIMPLEMENTED};
+pub use self::opus_projection_h::{
+    OPUS_PROJECTION_GET_DEMIXING_MATRIX_GAIN_REQUEST, OPUS_PROJECTION_GET_DEMIXING_MATRIX_REQUEST,
+    OPUS_PROJECTION_GET_DEMIXING_MATRIX_SIZE_REQUEST,
+};
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 use crate::celt::mathops::isqrt32;
@@ -96,12 +79,6 @@ use crate::src::mapping_matrix::{
     mapping_matrix_soa_demixing_data, mapping_matrix_soa_mixing, mapping_matrix_soa_mixing_data,
     mapping_matrix_toa_demixing, mapping_matrix_toa_demixing_data, mapping_matrix_toa_mixing,
     mapping_matrix_toa_mixing_data, MappingMatrix,
-};
-
-use self::opus_multistream_h::{opus_multistream_encoder_get_size, opus_multistream_encoder_init};
-pub use self::opus_projection_h::{
-    OPUS_PROJECTION_GET_DEMIXING_MATRIX_GAIN_REQUEST, OPUS_PROJECTION_GET_DEMIXING_MATRIX_REQUEST,
-    OPUS_PROJECTION_GET_DEMIXING_MATRIX_SIZE_REQUEST,
 };
 #[derive(Copy, Clone)]
 #[repr(C)]
