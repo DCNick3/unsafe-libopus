@@ -44,7 +44,6 @@ static mut PLC_RAND_ATTENUATE_V_Q15: [i16; 2] =
 #[c2rust::src_loc = "39:25"]
 static mut PLC_RAND_ATTENUATE_UV_Q15: [i16; 2] =
     [32440 as libc::c_int as i16, 29491 as libc::c_int as i16];
-#[no_mangle]
 #[c2rust::src_loc = "54:1"]
 pub unsafe extern "C" fn silk_PLC_Reset(mut psDec: *mut silk_decoder_state) {
     (*psDec).sPLC.pitchL_Q8 =
@@ -60,7 +59,6 @@ pub unsafe extern "C" fn silk_PLC_Reset(mut psDec: *mut silk_decoder_state) {
     (*psDec).sPLC.subfr_length = 20 as libc::c_int;
     (*psDec).sPLC.nb_subfr = 2 as libc::c_int;
 }
-#[no_mangle]
 #[c2rust::src_loc = "65:1"]
 pub unsafe extern "C" fn silk_PLC(
     mut psDec: *mut silk_decoder_state,
@@ -915,7 +913,6 @@ unsafe extern "C" fn silk_PLC_conceal(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "392:1"]
 pub unsafe extern "C" fn silk_PLC_glue_frames(
     psDec: *mut silk_decoder_state,

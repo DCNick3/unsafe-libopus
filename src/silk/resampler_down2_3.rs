@@ -14,7 +14,6 @@ use crate::silk::resampler_rom::silk_Resampler_2_3_COEFS_LQ;
 
 #[c2rust::src_loc = "36:9"]
 pub const ORDER_FIR: libc::c_int = 4 as libc::c_int;
-#[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_resampler_down2_3(
     S: *mut i32,

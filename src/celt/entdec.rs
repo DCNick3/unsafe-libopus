@@ -44,7 +44,6 @@ unsafe extern "C" fn ec_dec_normalize(mut _this: *mut ec_dec) {
             & EC_CODE_TOP.wrapping_sub(1 as libc::c_int as libc::c_uint);
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "119:1"]
 pub unsafe extern "C" fn ec_dec_init(
     mut _this: *mut ec_dec,
@@ -67,7 +66,6 @@ pub unsafe extern "C" fn ec_dec_init(
     (*_this).error = 0 as libc::c_int;
     ec_dec_normalize(_this);
 }
-#[no_mangle]
 #[c2rust::src_loc = "139:1"]
 pub unsafe extern "C" fn ec_decode(mut _this: *mut ec_dec, mut _ft: libc::c_uint) -> libc::c_uint {
     let mut s: libc::c_uint = 0;
@@ -82,7 +80,6 @@ pub unsafe extern "C" fn ec_decode(mut _this: *mut ec_dec, mut _ft: libc::c_uint
             ),
     );
 }
-#[no_mangle]
 #[c2rust::src_loc = "146:1"]
 pub unsafe extern "C" fn ec_decode_bin(
     mut _this: *mut ec_dec,
@@ -99,7 +96,6 @@ pub unsafe extern "C" fn ec_decode_bin(
         ),
     );
 }
-#[no_mangle]
 #[c2rust::src_loc = "153:1"]
 pub unsafe extern "C" fn ec_dec_update(
     mut _this: *mut ec_dec,
@@ -117,7 +113,6 @@ pub unsafe extern "C" fn ec_dec_update(
     };
     ec_dec_normalize(_this);
 }
-#[no_mangle]
 #[c2rust::src_loc = "162:1"]
 pub unsafe extern "C" fn ec_dec_bit_logp(
     mut _this: *mut ec_dec,
@@ -138,7 +133,6 @@ pub unsafe extern "C" fn ec_dec_bit_logp(
     ec_dec_normalize(_this);
     return ret;
 }
-#[no_mangle]
 #[c2rust::src_loc = "177:1"]
 pub unsafe extern "C" fn ec_dec_icdf(
     mut _this: *mut ec_dec,
@@ -167,7 +161,6 @@ pub unsafe extern "C" fn ec_dec_icdf(
     ec_dec_normalize(_this);
     return ret;
 }
-#[no_mangle]
 #[c2rust::src_loc = "198:1"]
 pub unsafe extern "C" fn ec_dec_uint(mut _this: *mut ec_dec, mut _ft: u32) -> u32 {
     let mut ft: libc::c_uint = 0;
@@ -211,7 +204,6 @@ pub unsafe extern "C" fn ec_dec_uint(mut _this: *mut ec_dec, mut _ft: u32) -> u3
         return s;
     };
 }
-#[no_mangle]
 #[c2rust::src_loc = "225:1"]
 pub unsafe extern "C" fn ec_dec_bits(mut _this: *mut ec_dec, mut _bits: libc::c_uint) -> u32 {
     let mut window: ec_window = 0;

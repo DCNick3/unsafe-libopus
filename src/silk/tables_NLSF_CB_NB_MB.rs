@@ -81,7 +81,6 @@ static silk_NLSF_PRED_NB_MB_Q8: [u8; 18] = [
 ];
 #[c2rust::src_loc = "176:25"]
 static silk_NLSF_DELTA_MIN_NB_MB_Q15: [i16; 11] = [250, 3, 6, 3, 3, 3, 4, 3, 3, 3, 461];
-#[no_mangle]
 #[c2rust::src_loc = "181:27"]
 pub static mut silk_NLSF_CB_NB_MB: silk_NLSF_CB_struct = {
     let init = silk_NLSF_CB_struct {

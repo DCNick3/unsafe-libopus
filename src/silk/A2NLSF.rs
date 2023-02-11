@@ -99,7 +99,6 @@ unsafe extern "C" fn silk_A2NLSF_init(
     silk_A2NLSF_trans_poly(P, dd);
     silk_A2NLSF_trans_poly(Q, dd);
 }
-#[no_mangle]
 #[c2rust::src_loc = "127:1"]
 pub unsafe extern "C" fn silk_A2NLSF(NLSF: *mut i16, a_Q16: *mut i32, d: libc::c_int) {
     let mut i: libc::c_int = 0;

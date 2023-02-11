@@ -5,7 +5,6 @@ use crate::silk::float::structs_FLP::silk_encoder_state_FLP;
 use crate::silk::lin2log::silk_lin2log;
 use crate::silk::VAD::silk_VAD_Init;
 
-#[no_mangle]
 #[c2rust::src_loc = "42:1"]
 pub unsafe extern "C" fn silk_init_encoder(
     mut psEnc: *mut silk_encoder_state_FLP,

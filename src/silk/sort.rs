@@ -1,7 +1,6 @@
 use crate::celt::celt::celt_fatal;
 use ::libc;
 
-#[no_mangle]
 #[c2rust::src_loc = "40:1"]
 pub unsafe extern "C" fn silk_insertion_sort_increasing(
     a: *mut i32,
@@ -67,7 +66,6 @@ pub unsafe extern "C" fn silk_insertion_sort_increasing(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "135:1"]
 pub unsafe extern "C" fn silk_insertion_sort_increasing_all_values_int16(
     a: *mut i16,

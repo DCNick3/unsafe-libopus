@@ -29,7 +29,6 @@ use crate::silk::tables_other::silk_LTPScales_table_Q14;
 use crate::silk::NSQ_del_dec::silk_NSQ_del_dec_c;
 use crate::silk::NSQ::silk_NSQ_c;
 
-#[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn silk_A2NLSF_FLP(
     NLSF_Q15: *mut i16,
@@ -45,7 +44,6 @@ pub unsafe extern "C" fn silk_A2NLSF_FLP(
     }
     silk_A2NLSF(NLSF_Q15, a_fix_Q16.as_mut_ptr(), LPC_order);
 }
-#[no_mangle]
 #[c2rust::src_loc = "54:1"]
 pub unsafe extern "C" fn silk_NLSF2A_FLP(
     pAR: *mut libc::c_float,
@@ -62,7 +60,6 @@ pub unsafe extern "C" fn silk_NLSF2A_FLP(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "74:1"]
 pub unsafe extern "C" fn silk_process_NLSFs_FLP(
     psEncC: *mut silk_encoder_state,
@@ -85,7 +82,6 @@ pub unsafe extern "C" fn silk_process_NLSFs_FLP(
         j += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "96:1"]
 pub unsafe extern "C" fn silk_NSQ_wrapper_FLP(
     psEnc: *mut silk_encoder_state_FLP,
@@ -202,7 +198,6 @@ pub unsafe extern "C" fn silk_NSQ_wrapper_FLP(
         );
     };
 }
-#[no_mangle]
 #[c2rust::src_loc = "175:1"]
 pub unsafe extern "C" fn silk_quant_LTP_gains_FLP(
     B: *mut libc::c_float,

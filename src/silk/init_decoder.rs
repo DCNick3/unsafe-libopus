@@ -14,7 +14,6 @@ use crate::silk::structs::silk_decoder_state;
 use crate::silk::CNG::silk_CNG_Reset;
 use crate::silk::PLC::silk_PLC_Reset;
 
-#[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn silk_init_decoder(mut psDec: *mut silk_decoder_state) -> libc::c_int {
     memset(

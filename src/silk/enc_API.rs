@@ -61,14 +61,12 @@ use crate::silk::structs::{silk_LP_state, silk_nsq_state};
 use crate::silk::tables_other::{silk_LBRR_flags_iCDF_ptr, silk_Quantization_Offsets_Q10};
 use crate::silk::HP_variable_cutoff::silk_HP_variable_cutoff;
 
-#[no_mangle]
 #[c2rust::src_loc = "56:1"]
 pub unsafe extern "C" fn silk_Get_Encoder_Size(encSizeBytes: *mut libc::c_int) -> libc::c_int {
     let ret: libc::c_int = SILK_NO_ERROR;
     *encSizeBytes = ::core::mem::size_of::<silk_encoder>() as libc::c_ulong as libc::c_int;
     return ret;
 }
-#[no_mangle]
 #[c2rust::src_loc = "70:1"]
 pub unsafe extern "C" fn silk_InitEncoder(
     encState: *mut libc::c_void,
@@ -167,7 +165,6 @@ unsafe extern "C" fn silk_QueryEncoder(
             as libc::c_int;
     return ret;
 }
-#[no_mangle]
 #[c2rust::src_loc = "140:1"]
 pub unsafe extern "C" fn silk_Encode(
     encState: *mut libc::c_void,

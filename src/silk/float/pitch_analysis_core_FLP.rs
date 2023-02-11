@@ -85,7 +85,6 @@ use crate::silk::resampler_down2::silk_resampler_down2;
 use crate::silk::resampler_down2_3::silk_resampler_down2_3;
 use crate::silk::SigProc_FIX::{silk_max_int, silk_min_int};
 
-#[no_mangle]
 #[c2rust::src_loc = "67:1"]
 pub unsafe extern "C" fn silk_pitch_analysis_core_FLP(
     frame: *const libc::c_float,

@@ -11,7 +11,6 @@ use crate::silk::CNG::silk_CNG;
 use crate::silk::PLC::{silk_PLC, silk_PLC_glue_frames};
 use ::libc;
 
-#[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_decode_frame(
     mut psDec: *mut silk_decoder_state,

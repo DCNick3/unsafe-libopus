@@ -3,7 +3,6 @@ use ::libc;
 use crate::silk::macros::silk_CLZ32;
 use crate::silk::SigProc_FIX::silk_max_32;
 
-#[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_sum_sqr_shift(
     energy: *mut i32,

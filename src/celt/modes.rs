@@ -7404,7 +7404,6 @@ static mut band_allocation: [libc::c_uchar; 231] = [
     129 as libc::c_int as libc::c_uchar,
     104 as libc::c_int as libc::c_uchar,
 ];
-#[no_mangle]
 #[c2rust::src_loc = "224:1"]
 pub unsafe extern "C" fn opus_custom_mode_create(
     Fs: i32,

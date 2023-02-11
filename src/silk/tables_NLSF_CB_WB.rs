@@ -108,7 +108,6 @@ static silk_NLSF_PRED_WB_Q8: [u8; 30] = [
 #[c2rust::src_loc = "213:25"]
 static silk_NLSF_DELTA_MIN_WB_Q15: [i16; 17] =
     [100, 3, 40, 3, 3, 3, 5, 14, 14, 10, 11, 3, 8, 9, 7, 3, 347];
-#[no_mangle]
 #[c2rust::src_loc = "219:27"]
 pub static mut silk_NLSF_CB_WB: silk_NLSF_CB_struct = {
     let init = silk_NLSF_CB_struct {

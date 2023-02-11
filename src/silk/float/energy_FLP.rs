@@ -1,5 +1,4 @@
 use ::libc;
-#[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_energy_FLP(
     data: *const libc::c_float,

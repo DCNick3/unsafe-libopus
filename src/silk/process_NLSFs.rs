@@ -7,7 +7,6 @@ use crate::silk::NLSF_encode::silk_NLSF_encode;
 use crate::silk::NLSF2A::silk_NLSF2A;
 use ::libc;
 
-#[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_process_NLSFs(
     psEncC: *mut silk_encoder_state,

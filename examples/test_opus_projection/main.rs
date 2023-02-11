@@ -96,7 +96,6 @@ pub mod test_opus_common_h {
 }
 pub use self::arch_h::opus_val16;
 pub use self::test_opus_common_h::{_test_failed, fast_rand};
-use crate::simple_matrix::test_simple_matrix;
 use libopus_unsafe::externs::memset;
 use libopus_unsafe::externs::{free, malloc};
 use libopus_unsafe::{
@@ -106,7 +105,6 @@ use libopus_unsafe::{
     OpusProjectionEncoder,
 };
 
-#[no_mangle]
 #[c2rust::src_loc = "55:1"]
 pub unsafe extern "C" fn assert_is_equal(
     mut a: *const opus_val16,
@@ -128,7 +126,6 @@ pub unsafe extern "C" fn assert_is_equal(
     }
     0 as libc::c_int
 }
-#[no_mangle]
 #[c2rust::src_loc = "72:1"]
 pub unsafe extern "C" fn assert_is_equal_short(
     mut a: *const i16,
@@ -148,7 +145,6 @@ pub unsafe extern "C" fn assert_is_equal_short(
     }
     0 as libc::c_int
 }
-#[no_mangle]
 #[c2rust::src_loc = "189:1"]
 pub unsafe extern "C" fn test_creation_arguments(
     channels: libc::c_int,
@@ -235,7 +231,6 @@ pub unsafe extern "C" fn test_creation_arguments(
         );
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "249:1"]
 pub unsafe extern "C" fn generate_music(
     mut buf: *mut libc::c_short,
@@ -329,7 +324,6 @@ pub unsafe extern "C" fn generate_music(
     free(c as *mut libc::c_void);
     free(d as *mut libc::c_void);
 }
-#[no_mangle]
 #[c2rust::src_loc = "285:1"]
 pub unsafe extern "C" fn test_encode_decode(
     mut bitrate: i32,
@@ -33235,7 +33229,7 @@ pub unsafe extern "C" fn test_encode_decode(
 unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> libc::c_int {
     let mut i: libc::c_uint = 0;
     // not longer tested, because it wants to link to internal opus functions, which is a no-no
-    //test_simple_matrix();
+    //crate::simple_matrix::test_simple_matrix();
     i = 0 as libc::c_int as libc::c_uint;
     while i < 255 as libc::c_int as libc::c_uint {
         test_creation_arguments(i as libc::c_int, 3 as libc::c_int);

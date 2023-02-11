@@ -25,7 +25,6 @@ pub use self::arch_h::{celt_ener, opus_val16, opus_val32};
 pub use self::stack_alloc_h::ALLOC_NONE;
 
 use crate::externs::memcpy;
-#[no_mangle]
 #[c2rust::src_loc = "53:18"]
 pub static eMeans: [opus_val16; 25] = [
     6.437500f32,
@@ -627,7 +626,6 @@ unsafe extern "C" fn quant_coarse_energy_impl(
     }
     return if lfe != 0 { 0 as libc::c_int } else { badness };
 }
-#[no_mangle]
 #[c2rust::src_loc = "261:1"]
 pub unsafe extern "C" fn quant_coarse_energy(
     m: *const OpusCustomMode,
@@ -858,7 +856,6 @@ pub unsafe extern "C" fn quant_coarse_energy(
             pred_coef[LM as usize] * pred_coef[LM as usize] * *delayedIntra + new_distortion;
     };
 }
-#[no_mangle]
 #[c2rust::src_loc = "361:1"]
 pub unsafe extern "C" fn quant_fine_energy(
     m: *const OpusCustomMode,
@@ -912,7 +909,6 @@ pub unsafe extern "C" fn quant_fine_energy(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "398:1"]
 pub unsafe extern "C" fn quant_energy_finalise(
     m: *const OpusCustomMode,
@@ -970,7 +966,6 @@ pub unsafe extern "C" fn quant_energy_finalise(
         prio += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "428:1"]
 pub unsafe extern "C" fn unquant_coarse_energy(
     m: *const OpusCustomMode,
@@ -1054,7 +1049,6 @@ pub unsafe extern "C" fn unquant_coarse_energy(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "493:1"]
 pub unsafe extern "C" fn unquant_fine_energy(
     m: *const OpusCustomMode,
@@ -1092,7 +1086,6 @@ pub unsafe extern "C" fn unquant_fine_energy(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "516:1"]
 pub unsafe extern "C" fn unquant_energy_finalise(
     m: *const OpusCustomMode,
@@ -1140,7 +1133,6 @@ pub unsafe extern "C" fn unquant_energy_finalise(
         prio += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "544:1"]
 pub unsafe extern "C" fn amp2Log2(
     m: *const OpusCustomMode,

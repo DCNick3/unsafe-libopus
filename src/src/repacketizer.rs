@@ -37,12 +37,10 @@ use crate::externs::memmove;
 use crate::src::opus::{encode_size, opus_packet_parse_impl};
 use crate::{opus_packet_get_nb_frames, opus_packet_get_samples_per_frame};
 
-#[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn opus_repacketizer_get_size() -> libc::c_int {
     return ::core::mem::size_of::<OpusRepacketizer>() as libc::c_ulong as libc::c_int;
 }
-#[no_mangle]
 #[c2rust::src_loc = "42:1"]
 pub unsafe extern "C" fn opus_repacketizer_init(
     mut rp: *mut OpusRepacketizer,
@@ -50,7 +48,6 @@ pub unsafe extern "C" fn opus_repacketizer_init(
     (*rp).nb_frames = 0 as libc::c_int;
     return rp;
 }
-#[no_mangle]
 #[c2rust::src_loc = "48:1"]
 pub unsafe extern "C" fn opus_repacketizer_create() -> *mut OpusRepacketizer {
     let mut rp: *mut OpusRepacketizer = 0 as *mut OpusRepacketizer;
@@ -60,7 +57,6 @@ pub unsafe extern "C" fn opus_repacketizer_create() -> *mut OpusRepacketizer {
     }
     return opus_repacketizer_init(rp);
 }
-#[no_mangle]
 #[c2rust::src_loc = "56:1"]
 pub unsafe extern "C" fn opus_repacketizer_destroy(rp: *mut OpusRepacketizer) {
     free(rp as *mut libc::c_void);
@@ -109,7 +105,6 @@ unsafe extern "C" fn opus_repacketizer_cat_impl(
     (*rp).nb_frames += curr_nb_frames;
     return OPUS_OK;
 }
-#[no_mangle]
 #[c2rust::src_loc = "92:1"]
 pub unsafe extern "C" fn opus_repacketizer_cat(
     rp: *mut OpusRepacketizer,
@@ -118,12 +113,10 @@ pub unsafe extern "C" fn opus_repacketizer_cat(
 ) -> libc::c_int {
     return opus_repacketizer_cat_impl(rp, data, len, 0 as libc::c_int);
 }
-#[no_mangle]
 #[c2rust::src_loc = "97:1"]
 pub unsafe extern "C" fn opus_repacketizer_get_nb_frames(rp: *mut OpusRepacketizer) -> libc::c_int {
     return (*rp).nb_frames;
 }
-#[no_mangle]
 #[c2rust::src_loc = "102:1"]
 pub unsafe extern "C" fn opus_repacketizer_out_range_impl(
     rp: *mut OpusRepacketizer,
@@ -313,7 +306,6 @@ pub unsafe extern "C" fn opus_repacketizer_out_range_impl(
     }
     return tot_size;
 }
-#[no_mangle]
 #[c2rust::src_loc = "230:1"]
 pub unsafe extern "C" fn opus_repacketizer_out_range(
     rp: *mut OpusRepacketizer,
@@ -332,7 +324,6 @@ pub unsafe extern "C" fn opus_repacketizer_out_range(
         0 as libc::c_int,
     );
 }
-#[no_mangle]
 #[c2rust::src_loc = "235:1"]
 pub unsafe extern "C" fn opus_repacketizer_out(
     rp: *mut OpusRepacketizer,
@@ -349,7 +340,6 @@ pub unsafe extern "C" fn opus_repacketizer_out(
         0 as libc::c_int,
     );
 }
-#[no_mangle]
 #[c2rust::src_loc = "240:1"]
 pub unsafe extern "C" fn opus_packet_pad(
     data: *mut libc::c_uchar,
@@ -411,7 +401,6 @@ pub unsafe extern "C" fn opus_packet_pad(
         return ret;
     };
 }
-#[no_mangle]
 #[c2rust::src_loc = "263:1"]
 pub unsafe extern "C" fn opus_packet_unpad(data: *mut libc::c_uchar, len: i32) -> i32 {
     let mut rp: OpusRepacketizer = OpusRepacketizer {
@@ -448,7 +437,6 @@ pub unsafe extern "C" fn opus_packet_unpad(data: *mut libc::c_uchar, len: i32) -
     }
     return ret;
 }
-#[no_mangle]
 #[c2rust::src_loc = "278:1"]
 pub unsafe extern "C" fn opus_multistream_packet_pad(
     mut data: *mut libc::c_uchar,
@@ -497,7 +485,6 @@ pub unsafe extern "C" fn opus_multistream_packet_pad(
     }
     return opus_packet_pad(data, len, len + amount);
 }
-#[no_mangle]
 #[c2rust::src_loc = "309:1"]
 pub unsafe extern "C" fn opus_multistream_packet_unpad(
     mut data: *mut libc::c_uchar,

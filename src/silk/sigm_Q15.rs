@@ -26,7 +26,6 @@ static mut sigm_LUT_neg_Q15: [i32; 6] = [
     589 as libc::c_int,
     219 as libc::c_int,
 ];
-#[no_mangle]
 #[c2rust::src_loc = "49:1"]
 pub unsafe extern "C" fn silk_sigm_Q15(mut in_Q5: libc::c_int) -> libc::c_int {
     let mut ind: libc::c_int = 0;

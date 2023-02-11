@@ -527,7 +527,6 @@ unsafe extern "C" fn logSum(a: opus_val16, b: opus_val16) -> opus_val16 {
         + diff_table[low as usize]
         + frac * (diff_table[(low + 1 as libc::c_int) as usize] - diff_table[low as usize]);
 }
-#[no_mangle]
 #[c2rust::src_loc = "224:1"]
 pub unsafe extern "C" fn surround_analysis(
     celt_mode: *const OpusCustomMode,
@@ -819,7 +818,6 @@ pub unsafe extern "C" fn surround_analysis(
         c += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "376:1"]
 pub unsafe extern "C" fn opus_multistream_encoder_get_size(
     nb_streams: libc::c_int,
@@ -839,7 +837,6 @@ pub unsafe extern "C" fn opus_multistream_encoder_get_size(
         + nb_coupled_streams * align(coupled_size)
         + (nb_streams - nb_coupled_streams) * align(mono_size);
 }
-#[no_mangle]
 #[c2rust::src_loc = "389:1"]
 pub unsafe extern "C" fn opus_multistream_surround_encoder_get_size(
     channels: libc::c_int,
@@ -997,7 +994,6 @@ unsafe extern "C" fn opus_multistream_encoder_init_impl(
     (*st).mapping_type = mapping_type;
     return OPUS_OK;
 }
-#[no_mangle]
 #[c2rust::src_loc = "497:1"]
 pub unsafe extern "C" fn opus_multistream_encoder_init(
     st: *mut OpusMSEncoder,
@@ -1019,7 +1015,6 @@ pub unsafe extern "C" fn opus_multistream_encoder_init(
         MAPPING_TYPE_NONE,
     );
 }
-#[no_mangle]
 #[c2rust::src_loc = "512:1"]
 pub unsafe extern "C" fn opus_multistream_surround_encoder_init(
     mut st: *mut OpusMSEncoder,
@@ -1112,7 +1107,6 @@ pub unsafe extern "C" fn opus_multistream_surround_encoder_init(
         mapping_type,
     );
 }
-#[no_mangle]
 #[c2rust::src_loc = "585:1"]
 pub unsafe extern "C" fn opus_multistream_encoder_create(
     Fs: i32,
@@ -1163,7 +1157,6 @@ pub unsafe extern "C" fn opus_multistream_encoder_create(
     }
     return st;
 }
-#[no_mangle]
 #[c2rust::src_loc = "622:1"]
 pub unsafe extern "C" fn opus_multistream_surround_encoder_create(
     Fs: i32,
@@ -1382,7 +1375,6 @@ unsafe extern "C" fn rate_allocation(
     }
     return rate_sum;
 }
-#[no_mangle]
 #[c2rust::src_loc = "801:1"]
 pub unsafe extern "C" fn opus_multistream_encode_native(
     st: *mut OpusMSEncoder,
@@ -1764,7 +1756,6 @@ unsafe extern "C" fn opus_copy_channel_in_short(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "1090:1"]
 pub unsafe extern "C" fn opus_multistream_encode_float(
     st: *mut OpusMSEncoder,
@@ -1808,7 +1799,6 @@ pub unsafe extern "C" fn opus_multistream_encode_float(
         NULL as *mut libc::c_void,
     );
 }
-#[no_mangle]
 #[c2rust::src_loc = "1103:1"]
 pub unsafe extern "C" fn opus_multistream_encode(
     st: *mut OpusMSEncoder,
@@ -1852,7 +1842,6 @@ pub unsafe extern "C" fn opus_multistream_encode(
         NULL as *mut libc::c_void,
     );
 }
-#[no_mangle]
 #[c2rust::src_loc = "1116:1"]
 pub unsafe extern "C" fn opus_multistream_encoder_ctl_va_list(
     mut st: *mut OpusMSEncoder,
@@ -2093,7 +2082,6 @@ pub unsafe extern "C" fn opus_multistream_encoder_ctl_va_list(
         _ => return OPUS_BAD_ARG,
     };
 }
-#[no_mangle]
 #[c2rust::src_loc = "1315:1"]
 pub unsafe extern "C" fn opus_multistream_encoder_ctl(
     st: *mut OpusMSEncoder,
@@ -2106,7 +2094,6 @@ pub unsafe extern "C" fn opus_multistream_encoder_ctl(
     ret = opus_multistream_encoder_ctl_va_list(st, request, ap.as_va_list());
     return ret;
 }
-#[no_mangle]
 #[c2rust::src_loc = "1325:1"]
 pub unsafe extern "C" fn opus_multistream_encoder_destroy(st: *mut OpusMSEncoder) {
     free(st as *mut libc::c_void);

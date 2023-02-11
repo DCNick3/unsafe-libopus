@@ -29,7 +29,6 @@ pub struct MappingMatrix {
     pub gain: libc::c_int,
 }
 
-#[no_mangle]
 #[c2rust::src_loc = "40:1"]
 pub unsafe extern "C" fn mapping_matrix_get_size(rows: libc::c_int, cols: libc::c_int) -> i32 {
     let mut size: i32 = 0;
@@ -44,14 +43,12 @@ pub unsafe extern "C" fn mapping_matrix_get_size(rows: libc::c_int, cols: libc::
     return align(::core::mem::size_of::<MappingMatrix>() as libc::c_ulong as libc::c_int)
         + align(size);
 }
-#[no_mangle]
 #[c2rust::src_loc = "57:1"]
 pub unsafe extern "C" fn mapping_matrix_get_data(matrix: *const MappingMatrix) -> *mut i16 {
     return (matrix as *mut libc::c_char).offset(align(
         ::core::mem::size_of::<MappingMatrix>() as libc::c_ulong as libc::c_int
     ) as isize) as *mut libc::c_void as *mut i16;
 }
-#[no_mangle]
 #[c2rust::src_loc = "63:1"]
 pub unsafe extern "C" fn mapping_matrix_init(
     matrix: *mut MappingMatrix,
@@ -87,7 +84,6 @@ pub unsafe extern "C" fn mapping_matrix_init(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "85:1"]
 pub unsafe extern "C" fn mapping_matrix_multiply_channel_in_float(
     matrix: *const MappingMatrix,
@@ -125,7 +121,6 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_in_float(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "119:1"]
 pub unsafe extern "C" fn mapping_matrix_multiply_channel_out_float(
     matrix: *const MappingMatrix,
@@ -164,7 +159,6 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_out_float(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "156:1"]
 pub unsafe extern "C" fn mapping_matrix_multiply_channel_in_short(
     matrix: *const MappingMatrix,
@@ -203,7 +197,6 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_in_short(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "196:1"]
 pub unsafe extern "C" fn mapping_matrix_multiply_channel_out_short(
     matrix: *const MappingMatrix,
@@ -242,7 +235,6 @@ pub unsafe extern "C" fn mapping_matrix_multiply_channel_out_short(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "231:21"]
 pub static mut mapping_matrix_foa_mixing: MappingMatrix = {
     let init = MappingMatrix {
@@ -252,7 +244,6 @@ pub static mut mapping_matrix_foa_mixing: MappingMatrix = {
     };
     init
 };
-#[no_mangle]
 #[c2rust::src_loc = "232:18"]
 pub static mut mapping_matrix_foa_mixing_data: [i16; 36] = [
     16384 as libc::c_int as i16,
@@ -292,7 +283,6 @@ pub static mut mapping_matrix_foa_mixing_data: [i16; 36] = [
     0 as libc::c_int as i16,
     32767 as libc::c_int as i16,
 ];
-#[no_mangle]
 #[c2rust::src_loc = "240:21"]
 pub static mut mapping_matrix_soa_mixing: MappingMatrix = {
     let init = MappingMatrix {
@@ -302,7 +292,6 @@ pub static mut mapping_matrix_soa_mixing: MappingMatrix = {
     };
     init
 };
-#[no_mangle]
 #[c2rust::src_loc = "241:18"]
 pub static mut mapping_matrix_soa_mixing_data: [i16; 121] = [
     10923 as libc::c_int as i16,
@@ -427,7 +416,6 @@ pub static mut mapping_matrix_soa_mixing_data: [i16; 121] = [
     0 as libc::c_int as i16,
     32767 as libc::c_int as i16,
 ];
-#[no_mangle]
 #[c2rust::src_loc = "260:21"]
 pub static mut mapping_matrix_toa_mixing: MappingMatrix = {
     let init = MappingMatrix {
@@ -437,7 +425,6 @@ pub static mut mapping_matrix_toa_mixing: MappingMatrix = {
     };
     init
 };
-#[no_mangle]
 #[c2rust::src_loc = "261:18"]
 pub static mut mapping_matrix_toa_mixing_data: [i16; 324] = [
     8208 as libc::c_int as i16,
@@ -765,7 +752,6 @@ pub static mut mapping_matrix_toa_mixing_data: [i16; 324] = [
     0 as libc::c_int as i16,
     32767 as libc::c_int as i16,
 ];
-#[no_mangle]
 #[c2rust::src_loc = "305:21"]
 pub static mut mapping_matrix_foa_demixing: MappingMatrix = {
     let init = MappingMatrix {
@@ -775,7 +761,6 @@ pub static mut mapping_matrix_foa_demixing: MappingMatrix = {
     };
     init
 };
-#[no_mangle]
 #[c2rust::src_loc = "306:18"]
 pub static mut mapping_matrix_foa_demixing_data: [i16; 36] = [
     16384 as libc::c_int as i16,
@@ -815,7 +800,6 @@ pub static mut mapping_matrix_foa_demixing_data: [i16; 36] = [
     0 as libc::c_int as i16,
     32767 as libc::c_int as i16,
 ];
-#[no_mangle]
 #[c2rust::src_loc = "314:21"]
 pub static mut mapping_matrix_soa_demixing: MappingMatrix = {
     let init = MappingMatrix {
@@ -825,7 +809,6 @@ pub static mut mapping_matrix_soa_demixing: MappingMatrix = {
     };
     init
 };
-#[no_mangle]
 #[c2rust::src_loc = "315:18"]
 pub static mut mapping_matrix_soa_demixing_data: [i16; 121] = [
     2771 as libc::c_int as i16,
@@ -950,7 +933,6 @@ pub static mut mapping_matrix_soa_demixing_data: [i16; 121] = [
     0 as libc::c_int as i16,
     8312 as libc::c_int as i16,
 ];
-#[no_mangle]
 #[c2rust::src_loc = "334:21"]
 pub static mut mapping_matrix_toa_demixing: MappingMatrix = {
     let init = MappingMatrix {
@@ -960,7 +942,6 @@ pub static mut mapping_matrix_toa_demixing: MappingMatrix = {
     };
     init
 };
-#[no_mangle]
 #[c2rust::src_loc = "335:18"]
 pub static mut mapping_matrix_toa_demixing_data: [i16; 324] = [
     8192 as libc::c_int as i16,

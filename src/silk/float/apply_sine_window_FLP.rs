@@ -1,7 +1,6 @@
 use ::libc;
 
 use crate::celt::celt::celt_fatal;
-#[no_mangle]
 #[c2rust::src_loc = "38:1"]
 pub unsafe extern "C" fn silk_apply_sine_window_FLP(
     px_win: *mut libc::c_float,

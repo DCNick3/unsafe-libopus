@@ -40,7 +40,6 @@ unsafe extern "C" fn combine_and_check(
     }
     return 0 as libc::c_int;
 }
-#[no_mangle]
 #[c2rust::src_loc = "60:1"]
 pub unsafe extern "C" fn silk_encode_pulses(
     psRangeEnc: *mut ec_enc,

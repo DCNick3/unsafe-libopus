@@ -48,7 +48,6 @@ use self::stdlib_h::{rand, srand};
 
 pub use self::FILE_h::FILE;
 use self::SigProc_FIX_h::silk_LPC_inverse_pred_gain_c;
-#[no_mangle]
 #[c2rust::src_loc = "42:1"]
 pub unsafe extern "C" fn check_stability(A_Q12: *mut i16, order: libc::c_int) -> libc::c_int {
     let mut i: libc::c_int = 0;

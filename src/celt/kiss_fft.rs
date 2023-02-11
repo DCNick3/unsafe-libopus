@@ -448,7 +448,6 @@ unsafe extern "C" fn kf_bfly5(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "521:1"]
 pub unsafe extern "C" fn opus_fft_impl(st: *const kiss_fft_state, fout: *mut kiss_fft_cpx) {
     let mut m2: libc::c_int = 0;
@@ -522,7 +521,6 @@ pub unsafe extern "C" fn opus_fft_impl(st: *const kiss_fft_state, fout: *mut kis
         i -= 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "569:1"]
 pub unsafe extern "C" fn opus_fft_c(
     st: *const kiss_fft_state,
@@ -549,7 +547,6 @@ pub unsafe extern "C" fn opus_fft_c(
     }
     opus_fft_impl(st, fout);
 }
-#[no_mangle]
 #[c2rust::src_loc = "592:1"]
 pub unsafe extern "C" fn opus_ifft_c(
     st: *const kiss_fft_state,

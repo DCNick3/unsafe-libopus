@@ -38,7 +38,6 @@ unsafe extern "C" fn silk_NLSF_residual_dequant(
         i -= 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "63:1"]
 pub unsafe extern "C" fn silk_NLSF_decode(
     pNLSF_Q15: *mut i16,

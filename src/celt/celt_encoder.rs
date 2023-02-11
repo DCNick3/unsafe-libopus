@@ -181,7 +181,6 @@ pub struct OpusCustomEncoder {
     pub spec_avg: opus_val16,
     pub in_mem: [celt_sig; 1],
 }
-#[no_mangle]
 #[c2rust::src_loc = "130:1"]
 pub unsafe extern "C" fn celt_encoder_get_size(channels: libc::c_int) -> libc::c_int {
     let mode: *mut OpusCustomMode = opus_custom_mode_create(
@@ -249,7 +248,6 @@ unsafe extern "C" fn opus_custom_encoder_init_arch(
     opus_custom_encoder_ctl(st, OPUS_RESET_STATE);
     return OPUS_OK;
 }
-#[no_mangle]
 #[c2rust::src_loc = "207:1"]
 pub unsafe extern "C" fn celt_encoder_init(
     mut st: *mut OpusCustomEncoder,
@@ -750,7 +748,6 @@ unsafe extern "C" fn compute_mdcts(
         }
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "496:1"]
 pub unsafe extern "C" fn celt_preemphasis(
     pcmp: *const opus_val16,
@@ -2318,7 +2315,6 @@ unsafe extern "C" fn compute_vbr(
     };
     return target;
 }
-#[no_mangle]
 #[c2rust::src_loc = "1408:1"]
 pub unsafe extern "C" fn celt_encode_with_ec(
     mut st: *mut OpusCustomEncoder,
@@ -3809,7 +3805,6 @@ pub unsafe extern "C" fn celt_encode_with_ec(
         return nbCompressedBytes;
     };
 }
-#[no_mangle]
 #[c2rust::src_loc = "2409:1"]
 pub unsafe extern "C" fn opus_custom_encoder_ctl(
     mut st: *mut OpusCustomEncoder,

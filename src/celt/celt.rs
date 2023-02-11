@@ -40,7 +40,6 @@ pub static trim_icdf: [libc::c_uchar; 11] = [126, 124, 119, 109, 87, 41, 19, 9, 
 pub static spread_icdf: [libc::c_uchar; 4] = [25, 23, 2, 0];
 #[c2rust::src_loc = "169:28"]
 pub static tapset_icdf: [libc::c_uchar; 3] = [2, 1, 0];
-#[no_mangle]
 #[c2rust::src_loc = "263:19"]
 pub static tf_select_table: [[libc::c_schar; 8]; 4] = [
     [0, -1, 0, -1, 0, -1, 0, -1],
@@ -64,7 +63,6 @@ pub const CELT_GET_AND_CLEAR_ERROR_REQUEST: libc::c_int = 10007;
 pub const COMBFILTER_MAXPERIOD: libc::c_int = 1024 as libc::c_int;
 pub const COMBFILTER_MINPERIOD: libc::c_int = 16 as libc::c_int;
 
-#[no_mangle]
 #[c2rust::src_loc = "62:1"]
 pub unsafe extern "C" fn resampling_factor(rate: i32) -> libc::c_int {
     let mut ret: libc::c_int = 0;
@@ -130,7 +128,6 @@ unsafe extern "C" fn comb_filter_const_c(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "190:1"]
 pub unsafe extern "C" fn comb_filter(
     y: *mut opus_val32,
@@ -253,7 +250,6 @@ pub unsafe extern "C" fn comb_filter(
         g12,
     );
 }
-#[no_mangle]
 #[c2rust::src_loc = "272:1"]
 pub unsafe extern "C" fn init_caps(
     m: *const OpusCustomMode,
@@ -278,7 +274,6 @@ pub unsafe extern "C" fn init_caps(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "285:1"]
 pub unsafe extern "C" fn opus_strerror(error: libc::c_int) -> *const libc::c_char {
     static mut error_strings: [*const libc::c_char; 8] = [
@@ -297,7 +292,6 @@ pub unsafe extern "C" fn opus_strerror(error: libc::c_int) -> *const libc::c_cha
         return error_strings[-error as usize];
     };
 }
-#[no_mangle]
 #[c2rust::src_loc = "303:1"]
 pub unsafe extern "C" fn opus_get_version_string() -> *const libc::c_char {
     return b"libopus 1.3.1\0" as *const u8 as *const libc::c_char;

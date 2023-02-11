@@ -27328,7 +27328,6 @@ unsafe extern "C" fn silk_gain_assert() -> libc::c_int {
     opus_encoder_destroy(enc);
     0 as libc::c_int
 }
-#[no_mangle]
 #[c2rust::src_loc = "1025:1"]
 pub unsafe extern "C" fn regression_test() {
     fprintf(

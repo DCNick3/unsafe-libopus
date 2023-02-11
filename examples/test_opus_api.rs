@@ -87,10 +87,8 @@ use libopus_unsafe::{
     OpusMSDecoder, OpusRepacketizer,
 };
 
-#[no_mangle]
 #[c2rust::src_loc = "81:13"]
 pub static mut null_int_ptr: *mut i32 = 0 as *const libc::c_void as *mut libc::c_void as *mut i32;
-#[no_mangle]
 #[c2rust::src_loc = "82:14"]
 pub static mut null_uint_ptr: *mut u32 = 0 as *const libc::c_void as *mut libc::c_void as *mut u32;
 #[c2rust::src_loc = "84:25"]
@@ -101,7 +99,6 @@ static mut opus_rates: [i32; 5] = [
     12000 as libc::c_int,
     8000 as libc::c_int,
 ];
-#[no_mangle]
 #[c2rust::src_loc = "86:1"]
 pub unsafe extern "C" fn test_dec_api() -> i32 {
     let mut dec_final_range: u32 = 0;
@@ -915,7 +912,6 @@ pub unsafe extern "C" fn test_dec_api() -> i32 {
     );
     cfgs
 }
-#[no_mangle]
 #[c2rust::src_loc = "343:1"]
 pub unsafe extern "C" fn test_msdec_api() -> i32 {
     let mut dec_final_range: u32 = 0;
@@ -1781,7 +1777,6 @@ pub unsafe extern "C" fn test_msdec_api() -> i32 {
     );
     cfgs
 }
-#[no_mangle]
 #[c2rust::src_loc = "707:1"]
 pub unsafe extern "C" fn test_parse() -> i32 {
     let mut i: i32 = 0;
@@ -2911,7 +2906,6 @@ pub unsafe extern "C" fn test_parse() -> i32 {
     );
     cfgs_total
 }
-#[no_mangle]
 #[c2rust::src_loc = "1065:1"]
 pub unsafe extern "C" fn test_enc_api() -> i32 {
     let mut enc_final_range: u32 = 0;
@@ -4661,7 +4655,6 @@ pub unsafe extern "C" fn test_enc_api() -> i32 {
     );
     cfgs
 }
-#[no_mangle]
 #[c2rust::src_loc = "1444:1"]
 pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
     let mut ret: libc::c_int = 0;
@@ -5647,7 +5640,6 @@ pub unsafe extern "C" fn test_repacketizer_api() -> libc::c_int {
     );
     cfgs
 }
-#[no_mangle]
 #[c2rust::src_loc = "1766:1"]
 pub unsafe extern "C" fn test_malloc_fail() -> libc::c_int {
     fprintf(

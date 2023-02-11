@@ -252,7 +252,6 @@ static mut layer2_weights: [i8; 48] = [
 ];
 #[c2rust::src_loc = "650:24"]
 static mut layer2_bias: [i8; 2] = [14, 117];
-#[no_mangle]
 #[c2rust::src_loc = "654:18"]
 pub static mut layer0: DenseLayer = unsafe {
     {
@@ -266,7 +265,6 @@ pub static mut layer0: DenseLayer = unsafe {
         init
     }
 };
-#[no_mangle]
 #[c2rust::src_loc = "660:16"]
 pub static mut layer1: GRULayer = unsafe {
     {
@@ -280,7 +278,6 @@ pub static mut layer1: GRULayer = unsafe {
         init
     }
 };
-#[no_mangle]
 #[c2rust::src_loc = "667:18"]
 pub static mut layer2: DenseLayer = unsafe {
     {

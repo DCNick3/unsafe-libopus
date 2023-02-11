@@ -79,7 +79,6 @@ pub unsafe extern "C" fn celt_sudiv(n: i32, d: i32) -> i32 {
     return n / d;
 }
 
-#[no_mangle]
 #[c2rust::src_loc = "69:1"]
 pub unsafe extern "C" fn ec_tell_frac(mut _this: *mut ec_ctx) -> u32 {
     static mut correction: [libc::c_uint; 8] = [

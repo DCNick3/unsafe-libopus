@@ -12,7 +12,6 @@ pub const cC: libc::c_float = 0.08595542f32;
 #[c2rust::src_loc = "53:9"]
 pub const cE: libc::c_float = PI / 2 as libc::c_int as libc::c_float;
 
-#[no_mangle]
 #[c2rust::src_loc = "43:1"]
 pub unsafe extern "C" fn isqrt32(mut _val: u32) -> libc::c_uint {
     let mut b: libc::c_uint = 0;

@@ -12,7 +12,6 @@ use crate::celt::celt::celt_fatal;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 
 use crate::externs::memset;
-#[no_mangle]
 #[c2rust::src_loc = "49:1"]
 pub unsafe extern "C" fn silk_LPC_analysis_filter(
     out: *mut i16,

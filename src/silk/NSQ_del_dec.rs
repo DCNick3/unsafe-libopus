@@ -133,7 +133,6 @@ pub struct NSQ_sample_struct {
 }
 #[c2rust::src_loc = "62:1"]
 pub type NSQ_sample_pair = [NSQ_sample_struct; 2];
-#[no_mangle]
 #[c2rust::src_loc = "117:1"]
 pub unsafe extern "C" fn silk_NSQ_del_dec_c(
     psEncC: *const silk_encoder_state,

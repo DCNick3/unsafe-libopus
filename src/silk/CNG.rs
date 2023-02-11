@@ -46,7 +46,6 @@ unsafe extern "C" fn silk_CNG_exc(
     }
     *rand_seed = seed;
 }
-#[no_mangle]
 #[c2rust::src_loc = "62:1"]
 pub unsafe extern "C" fn silk_CNG_Reset(mut psDec: *mut silk_decoder_state) {
     let mut i: libc::c_int = 0;
@@ -63,7 +62,6 @@ pub unsafe extern "C" fn silk_CNG_Reset(mut psDec: *mut silk_decoder_state) {
     (*psDec).sCNG.CNG_smth_Gain_Q16 = 0 as libc::c_int;
     (*psDec).sCNG.rand_seed = 3176576 as libc::c_int;
 }
-#[no_mangle]
 #[c2rust::src_loc = "79:1"]
 pub unsafe extern "C" fn silk_CNG(
     psDec: *mut silk_decoder_state,

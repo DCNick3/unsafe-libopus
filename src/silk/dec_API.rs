@@ -57,14 +57,12 @@ pub struct silk_decoder {
     pub nChannelsInternal: libc::c_int,
     pub prev_decode_only_middle: libc::c_int,
 }
-#[no_mangle]
 #[c2rust::src_loc = "51:1"]
 pub unsafe extern "C" fn silk_Get_Decoder_Size(decSizeBytes: *mut libc::c_int) -> libc::c_int {
     let ret: libc::c_int = SILK_NO_ERROR;
     *decSizeBytes = ::core::mem::size_of::<silk_decoder>() as libc::c_ulong as libc::c_int;
     return ret;
 }
-#[no_mangle]
 #[c2rust::src_loc = "63:1"]
 pub unsafe extern "C" fn silk_InitDecoder(decState: *mut libc::c_void) -> libc::c_int {
     let mut n: libc::c_int = 0;
@@ -85,7 +83,6 @@ pub unsafe extern "C" fn silk_InitDecoder(decState: *mut libc::c_void) -> libc::
     (*(decState as *mut silk_decoder)).prev_decode_only_middle = 0 as libc::c_int;
     return ret;
 }
-#[no_mangle]
 #[c2rust::src_loc = "81:1"]
 pub unsafe extern "C" fn silk_Decode(
     decState: *mut libc::c_void,

@@ -4,7 +4,6 @@ use crate::silk::float::energy_FLP::silk_energy_FLP;
 use crate::silk::float::scale_vector_FLP::silk_scale_vector_FLP;
 use ::libc;
 
-#[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_find_LTP_FLP(
     XX: *mut libc::c_float,

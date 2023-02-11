@@ -196,7 +196,6 @@ unsafe extern "C" fn silk_LPC_analysis_filter6_FLP(
         ix += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "210:1"]
 pub unsafe extern "C" fn silk_LPC_analysis_filter_FLP(
     r_LPC: *mut libc::c_float,

@@ -2,7 +2,6 @@ use ::libc;
 
 use crate::silk::Inlines::silk_CLZ_FRAC;
 
-#[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_lin2log(inLin: i32) -> i32 {
     let mut lz: i32 = 0;

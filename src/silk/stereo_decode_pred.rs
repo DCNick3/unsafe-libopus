@@ -5,7 +5,6 @@ use crate::silk::tables_other::{
 };
 use ::libc;
 
-#[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_stereo_decode_pred(psRangeDec: *mut ec_dec, pred_Q13: *mut i32) {
     let mut n: libc::c_int = 0;
@@ -57,7 +56,6 @@ pub unsafe extern "C" fn silk_stereo_decode_pred(psRangeDec: *mut ec_dec, pred_Q
     let ref mut fresh0 = *pred_Q13.offset(0 as libc::c_int as isize);
     *fresh0 -= *pred_Q13.offset(1 as libc::c_int as isize);
 }
-#[no_mangle]
 #[c2rust::src_loc = "66:1"]
 pub unsafe extern "C" fn silk_stereo_decode_mid_only(
     psRangeDec: *mut ec_dec,

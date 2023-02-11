@@ -298,7 +298,6 @@ unsafe extern "C" fn celt_fir5(x: *mut opus_val16, num: *const opus_val16, N: li
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "140:1"]
 pub unsafe extern "C" fn pitch_downsample(
     x: *mut *mut celt_sig,
@@ -379,7 +378,6 @@ pub unsafe extern "C" fn pitch_downsample(
     lpc2[4 as libc::c_int as usize] = c1 * lpc[3 as libc::c_int as usize];
     celt_fir5(x_lp, lpc2.as_mut_ptr(), len >> 1 as libc::c_int);
 }
-#[no_mangle]
 #[c2rust::src_loc = "214:1"]
 pub unsafe extern "C" fn celt_pitch_xcorr_c(
     mut _x: *const opus_val16,
@@ -419,7 +417,6 @@ pub unsafe extern "C" fn celt_pitch_xcorr_c(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "284:1"]
 pub unsafe extern "C" fn pitch_search(
     x_lp: *const opus_val16,
@@ -560,7 +557,6 @@ static mut second_check: [libc::c_int; 16] = [
     3 as libc::c_int,
     2 as libc::c_int,
 ];
-#[no_mangle]
 #[c2rust::src_loc = "431:1"]
 pub unsafe extern "C" fn remove_doubling(
     mut x: *mut opus_val16,

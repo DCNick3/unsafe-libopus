@@ -185,10 +185,8 @@ pub use self::stddef_h::size_t;
 use self::stdio_h::printf;
 pub use self::stdlib_h::{atoi, free, malloc, rand, strtol};
 
-#[no_mangle]
 #[c2rust::src_loc = "44:5"]
 pub static mut ret: libc::c_int = 0 as libc::c_int;
-#[no_mangle]
 #[c2rust::src_loc = "45:1"]
 pub unsafe extern "C" fn check(
     mut in_0: *mut libc::c_float,
@@ -237,7 +235,6 @@ pub unsafe extern "C" fn check(
         ret = 1 as libc::c_int;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "75:1"]
 pub unsafe extern "C" fn check_inv(
     mut in_0: *mut libc::c_float,
@@ -285,7 +282,6 @@ pub unsafe extern "C" fn check_inv(
         ret = 1 as libc::c_int;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "106:1"]
 pub unsafe extern "C" fn test1d(
     mut nfft: libc::c_int,

@@ -62,7 +62,6 @@ unsafe extern "C" fn exp_rotation1(
         i -= 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "74:1"]
 pub unsafe extern "C" fn exp_rotation(
     X: *mut celt_norm,
@@ -168,7 +167,6 @@ unsafe extern "C" fn extract_collapse_mask(
     }
     return collapse_mask;
 }
-#[no_mangle]
 #[c2rust::src_loc = "165:1"]
 pub unsafe extern "C" fn op_pvq_search_c(
     X: *mut celt_norm,
@@ -296,7 +294,6 @@ pub unsafe extern "C" fn op_pvq_search_c(
     }
     return yy;
 }
-#[no_mangle]
 #[c2rust::src_loc = "330:1"]
 pub unsafe extern "C" fn alg_quant(
     X: *mut celt_norm,
@@ -339,7 +336,6 @@ pub unsafe extern "C" fn alg_quant(
     collapse_mask = extract_collapse_mask(iy.as_mut_ptr(), N, B);
     return collapse_mask;
 }
-#[no_mangle]
 #[c2rust::src_loc = "363:1"]
 pub unsafe extern "C" fn alg_unquant(
     X: *mut celt_norm,
@@ -376,7 +372,6 @@ pub unsafe extern "C" fn alg_unquant(
     collapse_mask = extract_collapse_mask(iy.as_mut_ptr(), N, B);
     return collapse_mask;
 }
-#[no_mangle]
 #[c2rust::src_loc = "383:1"]
 pub unsafe extern "C" fn renormalise_vector(
     X: *mut celt_norm,
@@ -400,7 +395,6 @@ pub unsafe extern "C" fn renormalise_vector(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "410:1"]
 pub unsafe extern "C" fn stereo_itheta(
     X: *const celt_norm,

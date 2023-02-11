@@ -3,7 +3,6 @@ use ::libc;
 use crate::silk::define::MAX_PREDICTION_POWER_GAIN;
 
 use crate::externs::memcpy;
-#[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_LPC_inverse_pred_gain_FLP(
     A: *const libc::c_float,

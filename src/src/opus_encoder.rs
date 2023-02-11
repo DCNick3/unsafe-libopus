@@ -388,7 +388,6 @@ static mut fec_thresholds: [i32; 10] = [
     22000 as libc::c_int,
     1000 as libc::c_int,
 ];
-#[no_mangle]
 #[c2rust::src_loc = "168:1"]
 pub unsafe extern "C" fn opus_encoder_get_size(channels: libc::c_int) -> libc::c_int {
     let mut silkEncSizeBytes: libc::c_int = 0;
@@ -407,7 +406,6 @@ pub unsafe extern "C" fn opus_encoder_get_size(channels: libc::c_int) -> libc::c
         + silkEncSizeBytes
         + celtEncSizeBytes;
 }
-#[no_mangle]
 #[c2rust::src_loc = "182:1"]
 pub unsafe extern "C" fn opus_encoder_init(
     mut st: *mut OpusEncoder,
@@ -799,7 +797,6 @@ unsafe extern "C" fn gain_fade(
         }
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "516:1"]
 pub unsafe extern "C" fn opus_encoder_create(
     Fs: i32,
@@ -858,7 +855,6 @@ unsafe extern "C" fn user_bitrate_to_bitrate(
         return (*st).user_bitrate_bps;
     };
 }
-#[no_mangle]
 #[c2rust::src_loc = "564:1"]
 pub unsafe extern "C" fn downmix_float(
     mut _x: *const libc::c_void,
@@ -898,7 +894,6 @@ pub unsafe extern "C" fn downmix_float(
         }
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "588:1"]
 pub unsafe extern "C" fn downmix_int(
     mut _x: *const libc::c_void,
@@ -939,7 +934,6 @@ pub unsafe extern "C" fn downmix_int(
         }
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "611:1"]
 pub unsafe extern "C" fn frame_size_select(
     frame_size: i32,
@@ -981,7 +975,6 @@ pub unsafe extern "C" fn frame_size_select(
     }
     return new_size;
 }
-#[no_mangle]
 #[c2rust::src_loc = "636:1"]
 pub unsafe extern "C" fn compute_stereo_width(
     pcm: *const opus_val16,
@@ -1290,7 +1283,6 @@ unsafe extern "C" fn compute_equiv_rate(
     }
     return equiv;
 }
-#[no_mangle]
 #[c2rust::src_loc = "840:1"]
 pub unsafe extern "C" fn is_digital_silence(
     pcm: *const opus_val16,
@@ -1506,7 +1498,6 @@ unsafe extern "C" fn compute_redundancy_bytes(
     }
     return redundancy_bytes;
 }
-#[no_mangle]
 #[c2rust::src_loc = "1066:1"]
 pub unsafe extern "C" fn opus_encode_native(
     mut st: *mut OpusEncoder,
@@ -2998,7 +2989,6 @@ pub unsafe extern "C" fn opus_encode_native(
     }
     return ret;
 }
-#[no_mangle]
 #[c2rust::src_loc = "2235:1"]
 pub unsafe extern "C" fn opus_encode(
     st: *mut OpusEncoder,
@@ -3050,7 +3040,6 @@ pub unsafe extern "C" fn opus_encode(
     );
     return ret;
 }
-#[no_mangle]
 #[c2rust::src_loc = "2258:1"]
 pub unsafe extern "C" fn opus_encode_float(
     st: *mut OpusEncoder,
@@ -3088,7 +3077,6 @@ pub unsafe extern "C" fn opus_encode_float(
         1 as libc::c_int,
     );
 }
-#[no_mangle]
 #[c2rust::src_loc = "2269:1"]
 pub unsafe extern "C" fn opus_encoder_ctl(
     mut st: *mut OpusEncoder,
@@ -3635,7 +3623,6 @@ pub unsafe extern "C" fn opus_encoder_ctl(
         _ => return ret,
     };
 }
-#[no_mangle]
 #[c2rust::src_loc = "2780:1"]
 pub unsafe extern "C" fn opus_encoder_destroy(st: *mut OpusEncoder) {
     free(st as *mut libc::c_void);

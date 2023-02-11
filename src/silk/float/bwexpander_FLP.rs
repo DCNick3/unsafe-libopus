@@ -1,5 +1,4 @@
 use ::libc;
-#[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_bwexpander_FLP(
     ar: *mut libc::c_float,

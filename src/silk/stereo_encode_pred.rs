@@ -7,7 +7,6 @@ use crate::silk::tables_other::{
     silk_uniform5_iCDF,
 };
 
-#[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_stereo_encode_pred(psRangeEnc: *mut ec_enc, ix: *mut [i8; 3]) {
     let mut n: libc::c_int = 0;
@@ -63,7 +62,6 @@ pub unsafe extern "C" fn silk_stereo_encode_pred(psRangeEnc: *mut ec_enc, ix: *m
         n += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "55:1"]
 pub unsafe extern "C" fn silk_stereo_encode_mid_only(psRangeEnc: *mut ec_enc, mid_only_flag: i8) {
     ec_enc_icdf(

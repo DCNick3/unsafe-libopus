@@ -22,7 +22,6 @@ use libopus_unsafe::{
     opus_repacketizer_init, opus_repacketizer_out, opus_repacketizer_out_range, opus_strerror,
     OpusRepacketizer,
 };
-#[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn usage(mut argv0: *mut libc::c_char) {
     fprintf(

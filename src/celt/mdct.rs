@@ -18,7 +18,6 @@ pub struct mdct_lookup {
 }
 pub use self::arch_h::opus_val16;
 
-#[no_mangle]
 #[c2rust::src_loc = "119:1"]
 pub unsafe extern "C" fn clt_mdct_forward_c(
     l: *const mdct_lookup,
@@ -153,7 +152,6 @@ pub unsafe extern "C" fn clt_mdct_forward_c(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "242:1"]
 pub unsafe extern "C" fn clt_mdct_backward_c(
     l: *const mdct_lookup,

@@ -7,7 +7,6 @@ pub mod typedef_h {
 
 pub use self::typedef_h::silk_int32_MAX;
 
-#[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_log2lin(inLog_Q7: i32) -> i32 {
     let mut out: i32 = 0;

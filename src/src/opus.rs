@@ -14,7 +14,6 @@ pub mod stddef_h {
 pub use self::opus_defines_h::{OPUS_BAD_ARG, OPUS_INVALID_PACKET};
 pub use self::stddef_h::NULL;
 
-#[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn opus_pcm_soft_clip(
     mut _x: *mut libc::c_float,
@@ -150,7 +149,6 @@ pub unsafe extern "C" fn opus_pcm_soft_clip(
         c += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "140:1"]
 pub unsafe extern "C" fn encode_size(size: libc::c_int, data: *mut libc::c_uchar) -> libc::c_int {
     if size < 252 as libc::c_int {
@@ -186,7 +184,6 @@ unsafe extern "C" fn parse_size(
         return 2 as libc::c_int;
     };
 }
-#[no_mangle]
 #[c2rust::src_loc = "173:1"]
 pub unsafe extern "C" fn opus_packet_get_samples_per_frame(
     data: *const libc::c_uchar,
@@ -217,7 +214,6 @@ pub unsafe extern "C" fn opus_packet_get_samples_per_frame(
     }
     return audiosize;
 }
-#[no_mangle]
 #[c2rust::src_loc = "194:1"]
 pub unsafe extern "C" fn opus_packet_parse_impl(
     mut data: *const libc::c_uchar,
@@ -403,7 +399,6 @@ pub unsafe extern "C" fn opus_packet_parse_impl(
     }
     return count;
 }
-#[no_mangle]
 #[c2rust::src_loc = "349:1"]
 pub unsafe extern "C" fn opus_packet_parse(
     data: *const libc::c_uchar,

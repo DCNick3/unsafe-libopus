@@ -104,7 +104,6 @@ unsafe extern "C" fn silk_LP_interpolate_filter_taps(
         );
     };
 }
-#[no_mangle]
 #[c2rust::src_loc = "100:1"]
 pub unsafe extern "C" fn silk_LP_variable_cutoff(
     mut psLP: *mut silk_LP_state,

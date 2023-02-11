@@ -22,7 +22,6 @@ use crate::silk::tables_other::silk_Quantization_Offsets_Q10;
 use crate::silk::Inlines::{silk_DIV32_varQ, silk_INVERSE32_varQ};
 use crate::silk::LPC_analysis_filter::silk_LPC_analysis_filter;
 
-#[no_mangle]
 #[c2rust::src_loc = "38:1"]
 pub unsafe extern "C" fn silk_decode_core(
     mut psDec: *mut silk_decoder_state,

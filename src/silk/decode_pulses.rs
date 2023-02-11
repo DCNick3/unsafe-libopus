@@ -9,7 +9,6 @@ use crate::silk::shell_coder::silk_shell_decoder;
 use crate::silk::tables_other::silk_lsb_iCDF;
 use crate::silk::tables_pulses_per_block::{silk_pulses_per_block_iCDF, silk_rate_levels_iCDF};
 
-#[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn silk_decode_pulses(
     psRangeDec: *mut ec_dec,

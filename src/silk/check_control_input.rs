@@ -31,7 +31,6 @@ use crate::celt::celt::celt_fatal;
 use crate::silk::define::ENCODER_NUM_CHANNELS;
 use crate::silk::enc_API::silk_EncControlStruct;
 
-#[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn check_control_input(
     encControl: *mut silk_EncControlStruct,

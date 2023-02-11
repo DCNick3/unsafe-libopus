@@ -28,7 +28,6 @@ use libopus_unsafe::{
     OpusEncoder,
 };
 
-#[no_mangle]
 #[c2rust::src_loc = "45:1"]
 pub unsafe extern "C" fn print_usage(mut argv: *mut *mut libc::c_char) {
     fprintf(

@@ -20,7 +20,6 @@ use crate::silk::structs::{silk_VAD_state, silk_encoder_state};
 use crate::silk::Inlines::silk_SQRT_APPROX;
 use crate::silk::SigProc_FIX::{silk_max_32, silk_max_int, silk_min_int};
 
-#[no_mangle]
 #[c2rust::src_loc = "46:1"]
 pub unsafe extern "C" fn silk_VAD_Init(mut psSilk_VAD: *mut silk_VAD_state) -> libc::c_int {
     let mut b: libc::c_int = 0;
@@ -58,7 +57,6 @@ static mut tiltWeights: [i32; 4] = [
     -(12000 as libc::c_int),
     -(12000 as libc::c_int),
 ];
-#[no_mangle]
 #[c2rust::src_loc = "82:1"]
 pub unsafe extern "C" fn silk_VAD_GetSA_Q8_c(
     mut psEncC: *mut silk_encoder_state,

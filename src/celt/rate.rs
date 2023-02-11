@@ -511,7 +511,6 @@ unsafe extern "C" fn interp_bits2pulses(
     }
     return codedBands;
 }
-#[no_mangle]
 #[c2rust::src_loc = "532:1"]
 pub unsafe extern "C" fn clt_compute_allocation(
     m: *const OpusCustomMode,

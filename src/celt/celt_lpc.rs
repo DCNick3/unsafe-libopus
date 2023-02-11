@@ -14,7 +14,6 @@ use crate::externs::memset;
 #[c2rust::src_loc = "38:9"]
 pub const LPC_ORDER: libc::c_int = 24 as libc::c_int;
 
-#[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn _celt_lpc(
     mut _lpc: *mut opus_val16,
@@ -61,7 +60,6 @@ pub unsafe extern "C" fn _celt_lpc(
         }
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "91:1"]
 pub unsafe extern "C" fn celt_fir_c(
     x: *const opus_val16,
@@ -118,7 +116,6 @@ pub unsafe extern "C" fn celt_fir_c(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "129:1"]
 pub unsafe extern "C" fn celt_iir(
     mut _x: *const opus_val32,
@@ -215,7 +212,6 @@ pub unsafe extern "C" fn celt_iir(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "210:1"]
 pub unsafe extern "C" fn _celt_autocorr(
     x: *const opus_val16,

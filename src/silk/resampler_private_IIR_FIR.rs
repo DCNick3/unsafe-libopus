@@ -87,7 +87,6 @@ unsafe extern "C" fn silk_resampler_private_IIR_FIR_INTERPOL(
     }
     return out;
 }
-#[no_mangle]
 #[c2rust::src_loc = "65:1"]
 pub unsafe extern "C" fn silk_resampler_private_IIR_FIR(
     SS: *mut libc::c_void,

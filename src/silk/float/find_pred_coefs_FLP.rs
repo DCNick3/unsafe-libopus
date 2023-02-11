@@ -14,7 +14,6 @@ use crate::silk::float::wrappers_FLP::{silk_process_NLSFs_FLP, silk_quant_LTP_ga
 use crate::silk::float::LTP_analysis_filter_FLP::silk_LTP_analysis_filter_FLP;
 use crate::silk::float::LTP_scale_ctrl_FLP::silk_LTP_scale_ctrl_FLP;
 
-#[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_find_pred_coefs_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,

@@ -18,7 +18,6 @@ unsafe extern "C" fn ec_laplace_get_freq1(fs0: libc::c_uint, decay: libc::c_int)
         .wrapping_sub(fs0);
     return ft.wrapping_mul((16384 as libc::c_int - decay) as libc::c_uint) >> 15 as libc::c_int;
 }
-#[no_mangle]
 #[c2rust::src_loc = "51:1"]
 pub unsafe extern "C" fn ec_laplace_encode(
     enc: *mut ec_enc,
@@ -95,7 +94,6 @@ pub unsafe extern "C" fn ec_laplace_encode(
         15 as libc::c_int as libc::c_uint,
     );
 }
-#[no_mangle]
 #[c2rust::src_loc = "94:1"]
 pub unsafe extern "C" fn ec_laplace_decode(
     dec: *mut ec_dec,

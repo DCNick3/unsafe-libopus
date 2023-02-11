@@ -15,7 +15,6 @@ use crate::silk::tables_pitch_lag::{silk_pitch_delta_iCDF, silk_pitch_lag_iCDF};
 use crate::silk::NLSF_unpack::silk_NLSF_unpack;
 use ::libc;
 
-#[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_decode_indices(
     mut psDec: *mut silk_decoder_state,

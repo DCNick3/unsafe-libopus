@@ -84,7 +84,6 @@ pub struct split_ctx {
     pub itheta: libc::c_int,
     pub qalloc: libc::c_int,
 }
-#[no_mangle]
 #[c2rust::src_loc = "46:1"]
 pub unsafe extern "C" fn hysteresis_decision(
     val: opus_val16,
@@ -112,14 +111,12 @@ pub unsafe extern "C" fn hysteresis_decision(
     }
     return i;
 }
-#[no_mangle]
 #[c2rust::src_loc = "61:1"]
 pub unsafe extern "C" fn celt_lcg_rand(seed: u32) -> u32 {
     return (1664525 as libc::c_int as libc::c_uint)
         .wrapping_mul(seed)
         .wrapping_add(1013904223 as libc::c_int as libc::c_uint);
 }
-#[no_mangle]
 #[c2rust::src_loc = "68:1"]
 pub unsafe extern "C" fn bitexact_cos(x: i16) -> i16 {
     let mut tmp: i32 = 0;
@@ -141,7 +138,6 @@ pub unsafe extern "C" fn bitexact_cos(x: i16) -> i16 {
             >> 15 as libc::c_int)) as i16;
     return (1 as libc::c_int + x2 as libc::c_int) as i16;
 }
-#[no_mangle]
 #[c2rust::src_loc = "80:1"]
 pub unsafe extern "C" fn bitexact_log2tan(
     mut isin: libc::c_int,
@@ -169,7 +165,6 @@ pub unsafe extern "C" fn bitexact_log2tan(
                     + 7932 as libc::c_int) as i16 as libc::c_int
             >> 15 as libc::c_int);
 }
-#[no_mangle]
 #[c2rust::src_loc = "159:1"]
 pub unsafe extern "C" fn compute_band_energies(
     m: *const OpusCustomMode,
@@ -211,7 +206,6 @@ pub unsafe extern "C" fn compute_band_energies(
         }
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "177:1"]
 pub unsafe extern "C" fn normalise_bands(
     m: *const OpusCustomMode,
@@ -247,7 +241,6 @@ pub unsafe extern "C" fn normalise_bands(
         }
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "196:1"]
 pub unsafe extern "C" fn denormalise_bands(
     m: *const OpusCustomMode,
@@ -327,7 +320,6 @@ pub unsafe extern "C" fn denormalise_bands(
             .wrapping_mul(::core::mem::size_of::<celt_sig>() as libc::c_ulong),
     );
 }
-#[no_mangle]
 #[c2rust::src_loc = "268:1"]
 pub unsafe extern "C" fn anti_collapse(
     m: *const OpusCustomMode,
@@ -542,7 +534,6 @@ unsafe extern "C" fn stereo_merge(
         j += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "479:1"]
 pub unsafe extern "C" fn spreading_decision(
     m: *const OpusCustomMode,
@@ -829,7 +820,6 @@ unsafe extern "C" fn interleave_hadamard(
             ),
     );
 }
-#[no_mangle]
 #[c2rust::src_loc = "632:1"]
 pub unsafe extern "C" fn haar1(X: *mut celt_norm, mut N0: libc::c_int, stride: libc::c_int) {
     let mut i: libc::c_int = 0;
@@ -1876,7 +1866,6 @@ unsafe extern "C" fn special_hybrid_folding(
         );
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "1397:1"]
 pub unsafe extern "C" fn quant_all_bands(
     encode: libc::c_int,

@@ -188,7 +188,6 @@ unsafe extern "C" fn limit_coefs(
         iter += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "147:1"]
 pub unsafe extern "C" fn silk_noise_shape_analysis_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,

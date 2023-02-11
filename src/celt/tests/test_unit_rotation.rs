@@ -61,10 +61,8 @@ pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data
 
 use self::vq_h::exp_rotation;
 pub use self::FILE_h::FILE;
-#[no_mangle]
 #[c2rust::src_loc = "46:5"]
 pub static mut ret: libc::c_int = 0 as libc::c_int;
-#[no_mangle]
 #[c2rust::src_loc = "47:1"]
 pub unsafe extern "C" fn test_rotation(mut N: libc::c_int, mut K: libc::c_int) {
     let mut i: libc::c_int = 0;

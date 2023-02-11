@@ -11,7 +11,6 @@ pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 use crate::celt::celt::celt_fatal;
 use crate::silk::resampler_rom::{silk_resampler_down2_0, silk_resampler_down2_1};
 
-#[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_resampler_down2(
     S: *mut i32,

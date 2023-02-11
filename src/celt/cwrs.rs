@@ -1330,7 +1330,6 @@ unsafe extern "C" fn icwrs(mut _n: libc::c_int, mut _y: *const libc::c_int) -> u
     }
     return i;
 }
-#[no_mangle]
 #[c2rust::src_loc = "458:1"]
 pub unsafe extern "C" fn encode_pulses(
     mut _y: *const libc::c_int,
@@ -1474,7 +1473,6 @@ unsafe extern "C" fn cwrsi(
     yy = yy + val as opus_val32 * val as opus_val32;
     return yy;
 }
-#[no_mangle]
 #[c2rust::src_loc = "539:1"]
 pub unsafe extern "C" fn decode_pulses(
     mut _y: *mut libc::c_int,

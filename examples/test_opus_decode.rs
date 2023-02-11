@@ -144,7 +144,6 @@ use libopus_unsafe::{
     opus_packet_get_nb_channels, opus_pcm_soft_clip, OpusDecoder,
 };
 
-#[no_mangle]
 #[c2rust::src_loc = "51:1"]
 pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c_int {
     static mut fsv: [i32; 5] = [
@@ -1169,7 +1168,6 @@ pub unsafe extern "C" fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c
     free(packet as *mut libc::c_void);
     0 as libc::c_int
 }
-#[no_mangle]
 #[c2rust::src_loc = "384:1"]
 pub unsafe extern "C" fn test_soft_clip() {
     let mut i: libc::c_int = 0;

@@ -73,7 +73,6 @@ unsafe extern "C" fn ec_enc_normalize(mut _this: *mut ec_enc) {
         (*_this).nbits_total += EC_SYM_BITS;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "112:1"]
 pub unsafe extern "C" fn ec_enc_init(
     mut _this: *mut ec_enc,
@@ -93,7 +92,6 @@ pub unsafe extern "C" fn ec_enc_init(
     (*_this).storage = _size;
     (*_this).error = 0 as libc::c_int;
 }
-#[no_mangle]
 #[c2rust::src_loc = "128:1"]
 pub unsafe extern "C" fn ec_encode(
     mut _this: *mut ec_enc,
@@ -115,7 +113,6 @@ pub unsafe extern "C" fn ec_encode(
     }
     ec_enc_normalize(_this);
 }
-#[no_mangle]
 #[c2rust::src_loc = "139:1"]
 pub unsafe extern "C" fn ec_encode_bin(
     mut _this: *mut ec_enc,
@@ -138,7 +135,6 @@ pub unsafe extern "C" fn ec_encode_bin(
     }
     ec_enc_normalize(_this);
 }
-#[no_mangle]
 #[c2rust::src_loc = "151:1"]
 pub unsafe extern "C" fn ec_enc_bit_logp(
     mut _this: *mut ec_enc,
@@ -158,7 +154,6 @@ pub unsafe extern "C" fn ec_enc_bit_logp(
     (*_this).rng = if _val != 0 { s } else { r };
     ec_enc_normalize(_this);
 }
-#[no_mangle]
 #[c2rust::src_loc = "164:1"]
 pub unsafe extern "C" fn ec_enc_icdf(
     mut _this: *mut ec_enc,
@@ -183,7 +178,6 @@ pub unsafe extern "C" fn ec_enc_icdf(
     }
     ec_enc_normalize(_this);
 }
-#[no_mangle]
 #[c2rust::src_loc = "175:1"]
 pub unsafe extern "C" fn ec_enc_uint(mut _this: *mut ec_enc, mut _fl: u32, mut _ft: u32) {
     let mut ft: libc::c_uint = 0;
@@ -222,7 +216,6 @@ pub unsafe extern "C" fn ec_enc_uint(mut _this: *mut ec_enc, mut _fl: u32, mut _
         );
     };
 }
-#[no_mangle]
 #[c2rust::src_loc = "193:1"]
 pub unsafe extern "C" fn ec_enc_bits(
     mut _this: *mut ec_enc,
@@ -257,7 +250,6 @@ pub unsafe extern "C" fn ec_enc_bits(
     (*_this).nbits_total =
         ((*_this).nbits_total as libc::c_uint).wrapping_add(_bits) as libc::c_int as libc::c_int;
 }
-#[no_mangle]
 #[c2rust::src_loc = "214:1"]
 pub unsafe extern "C" fn ec_enc_patch_initial_bits(
     mut _this: *mut ec_enc,
@@ -287,7 +279,6 @@ pub unsafe extern "C" fn ec_enc_patch_initial_bits(
         (*_this).error = -(1 as libc::c_int);
     };
 }
-#[no_mangle]
 #[c2rust::src_loc = "237:1"]
 pub unsafe extern "C" fn ec_enc_shrink(mut _this: *mut ec_enc, mut _size: u32) {
     if !(((*_this).offs).wrapping_add((*_this).end_offs) <= _size) {
@@ -321,7 +312,6 @@ pub unsafe extern "C" fn ec_enc_shrink(mut _this: *mut ec_enc, mut _size: u32) {
     );
     (*_this).storage = _size;
 }
-#[no_mangle]
 #[c2rust::src_loc = "244:1"]
 pub unsafe extern "C" fn ec_enc_done(mut _this: *mut ec_enc) {
     let mut window: ec_window = 0;

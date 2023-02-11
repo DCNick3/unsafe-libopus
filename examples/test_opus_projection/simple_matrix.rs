@@ -73,7 +73,6 @@ pub use self::mapping_matrix_h::{
 use crate::{_test_failed, assert_is_equal, assert_is_equal_short, opus_val16};
 use libopus_unsafe::externs::{free, malloc};
 
-#[no_mangle]
 #[c2rust::src_loc = "82:1"]
 pub unsafe extern "C" fn test_simple_matrix() {
     let simple_matrix_params: MappingMatrix = {

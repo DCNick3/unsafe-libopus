@@ -185,10 +185,8 @@ use crate::celt::mdct::mdct_lookup;
 use self::stdio_h::printf;
 pub use self::stdlib_h::{atoi, free, malloc, rand, strtol};
 
-#[no_mangle]
 #[c2rust::src_loc = "43:5"]
 pub static mut ret: libc::c_int = 0 as libc::c_int;
-#[no_mangle]
 #[c2rust::src_loc = "45:1"]
 pub unsafe extern "C" fn check(
     mut in_0: *mut kiss_fft_cpx,
@@ -250,7 +248,6 @@ pub unsafe extern "C" fn check(
         ret = 1 as libc::c_int;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "86:1"]
 pub unsafe extern "C" fn test1d(
     mut nfft: libc::c_int,

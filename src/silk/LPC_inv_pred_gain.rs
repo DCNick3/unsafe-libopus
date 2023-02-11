@@ -544,7 +544,6 @@ unsafe extern "C" fn LPC_inverse_pred_gain_QA_c(A_QA: *mut i32, order: libc::c_i
     }
     return invGain_Q30;
 }
-#[no_mangle]
 #[c2rust::src_loc = "122:1"]
 pub unsafe extern "C" fn silk_LPC_inverse_pred_gain_c(
     A_Q12: *const i16,

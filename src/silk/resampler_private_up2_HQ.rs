@@ -12,7 +12,6 @@ use crate::silk::resampler_structs::silk_resampler_state_struct;
 
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 
-#[no_mangle]
 #[c2rust::src_loc = "38:1"]
 pub unsafe extern "C" fn silk_resampler_private_up2_HQ(
     S: *mut i32,
@@ -105,7 +104,6 @@ pub unsafe extern "C" fn silk_resampler_private_up2_HQ(
         k += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "104:1"]
 pub unsafe extern "C" fn silk_resampler_private_up2_HQ_wrapper(
     SS: *mut libc::c_void,

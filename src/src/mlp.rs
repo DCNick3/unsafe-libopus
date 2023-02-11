@@ -283,7 +283,6 @@ unsafe extern "C" fn gemm_accum(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "82:1"]
 pub unsafe extern "C" fn compute_dense(
     layer: *const DenseLayer,
@@ -322,7 +321,6 @@ pub unsafe extern "C" fn compute_dense(
         }
     };
 }
-#[no_mangle]
 #[c2rust::src_loc = "104:1"]
 pub unsafe extern "C" fn compute_gru(
     gru: *const GRULayer,

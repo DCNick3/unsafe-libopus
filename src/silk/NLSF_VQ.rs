@@ -2,7 +2,6 @@ use ::libc;
 
 use crate::celt::celt::celt_fatal;
 
-#[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_NLSF_VQ(
     err_Q24: *mut i32,

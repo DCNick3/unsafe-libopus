@@ -29,7 +29,6 @@ use crate::silk::float::LPC_analysis_filter_FLP::silk_LPC_analysis_filter_FLP;
 use crate::silk::interpolate::silk_interpolate;
 use crate::silk::structs::silk_encoder_state;
 
-#[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn silk_find_LPC_FLP(
     mut psEncC: *mut silk_encoder_state,

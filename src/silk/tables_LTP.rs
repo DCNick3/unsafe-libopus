@@ -1,5 +1,4 @@
 use ::libc;
-#[no_mangle]
 #[c2rust::src_loc = "34:18"]
 pub static silk_LTP_per_index_iCDF: [u8; 3] = [179, 99, 0];
 #[c2rust::src_loc = "38:25"]
@@ -24,14 +23,12 @@ static silk_LTP_gain_BITS_Q5_2: [u8; 32] = [
     131, 128, 134, 141, 141, 141, 145, 145, 145, 150, 155, 155, 155, 155, 160, 160, 160, 160, 166,
     166, 173, 173, 182, 192, 182, 192, 192, 192, 205, 192, 205, 224,
 ];
-#[no_mangle]
 #[c2rust::src_loc = "70:26"]
 pub static mut silk_LTP_gain_iCDF_ptrs: [*const u8; 3] = [
     silk_LTP_gain_iCDF_0.as_ptr(),
     silk_LTP_gain_iCDF_1.as_ptr(),
     silk_LTP_gain_iCDF_2.as_ptr(),
 ];
-#[no_mangle]
 #[c2rust::src_loc = "76:26"]
 pub static mut silk_LTP_gain_BITS_Q5_ptrs: [*const u8; 3] = [
     silk_LTP_gain_BITS_Q5_0.as_ptr(),
@@ -103,7 +100,6 @@ static silk_LTP_gain_vq_2: [[i8; 5]; 32] = [
     [81, 5, 11, 3, 7],
     [2, 0, 9, 10, 88],
 ];
-#[no_mangle]
 #[c2rust::src_loc = "262:25"]
 pub static mut silk_LTP_vq_ptrs_Q7: [*const i8; 3] = [0 as *const i8; 3];
 #[c2rust::src_loc = "270:25"]
@@ -117,10 +113,8 @@ static silk_LTP_gain_vq_2_gain: [u8; 32] = [
     126, 124, 125, 124, 129, 121, 126, 23, 132, 127, 127, 127, 126, 127, 122, 133, 130, 134, 101,
     118, 119, 145, 126, 86, 124, 120, 123, 119, 170, 173, 107, 109,
 ];
-#[no_mangle]
 #[c2rust::src_loc = "286:26"]
 pub static mut silk_LTP_vq_gain_ptrs_Q7: [*const u8; 3] = [0 as *const u8; 3];
-#[no_mangle]
 #[c2rust::src_loc = "292:17"]
 pub static silk_LTP_vq_sizes: [i8; 3] = [8, 16, 32];
 

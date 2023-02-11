@@ -12,7 +12,6 @@ use crate::silk::define::{
 pub use self::typedef_h::silk_int32_MAX;
 
 use crate::externs::memcpy;
-#[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_NLSF_del_dec_quant(
     indices: *mut i8,

@@ -56,7 +56,6 @@ unsafe extern "C" fn silk_NLSF2A_find_poly(out: *mut i32, cLSF: *const i32, dd: 
         k += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "66:1"]
 pub unsafe extern "C" fn silk_NLSF2A(
     a_Q12: *mut i16,

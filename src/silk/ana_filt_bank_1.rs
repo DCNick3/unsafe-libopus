@@ -13,7 +13,6 @@ pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 static mut A_fb1_20: i16 = ((5394 as libc::c_int) << 1 as libc::c_int) as i16;
 #[c2rust::src_loc = "36:19"]
 static mut A_fb1_21: i16 = -(24290 as libc::c_int) as i16;
-#[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_ana_filt_bank_1(
     in_0: *const i16,

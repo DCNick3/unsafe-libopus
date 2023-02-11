@@ -1,5 +1,4 @@
 use ::libc;
-#[no_mangle]
 #[c2rust::src_loc = "34:1"]
 pub unsafe extern "C" fn silk_inner_prod_aligned_scale(
     inVec1: *const i16,

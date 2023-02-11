@@ -151,7 +151,6 @@ use libopus_unsafe::{
 mod opus_encode_regressions;
 use opus_encode_regressions::regression_test;
 
-#[no_mangle]
 #[c2rust::src_loc = "57:1"]
 pub unsafe extern "C" fn generate_music(mut buf: *mut libc::c_short, mut len: i32) {
     let mut a1: i32 = 0;
@@ -233,7 +232,6 @@ pub unsafe extern "C" fn generate_music(mut buf: *mut libc::c_short, mut len: i3
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "115:1"]
 pub unsafe extern "C" fn get_frame_size_enum(
     mut frame_size: libc::c_int,
@@ -266,7 +264,6 @@ pub unsafe extern "C" fn get_frame_size_enum(
     }
     frame_size_enum
 }
-#[no_mangle]
 #[c2rust::src_loc = "143:1"]
 pub unsafe extern "C" fn test_encode(
     mut enc: *mut OpusEncoder,
@@ -345,7 +342,6 @@ pub unsafe extern "C" fn test_encode(
     free(outbuf as *mut libc::c_void);
     ret
 }
-#[no_mangle]
 #[c2rust::src_loc = "185:1"]
 pub unsafe extern "C" fn fuzz_encoder_settings(
     num_encoders: libc::c_int,
@@ -642,7 +638,6 @@ pub unsafe extern "C" fn fuzz_encoder_settings(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "272:1"]
 pub unsafe extern "C" fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
     static mut fsizes: [libc::c_int; 6] = [
@@ -2382,7 +2377,6 @@ pub unsafe extern "C" fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
     free(out2buf as *mut libc::c_void);
     0 as libc::c_int
 }
-#[no_mangle]
 #[c2rust::src_loc = "632:1"]
 pub unsafe extern "C" fn print_usage(mut _argv: *mut *mut libc::c_char) {
     fprintf(

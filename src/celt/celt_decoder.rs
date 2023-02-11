@@ -150,7 +150,6 @@ pub const PLC_PITCH_LAG_MAX: libc::c_int = 720 as libc::c_int;
 pub const PLC_PITCH_LAG_MIN: libc::c_int = 100 as libc::c_int;
 #[c2rust::src_loc = "70:9"]
 pub const DECODE_BUFFER_SIZE: libc::c_int = 2048 as libc::c_int;
-#[no_mangle]
 #[c2rust::src_loc = "115:1"]
 pub unsafe extern "C" fn validate_celt_decoder(st: *mut OpusCustomDecoder) {
     if !((*st).mode
@@ -317,7 +316,6 @@ pub unsafe extern "C" fn validate_celt_decoder(st: *mut OpusCustomDecoder) {
         );
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "144:1"]
 pub unsafe extern "C" fn celt_decoder_get_size(channels: libc::c_int) -> libc::c_int {
     let mode: *const OpusCustomMode = opus_custom_mode_create(
@@ -349,7 +347,6 @@ unsafe extern "C" fn opus_custom_decoder_get_size(
         ) as libc::c_int;
     return size;
 }
-#[no_mangle]
 #[c2rust::src_loc = "176:1"]
 pub unsafe extern "C" fn celt_decoder_init(
     mut st: *mut OpusCustomDecoder,
@@ -1178,7 +1175,6 @@ unsafe extern "C" fn celt_decode_lost(
     }
     (*st).loss_count = loss_count + 1 as libc::c_int;
 }
-#[no_mangle]
 #[c2rust::src_loc = "814:1"]
 pub unsafe extern "C" fn celt_decode_with_ec(
     mut st: *mut OpusCustomDecoder,
@@ -1757,7 +1753,6 @@ pub unsafe extern "C" fn celt_decode_with_ec(
     }
     return frame_size / (*st).downsample;
 }
-#[no_mangle]
 #[c2rust::src_loc = "1247:1"]
 pub unsafe extern "C" fn opus_custom_decoder_ctl(
     mut st: *mut OpusCustomDecoder,

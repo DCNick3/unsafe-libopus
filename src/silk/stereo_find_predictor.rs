@@ -5,7 +5,6 @@ use ::libc;
 
 use crate::silk::Inlines::{silk_DIV32_varQ, silk_SQRT_APPROX};
 
-#[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_stereo_find_predictor(
     ratio_Q14: *mut i32,

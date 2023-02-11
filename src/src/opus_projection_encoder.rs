@@ -194,7 +194,6 @@ unsafe extern "C" fn get_multistream_encoder(st: *mut OpusProjectionEncoder) -> 
             as libc::c_int,
     ) as isize) as *mut libc::c_void as *mut OpusMSEncoder;
 }
-#[no_mangle]
 #[c2rust::src_loc = "142:1"]
 pub unsafe extern "C" fn opus_projection_ambisonics_encoder_get_size(
     channels: libc::c_int,
@@ -256,7 +255,6 @@ pub unsafe extern "C" fn opus_projection_ambisonics_encoder_get_size(
         + demixing_matrix_size
         + encoder_size;
 }
-#[no_mangle]
 #[c2rust::src_loc = "202:1"]
 pub unsafe extern "C" fn opus_projection_ambisonics_encoder_init(
     mut st: *mut OpusProjectionEncoder,
@@ -387,7 +385,6 @@ pub unsafe extern "C" fn opus_projection_ambisonics_encoder_init(
     );
     return ret;
 }
-#[no_mangle]
 #[c2rust::src_loc = "308:1"]
 pub unsafe extern "C" fn opus_projection_ambisonics_encoder_create(
     Fs: i32,
@@ -433,7 +430,6 @@ pub unsafe extern "C" fn opus_projection_ambisonics_encoder_create(
     }
     return st;
 }
-#[no_mangle]
 #[c2rust::src_loc = "344:1"]
 pub unsafe extern "C" fn opus_projection_encode(
     st: *mut OpusProjectionEncoder,
@@ -477,7 +473,6 @@ pub unsafe extern "C" fn opus_projection_encode(
         get_mixing_matrix(st) as *mut libc::c_void,
     );
 }
-#[no_mangle]
 #[c2rust::src_loc = "364:1"]
 pub unsafe extern "C" fn opus_projection_encode_float(
     st: *mut OpusProjectionEncoder,
@@ -521,12 +516,10 @@ pub unsafe extern "C" fn opus_projection_encode_float(
         get_mixing_matrix(st) as *mut libc::c_void,
     );
 }
-#[no_mangle]
 #[c2rust::src_loc = "375:1"]
 pub unsafe extern "C" fn opus_projection_encoder_destroy(st: *mut OpusProjectionEncoder) {
     free(st as *mut libc::c_void);
 }
-#[no_mangle]
 #[c2rust::src_loc = "380:1"]
 pub unsafe extern "C" fn opus_projection_encoder_ctl(
     st: *mut OpusProjectionEncoder,

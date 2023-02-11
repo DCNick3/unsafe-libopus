@@ -22,7 +22,6 @@ use crate::silk::float::schur_FLP::silk_schur_FLP;
 use crate::silk::float::structs_FLP::{silk_encoder_control_FLP, silk_encoder_state_FLP};
 use crate::silk::float::LPC_analysis_filter_FLP::silk_LPC_analysis_filter_FLP;
 
-#[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_find_pitch_lags_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,

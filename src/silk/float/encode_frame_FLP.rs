@@ -41,7 +41,6 @@ use crate::silk::LP_variable_cutoff::silk_LP_variable_cutoff;
 use crate::silk::SigProc_FIX::silk_min_int;
 use crate::silk::VAD::silk_VAD_GetSA_Q8_c;
 
-#[no_mangle]
 #[c2rust::src_loc = "44:1"]
 pub unsafe extern "C" fn silk_encode_do_VAD_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,
@@ -78,7 +77,6 @@ pub unsafe extern "C" fn silk_encode_do_VAD_FLP(
         (*psEnc).sCmn.VAD_flags[(*psEnc).sCmn.nFramesEncoded as usize] = 1 as libc::c_int as i8;
     };
 }
-#[no_mangle]
 #[c2rust::src_loc = "84:1"]
 pub unsafe extern "C" fn silk_encode_frame_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,

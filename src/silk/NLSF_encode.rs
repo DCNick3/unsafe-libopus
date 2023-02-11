@@ -12,7 +12,6 @@ use crate::silk::NLSF_unpack::silk_NLSF_unpack;
 use crate::silk::NLSF_VQ::silk_NLSF_VQ;
 use ::libc;
 
-#[no_mangle]
 #[c2rust::src_loc = "38:1"]
 pub unsafe extern "C" fn silk_NLSF_encode(
     NLSFIndices: *mut i8,

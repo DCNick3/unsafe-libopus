@@ -73,7 +73,6 @@ use libopus_unsafe::{
     opus_decode, opus_decoder_create, opus_decoder_destroy, opus_get_version_string, OpusDecoder,
 };
 
-#[no_mangle]
 #[c2rust::src_loc = "42:1"]
 pub unsafe extern "C" fn test_overflow() -> libc::c_int {
     let mut decoder: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();

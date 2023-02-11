@@ -641,14 +641,12 @@ unsafe extern "C" fn downmix_and_resample(
     }
     return ret;
 }
-#[no_mangle]
 #[c2rust::src_loc = "215:1"]
 pub unsafe extern "C" fn tonality_analysis_init(mut tonal: *mut TonalityAnalysisState, Fs: i32) {
     (*tonal).arch = opus_select_arch();
     (*tonal).Fs = Fs;
     tonality_analysis_reset(tonal);
 }
-#[no_mangle]
 #[c2rust::src_loc = "224:1"]
 pub unsafe extern "C" fn tonality_analysis_reset(tonal: *mut TonalityAnalysisState) {
     let start: *mut libc::c_char =
@@ -663,7 +661,6 @@ pub unsafe extern "C" fn tonality_analysis_reset(tonal: *mut TonalityAnalysisSta
             .wrapping_mul(::core::mem::size_of::<libc::c_char>() as libc::c_ulong),
     );
 }
-#[no_mangle]
 #[c2rust::src_loc = "231:1"]
 pub unsafe extern "C" fn tonality_get_info(
     mut tonal: *mut TonalityAnalysisState,
@@ -1687,7 +1684,6 @@ unsafe extern "C" fn tonality_analysis(
     (*info).noisiness = frame_noisiness;
     (*info).valid = 1 as libc::c_int;
 }
-#[no_mangle]
 #[c2rust::src_loc = "953:1"]
 pub unsafe extern "C" fn run_analysis(
     mut analysis: *mut TonalityAnalysisState,

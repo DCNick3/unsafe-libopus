@@ -5,7 +5,6 @@ use crate::celt::entenc::{ec_enc, ec_enc_icdf};
 use crate::silk::define::SHELL_CODEC_FRAME_LENGTH;
 use crate::silk::tables_pulses_per_block::silk_sign_iCDF;
 
-#[no_mangle]
 #[c2rust::src_loc = "41:1"]
 pub unsafe extern "C" fn silk_encode_signs(
     psRangeEnc: *mut ec_enc,
@@ -56,7 +55,6 @@ pub unsafe extern "C" fn silk_encode_signs(
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "75:1"]
 pub unsafe extern "C" fn silk_decode_signs(
     psRangeDec: *mut ec_dec,

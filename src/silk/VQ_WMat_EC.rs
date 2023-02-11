@@ -9,7 +9,6 @@ pub mod typedef_h {
 pub use self::typedef_h::silk_int32_MAX;
 use crate::silk::define::LTP_ORDER;
 
-#[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_VQ_WMat_EC_c(
     ind: *mut i8,

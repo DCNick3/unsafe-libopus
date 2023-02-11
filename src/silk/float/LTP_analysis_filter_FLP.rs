@@ -1,7 +1,6 @@
 use ::libc;
 
 use crate::silk::define::LTP_ORDER;
-#[no_mangle]
 #[c2rust::src_loc = "34:1"]
 pub unsafe extern "C" fn silk_LTP_analysis_filter_FLP(
     LTP_res: *mut libc::c_float,

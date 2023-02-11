@@ -8,7 +8,6 @@ pub struct ChannelLayout {
     pub nb_coupled_streams: libc::c_int,
     pub mapping: [libc::c_uchar; 256],
 }
-#[no_mangle]
 #[c2rust::src_loc = "41:1"]
 pub unsafe extern "C" fn validate_layout(layout: *const ChannelLayout) -> libc::c_int {
     let mut i: libc::c_int = 0;
@@ -28,7 +27,6 @@ pub unsafe extern "C" fn validate_layout(layout: *const ChannelLayout) -> libc::
     }
     return 1 as libc::c_int;
 }
-#[no_mangle]
 #[c2rust::src_loc = "57:1"]
 pub unsafe extern "C" fn get_left_channel(
     layout: *const ChannelLayout,
@@ -49,7 +47,6 @@ pub unsafe extern "C" fn get_left_channel(
     }
     return -(1 as libc::c_int);
 }
-#[no_mangle]
 #[c2rust::src_loc = "69:1"]
 pub unsafe extern "C" fn get_right_channel(
     layout: *const ChannelLayout,
@@ -72,7 +69,6 @@ pub unsafe extern "C" fn get_right_channel(
     }
     return -(1 as libc::c_int);
 }
-#[no_mangle]
 #[c2rust::src_loc = "81:1"]
 pub unsafe extern "C" fn get_mono_channel(
     layout: *const ChannelLayout,

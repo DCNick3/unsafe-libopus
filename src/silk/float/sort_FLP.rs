@@ -1,7 +1,6 @@
 use ::libc;
 
 use crate::celt::celt::celt_fatal;
-#[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_insertion_sort_decreasing_FLP(
     a: *mut libc::c_float,

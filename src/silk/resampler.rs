@@ -75,7 +75,6 @@ pub const USE_silk_resampler_private_up2_HQ_wrapper: libc::c_int = 1 as libc::c_
 pub const USE_silk_resampler_private_IIR_FIR: libc::c_int = 2 as libc::c_int;
 #[c2rust::src_loc = "75:9"]
 pub const USE_silk_resampler_private_down_FIR: libc::c_int = 3 as libc::c_int;
-#[no_mangle]
 #[c2rust::src_loc = "78:1"]
 pub unsafe extern "C" fn silk_resampler_init(
     mut S: *mut silk_resampler_state_struct,
@@ -202,7 +201,6 @@ pub unsafe extern "C" fn silk_resampler_init(
     }
     return 0 as libc::c_int;
 }
-#[no_mangle]
 #[c2rust::src_loc = "174:1"]
 pub unsafe extern "C" fn silk_resampler(
     S: *mut silk_resampler_state_struct,

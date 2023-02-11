@@ -9,7 +9,6 @@ use crate::silk::float::LPC_analysis_filter_FLP::silk_LPC_analysis_filter_FLP;
 pub const MAX_ITERATIONS_RESIDUAL_NRG: libc::c_int = 10 as libc::c_int;
 #[c2rust::src_loc = "35:9"]
 pub const REGULARIZATION_FACTOR: libc::c_float = 1e-8f32;
-#[no_mangle]
 #[c2rust::src_loc = "38:1"]
 pub unsafe extern "C" fn silk_residual_energy_covar_FLP(
     c: *const libc::c_float,
@@ -72,7 +71,6 @@ pub unsafe extern "C" fn silk_residual_energy_covar_FLP(
     }
     return nrg;
 }
-#[no_mangle]
 #[c2rust::src_loc = "91:1"]
 pub unsafe extern "C" fn silk_residual_energy_FLP(
     nrgs: *mut libc::c_float,

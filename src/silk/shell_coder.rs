@@ -62,7 +62,6 @@ unsafe extern "C" fn decode_split(
         *p_child2.offset(0 as libc::c_int as isize) = 0 as libc::c_int as i16;
     };
 }
-#[no_mangle]
 #[c2rust::src_loc = "78:1"]
 pub unsafe extern "C" fn silk_shell_encoder(psRangeEnc: *mut ec_enc, pulses0: *const libc::c_int) {
     let mut pulses1: [libc::c_int; 8] = [0; 8];
@@ -164,7 +163,6 @@ pub unsafe extern "C" fn silk_shell_encoder(psRangeEnc: *mut ec_enc, pulses0: *c
         silk_shell_code_table0.as_ptr(),
     );
 }
-#[no_mangle]
 #[c2rust::src_loc = "119:1"]
 pub unsafe extern "C" fn silk_shell_decoder(
     pulses0: *mut i16,

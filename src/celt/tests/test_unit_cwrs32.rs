@@ -54,7 +54,6 @@ pub mod stdio_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entenc.c:44"]
 pub mod entenc_c {
-    #[no_mangle]
     #[c2rust::src_loc = "244:1"]
     pub unsafe extern "C" fn ec_enc_done(mut _this: *mut ec_enc) {
         let mut window: ec_window = 0;
@@ -132,7 +131,6 @@ pub mod entenc_c {
             }
         }
     }
-    #[no_mangle]
     #[c2rust::src_loc = "237:1"]
     pub unsafe extern "C" fn ec_enc_shrink(mut _this: *mut ec_enc, mut _size: u32) {
         memmove(
@@ -158,7 +156,6 @@ pub mod entenc_c {
         );
         (*_this).storage = _size;
     }
-    #[no_mangle]
     #[c2rust::src_loc = "214:1"]
     pub unsafe extern "C" fn ec_enc_patch_initial_bits(
         mut _this: *mut ec_enc,
@@ -198,7 +195,6 @@ pub mod entenc_c {
             _value as libc::c_uchar;
         return 0 as libc::c_int;
     }
-    #[no_mangle]
     #[c2rust::src_loc = "193:1"]
     pub unsafe extern "C" fn ec_enc_bits(
         mut _this: *mut ec_enc,
@@ -234,7 +230,6 @@ pub mod entenc_c {
         (*_this).nbits_total = ((*_this).nbits_total as libc::c_uint).wrapping_add(_bits)
             as libc::c_int as libc::c_int;
     }
-    #[no_mangle]
     #[c2rust::src_loc = "175:1"]
     pub unsafe extern "C" fn ec_enc_uint(mut _this: *mut ec_enc, mut _fl: u32, mut _ft: u32) {
         let mut ft: libc::c_uint = 0;
@@ -268,7 +263,6 @@ pub mod entenc_c {
             );
         };
     }
-    #[no_mangle]
     #[c2rust::src_loc = "164:1"]
     pub unsafe extern "C" fn ec_enc_icdf(
         mut _this: *mut ec_enc,
@@ -293,7 +287,6 @@ pub mod entenc_c {
         }
         ec_enc_normalize(_this);
     }
-    #[no_mangle]
     #[c2rust::src_loc = "151:1"]
     pub unsafe extern "C" fn ec_enc_bit_logp(
         mut _this: *mut ec_enc,
@@ -313,7 +306,6 @@ pub mod entenc_c {
         (*_this).rng = if _val != 0 { s } else { r };
         ec_enc_normalize(_this);
     }
-    #[no_mangle]
     #[c2rust::src_loc = "139:1"]
     pub unsafe extern "C" fn ec_encode_bin(
         mut _this: *mut ec_enc,
@@ -401,7 +393,6 @@ pub mod entenc_c {
             (*_this).nbits_total += 8 as libc::c_int;
         }
     }
-    #[no_mangle]
     #[c2rust::src_loc = "128:1"]
     pub unsafe extern "C" fn ec_encode(
         mut _this: *mut ec_enc,
@@ -423,7 +414,6 @@ pub mod entenc_c {
         }
         ec_enc_normalize(_this);
     }
-    #[no_mangle]
     #[c2rust::src_loc = "112:1"]
     pub unsafe extern "C" fn ec_enc_init(
         mut _this: *mut ec_enc,
@@ -497,7 +487,6 @@ pub mod entdec_c {
                 .wrapping_sub(1 as libc::c_int as libc::c_uint);
         }
     }
-    #[no_mangle]
     #[c2rust::src_loc = "146:1"]
     pub unsafe extern "C" fn ec_decode_bin(
         mut _this: *mut ec_dec,
@@ -514,7 +503,6 @@ pub mod entdec_c {
             ),
         );
     }
-    #[no_mangle]
     #[c2rust::src_loc = "153:1"]
     pub unsafe extern "C" fn ec_dec_update(
         mut _this: *mut ec_dec,
@@ -532,7 +520,6 @@ pub mod entdec_c {
         };
         ec_dec_normalize(_this);
     }
-    #[no_mangle]
     #[c2rust::src_loc = "162:1"]
     pub unsafe extern "C" fn ec_dec_bit_logp(
         mut _this: *mut ec_dec,
@@ -553,7 +540,6 @@ pub mod entdec_c {
         ec_dec_normalize(_this);
         return ret;
     }
-    #[no_mangle]
     #[c2rust::src_loc = "177:1"]
     pub unsafe extern "C" fn ec_dec_icdf(
         mut _this: *mut ec_dec,
@@ -582,7 +568,6 @@ pub mod entdec_c {
         ec_dec_normalize(_this);
         return ret;
     }
-    #[no_mangle]
     #[c2rust::src_loc = "198:1"]
     pub unsafe extern "C" fn ec_dec_uint(mut _this: *mut ec_dec, mut _ft: u32) -> u32 {
         let mut ft: libc::c_uint = 0;
@@ -621,7 +606,6 @@ pub mod entdec_c {
             return s;
         };
     }
-    #[no_mangle]
     #[c2rust::src_loc = "225:1"]
     pub unsafe extern "C" fn ec_dec_bits(mut _this: *mut ec_dec, mut _bits: libc::c_uint) -> u32 {
         let mut window: ec_window = 0;
@@ -651,7 +635,6 @@ pub mod entdec_c {
             as libc::c_int as libc::c_int;
         return ret;
     }
-    #[no_mangle]
     #[c2rust::src_loc = "139:1"]
     pub unsafe extern "C" fn ec_decode(
         mut _this: *mut ec_dec,
@@ -669,7 +652,6 @@ pub mod entdec_c {
                 ),
         );
     }
-    #[no_mangle]
     #[c2rust::src_loc = "119:1"]
     pub unsafe extern "C" fn ec_dec_init(
         mut _this: *mut ec_dec,
@@ -705,7 +687,6 @@ pub mod entdec_c {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/entcode.c:46"]
 pub mod entcode_c {
-    #[no_mangle]
     #[c2rust::src_loc = "69:1"]
     pub unsafe extern "C" fn ec_tell_frac(mut _this: *mut ec_ctx) -> u32 {
         pub static mut correction: [libc::c_uint; 8] = [
@@ -736,7 +717,6 @@ pub mod entcode_c {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cwrs.c:47"]
 pub mod cwrs_c {
-    #[no_mangle]
     #[c2rust::src_loc = "45:1"]
     pub unsafe extern "C" fn log2_frac(mut val: u32, mut frac: libc::c_int) -> libc::c_int {
         let mut l: libc::c_int = 0;
@@ -2264,7 +2244,6 @@ pub mod cwrs_c {
     ];
     #[c2rust::src_loc = "413:33"]
     pub static mut CELT_PVQ_U_ROW: [*const u32; 15] = [0 as *const u32; 15];
-    #[no_mangle]
     #[c2rust::src_loc = "431:1"]
     pub unsafe extern "C" fn get_required_bits(
         mut _bits: *mut i16,
@@ -2335,7 +2314,6 @@ pub mod cwrs_c {
         }
         return i;
     }
-    #[no_mangle]
     #[c2rust::src_loc = "458:1"]
     pub unsafe extern "C" fn encode_pulses(
         mut _y: *const libc::c_int,
@@ -2458,7 +2436,6 @@ pub mod cwrs_c {
         yy = yy + val as opus_val32 * val as opus_val32;
         return yy;
     }
-    #[no_mangle]
     #[c2rust::src_loc = "539:1"]
     pub unsafe extern "C" fn decode_pulses(
         mut _y: *mut libc::c_int,
@@ -2499,7 +2476,6 @@ pub mod cwrs_c {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mathops.c:48"]
 pub mod mathops_c {
-    #[no_mangle]
     #[c2rust::src_loc = "43:1"]
     pub unsafe extern "C" fn isqrt32(mut _val: u32) -> libc::c_uint {
         let mut b: libc::c_uint = 0;

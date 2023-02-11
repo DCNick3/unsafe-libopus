@@ -14,7 +14,6 @@ pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 
 #[c2rust::src_loc = "44:9"]
 pub const MAX_LOOPS: libc::c_int = 20 as libc::c_int;
-#[no_mangle]
 #[c2rust::src_loc = "47:1"]
 pub unsafe extern "C" fn silk_NLSF_stabilize(
     NLSF_Q15: *mut i16,

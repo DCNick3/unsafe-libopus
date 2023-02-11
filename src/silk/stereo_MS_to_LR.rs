@@ -13,7 +13,6 @@ pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 use crate::silk::structs::stereo_dec_state;
 
 use crate::externs::memcpy;
-#[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_stereo_MS_to_LR(
     mut state: *mut stereo_dec_state,

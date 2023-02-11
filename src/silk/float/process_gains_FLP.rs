@@ -37,7 +37,6 @@ use crate::silk::float::structs_FLP::{
 use crate::silk::gain_quant::silk_gains_quant;
 use crate::silk::tables_other::silk_Quantization_Offsets_Q10;
 
-#[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_process_gains_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,

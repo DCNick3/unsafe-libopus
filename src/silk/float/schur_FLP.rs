@@ -1,7 +1,6 @@
 use ::libc;
 
 use crate::celt::celt::celt_fatal;
-#[no_mangle]
 #[c2rust::src_loc = "34:1"]
 pub unsafe extern "C" fn silk_schur_FLP(
     refl_coef: *mut libc::c_float,

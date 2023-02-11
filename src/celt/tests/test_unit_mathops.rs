@@ -43,10 +43,8 @@ use self::stdio_h::{fprintf, stderr};
 pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
 
 pub use self::FILE_h::FILE;
-#[no_mangle]
 #[c2rust::src_loc = "48:5"]
 pub static mut ret: libc::c_int = 0 as libc::c_int;
-#[no_mangle]
 #[c2rust::src_loc = "50:1"]
 pub unsafe extern "C" fn testdiv() {
     let mut i: i32 = 0;
@@ -69,7 +67,6 @@ pub unsafe extern "C" fn testdiv() {
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "71:1"]
 pub unsafe extern "C" fn testsqrt() {
     let mut i: i32 = 0;
@@ -96,7 +93,6 @@ pub unsafe extern "C" fn testsqrt() {
         i += 1;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "89:1"]
 pub unsafe extern "C" fn testbitexactcos() {
     let mut i: libc::c_int = 0;
@@ -137,7 +133,6 @@ pub unsafe extern "C" fn testbitexactcos() {
         ret = 1 as libc::c_int;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "113:1"]
 pub unsafe extern "C" fn testbitexactlog2tan() {
     let mut i: libc::c_int = 0;
@@ -186,7 +181,6 @@ pub unsafe extern "C" fn testbitexactlog2tan() {
         ret = 1 as libc::c_int;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "143:1"]
 pub unsafe extern "C" fn testlog2() {
     let mut x: libc::c_float = 0.;
@@ -210,7 +204,6 @@ pub unsafe extern "C" fn testlog2() {
         x = (x as libc::c_double + x as libc::c_double / 8.0f64) as libc::c_float;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "157:1"]
 pub unsafe extern "C" fn testexp2() {
     let mut x: libc::c_float = 0.;
@@ -237,7 +230,6 @@ pub unsafe extern "C" fn testexp2() {
         x = (x as libc::c_double + 0.0007f64) as libc::c_float;
     }
 }
-#[no_mangle]
 #[c2rust::src_loc = "171:1"]
 pub unsafe extern "C" fn testexp2log2() {
     let mut x: libc::c_float = 0.;
