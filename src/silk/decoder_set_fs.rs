@@ -1,39 +1,17 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
-pub mod tables_h {
-    use crate::silk::structs::silk_NLSF_CB_struct;
-    extern "C" {
-        #[c2rust::src_loc = "45:26"]
-        pub static silk_pitch_contour_iCDF: [u8; 34];
-        #[c2rust::src_loc = "46:26"]
-        pub static silk_pitch_contour_NB_iCDF: [u8; 11];
-        #[c2rust::src_loc = "47:26"]
-        pub static silk_pitch_contour_10_ms_iCDF: [u8; 12];
-        #[c2rust::src_loc = "48:26"]
-        pub static silk_pitch_contour_10_ms_NB_iCDF: [u8; 3];
-        #[c2rust::src_loc = "69:26"]
-        pub static silk_uniform4_iCDF: [u8; 4];
-        #[c2rust::src_loc = "71:26"]
-        pub static silk_uniform6_iCDF: [u8; 6];
-        #[c2rust::src_loc = "72:26"]
-        pub static silk_uniform8_iCDF: [u8; 8];
-        #[c2rust::src_loc = "97:34"]
-        pub static silk_NLSF_CB_WB: silk_NLSF_CB_struct;
-        #[c2rust::src_loc = "98:34"]
-        pub static silk_NLSF_CB_NB_MB: silk_NLSF_CB_struct;
-    }
-}
-use self::tables_h::{
-    silk_NLSF_CB_NB_MB, silk_NLSF_CB_WB, silk_pitch_contour_10_ms_NB_iCDF,
-    silk_pitch_contour_10_ms_iCDF, silk_pitch_contour_NB_iCDF, silk_pitch_contour_iCDF,
-    silk_uniform4_iCDF, silk_uniform6_iCDF, silk_uniform8_iCDF,
-};
 use crate::celt::celt::celt_fatal;
 use crate::externs::memset;
 use crate::silk::define::{MAX_LPC_ORDER, MAX_NB_SUBFR, MIN_LPC_ORDER, TYPE_NO_VOICE_ACTIVITY};
 use crate::silk::resampler::silk_resampler_init;
 use crate::silk::structs::silk_decoder_state;
+use crate::silk::tables_NLSF_CB_NB_MB::silk_NLSF_CB_NB_MB;
+use crate::silk::tables_NLSF_CB_WB::silk_NLSF_CB_WB;
+use crate::silk::tables_other::{silk_uniform4_iCDF, silk_uniform6_iCDF, silk_uniform8_iCDF};
+use crate::silk::tables_pitch_lag::{
+    silk_pitch_contour_10_ms_NB_iCDF, silk_pitch_contour_10_ms_iCDF, silk_pitch_contour_NB_iCDF,
+    silk_pitch_contour_iCDF,
+};
 
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]

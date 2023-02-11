@@ -62,13 +62,6 @@ pub mod SigProc_FLP_h {
     }
     use crate::celt::float_cast::float2int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
-pub mod tables_h {
-    extern "C" {
-        #[c2rust::src_loc = "84:26"]
-        pub static silk_LTPScales_table_Q14: [i16; 3];
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
     use crate::silk::structs::{silk_encoder_state, silk_nsq_state, SideInfoIndices};
@@ -131,14 +124,15 @@ pub mod main_h {
         );
     }
 }
+
 use self::main_h::{silk_NSQ_c, silk_NSQ_del_dec_c, silk_process_NLSFs, silk_quant_LTP_gains};
 pub use self::structs_FLP_h::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
 };
-use self::tables_h::silk_LTPScales_table_Q14;
 pub use self::SigProc_FLP_h::silk_float2int;
 use crate::silk::define::{LTP_ORDER, MAX_SHAPE_LPC_ORDER, TYPE_VOICED};
 use crate::silk::structs::{silk_encoder_state, silk_nsq_state, SideInfoIndices};
+use crate::silk::tables_other::silk_LTPScales_table_Q14;
 
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]

@@ -1,26 +1,9 @@
 use crate::celt::entdec::{ec_dec, ec_dec_icdf};
-use ::libc;
-
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
-pub mod tables_h {
-    extern "C" {
-        #[c2rust::src_loc = "68:26"]
-        pub static silk_uniform3_iCDF: [u8; 3];
-        #[c2rust::src_loc = "70:26"]
-        pub static silk_uniform5_iCDF: [u8; 5];
-        #[c2rust::src_loc = "89:26"]
-        pub static silk_stereo_pred_quant_Q13: [i16; 16];
-        #[c2rust::src_loc = "90:26"]
-        pub static silk_stereo_pred_joint_iCDF: [u8; 25];
-        #[c2rust::src_loc = "91:26"]
-        pub static silk_stereo_only_code_mid_iCDF: [u8; 2];
-    }
-}
-
-use self::tables_h::{
+use crate::silk::tables_other::{
     silk_stereo_only_code_mid_iCDF, silk_stereo_pred_joint_iCDF, silk_stereo_pred_quant_Q13,
     silk_uniform3_iCDF, silk_uniform5_iCDF,
 };
+use ::libc;
 
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]

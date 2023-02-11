@@ -1,12 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
-pub mod tables_h {
-    extern "C" {
-        #[c2rust::src_loc = "101:26"]
-        pub static silk_Quantization_Offsets_Q10: [[i16; 2]; 2];
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
     #[c2rust::src_loc = "45:9"]
@@ -18,7 +11,6 @@ pub mod typedef_h {
     #[c2rust::src_loc = "43:9"]
     pub const silk_int32_MIN: libc::c_uint = 0x80000000 as libc::c_uint;
 }
-use self::tables_h::silk_Quantization_Offsets_Q10;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN, silk_int32_MAX, silk_int32_MIN};
 use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memset};
@@ -26,6 +18,7 @@ use crate::silk::define::{
     LTP_ORDER, MAX_LPC_ORDER, MAX_NB_SUBFR, QUANT_LEVEL_ADJUST_Q10, TYPE_VOICED,
 };
 use crate::silk::structs::{silk_decoder_control, silk_decoder_state};
+use crate::silk::tables_other::silk_Quantization_Offsets_Q10;
 use crate::silk::Inlines::{silk_DIV32_varQ, silk_INVERSE32_varQ};
 use crate::silk::LPC_analysis_filter::silk_LPC_analysis_filter;
 

@@ -80,30 +80,6 @@ pub mod typedef_h {
     #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:35"]
-pub mod tables_h {
-    use crate::silk::structs::silk_NLSF_CB_struct;
-    extern "C" {
-        #[c2rust::src_loc = "45:26"]
-        pub static silk_pitch_contour_iCDF: [u8; 34];
-        #[c2rust::src_loc = "46:26"]
-        pub static silk_pitch_contour_NB_iCDF: [u8; 11];
-        #[c2rust::src_loc = "47:26"]
-        pub static silk_pitch_contour_10_ms_iCDF: [u8; 12];
-        #[c2rust::src_loc = "48:26"]
-        pub static silk_pitch_contour_10_ms_NB_iCDF: [u8; 3];
-        #[c2rust::src_loc = "69:26"]
-        pub static silk_uniform4_iCDF: [u8; 4];
-        #[c2rust::src_loc = "71:26"]
-        pub static silk_uniform6_iCDF: [u8; 6];
-        #[c2rust::src_loc = "72:26"]
-        pub static silk_uniform8_iCDF: [u8; 8];
-        #[c2rust::src_loc = "97:34"]
-        pub static silk_NLSF_CB_WB: silk_NLSF_CB_struct;
-        #[c2rust::src_loc = "98:34"]
-        pub static silk_NLSF_CB_NB_MB: silk_NLSF_CB_struct;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:35"]
 pub mod main_h {
     use crate::silk::enc_API::silk_EncControlStruct;
@@ -130,25 +106,26 @@ use self::main_h::silk_control_audio_bandwidth;
 pub use self::pitch_est_defines_h::{
     SILK_PE_MAX_COMPLEX, SILK_PE_MID_COMPLEX, SILK_PE_MIN_COMPLEX,
 };
+pub use self::structs_FLP_h::{silk_encoder_state_FLP, silk_shape_state_FLP};
+pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
+pub use self::SigProc_FLP_h::{silk_float2short_array, silk_short2float_array};
 use crate::celt::celt::celt_fatal;
+use crate::externs::memset;
 use crate::silk::define::{
     LA_SHAPE_MS, MAX_DEL_DEC_STATES, MAX_LPC_ORDER, MAX_NB_SUBFR, MIN_LPC_ORDER,
     SUB_FRAME_LENGTH_MS, TYPE_NO_VOICE_ACTIVITY,
 };
 use crate::silk::enc_API::silk_EncControlStruct;
-use crate::silk::resampler_structs::silk_resampler_state_struct;
-
-pub use self::structs_FLP_h::{silk_encoder_state_FLP, silk_shape_state_FLP};
-use self::tables_h::{
-    silk_NLSF_CB_NB_MB, silk_NLSF_CB_WB, silk_pitch_contour_10_ms_NB_iCDF,
-    silk_pitch_contour_10_ms_iCDF, silk_pitch_contour_NB_iCDF, silk_pitch_contour_iCDF,
-    silk_uniform4_iCDF, silk_uniform6_iCDF, silk_uniform8_iCDF,
-};
-pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
-pub use self::SigProc_FLP_h::{silk_float2short_array, silk_short2float_array};
-use crate::externs::memset;
 use crate::silk::resampler::{silk_resampler, silk_resampler_init};
+use crate::silk::resampler_structs::silk_resampler_state_struct;
 use crate::silk::structs::{silk_encoder_state, silk_nsq_state};
+use crate::silk::tables_NLSF_CB_NB_MB::silk_NLSF_CB_NB_MB;
+use crate::silk::tables_NLSF_CB_WB::silk_NLSF_CB_WB;
+use crate::silk::tables_other::{silk_uniform4_iCDF, silk_uniform6_iCDF, silk_uniform8_iCDF};
+use crate::silk::tables_pitch_lag::{
+    silk_pitch_contour_10_ms_NB_iCDF, silk_pitch_contour_10_ms_iCDF, silk_pitch_contour_NB_iCDF,
+    silk_pitch_contour_iCDF,
+};
 use crate::silk::SigProc_FIX::{silk_max_int, silk_min_int};
 
 #[no_mangle]

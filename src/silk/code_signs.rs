@@ -1,16 +1,9 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
-pub mod tables_h {
-    extern "C" {
-        #[c2rust::src_loc = "66:26"]
-        pub static silk_sign_iCDF: [u8; 42];
-    }
-}
+
 use crate::celt::entdec::{ec_dec, ec_dec_icdf};
 use crate::celt::entenc::{ec_enc, ec_enc_icdf};
 use crate::silk::define::SHELL_CODEC_FRAME_LENGTH;
-
-use self::tables_h::silk_sign_iCDF;
+use crate::silk::tables_pulses_per_block::silk_sign_iCDF;
 
 #[no_mangle]
 #[c2rust::src_loc = "41:1"]

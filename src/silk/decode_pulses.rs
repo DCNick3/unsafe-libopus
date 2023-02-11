@@ -1,16 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
-pub mod tables_h {
-    extern "C" {
-        #[c2rust::src_loc = "50:26"]
-        pub static silk_pulses_per_block_iCDF: [[u8; 18]; 10];
-        #[c2rust::src_loc = "53:26"]
-        pub static silk_rate_levels_iCDF: [[u8; 9]; 2];
-        #[c2rust::src_loc = "64:26"]
-        pub static silk_lsb_iCDF: [u8; 2];
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
     use crate::celt::entdec::ec_dec;
@@ -32,11 +21,11 @@ pub mod main_h {
 use self::main_h::{silk_decode_signs, silk_shell_decoder};
 use crate::celt::celt::celt_fatal;
 use crate::celt::entdec::{ec_dec, ec_dec_icdf};
-use crate::silk::define::{N_RATE_LEVELS, SHELL_CODEC_FRAME_LENGTH, SILK_MAX_PULSES};
-
-use self::tables_h::{silk_lsb_iCDF, silk_pulses_per_block_iCDF, silk_rate_levels_iCDF};
-
 use crate::externs::memset;
+use crate::silk::define::{N_RATE_LEVELS, SHELL_CODEC_FRAME_LENGTH, SILK_MAX_PULSES};
+use crate::silk::tables_other::silk_lsb_iCDF;
+use crate::silk::tables_pulses_per_block::{silk_pulses_per_block_iCDF, silk_rate_levels_iCDF};
+
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn silk_decode_pulses(

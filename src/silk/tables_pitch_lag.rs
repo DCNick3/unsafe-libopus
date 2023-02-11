@@ -1,138 +1,27 @@
-use ::libc;
 #[no_mangle]
 #[c2rust::src_loc = "34:18"]
-pub static mut silk_pitch_lag_iCDF: [u8; 32] = [
-    253 as libc::c_int as u8,
-    250 as libc::c_int as u8,
-    244 as libc::c_int as u8,
-    233 as libc::c_int as u8,
-    212 as libc::c_int as u8,
-    182 as libc::c_int as u8,
-    150 as libc::c_int as u8,
-    131 as libc::c_int as u8,
-    120 as libc::c_int as u8,
-    110 as libc::c_int as u8,
-    98 as libc::c_int as u8,
-    85 as libc::c_int as u8,
-    72 as libc::c_int as u8,
-    60 as libc::c_int as u8,
-    49 as libc::c_int as u8,
-    40 as libc::c_int as u8,
-    32 as libc::c_int as u8,
-    25 as libc::c_int as u8,
-    19 as libc::c_int as u8,
-    15 as libc::c_int as u8,
-    13 as libc::c_int as u8,
-    11 as libc::c_int as u8,
-    9 as libc::c_int as u8,
-    8 as libc::c_int as u8,
-    7 as libc::c_int as u8,
-    6 as libc::c_int as u8,
-    5 as libc::c_int as u8,
-    4 as libc::c_int as u8,
-    3 as libc::c_int as u8,
-    2 as libc::c_int as u8,
-    1 as libc::c_int as u8,
-    0 as libc::c_int as u8,
+pub static silk_pitch_lag_iCDF: [u8; 32] = [
+    253, 250, 244, 233, 212, 182, 150, 131, 120, 110, 98, 85, 72, 60, 49, 40, 32, 25, 19, 15, 13,
+    11, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0,
 ];
 #[no_mangle]
 #[c2rust::src_loc = "41:18"]
-pub static mut silk_pitch_delta_iCDF: [u8; 21] = [
-    210 as libc::c_int as u8,
-    208 as libc::c_int as u8,
-    206 as libc::c_int as u8,
-    203 as libc::c_int as u8,
-    199 as libc::c_int as u8,
-    193 as libc::c_int as u8,
-    183 as libc::c_int as u8,
-    168 as libc::c_int as u8,
-    142 as libc::c_int as u8,
-    104 as libc::c_int as u8,
-    74 as libc::c_int as u8,
-    52 as libc::c_int as u8,
-    37 as libc::c_int as u8,
-    27 as libc::c_int as u8,
-    20 as libc::c_int as u8,
-    14 as libc::c_int as u8,
-    10 as libc::c_int as u8,
-    6 as libc::c_int as u8,
-    4 as libc::c_int as u8,
-    2 as libc::c_int as u8,
-    0 as libc::c_int as u8,
+pub static silk_pitch_delta_iCDF: [u8; 21] = [
+    210, 208, 206, 203, 199, 193, 183, 168, 142, 104, 74, 52, 37, 27, 20, 14, 10, 6, 4, 2, 0,
 ];
 #[no_mangle]
 #[c2rust::src_loc = "47:18"]
-pub static mut silk_pitch_contour_iCDF: [u8; 34] = [
-    223 as libc::c_int as u8,
-    201 as libc::c_int as u8,
-    183 as libc::c_int as u8,
-    167 as libc::c_int as u8,
-    152 as libc::c_int as u8,
-    138 as libc::c_int as u8,
-    124 as libc::c_int as u8,
-    111 as libc::c_int as u8,
-    98 as libc::c_int as u8,
-    88 as libc::c_int as u8,
-    79 as libc::c_int as u8,
-    70 as libc::c_int as u8,
-    62 as libc::c_int as u8,
-    56 as libc::c_int as u8,
-    50 as libc::c_int as u8,
-    44 as libc::c_int as u8,
-    39 as libc::c_int as u8,
-    35 as libc::c_int as u8,
-    31 as libc::c_int as u8,
-    27 as libc::c_int as u8,
-    24 as libc::c_int as u8,
-    21 as libc::c_int as u8,
-    18 as libc::c_int as u8,
-    16 as libc::c_int as u8,
-    14 as libc::c_int as u8,
-    12 as libc::c_int as u8,
-    10 as libc::c_int as u8,
-    8 as libc::c_int as u8,
-    6 as libc::c_int as u8,
-    4 as libc::c_int as u8,
-    3 as libc::c_int as u8,
-    2 as libc::c_int as u8,
-    1 as libc::c_int as u8,
-    0 as libc::c_int as u8,
+pub static silk_pitch_contour_iCDF: [u8; 34] = [
+    223, 201, 183, 167, 152, 138, 124, 111, 98, 88, 79, 70, 62, 56, 50, 44, 39, 35, 31, 27, 24, 21,
+    18, 16, 14, 12, 10, 8, 6, 4, 3, 2, 1, 0,
 ];
 #[no_mangle]
 #[c2rust::src_loc = "55:18"]
-pub static mut silk_pitch_contour_NB_iCDF: [u8; 11] = [
-    188 as libc::c_int as u8,
-    176 as libc::c_int as u8,
-    155 as libc::c_int as u8,
-    138 as libc::c_int as u8,
-    119 as libc::c_int as u8,
-    97 as libc::c_int as u8,
-    67 as libc::c_int as u8,
-    43 as libc::c_int as u8,
-    26 as libc::c_int as u8,
-    10 as libc::c_int as u8,
-    0 as libc::c_int as u8,
-];
+pub static silk_pitch_contour_NB_iCDF: [u8; 11] = [188, 176, 155, 138, 119, 97, 67, 43, 26, 10, 0];
 #[no_mangle]
 #[c2rust::src_loc = "60:18"]
-pub static mut silk_pitch_contour_10_ms_iCDF: [u8; 12] = [
-    165 as libc::c_int as u8,
-    119 as libc::c_int as u8,
-    80 as libc::c_int as u8,
-    61 as libc::c_int as u8,
-    47 as libc::c_int as u8,
-    35 as libc::c_int as u8,
-    27 as libc::c_int as u8,
-    20 as libc::c_int as u8,
-    14 as libc::c_int as u8,
-    9 as libc::c_int as u8,
-    4 as libc::c_int as u8,
-    0 as libc::c_int as u8,
-];
+pub static silk_pitch_contour_10_ms_iCDF: [u8; 12] =
+    [165, 119, 80, 61, 47, 35, 27, 20, 14, 9, 4, 0];
 #[no_mangle]
 #[c2rust::src_loc = "65:18"]
-pub static mut silk_pitch_contour_10_ms_NB_iCDF: [u8; 3] = [
-    113 as libc::c_int as u8,
-    63 as libc::c_int as u8,
-    0 as libc::c_int as u8,
-];
+pub static silk_pitch_contour_10_ms_NB_iCDF: [u8; 3] = [113, 63, 0];

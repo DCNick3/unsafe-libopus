@@ -1,22 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
-pub mod tables_h {
-    extern "C" {
-        #[c2rust::src_loc = "50:26"]
-        pub static silk_pulses_per_block_iCDF: [[u8; 18]; 10];
-        #[c2rust::src_loc = "51:26"]
-        pub static silk_pulses_per_block_BITS_Q5: [[u8; 18]; 9];
-        #[c2rust::src_loc = "53:26"]
-        pub static silk_rate_levels_iCDF: [[u8; 9]; 2];
-        #[c2rust::src_loc = "54:26"]
-        pub static silk_rate_levels_BITS_Q5: [[u8; 9]; 2];
-        #[c2rust::src_loc = "56:26"]
-        pub static silk_max_pulses_table: [u8; 4];
-        #[c2rust::src_loc = "64:26"]
-        pub static silk_lsb_iCDF: [u8; 2];
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
     use crate::celt::entenc::ec_enc;
@@ -41,17 +24,17 @@ pub mod typedef_h {
     pub const silk_int32_MAX: libc::c_int = 0x7fffffff as libc::c_int;
 }
 use self::main_h::{silk_encode_signs, silk_shell_encoder};
+pub use self::typedef_h::silk_int32_MAX;
 use crate::celt::celt::celt_fatal;
 use crate::celt::entenc::{ec_enc, ec_enc_icdf};
-use crate::silk::define::{N_RATE_LEVELS, SHELL_CODEC_FRAME_LENGTH, SILK_MAX_PULSES};
-
-use self::tables_h::{
-    silk_lsb_iCDF, silk_max_pulses_table, silk_pulses_per_block_BITS_Q5,
-    silk_pulses_per_block_iCDF, silk_rate_levels_BITS_Q5, silk_rate_levels_iCDF,
-};
-pub use self::typedef_h::silk_int32_MAX;
-
 use crate::externs::memset;
+use crate::silk::define::{N_RATE_LEVELS, SHELL_CODEC_FRAME_LENGTH, SILK_MAX_PULSES};
+use crate::silk::tables_other::silk_lsb_iCDF;
+use crate::silk::tables_pulses_per_block::{
+    silk_max_pulses_table, silk_pulses_per_block_BITS_Q5, silk_pulses_per_block_iCDF,
+    silk_rate_levels_BITS_Q5, silk_rate_levels_iCDF,
+};
+
 #[inline]
 #[c2rust::src_loc = "39:1"]
 unsafe extern "C" fn combine_and_check(

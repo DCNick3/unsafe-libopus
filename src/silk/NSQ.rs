@@ -7,13 +7,6 @@ pub mod typedef_h {
     #[c2rust::src_loc = "45:9"]
     pub const silk_int16_MIN: libc::c_int = 0x8000 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
-pub mod tables_h {
-    extern "C" {
-        #[c2rust::src_loc = "101:26"]
-        pub static silk_Quantization_Offsets_Q10: [[i16; 2]; 2];
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/NSQ.h:34"]
 pub mod NSQ_h {
     #[inline]
@@ -135,7 +128,6 @@ pub mod NSQ_h {
     }
 }
 
-use self::tables_h::silk_Quantization_Offsets_Q10;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 pub use self::NSQ_h::{
     silk_NSQ_noise_shape_feedback_loop_c, silk_noise_shape_quantizer_short_prediction_c,
@@ -147,8 +139,10 @@ use crate::silk::define::{
     TYPE_VOICED,
 };
 use crate::silk::structs::{silk_encoder_state, silk_nsq_state, SideInfoIndices};
+use crate::silk::tables_other::silk_Quantization_Offsets_Q10;
 use crate::silk::Inlines::{silk_DIV32_varQ, silk_INVERSE32_varQ};
 use crate::silk::LPC_analysis_filter::silk_LPC_analysis_filter;
+
 #[no_mangle]
 #[c2rust::src_loc = "76:1"]
 pub unsafe extern "C" fn silk_NSQ_c(

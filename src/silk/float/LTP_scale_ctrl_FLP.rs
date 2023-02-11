@@ -44,19 +44,12 @@ pub mod structs_FLP_h {
     }
     use crate::silk::structs::silk_encoder_state;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
-pub mod tables_h {
-    extern "C" {
-        #[c2rust::src_loc = "84:26"]
-        pub static silk_LTPScales_table_Q14: [i16; 3];
-    }
-}
 use crate::silk::define::CODE_INDEPENDENTLY;
+use crate::silk::tables_other::silk_LTPScales_table_Q14;
 
 pub use self::structs_FLP_h::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
 };
-use self::tables_h::silk_LTPScales_table_Q14;
 
 #[no_mangle]
 #[c2rust::src_loc = "34:1"]

@@ -1,26 +1,10 @@
-use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
-pub mod tables_h {
-    extern "C" {
-        #[c2rust::src_loc = "58:26"]
-        pub static silk_shell_code_table0: [u8; 152];
-        #[c2rust::src_loc = "59:26"]
-        pub static silk_shell_code_table1: [u8; 152];
-        #[c2rust::src_loc = "60:26"]
-        pub static silk_shell_code_table2: [u8; 152];
-        #[c2rust::src_loc = "61:26"]
-        pub static silk_shell_code_table3: [u8; 152];
-        #[c2rust::src_loc = "62:26"]
-        pub static silk_shell_code_table_offsets: [u8; 17];
-    }
-}
 use crate::celt::entdec::{ec_dec, ec_dec_icdf};
 use crate::celt::entenc::{ec_enc, ec_enc_icdf};
-
-use self::tables_h::{
+use crate::silk::tables_pulses_per_block::{
     silk_shell_code_table0, silk_shell_code_table1, silk_shell_code_table2, silk_shell_code_table3,
     silk_shell_code_table_offsets,
 };
+use ::libc;
 
 #[inline]
 #[c2rust::src_loc = "36:1"]

@@ -52,13 +52,6 @@ pub mod SigProc_FLP_h {
         return (1.0f64 / (1.0f64 + (-x as f64).exp())) as libc::c_float;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
-pub mod tables_h {
-    extern "C" {
-        #[c2rust::src_loc = "101:26"]
-        pub static silk_Quantization_Offsets_Q10: [[i16; 2]; 2];
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
     extern "C" {
@@ -87,20 +80,20 @@ pub mod tuning_parameters_h {
     #[c2rust::src_loc = "143:9"]
     pub const LAMBDA_QUANT_OFFSET: libc::c_float = 0.8f32;
 }
-use self::main_h::silk_gains_quant;
-use crate::silk::define::{CODE_CONDITIONALLY, TYPE_VOICED};
 
+use self::main_h::silk_gains_quant;
 pub use self::structs_FLP_h::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
 };
-use self::tables_h::silk_Quantization_Offsets_Q10;
 pub use self::tuning_parameters_h::{
     LAMBDA_CODING_QUALITY, LAMBDA_DELAYED_DECISIONS, LAMBDA_INPUT_QUALITY, LAMBDA_OFFSET,
     LAMBDA_QUANT_OFFSET, LAMBDA_SPEECH_ACT,
 };
-
 pub use self::SigProc_FLP_h::silk_sigmoid;
 use crate::externs::memcpy;
+use crate::silk::define::{CODE_CONDITIONALLY, TYPE_VOICED};
+use crate::silk::tables_other::silk_Quantization_Offsets_Q10;
+
 #[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_process_gains_FLP(

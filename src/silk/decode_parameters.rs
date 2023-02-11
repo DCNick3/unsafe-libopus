@@ -1,14 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
-pub mod tables_h {
-    extern "C" {
-        #[c2rust::src_loc = "79:34"]
-        pub static silk_LTP_vq_ptrs_Q7: [*const i8; 3];
-        #[c2rust::src_loc = "84:26"]
-        pub static silk_LTPScales_table_Q14: [i16; 3];
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
     use crate::silk::structs::silk_NLSF_CB_struct;
@@ -29,13 +20,15 @@ pub mod main_h {
         );
     }
 }
+
 use self::main_h::{silk_NLSF_decode, silk_gains_dequant};
-use self::tables_h::{silk_LTPScales_table_Q14, silk_LTP_vq_ptrs_Q7};
 use crate::externs::{memcpy, memset};
 use crate::silk::bwexpander::silk_bwexpander;
 use crate::silk::decode_pitch::silk_decode_pitch;
 use crate::silk::define::{BWE_AFTER_LOSS_Q16, CODE_CONDITIONALLY, LTP_ORDER, TYPE_VOICED};
 use crate::silk::structs::{silk_decoder_control, silk_decoder_state};
+use crate::silk::tables_LTP::silk_LTP_vq_ptrs_Q7;
+use crate::silk::tables_other::silk_LTPScales_table_Q14;
 use crate::silk::NLSF2A::silk_NLSF2A;
 
 #[no_mangle]

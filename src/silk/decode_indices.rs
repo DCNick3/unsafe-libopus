@@ -1,35 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
-pub mod tables_h {
-    extern "C" {
-        #[c2rust::src_loc = "40:26"]
-        pub static silk_gain_iCDF: [[u8; 8]; 3];
-        #[c2rust::src_loc = "41:26"]
-        pub static silk_delta_gain_iCDF: [u8; 41];
-        #[c2rust::src_loc = "43:26"]
-        pub static silk_pitch_lag_iCDF: [u8; 32];
-        #[c2rust::src_loc = "44:26"]
-        pub static silk_pitch_delta_iCDF: [u8; 21];
-        #[c2rust::src_loc = "69:26"]
-        pub static silk_uniform4_iCDF: [u8; 4];
-        #[c2rust::src_loc = "72:26"]
-        pub static silk_uniform8_iCDF: [u8; 8];
-        #[c2rust::src_loc = "74:26"]
-        pub static silk_NLSF_EXT_iCDF: [u8; 7];
-        #[c2rust::src_loc = "76:26"]
-        pub static silk_LTP_per_index_iCDF: [u8; 3];
-        #[c2rust::src_loc = "77:34"]
-        pub static silk_LTP_gain_iCDF_ptrs: [*const u8; 3];
-        #[c2rust::src_loc = "83:26"]
-        pub static silk_LTPscale_iCDF: [u8; 3];
-        #[c2rust::src_loc = "86:26"]
-        pub static silk_type_offset_VAD_iCDF: [u8; 4];
-        #[c2rust::src_loc = "87:26"]
-        pub static silk_type_offset_no_VAD_iCDF: [u8; 2];
-        #[c2rust::src_loc = "95:26"]
-        pub static silk_NLSF_interpolation_factor_iCDF: [u8; 5];
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
     use crate::silk::structs::silk_NLSF_CB_struct;
@@ -50,13 +19,15 @@ use crate::silk::define::{
     CODE_CONDITIONALLY, CODE_INDEPENDENTLY, MAX_NB_SUBFR, NLSF_QUANT_MAX_AMPLITUDE, TYPE_VOICED,
 };
 
-use self::tables_h::{
-    silk_LTP_gain_iCDF_ptrs, silk_LTP_per_index_iCDF, silk_LTPscale_iCDF, silk_NLSF_EXT_iCDF,
-    silk_NLSF_interpolation_factor_iCDF, silk_delta_gain_iCDF, silk_gain_iCDF,
-    silk_pitch_delta_iCDF, silk_pitch_lag_iCDF, silk_type_offset_VAD_iCDF,
-    silk_type_offset_no_VAD_iCDF, silk_uniform4_iCDF, silk_uniform8_iCDF,
-};
 use crate::silk::structs::silk_decoder_state;
+use crate::silk::tables_LTP::{silk_LTP_gain_iCDF_ptrs, silk_LTP_per_index_iCDF};
+use crate::silk::tables_gain::{silk_delta_gain_iCDF, silk_gain_iCDF};
+use crate::silk::tables_other::{
+    silk_LTPscale_iCDF, silk_NLSF_EXT_iCDF, silk_NLSF_interpolation_factor_iCDF,
+    silk_type_offset_VAD_iCDF, silk_type_offset_no_VAD_iCDF, silk_uniform4_iCDF,
+    silk_uniform8_iCDF,
+};
+use crate::silk::tables_pitch_lag::{silk_pitch_delta_iCDF, silk_pitch_lag_iCDF};
 
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]

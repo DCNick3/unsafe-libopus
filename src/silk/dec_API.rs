@@ -82,21 +82,13 @@ pub mod main_h {
         ) -> libc::c_int;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
-pub mod tables_h {
-    extern "C" {
-        #[c2rust::src_loc = "93:34"]
-        pub static silk_LBRR_flags_iCDF_ptr: [*const u8; 2];
-    }
-}
-pub use self::errors_h::{
+use self::errors_h::{
     SILK_DEC_INVALID_FRAME_SIZE, SILK_DEC_INVALID_SAMPLING_FREQUENCY, SILK_NO_ERROR,
 };
 use self::main_h::{
     silk_decode_frame, silk_decode_indices, silk_decode_pulses, silk_decoder_set_fs,
     silk_init_decoder, silk_stereo_MS_to_LR, silk_stereo_decode_mid_only, silk_stereo_decode_pred,
 };
-use self::tables_h::silk_LBRR_flags_iCDF_ptr;
 use crate::celt::celt::celt_fatal;
 use crate::celt::entdec::{ec_dec, ec_dec_bit_logp, ec_dec_icdf};
 use crate::externs::{memcpy, memset};
@@ -107,6 +99,7 @@ use crate::silk::define::{
 use crate::silk::resampler::silk_resampler;
 use crate::silk::resampler_structs::silk_resampler_state_struct;
 use crate::silk::structs::{silk_decoder_state, stereo_dec_state};
+use crate::silk::tables_other::silk_LBRR_flags_iCDF_ptr;
 
 #[derive(Copy, Clone)]
 #[repr(C)]

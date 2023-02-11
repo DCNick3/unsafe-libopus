@@ -170,16 +170,7 @@ pub mod main_FLP_h {
         ) -> libc::c_int;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:41"]
-pub mod tables_h {
-    extern "C" {
-        #[c2rust::src_loc = "93:34"]
-        pub static silk_LBRR_flags_iCDF_ptr: [*const u8; 2];
-        #[c2rust::src_loc = "101:26"]
-        pub static silk_Quantization_Offsets_Q10: [[i16; 2]; 2];
-    }
-}
-pub use self::errors_h::{SILK_ENC_INPUT_INVALID_NO_OF_SAMPLES, SILK_NO_ERROR};
+use self::errors_h::{SILK_ENC_INPUT_INVALID_NO_OF_SAMPLES, SILK_NO_ERROR};
 pub use self::main_FLP_h::{
     silk_HP_variable_cutoff, silk_control_encoder, silk_encode_do_VAD_FLP, silk_encode_do_VAD_Fxx,
     silk_encode_frame_FLP, silk_encode_frame_Fxx, silk_init_encoder,
@@ -189,7 +180,6 @@ use self::main_h::{
     silk_stereo_LR_to_MS, silk_stereo_encode_mid_only, silk_stereo_encode_pred,
 };
 pub use self::structs_FLP_h::{silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP};
-use self::tables_h::{silk_LBRR_flags_iCDF_ptr, silk_Quantization_Offsets_Q10};
 use crate::celt::celt::celt_fatal;
 use crate::celt::entcode::ec_tell;
 use crate::celt::entenc::{ec_enc, ec_enc_icdf, ec_enc_patch_initial_bits};
@@ -201,6 +191,7 @@ use crate::silk::define::{
 use crate::silk::resampler::silk_resampler;
 use crate::silk::resampler_structs::silk_resampler_state_struct;
 use crate::silk::structs::{silk_LP_state, silk_nsq_state};
+use crate::silk::tables_other::{silk_LBRR_flags_iCDF_ptr, silk_Quantization_Offsets_Q10};
 
 #[no_mangle]
 #[c2rust::src_loc = "56:1"]

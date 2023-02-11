@@ -7,16 +7,9 @@ pub mod typedef_h {
     #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:39"]
-pub mod tables_h {
-    extern "C" {
-        #[c2rust::src_loc = "108:26"]
-        pub static silk_LSFCosTab_FIX_Q12: [i16; 129];
-    }
-}
-use self::tables_h::silk_LSFCosTab_FIX_Q12;
 pub use self::typedef_h::silk_int16_MAX;
 use crate::silk::define::LSF_COS_TAB_SZ_FIX;
+use crate::silk::table_LSF_cos::silk_LSFCosTab_FIX_Q12;
 
 #[c2rust::src_loc = "42:9"]
 pub const BIN_DIV_STEPS_A2NLSF_FIX: libc::c_int = 3 as libc::c_int;

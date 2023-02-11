@@ -1,20 +1,10 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:38"]
-pub mod tables_h {
-    extern "C" {
-        #[c2rust::src_loc = "104:26"]
-        pub static silk_Transition_LP_B_Q28: [[i32; 3]; 5];
-        #[c2rust::src_loc = "105:26"]
-        pub static silk_Transition_LP_A_Q28: [[i32; 2]; 5];
-    }
-}
-
-use self::tables_h::{silk_Transition_LP_A_Q28, silk_Transition_LP_B_Q28};
 use crate::externs::memcpy;
 use crate::silk::biquad_alt::silk_biquad_alt_stride1;
 use crate::silk::define::{TRANSITION_INT_NUM, TRANSITION_NA, TRANSITION_NB};
 use crate::silk::structs::silk_LP_state;
+use crate::silk::tables_other::{silk_Transition_LP_A_Q28, silk_Transition_LP_B_Q28};
 
 #[inline]
 #[c2rust::src_loc = "41:1"]
