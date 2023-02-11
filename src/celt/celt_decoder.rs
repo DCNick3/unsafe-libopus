@@ -218,47 +218,6 @@ pub mod bands_h {
         );
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/quant_bands.h:45"]
-pub mod quant_bands_h {
-    use super::arch_h::opus_val16;
-    use crate::celt::entdec::ec_dec;
-    use crate::celt::modes::OpusCustomMode;
-    extern "C" {
-        #[c2rust::src_loc = "62:1"]
-        pub fn unquant_fine_energy(
-            m: *const OpusCustomMode,
-            start: libc::c_int,
-            end: libc::c_int,
-            oldEBands: *mut opus_val16,
-            fine_quant: *mut libc::c_int,
-            dec: *mut ec_dec,
-            C: libc::c_int,
-        );
-        #[c2rust::src_loc = "64:1"]
-        pub fn unquant_energy_finalise(
-            m: *const OpusCustomMode,
-            start: libc::c_int,
-            end: libc::c_int,
-            oldEBands: *mut opus_val16,
-            fine_quant: *mut libc::c_int,
-            fine_priority: *mut libc::c_int,
-            bits_left: libc::c_int,
-            dec: *mut ec_dec,
-            C: libc::c_int,
-        );
-        #[c2rust::src_loc = "60:1"]
-        pub fn unquant_coarse_energy(
-            m: *const OpusCustomMode,
-            start: libc::c_int,
-            end: libc::c_int,
-            oldEBands: *mut opus_val16,
-            intra: libc::c_int,
-            dec: *mut ec_dec,
-            C: libc::c_int,
-            LM: libc::c_int,
-        );
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/celt_lpc.h:51"]
 pub mod celt_lpc_h {
     #[c2rust::src_loc = "38:9"]
@@ -317,7 +276,6 @@ pub use self::opus_defines_h::{
     OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_GET_PITCH_REQUEST, OPUS_INTERNAL_ERROR,
     OPUS_OK, OPUS_RESET_STATE, OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_UNIMPLEMENTED,
 };
-use self::quant_bands_h::{unquant_coarse_energy, unquant_energy_finalise, unquant_fine_energy};
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::NULL;
 use crate::celt::celt::celt_fatal;
@@ -328,6 +286,9 @@ use crate::celt::entdec::{
 use crate::celt::mdct::clt_mdct_backward_c;
 use crate::celt::modes::{opus_custom_mode_create, OpusCustomMode, MAX_PERIOD};
 use crate::celt::pitch::{pitch_downsample, pitch_search};
+use crate::celt::quant_bands::{
+    unquant_coarse_energy, unquant_energy_finalise, unquant_fine_energy,
+};
 use crate::celt::rate::clt_compute_allocation;
 use crate::celt::vq::renormalise_vector;
 use crate::externs::{memcpy, memmove, memset};

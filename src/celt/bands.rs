@@ -39,19 +39,10 @@ pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
     pub const NULL: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/quant_bands.h:43"]
-pub mod quant_bands_h {
-    use super::arch_h::opus_val16;
-    extern "C" {
-        #[c2rust::src_loc = "41:25"]
-        pub static eMeans: [opus_val16; 25];
-    }
-}
 pub use self::arch_h::{
     celt_ener, celt_norm, celt_sig, opus_val16, opus_val32, EPSILON, NORM_SCALING, Q15ONE,
 };
 pub use self::bands_h::{SPREAD_AGGRESSIVE, SPREAD_LIGHT, SPREAD_NONE, SPREAD_NORMAL};
-use self::quant_bands_h::eMeans;
 pub use self::stack_alloc_h::ALLOC_NONE;
 pub use self::stddef_h::NULL;
 use crate::celt::celt::celt_fatal;
@@ -61,6 +52,7 @@ use crate::celt::entenc::{ec_enc_bit_logp, ec_enc_bits, ec_enc_uint, ec_encode};
 use crate::celt::mathops::isqrt32;
 use crate::celt::modes::OpusCustomMode;
 use crate::celt::pitch::{celt_inner_prod_c, dual_inner_prod_c};
+use crate::celt::quant_bands::eMeans;
 use crate::celt::rate::{
     bits2pulses, get_pulses, pulses2bits, QTHETA_OFFSET, QTHETA_OFFSET_TWOPHASE,
 };

@@ -263,69 +263,6 @@ pub mod bands_h {
         );
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/quant_bands.h:45"]
-pub mod quant_bands_h {
-    use super::arch_h::{celt_ener, opus_val16, opus_val32};
-    use crate::celt::entenc::ec_enc;
-    use crate::celt::modes::OpusCustomMode;
-    extern "C" {
-        #[c2rust::src_loc = "50:1"]
-        pub fn quant_coarse_energy(
-            m: *const OpusCustomMode,
-            start: libc::c_int,
-            end: libc::c_int,
-            effEnd: libc::c_int,
-            eBands: *const opus_val16,
-            oldEBands: *mut opus_val16,
-            budget: u32,
-            error: *mut opus_val16,
-            enc: *mut ec_enc,
-            C: libc::c_int,
-            LM: libc::c_int,
-            nbAvailableBytes: libc::c_int,
-            force_intra: libc::c_int,
-            delayedIntra: *mut opus_val32,
-            two_pass: libc::c_int,
-            loss_rate: libc::c_int,
-            lfe: libc::c_int,
-        );
-        #[c2rust::src_loc = "41:25"]
-        pub static eMeans: [opus_val16; 25];
-        #[c2rust::src_loc = "44:1"]
-        pub fn amp2Log2(
-            m: *const OpusCustomMode,
-            effEnd: libc::c_int,
-            end: libc::c_int,
-            bandE: *mut celt_ener,
-            bandLogE: *mut opus_val16,
-            C: libc::c_int,
-        );
-        #[c2rust::src_loc = "56:1"]
-        pub fn quant_fine_energy(
-            m: *const OpusCustomMode,
-            start: libc::c_int,
-            end: libc::c_int,
-            oldEBands: *mut opus_val16,
-            error: *mut opus_val16,
-            fine_quant: *mut libc::c_int,
-            enc: *mut ec_enc,
-            C: libc::c_int,
-        );
-        #[c2rust::src_loc = "58:1"]
-        pub fn quant_energy_finalise(
-            m: *const OpusCustomMode,
-            start: libc::c_int,
-            end: libc::c_int,
-            oldEBands: *mut opus_val16,
-            error: *mut opus_val16,
-            fine_quant: *mut libc::c_int,
-            fine_priority: *mut libc::c_int,
-            bits_left: libc::c_int,
-            enc: *mut ec_enc,
-            C: libc::c_int,
-        );
-    }
-}
 pub use self::arch_h::{
     celt_ener, celt_norm, celt_sig, opus_val16, opus_val32, CELT_SIG_SCALE, EPSILON,
 };
@@ -349,9 +286,6 @@ pub use self::opus_defines_h::{
     OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_SET_VBR_CONSTRAINT_REQUEST,
     OPUS_SET_VBR_REQUEST, OPUS_UNIMPLEMENTED,
 };
-use self::quant_bands_h::{
-    amp2Log2, eMeans, quant_coarse_energy, quant_energy_finalise, quant_fine_energy,
-};
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::NULL;
 use crate::celt::celt::celt_fatal;
@@ -364,6 +298,9 @@ use crate::celt::mathops::celt_maxabs16;
 use crate::celt::mdct::clt_mdct_forward_c;
 use crate::celt::modes::{opus_custom_mode_create, OpusCustomMode};
 use crate::celt::pitch::{celt_inner_prod_c, pitch_downsample, pitch_search, remove_doubling};
+use crate::celt::quant_bands::{
+    amp2Log2, eMeans, quant_coarse_energy, quant_energy_finalise, quant_fine_energy,
+};
 use crate::celt::rate::clt_compute_allocation;
 
 use self::stdlib_h::abs;

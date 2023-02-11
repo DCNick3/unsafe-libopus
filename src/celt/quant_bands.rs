@@ -48,7 +48,7 @@ pub use self::stack_alloc_h::ALLOC_NONE;
 use crate::externs::memcpy;
 #[no_mangle]
 #[c2rust::src_loc = "53:18"]
-pub static mut eMeans: [opus_val16; 25] = [
+pub static eMeans: [opus_val16; 25] = [
     6.437500f32,
     6.250000f32,
     5.750000f32,
