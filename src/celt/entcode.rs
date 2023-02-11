@@ -1,6 +1,23 @@
 use crate::silk::macros::EC_CLZ0;
 use ::libc;
 
+#[c2rust::src_loc = "35:10"]
+pub const EC_SYM_BITS: libc::c_int = 8 as libc::c_int;
+#[c2rust::src_loc = "37:10"]
+pub const EC_CODE_BITS: libc::c_int = 32 as libc::c_int;
+#[c2rust::src_loc = "39:10"]
+pub const EC_SYM_MAX: libc::c_uint =
+    ((1 as libc::c_uint) << EC_SYM_BITS).wrapping_sub(1 as libc::c_int as libc::c_uint);
+#[c2rust::src_loc = "41:10"]
+pub const EC_CODE_SHIFT: libc::c_int = EC_CODE_BITS - EC_SYM_BITS - 1 as libc::c_int;
+#[c2rust::src_loc = "43:10"]
+pub const EC_CODE_TOP: u32 = (1 as libc::c_uint) << EC_CODE_BITS - 1 as libc::c_int;
+#[c2rust::src_loc = "45:10"]
+pub const EC_CODE_BOT: u32 = EC_CODE_TOP >> EC_SYM_BITS;
+#[c2rust::src_loc = "47:10"]
+pub const EC_CODE_EXTRA: libc::c_int =
+    (EC_CODE_BITS - 2 as libc::c_int) % EC_SYM_BITS + 1 as libc::c_int;
+
 #[c2rust::src_loc = "45:1"]
 pub type ec_window = u32;
 #[derive(Copy, Clone)]
