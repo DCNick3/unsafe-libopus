@@ -18,20 +18,6 @@ pub mod arch_h {
     #[c2rust::src_loc = "207:9"]
     pub const EPSILON: libc::c_float = 1e-15f32;
 }
-
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:35"]
-pub mod limits_h {
-    #[c2rust::src_loc = "63:9"]
-    pub const CHAR_BIT: libc::c_int = __CHAR_BIT__;
-    use super::internal::__CHAR_BIT__;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:35"]
-pub mod ecintrin_h {
-    #[c2rust::src_loc = "69:11"]
-    pub const EC_CLZ0: libc::c_int =
-        ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
-    use super::limits_h::CHAR_BIT;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/bands.h:35"]
 pub mod bands_h {
     #[c2rust::src_loc = "68:9"]
@@ -52,11 +38,6 @@ pub mod stack_alloc_h {
 pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
     pub const NULL: libc::c_int = 0 as libc::c_int;
-}
-#[c2rust::header_src = "internal:0"]
-pub mod internal {
-    #[c2rust::src_loc = "36:9"]
-    pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/vq.h:37"]
 pub mod vq_h {
@@ -164,9 +145,6 @@ pub use self::arch_h::{
     celt_ener, celt_norm, celt_sig, opus_val16, opus_val32, EPSILON, NORM_SCALING, Q15ONE,
 };
 pub use self::bands_h::{SPREAD_AGGRESSIVE, SPREAD_LIGHT, SPREAD_NONE, SPREAD_NORMAL};
-pub use self::ecintrin_h::EC_CLZ0;
-pub use self::internal::__CHAR_BIT__;
-pub use self::limits_h::CHAR_BIT;
 use self::mathops_h::isqrt32;
 pub use self::pitch_h::{celt_inner_prod_c, dual_inner_prod_c};
 use self::quant_bands_h::eMeans;
@@ -183,6 +161,8 @@ use crate::celt::rate::{
 
 use self::vq_h::{alg_quant, alg_unquant, renormalise_vector, stereo_itheta};
 use crate::externs::{memcpy, memset};
+use crate::silk::macros::EC_CLZ0;
+
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "673:8"]

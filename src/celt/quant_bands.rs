@@ -15,20 +15,6 @@ pub mod arch_h {
     pub type celt_ener = libc::c_float;
 }
 
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:33"]
-pub mod limits_h {
-    #[c2rust::src_loc = "63:9"]
-    pub const CHAR_BIT: libc::c_int = __CHAR_BIT__;
-    use super::internal::__CHAR_BIT__;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:33"]
-pub mod ecintrin_h {
-    #[c2rust::src_loc = "69:11"]
-    pub const EC_CLZ0: libc::c_int =
-        ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
-    use super::limits_h::CHAR_BIT;
-}
-
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/laplace.h:34"]
 pub mod laplace_h {
     use crate::celt::entdec::ec_dec;
@@ -50,21 +36,13 @@ pub mod laplace_h {
         ) -> libc::c_int;
     }
 }
-#[c2rust::header_src = "internal:0"]
-pub mod internal {
-    #[c2rust::src_loc = "36:9"]
-    pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/stack_alloc.h:39"]
 pub mod stack_alloc_h {
     #[c2rust::src_loc = "99:9"]
     pub const ALLOC_NONE: libc::c_int = 1 as libc::c_int;
 }
 pub use self::arch_h::{celt_ener, opus_val16, opus_val32};
-pub use self::ecintrin_h::EC_CLZ0;
-pub use self::internal::__CHAR_BIT__;
 use self::laplace_h::{ec_laplace_decode, ec_laplace_encode};
-pub use self::limits_h::CHAR_BIT;
 pub use self::stack_alloc_h::ALLOC_NONE;
 
 use crate::externs::memcpy;

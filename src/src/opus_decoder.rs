@@ -14,8 +14,6 @@ pub mod internal {
         pub overflow_arg_area: *mut libc::c_void,
         pub reg_save_area: *mut libc::c_void,
     }
-    #[c2rust::src_loc = "36:9"]
-    pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stdarg.h:40"]
 pub mod stdarg_h {
@@ -178,19 +176,6 @@ pub mod celt_h {
         ) -> libc::c_int;
     }
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:41"]
-pub mod limits_h {
-    #[c2rust::src_loc = "63:9"]
-    pub const CHAR_BIT: libc::c_int = __CHAR_BIT__;
-    use super::internal::__CHAR_BIT__;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:41"]
-pub mod ecintrin_h {
-    #[c2rust::src_loc = "69:11"]
-    pub const EC_CLZ0: libc::c_int =
-        ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
-    use super::limits_h::CHAR_BIT;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cpu_support.h:44"]
 pub mod cpu_support_h {
     #[inline]
@@ -263,9 +248,7 @@ pub use self::celt_h::{
     celt_decode_with_ec, celt_decoder_ctl, celt_decoder_get_size, celt_decoder_init,
     CELT_SET_SIGNALLING_REQUEST,
 };
-pub use self::ecintrin_h::EC_CLZ0;
-pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
-pub use self::limits_h::CHAR_BIT;
+pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::opus_defines_h::{
     OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_BANDWIDTH_FULLBAND, OPUS_BANDWIDTH_MEDIUMBAND,
     OPUS_BANDWIDTH_NARROWBAND, OPUS_BANDWIDTH_SUPERWIDEBAND, OPUS_BANDWIDTH_WIDEBAND,

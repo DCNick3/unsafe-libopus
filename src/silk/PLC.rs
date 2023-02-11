@@ -32,30 +32,9 @@ pub mod typedef_h {
     #[c2rust::src_loc = "45:9"]
     pub const silk_int16_MIN: libc::c_int = 0x8000 as libc::c_int;
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:32"]
-pub mod limits_h {
-    #[c2rust::src_loc = "63:9"]
-    pub const CHAR_BIT: libc::c_int = __CHAR_BIT__;
-    use super::internal::__CHAR_BIT__;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:32"]
-pub mod ecintrin_h {
-    #[c2rust::src_loc = "69:11"]
-    pub const EC_CLZ0: libc::c_int =
-        ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
-    use super::limits_h::CHAR_BIT;
-}
-#[c2rust::header_src = "internal:0"]
-pub mod internal {
-    #[c2rust::src_loc = "36:9"]
-    pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
-}
 pub use self::define_h::{
     LTP_ORDER, MAX_LPC_ORDER, MAX_NB_SUBFR, TYPE_NO_VOICE_ACTIVITY, TYPE_VOICED,
 };
-pub use self::ecintrin_h::EC_CLZ0;
-pub use self::internal::__CHAR_BIT__;
-pub use self::limits_h::CHAR_BIT;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN, silk_int32_MAX, silk_int32_MIN};
 use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memset};

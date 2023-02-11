@@ -4,19 +4,7 @@ use ::libc;
 
 #[c2rust::src_loc = "47:1"]
 pub type ec_enc = ec_ctx;
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:33"]
-pub mod limits_h {
-    #[c2rust::src_loc = "63:9"]
-    pub const CHAR_BIT: libc::c_int = __CHAR_BIT__;
-    use super::internal::__CHAR_BIT__;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:33"]
-pub mod ecintrin_h {
-    #[c2rust::src_loc = "69:11"]
-    pub const EC_CLZ0: libc::c_int =
-        ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
-    use super::limits_h::CHAR_BIT;
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mfrngcod.h:34"]
 pub mod mfrngcod_h {
     #[c2rust::src_loc = "35:10"]
@@ -33,20 +21,14 @@ pub mod mfrngcod_h {
     #[c2rust::src_loc = "45:10"]
     pub const EC_CODE_BOT: u32 = EC_CODE_TOP >> EC_SYM_BITS;
 }
-#[c2rust::header_src = "internal:0"]
-pub mod internal {
-    #[c2rust::src_loc = "36:9"]
-    pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
-}
 
-pub use self::ecintrin_h::EC_CLZ0;
-pub use self::internal::__CHAR_BIT__;
-pub use self::limits_h::CHAR_BIT;
 pub use self::mfrngcod_h::{
     EC_CODE_BITS, EC_CODE_BOT, EC_CODE_SHIFT, EC_CODE_TOP, EC_SYM_BITS, EC_SYM_MAX,
 };
 
 use crate::externs::{memmove, memset};
+use crate::silk::macros::EC_CLZ0;
+
 #[c2rust::src_loc = "60:1"]
 unsafe extern "C" fn ec_write_byte(
     mut _this: *mut ec_enc,

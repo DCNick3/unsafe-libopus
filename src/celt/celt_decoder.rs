@@ -12,8 +12,6 @@ pub mod internal {
         pub overflow_arg_area: *mut libc::c_void,
         pub reg_save_area: *mut libc::c_void,
     }
-    #[c2rust::src_loc = "36:9"]
-    pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stdarg.h:37"]
 pub mod stdarg_h {
@@ -151,19 +149,6 @@ pub mod celt_h {
             arch: libc::c_int,
         );
     }
-}
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:40"]
-pub mod limits_h {
-    #[c2rust::src_loc = "63:9"]
-    pub const CHAR_BIT: libc::c_int = __CHAR_BIT__;
-    use super::internal::__CHAR_BIT__;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:40"]
-pub mod ecintrin_h {
-    #[c2rust::src_loc = "69:11"]
-    pub const EC_CLZ0: libc::c_int =
-        ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
-    use super::limits_h::CHAR_BIT;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/pitch.h:41"]
 pub mod pitch_h {
@@ -362,9 +347,7 @@ pub use self::celt_h::{
 };
 pub use self::celt_lpc_h::{_celt_autocorr, _celt_lpc, celt_fir_c, celt_iir, LPC_ORDER};
 pub use self::cpu_support_h::opus_select_arch;
-pub use self::ecintrin_h::EC_CLZ0;
-pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
-pub use self::limits_h::CHAR_BIT;
+pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::opus_defines_h::{
     OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_GET_FINAL_RANGE_REQUEST, OPUS_GET_LOOKAHEAD_REQUEST,
     OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_GET_PITCH_REQUEST, OPUS_INTERNAL_ERROR,

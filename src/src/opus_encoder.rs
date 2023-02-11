@@ -14,8 +14,6 @@ pub mod internal {
         pub overflow_arg_area: *mut libc::c_void,
         pub reg_save_area: *mut libc::c_void,
     }
-    #[c2rust::src_loc = "36:9"]
-    pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stdarg.h:32"]
 pub mod stdarg_h {
@@ -324,20 +322,6 @@ pub mod opus_defines_h {
     #[c2rust::src_loc = "46:9"]
     pub const OPUS_OK: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/ecintrin.h:33"]
-pub mod ecintrin_h {
-    #[c2rust::src_loc = "69:11"]
-    pub const EC_CLZ0: libc::c_int =
-        ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
-
-    use super::limits_h::CHAR_BIT;
-}
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:33"]
-pub mod limits_h {
-    #[c2rust::src_loc = "63:9"]
-    pub const CHAR_BIT: libc::c_int = __CHAR_BIT__;
-    use super::internal::__CHAR_BIT__;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cpu_support.h:35"]
 pub mod cpu_support_h {
     #[inline]
@@ -467,10 +451,8 @@ pub use self::cpu_support_h::opus_select_arch;
 pub use self::define_h::{
     DTX_ACTIVITY_THRESHOLD, MAX_CONSECUTIVE_DTX, NB_SPEECH_FRAMES_BEFORE_DTX, VAD_NO_DECISION,
 };
-pub use self::ecintrin_h::EC_CLZ0;
 pub use self::float_cast_h::{float2int, FLOAT2INT16};
-pub use self::internal::{__builtin_va_list, __va_list_tag, __CHAR_BIT__};
-pub use self::limits_h::CHAR_BIT;
+pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::mathops_h::celt_maxabs16;
 pub use self::opus_defines_h::{
     OPUS_ALLOC_FAIL, OPUS_APPLICATION_AUDIO, OPUS_APPLICATION_RESTRICTED_LOWDELAY,
