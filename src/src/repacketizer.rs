@@ -11,24 +11,6 @@ pub struct OpusRepacketizer {
     pub(crate) framesize: libc::c_int,
 }
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/opus_private.h:33"]
-pub mod opus_private_h {
-    extern "C" {
-        #[c2rust::src_loc = "165:1"]
-        pub fn opus_packet_parse_impl(
-            data: *const libc::c_uchar,
-            len: i32,
-            self_delimited: libc::c_int,
-            out_toc: *mut libc::c_uchar,
-            frames: *mut *const libc::c_uchar,
-            size: *mut i16,
-            payload_offset: *mut libc::c_int,
-            packet_offset: *mut i32,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "140:1"]
-        pub fn encode_size(size: libc::c_int, data: *mut libc::c_uchar) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:33"]
 pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]
@@ -48,11 +30,11 @@ pub mod opus_defines_h {
     pub const OPUS_OK: libc::c_int = 0 as libc::c_int;
 }
 pub use self::opus_defines_h::{OPUS_BAD_ARG, OPUS_BUFFER_TOO_SMALL, OPUS_INVALID_PACKET, OPUS_OK};
-pub use self::opus_private_h::{encode_size, opus_packet_parse_impl};
 pub use self::stddef_h::{size_t, NULL};
 use crate::celt::celt::celt_fatal;
 
 use crate::externs::memmove;
+use crate::src::opus::{encode_size, opus_packet_parse_impl};
 use crate::{opus_packet_get_nb_frames, opus_packet_get_samples_per_frame};
 
 #[no_mangle]

@@ -23,103 +23,18 @@ pub struct OpusMSDecoder {
     pub layout: ChannelLayout,
 }
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/opus_private.h:34"]
-pub mod opus_private_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "47:16"]
-    pub struct ChannelLayout {
-        pub nb_channels: libc::c_int,
-        pub nb_streams: libc::c_int,
-        pub nb_coupled_streams: libc::c_int,
-        pub mapping: [libc::c_uchar; 256],
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "156:12"]
-    pub struct foo {
-        pub c: libc::c_char,
-        pub u: C2RustUnnamed,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "156:25"]
-    pub union C2RustUnnamed {
-        pub p: *mut libc::c_void,
-        pub i: i32,
-        pub v: opus_val32,
-    }
-    #[c2rust::src_loc = "98:1"]
-    pub type opus_copy_channel_out_func = Option<
-        unsafe extern "C" fn(
-            *mut libc::c_void,
-            libc::c_int,
-            libc::c_int,
-            *const opus_val16,
-            libc::c_int,
-            libc::c_int,
-            *mut libc::c_void,
-        ) -> (),
-    >;
-    #[inline]
-    #[c2rust::src_loc = "154:1"]
-    pub unsafe extern "C" fn align(i: libc::c_int) -> libc::c_int {
-        let alignment: libc::c_uint = 8 as libc::c_ulong as libc::c_uint;
-        return (i as libc::c_uint)
-            .wrapping_add(alignment)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-            .wrapping_div(alignment)
-            .wrapping_mul(alignment) as libc::c_int;
-    }
+pub type opus_copy_channel_out_func = Option<
+    unsafe extern "C" fn(
+        *mut libc::c_void,
+        libc::c_int,
+        libc::c_int,
+        *const opus_val16,
+        libc::c_int,
+        libc::c_int,
+        *mut libc::c_void,
+    ) -> (),
+>;
 
-    use super::arch_h::{opus_val16, opus_val32};
-    use crate::OpusDecoder;
-    extern "C" {
-        #[c2rust::src_loc = "165:1"]
-        pub fn opus_packet_parse_impl(
-            data: *const libc::c_uchar,
-            len: i32,
-            self_delimited: libc::c_int,
-            out_toc: *mut libc::c_uchar,
-            frames: *mut *const libc::c_uchar,
-            size: *mut i16,
-            payload_offset: *mut libc::c_int,
-            packet_offset: *mut i32,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "149:1"]
-        pub fn opus_decode_native(
-            st: *mut OpusDecoder,
-            data: *const libc::c_uchar,
-            len: i32,
-            pcm: *mut opus_val16,
-            frame_size: libc::c_int,
-            decode_fec: libc::c_int,
-            self_delimited: libc::c_int,
-            packet_offset: *mut i32,
-            soft_clip: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "84:1"]
-        pub fn get_left_channel(
-            layout: *const ChannelLayout,
-            stream_id: libc::c_int,
-            prev: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "85:1"]
-        pub fn get_right_channel(
-            layout: *const ChannelLayout,
-            stream_id: libc::c_int,
-            prev: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "86:1"]
-        pub fn get_mono_channel(
-            layout: *const ChannelLayout,
-            stream_id: libc::c_int,
-            prev: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "83:1"]
-        pub fn validate_layout(layout: *const ChannelLayout) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:34"]
 pub mod arch_h {
     #[c2rust::src_loc = "180:1"]
@@ -224,15 +139,16 @@ pub use self::opus_defines_h::{
     OPUS_INVALID_PACKET, OPUS_OK, OPUS_RESET_STATE, OPUS_SET_GAIN_REQUEST,
     OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_UNIMPLEMENTED,
 };
-
 pub use self::opus_multistream_h::OPUS_MULTISTREAM_GET_DECODER_STATE_REQUEST;
-pub use self::opus_private_h::{
-    align, foo, get_left_channel, get_mono_channel, get_right_channel, opus_copy_channel_out_func,
-    opus_decode_native, opus_packet_parse_impl, validate_layout, C2RustUnnamed, ChannelLayout,
-};
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 use crate::celt::celt::celt_fatal;
+use crate::src::opus::opus_packet_parse_impl;
+use crate::src::opus_decoder::opus_decode_native;
+use crate::src::opus_multistream::{
+    get_left_channel, get_mono_channel, get_right_channel, validate_layout, ChannelLayout,
+};
+use crate::src::opus_private::align;
 use crate::{
     opus_decoder_ctl, opus_decoder_get_size, opus_decoder_init, opus_packet_get_nb_samples,
     OpusDecoder,

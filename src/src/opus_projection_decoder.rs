@@ -35,56 +35,6 @@ pub mod stdarg_h {
     pub type va_list = __builtin_va_list;
     use super::internal::__builtin_va_list;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/opus_private.h:34"]
-pub mod opus_private_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "47:16"]
-    pub struct ChannelLayout {
-        pub nb_channels: libc::c_int,
-        pub nb_streams: libc::c_int,
-        pub nb_coupled_streams: libc::c_int,
-        pub mapping: [libc::c_uchar; 256],
-    }
-    #[c2rust::src_loc = "98:1"]
-    pub type opus_copy_channel_out_func = Option<
-        unsafe extern "C" fn(
-            *mut libc::c_void,
-            libc::c_int,
-            libc::c_int,
-            *const opus_val16,
-            libc::c_int,
-            libc::c_int,
-            *mut libc::c_void,
-        ) -> (),
-    >;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "156:12"]
-    pub struct foo {
-        pub c: libc::c_char,
-        pub u: C2RustUnnamed,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "156:25"]
-    pub union C2RustUnnamed {
-        pub p: *mut libc::c_void,
-        pub i: i32,
-        pub v: opus_val32,
-    }
-    #[inline]
-    #[c2rust::src_loc = "154:1"]
-    pub unsafe extern "C" fn align(i: libc::c_int) -> libc::c_int {
-        let alignment: libc::c_uint = 8 as libc::c_ulong as libc::c_uint;
-        return (i as libc::c_uint)
-            .wrapping_add(alignment)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-            .wrapping_div(alignment)
-            .wrapping_mul(alignment) as libc::c_int;
-    }
-    use super::arch_h::{opus_val16, opus_val32};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/mapping_matrix.h:38"]
 pub mod mapping_matrix_h {
     #[derive(Copy, Clone)]
@@ -146,9 +96,6 @@ pub use self::mapping_matrix_h::{
     mapping_matrix_multiply_channel_out_short, MappingMatrix,
 };
 pub use self::opus_defines_h::{OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_OK};
-pub use self::opus_private_h::{
-    align, foo, opus_copy_channel_out_func, C2RustUnnamed, ChannelLayout,
-};
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 
@@ -156,6 +103,7 @@ use crate::externs::memset;
 use crate::src::opus_multistream_decoder::{
     opus_multistream_decode_native, opus_multistream_decoder_ctl_va_list,
 };
+use crate::src::opus_private::align;
 use crate::{opus_multistream_decoder_get_size, opus_multistream_decoder_init, OpusMSDecoder};
 
 #[derive(Copy, Clone)]

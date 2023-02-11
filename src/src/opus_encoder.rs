@@ -112,47 +112,6 @@ pub mod xmmintrin_h {
     #[cfg(target_arch = "x86_64")]
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/opus_private.h:42"]
-pub mod opus_private_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "156:12"]
-    pub struct foo {
-        pub c: libc::c_char,
-        pub u: C2RustUnnamed,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "156:25"]
-    pub union C2RustUnnamed {
-        pub p: *mut libc::c_void,
-        pub i: i32,
-        pub v: opus_val32,
-    }
-    #[c2rust::src_loc = "108:9"]
-    pub const MODE_SILK_ONLY: libc::c_int = 1000 as libc::c_int;
-    #[c2rust::src_loc = "109:9"]
-    pub const MODE_HYBRID: libc::c_int = 1001 as libc::c_int;
-    #[c2rust::src_loc = "110:9"]
-    pub const MODE_CELT_ONLY: libc::c_int = 1002 as libc::c_int;
-    #[c2rust::src_loc = "112:9"]
-    pub const OPUS_SET_VOICE_RATIO_REQUEST: libc::c_int = 11018;
-    #[c2rust::src_loc = "113:9"]
-    pub const OPUS_GET_VOICE_RATIO_REQUEST: libc::c_int = 11019;
-    #[c2rust::src_loc = "132:9"]
-    pub const OPUS_SET_FORCE_MODE_REQUEST: libc::c_int = 11002;
-    #[inline]
-    #[c2rust::src_loc = "154:1"]
-    pub unsafe extern "C" fn align(i: libc::c_int) -> libc::c_int {
-        let alignment: libc::c_uint = 8 as libc::c_ulong as libc::c_uint;
-        return (i as libc::c_uint)
-            .wrapping_add(alignment)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-            .wrapping_div(alignment)
-            .wrapping_mul(alignment) as libc::c_int;
-    }
-    use super::arch_h::opus_val32;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:51"]
 pub mod structs_FLP_h {
     #[derive(Copy, Clone)]
@@ -477,10 +436,6 @@ pub use self::opus_defines_h::{
     OPUS_SET_PREDICTION_DISABLED_REQUEST, OPUS_SET_SIGNAL_REQUEST, OPUS_SET_VBR_CONSTRAINT_REQUEST,
     OPUS_SET_VBR_REQUEST, OPUS_SIGNAL_MUSIC, OPUS_SIGNAL_VOICE, OPUS_UNIMPLEMENTED,
 };
-pub use self::opus_private_h::{
-    align, foo, C2RustUnnamed, MODE_CELT_ONLY, MODE_HYBRID, MODE_SILK_ONLY,
-    OPUS_GET_VOICE_RATIO_REQUEST, OPUS_SET_FORCE_MODE_REQUEST, OPUS_SET_VOICE_RATIO_REQUEST,
-};
 pub use self::pitch_h::celt_inner_prod_c;
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
@@ -499,6 +454,10 @@ use crate::silk::log2lin::silk_log2lin;
 use crate::src::analysis::{
     downmix_func, run_analysis, tonality_analysis_init, tonality_analysis_reset, AnalysisInfo,
     TonalityAnalysisState,
+};
+use crate::src::opus_private::{
+    align, MODE_CELT_ONLY, MODE_HYBRID, MODE_SILK_ONLY, OPUS_GET_VOICE_RATIO_REQUEST,
+    OPUS_SET_FORCE_MODE_REQUEST, OPUS_SET_VOICE_RATIO_REQUEST,
 };
 use crate::{
     opus_packet_pad, opus_repacketizer_cat, opus_repacketizer_init,

@@ -38,54 +38,6 @@ pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
     pub const NULL: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/opus_private.h:48"]
-pub mod opus_private_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "156:12"]
-    pub struct foo {
-        pub c: libc::c_char,
-        pub u: C2RustUnnamed,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "156:25"]
-    pub union C2RustUnnamed {
-        pub p: *mut libc::c_void,
-        pub i: i32,
-        pub v: opus_val32,
-    }
-    #[c2rust::src_loc = "108:9"]
-    pub const MODE_SILK_ONLY: libc::c_int = 1000 as libc::c_int;
-    #[c2rust::src_loc = "109:9"]
-    pub const MODE_HYBRID: libc::c_int = 1001 as libc::c_int;
-    #[c2rust::src_loc = "110:9"]
-    pub const MODE_CELT_ONLY: libc::c_int = 1002 as libc::c_int;
-    #[inline]
-    #[c2rust::src_loc = "154:1"]
-    pub unsafe extern "C" fn align(i: libc::c_int) -> libc::c_int {
-        let alignment: libc::c_uint = 8 as libc::c_ulong as libc::c_uint;
-        return (i as libc::c_uint)
-            .wrapping_add(alignment)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-            .wrapping_div(alignment)
-            .wrapping_mul(alignment) as libc::c_int;
-    }
-    use super::arch_h::opus_val32;
-    extern "C" {
-        #[c2rust::src_loc = "165:1"]
-        pub fn opus_packet_parse_impl(
-            data: *const libc::c_uchar,
-            len: i32,
-            self_delimited: libc::c_int,
-            out_toc: *mut libc::c_uchar,
-            frames: *mut *const libc::c_uchar,
-            size: *mut i16,
-            payload_offset: *mut libc::c_int,
-            packet_offset: *mut i32,
-        ) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:47"]
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]
@@ -248,6 +200,8 @@ pub use self::celt_h::{
     celt_decode_with_ec, celt_decoder_ctl, celt_decoder_get_size, celt_decoder_init,
     CELT_SET_SIGNALLING_REQUEST,
 };
+pub use self::cpu_support_h::opus_select_arch;
+pub use self::float_cast_h::{float2int, FLOAT2INT16};
 pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::opus_defines_h::{
     OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_BANDWIDTH_FULLBAND, OPUS_BANDWIDTH_MEDIUMBAND,
@@ -259,24 +213,20 @@ pub use self::opus_defines_h::{
     OPUS_RESET_STATE, OPUS_SET_GAIN_REQUEST, OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST,
     OPUS_UNIMPLEMENTED,
 };
-pub use self::opus_private_h::{
-    align, foo, opus_packet_parse_impl, C2RustUnnamed, MODE_CELT_ONLY, MODE_HYBRID, MODE_SILK_ONLY,
-};
+pub use self::stack_alloc_h::{_opus_false, ALLOC_NONE};
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
+use self::API_h::{silk_Decode, silk_Get_Decoder_Size, silk_InitDecoder};
 use crate::celt::celt::celt_fatal;
+use crate::celt::celt_decoder::{opus_custom_decoder_ctl, OpusCustomDecoder};
 use crate::celt::entcode::ec_tell;
 use crate::celt::entdec::ec_dec;
 use crate::celt::entdec::{ec_dec_bit_logp, ec_dec_init, ec_dec_uint};
-use crate::silk::dec_API::silk_DecControlStruct;
-
-pub use self::cpu_support_h::opus_select_arch;
-pub use self::float_cast_h::{float2int, FLOAT2INT16};
-pub use self::stack_alloc_h::{_opus_false, ALLOC_NONE};
-use self::API_h::{silk_Decode, silk_Get_Decoder_Size, silk_InitDecoder};
-use crate::celt::celt_decoder::{opus_custom_decoder_ctl, OpusCustomDecoder};
 use crate::celt::modes::OpusCustomMode;
 use crate::externs::memset;
+use crate::silk::dec_API::silk_DecControlStruct;
+use crate::src::opus::opus_packet_parse_impl;
+use crate::src::opus_private::{align, MODE_CELT_ONLY, MODE_HYBRID, MODE_SILK_ONLY};
 use crate::{opus_packet_get_samples_per_frame, opus_pcm_soft_clip};
 
 #[derive(Copy, Clone)]

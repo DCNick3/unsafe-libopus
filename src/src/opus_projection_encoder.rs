@@ -1,4 +1,10 @@
 use crate::externs::{free, malloc};
+use crate::src::opus_encoder::{downmix_float, downmix_int};
+use crate::src::opus_multistream_encoder::{
+    opus_multistream_encode_native, opus_multistream_encoder_ctl_va_list,
+};
+use crate::src::opus_private::align;
+use crate::OpusMSEncoder;
 use ::libc;
 
 #[c2rust::header_src = "internal:0"]
@@ -34,120 +40,6 @@ pub mod stdarg_h {
     #[c2rust::src_loc = "14:1"]
     pub type va_list = __builtin_va_list;
     use super::internal::__builtin_va_list;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/opus_private.h:34"]
-pub mod opus_private_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "47:16"]
-    pub struct ChannelLayout {
-        pub nb_channels: libc::c_int,
-        pub nb_streams: libc::c_int,
-        pub nb_coupled_streams: libc::c_int,
-        pub mapping: [libc::c_uchar; 256],
-    }
-    #[c2rust::src_loc = "54:9"]
-    pub type MappingType = libc::c_uint;
-    #[c2rust::src_loc = "57:3"]
-    pub const MAPPING_TYPE_AMBISONICS: MappingType = 2;
-    #[c2rust::src_loc = "56:3"]
-    pub const MAPPING_TYPE_SURROUND: MappingType = 1;
-    #[c2rust::src_loc = "55:3"]
-    pub const MAPPING_TYPE_NONE: MappingType = 0;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "60:8"]
-    pub struct OpusMSEncoder {
-        pub layout: ChannelLayout,
-        pub arch: libc::c_int,
-        pub lfe_stream: libc::c_int,
-        pub application: libc::c_int,
-        pub variable_duration: libc::c_int,
-        pub mapping_type: MappingType,
-        pub bitrate_bps: i32,
-    }
-    #[c2rust::src_loc = "88:1"]
-    pub type opus_copy_channel_in_func = Option<
-        unsafe extern "C" fn(
-            *mut opus_val16,
-            libc::c_int,
-            *const libc::c_void,
-            libc::c_int,
-            libc::c_int,
-            libc::c_int,
-            *mut libc::c_void,
-        ) -> (),
-    >;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "156:12"]
-    pub struct foo {
-        pub c: libc::c_char,
-        pub u: C2RustUnnamed,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "156:25"]
-    pub union C2RustUnnamed {
-        pub p: *mut libc::c_void,
-        pub i: i32,
-        pub v: opus_val32,
-    }
-    #[inline]
-    #[c2rust::src_loc = "154:1"]
-    pub unsafe extern "C" fn align(i: libc::c_int) -> libc::c_int {
-        let alignment: libc::c_uint = 8 as libc::c_ulong as libc::c_uint;
-        return (i as libc::c_uint)
-            .wrapping_add(alignment)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-            .wrapping_div(alignment)
-            .wrapping_mul(alignment) as libc::c_int;
-    }
-
-    use super::arch_h::{opus_val16, opus_val32};
-    use crate::src::analysis::downmix_func;
-
-    extern "C" {
-        #[c2rust::src_loc = "78:1"]
-        pub fn opus_multistream_encoder_ctl_va_list(
-            st: *mut OpusMSEncoder,
-            request: libc::c_int,
-            ap: ::core::ffi::VaList,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "137:1"]
-        pub fn downmix_int(
-            _x: *const libc::c_void,
-            sub: *mut opus_val32,
-            subframe: libc::c_int,
-            offset: libc::c_int,
-            c1: libc::c_int,
-            c2: libc::c_int,
-            C: libc::c_int,
-        );
-        #[c2rust::src_loc = "136:1"]
-        pub fn downmix_float(
-            _x: *const libc::c_void,
-            sub: *mut opus_val32,
-            subframe: libc::c_int,
-            offset: libc::c_int,
-            c1: libc::c_int,
-            c2: libc::c_int,
-            C: libc::c_int,
-        );
-        #[c2rust::src_loc = "175:1"]
-        pub fn opus_multistream_encode_native(
-            st: *mut OpusMSEncoder,
-            copy_channel_in: opus_copy_channel_in_func,
-            pcm: *const libc::c_void,
-            analysis_frame_size: libc::c_int,
-            data: *mut libc::c_uchar,
-            max_data_bytes: i32,
-            lsb_depth: libc::c_int,
-            downmix: downmix_func,
-            float_api: libc::c_int,
-            user_data: *mut libc::c_void,
-        ) -> libc::c_int;
-    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/mapping_matrix.h:39"]
 pub mod mapping_matrix_h {
@@ -249,7 +141,7 @@ pub mod opus_projection_h {
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_multistream.h:36"]
 pub mod opus_multistream_h {
-    use super::opus_private_h::OpusMSEncoder;
+    use crate::OpusMSEncoder;
     extern "C" {
         #[c2rust::src_loc = "203:1"]
         pub fn opus_multistream_encoder_get_size(
@@ -281,12 +173,6 @@ pub use self::mapping_matrix_h::{
 };
 use self::mathops_h::isqrt32;
 pub use self::opus_defines_h::{OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_OK, OPUS_UNIMPLEMENTED};
-pub use self::opus_private_h::{
-    align, downmix_float, downmix_int, foo, opus_copy_channel_in_func,
-    opus_multistream_encode_native, opus_multistream_encoder_ctl_va_list, C2RustUnnamed,
-    ChannelLayout, MappingType, OpusMSEncoder, MAPPING_TYPE_AMBISONICS, MAPPING_TYPE_NONE,
-    MAPPING_TYPE_SURROUND,
-};
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 

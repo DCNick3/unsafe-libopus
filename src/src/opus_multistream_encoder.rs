@@ -15,144 +15,38 @@ pub mod internal {
         pub reg_save_area: *mut libc::c_void,
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/opus_private.h:34"]
-pub mod opus_private_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "60:8"]
-    pub struct OpusMSEncoder {
-        pub layout: ChannelLayout,
-        pub arch: libc::c_int,
-        pub lfe_stream: libc::c_int,
-        pub application: libc::c_int,
-        pub variable_duration: libc::c_int,
-        pub mapping_type: MappingType,
-        pub bitrate_bps: i32,
-    }
-    #[c2rust::src_loc = "54:9"]
-    pub type MappingType = libc::c_uint;
-    #[c2rust::src_loc = "57:3"]
-    pub const MAPPING_TYPE_AMBISONICS: MappingType = 2;
-    #[c2rust::src_loc = "56:3"]
-    pub const MAPPING_TYPE_SURROUND: MappingType = 1;
-    #[c2rust::src_loc = "55:3"]
-    pub const MAPPING_TYPE_NONE: MappingType = 0;
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "47:16"]
-    pub struct ChannelLayout {
-        pub nb_channels: libc::c_int,
-        pub nb_streams: libc::c_int,
-        pub nb_coupled_streams: libc::c_int,
-        pub mapping: [libc::c_uchar; 256],
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "156:12"]
-    pub struct foo {
-        pub c: libc::c_char,
-        pub u: C2RustUnnamed,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "156:25"]
-    pub union C2RustUnnamed {
-        pub p: *mut libc::c_void,
-        pub i: i32,
-        pub v: opus_val32,
-    }
-    #[c2rust::src_loc = "88:1"]
-    pub type opus_copy_channel_in_func = Option<
-        unsafe extern "C" fn(
-            *mut opus_val16,
-            libc::c_int,
-            *const libc::c_void,
-            libc::c_int,
-            libc::c_int,
-            libc::c_int,
-            *mut libc::c_void,
-        ) -> (),
-    >;
-    #[c2rust::src_loc = "113:9"]
-    pub const OPUS_GET_VOICE_RATIO_REQUEST: libc::c_int = 11019;
-    #[c2rust::src_loc = "132:9"]
-    pub const OPUS_SET_FORCE_MODE_REQUEST: libc::c_int = 11002 as libc::c_int;
-    #[inline]
-    #[c2rust::src_loc = "154:1"]
-    pub unsafe extern "C" fn align(i: libc::c_int) -> libc::c_int {
-        let alignment: libc::c_uint = 8 as libc::c_ulong as libc::c_uint;
-        return (i as libc::c_uint)
-            .wrapping_add(alignment)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-            .wrapping_div(alignment)
-            .wrapping_mul(alignment) as libc::c_int;
-    }
-
-    use super::arch_h::{opus_val16, opus_val32};
-    use crate::src::analysis::downmix_func;
-    use crate::OpusEncoder;
-
-    extern "C" {
-        #[c2rust::src_loc = "136:1"]
-        pub fn downmix_float(
-            _x: *const libc::c_void,
-            sub: *mut opus_val32,
-            subframe: libc::c_int,
-            offset: libc::c_int,
-            c1: libc::c_int,
-            c2: libc::c_int,
-            C: libc::c_int,
-        );
-        #[c2rust::src_loc = "142:1"]
-        pub fn frame_size_select(frame_size: i32, variable_duration: libc::c_int, Fs: i32) -> i32;
-        #[c2rust::src_loc = "144:1"]
-        pub fn opus_encode_native(
-            st: *mut OpusEncoder,
-            pcm: *const opus_val16,
-            frame_size: libc::c_int,
-            data: *mut libc::c_uchar,
-            out_data_bytes: i32,
-            lsb_depth: libc::c_int,
-            analysis_pcm: *const libc::c_void,
-            analysis_size: i32,
-            c1: libc::c_int,
-            c2: libc::c_int,
-            analysis_channels: libc::c_int,
-            downmix: downmix_func,
-            float_api: libc::c_int,
-        ) -> i32;
-        #[c2rust::src_loc = "137:1"]
-        pub fn downmix_int(
-            _x: *const libc::c_void,
-            sub: *mut opus_val32,
-            subframe: libc::c_int,
-            offset: libc::c_int,
-            c1: libc::c_int,
-            c2: libc::c_int,
-            C: libc::c_int,
-        );
-        #[c2rust::src_loc = "83:1"]
-        pub fn validate_layout(layout: *const ChannelLayout) -> libc::c_int;
-        #[c2rust::src_loc = "84:1"]
-        pub fn get_left_channel(
-            layout: *const ChannelLayout,
-            stream_id: libc::c_int,
-            prev: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "85:1"]
-        pub fn get_right_channel(
-            layout: *const ChannelLayout,
-            stream_id: libc::c_int,
-            prev: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "86:1"]
-        pub fn get_mono_channel(
-            layout: *const ChannelLayout,
-            stream_id: libc::c_int,
-            prev: libc::c_int,
-        ) -> libc::c_int;
-    }
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "60:8"]
+pub struct OpusMSEncoder {
+    pub layout: ChannelLayout,
+    pub arch: libc::c_int,
+    pub lfe_stream: libc::c_int,
+    pub application: libc::c_int,
+    pub variable_duration: libc::c_int,
+    pub mapping_type: MappingType,
+    pub bitrate_bps: i32,
 }
+#[c2rust::src_loc = "54:9"]
+pub type MappingType = libc::c_uint;
+#[c2rust::src_loc = "57:3"]
+pub const MAPPING_TYPE_AMBISONICS: MappingType = 2;
+#[c2rust::src_loc = "56:3"]
+pub const MAPPING_TYPE_SURROUND: MappingType = 1;
+#[c2rust::src_loc = "55:3"]
+pub const MAPPING_TYPE_NONE: MappingType = 0;
+#[c2rust::src_loc = "88:1"]
+pub type opus_copy_channel_in_func = Option<
+    unsafe extern "C" fn(
+        *mut opus_val16,
+        libc::c_int,
+        *const libc::c_void,
+        libc::c_int,
+        libc::c_int,
+        libc::c_int,
+        *mut libc::c_void,
+    ) -> (),
+>;
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:34"]
 pub mod arch_h {
     #[c2rust::src_loc = "180:1"]
@@ -368,11 +262,14 @@ pub mod pitch_h {
     use super::arch_h::{opus_val16, opus_val32};
 }
 pub use self::arch_h::{celt_ener, celt_sig, opus_val16, opus_val32};
+use self::bands_h::compute_band_energies;
 pub use self::celt_h::{
     celt_preemphasis, resampling_factor, CELT_GET_MODE_REQUEST, OPUS_SET_ENERGY_MASK_REQUEST,
     OPUS_SET_LFE_REQUEST,
 };
+pub use self::cpu_support_h::opus_select_arch;
 pub use self::internal::{__builtin_va_list, __va_list_tag};
+use self::mathops_h::isqrt32;
 pub use self::opus_defines_h::{
     OPUS_ALLOC_FAIL, OPUS_AUTO, OPUS_BAD_ARG, OPUS_BITRATE_MAX, OPUS_BUFFER_TOO_SMALL,
     OPUS_FRAMESIZE_ARG, OPUS_GET_APPLICATION_REQUEST, OPUS_GET_BANDWIDTH_REQUEST,
@@ -392,26 +289,20 @@ pub use self::opus_defines_h::{
     OPUS_UNIMPLEMENTED,
 };
 pub use self::opus_multistream_h::OPUS_MULTISTREAM_GET_ENCODER_STATE_REQUEST;
-pub use self::opus_private_h::{
-    align, downmix_float, downmix_int, foo, frame_size_select, get_left_channel, get_mono_channel,
-    get_right_channel, opus_copy_channel_in_func, opus_encode_native, validate_layout,
-    C2RustUnnamed, ChannelLayout, MappingType, OpusMSEncoder, MAPPING_TYPE_AMBISONICS,
-    MAPPING_TYPE_NONE, MAPPING_TYPE_SURROUND, OPUS_GET_VOICE_RATIO_REQUEST,
-    OPUS_SET_FORCE_MODE_REQUEST,
-};
+pub use self::pitch_h::celt_inner_prod_c;
+use self::quant_bands_h::amp2Log2;
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 use crate::celt::celt::celt_fatal;
-
-use self::bands_h::compute_band_energies;
-pub use self::cpu_support_h::opus_select_arch;
-use self::mathops_h::isqrt32;
-pub use self::pitch_h::celt_inner_prod_c;
-use self::quant_bands_h::amp2Log2;
 use crate::celt::mdct::clt_mdct_forward_c;
 use crate::celt::modes::OpusCustomMode;
 use crate::externs::{memcpy, memset};
 use crate::src::analysis::downmix_func;
+use crate::src::opus_encoder::{downmix_float, downmix_int, frame_size_select, opus_encode_native};
+use crate::src::opus_multistream::{
+    get_left_channel, get_mono_channel, get_right_channel, validate_layout, ChannelLayout,
+};
+use crate::src::opus_private::{align, OPUS_GET_VOICE_RATIO_REQUEST, OPUS_SET_FORCE_MODE_REQUEST};
 use crate::{
     opus_encoder_ctl, opus_encoder_get_size, opus_encoder_init, opus_repacketizer_cat,
     opus_repacketizer_get_nb_frames, opus_repacketizer_init, opus_repacketizer_out_range_impl,

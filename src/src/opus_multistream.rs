@@ -1,17 +1,13 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/opus_private.h:34"]
-pub mod opus_private_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "47:16"]
-    pub struct ChannelLayout {
-        pub nb_channels: libc::c_int,
-        pub nb_streams: libc::c_int,
-        pub nb_coupled_streams: libc::c_int,
-        pub mapping: [libc::c_uchar; 256],
-    }
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "47:16"]
+pub struct ChannelLayout {
+    pub nb_channels: libc::c_int,
+    pub nb_streams: libc::c_int,
+    pub nb_coupled_streams: libc::c_int,
+    pub mapping: [libc::c_uchar; 256],
 }
-pub use self::opus_private_h::ChannelLayout;
 #[no_mangle]
 #[c2rust::src_loc = "41:1"]
 pub unsafe extern "C" fn validate_layout(layout: *const ChannelLayout) -> libc::c_int {

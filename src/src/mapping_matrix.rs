@@ -15,35 +15,6 @@ pub mod xmmintrin_h {
     #[cfg(target_arch = "x86_64")]
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/opus_private.h:34"]
-pub mod opus_private_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "156:12"]
-    pub struct foo {
-        pub c: libc::c_char,
-        pub u: C2RustUnnamed,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "156:25"]
-    pub union C2RustUnnamed {
-        pub p: *mut libc::c_void,
-        pub i: i32,
-        pub v: opus_val32,
-    }
-    #[inline]
-    #[c2rust::src_loc = "154:1"]
-    pub unsafe extern "C" fn align(i: libc::c_int) -> libc::c_int {
-        let alignment: libc::c_uint = 8 as libc::c_ulong as libc::c_uint;
-        return (i as libc::c_uint)
-            .wrapping_add(alignment)
-            .wrapping_sub(1 as libc::c_int as libc::c_uint)
-            .wrapping_div(alignment)
-            .wrapping_mul(alignment) as libc::c_int;
-    }
-    use super::arch_h::opus_val32;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/mapping_matrix.h:36"]
 pub mod mapping_matrix_h {
     #[derive(Copy, Clone)]
@@ -84,8 +55,8 @@ pub mod float_cast_h {
 pub use self::arch_h::{opus_val16, opus_val32, CELT_SIG_SCALE};
 pub use self::float_cast_h::{float2int, FLOAT2INT16};
 pub use self::mapping_matrix_h::MappingMatrix;
-pub use self::opus_private_h::{align, foo, C2RustUnnamed};
 use crate::celt::celt::celt_fatal;
+use crate::src::opus_private::align;
 
 #[no_mangle]
 #[c2rust::src_loc = "40:1"]
