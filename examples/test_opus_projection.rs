@@ -93,31 +93,6 @@ pub mod mapping_matrix_h {
         );
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/float_cast.h:37"]
-pub mod float_cast_h {
-    #[inline]
-    #[c2rust::src_loc = "137:1"]
-    pub unsafe extern "C" fn FLOAT2INT16(mut x: libc::c_float) -> i16 {
-        x *= 32768.0f32;
-        x = if x > -(32768 as libc::c_int) as libc::c_float {
-            x
-        } else {
-            -(32768 as libc::c_int) as libc::c_float
-        };
-        x = if x < 32767 as libc::c_int as libc::c_float {
-            x
-        } else {
-            32767 as libc::c_int as libc::c_float
-        };
-        float2int(x) as i16
-    }
-    #[inline]
-    #[c2rust::src_loc = "68:1"]
-    pub unsafe extern "C" fn float2int(mut x: libc::c_float) -> i32 {
-        _mm_cvt_ss2si(_mm_set_ss(x))
-    }
-    use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/tests/test_opus_common.h:39"]
 pub mod test_opus_common_h {
     #[c2rust::src_loc = "56:20"]
@@ -184,7 +159,6 @@ pub mod test_opus_common_h {
     use libopus_unsafe::opus_get_version_string;
 }
 pub use self::arch_h::opus_val16;
-pub use self::float_cast_h::FLOAT2INT16;
 // NOTE: this is kinda internal, but it's used by the test suite
 // How should I handle this?
 pub use self::mapping_matrix_h::{
@@ -213,7 +187,7 @@ pub unsafe extern "C" fn assert_is_equal(
     let mut i: libc::c_int = 0;
     i = 0 as libc::c_int;
     while i < size {
-        let mut val: i16 = FLOAT2INT16(*a.offset(i as isize));
+        let mut val: i16 = (*a.offset(i as isize)) as i16;
         if (val as libc::c_int - *b.offset(i as isize) as libc::c_int).abs()
             > tolerance as libc::c_int
         {

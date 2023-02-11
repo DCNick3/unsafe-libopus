@@ -26,36 +26,10 @@ pub mod mapping_matrix_h {
         pub gain: libc::c_int,
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/float_cast.h:33"]
-pub mod float_cast_h {
-    #[inline]
-    #[c2rust::src_loc = "137:1"]
-    pub unsafe extern "C" fn FLOAT2INT16(mut x: libc::c_float) -> i16 {
-        x = x * CELT_SIG_SCALE;
-        x = if x > -(32768 as libc::c_int) as libc::c_float {
-            x
-        } else {
-            -(32768 as libc::c_int) as libc::c_float
-        };
-        x = if x < 32767 as libc::c_int as libc::c_float {
-            x
-        } else {
-            32767 as libc::c_int as libc::c_float
-        };
-        return float2int(x) as i16;
-    }
-    #[inline]
-    #[c2rust::src_loc = "68:1"]
-    pub unsafe extern "C" fn float2int(x: libc::c_float) -> i32 {
-        return _mm_cvt_ss2si(_mm_set_ss(x));
-    }
-    use super::arch_h::CELT_SIG_SCALE;
-    use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
-}
 pub use self::arch_h::{opus_val16, opus_val32, CELT_SIG_SCALE};
-pub use self::float_cast_h::{float2int, FLOAT2INT16};
 pub use self::mapping_matrix_h::MappingMatrix;
 use crate::celt::celt::celt_fatal;
+use crate::celt::float_cast::FLOAT2INT16;
 use crate::src::opus_private::align;
 
 #[no_mangle]

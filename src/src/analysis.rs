@@ -155,22 +155,13 @@ pub mod cpu_support_h {
         return 0 as libc::c_int;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/float_cast.h:45"]
-pub mod float_cast_h {
-    #[inline]
-    #[c2rust::src_loc = "68:1"]
-    pub unsafe extern "C" fn float2int(x: libc::c_float) -> i32 {
-        return _mm_cvt_ss2si(_mm_set_ss(x));
-    }
-    use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
-}
 pub use self::arch_h::{opus_val16, opus_val32, opus_val64};
 pub use self::cpu_support_h::opus_select_arch;
-pub use self::float_cast_h::float2int;
 pub use self::math_h::M_PI;
 pub use self::mlp_h::{compute_dense, compute_gru, layer0, layer1, layer2, DenseLayer, GRULayer};
 pub use self::stddef_h::NULL;
 use crate::celt::celt::celt_fatal;
+use crate::celt::float_cast::float2int;
 use crate::celt::kiss_fft::{kiss_fft_cpx, kiss_fft_state, opus_fft_c};
 use crate::celt::mathops::fast_atan2f;
 use crate::celt::modes::OpusCustomMode;

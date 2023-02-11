@@ -169,39 +169,12 @@ pub mod stack_alloc_h {
         return 0 as libc::c_int;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/float_cast.h:47"]
-pub mod float_cast_h {
-    #[inline]
-    #[c2rust::src_loc = "137:1"]
-    pub unsafe extern "C" fn FLOAT2INT16(mut x: libc::c_float) -> i16 {
-        x = x * CELT_SIG_SCALE;
-        x = if x > -(32768 as libc::c_int) as libc::c_float {
-            x
-        } else {
-            -(32768 as libc::c_int) as libc::c_float
-        };
-        x = if x < 32767 as libc::c_int as libc::c_float {
-            x
-        } else {
-            32767 as libc::c_int as libc::c_float
-        };
-        return float2int(x) as i16;
-    }
-    #[inline]
-    #[c2rust::src_loc = "68:1"]
-    pub unsafe extern "C" fn float2int(x: libc::c_float) -> i32 {
-        return _mm_cvt_ss2si(_mm_set_ss(x));
-    }
-    use super::arch_h::CELT_SIG_SCALE;
-    use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
-}
 pub use self::arch_h::{opus_val16, opus_val32, CELT_SIG_SCALE};
 pub use self::celt_h::{
     celt_decode_with_ec, celt_decoder_ctl, celt_decoder_get_size, celt_decoder_init,
     CELT_SET_SIGNALLING_REQUEST,
 };
 pub use self::cpu_support_h::opus_select_arch;
-pub use self::float_cast_h::{float2int, FLOAT2INT16};
 pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::opus_defines_h::{
     OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_BANDWIDTH_FULLBAND, OPUS_BANDWIDTH_MEDIUMBAND,
@@ -222,6 +195,7 @@ use crate::celt::celt_decoder::{opus_custom_decoder_ctl, OpusCustomDecoder};
 use crate::celt::entcode::ec_tell;
 use crate::celt::entdec::ec_dec;
 use crate::celt::entdec::{ec_dec_bit_logp, ec_dec_init, ec_dec_uint};
+use crate::celt::float_cast::FLOAT2INT16;
 use crate::celt::modes::OpusCustomMode;
 use crate::externs::memset;
 use crate::silk::dec_API::silk_DecControlStruct;

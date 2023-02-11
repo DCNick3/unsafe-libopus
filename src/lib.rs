@@ -43,6 +43,8 @@ mod celt {
     //     pub mod test_unit_types;
     // } // mod tests
     pub mod vq;
+    // stuff for structs that do not have a clear home, named after the header files
+    pub mod float_cast;
 } // mod celt
 mod silk {
     pub mod A2NLSF;

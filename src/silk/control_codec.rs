@@ -51,15 +51,6 @@ pub mod errors_h {
     #[c2rust::src_loc = "39:9"]
     pub const SILK_NO_ERROR: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/float_cast.h:35"]
-pub mod float_cast_h {
-    #[inline]
-    #[c2rust::src_loc = "68:1"]
-    pub unsafe extern "C" fn float2int(x: libc::c_float) -> i32 {
-        return _mm_cvt_ss2si(_mm_set_ss(x));
-    }
-    use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:35"]
 pub mod SigProc_FLP_h {
     #[inline]
@@ -96,8 +87,8 @@ pub mod SigProc_FLP_h {
             k -= 1;
         }
     }
-    use super::float_cast_h::float2int;
     use super::typedef_h::{silk_int16_MAX, silk_int16_MIN};
+    use crate::celt::float_cast::float2int;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:35"]
 pub mod typedef_h {
@@ -156,7 +147,6 @@ pub use self::define_h::{
     SUB_FRAME_LENGTH_MS, TYPE_NO_VOICE_ACTIVITY,
 };
 pub use self::errors_h::{SILK_ENC_PACKET_SIZE_NOT_SUPPORTED, SILK_NO_ERROR};
-pub use self::float_cast_h::float2int;
 use self::main_h::silk_control_audio_bandwidth;
 pub use self::pitch_est_defines_h::{
     SILK_PE_MAX_COMPLEX, SILK_PE_MID_COMPLEX, SILK_PE_MIN_COMPLEX,

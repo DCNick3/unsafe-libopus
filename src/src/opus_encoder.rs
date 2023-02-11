@@ -315,32 +315,6 @@ pub mod API_h {
         ) -> libc::c_int;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/float_cast.h:38"]
-pub mod float_cast_h {
-    #[inline]
-    #[c2rust::src_loc = "137:1"]
-    pub unsafe extern "C" fn FLOAT2INT16(mut x: libc::c_float) -> i16 {
-        x = x * CELT_SIG_SCALE;
-        x = if x > -(32768 as libc::c_int) as libc::c_float {
-            x
-        } else {
-            -(32768 as libc::c_int) as libc::c_float
-        };
-        x = if x < 32767 as libc::c_int as libc::c_float {
-            x
-        } else {
-            32767 as libc::c_int as libc::c_float
-        };
-        return float2int(x) as i16;
-    }
-    #[inline]
-    #[c2rust::src_loc = "68:1"]
-    pub unsafe extern "C" fn float2int(x: libc::c_float) -> i32 {
-        return _mm_cvt_ss2si(_mm_set_ss(x));
-    }
-    use super::arch_h::CELT_SIG_SCALE;
-    use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:51"]
 pub mod define_h {
     #[c2rust::src_loc = "56:9"]
@@ -364,7 +338,6 @@ pub use self::cpu_support_h::opus_select_arch;
 pub use self::define_h::{
     DTX_ACTIVITY_THRESHOLD, MAX_CONSECUTIVE_DTX, NB_SPEECH_FRAMES_BEFORE_DTX, VAD_NO_DECISION,
 };
-pub use self::float_cast_h::{float2int, FLOAT2INT16};
 pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::opus_defines_h::{
     OPUS_ALLOC_FAIL, OPUS_APPLICATION_AUDIO, OPUS_APPLICATION_RESTRICTED_LOWDELAY,
@@ -398,6 +371,7 @@ use crate::celt::celt_encoder::{opus_custom_encoder_ctl, OpusCustomEncoder};
 use crate::celt::entcode::ec_tell;
 use crate::celt::entenc::ec_enc;
 use crate::celt::entenc::{ec_enc_bit_logp, ec_enc_done, ec_enc_init, ec_enc_shrink, ec_enc_uint};
+use crate::celt::float_cast::FLOAT2INT16;
 use crate::celt::mathops::celt_maxabs16;
 use crate::celt::modes::OpusCustomMode;
 use crate::celt::pitch::celt_inner_prod_c;

@@ -54,8 +54,8 @@ pub mod SigProc_FLP_h {
     pub unsafe extern "C" fn silk_log2(x: libc::c_double) -> libc::c_float {
         return (3.32192809488736f64 * x.log10()) as libc::c_float;
     }
-    use super::float_cast_h::float2int;
     use super::typedef_h::{silk_int16_MAX, silk_int16_MIN};
+    use crate::celt::float_cast::float2int;
     extern "C" {
         #[c2rust::src_loc = "134:1"]
         pub fn silk_energy_FLP(data: *const libc::c_float, dataSize: libc::c_int)
@@ -74,15 +74,6 @@ pub mod SigProc_FLP_h {
             dataSize: libc::c_int,
         ) -> libc::c_double;
     }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/float_cast.h:35"]
-pub mod float_cast_h {
-    #[inline]
-    #[c2rust::src_loc = "68:1"]
-    pub unsafe extern "C" fn float2int(x: libc::c_float) -> i32 {
-        return _mm_cvt_ss2si(_mm_set_ss(x));
-    }
-    use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:35"]
 pub mod typedef_h {
@@ -141,9 +132,6 @@ pub mod pitch_est_defines_h {
     }
 }
 use self::arch_h::opus_val32;
-use crate::celt::celt::celt_fatal;
-
-pub use self::float_cast_h::float2int;
 pub use self::pitch_est_defines_h::{
     silk_CB_lags_stage2, silk_CB_lags_stage2_10_ms, silk_CB_lags_stage3, silk_CB_lags_stage3_10_ms,
     silk_Lag_range_stage3, silk_Lag_range_stage3_10_ms, silk_nb_cbk_searchs_stage3,
@@ -157,6 +145,7 @@ pub use self::SigProc_FLP_h::{
     silk_energy_FLP, silk_float2short_array, silk_inner_product_FLP,
     silk_insertion_sort_decreasing_FLP, silk_log2, silk_short2float_array,
 };
+use crate::celt::celt::celt_fatal;
 use crate::celt::pitch::celt_pitch_xcorr_c;
 use crate::externs::memset;
 use crate::silk::resampler_down2::silk_resampler_down2;

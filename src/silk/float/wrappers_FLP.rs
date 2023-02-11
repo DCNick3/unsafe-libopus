@@ -53,15 +53,6 @@ pub mod structs_FLP_h {
     }
     use crate::silk::structs::silk_encoder_state;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/float_cast.h:32"]
-pub mod float_cast_h {
-    #[inline]
-    #[c2rust::src_loc = "68:1"]
-    pub unsafe extern "C" fn float2int(x: libc::c_float) -> i32 {
-        return _mm_cvt_ss2si(_mm_set_ss(x));
-    }
-    use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:32"]
 pub mod SigProc_FLP_h {
     #[inline]
@@ -69,7 +60,7 @@ pub mod SigProc_FLP_h {
     pub unsafe extern "C" fn silk_float2int(x: libc::c_float) -> i32 {
         return float2int(x);
     }
-    use super::float_cast_h::float2int;
+    use crate::celt::float_cast::float2int;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
 pub mod tables_h {
@@ -150,7 +141,6 @@ pub mod define_h {
     pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
 }
 pub use self::define_h::{LTP_ORDER, MAX_SHAPE_LPC_ORDER, TYPE_VOICED};
-pub use self::float_cast_h::float2int;
 use self::main_h::{silk_NSQ_c, silk_NSQ_del_dec_c, silk_process_NLSFs, silk_quant_LTP_gains};
 pub use self::structs_FLP_h::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,

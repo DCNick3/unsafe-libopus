@@ -104,33 +104,7 @@ pub mod opus_multistream_h {
     #[c2rust::src_loc = "56:9"]
     pub const OPUS_MULTISTREAM_GET_DECODER_STATE_REQUEST: libc::c_int = 5122;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/float_cast.h:37"]
-pub mod float_cast_h {
-    #[inline]
-    #[c2rust::src_loc = "137:1"]
-    pub unsafe extern "C" fn FLOAT2INT16(mut x: libc::c_float) -> i16 {
-        x = x * CELT_SIG_SCALE;
-        x = if x > -(32768 as libc::c_int) as libc::c_float {
-            x
-        } else {
-            -(32768 as libc::c_int) as libc::c_float
-        };
-        x = if x < 32767 as libc::c_int as libc::c_float {
-            x
-        } else {
-            32767 as libc::c_int as libc::c_float
-        };
-        return float2int(x) as i16;
-    }
-    #[inline]
-    #[c2rust::src_loc = "68:1"]
-    pub unsafe extern "C" fn float2int(x: libc::c_float) -> i32 {
-        return _mm_cvt_ss2si(_mm_set_ss(x));
-    }
-    use super::arch_h::CELT_SIG_SCALE;
-    use super::xmmintrin_h::{_mm_cvt_ss2si, _mm_set_ss};
-}
-pub use self::arch_h::{opus_val16, opus_val32, CELT_SIG_SCALE};
+use self::arch_h::opus_val16;
 pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::opus_defines_h::{
     OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_BUFFER_TOO_SMALL, OPUS_GET_BANDWIDTH_REQUEST,
@@ -154,7 +128,7 @@ use crate::{
     OpusDecoder,
 };
 
-pub use self::float_cast_h::{float2int, FLOAT2INT16};
+use crate::celt::float_cast::FLOAT2INT16;
 #[c2rust::src_loc = "43:1"]
 unsafe extern "C" fn validate_ms_decoder(st: *mut OpusMSDecoder) {
     validate_layout(&mut (*st).layout);
