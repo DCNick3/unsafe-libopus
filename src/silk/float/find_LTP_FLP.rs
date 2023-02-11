@@ -1,21 +1,8 @@
-use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:32"]
-pub mod SigProc_FLP_h {
-    extern "C" {
-        #[c2rust::src_loc = "112:1"]
-        pub fn silk_scale_vector_FLP(
-            data1: *mut libc::c_float,
-            gain: libc::c_float,
-            dataSize: libc::c_int,
-        );
-        #[c2rust::src_loc = "134:1"]
-        pub fn silk_energy_FLP(data: *const libc::c_float, dataSize: libc::c_int)
-            -> libc::c_double;
-    }
-}
-use self::SigProc_FLP_h::{silk_energy_FLP, silk_scale_vector_FLP};
 use crate::silk::define::LTP_ORDER;
 use crate::silk::float::corrMatrix_FLP::{silk_corrMatrix_FLP, silk_corrVector_FLP};
+use crate::silk::float::energy_FLP::silk_energy_FLP;
+use crate::silk::float::scale_vector_FLP::silk_scale_vector_FLP;
+use ::libc;
 
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]

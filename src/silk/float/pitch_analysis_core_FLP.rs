@@ -56,24 +56,6 @@ pub mod SigProc_FLP_h {
     }
     use super::typedef_h::{silk_int16_MAX, silk_int16_MIN};
     use crate::celt::float_cast::float2int;
-    extern "C" {
-        #[c2rust::src_loc = "134:1"]
-        pub fn silk_energy_FLP(data: *const libc::c_float, dataSize: libc::c_int)
-            -> libc::c_double;
-        #[c2rust::src_loc = "94:1"]
-        pub fn silk_insertion_sort_decreasing_FLP(
-            a: *mut libc::c_float,
-            idx: *mut libc::c_int,
-            L: libc::c_int,
-            K: libc::c_int,
-        );
-        #[c2rust::src_loc = "127:1"]
-        pub fn silk_inner_product_FLP(
-            data1: *const libc::c_float,
-            data2: *const libc::c_float,
-            dataSize: libc::c_int,
-        ) -> libc::c_double;
-    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:35"]
 pub mod typedef_h {
@@ -84,13 +66,13 @@ pub mod typedef_h {
 }
 use self::arch_h::opus_val32;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
-pub use self::SigProc_FLP_h::{
-    silk_energy_FLP, silk_float2short_array, silk_inner_product_FLP,
-    silk_insertion_sort_decreasing_FLP, silk_log2, silk_short2float_array,
-};
+pub use self::SigProc_FLP_h::{silk_float2short_array, silk_log2, silk_short2float_array};
 use crate::celt::celt::celt_fatal;
 use crate::celt::pitch::celt_pitch_xcorr_c;
 use crate::externs::memset;
+use crate::silk::float::energy_FLP::silk_energy_FLP;
+use crate::silk::float::inner_product_FLP::silk_inner_product_FLP;
+use crate::silk::float::sort_FLP::silk_insertion_sort_decreasing_FLP;
 use crate::silk::pitch_est_tables::{
     silk_CB_lags_stage2, silk_CB_lags_stage2_10_ms, silk_CB_lags_stage3, silk_CB_lags_stage3_10_ms,
     silk_Lag_range_stage3, silk_Lag_range_stage3_10_ms, silk_nb_cbk_searchs_stage3,

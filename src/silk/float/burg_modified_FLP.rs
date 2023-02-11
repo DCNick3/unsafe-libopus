@@ -1,28 +1,16 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:32"]
-pub mod SigProc_FLP_h {
-    extern "C" {
-        #[c2rust::src_loc = "127:1"]
-        pub fn silk_inner_product_FLP(
-            data1: *const libc::c_float,
-            data2: *const libc::c_float,
-            dataSize: libc::c_int,
-        ) -> libc::c_double;
-        #[c2rust::src_loc = "134:1"]
-        pub fn silk_energy_FLP(data: *const libc::c_float, dataSize: libc::c_int)
-            -> libc::c_double;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tuning_parameters.h:33"]
 pub mod tuning_parameters_h {
     #[c2rust::src_loc = "54:9"]
     pub const FIND_LPC_COND_FAC: libc::c_float = 1e-5f32;
 }
 pub use self::tuning_parameters_h::FIND_LPC_COND_FAC;
-use self::SigProc_FLP_h::{silk_energy_FLP, silk_inner_product_FLP};
 use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memset};
+use crate::silk::float::energy_FLP::silk_energy_FLP;
+use crate::silk::float::inner_product_FLP::silk_inner_product_FLP;
+
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_burg_modified_FLP(

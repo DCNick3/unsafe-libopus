@@ -12,28 +12,6 @@ pub mod SigProc_FLP_h {
     pub unsafe extern "C" fn silk_log2(x: libc::c_double) -> libc::c_float {
         return (3.32192809488736f64 * x.log10()) as libc::c_float;
     }
-    extern "C" {
-        #[c2rust::src_loc = "45:1"]
-        pub fn silk_bwexpander_FLP(ar: *mut libc::c_float, d: libc::c_int, chirp: libc::c_float);
-        #[c2rust::src_loc = "59:1"]
-        pub fn silk_schur_FLP(
-            refl_coef: *mut libc::c_float,
-            auto_corr: *const libc::c_float,
-            order: libc::c_int,
-        ) -> libc::c_float;
-        #[c2rust::src_loc = "65:1"]
-        pub fn silk_k2a_FLP(A: *mut libc::c_float, rc: *const libc::c_float, order: i32);
-        #[c2rust::src_loc = "72:1"]
-        pub fn silk_autocorrelation_FLP(
-            results: *mut libc::c_float,
-            inputData: *const libc::c_float,
-            inputDataSize: libc::c_int,
-            correlationCount: libc::c_int,
-        );
-        #[c2rust::src_loc = "134:1"]
-        pub fn silk_energy_FLP(data: *const libc::c_float, dataSize: libc::c_int)
-            -> libc::c_double;
-    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tuning_parameters.h:33"]
 pub mod tuning_parameters_h {
@@ -75,12 +53,14 @@ use crate::silk::float::structs_FLP::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
 };
 
-pub use self::SigProc_FLP_h::{
-    silk_autocorrelation_FLP, silk_bwexpander_FLP, silk_energy_FLP, silk_k2a_FLP, silk_log2,
-    silk_schur_FLP, silk_sigmoid,
-};
+pub use self::SigProc_FLP_h::{silk_log2, silk_sigmoid};
 use crate::externs::memcpy;
 use crate::silk::float::apply_sine_window_FLP::silk_apply_sine_window_FLP;
+use crate::silk::float::autocorrelation_FLP::silk_autocorrelation_FLP;
+use crate::silk::float::bwexpander_FLP::silk_bwexpander_FLP;
+use crate::silk::float::energy_FLP::silk_energy_FLP;
+use crate::silk::float::k2a_FLP::silk_k2a_FLP;
+use crate::silk::float::schur_FLP::silk_schur_FLP;
 use crate::silk::float::warped_autocorrelation_FLP::silk_warped_autocorrelation_FLP;
 
 #[inline]

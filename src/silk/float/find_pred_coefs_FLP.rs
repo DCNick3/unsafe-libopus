@@ -1,28 +1,15 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:32"]
-pub mod SigProc_FLP_h {
-    extern "C" {
-        #[c2rust::src_loc = "119:1"]
-        pub fn silk_scale_copy_vector_FLP(
-            data_out: *mut libc::c_float,
-            data_in: *const libc::c_float,
-            gain: libc::c_float,
-            dataSize: libc::c_int,
-        );
-    }
-}
 use crate::celt::celt::celt_fatal;
+use crate::externs::{memcpy, memset};
 use crate::silk::define::{
     MAX_PREDICTION_POWER_GAIN, MAX_PREDICTION_POWER_GAIN_AFTER_RESET, TYPE_VOICED,
 };
-use crate::silk::float::structs_FLP::{silk_encoder_control_FLP, silk_encoder_state_FLP};
-
-use self::SigProc_FLP_h::silk_scale_copy_vector_FLP;
-use crate::externs::{memcpy, memset};
 use crate::silk::float::find_LPC_FLP::silk_find_LPC_FLP;
 use crate::silk::float::find_LTP_FLP::silk_find_LTP_FLP;
 use crate::silk::float::residual_energy_FLP::silk_residual_energy_FLP;
+use crate::silk::float::scale_copy_vector_FLP::silk_scale_copy_vector_FLP;
+use crate::silk::float::structs_FLP::{silk_encoder_control_FLP, silk_encoder_state_FLP};
 use crate::silk::float::wrappers_FLP::{silk_process_NLSFs_FLP, silk_quant_LTP_gains_FLP};
 use crate::silk::float::LTP_analysis_filter_FLP::silk_LTP_analysis_filter_FLP;
 use crate::silk::float::LTP_scale_ctrl_FLP::silk_LTP_scale_ctrl_FLP;

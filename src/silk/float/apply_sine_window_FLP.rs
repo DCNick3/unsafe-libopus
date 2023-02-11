@@ -1,11 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:32"]
-pub mod SigProc_FLP_h {
-    #[c2rust::src_loc = "143:9"]
-    pub const PI: libc::c_float = 3.1415926536f32;
-}
-pub use self::SigProc_FLP_h::PI;
 use crate::celt::celt::celt_fatal;
 #[no_mangle]
 #[c2rust::src_loc = "38:1"]
@@ -35,7 +29,7 @@ pub unsafe extern "C" fn silk_apply_sine_window_FLP(
             51 as libc::c_int,
         );
     }
-    freq = PI / (length + 1 as libc::c_int) as libc::c_float;
+    freq = std::f32::consts::PI / (length + 1 as libc::c_int) as libc::c_float;
     c = 2.0f32 - freq * freq;
     if win_type < 2 as libc::c_int {
         S0 = 0.0f32;
