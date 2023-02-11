@@ -1,18 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
-pub mod SigProc_FIX_h {
-    extern "C" {
-        #[c2rust::src_loc = "286:1"]
-        pub fn silk_NLSF2A(a_Q12: *mut i16, NLSF: *const i16, d: libc::c_int, arch: libc::c_int);
-        #[c2rust::src_loc = "329:1"]
-        pub fn silk_NLSF_VQ_weights_laroia(
-            pNLSFW_Q_OUT: *mut i16,
-            pNLSF_Q15: *const i16,
-            D: libc::c_int,
-        );
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
     use crate::silk::structs::silk_NLSF_CB_struct;
@@ -39,11 +26,11 @@ pub mod main_h {
 }
 use self::main_h::{silk_NLSF_encode, silk_interpolate};
 use crate::celt::celt::celt_fatal;
-
-use crate::silk::structs::silk_encoder_state;
-
-use self::SigProc_FIX_h::{silk_NLSF2A, silk_NLSF_VQ_weights_laroia};
 use crate::externs::memcpy;
+use crate::silk::structs::silk_encoder_state;
+use crate::silk::NLSF_VQ_weights_laroia::silk_NLSF_VQ_weights_laroia;
+use crate::silk::NLSF2A::silk_NLSF2A;
+
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_process_NLSFs(

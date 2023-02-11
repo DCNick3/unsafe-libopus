@@ -1,16 +1,7 @@
+use crate::silk::bwexpander_32::silk_bwexpander_32;
+use crate::silk::SigProc_FIX::silk_min_32;
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:38"]
-pub mod SigProc_FIX_h {
-    #[inline]
-    #[c2rust::src_loc = "554:1"]
-    pub unsafe extern "C" fn silk_min_32(a: i32, b: i32) -> i32 {
-        return if a < b { a } else { b };
-    }
-    extern "C" {
-        #[c2rust::src_loc = "140:1"]
-        pub fn silk_bwexpander_32(ar: *mut i32, d: libc::c_int, chirp_Q16: i32);
-    }
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:38"]
 pub mod typedef_h {
     #[c2rust::src_loc = "44:9"]
@@ -29,11 +20,9 @@ pub mod tables_h {
     }
 }
 pub use self::define_h::LSF_COS_TAB_SZ_FIX;
-
 use self::tables_h::silk_LSFCosTab_FIX_Q12;
 pub use self::typedef_h::silk_int16_MAX;
 
-pub use self::SigProc_FIX_h::{silk_bwexpander_32, silk_min_32};
 #[c2rust::src_loc = "42:9"]
 pub const BIN_DIV_STEPS_A2NLSF_FIX: libc::c_int = 3 as libc::c_int;
 #[c2rust::src_loc = "43:9"]

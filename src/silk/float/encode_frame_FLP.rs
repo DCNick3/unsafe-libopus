@@ -51,20 +51,6 @@ pub mod stdlib_h {
         pub fn abs(_: libc::c_int) -> libc::c_int;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:33"]
-pub mod SigProc_FIX_h {
-    #[inline]
-    #[c2rust::src_loc = "546:1"]
-    pub unsafe extern "C" fn silk_min_int(a: libc::c_int, b: libc::c_int) -> libc::c_int {
-        return if a < b { a } else { b };
-    }
-    extern "C" {
-        #[c2rust::src_loc = "187:1"]
-        pub fn silk_log2lin(inLog_Q7: i32) -> i32;
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
-pub mod arch_h {}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:33"]
 pub mod limits_h {
     #[c2rust::src_loc = "63:9"]
@@ -229,19 +215,19 @@ use self::main_h::{
     silk_LP_variable_cutoff, silk_VAD_GetSA_Q8_c, silk_encode_indices, silk_encode_pulses,
     silk_gains_ID, silk_gains_dequant, silk_gains_quant,
 };
-use crate::celt::celt::celt_fatal;
-use crate::celt::entcode::ec_tell;
-use crate::celt::entenc::ec_enc;
-
 use self::stdlib_h::abs;
 pub use self::structs_FLP_h::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
 };
-use crate::silk::structs::{silk_nsq_state, SideInfoIndices};
-
-pub use self::SigProc_FIX_h::{silk_log2lin, silk_min_int};
 pub use self::SigProc_FLP_h::silk_short2float_array;
+use crate::celt::celt::celt_fatal;
+use crate::celt::entcode::ec_tell;
+use crate::celt::entenc::ec_enc;
 use crate::externs::{memcpy, memmove};
+use crate::silk::log2lin::silk_log2lin;
+use crate::silk::structs::{silk_nsq_state, SideInfoIndices};
+use crate::silk::SigProc_FIX::silk_min_int;
+
 #[no_mangle]
 #[c2rust::src_loc = "44:1"]
 pub unsafe extern "C" fn silk_encode_do_VAD_FLP(

@@ -1,18 +1,5 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:38"]
-pub mod SigProc_FIX_h {
-    extern "C" {
-        #[c2rust::src_loc = "104:1"]
-        pub fn silk_biquad_alt_stride1(
-            in_0: *const i16,
-            B_Q28: *const i32,
-            A_Q28: *const i32,
-            S: *mut i32,
-            out: *mut i16,
-            len: i32,
-        );
-    }
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:38"]
 pub mod tables_h {
     extern "C" {
@@ -33,8 +20,8 @@ pub mod define_h {
 }
 pub use self::define_h::{TRANSITION_INT_NUM, TRANSITION_NA, TRANSITION_NB};
 use self::tables_h::{silk_Transition_LP_A_Q28, silk_Transition_LP_B_Q28};
-use self::SigProc_FIX_h::silk_biquad_alt_stride1;
 use crate::externs::memcpy;
+use crate::silk::biquad_alt::silk_biquad_alt_stride1;
 use crate::silk::structs::silk_LP_state;
 
 #[inline]

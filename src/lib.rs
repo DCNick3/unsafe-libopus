@@ -152,7 +152,10 @@ mod silk {
     pub mod tables_other;
     pub mod tables_pitch_lag;
     pub mod tables_pulses_per_block;
-    // stuff for structs that do not have a clear home
+    // stuff for structs that do not have a clear home, named after the header files
+    pub mod Inlines;
+    pub mod SigProc_FIX;
+    pub mod macros;
     pub mod resampler_structs;
     pub mod structs;
 } // mod silk

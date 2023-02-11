@@ -1,4 +1,7 @@
+use crate::silk::A2NLSF::silk_A2NLSF;
+use crate::silk::NLSF2A::silk_NLSF2A;
 use ::libc;
+
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:32"]
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]
@@ -49,15 +52,6 @@ pub mod structs_FLP_h {
         pub lastGainIndexPrev: i8,
     }
     use crate::silk::structs::silk_encoder_state;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
-pub mod SigProc_FIX_h {
-    extern "C" {
-        #[c2rust::src_loc = "279:1"]
-        pub fn silk_A2NLSF(NLSF: *mut i16, a_Q16: *mut i32, d: libc::c_int);
-        #[c2rust::src_loc = "286:1"]
-        pub fn silk_NLSF2A(a_Q12: *mut i16, NLSF: *const i16, d: libc::c_int, arch: libc::c_int);
-    }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/float_cast.h:32"]
 pub mod float_cast_h {
@@ -158,15 +152,13 @@ pub mod define_h {
 pub use self::define_h::{LTP_ORDER, MAX_SHAPE_LPC_ORDER, TYPE_VOICED};
 pub use self::float_cast_h::float2int;
 use self::main_h::{silk_NSQ_c, silk_NSQ_del_dec_c, silk_process_NLSFs, silk_quant_LTP_gains};
-
 pub use self::structs_FLP_h::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
 };
 use self::tables_h::silk_LTPScales_table_Q14;
+pub use self::SigProc_FLP_h::silk_float2int;
 use crate::silk::structs::{silk_encoder_state, silk_nsq_state, SideInfoIndices};
 
-use self::SigProc_FIX_h::{silk_A2NLSF, silk_NLSF2A};
-pub use self::SigProc_FLP_h::silk_float2int;
 #[no_mangle]
 #[c2rust::src_loc = "37:1"]
 pub unsafe extern "C" fn silk_A2NLSF_FLP(

@@ -27,38 +27,6 @@ pub mod structs_FLP_h {
     }
     use crate::silk::structs::silk_encoder_state;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:35"]
-pub mod arch_h {}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:35"]
-pub mod SigProc_FIX_h {
-    #[inline]
-    #[c2rust::src_loc = "546:1"]
-    pub unsafe extern "C" fn silk_min_int(a: libc::c_int, b: libc::c_int) -> libc::c_int {
-        return if a < b { a } else { b };
-    }
-    #[inline]
-    #[c2rust::src_loc = "564:1"]
-    pub unsafe extern "C" fn silk_max_int(a: libc::c_int, b: libc::c_int) -> libc::c_int {
-        return if a > b { a } else { b };
-    }
-    use crate::silk::resampler_structs::silk_resampler_state_struct;
-    extern "C" {
-        #[c2rust::src_loc = "62:1"]
-        pub fn silk_resampler_init(
-            S: *mut silk_resampler_state_struct,
-            Fs_Hz_in: i32,
-            Fs_Hz_out: i32,
-            forEnc: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "72:1"]
-        pub fn silk_resampler(
-            S: *mut silk_resampler_state_struct,
-            out: *mut i16,
-            in_0: *const i16,
-            inLen: i32,
-        ) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:35"]
 pub mod define_h {
     #[c2rust::src_loc = "112:9"]
@@ -204,11 +172,12 @@ use self::tables_h::{
     silk_uniform4_iCDF, silk_uniform6_iCDF, silk_uniform8_iCDF,
 };
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
-use crate::silk::structs::{silk_encoder_state, silk_nsq_state};
-
-pub use self::SigProc_FIX_h::{silk_max_int, silk_min_int, silk_resampler, silk_resampler_init};
 pub use self::SigProc_FLP_h::{silk_float2short_array, silk_short2float_array};
 use crate::externs::memset;
+use crate::silk::resampler::{silk_resampler, silk_resampler_init};
+use crate::silk::structs::{silk_encoder_state, silk_nsq_state};
+use crate::silk::SigProc_FIX::{silk_max_int, silk_min_int};
+
 #[no_mangle]
 #[c2rust::src_loc = "65:1"]
 pub unsafe extern "C" fn silk_control_encoder(

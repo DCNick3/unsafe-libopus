@@ -40,14 +40,7 @@ pub mod mathcalls_h {
         pub fn fabs(_: libc::c_double) -> libc::c_double;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:36"]
-pub mod SigProc_FIX_h {
-    extern "C" {
-        #[c2rust::src_loc = "148:1"]
-        pub fn silk_LPC_inverse_pred_gain_c(A_Q12: *const i16, order: libc::c_int) -> i32;
-    }
-}
-pub use self::cpu_support_h::opus_select_arch;
+use self::cpu_support_h::opus_select_arch;
 pub use self::stddef_h::size_t;
 
 use self::stdio_h::{fprintf, printf, stderr};

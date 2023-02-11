@@ -444,15 +444,6 @@ pub mod mathops_h {
     }
     use super::arch_h::{opus_val16, opus_val32};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:51"]
-pub mod SigProc_FIX_h {
-    extern "C" {
-        #[c2rust::src_loc = "176:1"]
-        pub fn silk_lin2log(inLin: i32) -> i32;
-        #[c2rust::src_loc = "187:1"]
-        pub fn silk_log2lin(inLog_Q7: i32) -> i32;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:51"]
 pub mod define_h {
     #[c2rust::src_loc = "56:9"]
@@ -513,7 +504,6 @@ pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 pub use self::structs_FLP_h::{silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP};
 use self::API_h::{silk_Encode, silk_Get_Encoder_Size, silk_InitEncoder};
-use self::SigProc_FIX_h::{silk_lin2log, silk_log2lin};
 use crate::celt::celt::celt_fatal;
 use crate::celt::celt_encoder::{opus_custom_encoder_ctl, OpusCustomEncoder};
 use crate::celt::entcode::ec_tell;
@@ -522,6 +512,8 @@ use crate::celt::entenc::{ec_enc_bit_logp, ec_enc_done, ec_enc_init, ec_enc_shri
 use crate::celt::modes::OpusCustomMode;
 use crate::externs::{memcpy, memmove, memset};
 use crate::silk::enc_API::silk_EncControlStruct;
+use crate::silk::lin2log::silk_lin2log;
+use crate::silk::log2lin::silk_log2lin;
 use crate::src::analysis::{
     downmix_func, run_analysis, tonality_analysis_init, tonality_analysis_reset, AnalysisInfo,
     TonalityAnalysisState,

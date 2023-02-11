@@ -1,4 +1,6 @@
+use crate::silk::lin2log::silk_lin2log;
 use ::libc;
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/structs_FLP.h:34"]
 pub mod structs_FLP_h {
     #[derive(Copy, Clone)]
@@ -20,24 +22,15 @@ pub mod structs_FLP_h {
     }
     use super::silk_encoder_state;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:34"]
-pub mod SigProc_FIX_h {
-    extern "C" {
-        #[c2rust::src_loc = "176:1"]
-        pub fn silk_lin2log(inLin: i32) -> i32;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:34"]
 pub mod define_h {
     #[c2rust::src_loc = "72:9"]
     pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
 }
 pub use self::define_h::TYPE_VOICED;
-
 pub use self::structs_FLP_h::{silk_encoder_state_FLP, silk_shape_state_FLP};
 use crate::silk::structs::silk_encoder_state;
 
-use self::SigProc_FIX_h::silk_lin2log;
 #[no_mangle]
 #[c2rust::src_loc = "39:1"]
 pub unsafe extern "C" fn silk_HP_variable_cutoff(state_Fxx: *mut silk_encoder_state_FLP) {

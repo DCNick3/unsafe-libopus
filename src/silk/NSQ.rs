@@ -42,33 +42,6 @@ pub mod ecintrin_h {
         ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/macros.h:32"]
-pub mod macros_h {
-    #[inline]
-    #[c2rust::src_loc = "120:1"]
-    pub unsafe extern "C" fn silk_CLZ32(in32: i32) -> i32 {
-        return if in32 != 0 {
-            32 as libc::c_int - (EC_CLZ0 - (in32 as libc::c_uint).leading_zeros() as i32)
-        } else {
-            32 as libc::c_int
-        };
-    }
-    use super::ecintrin_h::EC_CLZ0;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
-pub mod SigProc_FIX_h {
-    extern "C" {
-        #[c2rust::src_loc = "123:1"]
-        pub fn silk_LPC_analysis_filter(
-            out: *mut i16,
-            in_0: *const i16,
-            B: *const i16,
-            len: i32,
-            d: i32,
-            arch: libc::c_int,
-        );
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/Inlines.h:32"]
 pub mod Inlines_h {
     #[inline]
@@ -178,7 +151,7 @@ pub mod Inlines_h {
             return 0 as libc::c_int;
         };
     }
-    use super::macros_h::silk_CLZ32;
+    use crate::silk::macros::silk_CLZ32;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/NSQ.h:34"]
 pub mod NSQ_h {
@@ -312,19 +285,16 @@ pub use self::define_h::{
 pub use self::ecintrin_h::EC_CLZ0;
 pub use self::internal::__CHAR_BIT__;
 pub use self::limits_h::CHAR_BIT;
-pub use self::macros_h::silk_CLZ32;
-use crate::celt::celt::celt_fatal;
-
 use self::tables_h::silk_Quantization_Offsets_Q10;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
-use crate::silk::structs::{silk_encoder_state, silk_nsq_state, SideInfoIndices};
-
 pub use self::Inlines_h::{silk_DIV32_varQ, silk_INVERSE32_varQ};
 pub use self::NSQ_h::{
     silk_NSQ_noise_shape_feedback_loop_c, silk_noise_shape_quantizer_short_prediction_c,
 };
-use self::SigProc_FIX_h::silk_LPC_analysis_filter;
+use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memmove};
+use crate::silk::structs::{silk_encoder_state, silk_nsq_state, SideInfoIndices};
+use crate::silk::LPC_analysis_filter::silk_LPC_analysis_filter;
 #[no_mangle]
 #[c2rust::src_loc = "76:1"]
 pub unsafe extern "C" fn silk_NSQ_c(

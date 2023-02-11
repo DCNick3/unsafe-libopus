@@ -1,18 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
-pub mod SigProc_FIX_h {
-    use crate::silk::resampler_structs::silk_resampler_state_struct;
-    extern "C" {
-        #[c2rust::src_loc = "62:1"]
-        pub fn silk_resampler_init(
-            S: *mut silk_resampler_state_struct,
-            Fs_Hz_in: i32,
-            Fs_Hz_out: i32,
-            forEnc: libc::c_int,
-        ) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
 pub mod tables_h {
     use crate::silk::structs::silk_NLSF_CB_struct;
@@ -49,17 +36,16 @@ pub mod define_h {
     pub const MAX_NB_SUBFR: libc::c_int = 4 as libc::c_int;
 }
 pub use self::define_h::{MAX_LPC_ORDER, MAX_NB_SUBFR, MIN_LPC_ORDER, TYPE_NO_VOICE_ACTIVITY};
-use crate::celt::celt::celt_fatal;
-
 use self::tables_h::{
     silk_NLSF_CB_NB_MB, silk_NLSF_CB_WB, silk_pitch_contour_10_ms_NB_iCDF,
     silk_pitch_contour_10_ms_iCDF, silk_pitch_contour_NB_iCDF, silk_pitch_contour_iCDF,
     silk_uniform4_iCDF, silk_uniform6_iCDF, silk_uniform8_iCDF,
 };
+use crate::celt::celt::celt_fatal;
+use crate::externs::memset;
+use crate::silk::resampler::silk_resampler_init;
 use crate::silk::structs::silk_decoder_state;
 
-use self::SigProc_FIX_h::silk_resampler_init;
-use crate::externs::memset;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_decoder_set_fs(

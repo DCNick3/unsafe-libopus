@@ -4,26 +4,10 @@ pub mod typedef_h {
     #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
-pub mod arch_h {}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:33"]
-pub mod SigProc_FIX_h {
-    #[inline]
-    #[c2rust::src_loc = "546:1"]
-    pub unsafe extern "C" fn silk_min_int(a: libc::c_int, b: libc::c_int) -> libc::c_int {
-        return if a < b { a } else { b };
-    }
-    #[inline]
-    #[c2rust::src_loc = "564:1"]
-    pub unsafe extern "C" fn silk_max_int(a: libc::c_int, b: libc::c_int) -> libc::c_int {
-        return if a > b { a } else { b };
-    }
-}
-use crate::celt::celt::celt_fatal;
-
 pub use self::typedef_h::silk_int16_MAX;
+use crate::celt::celt::celt_fatal;
+use crate::silk::SigProc_FIX::{silk_max_int, silk_min_int};
 
-pub use self::SigProc_FIX_h::{silk_max_int, silk_min_int};
 #[no_mangle]
 #[c2rust::src_loc = "42:1"]
 pub unsafe extern "C" fn silk_NLSF_VQ_weights_laroia(

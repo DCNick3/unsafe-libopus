@@ -1,13 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
-pub mod SigProc_FIX_h {
-    extern "C" {
-        #[c2rust::src_loc = "176:1"]
-        pub fn silk_lin2log(inLin: i32) -> i32;
-        #[c2rust::src_loc = "187:1"]
-        pub fn silk_log2lin(inLog_Q7: i32) -> i32;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
 pub mod tables_h {
     extern "C" {
@@ -53,14 +44,14 @@ pub mod main_h {
 }
 pub use self::define_h::LTP_ORDER;
 use self::main_h::silk_VQ_WMat_EC_c;
-
 use self::tables_h::{
     silk_LTP_gain_BITS_Q5_ptrs, silk_LTP_vq_gain_ptrs_Q7, silk_LTP_vq_ptrs_Q7, silk_LTP_vq_sizes,
 };
 pub use self::typedef_h::silk_int32_MAX;
-
-use self::SigProc_FIX_h::{silk_lin2log, silk_log2lin};
 use crate::externs::memcpy;
+use crate::silk::lin2log::silk_lin2log;
+use crate::silk::log2lin::silk_log2lin;
+
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_quant_LTP_gains(

@@ -1,11 +1,6 @@
+use crate::silk::NLSF_stabilize::silk_NLSF_stabilize;
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
-pub mod SigProc_FIX_h {
-    extern "C" {
-        #[c2rust::src_loc = "322:1"]
-        pub fn silk_NLSF_stabilize(NLSF_Q15: *mut i16, NDeltaMin_Q15: *const i16, L: libc::c_int);
-    }
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
     use crate::silk::structs::silk_NLSF_CB_struct;
@@ -20,7 +15,6 @@ pub mod main_h {
     }
 }
 use self::main_h::silk_NLSF_unpack;
-use self::SigProc_FIX_h::silk_NLSF_stabilize;
 use crate::silk::structs::silk_NLSF_CB_struct;
 
 #[inline]

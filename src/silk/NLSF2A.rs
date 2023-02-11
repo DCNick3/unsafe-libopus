@@ -1,23 +1,4 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:38"]
-pub mod arch_h {}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:38"]
-pub mod SigProc_FIX_h {
-    extern "C" {
-        #[c2rust::src_loc = "140:1"]
-        pub fn silk_bwexpander_32(ar: *mut i32, d: libc::c_int, chirp_Q16: i32);
-        #[c2rust::src_loc = "148:1"]
-        pub fn silk_LPC_inverse_pred_gain_c(A_Q12: *const i16, order: libc::c_int) -> i32;
-        #[c2rust::src_loc = "294:1"]
-        pub fn silk_LPC_fit(
-            a_QOUT: *mut i16,
-            a_QIN: *mut i32,
-            QOUT: libc::c_int,
-            QIN: libc::c_int,
-            d: libc::c_int,
-        );
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:39"]
 pub mod define_h {
     #[c2rust::src_loc = "138:9"]
@@ -31,11 +12,12 @@ pub mod tables_h {
     }
 }
 pub use self::define_h::MAX_LPC_STABILIZE_ITERATIONS;
-use crate::celt::celt::celt_fatal;
-
 use self::tables_h::silk_LSFCosTab_FIX_Q12;
+use crate::celt::celt::celt_fatal;
+use crate::silk::bwexpander_32::silk_bwexpander_32;
+use crate::silk::LPC_fit::silk_LPC_fit;
+use crate::silk::LPC_inv_pred_gain::silk_LPC_inverse_pred_gain_c;
 
-use self::SigProc_FIX_h::{silk_LPC_fit, silk_LPC_inverse_pred_gain_c, silk_bwexpander_32};
 #[c2rust::src_loc = "41:9"]
 pub const QA: libc::c_int = 16 as libc::c_int;
 #[inline]

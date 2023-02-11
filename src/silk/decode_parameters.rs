@@ -1,22 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
-pub mod SigProc_FIX_h {
-    extern "C" {
-        #[c2rust::src_loc = "133:1"]
-        pub fn silk_bwexpander(ar: *mut i16, d: libc::c_int, chirp_Q16: i32);
-        #[c2rust::src_loc = "254:1"]
-        pub fn silk_decode_pitch(
-            lagIndex: i16,
-            contourIndex: i8,
-            pitch_lags: *mut libc::c_int,
-            Fs_kHz: libc::c_int,
-            nb_subfr: libc::c_int,
-        );
-        #[c2rust::src_loc = "286:1"]
-        pub fn silk_NLSF2A(a_Q12: *mut i16, NLSF: *const i16, d: libc::c_int, arch: libc::c_int);
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
 pub mod tables_h {
     extern "C" {
@@ -59,12 +42,13 @@ pub mod define_h {
 }
 pub use self::define_h::{BWE_AFTER_LOSS_Q16, CODE_CONDITIONALLY, LTP_ORDER, TYPE_VOICED};
 use self::main_h::{silk_NLSF_decode, silk_gains_dequant};
-
 use self::tables_h::{silk_LTPScales_table_Q14, silk_LTP_vq_ptrs_Q7};
-use crate::silk::structs::{silk_decoder_control, silk_decoder_state};
-
-use self::SigProc_FIX_h::{silk_NLSF2A, silk_bwexpander, silk_decode_pitch};
 use crate::externs::{memcpy, memset};
+use crate::silk::bwexpander::silk_bwexpander;
+use crate::silk::decode_pitch::silk_decode_pitch;
+use crate::silk::structs::{silk_decoder_control, silk_decoder_state};
+use crate::silk::NLSF2A::silk_NLSF2A;
+
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_decode_parameters(

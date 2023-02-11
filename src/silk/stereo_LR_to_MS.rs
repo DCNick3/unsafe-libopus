@@ -12,19 +12,6 @@ pub mod ecintrin_h {
         ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/macros.h:32"]
-pub mod macros_h {
-    #[inline]
-    #[c2rust::src_loc = "120:1"]
-    pub unsafe extern "C" fn silk_CLZ32(in32: i32) -> i32 {
-        return if in32 != 0 {
-            32 as libc::c_int - (EC_CLZ0 - (in32 as libc::c_uint).leading_zeros() as i32)
-        } else {
-            32 as libc::c_int
-        };
-    }
-    use super::ecintrin_h::EC_CLZ0;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/Inlines.h:32"]
 pub mod Inlines_h {
     #[inline]
@@ -82,7 +69,7 @@ pub mod Inlines_h {
             return 0 as libc::c_int;
         };
     }
-    use super::macros_h::silk_CLZ32;
+    use crate::silk::macros::silk_CLZ32;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
@@ -114,14 +101,6 @@ pub mod main_h {
         ) -> i32;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
-pub mod SigProc_FIX_h {
-    #[inline]
-    #[c2rust::src_loc = "564:1"]
-    pub unsafe extern "C" fn silk_max_int(a: libc::c_int, b: libc::c_int) -> libc::c_int {
-        return if a > b { a } else { b };
-    }
-}
 #[c2rust::header_src = "internal:0"]
 pub mod internal {
     #[c2rust::src_loc = "36:9"]
@@ -131,13 +110,13 @@ pub use self::define_h::{LA_SHAPE_MS, STEREO_INTERP_LEN_MS};
 pub use self::ecintrin_h::EC_CLZ0;
 pub use self::internal::__CHAR_BIT__;
 pub use self::limits_h::CHAR_BIT;
-pub use self::macros_h::silk_CLZ32;
 use self::main_h::{silk_stereo_find_predictor, silk_stereo_quant_pred};
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 pub use self::Inlines_h::silk_DIV32_varQ;
-pub use self::SigProc_FIX_h::silk_max_int;
 use crate::externs::memcpy;
 use crate::silk::structs::stereo_enc_state;
+use crate::silk::SigProc_FIX::silk_max_int;
+
 #[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_stereo_LR_to_MS(

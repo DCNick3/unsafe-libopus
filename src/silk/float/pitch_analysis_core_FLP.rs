@@ -13,25 +13,6 @@ pub mod xmmintrin_h {
     #[cfg(target_arch = "x86_64")]
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:35"]
-pub mod SigProc_FIX_h {
-    #[inline]
-    #[c2rust::src_loc = "546:1"]
-    pub unsafe extern "C" fn silk_min_int(a: libc::c_int, b: libc::c_int) -> libc::c_int {
-        return if a < b { a } else { b };
-    }
-    #[inline]
-    #[c2rust::src_loc = "564:1"]
-    pub unsafe extern "C" fn silk_max_int(a: libc::c_int, b: libc::c_int) -> libc::c_int {
-        return if a > b { a } else { b };
-    }
-    extern "C" {
-        #[c2rust::src_loc = "82:1"]
-        pub fn silk_resampler_down2(S: *mut i32, out: *mut i16, in_0: *const i16, inLen: i32);
-        #[c2rust::src_loc = "92:1"]
-        pub fn silk_resampler_down2_3(S: *mut i32, out: *mut i16, in_0: *const i16, inLen: i32);
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:35"]
 pub mod SigProc_FLP_h {
     #[inline]
@@ -197,14 +178,15 @@ pub use self::pitch_est_defines_h::{
 };
 pub use self::pitch_h::{celt_pitch_xcorr, celt_pitch_xcorr_c};
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
-pub use self::SigProc_FIX_h::{
-    silk_max_int, silk_min_int, silk_resampler_down2, silk_resampler_down2_3,
-};
 pub use self::SigProc_FLP_h::{
     silk_energy_FLP, silk_float2short_array, silk_inner_product_FLP,
     silk_insertion_sort_decreasing_FLP, silk_log2, silk_short2float_array,
 };
 use crate::externs::memset;
+use crate::silk::resampler_down2::silk_resampler_down2;
+use crate::silk::resampler_down2_3::silk_resampler_down2_3;
+use crate::silk::SigProc_FIX::{silk_max_int, silk_min_int};
+
 #[no_mangle]
 #[c2rust::src_loc = "67:1"]
 pub unsafe extern "C" fn silk_pitch_analysis_core_FLP(

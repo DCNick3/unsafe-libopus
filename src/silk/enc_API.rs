@@ -104,19 +104,6 @@ pub mod internal {
     #[c2rust::src_loc = "36:9"]
     pub const __CHAR_BIT__: libc::c_int = 8 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:36"]
-pub mod SigProc_FIX_h {
-    use crate::silk::resampler_structs::silk_resampler_state_struct;
-    extern "C" {
-        #[c2rust::src_loc = "72:1"]
-        pub fn silk_resampler(
-            S: *mut silk_resampler_state_struct,
-            out: *mut i16,
-            in_0: *const i16,
-            inLen: i32,
-        ) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:41"]
 pub mod main_h {
     use super::silk_EncControlStruct;
@@ -240,17 +227,16 @@ use self::main_h::{
     check_control_input, silk_control_SNR, silk_encode_indices, silk_encode_pulses,
     silk_stereo_LR_to_MS, silk_stereo_encode_mid_only, silk_stereo_encode_pred,
 };
+pub use self::structs_FLP_h::{silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP};
+use self::tables_h::{silk_LBRR_flags_iCDF_ptr, silk_Quantization_Offsets_Q10};
 use crate::celt::celt::celt_fatal;
 use crate::celt::entcode::ec_tell;
 use crate::celt::entenc::{ec_enc, ec_enc_icdf, ec_enc_patch_initial_bits};
+use crate::externs::{memcpy, memset};
+use crate::silk::resampler::silk_resampler;
 use crate::silk::resampler_structs::silk_resampler_state_struct;
-
-pub use self::structs_FLP_h::{silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP};
-use self::tables_h::{silk_LBRR_flags_iCDF_ptr, silk_Quantization_Offsets_Q10};
 use crate::silk::structs::{silk_LP_state, silk_nsq_state};
 
-use self::SigProc_FIX_h::silk_resampler;
-use crate::externs::{memcpy, memset};
 #[no_mangle]
 #[c2rust::src_loc = "56:1"]
 pub unsafe extern "C" fn silk_Get_Encoder_Size(encSizeBytes: *mut libc::c_int) -> libc::c_int {

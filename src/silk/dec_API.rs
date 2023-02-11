@@ -108,19 +108,6 @@ pub mod tables_h {
         pub static silk_LBRR_flags_iCDF_ptr: [*const u8; 2];
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
-pub mod SigProc_FIX_h {
-    use crate::silk::resampler_structs::silk_resampler_state_struct;
-    extern "C" {
-        #[c2rust::src_loc = "72:1"]
-        pub fn silk_resampler(
-            S: *mut silk_resampler_state_struct,
-            out: *mut i16,
-            in_0: *const i16,
-            inLen: i32,
-        ) -> libc::c_int;
-    }
-}
 pub use self::define_h::{
     CODE_CONDITIONALLY, CODE_INDEPENDENTLY, CODE_INDEPENDENTLY_NO_LTP_SCALING,
     DECODER_NUM_CHANNELS, MAX_API_FS_KHZ, TYPE_NO_VOICE_ACTIVITY, TYPE_VOICED,
@@ -132,15 +119,14 @@ use self::main_h::{
     silk_decode_frame, silk_decode_indices, silk_decode_pulses, silk_decoder_set_fs,
     silk_init_decoder, silk_stereo_MS_to_LR, silk_stereo_decode_mid_only, silk_stereo_decode_pred,
 };
+use self::tables_h::silk_LBRR_flags_iCDF_ptr;
 use crate::celt::celt::celt_fatal;
 use crate::celt::entdec::{ec_dec, ec_dec_bit_logp, ec_dec_icdf};
+use crate::externs::{memcpy, memset};
+use crate::silk::resampler::silk_resampler;
 use crate::silk::resampler_structs::silk_resampler_state_struct;
-
-use self::tables_h::silk_LBRR_flags_iCDF_ptr;
 use crate::silk::structs::{silk_decoder_state, stereo_dec_state};
 
-use self::SigProc_FIX_h::silk_resampler;
-use crate::externs::{memcpy, memset};
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "39:9"]

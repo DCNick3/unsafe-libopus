@@ -1,4 +1,8 @@
+use crate::silk::inner_prod_aligned::silk_inner_prod_aligned_scale;
+use crate::silk::sum_sqr_shift::silk_sum_sqr_shift;
+use crate::silk::SigProc_FIX::silk_max_int;
 use ::libc;
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/Inlines.h:32"]
 pub mod Inlines_h {
     #[inline]
@@ -85,8 +89,8 @@ pub mod Inlines_h {
             return 0 as libc::c_int;
         };
     }
-    use super::macros_h::silk_CLZ32;
-    use super::SigProc_FIX_h::silk_ROR32;
+    use crate::silk::macros::silk_CLZ32;
+    use crate::silk::SigProc_FIX::silk_ROR32;
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/limits.h:32"]
 pub mod limits_h {
@@ -101,57 +105,6 @@ pub mod ecintrin_h {
         ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/macros.h:32"]
-pub mod macros_h {
-    #[inline]
-    #[c2rust::src_loc = "120:1"]
-    pub unsafe extern "C" fn silk_CLZ32(in32: i32) -> i32 {
-        return if in32 != 0 {
-            32 as libc::c_int - (EC_CLZ0 - (in32 as libc::c_uint).leading_zeros() as i32)
-        } else {
-            32 as libc::c_int
-        };
-    }
-    use super::ecintrin_h::EC_CLZ0;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
-pub mod SigProc_FIX_h {
-    #[inline]
-    #[c2rust::src_loc = "398:1"]
-    pub unsafe extern "C" fn silk_ROR32(a32: i32, rot: libc::c_int) -> i32 {
-        let x: u32 = a32 as u32;
-        let r: u32 = rot as u32;
-        let m: u32 = -rot as u32;
-        if rot == 0 as libc::c_int {
-            return a32;
-        } else if rot < 0 as libc::c_int {
-            return (x << m | x >> (32 as libc::c_int as libc::c_uint).wrapping_sub(m)) as i32;
-        } else {
-            return (x << (32 as libc::c_int as libc::c_uint).wrapping_sub(r) | x >> r) as i32;
-        };
-    }
-    #[inline]
-    #[c2rust::src_loc = "564:1"]
-    pub unsafe extern "C" fn silk_max_int(a: libc::c_int, b: libc::c_int) -> libc::c_int {
-        return if a > b { a } else { b };
-    }
-    extern "C" {
-        #[c2rust::src_loc = "193:1"]
-        pub fn silk_sum_sqr_shift(
-            energy: *mut i32,
-            shift: *mut libc::c_int,
-            x: *const i16,
-            len: libc::c_int,
-        );
-        #[c2rust::src_loc = "377:1"]
-        pub fn silk_inner_prod_aligned_scale(
-            inVec1: *const i16,
-            inVec2: *const i16,
-            scale: libc::c_int,
-            len: libc::c_int,
-        ) -> i32;
-    }
-}
 #[c2rust::header_src = "internal:0"]
 pub mod internal {
     #[c2rust::src_loc = "36:9"]
@@ -160,12 +113,8 @@ pub mod internal {
 pub use self::ecintrin_h::EC_CLZ0;
 pub use self::internal::__CHAR_BIT__;
 pub use self::limits_h::CHAR_BIT;
-pub use self::macros_h::silk_CLZ32;
-
 pub use self::Inlines_h::{silk_CLZ_FRAC, silk_DIV32_varQ, silk_SQRT_APPROX};
-pub use self::SigProc_FIX_h::{
-    silk_ROR32, silk_inner_prod_aligned_scale, silk_max_int, silk_sum_sqr_shift,
-};
+
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_stereo_find_predictor(

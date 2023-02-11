@@ -1,28 +1,8 @@
+use crate::silk::lin2log::silk_lin2log;
+use crate::silk::log2lin::silk_log2lin;
+use crate::silk::SigProc_FIX::{silk_max_int, silk_min_32, silk_min_int};
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
-pub mod SigProc_FIX_h {
-    #[inline]
-    #[c2rust::src_loc = "546:1"]
-    pub unsafe extern "C" fn silk_min_int(a: libc::c_int, b: libc::c_int) -> libc::c_int {
-        return if a < b { a } else { b };
-    }
-    #[inline]
-    #[c2rust::src_loc = "554:1"]
-    pub unsafe extern "C" fn silk_min_32(a: i32, b: i32) -> i32 {
-        return if a < b { a } else { b };
-    }
-    #[inline]
-    #[c2rust::src_loc = "564:1"]
-    pub unsafe extern "C" fn silk_max_int(a: libc::c_int, b: libc::c_int) -> libc::c_int {
-        return if a > b { a } else { b };
-    }
-    extern "C" {
-        #[c2rust::src_loc = "176:1"]
-        pub fn silk_lin2log(inLin: i32) -> i32;
-        #[c2rust::src_loc = "187:1"]
-        pub fn silk_log2lin(inLog_Q7: i32) -> i32;
-    }
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
 pub mod define_h {
     #[c2rust::src_loc = "119:9"]
@@ -38,9 +18,6 @@ pub use self::define_h::{
     MAX_DELTA_GAIN_QUANT, MIN_DELTA_GAIN_QUANT, MIN_QGAIN_DB, N_LEVELS_QGAIN,
 };
 
-pub use self::SigProc_FIX_h::{
-    silk_lin2log, silk_log2lin, silk_max_int, silk_min_32, silk_min_int,
-};
 #[c2rust::src_loc = "34:9"]
 pub const OFFSET: libc::c_int =
     MIN_QGAIN_DB * 128 as libc::c_int / 6 as libc::c_int + 16 as libc::c_int * 128 as libc::c_int;

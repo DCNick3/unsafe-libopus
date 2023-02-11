@@ -20,13 +20,6 @@ pub mod structs_FLP_h {
     }
     use crate::silk::structs::silk_encoder_state;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:34"]
-pub mod SigProc_FIX_h {
-    extern "C" {
-        #[c2rust::src_loc = "176:1"]
-        pub fn silk_lin2log(inLin: i32) -> i32;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:34"]
 pub mod main_h {
     use crate::silk::structs::silk_VAD_state;
@@ -36,11 +29,10 @@ pub mod main_h {
     }
 }
 use self::main_h::silk_VAD_Init;
-
 pub use self::structs_FLP_h::{silk_encoder_state_FLP, silk_shape_state_FLP};
-
-use self::SigProc_FIX_h::silk_lin2log;
 use crate::externs::memset;
+use crate::silk::lin2log::silk_lin2log;
+
 #[no_mangle]
 #[c2rust::src_loc = "42:1"]
 pub unsafe extern "C" fn silk_init_encoder(

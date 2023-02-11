@@ -13,35 +13,6 @@ pub mod ecintrin_h {
         ::core::mem::size_of::<libc::c_uint>() as libc::c_ulong as libc::c_int * CHAR_BIT;
     use super::limits_h::CHAR_BIT;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/macros.h:32"]
-pub mod macros_h {
-    #[inline]
-    #[c2rust::src_loc = "120:1"]
-    pub unsafe extern "C" fn silk_CLZ32(in32: i32) -> i32 {
-        return if in32 != 0 {
-            32 as libc::c_int - (EC_CLZ0 - (in32 as libc::c_uint).leading_zeros() as i32)
-        } else {
-            32 as libc::c_int
-        };
-    }
-    use super::ecintrin_h::EC_CLZ0;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
-pub mod SigProc_FIX_h {
-    extern "C" {
-        #[c2rust::src_loc = "176:1"]
-        pub fn silk_lin2log(inLin: i32) -> i32;
-        #[c2rust::src_loc = "302:1"]
-        pub fn silk_insertion_sort_increasing(
-            a: *mut i32,
-            idx: *mut libc::c_int,
-            L: libc::c_int,
-            K: libc::c_int,
-        );
-        #[c2rust::src_loc = "322:1"]
-        pub fn silk_NLSF_stabilize(NLSF_Q15: *mut i16, NDeltaMin_Q15: *const i16, L: libc::c_int);
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
     use crate::silk::structs::silk_NLSF_CB_struct;
@@ -145,7 +116,7 @@ pub mod Inlines_h {
             return 0 as libc::c_int;
         };
     }
-    use super::macros_h::silk_CLZ32;
+    use crate::silk::macros::silk_CLZ32;
 }
 #[c2rust::header_src = "internal:0"]
 pub mod internal {
@@ -156,13 +127,14 @@ pub use self::define_h::MAX_LPC_ORDER;
 pub use self::ecintrin_h::EC_CLZ0;
 pub use self::internal::__CHAR_BIT__;
 pub use self::limits_h::CHAR_BIT;
-pub use self::macros_h::silk_CLZ32;
 use self::main_h::{silk_NLSF_VQ, silk_NLSF_decode, silk_NLSF_del_dec_quant, silk_NLSF_unpack};
 pub use self::Inlines_h::silk_DIV32_varQ;
-use self::SigProc_FIX_h::{silk_NLSF_stabilize, silk_insertion_sort_increasing, silk_lin2log};
 use crate::celt::celt::celt_fatal;
 use crate::externs::memcpy;
+use crate::silk::lin2log::silk_lin2log;
+use crate::silk::sort::silk_insertion_sort_increasing;
 use crate::silk::structs::silk_NLSF_CB_struct;
+use crate::silk::NLSF_stabilize::silk_NLSF_stabilize;
 
 #[no_mangle]
 #[c2rust::src_loc = "38:1"]

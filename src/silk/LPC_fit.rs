@@ -1,11 +1,6 @@
+use crate::silk::bwexpander_32::silk_bwexpander_32;
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
-pub mod SigProc_FIX_h {
-    extern "C" {
-        #[c2rust::src_loc = "140:1"]
-        pub fn silk_bwexpander_32(ar: *mut i32, d: libc::c_int, chirp_Q16: i32);
-    }
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
     #[c2rust::src_loc = "45:9"]
@@ -16,7 +11,6 @@ pub mod typedef_h {
 
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 
-use self::SigProc_FIX_h::silk_bwexpander_32;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_LPC_fit(

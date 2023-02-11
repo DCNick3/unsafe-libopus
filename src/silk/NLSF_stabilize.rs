@@ -1,21 +1,7 @@
+use crate::silk::sort::silk_insertion_sort_increasing_all_values_int16;
+use crate::silk::SigProc_FIX::{silk_max_int, silk_min_int};
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:41"]
-pub mod SigProc_FIX_h {
-    #[inline]
-    #[c2rust::src_loc = "546:1"]
-    pub unsafe extern "C" fn silk_min_int(a: libc::c_int, b: libc::c_int) -> libc::c_int {
-        return if a < b { a } else { b };
-    }
-    #[inline]
-    #[c2rust::src_loc = "564:1"]
-    pub unsafe extern "C" fn silk_max_int(a: libc::c_int, b: libc::c_int) -> libc::c_int {
-        return if a > b { a } else { b };
-    }
-    extern "C" {
-        #[c2rust::src_loc = "316:1"]
-        pub fn silk_insertion_sort_increasing_all_values_int16(a: *mut i16, L: libc::c_int);
-    }
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:41"]
 pub mod typedef_h {
     #[c2rust::src_loc = "45:9"]
@@ -26,9 +12,6 @@ pub mod typedef_h {
 
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 
-pub use self::SigProc_FIX_h::{
-    silk_insertion_sort_increasing_all_values_int16, silk_max_int, silk_min_int,
-};
 #[c2rust::src_loc = "44:9"]
 pub const MAX_LOOPS: libc::c_int = 20 as libc::c_int;
 #[no_mangle]

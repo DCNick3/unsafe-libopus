@@ -1,11 +1,6 @@
+use crate::silk::lin2log::silk_lin2log;
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/SigProc_FIX.h:32"]
-pub mod SigProc_FIX_h {
-    extern "C" {
-        #[c2rust::src_loc = "176:1"]
-        pub fn silk_lin2log(inLin: i32) -> i32;
-    }
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
 pub mod define_h {
     #[c2rust::src_loc = "146:9"]
@@ -17,10 +12,8 @@ pub mod typedef_h {
     pub const silk_int32_MAX: libc::c_int = 0x7fffffff as libc::c_int;
 }
 pub use self::define_h::LTP_ORDER;
-
 pub use self::typedef_h::silk_int32_MAX;
 
-use self::SigProc_FIX_h::silk_lin2log;
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_VQ_WMat_EC_c(
