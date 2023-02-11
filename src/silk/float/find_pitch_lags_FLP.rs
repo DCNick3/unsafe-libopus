@@ -1,25 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/main_FLP.h:33"]
-pub mod main_FLP_h {
-    extern "C" {
-        #[c2rust::src_loc = "240:1"]
-        pub fn silk_apply_sine_window_FLP(
-            px_win: *mut libc::c_float,
-            px: *const libc::c_float,
-            win_type: libc::c_int,
-            length: libc::c_int,
-        );
-        #[c2rust::src_loc = "178:1"]
-        pub fn silk_LPC_analysis_filter_FLP(
-            r_LPC: *mut libc::c_float,
-            PredCoef: *const libc::c_float,
-            s: *const libc::c_float,
-            length: libc::c_int,
-            Order: libc::c_int,
-        );
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:33"]
 pub mod SigProc_FLP_h {
     extern "C" {
@@ -64,19 +44,20 @@ pub mod tuning_parameters_h {
     #[c2rust::src_loc = "47:9"]
     pub const FIND_PITCH_BANDWIDTH_EXPANSION: libc::c_float = 0.99f32;
 }
-use self::main_FLP_h::{silk_LPC_analysis_filter_FLP, silk_apply_sine_window_FLP};
 pub use self::tuning_parameters_h::{
     FIND_PITCH_BANDWIDTH_EXPANSION, FIND_PITCH_WHITE_NOISE_FRACTION,
 };
-use crate::celt::celt::celt_fatal;
-use crate::silk::define::{TYPE_NO_VOICE_ACTIVITY, TYPE_UNVOICED, TYPE_VOICED};
-use crate::silk::float::structs_FLP::{silk_encoder_control_FLP, silk_encoder_state_FLP};
-
 use self::SigProc_FLP_h::{
     silk_autocorrelation_FLP, silk_bwexpander_FLP, silk_k2a_FLP, silk_pitch_analysis_core_FLP,
     silk_schur_FLP,
 };
+use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memset};
+use crate::silk::define::{TYPE_NO_VOICE_ACTIVITY, TYPE_UNVOICED, TYPE_VOICED};
+use crate::silk::float::apply_sine_window_FLP::silk_apply_sine_window_FLP;
+use crate::silk::float::structs_FLP::{silk_encoder_control_FLP, silk_encoder_state_FLP};
+use crate::silk::float::LPC_analysis_filter_FLP::silk_LPC_analysis_filter_FLP;
+
 #[no_mangle]
 #[c2rust::src_loc = "36:1"]
 pub unsafe extern "C" fn silk_find_pitch_lags_FLP(

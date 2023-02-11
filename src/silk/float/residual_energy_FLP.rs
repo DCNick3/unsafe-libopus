@@ -1,18 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/main_FLP.h:32"]
-pub mod main_FLP_h {
-    extern "C" {
-        #[c2rust::src_loc = "178:1"]
-        pub fn silk_LPC_analysis_filter_FLP(
-            r_LPC: *mut libc::c_float,
-            PredCoef: *const libc::c_float,
-            s: *const libc::c_float,
-            length: libc::c_int,
-            Order: libc::c_int,
-        );
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:32"]
 pub mod SigProc_FLP_h {
     extern "C" {
@@ -21,10 +8,11 @@ pub mod SigProc_FLP_h {
             -> libc::c_double;
     }
 }
-use self::main_FLP_h::silk_LPC_analysis_filter_FLP;
 use self::SigProc_FLP_h::silk_energy_FLP;
 use crate::celt::celt::celt_fatal;
 use crate::silk::define::MAX_NB_SUBFR;
+use crate::silk::float::LPC_analysis_filter_FLP::silk_LPC_analysis_filter_FLP;
+
 #[c2rust::src_loc = "34:9"]
 pub const MAX_ITERATIONS_RESIDUAL_NRG: libc::c_int = 10 as libc::c_int;
 #[c2rust::src_loc = "35:9"]

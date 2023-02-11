@@ -12,80 +12,6 @@ pub mod SigProc_FLP_h {
         );
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/main_FLP.h:32"]
-pub mod main_FLP_h {
-    use crate::silk::float::structs_FLP::{silk_encoder_control_FLP, silk_encoder_state_FLP};
-    use crate::silk::structs::silk_encoder_state;
-    extern "C" {
-        #[c2rust::src_loc = "109:1"]
-        pub fn silk_LTP_scale_ctrl_FLP(
-            psEnc: *mut silk_encoder_state_FLP,
-            psEncCtrl: *mut silk_encoder_control_FLP,
-            condCoding: libc::c_int,
-        );
-        #[c2rust::src_loc = "167:1"]
-        pub fn silk_residual_energy_FLP(
-            nrgs: *mut libc::c_float,
-            x: *const libc::c_float,
-            a: *mut [libc::c_float; 16],
-            gains: *const libc::c_float,
-            subfr_length: libc::c_int,
-            nb_subfr: libc::c_int,
-            LPC_order: libc::c_int,
-        );
-        #[c2rust::src_loc = "265:1"]
-        pub fn silk_process_NLSFs_FLP(
-            psEncC: *mut silk_encoder_state,
-            PredCoef: *mut [libc::c_float; 16],
-            NLSF_Q15: *mut i16,
-            prev_NLSF_Q15: *const i16,
-        );
-        #[c2rust::src_loc = "137:1"]
-        pub fn silk_find_LPC_FLP(
-            psEncC: *mut silk_encoder_state,
-            NLSF_Q15: *mut i16,
-            x: *const libc::c_float,
-            minInvGain: libc::c_float,
-        );
-        #[c2rust::src_loc = "154:1"]
-        pub fn silk_LTP_analysis_filter_FLP(
-            LTP_res: *mut libc::c_float,
-            x: *const libc::c_float,
-            B: *const libc::c_float,
-            pitchL: *const libc::c_int,
-            invGains: *const libc::c_float,
-            subfr_length: libc::c_int,
-            nb_subfr: libc::c_int,
-            pre_length: libc::c_int,
-        );
-        #[c2rust::src_loc = "187:1"]
-        pub fn silk_quant_LTP_gains_FLP(
-            B: *mut libc::c_float,
-            cbk_index: *mut i8,
-            periodicity_index: *mut i8,
-            sum_log_gain_Q7: *mut i32,
-            pred_gain_dB: *mut libc::c_float,
-            XX: *const libc::c_float,
-            xX: *const libc::c_float,
-            subfr_len: libc::c_int,
-            nb_subfr: libc::c_int,
-            arch: libc::c_int,
-        );
-        #[c2rust::src_loc = "145:1"]
-        pub fn silk_find_LTP_FLP(
-            XX: *mut libc::c_float,
-            xX: *mut libc::c_float,
-            r_ptr: *const libc::c_float,
-            lag: *const libc::c_int,
-            subfr_length: libc::c_int,
-            nb_subfr: libc::c_int,
-        );
-    }
-}
-use self::main_FLP_h::{
-    silk_LTP_analysis_filter_FLP, silk_LTP_scale_ctrl_FLP, silk_find_LPC_FLP, silk_find_LTP_FLP,
-    silk_process_NLSFs_FLP, silk_quant_LTP_gains_FLP, silk_residual_energy_FLP,
-};
 use crate::celt::celt::celt_fatal;
 use crate::silk::define::{
     MAX_PREDICTION_POWER_GAIN, MAX_PREDICTION_POWER_GAIN_AFTER_RESET, TYPE_VOICED,
@@ -94,6 +20,13 @@ use crate::silk::float::structs_FLP::{silk_encoder_control_FLP, silk_encoder_sta
 
 use self::SigProc_FLP_h::silk_scale_copy_vector_FLP;
 use crate::externs::{memcpy, memset};
+use crate::silk::float::find_LPC_FLP::silk_find_LPC_FLP;
+use crate::silk::float::find_LTP_FLP::silk_find_LTP_FLP;
+use crate::silk::float::residual_energy_FLP::silk_residual_energy_FLP;
+use crate::silk::float::wrappers_FLP::{silk_process_NLSFs_FLP, silk_quant_LTP_gains_FLP};
+use crate::silk::float::LTP_analysis_filter_FLP::silk_LTP_analysis_filter_FLP;
+use crate::silk::float::LTP_scale_ctrl_FLP::silk_LTP_scale_ctrl_FLP;
+
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_find_pred_coefs_FLP(

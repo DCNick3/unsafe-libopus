@@ -36,79 +36,30 @@ pub mod errors_h {
     #[c2rust::src_loc = "39:9"]
     pub const SILK_NO_ERROR: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/main_FLP.h:41"]
-pub mod main_FLP_h {
-    #[c2rust::src_loc = "45:9"]
-    pub const silk_encode_do_VAD_Fxx: unsafe extern "C" fn(
-        *mut silk_encoder_state_FLP,
-        libc::c_int,
-    ) -> () = silk_encode_do_VAD_FLP;
-    #[c2rust::src_loc = "46:9"]
-    pub const silk_encode_frame_Fxx: unsafe extern "C" fn(
-        *mut silk_encoder_state_FLP,
-        *mut i32,
-        *mut ec_enc,
-        libc::c_int,
-        libc::c_int,
-        libc::c_int,
-    ) -> libc::c_int = silk_encode_frame_FLP;
-
-    use super::silk_EncControlStruct;
-    use crate::celt::entenc::ec_enc;
-    use crate::silk::float::structs_FLP::silk_encoder_state_FLP;
-    extern "C" {
-        #[c2rust::src_loc = "80:1"]
-        pub fn silk_control_encoder(
-            psEnc: *mut silk_encoder_state_FLP,
-            encControl: *mut silk_EncControlStruct,
-            allow_bw_switch: libc::c_int,
-            channelNb: libc::c_int,
-            force_fs_kHz: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "53:1"]
-        pub fn silk_HP_variable_cutoff(state_Fxx: *mut silk_encoder_state_FLP);
-        #[c2rust::src_loc = "58:1"]
-        pub fn silk_encode_do_VAD_FLP(psEnc: *mut silk_encoder_state_FLP, activity: libc::c_int);
-        #[c2rust::src_loc = "64:1"]
-        pub fn silk_encode_frame_FLP(
-            psEnc: *mut silk_encoder_state_FLP,
-            pnBytesOut: *mut i32,
-            psRangeEnc: *mut ec_enc,
-            condCoding: libc::c_int,
-            maxBits: libc::c_int,
-            useCBR: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "74:1"]
-        pub fn silk_init_encoder(
-            psEnc: *mut silk_encoder_state_FLP,
-            arch: libc::c_int,
-        ) -> libc::c_int;
-    }
-}
 use self::errors_h::{SILK_ENC_INPUT_INVALID_NO_OF_SAMPLES, SILK_NO_ERROR};
-pub use self::main_FLP_h::{
-    silk_HP_variable_cutoff, silk_control_encoder, silk_encode_do_VAD_FLP, silk_encode_do_VAD_Fxx,
-    silk_encode_frame_FLP, silk_encode_frame_Fxx, silk_init_encoder,
-};
 use crate::celt::celt::celt_fatal;
 use crate::celt::entcode::ec_tell;
 use crate::celt::entenc::{ec_enc, ec_enc_icdf, ec_enc_patch_initial_bits};
 use crate::externs::{memcpy, memset};
 use crate::silk::check_control_input::check_control_input;
 use crate::silk::control_SNR::silk_control_SNR;
+use crate::silk::control_codec::silk_control_encoder;
 use crate::silk::define::{
     CODE_CONDITIONALLY, CODE_INDEPENDENTLY, CODE_INDEPENDENTLY_NO_LTP_SCALING,
     ENCODER_NUM_CHANNELS, TYPE_NO_VOICE_ACTIVITY,
 };
 use crate::silk::encode_indices::silk_encode_indices;
 use crate::silk::encode_pulses::silk_encode_pulses;
+use crate::silk::float::encode_frame_FLP::{silk_encode_do_VAD_FLP, silk_encode_frame_FLP};
 use crate::silk::float::structs_FLP::{silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP};
+use crate::silk::init_encoder::silk_init_encoder;
 use crate::silk::resampler::silk_resampler;
 use crate::silk::resampler_structs::silk_resampler_state_struct;
 use crate::silk::stereo_LR_to_MS::silk_stereo_LR_to_MS;
 use crate::silk::stereo_encode_pred::{silk_stereo_encode_mid_only, silk_stereo_encode_pred};
 use crate::silk::structs::{silk_LP_state, silk_nsq_state};
 use crate::silk::tables_other::{silk_LBRR_flags_iCDF_ptr, silk_Quantization_Offsets_Q10};
+use crate::silk::HP_variable_cutoff::silk_HP_variable_cutoff;
 
 #[no_mangle]
 #[c2rust::src_loc = "56:1"]

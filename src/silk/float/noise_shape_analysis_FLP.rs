@@ -1,25 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/main_FLP.h:32"]
-pub mod main_FLP_h {
-    extern "C" {
-        #[c2rust::src_loc = "240:1"]
-        pub fn silk_apply_sine_window_FLP(
-            px_win: *mut libc::c_float,
-            px: *const libc::c_float,
-            win_type: libc::c_int,
-            length: libc::c_int,
-        );
-        #[c2rust::src_loc = "100:1"]
-        pub fn silk_warped_autocorrelation_FLP(
-            corr: *mut libc::c_float,
-            input: *const libc::c_float,
-            warping: libc::c_float,
-            length: libc::c_int,
-            order: libc::c_int,
-        );
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:32"]
 pub mod SigProc_FLP_h {
     #[inline]
@@ -84,7 +64,6 @@ pub mod tuning_parameters_h {
     #[c2rust::src_loc = "135:9"]
     pub const SUBFR_SMTH_COEF: libc::c_float = 0.4f32;
 }
-use self::main_FLP_h::{silk_apply_sine_window_FLP, silk_warped_autocorrelation_FLP};
 pub use self::tuning_parameters_h::{
     BG_SNR_DECR_dB, HARM_SNR_INCR_dB, BANDWIDTH_EXPANSION, ENERGY_VARIATION_THRESHOLD_QNT_OFFSET,
     FIND_PITCH_WHITE_NOISE_FRACTION, HARMONIC_SHAPING, HARM_HP_NOISE_COEF,
@@ -101,6 +80,9 @@ pub use self::SigProc_FLP_h::{
     silk_schur_FLP, silk_sigmoid,
 };
 use crate::externs::memcpy;
+use crate::silk::float::apply_sine_window_FLP::silk_apply_sine_window_FLP;
+use crate::silk::float::warped_autocorrelation_FLP::silk_warped_autocorrelation_FLP;
+
 #[inline]
 #[c2rust::src_loc = "39:1"]
 unsafe extern "C" fn warped_gain(

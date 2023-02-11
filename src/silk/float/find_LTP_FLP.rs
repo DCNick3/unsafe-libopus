@@ -13,29 +13,10 @@ pub mod SigProc_FLP_h {
             -> libc::c_double;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/main_FLP.h:32"]
-pub mod main_FLP_h {
-    extern "C" {
-        #[c2rust::src_loc = "220:1"]
-        pub fn silk_corrMatrix_FLP(
-            x: *const libc::c_float,
-            L: libc::c_int,
-            Order: libc::c_int,
-            XX: *mut libc::c_float,
-        );
-        #[c2rust::src_loc = "228:1"]
-        pub fn silk_corrVector_FLP(
-            x: *const libc::c_float,
-            t: *const libc::c_float,
-            L: libc::c_int,
-            Order: libc::c_int,
-            Xt: *mut libc::c_float,
-        );
-    }
-}
-use self::main_FLP_h::{silk_corrMatrix_FLP, silk_corrVector_FLP};
 use self::SigProc_FLP_h::{silk_energy_FLP, silk_scale_vector_FLP};
 use crate::silk::define::LTP_ORDER;
+use crate::silk::float::corrMatrix_FLP::{silk_corrMatrix_FLP, silk_corrVector_FLP};
+
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]
 pub unsafe extern "C" fn silk_find_LTP_FLP(

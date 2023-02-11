@@ -7,51 +7,6 @@ pub mod stdlib_h {
         pub fn abs(_: libc::c_int) -> libc::c_int;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/main_FLP.h:33"]
-pub mod main_FLP_h {
-    use crate::silk::float::structs_FLP::{silk_encoder_control_FLP, silk_encoder_state_FLP};
-    use crate::silk::structs::{silk_nsq_state, SideInfoIndices};
-    extern "C" {
-        #[c2rust::src_loc = "119:1"]
-        pub fn silk_find_pitch_lags_FLP(
-            psEnc: *mut silk_encoder_state_FLP,
-            psEncCtrl: *mut silk_encoder_control_FLP,
-            res: *mut libc::c_float,
-            x: *const libc::c_float,
-            arch: libc::c_int,
-        );
-        #[c2rust::src_loc = "92:1"]
-        pub fn silk_noise_shape_analysis_FLP(
-            psEnc: *mut silk_encoder_state_FLP,
-            psEncCtrl: *mut silk_encoder_control_FLP,
-            pitch_res: *const libc::c_float,
-            x: *const libc::c_float,
-        );
-        #[c2rust::src_loc = "128:1"]
-        pub fn silk_find_pred_coefs_FLP(
-            psEnc: *mut silk_encoder_state_FLP,
-            psEncCtrl: *mut silk_encoder_control_FLP,
-            res_pitch: *const libc::c_float,
-            x: *const libc::c_float,
-            condCoding: libc::c_int,
-        );
-        #[c2rust::src_loc = "210:1"]
-        pub fn silk_process_gains_FLP(
-            psEnc: *mut silk_encoder_state_FLP,
-            psEncCtrl: *mut silk_encoder_control_FLP,
-            condCoding: libc::c_int,
-        );
-        #[c2rust::src_loc = "273:1"]
-        pub fn silk_NSQ_wrapper_FLP(
-            psEnc: *mut silk_encoder_state_FLP,
-            psEncCtrl: *mut silk_encoder_control_FLP,
-            psIndices: *mut SideInfoIndices,
-            psNSQ: *mut silk_nsq_state,
-            pulses: *mut i8,
-            x: *const libc::c_float,
-        );
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:33"]
 pub mod SigProc_FLP_h {
     #[inline]
@@ -69,10 +24,6 @@ pub mod SigProc_FLP_h {
         }
     }
 }
-use self::main_FLP_h::{
-    silk_NSQ_wrapper_FLP, silk_find_pitch_lags_FLP, silk_find_pred_coefs_FLP,
-    silk_noise_shape_analysis_FLP, silk_process_gains_FLP,
-};
 use self::stdlib_h::abs;
 pub use self::SigProc_FLP_h::silk_short2float_array;
 use crate::celt::celt::celt_fatal;
@@ -85,7 +36,12 @@ use crate::silk::define::{
 };
 use crate::silk::encode_indices::silk_encode_indices;
 use crate::silk::encode_pulses::silk_encode_pulses;
+use crate::silk::float::find_pitch_lags_FLP::silk_find_pitch_lags_FLP;
+use crate::silk::float::find_pred_coefs_FLP::silk_find_pred_coefs_FLP;
+use crate::silk::float::noise_shape_analysis_FLP::silk_noise_shape_analysis_FLP;
+use crate::silk::float::process_gains_FLP::silk_process_gains_FLP;
 use crate::silk::float::structs_FLP::{silk_encoder_control_FLP, silk_encoder_state_FLP};
+use crate::silk::float::wrappers_FLP::silk_NSQ_wrapper_FLP;
 use crate::silk::gain_quant::{silk_gains_ID, silk_gains_dequant, silk_gains_quant};
 use crate::silk::log2lin::silk_log2lin;
 use crate::silk::structs::{silk_nsq_state, SideInfoIndices};
