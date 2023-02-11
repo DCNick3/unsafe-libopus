@@ -72,13 +72,6 @@ pub mod main_h {
         );
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "77:9"]
-    pub const CODE_CONDITIONALLY: libc::c_int = 2 as libc::c_int;
-    #[c2rust::src_loc = "72:9"]
-    pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tuning_parameters.h:33"]
 pub mod tuning_parameters_h {
     #[c2rust::src_loc = "138:9"]
@@ -94,8 +87,8 @@ pub mod tuning_parameters_h {
     #[c2rust::src_loc = "143:9"]
     pub const LAMBDA_QUANT_OFFSET: libc::c_float = 0.8f32;
 }
-pub use self::define_h::{CODE_CONDITIONALLY, TYPE_VOICED};
 use self::main_h::silk_gains_quant;
+use crate::silk::define::{CODE_CONDITIONALLY, TYPE_VOICED};
 
 pub use self::structs_FLP_h::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,

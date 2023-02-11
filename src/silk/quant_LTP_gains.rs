@@ -12,11 +12,6 @@ pub mod tables_h {
         pub static silk_LTP_vq_sizes: [i8; 3];
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "146:9"]
-    pub const LTP_ORDER: libc::c_int = 5 as libc::c_int;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
     #[c2rust::src_loc = "42:9"]
@@ -42,13 +37,13 @@ pub mod main_h {
         );
     }
 }
-pub use self::define_h::LTP_ORDER;
 use self::main_h::silk_VQ_WMat_EC_c;
 use self::tables_h::{
     silk_LTP_gain_BITS_Q5_ptrs, silk_LTP_vq_gain_ptrs_Q7, silk_LTP_vq_ptrs_Q7, silk_LTP_vq_sizes,
 };
 pub use self::typedef_h::silk_int32_MAX;
 use crate::externs::memcpy;
+use crate::silk::define::LTP_ORDER;
 use crate::silk::lin2log::silk_lin2log;
 use crate::silk::log2lin::silk_log2lin;
 

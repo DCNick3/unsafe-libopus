@@ -289,44 +289,7 @@ pub mod cpu_support_h {
         return 0 as libc::c_int;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/API.h:36"]
-pub mod API_h {
-    use crate::celt::entenc::ec_enc;
-    use crate::silk::enc_API::silk_EncControlStruct;
-    extern "C" {
-        #[c2rust::src_loc = "58:1"]
-        pub fn silk_Get_Encoder_Size(encSizeBytes: *mut libc::c_int) -> libc::c_int;
-        #[c2rust::src_loc = "65:1"]
-        pub fn silk_InitEncoder(
-            encState: *mut libc::c_void,
-            arch: libc::c_int,
-            encStatus: *mut silk_EncControlStruct,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "76:1"]
-        pub fn silk_Encode(
-            encState: *mut libc::c_void,
-            encControl: *mut silk_EncControlStruct,
-            samplesIn: *const i16,
-            nSamplesIn: libc::c_int,
-            psRangeEnc: *mut ec_enc,
-            nBytesOut: *mut i32,
-            prefillFlag: libc::c_int,
-            activity: libc::c_int,
-        ) -> libc::c_int;
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:51"]
-pub mod define_h {
-    #[c2rust::src_loc = "56:9"]
-    pub const NB_SPEECH_FRAMES_BEFORE_DTX: libc::c_int = 10 as libc::c_int;
-    #[c2rust::src_loc = "57:9"]
-    pub const MAX_CONSECUTIVE_DTX: libc::c_int = 20 as libc::c_int;
-    #[c2rust::src_loc = "61:9"]
-    pub const VAD_NO_DECISION: libc::c_int = -(1 as libc::c_int);
-    #[c2rust::src_loc = "58:9"]
-    pub const DTX_ACTIVITY_THRESHOLD: libc::c_float = 0.1f32;
-}
-pub use self::arch_h::{opus_val16, opus_val32, CELT_SIG_SCALE, EPSILON, Q15ONE, VERY_SMALL};
+use self::arch_h::{opus_val16, opus_val32, CELT_SIG_SCALE, EPSILON, Q15ONE, VERY_SMALL};
 pub use self::celt_h::{
     celt_encode_with_ec, celt_encoder_ctl, celt_encoder_get_size, celt_encoder_init, SILKInfo,
     CELT_GET_MODE_REQUEST, CELT_SET_ANALYSIS_REQUEST, CELT_SET_CHANNELS_REQUEST,
@@ -335,9 +298,6 @@ pub use self::celt_h::{
     OPUS_SET_LFE_REQUEST,
 };
 pub use self::cpu_support_h::opus_select_arch;
-pub use self::define_h::{
-    DTX_ACTIVITY_THRESHOLD, MAX_CONSECUTIVE_DTX, NB_SPEECH_FRAMES_BEFORE_DTX, VAD_NO_DECISION,
-};
 pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::opus_defines_h::{
     OPUS_ALLOC_FAIL, OPUS_APPLICATION_AUDIO, OPUS_APPLICATION_RESTRICTED_LOWDELAY,
@@ -365,7 +325,6 @@ pub use self::opus_defines_h::{
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 pub use self::structs_FLP_h::{silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP};
-use self::API_h::{silk_Encode, silk_Get_Encoder_Size, silk_InitEncoder};
 use crate::celt::celt::celt_fatal;
 use crate::celt::celt_encoder::{opus_custom_encoder_ctl, OpusCustomEncoder};
 use crate::celt::entcode::ec_tell;
@@ -376,7 +335,11 @@ use crate::celt::mathops::celt_maxabs16;
 use crate::celt::modes::OpusCustomMode;
 use crate::celt::pitch::celt_inner_prod_c;
 use crate::externs::{memcpy, memmove, memset};
+use crate::silk::define::{
+    DTX_ACTIVITY_THRESHOLD, MAX_CONSECUTIVE_DTX, NB_SPEECH_FRAMES_BEFORE_DTX, VAD_NO_DECISION,
+};
 use crate::silk::enc_API::silk_EncControlStruct;
+use crate::silk::enc_API::{silk_Encode, silk_Get_Encoder_Size, silk_InitEncoder};
 use crate::silk::lin2log::silk_lin2log;
 use crate::silk::log2lin::silk_log2lin;
 use crate::src::analysis::{

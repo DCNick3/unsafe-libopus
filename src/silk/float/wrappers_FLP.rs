@@ -131,22 +131,13 @@ pub mod main_h {
         );
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "146:9"]
-    pub const LTP_ORDER: libc::c_int = 5 as libc::c_int;
-    #[c2rust::src_loc = "155:9"]
-    pub const MAX_SHAPE_LPC_ORDER: libc::c_int = 24 as libc::c_int;
-    #[c2rust::src_loc = "72:9"]
-    pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
-}
-pub use self::define_h::{LTP_ORDER, MAX_SHAPE_LPC_ORDER, TYPE_VOICED};
 use self::main_h::{silk_NSQ_c, silk_NSQ_del_dec_c, silk_process_NLSFs, silk_quant_LTP_gains};
 pub use self::structs_FLP_h::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
 };
 use self::tables_h::silk_LTPScales_table_Q14;
 pub use self::SigProc_FLP_h::silk_float2int;
+use crate::silk::define::{LTP_ORDER, MAX_SHAPE_LPC_ORDER, TYPE_VOICED};
 use crate::silk::structs::{silk_encoder_state, silk_nsq_state, SideInfoIndices};
 
 #[no_mangle]

@@ -29,19 +29,10 @@ pub mod main_h {
         pub fn silk_shell_decoder(pulses0: *mut i16, psRangeDec: *mut ec_dec, pulses4: libc::c_int);
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "168:9"]
-    pub const SHELL_CODEC_FRAME_LENGTH: libc::c_int = 16 as libc::c_int;
-    #[c2rust::src_loc = "173:9"]
-    pub const N_RATE_LEVELS: libc::c_int = 10 as libc::c_int;
-    #[c2rust::src_loc = "176:9"]
-    pub const SILK_MAX_PULSES: libc::c_int = 16 as libc::c_int;
-}
-pub use self::define_h::{N_RATE_LEVELS, SHELL_CODEC_FRAME_LENGTH, SILK_MAX_PULSES};
 use self::main_h::{silk_decode_signs, silk_shell_decoder};
 use crate::celt::celt::celt_fatal;
 use crate::celt::entdec::{ec_dec, ec_dec_icdf};
+use crate::silk::define::{N_RATE_LEVELS, SHELL_CODEC_FRAME_LENGTH, SILK_MAX_PULSES};
 
 use self::tables_h::{silk_lsb_iCDF, silk_pulses_per_block_iCDF, silk_rate_levels_iCDF};
 

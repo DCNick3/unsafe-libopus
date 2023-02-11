@@ -44,8 +44,6 @@ pub mod structs_FLP_h {
     }
     use crate::silk::structs::silk_encoder_state;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
-pub mod arch_h {}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/main_FLP.h:33"]
 pub mod main_FLP_h {
     extern "C" {
@@ -65,15 +63,6 @@ pub mod main_FLP_h {
             Order: libc::c_int,
         );
     }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:33"]
-pub mod define_h {
-    #[c2rust::src_loc = "70:9"]
-    pub const TYPE_NO_VOICE_ACTIVITY: libc::c_int = 0 as libc::c_int;
-    #[c2rust::src_loc = "72:9"]
-    pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
-    #[c2rust::src_loc = "71:9"]
-    pub const TYPE_UNVOICED: libc::c_int = 1 as libc::c_int;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:33"]
 pub mod SigProc_FLP_h {
@@ -119,9 +108,9 @@ pub mod tuning_parameters_h {
     #[c2rust::src_loc = "47:9"]
     pub const FIND_PITCH_BANDWIDTH_EXPANSION: libc::c_float = 0.99f32;
 }
-pub use self::define_h::{TYPE_NO_VOICE_ACTIVITY, TYPE_UNVOICED, TYPE_VOICED};
 use self::main_FLP_h::{silk_LPC_analysis_filter_FLP, silk_apply_sine_window_FLP};
 use crate::celt::celt::celt_fatal;
+use crate::silk::define::{TYPE_NO_VOICE_ACTIVITY, TYPE_UNVOICED, TYPE_VOICED};
 
 pub use self::structs_FLP_h::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,

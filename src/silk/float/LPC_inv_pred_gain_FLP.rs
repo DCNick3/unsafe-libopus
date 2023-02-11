@@ -1,10 +1,6 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:34"]
-pub mod define_h {
-    #[c2rust::src_loc = "139:9"]
-    pub const MAX_PREDICTION_POWER_GAIN: libc::c_float = 1e4f32;
-}
-pub use self::define_h::MAX_PREDICTION_POWER_GAIN;
+
+use crate::silk::define::MAX_PREDICTION_POWER_GAIN;
 
 use crate::externs::memcpy;
 #[no_mangle]

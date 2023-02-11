@@ -9,19 +9,11 @@ pub mod tables_h {
         pub static silk_Transition_LP_A_Q28: [[i32; 2]; 5];
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:38"]
-pub mod define_h {
-    #[c2rust::src_loc = "217:9"]
-    pub const TRANSITION_NA: libc::c_int = 2 as libc::c_int;
-    #[c2rust::src_loc = "216:9"]
-    pub const TRANSITION_NB: libc::c_int = 3 as libc::c_int;
-    #[c2rust::src_loc = "218:9"]
-    pub const TRANSITION_INT_NUM: libc::c_int = 5 as libc::c_int;
-}
-pub use self::define_h::{TRANSITION_INT_NUM, TRANSITION_NA, TRANSITION_NB};
+
 use self::tables_h::{silk_Transition_LP_A_Q28, silk_Transition_LP_B_Q28};
 use crate::externs::memcpy;
 use crate::silk::biquad_alt::silk_biquad_alt_stride1;
+use crate::silk::define::{TRANSITION_INT_NUM, TRANSITION_NA, TRANSITION_NB};
 use crate::silk::structs::silk_LP_state;
 
 #[inline]

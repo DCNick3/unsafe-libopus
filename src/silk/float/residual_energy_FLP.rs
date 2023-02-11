@@ -1,10 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "90:9"]
-    pub const MAX_NB_SUBFR: libc::c_int = 4 as libc::c_int;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/main_FLP.h:32"]
 pub mod main_FLP_h {
     extern "C" {
@@ -26,10 +21,10 @@ pub mod SigProc_FLP_h {
             -> libc::c_double;
     }
 }
-pub use self::define_h::MAX_NB_SUBFR;
 use self::main_FLP_h::silk_LPC_analysis_filter_FLP;
 use self::SigProc_FLP_h::silk_energy_FLP;
 use crate::celt::celt::celt_fatal;
+use crate::silk::define::MAX_NB_SUBFR;
 #[c2rust::src_loc = "34:9"]
 pub const MAX_ITERATIONS_RESIDUAL_NRG: libc::c_int = 10 as libc::c_int;
 #[c2rust::src_loc = "35:9"]

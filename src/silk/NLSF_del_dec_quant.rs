@@ -1,24 +1,12 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "211:9"]
-    pub const NLSF_QUANT_DEL_DEC_STATES_LOG2: libc::c_int = 2 as libc::c_int;
-    #[c2rust::src_loc = "212:9"]
-    pub const NLSF_QUANT_DEL_DEC_STATES: libc::c_int =
-        (1 as libc::c_int) << NLSF_QUANT_DEL_DEC_STATES_LOG2;
-    #[c2rust::src_loc = "208:9"]
-    pub const NLSF_QUANT_MAX_AMPLITUDE: libc::c_int = 4 as libc::c_int;
-    #[c2rust::src_loc = "209:9"]
-    pub const NLSF_QUANT_MAX_AMPLITUDE_EXT: libc::c_int = 10 as libc::c_int;
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
     #[c2rust::src_loc = "42:9"]
     pub const silk_int32_MAX: libc::c_int = 0x7fffffff as libc::c_int;
 }
-pub use self::define_h::{
-    NLSF_QUANT_DEL_DEC_STATES, NLSF_QUANT_DEL_DEC_STATES_LOG2, NLSF_QUANT_MAX_AMPLITUDE,
-    NLSF_QUANT_MAX_AMPLITUDE_EXT,
+use crate::silk::define::{
+    NLSF_QUANT_DEL_DEC_STATES, NLSF_QUANT_MAX_AMPLITUDE, NLSF_QUANT_MAX_AMPLITUDE_EXT,
 };
 
 pub use self::typedef_h::silk_int32_MAX;

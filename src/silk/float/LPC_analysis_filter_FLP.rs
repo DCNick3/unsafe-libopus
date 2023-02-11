@@ -1,6 +1,5 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
-pub mod arch_h {}
+
 use crate::celt::celt::celt_fatal;
 use crate::externs::memset;
 #[inline]

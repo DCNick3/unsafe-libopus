@@ -29,23 +29,12 @@ pub mod main_h {
         );
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "146:9"]
-    pub const LTP_ORDER: libc::c_int = 5 as libc::c_int;
-    #[c2rust::src_loc = "72:9"]
-    pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
-    #[c2rust::src_loc = "223:9"]
-    pub const BWE_AFTER_LOSS_Q16: libc::c_int = 63570 as libc::c_int;
-    #[c2rust::src_loc = "77:9"]
-    pub const CODE_CONDITIONALLY: libc::c_int = 2 as libc::c_int;
-}
-pub use self::define_h::{BWE_AFTER_LOSS_Q16, CODE_CONDITIONALLY, LTP_ORDER, TYPE_VOICED};
 use self::main_h::{silk_NLSF_decode, silk_gains_dequant};
 use self::tables_h::{silk_LTPScales_table_Q14, silk_LTP_vq_ptrs_Q7};
 use crate::externs::{memcpy, memset};
 use crate::silk::bwexpander::silk_bwexpander;
 use crate::silk::decode_pitch::silk_decode_pitch;
+use crate::silk::define::{BWE_AFTER_LOSS_Q16, CODE_CONDITIONALLY, LTP_ORDER, TYPE_VOICED};
 use crate::silk::structs::{silk_decoder_control, silk_decoder_state};
 use crate::silk::NLSF2A::silk_NLSF2A;
 

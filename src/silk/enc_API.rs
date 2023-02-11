@@ -72,19 +72,6 @@ pub mod errors_h {
     #[c2rust::src_loc = "39:9"]
     pub const SILK_NO_ERROR: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:31"]
-pub mod define_h {
-    #[c2rust::src_loc = "77:9"]
-    pub const CODE_CONDITIONALLY: libc::c_int = 2 as libc::c_int;
-    #[c2rust::src_loc = "76:9"]
-    pub const CODE_INDEPENDENTLY_NO_LTP_SCALING: libc::c_int = 1 as libc::c_int;
-    #[c2rust::src_loc = "40:9"]
-    pub const ENCODER_NUM_CHANNELS: libc::c_int = 2 as libc::c_int;
-    #[c2rust::src_loc = "70:9"]
-    pub const TYPE_NO_VOICE_ACTIVITY: libc::c_int = 0 as libc::c_int;
-    #[c2rust::src_loc = "75:9"]
-    pub const CODE_INDEPENDENTLY: libc::c_int = 0 as libc::c_int;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:41"]
 pub mod main_h {
     use super::silk_EncControlStruct;
@@ -192,10 +179,6 @@ pub mod tables_h {
         pub static silk_Quantization_Offsets_Q10: [[i16; 2]; 2];
     }
 }
-pub use self::define_h::{
-    CODE_CONDITIONALLY, CODE_INDEPENDENTLY, CODE_INDEPENDENTLY_NO_LTP_SCALING,
-    ENCODER_NUM_CHANNELS, TYPE_NO_VOICE_ACTIVITY,
-};
 pub use self::errors_h::{SILK_ENC_INPUT_INVALID_NO_OF_SAMPLES, SILK_NO_ERROR};
 pub use self::main_FLP_h::{
     silk_HP_variable_cutoff, silk_control_encoder, silk_encode_do_VAD_FLP, silk_encode_do_VAD_Fxx,
@@ -211,6 +194,10 @@ use crate::celt::celt::celt_fatal;
 use crate::celt::entcode::ec_tell;
 use crate::celt::entenc::{ec_enc, ec_enc_icdf, ec_enc_patch_initial_bits};
 use crate::externs::{memcpy, memset};
+use crate::silk::define::{
+    CODE_CONDITIONALLY, CODE_INDEPENDENTLY, CODE_INDEPENDENTLY_NO_LTP_SCALING,
+    ENCODER_NUM_CHANNELS, TYPE_NO_VOICE_ACTIVITY,
+};
 use crate::silk::resampler::silk_resampler;
 use crate::silk::resampler_structs::silk_resampler_state_struct;
 use crate::silk::structs::{silk_LP_state, silk_nsq_state};

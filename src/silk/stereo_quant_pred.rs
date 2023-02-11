@@ -6,22 +6,14 @@ pub mod tables_h {
         pub static silk_stereo_pred_quant_Q13: [i16; 16];
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "81:9"]
-    pub const STEREO_QUANT_SUB_STEPS: libc::c_int = 5 as libc::c_int;
-    #[c2rust::src_loc = "80:9"]
-    pub const STEREO_QUANT_TAB_SIZE: libc::c_int = 16 as libc::c_int;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
     #[c2rust::src_loc = "42:9"]
     pub const silk_int32_MAX: libc::c_int = 0x7fffffff as libc::c_int;
 }
-pub use self::define_h::{STEREO_QUANT_SUB_STEPS, STEREO_QUANT_TAB_SIZE};
-
 use self::tables_h::silk_stereo_pred_quant_Q13;
 pub use self::typedef_h::silk_int32_MAX;
+use crate::silk::define::{STEREO_QUANT_SUB_STEPS, STEREO_QUANT_TAB_SIZE};
 
 #[no_mangle]
 #[c2rust::src_loc = "35:1"]

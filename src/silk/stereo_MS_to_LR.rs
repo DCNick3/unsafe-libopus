@@ -7,12 +7,7 @@ pub mod typedef_h {
     #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "82:9"]
-    pub const STEREO_INTERP_LEN_MS: libc::c_int = 8 as libc::c_int;
-}
-pub use self::define_h::STEREO_INTERP_LEN_MS;
+use crate::silk::define::STEREO_INTERP_LEN_MS;
 
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 use crate::silk::structs::stereo_dec_state;

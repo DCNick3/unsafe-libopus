@@ -1,16 +1,6 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "132:9"]
-    pub const OFFSET_UVL_Q10: libc::c_int = 100 as libc::c_int;
-    #[c2rust::src_loc = "133:9"]
-    pub const OFFSET_UVH_Q10: libc::c_int = 240 as libc::c_int;
-    #[c2rust::src_loc = "130:9"]
-    pub const OFFSET_VL_Q10: libc::c_int = 32 as libc::c_int;
-    #[c2rust::src_loc = "131:9"]
-    pub const OFFSET_VH_Q10: libc::c_int = 100 as libc::c_int;
-}
-pub use self::define_h::{OFFSET_UVH_Q10, OFFSET_UVL_Q10, OFFSET_VH_Q10, OFFSET_VL_Q10};
+
+use crate::silk::define::{OFFSET_UVH_Q10, OFFSET_UVL_Q10, OFFSET_VH_Q10, OFFSET_VL_Q10};
 
 #[no_mangle]
 #[c2rust::src_loc = "42:18"]

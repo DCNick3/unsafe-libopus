@@ -18,26 +18,13 @@ pub mod typedef_h {
     #[c2rust::src_loc = "43:9"]
     pub const silk_int32_MIN: libc::c_uint = 0x80000000 as libc::c_uint;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "142:9"]
-    pub const MAX_LPC_ORDER: libc::c_int = 16 as libc::c_int;
-    #[c2rust::src_loc = "146:9"]
-    pub const LTP_ORDER: libc::c_int = 5 as libc::c_int;
-    #[c2rust::src_loc = "72:9"]
-    pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
-    #[c2rust::src_loc = "90:9"]
-    pub const MAX_NB_SUBFR: libc::c_int = 4 as libc::c_int;
-    #[c2rust::src_loc = "135:9"]
-    pub const QUANT_LEVEL_ADJUST_Q10: libc::c_int = 80 as libc::c_int;
-}
-pub use self::define_h::{
-    LTP_ORDER, MAX_LPC_ORDER, MAX_NB_SUBFR, QUANT_LEVEL_ADJUST_Q10, TYPE_VOICED,
-};
 use self::tables_h::silk_Quantization_Offsets_Q10;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN, silk_int32_MAX, silk_int32_MIN};
 use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memset};
+use crate::silk::define::{
+    LTP_ORDER, MAX_LPC_ORDER, MAX_NB_SUBFR, QUANT_LEVEL_ADJUST_Q10, TYPE_VOICED,
+};
 use crate::silk::structs::{silk_decoder_control, silk_decoder_state};
 use crate::silk::Inlines::{silk_DIV32_varQ, silk_INVERSE32_varQ};
 use crate::silk::LPC_analysis_filter::silk_LPC_analysis_filter;

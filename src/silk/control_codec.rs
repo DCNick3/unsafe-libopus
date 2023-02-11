@@ -27,23 +27,6 @@ pub mod structs_FLP_h {
     }
     use crate::silk::structs::silk_encoder_state;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:35"]
-pub mod define_h {
-    #[c2rust::src_loc = "112:9"]
-    pub const LA_SHAPE_MS: libc::c_int = 5 as libc::c_int;
-    #[c2rust::src_loc = "70:9"]
-    pub const TYPE_NO_VOICE_ACTIVITY: libc::c_int = 0 as libc::c_int;
-    #[c2rust::src_loc = "143:9"]
-    pub const MIN_LPC_ORDER: libc::c_int = 10 as libc::c_int;
-    #[c2rust::src_loc = "142:9"]
-    pub const MAX_LPC_ORDER: libc::c_int = 16 as libc::c_int;
-    #[c2rust::src_loc = "90:9"]
-    pub const MAX_NB_SUBFR: libc::c_int = 4 as libc::c_int;
-    #[c2rust::src_loc = "160:9"]
-    pub const MAX_DEL_DEC_STATES: libc::c_int = 4 as libc::c_int;
-    #[c2rust::src_loc = "94:9"]
-    pub const SUB_FRAME_LENGTH_MS: libc::c_int = 5 as libc::c_int;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/errors.h:35"]
 pub mod errors_h {
     #[c2rust::src_loc = "52:9"]
@@ -142,16 +125,16 @@ pub mod pitch_est_defines_h {
     #[c2rust::src_loc = "74:9"]
     pub const SILK_PE_MAX_COMPLEX: libc::c_int = 2 as libc::c_int;
 }
-pub use self::define_h::{
-    LA_SHAPE_MS, MAX_DEL_DEC_STATES, MAX_LPC_ORDER, MAX_NB_SUBFR, MIN_LPC_ORDER,
-    SUB_FRAME_LENGTH_MS, TYPE_NO_VOICE_ACTIVITY,
-};
 pub use self::errors_h::{SILK_ENC_PACKET_SIZE_NOT_SUPPORTED, SILK_NO_ERROR};
 use self::main_h::silk_control_audio_bandwidth;
 pub use self::pitch_est_defines_h::{
     SILK_PE_MAX_COMPLEX, SILK_PE_MID_COMPLEX, SILK_PE_MIN_COMPLEX,
 };
 use crate::celt::celt::celt_fatal;
+use crate::silk::define::{
+    LA_SHAPE_MS, MAX_DEL_DEC_STATES, MAX_LPC_ORDER, MAX_NB_SUBFR, MIN_LPC_ORDER,
+    SUB_FRAME_LENGTH_MS, TYPE_NO_VOICE_ACTIVITY,
+};
 use crate::silk::enc_API::silk_EncControlStruct;
 use crate::silk::resampler_structs::silk_resampler_state_struct;
 

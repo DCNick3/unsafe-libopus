@@ -25,25 +25,6 @@ pub mod errors_h {
     #[c2rust::src_loc = "92:9"]
     pub const SILK_DEC_INVALID_FRAME_SIZE: libc::c_int = -(203 as libc::c_int);
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:31"]
-pub mod arch_h {}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "77:9"]
-    pub const CODE_CONDITIONALLY: libc::c_int = 2 as libc::c_int;
-    #[c2rust::src_loc = "76:9"]
-    pub const CODE_INDEPENDENTLY_NO_LTP_SCALING: libc::c_int = 1 as libc::c_int;
-    #[c2rust::src_loc = "75:9"]
-    pub const CODE_INDEPENDENTLY: libc::c_int = 0 as libc::c_int;
-    #[c2rust::src_loc = "70:9"]
-    pub const TYPE_NO_VOICE_ACTIVITY: libc::c_int = 0 as libc::c_int;
-    #[c2rust::src_loc = "67:9"]
-    pub const MAX_API_FS_KHZ: libc::c_int = 48 as libc::c_int;
-    #[c2rust::src_loc = "72:9"]
-    pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
-    #[c2rust::src_loc = "42:9"]
-    pub const DECODER_NUM_CHANNELS: libc::c_int = 2 as libc::c_int;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/main.h:32"]
 pub mod main_h {
     use crate::celt::entdec::ec_dec;
@@ -108,10 +89,6 @@ pub mod tables_h {
         pub static silk_LBRR_flags_iCDF_ptr: [*const u8; 2];
     }
 }
-pub use self::define_h::{
-    CODE_CONDITIONALLY, CODE_INDEPENDENTLY, CODE_INDEPENDENTLY_NO_LTP_SCALING,
-    DECODER_NUM_CHANNELS, MAX_API_FS_KHZ, TYPE_NO_VOICE_ACTIVITY, TYPE_VOICED,
-};
 pub use self::errors_h::{
     SILK_DEC_INVALID_FRAME_SIZE, SILK_DEC_INVALID_SAMPLING_FREQUENCY, SILK_NO_ERROR,
 };
@@ -123,6 +100,10 @@ use self::tables_h::silk_LBRR_flags_iCDF_ptr;
 use crate::celt::celt::celt_fatal;
 use crate::celt::entdec::{ec_dec, ec_dec_bit_logp, ec_dec_icdf};
 use crate::externs::{memcpy, memset};
+use crate::silk::define::{
+    CODE_CONDITIONALLY, CODE_INDEPENDENTLY, CODE_INDEPENDENTLY_NO_LTP_SCALING,
+    DECODER_NUM_CHANNELS, MAX_API_FS_KHZ, TYPE_NO_VOICE_ACTIVITY, TYPE_VOICED,
+};
 use crate::silk::resampler::silk_resampler;
 use crate::silk::resampler_structs::silk_resampler_state_struct;
 use crate::silk::structs::{silk_decoder_state, stereo_dec_state};

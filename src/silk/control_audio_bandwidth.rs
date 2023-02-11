@@ -1,22 +1,7 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "90:9"]
-    pub const MAX_NB_SUBFR: libc::c_int = 4 as libc::c_int;
-    #[c2rust::src_loc = "94:9"]
-    pub const SUB_FRAME_LENGTH_MS: libc::c_int = 5 as libc::c_int;
-    #[c2rust::src_loc = "96:9"]
-    pub const MAX_FRAME_LENGTH_MS: libc::c_int = SUB_FRAME_LENGTH_MS * MAX_NB_SUBFR;
-    #[c2rust::src_loc = "215:9"]
-    pub const TRANSITION_TIME_MS: libc::c_int = 5120 as libc::c_int;
-    #[c2rust::src_loc = "219:9"]
-    pub const TRANSITION_FRAMES: libc::c_int = TRANSITION_TIME_MS / MAX_FRAME_LENGTH_MS;
-}
-pub use self::define_h::{
-    MAX_FRAME_LENGTH_MS, MAX_NB_SUBFR, SUB_FRAME_LENGTH_MS, TRANSITION_FRAMES, TRANSITION_TIME_MS,
-};
 use crate::externs::memset;
+use crate::silk::define::TRANSITION_FRAMES;
 use crate::silk::enc_API::silk_EncControlStruct;
 use crate::silk::structs::silk_encoder_state;
 #[no_mangle]

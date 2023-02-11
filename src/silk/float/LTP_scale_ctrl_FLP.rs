@@ -51,12 +51,7 @@ pub mod tables_h {
         pub static silk_LTPScales_table_Q14: [i16; 3];
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "75:9"]
-    pub const CODE_INDEPENDENTLY: libc::c_int = 0 as libc::c_int;
-}
-pub use self::define_h::CODE_INDEPENDENTLY;
+use crate::silk::define::CODE_INDEPENDENTLY;
 
 pub use self::structs_FLP_h::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,

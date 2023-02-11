@@ -1,18 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "208:9"]
-    pub const NLSF_QUANT_MAX_AMPLITUDE: libc::c_int = 4 as libc::c_int;
-    #[c2rust::src_loc = "90:9"]
-    pub const MAX_NB_SUBFR: libc::c_int = 4 as libc::c_int;
-    #[c2rust::src_loc = "77:9"]
-    pub const CODE_CONDITIONALLY: libc::c_int = 2 as libc::c_int;
-    #[c2rust::src_loc = "75:9"]
-    pub const CODE_INDEPENDENTLY: libc::c_int = 0 as libc::c_int;
-    #[c2rust::src_loc = "72:9"]
-    pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:32"]
 pub mod tables_h {
     extern "C" {
@@ -57,12 +44,12 @@ pub mod main_h {
         );
     }
 }
-pub use self::define_h::{
-    CODE_CONDITIONALLY, CODE_INDEPENDENTLY, MAX_NB_SUBFR, NLSF_QUANT_MAX_AMPLITUDE, TYPE_VOICED,
-};
 use self::main_h::silk_NLSF_unpack;
 use crate::celt::celt::celt_fatal;
 use crate::celt::entenc::{ec_enc, ec_enc_icdf};
+use crate::silk::define::{
+    CODE_CONDITIONALLY, CODE_INDEPENDENTLY, MAX_NB_SUBFR, NLSF_QUANT_MAX_AMPLITUDE, TYPE_VOICED,
+};
 
 use self::tables_h::{
     silk_LTP_gain_iCDF_ptrs, silk_LTP_per_index_iCDF, silk_LTPscale_iCDF, silk_NLSF_EXT_iCDF,

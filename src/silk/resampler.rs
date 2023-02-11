@@ -1,6 +1,5 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:50"]
-pub mod arch_h {}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_rom.h:50"]
 pub mod resampler_rom_h {
     #[c2rust::src_loc = "41:9"]

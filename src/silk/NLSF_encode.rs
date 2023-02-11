@@ -41,15 +41,10 @@ pub mod main_h {
         );
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "142:9"]
-    pub const MAX_LPC_ORDER: libc::c_int = 16 as libc::c_int;
-}
-pub use self::define_h::MAX_LPC_ORDER;
 use self::main_h::{silk_NLSF_VQ, silk_NLSF_decode, silk_NLSF_del_dec_quant, silk_NLSF_unpack};
 use crate::celt::celt::celt_fatal;
 use crate::externs::memcpy;
+use crate::silk::define::MAX_LPC_ORDER;
 use crate::silk::lin2log::silk_lin2log;
 use crate::silk::sort::silk_insertion_sort_increasing;
 use crate::silk::structs::silk_NLSF_CB_struct;

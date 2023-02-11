@@ -64,17 +64,6 @@ pub mod main_FLP_h {
         );
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "155:9"]
-    pub const MAX_SHAPE_LPC_ORDER: libc::c_int = 24 as libc::c_int;
-    #[c2rust::src_loc = "119:9"]
-    pub const MIN_QGAIN_DB: libc::c_int = 2 as libc::c_int;
-    #[c2rust::src_loc = "152:9"]
-    pub const USE_HARM_SHAPING: libc::c_int = 1 as libc::c_int;
-    #[c2rust::src_loc = "72:9"]
-    pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:32"]
 pub mod SigProc_FLP_h {
     #[inline]
@@ -139,8 +128,8 @@ pub mod tuning_parameters_h {
     #[c2rust::src_loc = "135:9"]
     pub const SUBFR_SMTH_COEF: libc::c_float = 0.4f32;
 }
-pub use self::define_h::{MAX_SHAPE_LPC_ORDER, MIN_QGAIN_DB, TYPE_VOICED, USE_HARM_SHAPING};
 use self::main_FLP_h::{silk_apply_sine_window_FLP, silk_warped_autocorrelation_FLP};
+use crate::silk::define::{MAX_SHAPE_LPC_ORDER, MIN_QGAIN_DB, TYPE_VOICED, USE_HARM_SHAPING};
 
 pub use self::structs_FLP_h::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,

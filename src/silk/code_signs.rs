@@ -6,14 +6,9 @@ pub mod tables_h {
         pub static silk_sign_iCDF: [u8; 42];
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "168:9"]
-    pub const SHELL_CODEC_FRAME_LENGTH: libc::c_int = 16 as libc::c_int;
-}
-pub use self::define_h::SHELL_CODEC_FRAME_LENGTH;
 use crate::celt::entdec::{ec_dec, ec_dec_icdf};
 use crate::celt::entenc::{ec_enc, ec_enc_icdf};
+use crate::silk::define::SHELL_CODEC_FRAME_LENGTH;
 
 use self::tables_h::silk_sign_iCDF;
 

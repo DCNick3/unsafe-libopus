@@ -8,19 +8,6 @@ pub const RAND_BUF_SIZE: libc::c_int = 128 as libc::c_int;
 pub const V_PITCH_GAIN_START_MIN_Q14: libc::c_int = 11469 as libc::c_int;
 #[c2rust::src_loc = "35:9"]
 pub const V_PITCH_GAIN_START_MAX_Q14: libc::c_int = 15565 as libc::c_int;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "70:9"]
-    pub const TYPE_NO_VOICE_ACTIVITY: libc::c_int = 0 as libc::c_int;
-    #[c2rust::src_loc = "142:9"]
-    pub const MAX_LPC_ORDER: libc::c_int = 16 as libc::c_int;
-    #[c2rust::src_loc = "90:9"]
-    pub const MAX_NB_SUBFR: libc::c_int = 4 as libc::c_int;
-    #[c2rust::src_loc = "72:9"]
-    pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
-    #[c2rust::src_loc = "146:9"]
-    pub const LTP_ORDER: libc::c_int = 5 as libc::c_int;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
     #[c2rust::src_loc = "43:9"]
@@ -32,13 +19,13 @@ pub mod typedef_h {
     #[c2rust::src_loc = "45:9"]
     pub const silk_int16_MIN: libc::c_int = 0x8000 as libc::c_int;
 }
-pub use self::define_h::{
-    LTP_ORDER, MAX_LPC_ORDER, MAX_NB_SUBFR, TYPE_NO_VOICE_ACTIVITY, TYPE_VOICED,
-};
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN, silk_int32_MAX, silk_int32_MIN};
 use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memset};
 use crate::silk::bwexpander::silk_bwexpander;
+use crate::silk::define::{
+    LTP_ORDER, MAX_LPC_ORDER, MAX_NB_SUBFR, TYPE_NO_VOICE_ACTIVITY, TYPE_VOICED,
+};
 use crate::silk::macros::silk_CLZ32;
 use crate::silk::structs::{silk_PLC_struct, silk_decoder_control, silk_decoder_state};
 use crate::silk::sum_sqr_shift::silk_sum_sqr_shift;

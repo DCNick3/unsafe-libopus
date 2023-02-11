@@ -126,23 +126,14 @@ pub mod main_FLP_h {
         );
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "139:9"]
-    pub const MAX_PREDICTION_POWER_GAIN: libc::c_float = 1e4f32;
-    #[c2rust::src_loc = "140:9"]
-    pub const MAX_PREDICTION_POWER_GAIN_AFTER_RESET: libc::c_float = 1e2f32;
-    #[c2rust::src_loc = "72:9"]
-    pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
-}
-pub use self::define_h::{
-    MAX_PREDICTION_POWER_GAIN, MAX_PREDICTION_POWER_GAIN_AFTER_RESET, TYPE_VOICED,
-};
 use self::main_FLP_h::{
     silk_LTP_analysis_filter_FLP, silk_LTP_scale_ctrl_FLP, silk_find_LPC_FLP, silk_find_LTP_FLP,
     silk_process_NLSFs_FLP, silk_quant_LTP_gains_FLP, silk_residual_energy_FLP,
 };
 use crate::celt::celt::celt_fatal;
+use crate::silk::define::{
+    MAX_PREDICTION_POWER_GAIN, MAX_PREDICTION_POWER_GAIN_AFTER_RESET, TYPE_VOICED,
+};
 
 pub use self::structs_FLP_h::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,

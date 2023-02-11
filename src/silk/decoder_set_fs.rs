@@ -24,18 +24,6 @@ pub mod tables_h {
         pub static silk_NLSF_CB_NB_MB: silk_NLSF_CB_struct;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "70:9"]
-    pub const TYPE_NO_VOICE_ACTIVITY: libc::c_int = 0 as libc::c_int;
-    #[c2rust::src_loc = "142:9"]
-    pub const MAX_LPC_ORDER: libc::c_int = 16 as libc::c_int;
-    #[c2rust::src_loc = "143:9"]
-    pub const MIN_LPC_ORDER: libc::c_int = 10 as libc::c_int;
-    #[c2rust::src_loc = "90:9"]
-    pub const MAX_NB_SUBFR: libc::c_int = 4 as libc::c_int;
-}
-pub use self::define_h::{MAX_LPC_ORDER, MAX_NB_SUBFR, MIN_LPC_ORDER, TYPE_NO_VOICE_ACTIVITY};
 use self::tables_h::{
     silk_NLSF_CB_NB_MB, silk_NLSF_CB_WB, silk_pitch_contour_10_ms_NB_iCDF,
     silk_pitch_contour_10_ms_iCDF, silk_pitch_contour_NB_iCDF, silk_pitch_contour_iCDF,
@@ -43,6 +31,7 @@ use self::tables_h::{
 };
 use crate::celt::celt::celt_fatal;
 use crate::externs::memset;
+use crate::silk::define::{MAX_LPC_ORDER, MAX_NB_SUBFR, MIN_LPC_ORDER, TYPE_NO_VOICE_ACTIVITY};
 use crate::silk::resampler::silk_resampler_init;
 use crate::silk::structs::silk_decoder_state;
 

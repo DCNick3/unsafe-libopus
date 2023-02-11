@@ -1,20 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "155:9"]
-    pub const MAX_SHAPE_LPC_ORDER: libc::c_int = 24 as libc::c_int;
-    #[c2rust::src_loc = "157:9"]
-    pub const HARM_SHAPE_FIR_TAPS: libc::c_int = 3 as libc::c_int;
-    #[c2rust::src_loc = "146:9"]
-    pub const LTP_ORDER: libc::c_int = 5 as libc::c_int;
-    #[c2rust::src_loc = "180:10"]
-    pub const NSQ_LPC_BUF_LENGTH: libc::c_int = MAX_LPC_ORDER;
-    #[c2rust::src_loc = "142:9"]
-    pub const MAX_LPC_ORDER: libc::c_int = 16 as libc::c_int;
-    #[c2rust::src_loc = "72:9"]
-    pub const TYPE_VOICED: libc::c_int = 2 as libc::c_int;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
     #[c2rust::src_loc = "44:9"]
@@ -150,10 +135,6 @@ pub mod NSQ_h {
     }
 }
 
-pub use self::define_h::{
-    HARM_SHAPE_FIR_TAPS, LTP_ORDER, MAX_LPC_ORDER, MAX_SHAPE_LPC_ORDER, NSQ_LPC_BUF_LENGTH,
-    TYPE_VOICED,
-};
 use self::tables_h::silk_Quantization_Offsets_Q10;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 pub use self::NSQ_h::{
@@ -161,6 +142,10 @@ pub use self::NSQ_h::{
 };
 use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memmove};
+use crate::silk::define::{
+    HARM_SHAPE_FIR_TAPS, LTP_ORDER, MAX_LPC_ORDER, MAX_SHAPE_LPC_ORDER, NSQ_LPC_BUF_LENGTH,
+    TYPE_VOICED,
+};
 use crate::silk::structs::{silk_encoder_state, silk_nsq_state, SideInfoIndices};
 use crate::silk::Inlines::{silk_DIV32_varQ, silk_INVERSE32_varQ};
 use crate::silk::LPC_analysis_filter::silk_LPC_analysis_filter;

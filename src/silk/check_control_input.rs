@@ -21,19 +21,14 @@ pub mod errors_h {
     #[c2rust::src_loc = "49:9"]
     pub const SILK_ENC_FS_NOT_SUPPORTED: libc::c_int = -(102 as libc::c_int);
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "40:9"]
-    pub const ENCODER_NUM_CHANNELS: libc::c_int = 2 as libc::c_int;
-}
 
-pub use self::define_h::ENCODER_NUM_CHANNELS;
 pub use self::errors_h::{
     SILK_ENC_FS_NOT_SUPPORTED, SILK_ENC_INVALID_CBR_SETTING, SILK_ENC_INVALID_COMPLEXITY_SETTING,
     SILK_ENC_INVALID_DTX_SETTING, SILK_ENC_INVALID_INBAND_FEC_SETTING, SILK_ENC_INVALID_LOSS_RATE,
     SILK_ENC_INVALID_NUMBER_OF_CHANNELS_ERROR, SILK_ENC_PACKET_SIZE_NOT_SUPPORTED, SILK_NO_ERROR,
 };
 use crate::celt::celt::celt_fatal;
+use crate::silk::define::ENCODER_NUM_CHANNELS;
 use crate::silk::enc_API::silk_EncControlStruct;
 
 #[no_mangle]

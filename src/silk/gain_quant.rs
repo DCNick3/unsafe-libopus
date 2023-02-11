@@ -3,18 +3,7 @@ use crate::silk::log2lin::silk_log2lin;
 use crate::silk::SigProc_FIX::{silk_max_int, silk_min_32, silk_min_int};
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "119:9"]
-    pub const MIN_QGAIN_DB: libc::c_int = 2 as libc::c_int;
-    #[c2rust::src_loc = "127:9"]
-    pub const MIN_DELTA_GAIN_QUANT: libc::c_int = -(4 as libc::c_int);
-    #[c2rust::src_loc = "123:9"]
-    pub const N_LEVELS_QGAIN: libc::c_int = 64 as libc::c_int;
-    #[c2rust::src_loc = "125:9"]
-    pub const MAX_DELTA_GAIN_QUANT: libc::c_int = 36 as libc::c_int;
-}
-pub use self::define_h::{
+use crate::silk::define::{
     MAX_DELTA_GAIN_QUANT, MIN_DELTA_GAIN_QUANT, MIN_QGAIN_DB, N_LEVELS_QGAIN,
 };
 

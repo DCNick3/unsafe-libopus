@@ -51,25 +51,6 @@ pub mod stdlib_h {
         pub fn abs(_: libc::c_int) -> libc::c_int;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:33"]
-pub mod define_h {
-    #[c2rust::src_loc = "112:9"]
-    pub const LA_SHAPE_MS: libc::c_int = 5 as libc::c_int;
-    #[c2rust::src_loc = "123:9"]
-    pub const N_LEVELS_QGAIN: libc::c_int = 64 as libc::c_int;
-    #[c2rust::src_loc = "71:9"]
-    pub const TYPE_UNVOICED: libc::c_int = 1 as libc::c_int;
-    #[c2rust::src_loc = "56:9"]
-    pub const NB_SPEECH_FRAMES_BEFORE_DTX: libc::c_int = 10 as libc::c_int;
-    #[c2rust::src_loc = "57:9"]
-    pub const MAX_CONSECUTIVE_DTX: libc::c_int = 20 as libc::c_int;
-    #[c2rust::src_loc = "70:9"]
-    pub const TYPE_NO_VOICE_ACTIVITY: libc::c_int = 0 as libc::c_int;
-    #[c2rust::src_loc = "62:9"]
-    pub const VAD_NO_ACTIVITY: libc::c_int = 0 as libc::c_int;
-    #[c2rust::src_loc = "77:9"]
-    pub const CODE_CONDITIONALLY: libc::c_int = 2 as libc::c_int;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/main_FLP.h:33"]
 pub mod main_FLP_h {
     use super::structs_FLP_h::{silk_encoder_control_FLP, silk_encoder_state_FLP};
@@ -182,10 +163,6 @@ pub mod main_h {
         );
     }
 }
-pub use self::define_h::{
-    CODE_CONDITIONALLY, LA_SHAPE_MS, MAX_CONSECUTIVE_DTX, NB_SPEECH_FRAMES_BEFORE_DTX,
-    N_LEVELS_QGAIN, TYPE_NO_VOICE_ACTIVITY, TYPE_UNVOICED, VAD_NO_ACTIVITY,
-};
 use self::main_FLP_h::{
     silk_NSQ_wrapper_FLP, silk_find_pitch_lags_FLP, silk_find_pred_coefs_FLP,
     silk_noise_shape_analysis_FLP, silk_process_gains_FLP,
@@ -203,6 +180,10 @@ use crate::celt::celt::celt_fatal;
 use crate::celt::entcode::ec_tell;
 use crate::celt::entenc::ec_enc;
 use crate::externs::{memcpy, memmove};
+use crate::silk::define::{
+    CODE_CONDITIONALLY, LA_SHAPE_MS, MAX_CONSECUTIVE_DTX, NB_SPEECH_FRAMES_BEFORE_DTX,
+    N_LEVELS_QGAIN, TYPE_NO_VOICE_ACTIVITY, TYPE_UNVOICED, VAD_NO_ACTIVITY,
+};
 use crate::silk::log2lin::silk_log2lin;
 use crate::silk::structs::{silk_nsq_state, SideInfoIndices};
 use crate::silk::SigProc_FIX::silk_min_int;

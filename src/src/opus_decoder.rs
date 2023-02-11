@@ -136,29 +136,6 @@ pub mod cpu_support_h {
         return 0 as libc::c_int;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/API.h:45"]
-pub mod API_h {
-    use crate::celt::entdec::ec_dec;
-    use crate::silk::dec_API::silk_DecControlStruct;
-
-    extern "C" {
-        #[c2rust::src_loc = "94:1"]
-        pub fn silk_Get_Decoder_Size(decSizeBytes: *mut libc::c_int) -> libc::c_int;
-        #[c2rust::src_loc = "101:1"]
-        pub fn silk_InitDecoder(decState: *mut libc::c_void) -> libc::c_int;
-        #[c2rust::src_loc = "108:1"]
-        pub fn silk_Decode(
-            decState: *mut libc::c_void,
-            decControl: *mut silk_DecControlStruct,
-            lostFlag: libc::c_int,
-            newPacketFlag: libc::c_int,
-            psRangeDec: *mut ec_dec,
-            samplesOut: *mut i16,
-            nSamplesOut: *mut i32,
-            arch: libc::c_int,
-        ) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/stack_alloc.h:46"]
 pub mod stack_alloc_h {
     #[c2rust::src_loc = "99:9"]
@@ -189,7 +166,6 @@ pub use self::opus_defines_h::{
 pub use self::stack_alloc_h::{_opus_false, ALLOC_NONE};
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
-use self::API_h::{silk_Decode, silk_Get_Decoder_Size, silk_InitDecoder};
 use crate::celt::celt::celt_fatal;
 use crate::celt::celt_decoder::{opus_custom_decoder_ctl, OpusCustomDecoder};
 use crate::celt::entcode::ec_tell;
@@ -199,6 +175,7 @@ use crate::celt::float_cast::FLOAT2INT16;
 use crate::celt::modes::OpusCustomMode;
 use crate::externs::memset;
 use crate::silk::dec_API::silk_DecControlStruct;
+use crate::silk::dec_API::{silk_Decode, silk_Get_Decoder_Size, silk_InitDecoder};
 use crate::src::opus::opus_packet_parse_impl;
 use crate::src::opus_private::{align, MODE_CELT_ONLY, MODE_HYBRID, MODE_SILK_ONLY};
 use crate::{opus_packet_get_samples_per_frame, opus_pcm_soft_clip};

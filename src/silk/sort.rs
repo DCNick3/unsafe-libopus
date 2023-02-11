@@ -1,7 +1,5 @@
-use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:38"]
-pub mod arch_h {}
 use crate::celt::celt::celt_fatal;
+use ::libc;
 
 #[no_mangle]
 #[c2rust::src_loc = "40:1"]

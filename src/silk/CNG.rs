@@ -1,14 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "70:9"]
-    pub const TYPE_NO_VOICE_ACTIVITY: libc::c_int = 0 as libc::c_int;
-    #[c2rust::src_loc = "142:9"]
-    pub const MAX_LPC_ORDER: libc::c_int = 16 as libc::c_int;
-    #[c2rust::src_loc = "226:9"]
-    pub const CNG_BUF_MASK_MAX: libc::c_int = 255 as libc::c_int;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
     #[c2rust::src_loc = "45:9"]
@@ -20,10 +11,10 @@ pub mod typedef_h {
     #[c2rust::src_loc = "43:9"]
     pub const silk_int32_MIN: libc::c_uint = 0x80000000 as libc::c_uint;
 }
-pub use self::define_h::{CNG_BUF_MASK_MAX, MAX_LPC_ORDER, TYPE_NO_VOICE_ACTIVITY};
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN, silk_int32_MAX, silk_int32_MIN};
 use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memmove, memset};
+use crate::silk::define::{CNG_BUF_MASK_MAX, MAX_LPC_ORDER, TYPE_NO_VOICE_ACTIVITY};
 use crate::silk::structs::{silk_CNG_struct, silk_decoder_control, silk_decoder_state};
 use crate::silk::Inlines::silk_SQRT_APPROX;
 use crate::silk::NLSF2A::silk_NLSF2A;

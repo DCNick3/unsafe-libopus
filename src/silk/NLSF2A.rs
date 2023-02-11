@@ -1,9 +1,5 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:39"]
-pub mod define_h {
-    #[c2rust::src_loc = "138:9"]
-    pub const MAX_LPC_STABILIZE_ITERATIONS: libc::c_int = 16 as libc::c_int;
-}
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tables.h:39"]
 pub mod tables_h {
     extern "C" {
@@ -11,10 +7,10 @@ pub mod tables_h {
         pub static silk_LSFCosTab_FIX_Q12: [i16; 129];
     }
 }
-pub use self::define_h::MAX_LPC_STABILIZE_ITERATIONS;
 use self::tables_h::silk_LSFCosTab_FIX_Q12;
 use crate::celt::celt::celt_fatal;
 use crate::silk::bwexpander_32::silk_bwexpander_32;
+use crate::silk::define::MAX_LPC_STABILIZE_ITERATIONS;
 use crate::silk::LPC_fit::silk_LPC_fit;
 use crate::silk::LPC_inv_pred_gain::silk_LPC_inverse_pred_gain_c;
 

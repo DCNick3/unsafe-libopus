@@ -1,19 +1,5 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "185:9"]
-    pub const VAD_N_BANDS: libc::c_int = 4 as libc::c_int;
-    #[c2rust::src_loc = "194:9"]
-    pub const VAD_NEGATIVE_OFFSET_Q5: libc::c_int = 128 as libc::c_int;
-    #[c2rust::src_loc = "190:9"]
-    pub const VAD_NOISE_LEVEL_SMOOTH_COEF_Q16: libc::c_int = 1024 as libc::c_int;
-    #[c2rust::src_loc = "187:9"]
-    pub const VAD_INTERNAL_SUBFRAMES_LOG2: libc::c_int = 2 as libc::c_int;
-    #[c2rust::src_loc = "188:9"]
-    pub const VAD_INTERNAL_SUBFRAMES: libc::c_int =
-        (1 as libc::c_int) << VAD_INTERNAL_SUBFRAMES_LOG2;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
     #[c2rust::src_loc = "48:9"]
@@ -21,14 +7,13 @@ pub mod typedef_h {
     #[c2rust::src_loc = "42:9"]
     pub const silk_int32_MAX: libc::c_int = 0x7fffffff as libc::c_int;
 }
-pub use self::define_h::{
-    VAD_INTERNAL_SUBFRAMES, VAD_INTERNAL_SUBFRAMES_LOG2, VAD_NEGATIVE_OFFSET_Q5,
-    VAD_NOISE_LEVEL_SMOOTH_COEF_Q16, VAD_N_BANDS,
-};
 pub use self::typedef_h::{silk_int32_MAX, silk_uint8_MAX};
 use crate::celt::celt::celt_fatal;
 use crate::externs::memset;
 use crate::silk::ana_filt_bank_1::silk_ana_filt_bank_1;
+use crate::silk::define::{
+    VAD_INTERNAL_SUBFRAMES, VAD_NEGATIVE_OFFSET_Q5, VAD_NOISE_LEVEL_SMOOTH_COEF_Q16, VAD_N_BANDS,
+};
 use crate::silk::lin2log::silk_lin2log;
 use crate::silk::sigm_Q15::silk_sigm_Q15;
 use crate::silk::structs::{silk_VAD_state, silk_encoder_state};

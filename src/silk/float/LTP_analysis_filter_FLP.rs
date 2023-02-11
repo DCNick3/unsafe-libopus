@@ -1,10 +1,6 @@
 use ::libc;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/define.h:32"]
-pub mod define_h {
-    #[c2rust::src_loc = "146:9"]
-    pub const LTP_ORDER: libc::c_int = 5 as libc::c_int;
-}
-pub use self::define_h::LTP_ORDER;
+
+use crate::silk::define::LTP_ORDER;
 #[no_mangle]
 #[c2rust::src_loc = "34:1"]
 pub unsafe extern "C" fn silk_LTP_analysis_filter_FLP(

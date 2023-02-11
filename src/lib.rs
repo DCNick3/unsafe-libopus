@@ -157,6 +157,7 @@ mod silk {
     // stuff for structs that do not have a clear home, named after the header files
     pub mod Inlines;
     pub mod SigProc_FIX;
+    pub mod define;
     pub mod macros;
     pub mod resampler_structs;
     pub mod structs;
