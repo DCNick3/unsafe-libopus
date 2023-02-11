@@ -187,10 +187,11 @@ pub unsafe extern "C" fn assert_is_equal(
     let mut i: libc::c_int = 0;
     i = 0 as libc::c_int;
     while i < size {
-        let mut val: i16 = (*a.offset(i as isize)) as i16;
-        if (val as libc::c_int - *b.offset(i as isize) as libc::c_int).abs()
-            > tolerance as libc::c_int
-        {
+        let left = *a.offset(i as isize);
+        let right = *b.offset(i as isize);
+
+        let left = (left * 32768.0) as i16;
+        if (left - right).abs() > tolerance {
             return 1 as libc::c_int;
         }
         i += 1;
