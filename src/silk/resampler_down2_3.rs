@@ -6,23 +6,10 @@ pub mod typedef_h {
     #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_private.h:33"]
-pub mod resampler_private_h {
-    extern "C" {
-        #[c2rust::src_loc = "77:1"]
-        pub fn silk_resampler_private_AR2(
-            S: *mut i32,
-            out_Q8: *mut i32,
-            in_0: *const i16,
-            A_Q14: *const i16,
-            len: i32,
-        );
-    }
-}
-use self::resampler_private_h::silk_resampler_private_AR2;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 
 use crate::externs::memcpy;
+use crate::silk::resampler_private_AR2::silk_resampler_private_AR2;
 use crate::silk::resampler_rom::silk_Resampler_2_3_COEFS_LQ;
 
 #[c2rust::src_loc = "36:9"]

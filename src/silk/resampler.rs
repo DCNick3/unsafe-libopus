@@ -1,46 +1,19 @@
 use ::libc;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/resampler_private.h:50"]
-pub mod resampler_private_h {
-    #[c2rust::src_loc = "40:9"]
-    pub const RESAMPLER_MAX_BATCH_SIZE_MS: libc::c_int = 10 as libc::c_int;
-    extern "C" {
-        #[c2rust::src_loc = "53:1"]
-        pub fn silk_resampler_private_down_FIR(
-            SS: *mut libc::c_void,
-            out: *mut i16,
-            in_0: *const i16,
-            inLen: i32,
-        );
-        #[c2rust::src_loc = "45:1"]
-        pub fn silk_resampler_private_IIR_FIR(
-            SS: *mut libc::c_void,
-            out: *mut i16,
-            in_0: *const i16,
-            inLen: i32,
-        );
-        #[c2rust::src_loc = "61:1"]
-        pub fn silk_resampler_private_up2_HQ_wrapper(
-            SS: *mut libc::c_void,
-            out: *mut i16,
-            in_0: *const i16,
-            len: i32,
-        );
-    }
-}
-pub use self::resampler_private_h::{
-    silk_resampler_private_IIR_FIR, silk_resampler_private_down_FIR,
-    silk_resampler_private_up2_HQ_wrapper, RESAMPLER_MAX_BATCH_SIZE_MS,
-};
 use crate::celt::celt::celt_fatal;
-use crate::silk::resampler_structs::silk_resampler_state_struct;
-
 use crate::externs::{memcpy, memset};
+use crate::silk::resampler_private_IIR_FIR::silk_resampler_private_IIR_FIR;
+use crate::silk::resampler_private_down_FIR::silk_resampler_private_down_FIR;
+use crate::silk::resampler_private_up2_HQ::silk_resampler_private_up2_HQ_wrapper;
 use crate::silk::resampler_rom::{
     silk_Resampler_1_2_COEFS, silk_Resampler_1_3_COEFS, silk_Resampler_1_4_COEFS,
     silk_Resampler_1_6_COEFS, silk_Resampler_2_3_COEFS, silk_Resampler_3_4_COEFS,
     RESAMPLER_DOWN_ORDER_FIR0, RESAMPLER_DOWN_ORDER_FIR1, RESAMPLER_DOWN_ORDER_FIR2,
 };
+use crate::silk::resampler_structs::silk_resampler_state_struct;
+
+#[c2rust::src_loc = "40:9"]
+pub const RESAMPLER_MAX_BATCH_SIZE_MS: libc::c_int = 10 as libc::c_int;
 
 #[c2rust::src_loc = "53:24"]
 static mut delay_matrix_enc: [[i8; 3]; 5] = [
