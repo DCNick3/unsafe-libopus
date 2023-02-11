@@ -44,67 +44,6 @@ pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
     pub const NULL: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/celt.h:33"]
-pub mod celt_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "71:9"]
-    pub struct SILKInfo {
-        pub signalType: libc::c_int,
-        pub offset: libc::c_int,
-    }
-    #[c2rust::src_loc = "125:9"]
-    pub const OPUS_SET_LFE_REQUEST: libc::c_int = 10024;
-    #[c2rust::src_loc = "128:9"]
-    pub const OPUS_SET_ENERGY_MASK_REQUEST: libc::c_int = 10026;
-    #[c2rust::src_loc = "110:9"]
-    pub const CELT_GET_MODE_REQUEST: libc::c_int = 10015 as libc::c_int;
-    #[c2rust::src_loc = "107:9"]
-    pub const CELT_SET_END_BAND_REQUEST: libc::c_int = 10012 as libc::c_int;
-    #[c2rust::src_loc = "99:9"]
-    pub const CELT_SET_CHANNELS_REQUEST: libc::c_int = 10008 as libc::c_int;
-    #[c2rust::src_loc = "122:9"]
-    pub const CELT_SET_ANALYSIS_REQUEST: libc::c_int = 10022 as libc::c_int;
-    #[c2rust::src_loc = "131:9"]
-    pub const CELT_SET_SILK_INFO_REQUEST: libc::c_int = 10028 as libc::c_int;
-    #[c2rust::src_loc = "104:9"]
-    pub const CELT_SET_START_BAND_REQUEST: libc::c_int = 10010 as libc::c_int;
-    #[c2rust::src_loc = "85:9"]
-    pub const CELT_SET_PREDICTION_REQUEST: libc::c_int = 10002 as libc::c_int;
-    #[c2rust::src_loc = "114:9"]
-    pub const CELT_SET_SIGNALLING_REQUEST: libc::c_int = 10016 as libc::c_int;
-    #[c2rust::src_loc = "155:9"]
-    pub const celt_encoder_ctl: unsafe extern "C" fn(
-        *mut OpusCustomEncoder,
-        libc::c_int,
-        ...
-    ) -> libc::c_int = opus_custom_encoder_ctl;
-
-    use super::arch_h::opus_val16;
-    use crate::celt::celt_encoder::{opus_custom_encoder_ctl, OpusCustomEncoder};
-    use crate::celt::entenc::ec_enc;
-
-    extern "C" {
-        #[c2rust::src_loc = "140:1"]
-        pub fn celt_encoder_init(
-            st: *mut OpusCustomEncoder,
-            sampling_rate: i32,
-            channels: libc::c_int,
-            arch: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "138:1"]
-        pub fn celt_encode_with_ec(
-            st: *mut OpusCustomEncoder,
-            pcm: *const opus_val16,
-            frame_size: libc::c_int,
-            compressed: *mut libc::c_uchar,
-            nbCompressedBytes: libc::c_int,
-            enc: *mut ec_enc,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "136:1"]
-        pub fn celt_encoder_get_size(channels: libc::c_int) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:38"]
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]
@@ -290,13 +229,6 @@ pub mod cpu_support_h {
     }
 }
 use self::arch_h::{opus_val16, opus_val32, CELT_SIG_SCALE, EPSILON, Q15ONE, VERY_SMALL};
-pub use self::celt_h::{
-    celt_encode_with_ec, celt_encoder_ctl, celt_encoder_get_size, celt_encoder_init, SILKInfo,
-    CELT_GET_MODE_REQUEST, CELT_SET_ANALYSIS_REQUEST, CELT_SET_CHANNELS_REQUEST,
-    CELT_SET_END_BAND_REQUEST, CELT_SET_PREDICTION_REQUEST, CELT_SET_SIGNALLING_REQUEST,
-    CELT_SET_SILK_INFO_REQUEST, CELT_SET_START_BAND_REQUEST, OPUS_SET_ENERGY_MASK_REQUEST,
-    OPUS_SET_LFE_REQUEST,
-};
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::opus_defines_h::{
@@ -326,7 +258,16 @@ pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 pub use self::structs_FLP_h::{silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP};
 use crate::celt::celt::celt_fatal;
-use crate::celt::celt_encoder::{opus_custom_encoder_ctl, OpusCustomEncoder};
+use crate::celt::celt::{
+    CELT_GET_MODE_REQUEST, CELT_SET_ANALYSIS_REQUEST, CELT_SET_CHANNELS_REQUEST,
+    CELT_SET_END_BAND_REQUEST, CELT_SET_PREDICTION_REQUEST, CELT_SET_SIGNALLING_REQUEST,
+    CELT_SET_SILK_INFO_REQUEST, CELT_SET_START_BAND_REQUEST, OPUS_SET_ENERGY_MASK_REQUEST,
+    OPUS_SET_LFE_REQUEST,
+};
+use crate::celt::celt_encoder::{
+    celt_encode_with_ec, celt_encoder_get_size, celt_encoder_init, opus_custom_encoder_ctl,
+    OpusCustomEncoder, SILKInfo,
+};
 use crate::celt::entcode::ec_tell;
 use crate::celt::entenc::ec_enc;
 use crate::celt::entenc::{ec_enc_bit_logp, ec_enc_done, ec_enc_init, ec_enc_shrink, ec_enc_uint};

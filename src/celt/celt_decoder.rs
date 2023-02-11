@@ -77,79 +77,6 @@ pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
     pub const NULL: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/celt.h:40"]
-pub mod celt_h {
-    #[c2rust::src_loc = "99:9"]
-    pub const CELT_SET_CHANNELS_REQUEST: libc::c_int = 10008;
-    #[c2rust::src_loc = "107:9"]
-    pub const CELT_SET_END_BAND_REQUEST: libc::c_int = 10012;
-    #[c2rust::src_loc = "104:9"]
-    pub const CELT_SET_START_BAND_REQUEST: libc::c_int = 10010;
-    #[c2rust::src_loc = "96:9"]
-    pub const CELT_GET_AND_CLEAR_ERROR_REQUEST: libc::c_int = 10007;
-    #[c2rust::src_loc = "169:28"]
-    pub static mut tapset_icdf: [libc::c_uchar; 3] = [
-        2 as libc::c_int as libc::c_uchar,
-        1 as libc::c_int as libc::c_uchar,
-        0 as libc::c_int as libc::c_uchar,
-    ];
-    #[c2rust::src_loc = "167:28"]
-    pub static mut spread_icdf: [libc::c_uchar; 4] = [
-        25 as libc::c_int as libc::c_uchar,
-        23 as libc::c_int as libc::c_uchar,
-        2 as libc::c_int as libc::c_uchar,
-        0 as libc::c_int as libc::c_uchar,
-    ];
-    #[c2rust::src_loc = "110:9"]
-    pub const CELT_GET_MODE_REQUEST: libc::c_int = 10015;
-    #[c2rust::src_loc = "114:9"]
-    pub const CELT_SET_SIGNALLING_REQUEST: libc::c_int = 10016;
-    #[c2rust::src_loc = "165:28"]
-    pub static mut trim_icdf: [libc::c_uchar; 11] = [
-        126 as libc::c_int as libc::c_uchar,
-        124 as libc::c_int as libc::c_uchar,
-        119 as libc::c_int as libc::c_uchar,
-        109 as libc::c_int as libc::c_uchar,
-        87 as libc::c_int as libc::c_uchar,
-        41 as libc::c_int as libc::c_uchar,
-        19 as libc::c_int as libc::c_uchar,
-        9 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        2 as libc::c_int as libc::c_uchar,
-        0 as libc::c_int as libc::c_uchar,
-    ];
-
-    use super::arch_h::{opus_val16, opus_val32};
-    use crate::celt::modes::OpusCustomMode;
-    extern "C" {
-        #[c2rust::src_loc = "210:26"]
-        pub static tf_select_table: [[libc::c_schar; 8]; 4];
-        #[c2rust::src_loc = "219:1"]
-        pub fn resampling_factor(rate: i32) -> libc::c_int;
-        #[c2rust::src_loc = "238:1"]
-        pub fn init_caps(
-            m: *const OpusCustomMode,
-            cap: *mut libc::c_int,
-            LM: libc::c_int,
-            C: libc::c_int,
-        );
-        #[c2rust::src_loc = "224:1"]
-        pub fn comb_filter(
-            y: *mut opus_val32,
-            x: *mut opus_val32,
-            T0: libc::c_int,
-            T1: libc::c_int,
-            N: libc::c_int,
-            g0: opus_val16,
-            g1: opus_val16,
-            tapset0: libc::c_int,
-            tapset1: libc::c_int,
-            window: *const opus_val16,
-            overlap: libc::c_int,
-            arch: libc::c_int,
-        );
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/bands.h:42"]
 pub mod bands_h {
     #[c2rust::src_loc = "70:9"]
@@ -263,11 +190,6 @@ pub use self::arch_h::{
 pub use self::bands_h::{
     anti_collapse, celt_lcg_rand, denormalise_bands, quant_all_bands, SPREAD_NORMAL,
 };
-pub use self::celt_h::{
-    comb_filter, init_caps, resampling_factor, spread_icdf, tapset_icdf, tf_select_table,
-    trim_icdf, CELT_GET_AND_CLEAR_ERROR_REQUEST, CELT_GET_MODE_REQUEST, CELT_SET_CHANNELS_REQUEST,
-    CELT_SET_END_BAND_REQUEST, CELT_SET_SIGNALLING_REQUEST, CELT_SET_START_BAND_REQUEST,
-};
 pub use self::celt_lpc_h::{_celt_autocorr, _celt_lpc, celt_fir_c, celt_iir, LPC_ORDER};
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::internal::{__builtin_va_list, __va_list_tag};
@@ -278,7 +200,14 @@ pub use self::opus_defines_h::{
 };
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::NULL;
-use crate::celt::celt::celt_fatal;
+use crate::celt::celt::{
+    celt_fatal, comb_filter, init_caps, resampling_factor, spread_icdf, tapset_icdf,
+    tf_select_table, trim_icdf,
+};
+use crate::celt::celt::{
+    CELT_GET_AND_CLEAR_ERROR_REQUEST, CELT_GET_MODE_REQUEST, CELT_SET_CHANNELS_REQUEST,
+    CELT_SET_END_BAND_REQUEST, CELT_SET_SIGNALLING_REQUEST, CELT_SET_START_BAND_REQUEST,
+};
 use crate::celt::entcode::{ec_get_error, ec_tell, ec_tell_frac, BITRES};
 use crate::celt::entdec::{
     ec_dec, ec_dec_bit_logp, ec_dec_bits, ec_dec_icdf, ec_dec_init, ec_dec_uint,

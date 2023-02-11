@@ -36,99 +36,14 @@ pub mod arch_h {
     #[c2rust::src_loc = "207:9"]
     pub const EPSILON: libc::c_float = 1e-15f32;
 }
-
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/celt.h:40"]
-pub mod celt_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "71:9"]
-    pub struct SILKInfo {
-        pub signalType: libc::c_int,
-        pub offset: libc::c_int,
-    }
-    #[c2rust::src_loc = "165:28"]
-    pub static mut trim_icdf: [libc::c_uchar; 11] = [
-        126 as libc::c_int as libc::c_uchar,
-        124 as libc::c_int as libc::c_uchar,
-        119 as libc::c_int as libc::c_uchar,
-        109 as libc::c_int as libc::c_uchar,
-        87 as libc::c_int as libc::c_uchar,
-        41 as libc::c_int as libc::c_uchar,
-        19 as libc::c_int as libc::c_uchar,
-        9 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        2 as libc::c_int as libc::c_uchar,
-        0 as libc::c_int as libc::c_uchar,
-    ];
-    #[c2rust::src_loc = "128:9"]
-    pub const OPUS_SET_ENERGY_MASK_REQUEST: libc::c_int = 10026;
-    #[c2rust::src_loc = "110:9"]
-    pub const CELT_GET_MODE_REQUEST: libc::c_int = 10015;
-    #[c2rust::src_loc = "131:9"]
-    pub const CELT_SET_SILK_INFO_REQUEST: libc::c_int = 10028;
-    #[c2rust::src_loc = "122:9"]
-    pub const CELT_SET_ANALYSIS_REQUEST: libc::c_int = 10022;
-    #[c2rust::src_loc = "114:9"]
-    pub const CELT_SET_SIGNALLING_REQUEST: libc::c_int = 10016;
-    #[c2rust::src_loc = "125:9"]
-    pub const OPUS_SET_LFE_REQUEST: libc::c_int = 10024;
-    #[c2rust::src_loc = "104:9"]
-    pub const CELT_SET_START_BAND_REQUEST: libc::c_int = 10010;
-    #[c2rust::src_loc = "99:9"]
-    pub const CELT_SET_CHANNELS_REQUEST: libc::c_int = 10008;
-    #[c2rust::src_loc = "107:9"]
-    pub const CELT_SET_END_BAND_REQUEST: libc::c_int = 10012;
-    #[c2rust::src_loc = "85:9"]
-    pub const CELT_SET_PREDICTION_REQUEST: libc::c_int = 10002;
-    #[c2rust::src_loc = "167:28"]
-    pub static mut spread_icdf: [libc::c_uchar; 4] = [
-        25 as libc::c_int as libc::c_uchar,
-        23 as libc::c_int as libc::c_uchar,
-        2 as libc::c_int as libc::c_uchar,
-        0 as libc::c_int as libc::c_uchar,
-    ];
-    #[c2rust::src_loc = "169:28"]
-    pub static mut tapset_icdf: [libc::c_uchar; 3] = [
-        2 as libc::c_int as libc::c_uchar,
-        1 as libc::c_int as libc::c_uchar,
-        0 as libc::c_int as libc::c_uchar,
-    ];
-    #[c2rust::src_loc = "207:9"]
-    pub const COMBFILTER_MAXPERIOD: libc::c_int = 1024 as libc::c_int;
-    #[c2rust::src_loc = "208:9"]
-    pub const COMBFILTER_MINPERIOD: libc::c_int = 15 as libc::c_int;
-
-    use super::arch_h::{opus_val16, opus_val32};
-    use crate::celt::modes::OpusCustomMode;
-    extern "C" {
-        #[c2rust::src_loc = "210:26"]
-        pub static tf_select_table: [[libc::c_schar; 8]; 4];
-        #[c2rust::src_loc = "219:1"]
-        pub fn resampling_factor(rate: i32) -> libc::c_int;
-        #[c2rust::src_loc = "224:1"]
-        pub fn comb_filter(
-            y: *mut opus_val32,
-            x: *mut opus_val32,
-            T0: libc::c_int,
-            T1: libc::c_int,
-            N: libc::c_int,
-            g0: opus_val16,
-            g1: opus_val16,
-            tapset0: libc::c_int,
-            tapset1: libc::c_int,
-            window: *const opus_val16,
-            overlap: libc::c_int,
-            arch: libc::c_int,
-        );
-        #[c2rust::src_loc = "238:1"]
-        pub fn init_caps(
-            m: *const OpusCustomMode,
-            cap: *mut libc::c_int,
-            LM: libc::c_int,
-            C: libc::c_int,
-        );
-    }
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "71:9"]
+pub struct SILKInfo {
+    pub signalType: libc::c_int,
+    pub offset: libc::c_int,
 }
+
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:36"]
 pub mod opus_defines_h {
     #[c2rust::src_loc = "60:9"]
@@ -270,13 +185,6 @@ pub use self::bands_h::{
     compute_band_energies, haar1, hysteresis_decision, normalise_bands, quant_all_bands,
     spreading_decision, SPREAD_AGGRESSIVE, SPREAD_NONE, SPREAD_NORMAL,
 };
-pub use self::celt_h::{
-    comb_filter, init_caps, resampling_factor, spread_icdf, tapset_icdf, tf_select_table,
-    trim_icdf, SILKInfo, CELT_GET_MODE_REQUEST, CELT_SET_ANALYSIS_REQUEST,
-    CELT_SET_CHANNELS_REQUEST, CELT_SET_END_BAND_REQUEST, CELT_SET_PREDICTION_REQUEST,
-    CELT_SET_SIGNALLING_REQUEST, CELT_SET_SILK_INFO_REQUEST, CELT_SET_START_BAND_REQUEST,
-    COMBFILTER_MAXPERIOD, COMBFILTER_MINPERIOD, OPUS_SET_ENERGY_MASK_REQUEST, OPUS_SET_LFE_REQUEST,
-};
 pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::opus_defines_h::{
     OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_BITRATE_MAX, OPUS_GET_FINAL_RANGE_REQUEST,
@@ -288,7 +196,16 @@ pub use self::opus_defines_h::{
 };
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::NULL;
-use crate::celt::celt::celt_fatal;
+use crate::celt::celt::{
+    celt_fatal, comb_filter, init_caps, resampling_factor, spread_icdf, tapset_icdf,
+    tf_select_table, trim_icdf,
+};
+use crate::celt::celt::{
+    CELT_GET_MODE_REQUEST, CELT_SET_ANALYSIS_REQUEST, CELT_SET_CHANNELS_REQUEST,
+    CELT_SET_END_BAND_REQUEST, CELT_SET_PREDICTION_REQUEST, CELT_SET_SIGNALLING_REQUEST,
+    CELT_SET_SILK_INFO_REQUEST, CELT_SET_START_BAND_REQUEST, COMBFILTER_MAXPERIOD,
+    COMBFILTER_MINPERIOD, OPUS_SET_ENERGY_MASK_REQUEST, OPUS_SET_LFE_REQUEST,
+};
 use crate::celt::entcode::{ec_get_error, ec_tell, ec_tell_frac, BITRES};
 use crate::celt::entenc::{
     ec_enc, ec_enc_bit_logp, ec_enc_bits, ec_enc_done, ec_enc_icdf, ec_enc_init, ec_enc_shrink,

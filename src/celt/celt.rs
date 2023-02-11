@@ -34,6 +34,36 @@ pub use self::stddef_h::size_t;
 
 use crate::externs::memmove;
 
+#[c2rust::src_loc = "165:28"]
+pub static trim_icdf: [libc::c_uchar; 11] = [126, 124, 119, 109, 87, 41, 19, 9, 4, 2, 0];
+#[c2rust::src_loc = "167:28"]
+pub static spread_icdf: [libc::c_uchar; 4] = [25, 23, 2, 0];
+#[c2rust::src_loc = "169:28"]
+pub static tapset_icdf: [libc::c_uchar; 3] = [2, 1, 0];
+#[no_mangle]
+#[c2rust::src_loc = "263:19"]
+pub static tf_select_table: [[libc::c_schar; 8]; 4] = [
+    [0, -1, 0, -1, 0, -1, 0, -1],
+    [0, -1, 0, -2, 1, 0, 1, -1],
+    [0, -2, 0, -3, 2, 0, 1, -1],
+    [0, -2, 0, -3, 3, 0, 1, -1],
+];
+
+pub const OPUS_SET_ENERGY_MASK_REQUEST: libc::c_int = 10026;
+pub const CELT_GET_MODE_REQUEST: libc::c_int = 10015;
+pub const CELT_SET_SILK_INFO_REQUEST: libc::c_int = 10028;
+pub const CELT_SET_ANALYSIS_REQUEST: libc::c_int = 10022;
+pub const CELT_SET_SIGNALLING_REQUEST: libc::c_int = 10016;
+pub const OPUS_SET_LFE_REQUEST: libc::c_int = 10024;
+pub const CELT_SET_START_BAND_REQUEST: libc::c_int = 10010;
+pub const CELT_SET_CHANNELS_REQUEST: libc::c_int = 10008;
+pub const CELT_SET_END_BAND_REQUEST: libc::c_int = 10012;
+pub const CELT_SET_PREDICTION_REQUEST: libc::c_int = 10002;
+pub const CELT_GET_AND_CLEAR_ERROR_REQUEST: libc::c_int = 10007;
+
+pub const COMBFILTER_MAXPERIOD: libc::c_int = 1024 as libc::c_int;
+pub const COMBFILTER_MINPERIOD: libc::c_int = 16 as libc::c_int;
+
 #[no_mangle]
 #[c2rust::src_loc = "62:1"]
 pub unsafe extern "C" fn resampling_factor(rate: i32) -> libc::c_int {
@@ -223,50 +253,6 @@ pub unsafe extern "C" fn comb_filter(
         g12,
     );
 }
-#[no_mangle]
-#[c2rust::src_loc = "263:19"]
-pub static mut tf_select_table: [[libc::c_schar; 8]; 4] = [
-    [
-        0 as libc::c_int as libc::c_schar,
-        -(1 as libc::c_int) as libc::c_schar,
-        0 as libc::c_int as libc::c_schar,
-        -(1 as libc::c_int) as libc::c_schar,
-        0 as libc::c_int as libc::c_schar,
-        -(1 as libc::c_int) as libc::c_schar,
-        0 as libc::c_int as libc::c_schar,
-        -(1 as libc::c_int) as libc::c_schar,
-    ],
-    [
-        0 as libc::c_int as libc::c_schar,
-        -(1 as libc::c_int) as libc::c_schar,
-        0 as libc::c_int as libc::c_schar,
-        -(2 as libc::c_int) as libc::c_schar,
-        1 as libc::c_int as libc::c_schar,
-        0 as libc::c_int as libc::c_schar,
-        1 as libc::c_int as libc::c_schar,
-        -(1 as libc::c_int) as libc::c_schar,
-    ],
-    [
-        0 as libc::c_int as libc::c_schar,
-        -(2 as libc::c_int) as libc::c_schar,
-        0 as libc::c_int as libc::c_schar,
-        -(3 as libc::c_int) as libc::c_schar,
-        2 as libc::c_int as libc::c_schar,
-        0 as libc::c_int as libc::c_schar,
-        1 as libc::c_int as libc::c_schar,
-        -(1 as libc::c_int) as libc::c_schar,
-    ],
-    [
-        0 as libc::c_int as libc::c_schar,
-        -(2 as libc::c_int) as libc::c_schar,
-        0 as libc::c_int as libc::c_schar,
-        -(3 as libc::c_int) as libc::c_schar,
-        3 as libc::c_int as libc::c_schar,
-        0 as libc::c_int as libc::c_schar,
-        1 as libc::c_int as libc::c_schar,
-        -(1 as libc::c_int) as libc::c_schar,
-    ],
-];
 #[no_mangle]
 #[c2rust::src_loc = "272:1"]
 pub unsafe extern "C" fn init_caps(

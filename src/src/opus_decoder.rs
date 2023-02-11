@@ -92,42 +92,6 @@ pub mod opus_defines_h {
     #[c2rust::src_loc = "46:9"]
     pub const OPUS_OK: libc::c_int = 0 as libc::c_int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/celt.h:41"]
-pub mod celt_h {
-    #[c2rust::src_loc = "156:9"]
-    pub const celt_decoder_ctl: unsafe extern "C" fn(
-        *mut OpusCustomDecoder,
-        libc::c_int,
-        ...
-    ) -> libc::c_int = opus_custom_decoder_ctl;
-    #[c2rust::src_loc = "114:9"]
-    pub const CELT_SET_SIGNALLING_REQUEST: libc::c_int = 10016 as libc::c_int;
-
-    use super::arch_h::opus_val16;
-    use crate::celt::celt_decoder::{opus_custom_decoder_ctl, OpusCustomDecoder};
-    use crate::celt::entdec::ec_dec;
-
-    extern "C" {
-        #[c2rust::src_loc = "152:1"]
-        pub fn celt_decode_with_ec(
-            st: *mut OpusCustomDecoder,
-            data: *const libc::c_uchar,
-            len: libc::c_int,
-            pcm: *mut opus_val16,
-            frame_size: libc::c_int,
-            dec: *mut ec_dec,
-            accum: libc::c_int,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "147:1"]
-        pub fn celt_decoder_get_size(channels: libc::c_int) -> libc::c_int;
-        #[c2rust::src_loc = "150:1"]
-        pub fn celt_decoder_init(
-            st: *mut OpusCustomDecoder,
-            sampling_rate: i32,
-            channels: libc::c_int,
-        ) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cpu_support.h:44"]
 pub mod cpu_support_h {
     #[inline]
@@ -147,10 +111,6 @@ pub mod stack_alloc_h {
     }
 }
 pub use self::arch_h::{opus_val16, opus_val32, CELT_SIG_SCALE};
-pub use self::celt_h::{
-    celt_decode_with_ec, celt_decoder_ctl, celt_decoder_get_size, celt_decoder_init,
-    CELT_SET_SIGNALLING_REQUEST,
-};
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::opus_defines_h::{
@@ -167,7 +127,11 @@ pub use self::stack_alloc_h::{_opus_false, ALLOC_NONE};
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 use crate::celt::celt::celt_fatal;
-use crate::celt::celt_decoder::{opus_custom_decoder_ctl, OpusCustomDecoder};
+use crate::celt::celt::CELT_SET_SIGNALLING_REQUEST;
+use crate::celt::celt_decoder::{
+    celt_decode_with_ec, celt_decoder_get_size, celt_decoder_init, opus_custom_decoder_ctl,
+    OpusCustomDecoder,
+};
 use crate::celt::entcode::ec_tell;
 use crate::celt::entdec::ec_dec;
 use crate::celt::entdec::{ec_dec_bit_logp, ec_dec_init, ec_dec_uint};

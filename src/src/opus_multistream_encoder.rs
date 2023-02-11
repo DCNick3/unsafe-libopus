@@ -168,31 +168,6 @@ pub mod opus_defines_h {
     #[c2rust::src_loc = "52:9"]
     pub const OPUS_INTERNAL_ERROR: libc::c_int = -(3 as libc::c_int);
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/celt.h:34"]
-pub mod celt_h {
-    #[c2rust::src_loc = "110:9"]
-    pub const CELT_GET_MODE_REQUEST: libc::c_int = 10015 as libc::c_int;
-    #[c2rust::src_loc = "128:9"]
-    pub const OPUS_SET_ENERGY_MASK_REQUEST: libc::c_int = 10026 as libc::c_int;
-    #[c2rust::src_loc = "125:9"]
-    pub const OPUS_SET_LFE_REQUEST: libc::c_int = 10024 as libc::c_int;
-    use super::arch_h::{celt_sig, opus_val16};
-    extern "C" {
-        #[c2rust::src_loc = "219:1"]
-        pub fn resampling_factor(rate: i32) -> libc::c_int;
-        #[c2rust::src_loc = "221:1"]
-        pub fn celt_preemphasis(
-            pcmp: *const opus_val16,
-            inp: *mut celt_sig,
-            N: libc::c_int,
-            CC: libc::c_int,
-            upsample: libc::c_int,
-            coef: *const opus_val16,
-            mem: *mut celt_sig,
-            clip: libc::c_int,
-        );
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cpu_support.h:40"]
 pub mod cpu_support_h {
     #[inline]
@@ -220,10 +195,6 @@ pub mod bands_h {
 }
 pub use self::arch_h::{celt_ener, celt_sig, opus_val16, opus_val32};
 use self::bands_h::compute_band_energies;
-pub use self::celt_h::{
-    celt_preemphasis, resampling_factor, CELT_GET_MODE_REQUEST, OPUS_SET_ENERGY_MASK_REQUEST,
-    OPUS_SET_LFE_REQUEST,
-};
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::opus_defines_h::{
@@ -247,7 +218,11 @@ pub use self::opus_defines_h::{
 pub use self::opus_multistream_h::OPUS_MULTISTREAM_GET_ENCODER_STATE_REQUEST;
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
-use crate::celt::celt::celt_fatal;
+use crate::celt::celt::{celt_fatal, resampling_factor};
+use crate::celt::celt::{
+    CELT_GET_MODE_REQUEST, OPUS_SET_ENERGY_MASK_REQUEST, OPUS_SET_LFE_REQUEST,
+};
+use crate::celt::celt_encoder::celt_preemphasis;
 use crate::celt::mathops::isqrt32;
 use crate::celt::mdct::clt_mdct_forward_c;
 use crate::celt::modes::OpusCustomMode;
