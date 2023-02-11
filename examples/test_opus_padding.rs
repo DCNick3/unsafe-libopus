@@ -16,18 +16,6 @@ use ::libc;
 use libc::fprintf;
 use libc_stdhandle::stderr;
 
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:32"]
-pub mod stddef_h {
-    #[c2rust::src_loc = "46:1"]
-    pub type size_t = libc::c_ulong;
-}
-#[c2rust::header_src = "/usr/include/stdlib.h:33"]
-pub mod stdlib_h {
-    extern "C" {
-        #[c2rust::src_loc = "611:13"]
-        pub fn abort() -> !;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/tests/test_opus_common.h:36"]
 pub mod test_opus_common_h {
     #[c2rust::src_loc = "63:20"]
@@ -74,8 +62,7 @@ pub mod test_opus_common_h {
         abort();
     }
 
-    use super::stdlib_h::abort;
-    use libc::fprintf;
+    use libc::{abort, fprintf};
     use libc_stdhandle::stderr;
     use libopus_unsafe::opus_get_version_string;
 }

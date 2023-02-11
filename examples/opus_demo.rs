@@ -13,65 +13,19 @@
 #![register_tool(c2rust)]
 
 use ::libc;
-use libc::{fclose, fopen, fprintf, fread, fseek, ftell, fwrite, printf, FILE};
+use libc::{
+    abs, atoi, atol, fclose, fopen, fprintf, fread, fseek, ftell, fwrite, printf, rand, FILE,
+};
 use libc_stdhandle::stderr;
 
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:33"]
-pub mod stddef_h {
-    #[c2rust::src_loc = "46:1"]
-    pub type size_t = libc::c_ulong;
-}
-#[c2rust::header_src = "/usr/include/stdlib.h:34"]
-pub mod stdlib_h {
-    #[inline]
-    #[c2rust::src_loc = "361:1"]
-    pub unsafe extern "C" fn atoi(mut __nptr: *const libc::c_char) -> libc::c_int {
-        strtol(
-            __nptr,
-            std::ptr::null_mut::<libc::c_void>() as *mut *mut libc::c_char,
-            10 as libc::c_int,
-        ) as libc::c_int
-    }
-    #[inline]
-    #[c2rust::src_loc = "366:1"]
-    pub unsafe extern "C" fn atol(mut __nptr: *const libc::c_char) -> libc::c_long {
-        strtol(
-            __nptr,
-            std::ptr::null_mut::<libc::c_void>() as *mut *mut libc::c_char,
-            10 as libc::c_int,
-        )
-    }
-    extern "C" {
-        #[c2rust::src_loc = "177:17"]
-        pub fn strtol(
-            _: *const libc::c_char,
-            _: *mut *mut libc::c_char,
-            _: libc::c_int,
-        ) -> libc::c_long;
-        #[c2rust::src_loc = "454:1"]
-        pub fn rand() -> libc::c_int;
-        #[c2rust::src_loc = "861:12"]
-        pub fn abs(_: libc::c_int) -> libc::c_int;
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:37"]
-pub mod opus_defines_h {
-    extern "C" {
-        #[c2rust::src_loc = "782:1"]
-        pub fn opus_strerror(error: libc::c_int) -> *const libc::c_char;
-        #[c2rust::src_loc = "792:1"]
-        pub fn opus_get_version_string() -> *const libc::c_char;
-    }
-}
-use self::opus_defines_h::{opus_get_version_string, opus_strerror};
-pub use self::stddef_h::size_t;
-pub use self::stdlib_h::{abs, atoi, atol, rand};
+type size_t = libc::c_ulong;
 use libopus_unsafe::externs::strcmp;
 use libopus_unsafe::externs::{calloc, free, malloc};
 use libopus_unsafe::{
     opus_decode, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy, opus_encode,
-    opus_encoder_create, opus_encoder_ctl, opus_encoder_destroy, opus_packet_get_nb_frames,
-    opus_packet_get_samples_per_frame, OpusDecoder, OpusEncoder,
+    opus_encoder_create, opus_encoder_ctl, opus_encoder_destroy, opus_get_version_string,
+    opus_packet_get_nb_frames, opus_packet_get_samples_per_frame, opus_strerror, OpusDecoder,
+    OpusEncoder,
 };
 
 #[no_mangle]

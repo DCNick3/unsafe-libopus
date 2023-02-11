@@ -13,40 +13,9 @@
 #![register_tool(c2rust)]
 
 use ::libc;
-use libc::{fprintf, getpid, printf, time, time_t};
+use libc::{atoi, fprintf, getenv, getpid, printf, rand, time, time_t};
 use libc_stdhandle::{stderr, stdout};
 
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:32"]
-pub mod stddef_h {
-    #[c2rust::src_loc = "46:1"]
-    pub type size_t = libc::c_ulong;
-}
-#[c2rust::header_src = "/usr/include/stdlib.h:33"]
-pub mod stdlib_h {
-    #[inline]
-    #[c2rust::src_loc = "361:1"]
-    pub unsafe extern "C" fn atoi(mut __nptr: *const libc::c_char) -> libc::c_int {
-        strtol(
-            __nptr,
-            std::ptr::null_mut::<libc::c_void>() as *mut *mut libc::c_char,
-            10 as libc::c_int,
-        ) as libc::c_int
-    }
-    extern "C" {
-        #[c2rust::src_loc = "177:17"]
-        pub fn strtol(
-            _: *const libc::c_char,
-            _: *mut *mut libc::c_char,
-            _: libc::c_int,
-        ) -> libc::c_long;
-        #[c2rust::src_loc = "454:1"]
-        pub fn rand() -> libc::c_int;
-        #[c2rust::src_loc = "611:13"]
-        pub fn abort() -> !;
-        #[c2rust::src_loc = "654:1"]
-        pub fn getenv(__name: *const libc::c_char) -> *mut libc::c_char;
-    }
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/tests/test_opus_common.h:46"]
 pub mod test_opus_common_h {
     #[inline]
@@ -159,14 +128,12 @@ pub mod test_opus_common_h {
         abort();
     }
 
-    use super::stdlib_h::abort;
-    use libc::fprintf;
+    use libc::{abort, fprintf};
     use libc_stdhandle::stderr;
     use libopus_unsafe::externs::memset;
     use libopus_unsafe::externs::{free, malloc};
     use libopus_unsafe::opus_get_version_string;
 }
-pub use self::stdlib_h::{atoi, getenv, rand};
 pub use self::test_opus_common_h::{debruijn2, Rw, Rz, _test_failed, fast_rand, iseed};
 use libopus_unsafe::externs::{memcpy, memset};
 

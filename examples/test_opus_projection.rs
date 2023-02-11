@@ -16,11 +16,6 @@ use ::libc;
 use libc::fprintf;
 use libc_stdhandle::stderr;
 
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:33"]
-pub mod stddef_h {
-    #[c2rust::src_loc = "46:1"]
-    pub type size_t = libc::c_ulong;
-}
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:37"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
@@ -96,15 +91,6 @@ pub mod mapping_matrix_h {
             output_rows: libc::c_int,
             frame_size: libc::c_int,
         );
-    }
-}
-#[c2rust::header_src = "/usr/include/stdlib.h:34"]
-pub mod stdlib_h {
-    extern "C" {
-        #[c2rust::src_loc = "611:13"]
-        pub fn abort() -> !;
-        #[c2rust::src_loc = "861:12"]
-        pub fn abs(_: libc::c_int) -> libc::c_int;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/float_cast.h:37"]
@@ -193,26 +179,9 @@ pub mod test_opus_common_h {
         abort();
     }
 
-    use super::stdlib_h::abort;
-    use libc::fprintf;
+    use libc::{abort, fprintf};
     use libc_stdhandle::stderr;
     use libopus_unsafe::opus_get_version_string;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/os_support.h:41"]
-pub mod os_support_h {
-    #[inline]
-    #[c2rust::src_loc = "64:1"]
-    pub unsafe extern "C" fn opus_free(mut ptr: *mut libc::c_void) {
-        free(ptr);
-    }
-    #[inline]
-    #[c2rust::src_loc = "47:1"]
-    pub unsafe extern "C" fn opus_alloc(mut size: size_t) -> *mut libc::c_void {
-        malloc(size)
-    }
-
-    use super::stddef_h::size_t;
-    use libopus_unsafe::externs::{free, malloc};
 }
 pub use self::arch_h::opus_val16;
 pub use self::float_cast_h::FLOAT2INT16;
@@ -223,9 +192,6 @@ pub use self::mapping_matrix_h::{
     mapping_matrix_multiply_channel_in_short, mapping_matrix_multiply_channel_out_float,
     mapping_matrix_multiply_channel_out_short, MappingMatrix,
 };
-pub use self::os_support_h::{opus_alloc, opus_free};
-pub use self::stddef_h::size_t;
-use self::stdlib_h::abs;
 pub use self::test_opus_common_h::{_test_failed, fast_rand};
 use libopus_unsafe::externs::memset;
 use libopus_unsafe::externs::{free, malloc};
@@ -248,7 +214,8 @@ pub unsafe extern "C" fn assert_is_equal(
     i = 0 as libc::c_int;
     while i < size {
         let mut val: i16 = FLOAT2INT16(*a.offset(i as isize));
-        if abs(val as libc::c_int - *b.offset(i as isize) as libc::c_int) > tolerance as libc::c_int
+        if (val as libc::c_int - *b.offset(i as isize) as libc::c_int).abs()
+            > tolerance as libc::c_int
         {
             return 1 as libc::c_int;
         }
@@ -267,7 +234,7 @@ pub unsafe extern "C" fn assert_is_equal_short(
     let mut i: libc::c_int = 0;
     i = 0 as libc::c_int;
     while i < size {
-        if abs(*a.offset(i as isize) as libc::c_int - *b.offset(i as isize) as libc::c_int)
+        if (*a.offset(i as isize) as libc::c_int - *b.offset(i as isize) as libc::c_int).abs()
             > tolerance as libc::c_int
         {
             return 1 as libc::c_int;
@@ -381,15 +348,15 @@ pub unsafe extern "C" fn test_simple_matrix() {
     let mut output_val16: *mut opus_val16 = std::ptr::null_mut::<opus_val16>();
     let mut output_int16: *mut i16 = std::ptr::null_mut::<i16>();
     let mut simple_matrix: *mut MappingMatrix = std::ptr::null_mut::<MappingMatrix>();
-    input_val16 = opus_alloc(
+    input_val16 = malloc(
         (::core::mem::size_of::<opus_val16>() as libc::c_ulong)
             .wrapping_mul(30 as libc::c_int as libc::c_ulong),
     ) as *mut opus_val16;
-    output_int16 = opus_alloc(
+    output_int16 = malloc(
         (::core::mem::size_of::<i16>() as libc::c_ulong)
             .wrapping_mul(40 as libc::c_int as libc::c_ulong),
     ) as *mut i16;
-    output_val16 = opus_alloc(
+    output_val16 = malloc(
         (::core::mem::size_of::<opus_val16>() as libc::c_ulong)
             .wrapping_mul(40 as libc::c_int as libc::c_ulong),
     ) as *mut opus_val16;
@@ -401,7 +368,7 @@ pub unsafe extern "C" fn test_simple_matrix() {
             112 as libc::c_int,
         );
     }
-    simple_matrix = opus_alloc(simple_matrix_size as size_t) as *mut MappingMatrix;
+    simple_matrix = malloc(simple_matrix_size as _) as *mut MappingMatrix;
     mapping_matrix_init(
         simple_matrix,
         simple_matrix_params.rows,
@@ -536,10 +503,10 @@ pub unsafe extern "C" fn test_simple_matrix() {
             180 as libc::c_int,
         );
     }
-    opus_free(input_val16 as *mut libc::c_void);
-    opus_free(output_int16 as *mut libc::c_void);
-    opus_free(output_val16 as *mut libc::c_void);
-    opus_free(simple_matrix as *mut libc::c_void);
+    free(input_val16 as *mut libc::c_void);
+    free(output_int16 as *mut libc::c_void);
+    free(output_val16 as *mut libc::c_void);
+    free(simple_matrix as *mut libc::c_void);
 }
 #[no_mangle]
 #[c2rust::src_loc = "189:1"]
@@ -580,7 +547,7 @@ pub unsafe extern "C" fn test_creation_arguments(
                 218 as libc::c_int,
             );
         }
-        matrix = opus_alloc(matrix_size as size_t) as *mut libc::c_uchar;
+        matrix = malloc(matrix_size as _) as *mut libc::c_uchar;
         ret = opus_projection_encoder_ctl(st_enc, 6005 as libc::c_int, matrix, matrix_size);
         opus_projection_encoder_destroy(st_enc);
         st_dec = opus_projection_decoder_create(
@@ -595,7 +562,7 @@ pub unsafe extern "C" fn test_creation_arguments(
         if !st_dec.is_null() {
             opus_projection_decoder_destroy(st_dec);
         }
-        opus_free(matrix as *mut libc::c_void);
+        free(matrix as *mut libc::c_void);
     }
     is_channels_valid = (order_plus_one >= 2 as libc::c_int
         && order_plus_one <= 4 as libc::c_int
@@ -33555,7 +33522,7 @@ pub unsafe extern "C" fn test_encode_decode(
         error =
             opus_projection_encoder_ctl(st_enc, 6003 as libc::c_int, &mut matrix_size as *mut i32);
         if !(error != 0 as libc::c_int || matrix_size == 0) {
-            matrix = opus_alloc(matrix_size as size_t) as *mut libc::c_uchar;
+            matrix = malloc(matrix_size as _) as *mut libc::c_uchar;
             error = opus_projection_encoder_ctl(st_enc, 6005 as libc::c_int, matrix, matrix_size);
             st_dec = opus_projection_decoder_create(
                 Fs,
@@ -33566,7 +33533,7 @@ pub unsafe extern "C" fn test_encode_decode(
                 matrix_size,
                 &mut error,
             );
-            opus_free(matrix as *mut libc::c_void);
+            free(matrix as *mut libc::c_void);
             if error != 0 as libc::c_int {
                 fprintf(
                     stderr(),

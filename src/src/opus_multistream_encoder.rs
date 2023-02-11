@@ -19,13 +19,13 @@ pub mod internal {
 #[repr(C)]
 #[c2rust::src_loc = "60:8"]
 pub struct OpusMSEncoder {
-    pub layout: ChannelLayout,
-    pub arch: libc::c_int,
-    pub lfe_stream: libc::c_int,
-    pub application: libc::c_int,
-    pub variable_duration: libc::c_int,
-    pub mapping_type: MappingType,
-    pub bitrate_bps: i32,
+    pub(crate) layout: ChannelLayout,
+    pub(crate) arch: libc::c_int,
+    pub(crate) lfe_stream: libc::c_int,
+    pub(crate) application: libc::c_int,
+    pub(crate) variable_duration: libc::c_int,
+    pub(crate) mapping_type: MappingType,
+    pub(crate) bitrate_bps: i32,
 }
 #[c2rust::src_loc = "54:9"]
 pub type MappingType = libc::c_uint;

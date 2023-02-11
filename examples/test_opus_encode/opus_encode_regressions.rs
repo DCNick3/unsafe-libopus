@@ -1,82 +1,11 @@
 use ::libc;
 use libc::fprintf;
 use libc_stdhandle::stderr;
+use libopus_unsafe::{
+    opus_multistream_encode, opus_multistream_encoder_create, opus_multistream_encoder_ctl,
+    opus_multistream_encoder_destroy, opus_multistream_surround_encoder_create, OpusMSEncoder,
+};
 
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:32"]
-pub mod stddef_h {
-    #[c2rust::src_loc = "46:1"]
-    pub type size_t = libc::c_ulong;
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus.h:39"]
-pub mod opus_h {
-    extern "C" {
-        #[c2rust::src_loc = "164:16"]
-        pub type OpusEncoder;
-        #[c2rust::src_loc = "208:1"]
-        pub fn opus_encoder_create(
-            Fs: i32,
-            channels: libc::c_int,
-            application: libc::c_int,
-            error: *mut libc::c_int,
-        ) -> *mut OpusEncoder;
-        #[c2rust::src_loc = "263:1"]
-        pub fn opus_encode(
-            st: *mut OpusEncoder,
-            pcm: *const i16,
-            frame_size: libc::c_int,
-            data: *mut libc::c_uchar,
-            max_data_bytes: i32,
-        ) -> i32;
-        #[c2rust::src_loc = "315:1"]
-        pub fn opus_encoder_destroy(st: *mut OpusEncoder);
-        #[c2rust::src_loc = "328:1"]
-        pub fn opus_encoder_ctl(st: *mut OpusEncoder, request: libc::c_int, _: ...) -> libc::c_int;
-    }
-}
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_multistream.h:39"]
-pub mod opus_multistream_h {
-    extern "C" {
-        #[c2rust::src_loc = "175:16"]
-        pub type OpusMSEncoder;
-        #[c2rust::src_loc = "257:1"]
-        pub fn opus_multistream_encoder_create(
-            Fs: i32,
-            channels: libc::c_int,
-            streams: libc::c_int,
-            coupled_streams: libc::c_int,
-            mapping: *const libc::c_uchar,
-            application: libc::c_int,
-            error: *mut libc::c_int,
-        ) -> *mut OpusMSEncoder;
-        #[c2rust::src_loc = "267:1"]
-        pub fn opus_multistream_surround_encoder_create(
-            Fs: i32,
-            channels: libc::c_int,
-            mapping_family: libc::c_int,
-            streams: *mut libc::c_int,
-            coupled_streams: *mut libc::c_int,
-            mapping: *mut libc::c_uchar,
-            application: libc::c_int,
-            error: *mut libc::c_int,
-        ) -> *mut OpusMSEncoder;
-        #[c2rust::src_loc = "377:1"]
-        pub fn opus_multistream_encode(
-            st: *mut OpusMSEncoder,
-            pcm: *const i16,
-            frame_size: libc::c_int,
-            data: *mut libc::c_uchar,
-            max_data_bytes: i32,
-        ) -> libc::c_int;
-        #[c2rust::src_loc = "434:1"]
-        pub fn opus_multistream_encoder_destroy(st: *mut OpusMSEncoder);
-        #[c2rust::src_loc = "448:1"]
-        pub fn opus_multistream_encoder_ctl(
-            st: *mut OpusMSEncoder,
-            request: libc::c_int,
-            _: ...
-        ) -> libc::c_int;
-    }
-}
 #[c2rust::header_src = "/usr/include/assert.h:38"]
 pub mod assert_h {
     extern "C" {
@@ -90,12 +19,8 @@ pub mod assert_h {
     }
 }
 use self::assert_h::__assert_fail;
-use self::opus_h::{
+use libopus_unsafe::{
     opus_encode, opus_encoder_create, opus_encoder_ctl, opus_encoder_destroy, OpusEncoder,
-};
-use self::opus_multistream_h::{
-    opus_multistream_encode, opus_multistream_encoder_create, opus_multistream_encoder_ctl,
-    opus_multistream_encoder_destroy, opus_multistream_surround_encoder_create, OpusMSEncoder,
 };
 
 #[c2rust::src_loc = "44:1"]

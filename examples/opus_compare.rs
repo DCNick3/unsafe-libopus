@@ -13,62 +13,12 @@
 #![register_tool(c2rust)]
 
 use ::libc;
-use libc::{fclose, fopen, fprintf, fread, FILE};
+use libc::{atoi, fclose, fopen, fprintf, fread, FILE};
 use libc_stdhandle::stderr;
 use libopus_unsafe::externs::{free, malloc, realloc, strcmp};
 
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:28"]
-pub mod stddef_h {
-    #[c2rust::src_loc = "46:1"]
-    pub type size_t = libc::c_ulong;
-}
-#[c2rust::header_src = "/usr/include/stdlib.h:29"]
-pub mod stdlib_h {
-    #[inline]
-    #[c2rust::src_loc = "361:1"]
-    pub unsafe extern "C" fn atoi(mut __nptr: *const libc::c_char) -> libc::c_int {
-        return strtol(
-            __nptr,
-            0 as *mut libc::c_void as *mut *mut libc::c_char,
-            10 as libc::c_int,
-        ) as libc::c_int;
-    }
-    extern "C" {
-        #[c2rust::src_loc = "177:17"]
-        pub fn strtol(
-            _: *const libc::c_char,
-            _: *mut *mut libc::c_char,
-            _: libc::c_int,
-        ) -> libc::c_long;
-        #[c2rust::src_loc = "637:13"]
-        pub fn exit(_: libc::c_int) -> !;
-    }
-}
-pub use self::stddef_h::size_t;
-pub use self::stdlib_h::{atoi, exit};
+type size_t = libc::c_ulong;
 
-#[c2rust::src_loc = "38:1"]
-unsafe extern "C" fn check_alloc(mut _ptr: *mut libc::c_void) -> *mut libc::c_void {
-    if _ptr.is_null() {
-        fprintf(
-            stderr(),
-            b"Out of memory.\n\0" as *const u8 as *const libc::c_char,
-        );
-        exit(1 as libc::c_int);
-    }
-    return _ptr;
-}
-#[c2rust::src_loc = "46:1"]
-unsafe extern "C" fn opus_malloc(mut _size: size_t) -> *mut libc::c_void {
-    return check_alloc(malloc(_size));
-}
-#[c2rust::src_loc = "50:1"]
-unsafe extern "C" fn opus_realloc(
-    mut _ptr: *mut libc::c_void,
-    mut _size: size_t,
-) -> *mut libc::c_void {
-    return check_alloc(realloc(_ptr, _size));
-}
 #[c2rust::src_loc = "54:1"]
 unsafe extern "C" fn read_pcm16(
     mut _samples: *mut *mut libc::c_float,
@@ -101,7 +51,7 @@ unsafe extern "C" fn read_pcm16(
                     break;
                 }
             }
-            samples = opus_realloc(
+            samples = realloc(
                 samples as *mut libc::c_void,
                 (_nchannels as libc::c_ulong)
                     .wrapping_mul(csamples)
@@ -139,7 +89,7 @@ unsafe extern "C" fn read_pcm16(
         }
         nsamples = (nsamples as libc::c_ulong).wrapping_add(nread) as size_t as size_t;
     }
-    *_samples = opus_realloc(
+    *_samples = realloc(
         samples as *mut libc::c_void,
         (_nchannels as libc::c_ulong)
             .wrapping_mul(nsamples)
@@ -167,7 +117,7 @@ unsafe extern "C" fn band_energy(
     let mut xi: size_t = 0;
     let mut xj: libc::c_int = 0;
     let mut ps_sz: libc::c_int = 0;
-    window = opus_malloc(
+    window = malloc(
         (((3 as libc::c_int + _nchannels) * _window_sz) as libc::c_ulong)
             .wrapping_mul(::core::mem::size_of::<libc::c_float>() as libc::c_ulong),
     ) as *mut libc::c_float;
@@ -453,19 +403,19 @@ unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *const libc::c_char) ->
         .wrapping_sub(480 as libc::c_int as libc::c_ulong)
         .wrapping_add(120 as libc::c_int as libc::c_ulong)
         .wrapping_div(120 as libc::c_int as libc::c_ulong);
-    xb = opus_malloc(
+    xb = malloc(
         nframes
             .wrapping_mul(21 as libc::c_int as libc::c_ulong)
             .wrapping_mul(nchannels as libc::c_ulong)
             .wrapping_mul(::core::mem::size_of::<libc::c_float>() as libc::c_ulong),
     ) as *mut libc::c_float;
-    X = opus_malloc(
+    X = malloc(
         nframes
             .wrapping_mul(240 as libc::c_int as libc::c_ulong)
             .wrapping_mul(nchannels as libc::c_ulong)
             .wrapping_mul(::core::mem::size_of::<libc::c_float>() as libc::c_ulong),
     ) as *mut libc::c_float;
-    Y = opus_malloc(
+    Y = malloc(
         nframes
             .wrapping_mul(yfreqs as libc::c_ulong)
             .wrapping_mul(nchannels as libc::c_ulong)
