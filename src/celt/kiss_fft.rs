@@ -455,34 +455,3 @@ pub unsafe fn opus_fft_c(
     }
     opus_fft_impl(st, fout);
 }
-pub unsafe fn opus_ifft_c(
-    st: *const kiss_fft_state,
-    fin: *const kiss_fft_cpx,
-    fout: *mut kiss_fft_cpx,
-) {
-    let mut i: i32 = 0;
-    if !(fin != fout as *const kiss_fft_cpx) {
-        celt_fatal(
-            b"assertion failed: fin != fout\nIn-place FFT not supported\0" as *const u8
-                as *const i8,
-            b"celt/kiss_fft.c\0" as *const u8 as *const i8,
-            595 as i32,
-        );
-    }
-    i = 0 as i32;
-    while i < (*st).nfft {
-        *fout.offset(*((*st).bitrev).offset(i as isize) as isize) = *fin.offset(i as isize);
-        i += 1;
-    }
-    i = 0 as i32;
-    while i < (*st).nfft {
-        (*fout.offset(i as isize)).i = -(*fout.offset(i as isize)).i;
-        i += 1;
-    }
-    opus_fft_impl(st, fout);
-    i = 0 as i32;
-    while i < (*st).nfft {
-        (*fout.offset(i as isize)).i = -(*fout.offset(i as isize)).i;
-        i += 1;
-    }
-}

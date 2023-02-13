@@ -83,7 +83,6 @@ mod silk {
     pub mod encode_pulses;
     pub mod float {
         pub mod LPC_analysis_filter_FLP;
-        pub mod LPC_inv_pred_gain_FLP;
         pub mod LTP_analysis_filter_FLP;
         pub mod LTP_scale_ctrl_FLP;
         pub mod apply_sine_window_FLP;
@@ -102,7 +101,6 @@ mod silk {
         pub mod noise_shape_analysis_FLP;
         pub mod pitch_analysis_core_FLP;
         pub mod process_gains_FLP;
-        pub mod regularize_correlations_FLP;
         pub mod residual_energy_FLP;
         pub mod scale_copy_vector_FLP;
         pub mod scale_vector_FLP;
