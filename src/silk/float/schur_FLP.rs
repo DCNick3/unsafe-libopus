@@ -1,5 +1,3 @@
-use ::libc;
-
 use crate::celt::celt::celt_fatal;
 #[c2rust::src_loc = "34:1"]
 pub unsafe fn silk_schur_FLP(

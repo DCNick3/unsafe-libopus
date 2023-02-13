@@ -1,5 +1,4 @@
 use crate::silk::float::inner_product_FLP::silk_inner_product_FLP;
-use ::libc;
 
 #[c2rust::src_loc = "36:1"]
 pub unsafe fn silk_autocorrelation_FLP(

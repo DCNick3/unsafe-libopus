@@ -1,5 +1,4 @@
 use crate::externs::{free, malloc};
-use ::libc;
 
 #[c2rust::header_src = "internal:0"]
 pub mod internal {

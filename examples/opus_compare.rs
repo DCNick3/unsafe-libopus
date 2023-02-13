@@ -8,7 +8,6 @@
 #![feature(register_tool)]
 #![register_tool(c2rust)]
 
-use ::libc;
 use libc::{atoi, fclose, fopen, fprintf, fread, FILE};
 use libc_stdhandle::stderr;
 use unsafe_libopus::externs::{free, malloc, realloc, strcmp};

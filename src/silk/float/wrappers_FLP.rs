@@ -1,6 +1,5 @@
 use crate::silk::A2NLSF::silk_A2NLSF;
 use crate::silk::NLSF2A::silk_NLSF2A;
-use ::libc;
 
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:32"]
 pub mod xmmintrin_h {

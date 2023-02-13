@@ -1,4 +1,3 @@
-use ::libc;
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:32"]
 pub mod opus_defines_h {
     #[c2rust::src_loc = "54:9"]

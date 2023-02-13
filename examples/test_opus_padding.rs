@@ -8,7 +8,6 @@
 #![feature(register_tool)]
 #![register_tool(c2rust)]
 
-use ::libc;
 use libc::fprintf;
 use libc_stdhandle::stderr;
 

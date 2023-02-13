@@ -1,5 +1,4 @@
 use crate::externs::{free, malloc};
-use ::libc;
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "39:8"]

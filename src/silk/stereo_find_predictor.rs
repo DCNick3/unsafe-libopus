@@ -1,7 +1,6 @@
 use crate::silk::inner_prod_aligned::silk_inner_prod_aligned_scale;
 use crate::silk::sum_sqr_shift::silk_sum_sqr_shift;
 use crate::silk::SigProc_FIX::silk_max_int;
-use ::libc;
 
 use crate::silk::Inlines::{silk_DIV32_varQ, silk_SQRT_APPROX};
 

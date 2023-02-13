@@ -1,5 +1,4 @@
 use crate::celt::kiss_fft::{kiss_fft_cpx, kiss_fft_state, opus_fft_impl};
-use ::libc;
 
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:48"]
 pub mod arch_h {

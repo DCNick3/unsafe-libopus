@@ -1,5 +1,3 @@
-use ::libc;
-
 pub const PE_NB_CBKS_STAGE3_MIN: libc::c_int = 16;
 pub const PE_NB_CBKS_STAGE3_MID: libc::c_int = 24;
 pub const PE_NB_CBKS_STAGE3_MAX: libc::c_int = 34;

@@ -1,5 +1,3 @@
-use ::libc;
-
 pub const RESAMPLER_DOWN_ORDER_FIR2: libc::c_int = 36 as libc::c_int;
 pub const RESAMPLER_DOWN_ORDER_FIR1: libc::c_int = 24 as libc::c_int;
 pub const RESAMPLER_DOWN_ORDER_FIR0: libc::c_int = 18 as libc::c_int;

@@ -1,4 +1,3 @@
-use ::libc;
 use libc::fprintf;
 use libc_stdhandle::stderr;
 use unsafe_libopus::{

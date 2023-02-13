@@ -2,7 +2,6 @@ use crate::celt::bands::{
     compute_band_energies, haar1, hysteresis_decision, normalise_bands, quant_all_bands,
     spreading_decision, SPREAD_AGGRESSIVE, SPREAD_NONE, SPREAD_NORMAL,
 };
-use ::libc;
 
 #[c2rust::header_src = "internal:0"]
 pub mod internal {

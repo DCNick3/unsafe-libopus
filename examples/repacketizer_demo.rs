@@ -8,7 +8,6 @@
 #![feature(register_tool)]
 #![register_tool(c2rust)]
 
-use ::libc;
 use libc::{atoi, fclose, feof, fopen, fprintf, fread, fwrite, FILE};
 use libc_stdhandle::stderr;
 

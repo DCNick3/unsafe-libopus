@@ -1,5 +1,4 @@
 use crate::celt::celt::celt_fatal;
-use ::libc;
 
 #[c2rust::src_loc = "40:1"]
 pub unsafe fn silk_insertion_sort_increasing(

@@ -1,5 +1,3 @@
-use ::libc;
-
 use crate::silk::define::CODE_INDEPENDENTLY;
 use crate::silk::float::structs_FLP::{silk_encoder_control_FLP, silk_encoder_state_FLP};
 use crate::silk::tables_other::silk_LTPScales_table_Q14;

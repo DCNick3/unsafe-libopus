@@ -4,7 +4,6 @@ use crate::silk::pitch_est_tables::{
     PE_MAX_NB_SUBFR, PE_NB_CBKS_STAGE2_10MS, PE_NB_CBKS_STAGE2_EXT, PE_NB_CBKS_STAGE3_10MS,
     PE_NB_CBKS_STAGE3_MAX,
 };
-use ::libc;
 
 #[c2rust::src_loc = "38:1"]
 pub unsafe fn silk_decode_pitch(

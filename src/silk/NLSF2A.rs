@@ -1,5 +1,3 @@
-use ::libc;
-
 use crate::celt::celt::celt_fatal;
 use crate::silk::bwexpander_32::silk_bwexpander_32;
 use crate::silk::define::MAX_LPC_STABILIZE_ITERATIONS;

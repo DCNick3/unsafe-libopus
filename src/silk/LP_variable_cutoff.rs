@@ -1,5 +1,3 @@
-use ::libc;
-
 use crate::externs::memcpy;
 use crate::silk::biquad_alt::silk_biquad_alt_stride1;
 use crate::silk::define::{TRANSITION_INT_NUM, TRANSITION_NA, TRANSITION_NB};

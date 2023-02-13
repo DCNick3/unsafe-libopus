@@ -3,7 +3,6 @@ use crate::silk::tables_other::{
     silk_stereo_only_code_mid_iCDF, silk_stereo_pred_joint_iCDF, silk_stereo_pred_quant_Q13,
     silk_uniform3_iCDF, silk_uniform5_iCDF,
 };
-use ::libc;
 
 #[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_stereo_decode_pred(psRangeDec: *mut ec_dec, pred_Q13: *mut i32) {

@@ -1,5 +1,3 @@
-use ::libc;
-
 #[c2rust::src_loc = "38:9"]
 pub const RAND_BUF_MASK: libc::c_int = RAND_BUF_SIZE - 1 as libc::c_int;
 #[c2rust::src_loc = "37:9"]

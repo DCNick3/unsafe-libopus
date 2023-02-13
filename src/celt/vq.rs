@@ -1,5 +1,4 @@
 use crate::celt::bands::SPREAD_NONE;
-use ::libc;
 use std::f32::consts::PI;
 
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]

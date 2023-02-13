@@ -1,5 +1,3 @@
-use ::libc;
-
 use crate::celt::celt::celt_fatal;
 use crate::silk::define::MAX_NB_SUBFR;
 use crate::silk::float::energy_FLP::silk_energy_FLP;

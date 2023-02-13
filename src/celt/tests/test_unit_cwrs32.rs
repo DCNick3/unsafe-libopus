@@ -1,4 +1,3 @@
-use ::libc;
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:33"]
 pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]

@@ -1,5 +1,3 @@
-use ::libc;
-
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/float.h:32"]
 pub mod float_h {
     #[c2rust::src_loc = "121:9"]

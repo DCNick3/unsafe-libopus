@@ -1,5 +1,3 @@
-use ::libc;
-
 use crate::externs::memset;
 use crate::silk::define::TRANSITION_FRAMES;
 use crate::silk::enc_API::silk_EncControlStruct;

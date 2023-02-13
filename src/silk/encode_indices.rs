@@ -1,5 +1,3 @@
-use ::libc;
-
 use crate::celt::celt::celt_fatal;
 use crate::celt::entenc::{ec_enc, ec_enc_icdf};
 use crate::silk::define::{

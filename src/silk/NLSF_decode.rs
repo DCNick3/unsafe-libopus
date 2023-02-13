@@ -1,6 +1,5 @@
 use crate::silk::NLSF_stabilize::silk_NLSF_stabilize;
 use crate::silk::NLSF_unpack::silk_NLSF_unpack;
-use ::libc;
 
 use crate::silk::structs::silk_NLSF_CB_struct;
 

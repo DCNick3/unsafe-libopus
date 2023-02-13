@@ -1,4 +1,3 @@
-use ::libc;
 #[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_k2a_FLP(A: *mut libc::c_float, rc: *const libc::c_float, order: i32) {
     let mut k: libc::c_int = 0;

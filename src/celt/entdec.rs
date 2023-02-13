@@ -1,7 +1,6 @@
 use crate::celt::celt::celt_fatal;
 use crate::celt::entcode::{celt_udiv, ec_ctx, ec_window, EC_UINT_BITS, EC_WINDOW_SIZE};
 use crate::silk::macros::EC_CLZ0;
-use ::libc;
 
 #[c2rust::src_loc = "48:1"]
 pub type ec_dec = ec_ctx;

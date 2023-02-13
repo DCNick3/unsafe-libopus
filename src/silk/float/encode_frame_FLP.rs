@@ -1,5 +1,3 @@
-use ::libc;
-
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:33"]
 pub mod SigProc_FLP_h {
     #[inline]

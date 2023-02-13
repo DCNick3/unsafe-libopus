@@ -1,5 +1,3 @@
-use ::libc;
-
 use crate::silk::define::MAX_PREDICTION_POWER_GAIN;
 
 use crate::externs::memcpy;

@@ -1,4 +1,3 @@
-use ::libc;
 #[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_bwexpander(ar: *mut i16, d: libc::c_int, mut chirp_Q16: i32) {
     let mut i: libc::c_int = 0;

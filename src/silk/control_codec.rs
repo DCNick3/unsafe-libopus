@@ -1,4 +1,3 @@
-use ::libc;
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:35"]
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]

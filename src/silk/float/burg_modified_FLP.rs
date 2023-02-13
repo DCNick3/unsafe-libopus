@@ -1,5 +1,3 @@
-use ::libc;
-
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tuning_parameters.h:33"]
 pub mod tuning_parameters_h {
     #[c2rust::src_loc = "54:9"]

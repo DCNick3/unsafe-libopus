@@ -1,6 +1,5 @@
 use crate::silk::sort::silk_insertion_sort_increasing_all_values_int16;
 use crate::silk::SigProc_FIX::{silk_max_int, silk_min_int};
-use ::libc;
 
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:41"]
 pub mod typedef_h {

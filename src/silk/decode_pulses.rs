@@ -1,5 +1,3 @@
-use ::libc;
-
 use crate::celt::celt::celt_fatal;
 use crate::celt::entdec::{ec_dec, ec_dec_icdf};
 use crate::externs::memset;

@@ -1,5 +1,4 @@
 use crate::silk::macros::EC_CLZ0;
-use ::libc;
 
 #[c2rust::src_loc = "35:10"]
 pub const EC_SYM_BITS: libc::c_int = 8 as libc::c_int;

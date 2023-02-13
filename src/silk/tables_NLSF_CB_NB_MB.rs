@@ -1,5 +1,3 @@
-use ::libc;
-
 use crate::silk::structs::silk_NLSF_CB_struct;
 
 #[c2rust::src_loc = "34:25"]

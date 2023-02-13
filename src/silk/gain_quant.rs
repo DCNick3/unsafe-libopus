@@ -1,7 +1,6 @@
 use crate::silk::lin2log::silk_lin2log;
 use crate::silk::log2lin::silk_log2lin;
 use crate::silk::SigProc_FIX::{silk_max_int, silk_min_32, silk_min_int};
-use ::libc;
 
 use crate::silk::define::{
     MAX_DELTA_GAIN_QUANT, MIN_DELTA_GAIN_QUANT, MIN_QGAIN_DB, N_LEVELS_QGAIN,

@@ -1,5 +1,3 @@
-use ::libc;
-
 use crate::externs::{memcpy, memset};
 use crate::silk::bwexpander::silk_bwexpander;
 use crate::silk::decode_pitch::silk_decode_pitch;

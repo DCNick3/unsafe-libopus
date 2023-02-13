@@ -1,5 +1,3 @@
-use ::libc;
-
 use crate::silk::macros::silk_CLZ32;
 use crate::silk::SigProc_FIX::silk_max_32;
 

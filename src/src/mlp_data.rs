@@ -1,5 +1,4 @@
 use crate::src::mlp::{DenseLayer, GRULayer};
-use ::libc;
 
 #[c2rust::src_loc = "9:24"]
 static mut layer0_weights: [i8; 800] = [

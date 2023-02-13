@@ -4,7 +4,6 @@ use crate::silk::tables_pulses_per_block::{
     silk_shell_code_table0, silk_shell_code_table1, silk_shell_code_table2, silk_shell_code_table3,
     silk_shell_code_table_offsets,
 };
-use ::libc;
 
 #[inline]
 #[c2rust::src_loc = "36:1"]

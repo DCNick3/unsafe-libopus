@@ -2,7 +2,6 @@ use crate::celt::bands::{
     anti_collapse, celt_lcg_rand, denormalise_bands, quant_all_bands, SPREAD_NORMAL,
 };
 use crate::opus_custom_decoder_ctl;
-use ::libc;
 
 #[c2rust::header_src = "internal:0"]
 pub mod internal {

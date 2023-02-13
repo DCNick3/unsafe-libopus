@@ -1,5 +1,4 @@
 use crate::silk::lin2log::silk_lin2log;
-use ::libc;
 
 use crate::silk::define::TYPE_VOICED;
 use crate::silk::float::structs_FLP::silk_encoder_state_FLP;

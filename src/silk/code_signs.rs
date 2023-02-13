@@ -1,5 +1,3 @@
-use ::libc;
-
 use crate::celt::entdec::{ec_dec, ec_dec_icdf};
 use crate::celt::entenc::{ec_enc, ec_enc_icdf};
 use crate::silk::define::SHELL_CODEC_FRAME_LENGTH;

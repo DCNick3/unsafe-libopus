@@ -10,7 +10,6 @@ use crate::silk::NLSF_del_dec_quant::silk_NLSF_del_dec_quant;
 use crate::silk::NLSF_stabilize::silk_NLSF_stabilize;
 use crate::silk::NLSF_unpack::silk_NLSF_unpack;
 use crate::silk::NLSF_VQ::silk_NLSF_VQ;
-use ::libc;
 
 #[c2rust::src_loc = "38:1"]
 pub unsafe fn silk_NLSF_encode(

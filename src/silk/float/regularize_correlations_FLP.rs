@@ -1,4 +1,3 @@
-use ::libc;
 #[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_regularize_correlations_FLP(
     XX: *mut libc::c_float,

@@ -1,5 +1,4 @@
 use crate::silk::bwexpander_32::silk_bwexpander_32;
-use ::libc;
 
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {

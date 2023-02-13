@@ -1,4 +1,3 @@
-use ::libc;
 #[c2rust::src_loc = "37:25"]
 static mut sigm_LUT_slope_Q10: [i32; 6] = [
     237 as libc::c_int,

@@ -1,5 +1,4 @@
 use crate::celt::modes::OpusCustomMode;
-use ::libc;
 
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:36"]
 pub mod stddef_h {

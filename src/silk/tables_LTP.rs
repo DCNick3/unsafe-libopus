@@ -1,4 +1,3 @@
-use ::libc;
 #[c2rust::src_loc = "34:18"]
 pub static silk_LTP_per_index_iCDF: [u8; 3] = [179, 99, 0];
 #[c2rust::src_loc = "38:25"]

@@ -8,7 +8,6 @@
 #![feature(register_tool)]
 #![register_tool(c2rust)]
 
-use ::libc;
 use libc::{atoi, fprintf, getenv, getpid, strtol, time, time_t};
 use libc_stdhandle::{stderr, stdout};
 

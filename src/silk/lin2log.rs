@@ -1,5 +1,3 @@
-use ::libc;
-
 use crate::silk::Inlines::silk_CLZ_FRAC;
 
 #[c2rust::src_loc = "35:1"]

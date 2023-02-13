@@ -5,7 +5,6 @@ use crate::src::opus_multistream_encoder::{
 };
 use crate::src::opus_private::align;
 use crate::{opus_multistream_encoder_get_size, opus_multistream_encoder_init, OpusMSEncoder};
-use ::libc;
 
 #[c2rust::header_src = "internal:0"]
 pub mod internal {

@@ -1,4 +1,3 @@
-use ::libc;
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:35"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]

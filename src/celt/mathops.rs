@@ -1,5 +1,4 @@
 use crate::silk::macros::EC_CLZ0;
-use ::libc;
 
 use std::f32::consts::PI;
 

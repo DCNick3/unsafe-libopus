@@ -1,5 +1,3 @@
-use ::libc;
-
 use crate::externs::memset;
 use crate::silk::float::structs_FLP::silk_encoder_state_FLP;
 use crate::silk::lin2log::silk_lin2log;

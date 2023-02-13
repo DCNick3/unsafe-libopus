@@ -1,5 +1,3 @@
-use ::libc;
-
 use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memset};
 use crate::silk::resampler_private_IIR_FIR::silk_resampler_private_IIR_FIR;
