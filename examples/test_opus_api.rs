@@ -225,24 +225,20 @@ pub unsafe fn test_dec_api() -> i32 {
         b"    opus_decoder_init() .......................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
-    err = opus_decoder_ctl(
-        dec,
-        4031 as libc::c_int,
-        null_uint_ptr.offset(null_uint_ptr.offset_from(null_uint_ptr) as libc::c_long as isize),
-    );
+    err = opus_decoder_ctl!(dec, 4031 as libc::c_int, null_uint_ptr as *mut u32);
     if err != -(1 as libc::c_int) {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             152 as libc::c_int,
         );
     }
-    err = opus_decoder_ctl(
+    err = opus_decoder_ctl!(
         dec,
         4031 as libc::c_int,
         (&mut dec_final_range as *mut u32).offset(
             (&mut dec_final_range as *mut u32).offset_from(&mut dec_final_range as *mut u32)
                 as libc::c_long as isize,
-        ),
+        )
     );
     if err != 0 as libc::c_int {
         _test_failed(
@@ -256,7 +252,7 @@ pub unsafe fn test_dec_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 1;
-    err = opus_decoder_ctl(dec, -(5 as libc::c_int));
+    err = opus_decoder_ctl!(dec, -(5 as libc::c_int));
     if err != -(5 as libc::c_int) {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -269,22 +265,18 @@ pub unsafe fn test_dec_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 1;
-    err = opus_decoder_ctl(
-        dec,
-        4009 as libc::c_int,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
-    );
+    err = opus_decoder_ctl!(dec, 4009 as libc::c_int, null_uint_ptr as *mut u32);
     if err != -(1 as libc::c_int) {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             166 as libc::c_int,
         );
     }
-    err = opus_decoder_ctl(
+    err = opus_decoder_ctl!(
         dec,
         4009 as libc::c_int,
         (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize)
     );
     if err != 0 as libc::c_int || i != 0 as libc::c_int {
         _test_failed(
@@ -298,10 +290,10 @@ pub unsafe fn test_dec_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 1;
-    err = opus_decoder_ctl(
+    err = opus_decoder_ctl!(
         dec,
         4029 as libc::c_int,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
+        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize)
     );
     if err != -(1 as libc::c_int) {
         _test_failed(
@@ -309,11 +301,11 @@ pub unsafe fn test_dec_api() -> i32 {
             174 as libc::c_int,
         );
     }
-    err = opus_decoder_ctl(
+    err = opus_decoder_ctl!(
         dec,
         4029 as libc::c_int,
         (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize)
     );
     if err != 0 as libc::c_int || i != 48000 as libc::c_int {
         _test_failed(
@@ -327,10 +319,10 @@ pub unsafe fn test_dec_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 1;
-    err = opus_decoder_ctl(
+    err = opus_decoder_ctl!(
         dec,
         4033 as libc::c_int,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
+        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize)
     );
     if err != -(1 as libc::c_int) {
         _test_failed(
@@ -339,11 +331,11 @@ pub unsafe fn test_dec_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_decoder_ctl(
+    err = opus_decoder_ctl!(
         dec,
         4033 as libc::c_int,
         (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize)
     );
     if err != 0 as libc::c_int || i > 0 as libc::c_int || i < -(1 as libc::c_int) {
         _test_failed(
@@ -370,11 +362,11 @@ pub unsafe fn test_dec_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_decoder_ctl(
+    err = opus_decoder_ctl!(
         dec,
         4033 as libc::c_int,
         (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize)
     );
     if err != 0 as libc::c_int || i > 0 as libc::c_int || i < -(1 as libc::c_int) {
         _test_failed(
@@ -399,11 +391,11 @@ pub unsafe fn test_dec_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_decoder_ctl(
+    err = opus_decoder_ctl!(
         dec,
         4033 as libc::c_int,
         (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize)
     );
     if err != 0 as libc::c_int || i > 0 as libc::c_int || i < -(1 as libc::c_int) {
         _test_failed(
@@ -417,10 +409,10 @@ pub unsafe fn test_dec_api() -> i32 {
         b"    OPUS_GET_PITCH ............................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
-    err = opus_decoder_ctl(
+    err = opus_decoder_ctl!(
         dec,
         4039 as libc::c_int,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
+        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize)
     );
     if err != -(1 as libc::c_int) {
         _test_failed(
@@ -428,11 +420,11 @@ pub unsafe fn test_dec_api() -> i32 {
             207 as libc::c_int,
         );
     }
-    err = opus_decoder_ctl(
+    err = opus_decoder_ctl!(
         dec,
         4039 as libc::c_int,
         (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize)
     );
     if err != 0 as libc::c_int || i != 960 as libc::c_int {
         _test_failed(
@@ -446,11 +438,11 @@ pub unsafe fn test_dec_api() -> i32 {
         b"    OPUS_GET_LAST_PACKET_DURATION ................ OK.\n\0" as *const u8
             as *const libc::c_char,
     );
-    err = opus_decoder_ctl(
+    err = opus_decoder_ctl!(
         dec,
         4045 as libc::c_int,
         (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize)
     );
     if err != 0 as libc::c_int || i != 0 as libc::c_int {
         _test_failed(
@@ -459,10 +451,10 @@ pub unsafe fn test_dec_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_decoder_ctl(
+    err = opus_decoder_ctl!(
         dec,
         4045 as libc::c_int,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
+        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize)
     );
     if err != -(1 as libc::c_int) {
         _test_failed(
@@ -471,7 +463,7 @@ pub unsafe fn test_dec_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_decoder_ctl(dec, 4034 as libc::c_int, -(32769 as libc::c_int));
+    err = opus_decoder_ctl!(dec, 4034 as libc::c_int, -(32769 as libc::c_int));
     if err != -(1 as libc::c_int) {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -479,7 +471,7 @@ pub unsafe fn test_dec_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_decoder_ctl(dec, 4034 as libc::c_int, 32768 as libc::c_int);
+    err = opus_decoder_ctl!(dec, 4034 as libc::c_int, 32768 as libc::c_int);
     if err != -(1 as libc::c_int) {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -487,7 +479,7 @@ pub unsafe fn test_dec_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_decoder_ctl(dec, 4034 as libc::c_int, -(15 as libc::c_int));
+    err = opus_decoder_ctl!(dec, 4034 as libc::c_int, -(15 as libc::c_int));
     if err != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -495,11 +487,11 @@ pub unsafe fn test_dec_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_decoder_ctl(
+    err = opus_decoder_ctl!(
         dec,
         4045 as libc::c_int,
         (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize),
+            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize)
     );
     if err != 0 as libc::c_int || i != -(15 as libc::c_int) {
         _test_failed(
@@ -524,7 +516,7 @@ pub unsafe fn test_dec_api() -> i32 {
         dec as *const libc::c_void,
         opus_decoder_get_size(2 as libc::c_int) as libc::c_ulong,
     );
-    if opus_decoder_ctl(dec, 4028 as libc::c_int) != 0 as libc::c_int {
+    if opus_decoder_ctl!(dec, 4028 as libc::c_int) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             242 as libc::c_int,
@@ -1491,12 +1483,12 @@ pub unsafe fn test_msdec_api() -> i32 {
                 572 as libc::c_int,
             );
         }
-        err = opus_decoder_ctl(
+        err = opus_decoder_ctl!(
             od,
             4045 as libc::c_int,
             (&mut i as *mut i32).offset(
                 (&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize
-            ),
+            )
         );
         if err != 0 as libc::c_int || i != 0 as libc::c_int {
             _test_failed(
@@ -1537,12 +1529,12 @@ pub unsafe fn test_msdec_api() -> i32 {
                 586 as libc::c_int,
             );
         }
-        err = opus_decoder_ctl(
+        err = opus_decoder_ctl!(
             od_0,
             4045 as libc::c_int,
             (&mut i as *mut i32).offset(
                 (&mut i as *mut i32).offset_from(&mut i as *mut i32) as libc::c_long as isize
-            ),
+            )
         );
         if err != 0 as libc::c_int || i != 15 as libc::c_int {
             _test_failed(
@@ -4533,11 +4525,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 6 as libc::c_int;
-    err = opus_encoder_ctl(
-        enc,
-        4031 as libc::c_int,
-        null_uint_ptr.offset(null_uint_ptr.offset_from(null_uint_ptr) as libc::c_long as isize),
-    );
+    err = opus_encoder_ctl(enc, 4031 as libc::c_int, null_uint_ptr as *mut u32);
     if err != -(1 as libc::c_int) {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,

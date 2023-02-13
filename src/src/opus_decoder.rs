@@ -1306,13 +1306,11 @@ pub unsafe fn opus_decode_float(
     );
 }
 #[c2rust::src_loc = "833:1"]
-pub unsafe extern "C" fn opus_decoder_ctl(
+pub unsafe extern "C" fn opus_decoder_ctl_impl(
     mut st: *mut OpusDecoder,
     request: libc::c_int,
     args: ...
 ) -> libc::c_int {
-    let current_block: u64;
-    let mut ret: libc::c_int = OPUS_OK;
     let mut ap: ::core::ffi::VaListImpl;
     let mut silk_dec: *mut libc::c_void = 0 as *mut libc::c_void;
     let mut celt_dec: *mut OpusCustomDecoder = 0 as *mut OpusCustomDecoder;
@@ -1325,19 +1323,19 @@ pub unsafe extern "C" fn opus_decoder_ctl(
         OPUS_GET_BANDWIDTH_REQUEST => {
             let value: *mut i32 = ap.arg::<*mut i32>();
             if value.is_null() {
-                current_block = 2989495919056355252;
+                OPUS_BAD_ARG
             } else {
                 *value = (*st).bandwidth;
-                current_block = 3160140712158701372;
+                OPUS_OK
             }
         }
         OPUS_GET_FINAL_RANGE_REQUEST => {
             let value_0: *mut u32 = ap.arg::<*mut u32>();
             if value_0.is_null() {
-                current_block = 2989495919056355252;
+                OPUS_BAD_ARG
             } else {
                 *value_0 = (*st).rangeFinal;
-                current_block = 3160140712158701372;
+                OPUS_OK
             }
         }
         OPUS_RESET_STATE => {
@@ -1357,95 +1355,95 @@ pub unsafe extern "C" fn opus_decoder_ctl(
             silk_InitDecoder(silk_dec);
             (*st).stream_channels = (*st).channels;
             (*st).frame_size = (*st).Fs / 400 as libc::c_int;
-            current_block = 3160140712158701372;
+            OPUS_OK
         }
         OPUS_GET_SAMPLE_RATE_REQUEST => {
             let value_1: *mut i32 = ap.arg::<*mut i32>();
             if value_1.is_null() {
-                current_block = 2989495919056355252;
+                OPUS_BAD_ARG
             } else {
                 *value_1 = (*st).Fs;
-                current_block = 3160140712158701372;
+                OPUS_OK
             }
         }
         OPUS_GET_PITCH_REQUEST => {
             let value_2: *mut i32 = ap.arg::<*mut i32>();
             if value_2.is_null() {
-                current_block = 2989495919056355252;
+                OPUS_BAD_ARG
             } else {
                 if (*st).prev_mode == MODE_CELT_ONLY {
-                    ret = opus_custom_decoder_ctl(
+                    opus_custom_decoder_ctl(
                         celt_dec,
                         OPUS_GET_PITCH_REQUEST,
                         value_2.offset(value_2.offset_from(value_2) as libc::c_long as isize),
-                    );
+                    )
                 } else {
                     *value_2 = (*st).DecControl.prevPitchLag;
+                    OPUS_OK
                 }
-                current_block = 3160140712158701372;
             }
         }
         OPUS_GET_GAIN_REQUEST => {
             let value_3: *mut i32 = ap.arg::<*mut i32>();
             if value_3.is_null() {
-                current_block = 2989495919056355252;
+                OPUS_BAD_ARG
             } else {
                 *value_3 = (*st).decode_gain;
-                current_block = 3160140712158701372;
+                OPUS_OK
             }
         }
         OPUS_SET_GAIN_REQUEST => {
             let value_4: i32 = ap.arg::<i32>();
             if value_4 < -(32768 as libc::c_int) || value_4 > 32767 as libc::c_int {
-                current_block = 2989495919056355252;
+                OPUS_BAD_ARG
             } else {
                 (*st).decode_gain = value_4;
-                current_block = 3160140712158701372;
+                OPUS_OK
             }
         }
         OPUS_GET_LAST_PACKET_DURATION_REQUEST => {
             let value_5: *mut i32 = ap.arg::<*mut i32>();
             if value_5.is_null() {
-                current_block = 2989495919056355252;
+                OPUS_BAD_ARG
             } else {
                 *value_5 = (*st).last_packet_duration;
-                current_block = 3160140712158701372;
+                OPUS_OK
             }
         }
         OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST => {
             let value_6: i32 = ap.arg::<i32>();
             if value_6 < 0 as libc::c_int || value_6 > 1 as libc::c_int {
-                current_block = 2989495919056355252;
+                OPUS_BAD_ARG
             } else {
-                ret = opus_custom_decoder_ctl(
+                opus_custom_decoder_ctl(
                     celt_dec,
                     OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST,
                     value_6,
-                );
-                current_block = 3160140712158701372;
+                )
             }
         }
         OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST => {
             let value_7: *mut i32 = ap.arg::<*mut i32>();
             if value_7.is_null() {
-                current_block = 2989495919056355252;
+                OPUS_BAD_ARG
             } else {
-                ret = opus_custom_decoder_ctl(
+                opus_custom_decoder_ctl(
                     celt_dec,
                     OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST,
                     value_7.offset(value_7.offset_from(value_7) as libc::c_long as isize),
-                );
-                current_block = 3160140712158701372;
+                )
             }
         }
-        _ => {
-            ret = OPUS_UNIMPLEMENTED;
-            current_block = 3160140712158701372;
-        }
+        _ => OPUS_UNIMPLEMENTED,
     }
-    match current_block {
-        2989495919056355252 => return OPUS_BAD_ARG,
-        _ => return ret,
+}
+#[macro_export]
+macro_rules! opus_decoder_ctl {
+    ($st:expr,$request:expr, $($arg:expr),*) => {
+        $crate::opus_decoder_ctl_impl($st,$request,$($arg),*)
+    };
+    ($st:expr,$request:expr) => {
+        opus_decoder_ctl!($st,$request,)
     };
 }
 #[c2rust::src_loc = "966:1"]

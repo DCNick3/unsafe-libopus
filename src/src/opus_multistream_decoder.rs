@@ -621,7 +621,7 @@ pub unsafe fn opus_multistream_decoder_ctl_va_list(
             let mut dec: *mut OpusDecoder = 0 as *mut OpusDecoder;
             let value: *mut i32 = ap.arg::<*mut i32>();
             dec = ptr as *mut OpusDecoder;
-            ret = opus_decoder_ctl(dec, request, value);
+            ret = opus_decoder_ctl!(dec, request, value);
             current_block = 7343950298149844727;
         }
         OPUS_GET_FINAL_RANGE_REQUEST => {
@@ -641,7 +641,7 @@ pub unsafe fn opus_multistream_decoder_ctl_va_list(
                     } else {
                         ptr = ptr.offset(align(mono_size) as isize);
                     }
-                    ret = opus_decoder_ctl(dec_0, request, &mut tmp as *mut u32);
+                    ret = opus_decoder_ctl!(dec_0, request, &mut tmp as *mut u32);
                     if ret != OPUS_OK {
                         break;
                     }
@@ -662,7 +662,7 @@ pub unsafe fn opus_multistream_decoder_ctl_va_list(
                 } else {
                     ptr = ptr.offset(align(mono_size) as isize);
                 }
-                ret = opus_decoder_ctl(dec_1, OPUS_RESET_STATE);
+                ret = opus_decoder_ctl!(dec_1, OPUS_RESET_STATE);
                 if ret != OPUS_OK {
                     break;
                 }
@@ -708,7 +708,7 @@ pub unsafe fn opus_multistream_decoder_ctl_va_list(
                 } else {
                     ptr = ptr.offset(align(mono_size) as isize);
                 }
-                ret = opus_decoder_ctl(dec_2, request, value_2);
+                ret = opus_decoder_ctl!(dec_2, request, value_2);
                 if ret != OPUS_OK {
                     break;
                 }
