@@ -9,6 +9,7 @@
 #![register_tool(c2rust)]
 
 pub mod externs;
+pub mod varargs;
 
 extern crate libc;
 mod celt {
