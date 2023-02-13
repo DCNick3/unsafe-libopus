@@ -265,7 +265,11 @@ pub unsafe fn test_dec_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 1;
-    err = opus_decoder_ctl!(dec, 4009 as libc::c_int, null_uint_ptr as *mut u32);
+    err = opus_decoder_ctl!(
+        dec,
+        4009 as libc::c_int,
+        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize)
+    );
     if err != -(1 as libc::c_int) {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,

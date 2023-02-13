@@ -142,6 +142,7 @@ use crate::silk::dec_API::silk_DecControlStruct;
 use crate::silk::dec_API::{silk_Decode, silk_Get_Decoder_Size, silk_InitDecoder};
 use crate::src::opus::opus_packet_parse_impl;
 use crate::src::opus_private::{align, MODE_CELT_ONLY, MODE_HYBRID, MODE_SILK_ONLY};
+use crate::varargs::VarArgs;
 use crate::{opus_packet_get_samples_per_frame, opus_pcm_soft_clip};
 
 #[derive(Copy, Clone)]
@@ -1306,19 +1307,20 @@ pub unsafe fn opus_decode_float(
     );
 }
 #[c2rust::src_loc = "833:1"]
-pub unsafe extern "C" fn opus_decoder_ctl_impl(
+pub unsafe fn opus_decoder_ctl_impl(
     mut st: *mut OpusDecoder,
     request: libc::c_int,
-    args: ...
+    args: VarArgs,
 ) -> libc::c_int {
-    let mut ap: ::core::ffi::VaListImpl;
     let mut silk_dec: *mut libc::c_void = 0 as *mut libc::c_void;
     let mut celt_dec: *mut OpusCustomDecoder = 0 as *mut OpusCustomDecoder;
     silk_dec =
         (st as *mut libc::c_char).offset((*st).silk_dec_offset as isize) as *mut libc::c_void;
     celt_dec =
         (st as *mut libc::c_char).offset((*st).celt_dec_offset as isize) as *mut OpusCustomDecoder;
-    ap = args.clone();
+
+    let mut ap = args;
+
     match request {
         OPUS_GET_BANDWIDTH_REQUEST => {
             let value: *mut i32 = ap.arg::<*mut i32>();
@@ -1440,10 +1442,17 @@ pub unsafe extern "C" fn opus_decoder_ctl_impl(
 #[macro_export]
 macro_rules! opus_decoder_ctl {
     ($st:expr,$request:expr, $($arg:expr),*) => {
-        $crate::opus_decoder_ctl_impl($st,$request,$($arg),*)
+        $crate::opus_decoder_ctl_impl(
+            $st,
+            $request,
+            $crate::varargs!($($arg),*)
+        )
+    };
+    ($st:expr,$request:expr, $($arg:expr),*,) => {
+        opus_decoder_ctl!($st, $request, $($arg),*)
     };
     ($st:expr,$request:expr) => {
-        opus_decoder_ctl!($st,$request,)
+        opus_decoder_ctl!($st, $request,)
     };
 }
 #[c2rust::src_loc = "966:1"]

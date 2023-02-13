@@ -2005,7 +2005,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                                 && (rand() % 100 as libc::c_int) < packet_loss_perc)
                                                                             as libc::c_int;
                                                                         if lost != 0 {
-                                                                            opus_decoder_ctl(
+                                                                            opus_decoder_ctl!(
                                                                                 dec,
                                                                                 4039 as libc::c_int,
                                                                                 (&mut output_samples as *mut i32)
@@ -2022,7 +2022,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                         if count >= use_inbandfec {
                                                                             if use_inbandfec != 0 {
                                                                                 if lost_prev != 0 {
-                                                                                    opus_decoder_ctl(
+                                                                                    opus_decoder_ctl!(
                                                                                         dec,
                                                                                         4039 as libc::c_int,
                                                                                         (&mut output_samples as *mut i32)
@@ -2139,7 +2139,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                         }
                                                                     }
                                                                     if encode_only == 0 {
-                                                                        opus_decoder_ctl(
+                                                                        opus_decoder_ctl!(
                                                                             dec,
                                                                             4031 as libc::c_int,
                                                                             (&mut dec_final_range as *mut u32)

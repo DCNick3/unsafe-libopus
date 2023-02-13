@@ -72,6 +72,12 @@ impl VarArgs {
 #[macro_export]
 macro_rules! varargs {
     ($($arg:expr),*) => {
-        VarArgs::new(vec![$(IntoVarArg::into_vararg($arg)),*])
+        $crate::varargs::VarArgs::new(
+            vec![
+                $(
+                    $crate::varargs::IntoVarArg::into_vararg($arg)
+                ),*
+            ]
+        )
     };
 }

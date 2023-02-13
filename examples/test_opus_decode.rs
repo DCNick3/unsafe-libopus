@@ -261,7 +261,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c_int {
                     110 as libc::c_int,
                 );
             }
-            if opus_decoder_ctl(
+            if opus_decoder_ctl!(
                 dec[t as usize],
                 4039 as libc::c_int,
                 (&mut dur as *mut i32).offset(
@@ -351,7 +351,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c_int {
                     126 as libc::c_int,
                 );
             }
-            if opus_decoder_ctl(
+            if opus_decoder_ctl!(
                 dec[t as usize],
                 4039 as libc::c_int,
                 (&mut dur as *mut i32).offset(
@@ -480,7 +480,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c_int {
                     159 as libc::c_int,
                 );
             }
-            if opus_decoder_ctl(dec[t as usize], 4028 as libc::c_int) != 0 as libc::c_int {
+            if opus_decoder_ctl!(dec[t as usize], 4028 as libc::c_int) != 0 as libc::c_int {
                 _test_failed(
                     b"tests/test_opus_decode.c\0" as *const u8 as *const libc::c_char,
                     162 as libc::c_int,
@@ -543,7 +543,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c_int {
                         189 as libc::c_int,
                     );
                 }
-                if opus_decoder_ctl(
+                if opus_decoder_ctl!(
                     dec[t as usize],
                     4039 as libc::c_int,
                     (&mut dur_0 as *mut i32)
@@ -562,7 +562,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c_int {
                         191 as libc::c_int,
                     );
                 }
-                opus_decoder_ctl(
+                opus_decoder_ctl!(
                     dec[t as usize],
                     4031 as libc::c_int,
                     (&mut dec_final_range1 as *mut u32).offset(
@@ -603,7 +603,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c_int {
                         204 as libc::c_int,
                     );
                 }
-                if opus_decoder_ctl(
+                if opus_decoder_ctl!(
                     dec[t as usize],
                     4039 as libc::c_int,
                     (&mut dur_0 as *mut i32)
@@ -639,7 +639,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c_int {
                         213 as libc::c_int,
                     );
                 }
-                if opus_decoder_ctl(
+                if opus_decoder_ctl!(
                     dec[t as usize],
                     4039 as libc::c_int,
                     (&mut dur_0 as *mut i32)
@@ -763,7 +763,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c_int {
                 260 as libc::c_int,
             );
         }
-        opus_decoder_ctl(
+        opus_decoder_ctl!(
             dec[t as usize],
             4031 as libc::c_int,
             (&mut dec_final_range1 as *mut u32).offset(
@@ -814,7 +814,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c_int {
                 278 as libc::c_int,
             );
         }
-        opus_decoder_ctl(
+        opus_decoder_ctl!(
             dec[t as usize],
             4031 as libc::c_int,
             (&mut dec_final_range1 as *mut u32).offset(
@@ -879,7 +879,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c_int {
                         299 as libc::c_int,
                     );
                 }
-                opus_decoder_ctl(
+                opus_decoder_ctl!(
                     dec[t as usize],
                     4031 as libc::c_int,
                     (&mut dec_final_range1 as *mut u32).offset(
@@ -1015,7 +1015,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: libc::c_int) -> libc::c_int {
                     328 as libc::c_int,
                 );
             }
-            if opus_decoder_ctl(
+            if opus_decoder_ctl!(
                 dec[t as usize],
                 4039 as libc::c_int,
                 (&mut dur_1 as *mut i32)
