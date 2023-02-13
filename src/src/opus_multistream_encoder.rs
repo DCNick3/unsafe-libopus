@@ -212,6 +212,7 @@ use crate::src::opus_multistream::{
     get_left_channel, get_mono_channel, get_right_channel, validate_layout, ChannelLayout,
 };
 use crate::src::opus_private::{align, OPUS_GET_VOICE_RATIO_REQUEST, OPUS_SET_FORCE_MODE_REQUEST};
+use crate::varargs::VarArgs;
 use crate::{
     opus_encoder_ctl, opus_encoder_get_size, opus_encoder_init, opus_repacketizer_cat,
     opus_repacketizer_get_nb_frames, opus_repacketizer_init, opus_repacketizer_out_range_impl,
@@ -953,7 +954,7 @@ unsafe fn opus_multistream_encoder_init_impl(
             return ret;
         }
         if i == (*st).lfe_stream {
-            opus_encoder_ctl(
+            opus_encoder_ctl!(
                 ptr as *mut OpusEncoder,
                 OPUS_SET_LFE_REQUEST,
                 1 as libc::c_int,
@@ -965,7 +966,7 @@ unsafe fn opus_multistream_encoder_init_impl(
     while i < (*st).layout.nb_streams {
         ret = opus_encoder_init(ptr as *mut OpusEncoder, Fs, 1 as libc::c_int, application);
         if i == (*st).lfe_stream {
-            opus_encoder_ctl(
+            opus_encoder_ctl!(
                 ptr as *mut OpusEncoder,
                 OPUS_SET_LFE_REQUEST,
                 1 as libc::c_int,
@@ -1346,7 +1347,7 @@ unsafe fn rate_allocation(st: *mut OpusMSEncoder, rate: *mut i32, frame_size: li
     ptr = (st as *mut libc::c_char).offset(align(
         ::core::mem::size_of::<OpusMSEncoder>() as libc::c_ulong as libc::c_int
     ) as isize);
-    opus_encoder_ctl(
+    opus_encoder_ctl!(
         ptr as *mut OpusEncoder,
         OPUS_GET_SAMPLE_RATE_REQUEST,
         (&mut Fs as *mut i32).offset(
@@ -1414,21 +1415,21 @@ pub unsafe fn opus_multistream_encode_native(
     ptr = (st as *mut libc::c_char).offset(align(
         ::core::mem::size_of::<OpusMSEncoder>() as libc::c_ulong as libc::c_int
     ) as isize);
-    opus_encoder_ctl(
+    opus_encoder_ctl!(
         ptr as *mut OpusEncoder,
         OPUS_GET_SAMPLE_RATE_REQUEST,
         (&mut Fs as *mut i32).offset(
             (&mut Fs as *mut i32).offset_from(&mut Fs as *mut i32) as libc::c_long as isize
         ),
     );
-    opus_encoder_ctl(
+    opus_encoder_ctl!(
         ptr as *mut OpusEncoder,
         OPUS_GET_VBR_REQUEST,
         (&mut vbr as *mut i32).offset(
             (&mut vbr as *mut i32).offset_from(&mut vbr as *mut i32) as libc::c_long as isize
         ),
     );
-    opus_encoder_ctl(
+    opus_encoder_ctl!(
         ptr as *mut OpusEncoder,
         CELT_GET_MODE_REQUEST,
         (&mut celt_mode as *mut *const OpusCustomMode).offset(
@@ -1516,7 +1517,7 @@ pub unsafe fn opus_multistream_encode_native(
         } else {
             ptr = ptr.offset(align(mono_size) as isize);
         }
-        opus_encoder_ctl(enc, OPUS_SET_BITRATE_REQUEST, bitrates[s as usize]);
+        opus_encoder_ctl!(enc, OPUS_SET_BITRATE_REQUEST, bitrates[s as usize]);
         if (*st).mapping_type as libc::c_uint
             == MAPPING_TYPE_SURROUND as libc::c_int as libc::c_uint
         {
@@ -1528,22 +1529,22 @@ pub unsafe fn opus_multistream_encode_native(
                     * (*st).layout.nb_channels;
             }
             if equiv_rate > 10000 as libc::c_int * (*st).layout.nb_channels {
-                opus_encoder_ctl(enc, OPUS_SET_BANDWIDTH_REQUEST, 1105 as libc::c_int);
+                opus_encoder_ctl!(enc, OPUS_SET_BANDWIDTH_REQUEST, 1105 as libc::c_int);
             } else if equiv_rate > 7000 as libc::c_int * (*st).layout.nb_channels {
-                opus_encoder_ctl(enc, OPUS_SET_BANDWIDTH_REQUEST, 1104 as libc::c_int);
+                opus_encoder_ctl!(enc, OPUS_SET_BANDWIDTH_REQUEST, 1104 as libc::c_int);
             } else if equiv_rate > 5000 as libc::c_int * (*st).layout.nb_channels {
-                opus_encoder_ctl(enc, OPUS_SET_BANDWIDTH_REQUEST, 1103 as libc::c_int);
+                opus_encoder_ctl!(enc, OPUS_SET_BANDWIDTH_REQUEST, 1103 as libc::c_int);
             } else {
-                opus_encoder_ctl(enc, OPUS_SET_BANDWIDTH_REQUEST, 1101 as libc::c_int);
+                opus_encoder_ctl!(enc, OPUS_SET_BANDWIDTH_REQUEST, 1101 as libc::c_int);
             }
             if s < (*st).layout.nb_coupled_streams {
-                opus_encoder_ctl(enc, OPUS_SET_FORCE_MODE_REQUEST, 1002 as libc::c_int);
-                opus_encoder_ctl(enc, OPUS_SET_FORCE_CHANNELS_REQUEST, 2 as libc::c_int);
+                opus_encoder_ctl!(enc, OPUS_SET_FORCE_MODE_REQUEST, 1002 as libc::c_int);
+                opus_encoder_ctl!(enc, OPUS_SET_FORCE_CHANNELS_REQUEST, 2 as libc::c_int);
             }
         } else if (*st).mapping_type as libc::c_uint
             == MAPPING_TYPE_AMBISONICS as libc::c_int as libc::c_uint
         {
-            opus_encoder_ctl(enc, OPUS_SET_FORCE_MODE_REQUEST, 1002 as libc::c_int);
+            opus_encoder_ctl!(enc, OPUS_SET_FORCE_MODE_REQUEST, 1002 as libc::c_int);
         }
         s += 1;
     }
@@ -1635,7 +1636,7 @@ pub unsafe fn opus_multistream_encode_native(
         if (*st).mapping_type as libc::c_uint
             == MAPPING_TYPE_SURROUND as libc::c_int as libc::c_uint
         {
-            opus_encoder_ctl(
+            opus_encoder_ctl!(
                 enc_0,
                 OPUS_SET_ENERGY_MASK_REQUEST,
                 bandLogE.as_mut_ptr().offset(
@@ -1668,7 +1669,7 @@ pub unsafe fn opus_multistream_encode_native(
             };
         }
         if vbr == 0 && s == (*st).layout.nb_streams - 1 as libc::c_int {
-            opus_encoder_ctl(
+            opus_encoder_ctl!(
                 enc_0,
                 OPUS_SET_BITRATE_REQUEST,
                 curr_max * (8 as libc::c_int * Fs / frame_size),
@@ -1842,7 +1843,7 @@ pub unsafe fn opus_multistream_encode(
 pub unsafe fn opus_multistream_encoder_ctl_va_list(
     mut st: *mut OpusMSEncoder,
     request: libc::c_int,
-    mut ap: ::core::ffi::VaList,
+    mut ap: VarArgs,
 ) -> libc::c_int {
     let mut current_block: u64;
     let mut coupled_size: libc::c_int = 0;
@@ -1903,7 +1904,7 @@ pub unsafe fn opus_multistream_encoder_ctl_va_list(
                     } else {
                         ptr = ptr.offset(align(mono_size) as isize);
                     }
-                    opus_encoder_ctl(enc, request, &mut rate as *mut i32);
+                    opus_encoder_ctl!(enc, request, &mut rate as *mut i32);
                     *value_0 += rate;
                     s += 1;
                 }
@@ -1929,7 +1930,7 @@ pub unsafe fn opus_multistream_encoder_ctl_va_list(
             let mut enc_0: *mut OpusEncoder = 0 as *mut OpusEncoder;
             let value_1: *mut i32 = ap.arg::<*mut i32>();
             enc_0 = ptr as *mut OpusEncoder;
-            ret = opus_encoder_ctl(enc_0, request, value_1);
+            ret = opus_encoder_ctl!(enc_0, request, value_1);
             current_block = 2616667235040759262;
         }
         OPUS_GET_FINAL_RANGE_REQUEST => {
@@ -1949,7 +1950,7 @@ pub unsafe fn opus_multistream_encoder_ctl_va_list(
                     } else {
                         ptr = ptr.offset(align(mono_size) as isize);
                     }
-                    ret = opus_encoder_ctl(enc_1, request, &mut tmp as *mut u32);
+                    ret = opus_encoder_ctl!(enc_1, request, &mut tmp as *mut u32);
                     if ret != OPUS_OK {
                         break;
                     }
@@ -1985,7 +1986,7 @@ pub unsafe fn opus_multistream_encoder_ctl_va_list(
                 } else {
                     ptr = ptr.offset(align(mono_size) as isize);
                 }
-                ret = opus_encoder_ctl(enc_2, request, value_3);
+                ret = opus_encoder_ctl!(enc_2, request, value_3);
                 if ret != OPUS_OK {
                     break;
                 }
@@ -2060,7 +2061,7 @@ pub unsafe fn opus_multistream_encoder_ctl_va_list(
                 } else {
                     ptr = ptr.offset(align(mono_size) as isize);
                 }
-                ret = opus_encoder_ctl(enc_3, OPUS_RESET_STATE);
+                ret = opus_encoder_ctl!(enc_3, OPUS_RESET_STATE);
                 if ret != OPUS_OK {
                     break;
                 }
@@ -2079,16 +2080,26 @@ pub unsafe fn opus_multistream_encoder_ctl_va_list(
     };
 }
 #[c2rust::src_loc = "1315:1"]
-pub unsafe extern "C" fn opus_multistream_encoder_ctl(
+pub unsafe fn opus_multistream_encoder_ctl_impl(
     st: *mut OpusMSEncoder,
     request: libc::c_int,
-    args: ...
+    args: VarArgs,
 ) -> libc::c_int {
     let mut ret: libc::c_int = 0;
-    let mut ap: ::core::ffi::VaListImpl;
-    ap = args.clone();
-    ret = opus_multistream_encoder_ctl_va_list(st, request, ap.as_va_list());
+    ret = opus_multistream_encoder_ctl_va_list(st, request, args);
     return ret;
+}
+#[macro_export]
+macro_rules! opus_multistream_encoder_ctl {
+    ($st:expr, $request:expr, $($arg:expr),*) => {
+        $crate::opus_multistream_encoder_ctl_impl($st, $request, $crate::varargs!($($arg),*))
+    };
+    ($st:expr, $request:expr) => {
+        opus_multistream_encoder_ctl!($st, $request,)
+    };
+    ($st:expr, $request:expr, $($arg:expr),*,) => {
+        opus_multistream_encoder_ctl!($st, $request, $($arg),*)
+    };
 }
 #[c2rust::src_loc = "1325:1"]
 pub unsafe fn opus_multistream_encoder_destroy(st: *mut OpusMSEncoder) {

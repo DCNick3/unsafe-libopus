@@ -516,79 +516,79 @@ pub unsafe fn fuzz_encoder_settings(num_encoders: libc::c_int, num_setting_chang
             } else {
                 num_channels
             };
-            if opus_encoder_ctl(enc, 4002 as libc::c_int, bitrate) != 0 as libc::c_int {
+            if opus_encoder_ctl!(enc, 4002 as libc::c_int, bitrate) != 0 as libc::c_int {
                 _test_failed(
                     b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                     240 as libc::c_int,
                 );
             }
-            if opus_encoder_ctl(enc, 4022 as libc::c_int, force_channel) != 0 as libc::c_int {
+            if opus_encoder_ctl!(enc, 4022 as libc::c_int, force_channel) != 0 as libc::c_int {
                 _test_failed(
                     b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                     241 as libc::c_int,
                 );
             }
-            if opus_encoder_ctl(enc, 4006 as libc::c_int, vbr) != 0 as libc::c_int {
+            if opus_encoder_ctl!(enc, 4006 as libc::c_int, vbr) != 0 as libc::c_int {
                 _test_failed(
                     b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                     242 as libc::c_int,
                 );
             }
-            if opus_encoder_ctl(enc, 4020 as libc::c_int, vbr_constraint) != 0 as libc::c_int {
+            if opus_encoder_ctl!(enc, 4020 as libc::c_int, vbr_constraint) != 0 as libc::c_int {
                 _test_failed(
                     b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                     243 as libc::c_int,
                 );
             }
-            if opus_encoder_ctl(enc, 4010 as libc::c_int, complexity) != 0 as libc::c_int {
+            if opus_encoder_ctl!(enc, 4010 as libc::c_int, complexity) != 0 as libc::c_int {
                 _test_failed(
                     b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                     244 as libc::c_int,
                 );
             }
-            if opus_encoder_ctl(enc, 4004 as libc::c_int, max_bw) != 0 as libc::c_int {
+            if opus_encoder_ctl!(enc, 4004 as libc::c_int, max_bw) != 0 as libc::c_int {
                 _test_failed(
                     b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                     245 as libc::c_int,
                 );
             }
-            if opus_encoder_ctl(enc, 4024 as libc::c_int, sig) != 0 as libc::c_int {
+            if opus_encoder_ctl!(enc, 4024 as libc::c_int, sig) != 0 as libc::c_int {
                 _test_failed(
                     b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                     246 as libc::c_int,
                 );
             }
-            if opus_encoder_ctl(enc, 4012 as libc::c_int, inband_fec) != 0 as libc::c_int {
+            if opus_encoder_ctl!(enc, 4012 as libc::c_int, inband_fec) != 0 as libc::c_int {
                 _test_failed(
                     b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                     247 as libc::c_int,
                 );
             }
-            if opus_encoder_ctl(enc, 4014 as libc::c_int, pkt_loss) != 0 as libc::c_int {
+            if opus_encoder_ctl!(enc, 4014 as libc::c_int, pkt_loss) != 0 as libc::c_int {
                 _test_failed(
                     b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                     248 as libc::c_int,
                 );
             }
-            if opus_encoder_ctl(enc, 4036 as libc::c_int, lsb_depth) != 0 as libc::c_int {
+            if opus_encoder_ctl!(enc, 4036 as libc::c_int, lsb_depth) != 0 as libc::c_int {
                 _test_failed(
                     b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                     249 as libc::c_int,
                 );
             }
-            if opus_encoder_ctl(enc, 4042 as libc::c_int, pred_disabled) != 0 as libc::c_int {
+            if opus_encoder_ctl!(enc, 4042 as libc::c_int, pred_disabled) != 0 as libc::c_int {
                 _test_failed(
                     b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                     250 as libc::c_int,
                 );
             }
-            if opus_encoder_ctl(enc, 4016 as libc::c_int, dtx) != 0 as libc::c_int {
+            if opus_encoder_ctl!(enc, 4016 as libc::c_int, dtx) != 0 as libc::c_int {
                 _test_failed(
                     b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                     251 as libc::c_int,
                 );
             }
-            if opus_encoder_ctl(enc, 4040 as libc::c_int, frame_size_enum) != 0 as libc::c_int {
+            if opus_encoder_ctl!(enc, 4040 as libc::c_int, frame_size_enum) != 0 as libc::c_int {
                 _test_failed(
                     b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                     252 as libc::c_int,
@@ -1053,7 +1053,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
             328 as libc::c_int,
         );
     }
-    if opus_multistream_encoder_ctl(
+    if opus_multistream_encoder_ctl!(
         MSenc,
         4003 as libc::c_int,
         (&mut i as *mut i32)
@@ -1065,7 +1065,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
             331 as libc::c_int,
         );
     }
-    if opus_multistream_encoder_ctl(
+    if opus_multistream_encoder_ctl!(
         MSenc,
         4037 as libc::c_int,
         (&mut i as *mut i32)
@@ -1084,7 +1084,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
         );
     }
     let mut tmp_enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
-    if opus_multistream_encoder_ctl(
+    if opus_multistream_encoder_ctl!(
         MSenc,
         5120 as libc::c_int,
         1 as libc::c_int,
@@ -1100,7 +1100,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
             337 as libc::c_int,
         );
     }
-    if opus_encoder_ctl(
+    if opus_encoder_ctl!(
         tmp_enc,
         4037 as libc::c_int,
         (&mut j as *mut i32)
@@ -1118,7 +1118,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
             339 as libc::c_int,
         );
     }
-    if opus_multistream_encoder_ctl(
+    if opus_multistream_encoder_ctl!(
         MSenc,
         5120 as libc::c_int,
         2 as libc::c_int,
@@ -1240,13 +1240,13 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
         );
     }
     generate_music(inbuf, 48000 as libc::c_int * 30 as libc::c_int);
-    if opus_encoder_ctl(enc, 4008 as libc::c_int, -(1000 as libc::c_int)) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4008 as libc::c_int, -(1000 as libc::c_int)) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
             387 as libc::c_int,
         );
     }
-    if opus_encoder_ctl(enc, 11002 as libc::c_int, -(2 as libc::c_int)) != -(1 as libc::c_int) {
+    if opus_encoder_ctl!(enc, 11002 as libc::c_int, -(2 as libc::c_int)) != -(1 as libc::c_int) {
         _test_failed(
             b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
             388 as libc::c_int,
@@ -1267,7 +1267,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
     }
     rc = 0 as libc::c_int;
     while rc < 3 as libc::c_int {
-        if opus_encoder_ctl(
+        if opus_encoder_ctl!(
             enc,
             4006 as libc::c_int,
             (rc < 2 as libc::c_int) as libc::c_int,
@@ -1278,7 +1278,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                 393 as libc::c_int,
             );
         }
-        if opus_encoder_ctl(
+        if opus_encoder_ctl!(
             enc,
             4020 as libc::c_int,
             (rc == 1 as libc::c_int) as libc::c_int,
@@ -1289,7 +1289,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                 394 as libc::c_int,
             );
         }
-        if opus_encoder_ctl(
+        if opus_encoder_ctl!(
             enc,
             4020 as libc::c_int,
             (rc == 1 as libc::c_int) as libc::c_int,
@@ -1300,7 +1300,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                 395 as libc::c_int,
             );
         }
-        if opus_encoder_ctl(
+        if opus_encoder_ctl!(
             enc,
             4012 as libc::c_int,
             (rc == 0 as libc::c_int) as libc::c_int,
@@ -1373,7 +1373,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                 if fast_rand() & 255 as libc::c_int as libc::c_uint
                     == 0 as libc::c_int as libc::c_uint
                 {
-                    if opus_encoder_ctl(enc, 4028 as libc::c_int) != 0 as libc::c_int {
+                    if opus_encoder_ctl!(enc, 4028 as libc::c_int) != 0 as libc::c_int {
                         _test_failed(
                             b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                             410 as libc::c_int,
@@ -1416,7 +1416,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                     let mut complex: libc::c_int = (fast_rand())
                         .wrapping_rem(11 as libc::c_int as libc::c_uint)
                         as libc::c_int;
-                    if opus_encoder_ctl(enc, 4010 as libc::c_int, complex) != 0 as libc::c_int {
+                    if opus_encoder_ctl!(enc, 4010 as libc::c_int, complex) != 0 as libc::c_int {
                         _test_failed(
                             b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                             423 as libc::c_int,
@@ -1428,7 +1428,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                 {
                     opus_decoder_ctl!(dec, 4028 as libc::c_int);
                 }
-                if opus_encoder_ctl(
+                if opus_encoder_ctl!(
                     enc,
                     4012 as libc::c_int,
                     (rc == 0 as libc::c_int) as libc::c_int,
@@ -1439,7 +1439,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                         426 as libc::c_int,
                     );
                 }
-                if opus_encoder_ctl(
+                if opus_encoder_ctl!(
                     enc,
                     11002 as libc::c_int,
                     1000 as libc::c_int + modes[j as usize],
@@ -1451,7 +1451,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                     );
                 }
                 fast_rand();
-                if opus_encoder_ctl(
+                if opus_encoder_ctl!(
                     enc,
                     4016 as libc::c_int,
                     (fast_rand() & 1 as libc::c_int as libc::c_uint) as i32,
@@ -1462,7 +1462,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                         428 as libc::c_int,
                     );
                 }
-                if opus_encoder_ctl(enc, 4002 as libc::c_int, rate) != 0 as libc::c_int {
+                if opus_encoder_ctl!(enc, 4002 as libc::c_int, rate) != 0 as libc::c_int {
                     _test_failed(
                         b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                         429 as libc::c_int,
@@ -1471,7 +1471,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                 if rates[j as usize] >= 64000 as libc::c_int {
                 } else {
                 };
-                if opus_encoder_ctl(
+                if opus_encoder_ctl!(
                     enc,
                     4022 as libc::c_int,
                     if rates[j as usize] >= 64000 as libc::c_int {
@@ -1486,7 +1486,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                         430 as libc::c_int,
                     );
                 }
-                if opus_encoder_ctl(
+                if opus_encoder_ctl!(
                     enc,
                     4010 as libc::c_int,
                     (count >> 2 as libc::c_int) % 11 as libc::c_int,
@@ -1499,7 +1499,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                 }
                 fast_rand();
                 fast_rand();
-                if opus_encoder_ctl(
+                if opus_encoder_ctl!(
                     enc,
                     4014 as libc::c_int,
                     (fast_rand()
@@ -1526,7 +1526,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                 if modes[j as usize] == 2 as libc::c_int && bw == 1102 as libc::c_int {
                     bw += 3 as libc::c_int;
                 }
-                if opus_encoder_ctl(enc, 4008 as libc::c_int, bw) != 0 as libc::c_int {
+                if opus_encoder_ctl!(enc, 4008 as libc::c_int, bw) != 0 as libc::c_int {
                     _test_failed(
                         b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                         437 as libc::c_int,
@@ -1545,7 +1545,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                         439 as libc::c_int,
                     );
                 }
-                if opus_encoder_ctl(
+                if opus_encoder_ctl!(
                     enc,
                     4031 as libc::c_int,
                     (&mut enc_final_range as *mut u32).offset(
@@ -1693,25 +1693,25 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
         }
         rc += 1;
     }
-    if opus_encoder_ctl(enc, 11002 as libc::c_int, -(1000 as libc::c_int)) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 11002 as libc::c_int, -(1000 as libc::c_int)) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
             472 as libc::c_int,
         );
     }
-    if opus_encoder_ctl(enc, 4022 as libc::c_int, -(1000 as libc::c_int)) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4022 as libc::c_int, -(1000 as libc::c_int)) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
             473 as libc::c_int,
         );
     }
-    if opus_encoder_ctl(enc, 4012 as libc::c_int, 0 as libc::c_int) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4012 as libc::c_int, 0 as libc::c_int) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
             474 as libc::c_int,
         );
     }
-    if opus_encoder_ctl(enc, 4016 as libc::c_int, 0 as libc::c_int) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4016 as libc::c_int, 0 as libc::c_int) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
             475 as libc::c_int,
@@ -1719,7 +1719,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
     }
     rc = 0 as libc::c_int;
     while rc < 3 as libc::c_int {
-        if opus_multistream_encoder_ctl(
+        if opus_multistream_encoder_ctl!(
             MSenc,
             4006 as libc::c_int,
             (rc < 2 as libc::c_int) as libc::c_int,
@@ -1730,7 +1730,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                 479 as libc::c_int,
             );
         }
-        if opus_multistream_encoder_ctl(
+        if opus_multistream_encoder_ctl!(
             MSenc,
             4020 as libc::c_int,
             (rc == 1 as libc::c_int) as libc::c_int,
@@ -1741,7 +1741,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                 480 as libc::c_int,
             );
         }
-        if opus_multistream_encoder_ctl(
+        if opus_multistream_encoder_ctl!(
             MSenc,
             4020 as libc::c_int,
             (rc == 1 as libc::c_int) as libc::c_int,
@@ -1752,7 +1752,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                 481 as libc::c_int,
             );
         }
-        if opus_multistream_encoder_ctl(
+        if opus_multistream_encoder_ctl!(
             MSenc,
             4012 as libc::c_int,
             (rc == 0 as libc::c_int) as libc::c_int,
@@ -1821,7 +1821,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                 20 as libc::c_int,
             ];
             (rc == 0 as libc::c_int && j == 1 as libc::c_int) as libc::c_int;
-            if opus_multistream_encoder_ctl(
+            if opus_multistream_encoder_ctl!(
                 MSenc,
                 4012 as libc::c_int,
                 (rc == 0 as libc::c_int && j == 1 as libc::c_int) as libc::c_int,
@@ -1832,7 +1832,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                     489 as libc::c_int,
                 );
             }
-            if opus_multistream_encoder_ctl(
+            if opus_multistream_encoder_ctl!(
                 MSenc,
                 11002 as libc::c_int,
                 1000 as libc::c_int + modes_0[j as usize],
@@ -1847,7 +1847,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                 .wrapping_add((fast_rand()).wrapping_rem(rates_0[j as usize] as libc::c_uint))
                 as libc::c_int;
             fast_rand();
-            if opus_multistream_encoder_ctl(
+            if opus_multistream_encoder_ctl!(
                 MSenc,
                 4016 as libc::c_int,
                 (fast_rand() & 1 as libc::c_int as libc::c_uint) as i32,
@@ -1858,7 +1858,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                     492 as libc::c_int,
                 );
             }
-            if opus_multistream_encoder_ctl(MSenc, 4002 as libc::c_int, rate_0) != 0 as libc::c_int
+            if opus_multistream_encoder_ctl!(MSenc, 4002 as libc::c_int, rate_0) != 0 as libc::c_int
             {
                 _test_failed(
                     b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
@@ -1873,7 +1873,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                 let mut frame_size_0: libc::c_int = 0;
                 let mut loss: libc::c_int = 0;
                 let mut pred: i32 = 0;
-                if opus_multistream_encoder_ctl(
+                if opus_multistream_encoder_ctl!(
                     MSenc,
                     4043 as libc::c_int,
                     (&mut pred as *mut i32)
@@ -1890,7 +1890,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                 if pred != 0 {
                 } else {
                 };
-                if opus_multistream_encoder_ctl(
+                if opus_multistream_encoder_ctl!(
                     MSenc,
                     4042 as libc::c_int,
                     (((fast_rand() & 15 as libc::c_int as libc::c_uint) as libc::c_int)
@@ -1907,7 +1907,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                     );
                 }
                 frame_size_0 = frame_0[j as usize];
-                if opus_multistream_encoder_ctl(
+                if opus_multistream_encoder_ctl!(
                     MSenc,
                     4010 as libc::c_int,
                     (count >> 2 as libc::c_int) % 11 as libc::c_int,
@@ -1920,7 +1920,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                 }
                 fast_rand();
                 fast_rand();
-                if opus_multistream_encoder_ctl(
+                if opus_multistream_encoder_ctl!(
                     MSenc,
                     4014 as libc::c_int,
                     (fast_rand()
@@ -1937,14 +1937,14 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                 if fast_rand() & 255 as libc::c_int as libc::c_uint
                     == 0 as libc::c_int as libc::c_uint
                 {
-                    if opus_multistream_encoder_ctl(MSenc, 4028 as libc::c_int) != 0 as libc::c_int
+                    if opus_multistream_encoder_ctl!(MSenc, 4028 as libc::c_int) != 0 as libc::c_int
                     {
                         _test_failed(
                             b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
                             505 as libc::c_int,
                         );
                     }
-                    if opus_multistream_decoder_ctl(MSdec, 4028 as libc::c_int) != 0 as libc::c_int
+                    if opus_multistream_decoder_ctl!(MSdec, 4028 as libc::c_int) != 0 as libc::c_int
                     {
                         _test_failed(
                             b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
@@ -1953,7 +1953,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                     }
                     if fast_rand() & 3 as libc::c_int as libc::c_uint
                         != 0 as libc::c_int as libc::c_uint
-                        && opus_multistream_decoder_ctl(MSdec_err, 4028 as libc::c_int)
+                        && opus_multistream_decoder_ctl!(MSdec_err, 4028 as libc::c_int)
                             != 0 as libc::c_int
                     {
                         _test_failed(
@@ -1964,7 +1964,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                 }
                 if fast_rand() & 255 as libc::c_int as libc::c_uint
                     == 0 as libc::c_int as libc::c_uint
-                    && opus_multistream_decoder_ctl(MSdec_err, 4028 as libc::c_int)
+                    && opus_multistream_decoder_ctl!(MSdec_err, 4028 as libc::c_int)
                         != 0 as libc::c_int
                 {
                     _test_failed(
@@ -1985,7 +1985,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                         517 as libc::c_int,
                     );
                 }
-                if opus_multistream_encoder_ctl(
+                if opus_multistream_encoder_ctl!(
                     MSenc,
                     4031 as libc::c_int,
                     (&mut enc_final_range as *mut u32).offset(
@@ -2060,7 +2060,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
                         535 as libc::c_int,
                     );
                 }
-                if opus_multistream_decoder_ctl(
+                if opus_multistream_decoder_ctl!(
                     MSdec,
                     4031 as libc::c_int,
                     (&mut dec_final_range as *mut u32).offset(
@@ -2144,7 +2144,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
         let mut out_samples_1: libc::c_int = 0;
         let mut frame_size_1: libc::c_int = fsizes[db62[fsize as usize] as usize];
         let mut offset: i32 = i % (48000 as libc::c_int * 30 as libc::c_int - 5760 as libc::c_int);
-        opus_encoder_ctl(enc, 4002 as libc::c_int, bitrate_bps);
+        opus_encoder_ctl!(enc, 4002 as libc::c_int, bitrate_bps);
         len_1 = opus_encode(
             enc,
             &mut *inbuf.offset((offset << 1 as libc::c_int) as isize),
@@ -2159,7 +2159,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
             );
         }
         count += 1;
-        opus_encoder_ctl(
+        opus_encoder_ctl!(
             enc,
             4031 as libc::c_int,
             (&mut enc_final_range as *mut u32).offset(
@@ -2328,14 +2328,14 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
             as *const libc::c_char,
         count,
     );
-    if opus_encoder_ctl(enc, 4028 as libc::c_int) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4028 as libc::c_int) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
             616 as libc::c_int,
         );
     }
     opus_encoder_destroy(enc);
-    if opus_multistream_encoder_ctl(MSenc, 4028 as libc::c_int) != 0 as libc::c_int {
+    if opus_multistream_encoder_ctl!(MSenc, 4028 as libc::c_int) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
             618 as libc::c_int,
@@ -2349,7 +2349,7 @@ pub unsafe fn run_test1(mut no_fuzz: libc::c_int) -> libc::c_int {
         );
     }
     opus_decoder_destroy(dec);
-    if opus_multistream_decoder_ctl(MSdec, 4028 as libc::c_int) != 0 as libc::c_int {
+    if opus_multistream_decoder_ctl!(MSdec, 4028 as libc::c_int) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_encode.c\0" as *const u8 as *const libc::c_char,
             622 as libc::c_int,

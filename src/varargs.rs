@@ -5,8 +5,13 @@ pub enum VarArg {
     I32(i32),
     I32Out(*mut i32),
     U32Out(*mut u32),
+    F32Out(*mut f32),
+    U8Ptr(*mut u8),
     CustomModeOut(*mut *const crate::OpusCustomMode),
     OpusDecoderOut(*mut *mut crate::OpusDecoder),
+    OpusEncoderOut(*mut *mut crate::OpusEncoder),
+    AnalysisInfoOut(*mut crate::src::analysis::AnalysisInfo),
+    SilkInfoOut(*mut crate::celt::celt_encoder::SILKInfo),
 }
 
 pub trait FromVarArg {
@@ -48,8 +53,13 @@ macro_rules! impl_vararg {
 impl_vararg!(i32, I32);
 impl_vararg!(*mut i32, I32Out);
 impl_vararg!(*mut u32, U32Out);
+impl_vararg!(*mut f32, F32Out);
+impl_vararg!(*mut u8, U8Ptr);
 impl_vararg!(*mut *const crate::OpusCustomMode, CustomModeOut);
 impl_vararg!(*mut *mut crate::OpusDecoder, OpusDecoderOut);
+impl_vararg!(*mut *mut crate::OpusEncoder, OpusEncoderOut);
+impl_vararg!(*mut crate::src::analysis::AnalysisInfo, AnalysisInfoOut);
+impl_vararg!(*mut crate::celt::celt_encoder::SILKInfo, SilkInfoOut);
 
 pub struct VarArgs(Vec<VarArg>);
 

@@ -166,7 +166,7 @@ pub unsafe fn test_creation_arguments(channels: libc::c_int, mapping_family: lib
         let mut matrix_size: i32 = 0;
         let mut matrix: *mut libc::c_uchar = std::ptr::null_mut::<libc::c_uchar>();
         ret =
-            opus_projection_encoder_ctl(st_enc, 6003 as libc::c_int, &mut matrix_size as *mut i32);
+            opus_projection_encoder_ctl!(st_enc, 6003 as libc::c_int, &mut matrix_size as *mut i32);
         if ret != 0 as libc::c_int || matrix_size == 0 {
             _test_failed(
                 b"tests/test_opus_projection.c\0" as *const u8 as *const libc::c_char,
@@ -174,7 +174,7 @@ pub unsafe fn test_creation_arguments(channels: libc::c_int, mapping_family: lib
             );
         }
         matrix = malloc(matrix_size as _) as *mut libc::c_uchar;
-        ret = opus_projection_encoder_ctl(st_enc, 6005 as libc::c_int, matrix, matrix_size);
+        ret = opus_projection_encoder_ctl!(st_enc, 6005 as libc::c_int, matrix, matrix_size);
         opus_projection_encoder_destroy(st_enc);
         st_dec = opus_projection_decoder_create(
             Fs,
@@ -33129,17 +33129,17 @@ pub unsafe fn test_encode_decode(mut bitrate: i32, mut channels: i32, mapping_fa
             315 as libc::c_int,
         );
     }
-    error = opus_projection_encoder_ctl(
+    error = opus_projection_encoder_ctl!(
         st_enc,
         4002 as libc::c_int,
         bitrate * 1000 as libc::c_int * (streams + coupled),
     );
     if error == 0 as libc::c_int {
         error =
-            opus_projection_encoder_ctl(st_enc, 6003 as libc::c_int, &mut matrix_size as *mut i32);
+            opus_projection_encoder_ctl!(st_enc, 6003 as libc::c_int, &mut matrix_size as *mut i32);
         if !(error != 0 as libc::c_int || matrix_size == 0) {
             matrix = malloc(matrix_size as _) as *mut libc::c_uchar;
-            error = opus_projection_encoder_ctl(st_enc, 6005 as libc::c_int, matrix, matrix_size);
+            error = opus_projection_encoder_ctl!(st_enc, 6005 as libc::c_int, matrix, matrix_size);
             st_dec = opus_projection_decoder_create(
                 Fs,
                 channels,

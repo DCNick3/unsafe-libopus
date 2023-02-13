@@ -1348,52 +1348,52 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                         );
                                                         current_block = 14460699602747363466;
                                                     } else {
-                                                        opus_encoder_ctl(
+                                                        opus_encoder_ctl!(
                                                             enc,
                                                             4002 as libc::c_int,
                                                             bitrate_bps,
                                                         );
-                                                        opus_encoder_ctl(
+                                                        opus_encoder_ctl!(
                                                             enc,
                                                             4008 as libc::c_int,
                                                             bandwidth,
                                                         );
-                                                        opus_encoder_ctl(
+                                                        opus_encoder_ctl!(
                                                             enc,
                                                             4006 as libc::c_int,
                                                             use_vbr,
                                                         );
-                                                        opus_encoder_ctl(
+                                                        opus_encoder_ctl!(
                                                             enc,
                                                             4020 as libc::c_int,
                                                             cvbr,
                                                         );
-                                                        opus_encoder_ctl(
+                                                        opus_encoder_ctl!(
                                                             enc,
                                                             4010 as libc::c_int,
                                                             complexity,
                                                         );
-                                                        opus_encoder_ctl(
+                                                        opus_encoder_ctl!(
                                                             enc,
                                                             4012 as libc::c_int,
                                                             use_inbandfec,
                                                         );
-                                                        opus_encoder_ctl(
+                                                        opus_encoder_ctl!(
                                                             enc,
                                                             4022 as libc::c_int,
                                                             forcechannels,
                                                         );
-                                                        opus_encoder_ctl(
+                                                        opus_encoder_ctl!(
                                                             enc,
                                                             4016 as libc::c_int,
                                                             use_dtx,
                                                         );
-                                                        opus_encoder_ctl(
+                                                        opus_encoder_ctl!(
                                                             enc,
                                                             4014 as libc::c_int,
                                                             packet_loss_perc,
                                                         );
-                                                        opus_encoder_ctl(
+                                                        opus_encoder_ctl!(
                                                             enc,
                                                             4027 as libc::c_int,
                                                             (&mut skip as *mut i32).offset(
@@ -1404,12 +1404,12 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                     as isize,
                                                             ),
                                                         );
-                                                        opus_encoder_ctl(
+                                                        opus_encoder_ctl!(
                                                             enc,
                                                             4036 as libc::c_int,
                                                             16 as libc::c_int,
                                                         );
-                                                        opus_encoder_ctl(
+                                                        opus_encoder_ctl!(
                                                             enc,
                                                             4040 as libc::c_int,
                                                             variable_duration,
@@ -1613,7 +1613,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                         variable_duration =
                                                                             5009 as libc::c_int;
                                                                     }
-                                                                    opus_encoder_ctl(
+                                                                    opus_encoder_ctl!(
                                                                         enc,
                                                                         4040 as libc::c_int,
                                                                         variable_duration,
@@ -1670,7 +1670,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                         if newsize < sampling_rate / 100 as libc::c_int
                                                                             && frame_size >= sampling_rate / 100 as libc::c_int
                                                                         {
-                                                                            opus_encoder_ctl(
+                                                                            opus_encoder_ctl!(
                                                                                 enc,
                                                                                 11002 as libc::c_int,
                                                                                 1002 as libc::c_int,
@@ -1686,7 +1686,7 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                             == 0 as libc::c_int
                                                                     {
                                                                         rand();
-                                                                        opus_encoder_ctl(
+                                                                        opus_encoder_ctl!(
                                                                             enc,
                                                                             4012 as libc::c_int,
                                                                             (rand()
@@ -1773,19 +1773,19 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                     } else {
                                                                         let mut i: libc::c_int = 0;
                                                                         if !mode_list.is_null() {
-                                                                            opus_encoder_ctl(
+                                                                            opus_encoder_ctl!(
                                                                                 enc,
                                                                                 4008 as libc::c_int,
                                                                                 (*mode_list
                                                                                     .offset(curr_mode as isize))[1 as libc::c_int as usize],
                                                                             );
-                                                                            opus_encoder_ctl(
+                                                                            opus_encoder_ctl!(
                                                                                 enc,
                                                                                 11002 as libc::c_int,
                                                                                 (*mode_list
                                                                                     .offset(curr_mode as isize))[0 as libc::c_int as usize],
                                                                             );
-                                                                            opus_encoder_ctl(
+                                                                            opus_encoder_ctl!(
                                                                                 enc,
                                                                                 4022 as libc::c_int,
                                                                                 (*mode_list
@@ -1901,13 +1901,13 @@ unsafe fn main_0(mut argc: libc::c_int, mut argv: *mut *mut libc::c_char) -> lib
                                                                                 bitrate_bps = 1000
                                                                                     as libc::c_int;
                                                                             }
-                                                                            opus_encoder_ctl(
+                                                                            opus_encoder_ctl!(
                                                                                 enc,
                                                                                 4002 as libc::c_int,
                                                                                 bitrate_bps,
                                                                             );
                                                                         }
-                                                                        opus_encoder_ctl(
+                                                                        opus_encoder_ctl!(
                                                                             enc,
                                                                             4031 as libc::c_int,
                                                                             (&mut *enc_final_range.as_mut_ptr().offset(toggle as isize)

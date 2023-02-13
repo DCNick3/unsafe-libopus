@@ -59,6 +59,7 @@ use crate::src::opus_multistream_decoder::{
     opus_multistream_decode_native, opus_multistream_decoder_ctl_va_list,
 };
 use crate::src::opus_private::align;
+use crate::varargs::VarArgs;
 use crate::{opus_multistream_decoder_get_size, opus_multistream_decoder_init, OpusMSDecoder};
 
 #[derive(Copy, Clone)]
@@ -341,17 +342,26 @@ pub unsafe fn opus_projection_decode_float(
     );
 }
 #[c2rust::src_loc = "242:1"]
-pub unsafe extern "C" fn opus_projection_decoder_ctl(
+pub unsafe fn opus_projection_decoder_ctl_impl(
     st: *mut OpusProjectionDecoder,
     request: libc::c_int,
-    args: ...
+    args: VarArgs,
 ) -> libc::c_int {
-    let mut ap: ::core::ffi::VaListImpl;
     let mut ret: libc::c_int = OPUS_OK;
-    ap = args.clone();
-    ret =
-        opus_multistream_decoder_ctl_va_list(get_multistream_decoder(st), request, ap.as_va_list());
+    ret = opus_multistream_decoder_ctl_va_list(get_multistream_decoder(st), request, args);
     return ret;
+}
+#[macro_export]
+macro_rules! opus_projection_decoder_ctl {
+    ($st:expr, $request:expr, $($arg:expr),*) => {
+        $crate::opus_projection_decoder_ctl_impl($st, $request, $crate::varargs!($($arg),*))
+    };
+    ($st:expr, $request:expr) => {
+        opus_projection_decoder_ctl!($st, $request,)
+    };
+    ($st:expr, $request:expr, $($arg:expr),*,) => {
+        opus_projection_decoder_ctl!($st, $request, $($arg),*)
+    };
 }
 #[c2rust::src_loc = "254:1"]
 pub unsafe fn opus_projection_decoder_destroy(st: *mut OpusProjectionDecoder) {

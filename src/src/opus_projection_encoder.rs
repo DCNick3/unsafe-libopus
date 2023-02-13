@@ -80,6 +80,8 @@ use crate::src::mapping_matrix::{
     mapping_matrix_toa_demixing, mapping_matrix_toa_demixing_data, mapping_matrix_toa_mixing,
     mapping_matrix_toa_mixing_data, MappingMatrix,
 };
+use crate::varargs::VarArgs;
+
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "41:8"]
@@ -521,19 +523,18 @@ pub unsafe fn opus_projection_encoder_destroy(st: *mut OpusProjectionEncoder) {
     free(st as *mut libc::c_void);
 }
 #[c2rust::src_loc = "380:1"]
-pub unsafe extern "C" fn opus_projection_encoder_ctl(
+pub unsafe fn opus_projection_encoder_ctl_impl(
     st: *mut OpusProjectionEncoder,
     request: libc::c_int,
-    args: ...
+    args: VarArgs,
 ) -> libc::c_int {
     let current_block: u64;
-    let mut ap: ::core::ffi::VaListImpl;
     let mut demixing_matrix: *mut MappingMatrix = 0 as *mut MappingMatrix;
     let mut ms_encoder: *mut OpusMSEncoder = 0 as *mut OpusMSEncoder;
     let mut ret: libc::c_int = OPUS_OK;
     ms_encoder = get_multistream_encoder(st);
     demixing_matrix = get_enc_demixing_matrix(st);
-    ap = args.clone();
+    let mut ap = args;
     match request {
         OPUS_PROJECTION_GET_DEMIXING_MATRIX_SIZE_REQUEST => {
             let value: *mut i32 = ap.arg::<*mut i32>();
@@ -606,12 +607,24 @@ pub unsafe extern "C" fn opus_projection_encoder_ctl(
             }
         }
         _ => {
-            ret = opus_multistream_encoder_ctl_va_list(ms_encoder, request, ap.as_va_list());
+            ret = opus_multistream_encoder_ctl_va_list(ms_encoder, request, ap);
             current_block = 18153031941552419006;
         }
     }
     match current_block {
         17184638872671510253 => return OPUS_BAD_ARG,
         _ => return ret,
+    };
+}
+#[macro_export]
+macro_rules! opus_projection_encoder_ctl {
+    ($st:expr, $request:expr, $($arg:expr),*) => {
+        $crate::opus_projection_encoder_ctl_impl($st, $request, $crate::varargs!($($arg),*))
+    };
+    ($st:expr, $request:expr) => {
+        opus_projection_encoder_ctl!($st, $request,)
+    };
+    ($st:expr, $request:expr, $($arg:expr),*,) => {
+        opus_projection_encoder_ctl!($st, $request, $($arg),*)
     };
 }

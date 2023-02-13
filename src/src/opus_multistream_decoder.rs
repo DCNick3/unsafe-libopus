@@ -118,9 +118,10 @@ use crate::src::opus_multistream::{
     get_left_channel, get_mono_channel, get_right_channel, validate_layout, ChannelLayout,
 };
 use crate::src::opus_private::align;
+use crate::varargs::VarArgs;
 use crate::{
-    opus_decoder_ctl, opus_decoder_get_size, opus_decoder_init, opus_packet_get_nb_samples,
-    OpusDecoder,
+    opus_decoder_ctl, opus_decoder_get_size, opus_decoder_init, opus_multistream_decoder_ctl,
+    opus_packet_get_nb_samples, OpusDecoder,
 };
 
 pub const OPUS_MULTISTREAM_GET_DECODER_STATE_REQUEST: libc::c_int = 5122;
@@ -313,7 +314,7 @@ pub unsafe fn opus_multistream_decode_native(
     if frame_size <= 0 as libc::c_int {
         return OPUS_BAD_ARG;
     }
-    if !(opus_multistream_decoder_ctl(
+    if !(opus_multistream_decoder_ctl!(
         st,
         4029 as libc::c_int,
         (&mut Fs as *mut i32).offset(
@@ -600,7 +601,7 @@ pub unsafe fn opus_multistream_decode_float(
 pub unsafe fn opus_multistream_decoder_ctl_va_list(
     st: *mut OpusMSDecoder,
     request: libc::c_int,
-    mut ap: ::core::ffi::VaList,
+    mut ap: VarArgs,
 ) -> libc::c_int {
     let current_block: u64;
     let mut coupled_size: libc::c_int = 0;
@@ -727,16 +728,26 @@ pub unsafe fn opus_multistream_decoder_ctl_va_list(
     };
 }
 #[c2rust::src_loc = "536:1"]
-pub unsafe extern "C" fn opus_multistream_decoder_ctl(
+pub unsafe fn opus_multistream_decoder_ctl_impl(
     st: *mut OpusMSDecoder,
     request: libc::c_int,
-    args: ...
+    args: VarArgs,
 ) -> libc::c_int {
     let mut ret: libc::c_int = 0;
-    let mut ap: ::core::ffi::VaListImpl;
-    ap = args.clone();
-    ret = opus_multistream_decoder_ctl_va_list(st, request, ap.as_va_list());
+    ret = opus_multistream_decoder_ctl_va_list(st, request, args);
     return ret;
+}
+#[macro_export]
+macro_rules! opus_multistream_decoder_ctl {
+    ($st:expr, $request:expr, $($arg:expr),*) => {
+        $crate::opus_multistream_decoder_ctl_impl($st, $request, $crate::varargs!($($arg),*))
+    };
+    ($st:expr, $request:expr) => {
+        opus_multistream_decoder_ctl!($st, $request,)
+    };
+    ($st:expr, $request:expr, $($arg:expr),*,) => {
+        opus_multistream_decoder_ctl!($st, $request, $($arg),*)
+    };
 }
 #[c2rust::src_loc = "546:1"]
 pub unsafe fn opus_multistream_decoder_destroy(st: *mut OpusMSDecoder) {

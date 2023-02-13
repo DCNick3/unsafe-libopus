@@ -1,6 +1,7 @@
 use crate::celt::bands::{
     anti_collapse, celt_lcg_rand, denormalise_bands, quant_all_bands, SPREAD_NORMAL,
 };
+use crate::opus_custom_decoder_ctl;
 use ::libc;
 
 #[c2rust::header_src = "internal:0"]
@@ -115,6 +116,7 @@ use crate::celt::quant_bands::{
 use crate::celt::rate::clt_compute_allocation;
 use crate::celt::vq::renormalise_vector;
 use crate::externs::{memcpy, memmove, memset};
+use crate::varargs::VarArgs;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -402,7 +404,7 @@ unsafe fn opus_custom_decoder_init(
     (*st).signalling = 1 as libc::c_int;
     (*st).disable_inv = (channels == 1 as libc::c_int) as libc::c_int;
     (*st).arch = opus_select_arch();
-    opus_custom_decoder_ctl(st, OPUS_RESET_STATE);
+    opus_custom_decoder_ctl!(st, OPUS_RESET_STATE);
     return OPUS_OK;
 }
 #[c2rust::src_loc = "230:1"]
@@ -1750,14 +1752,13 @@ pub unsafe fn celt_decode_with_ec(
     return frame_size / (*st).downsample;
 }
 #[c2rust::src_loc = "1247:1"]
-pub unsafe extern "C" fn opus_custom_decoder_ctl(
+pub unsafe fn opus_custom_decoder_ctl_impl(
     mut st: *mut OpusCustomDecoder,
     request: libc::c_int,
-    args: ...
+    args: VarArgs,
 ) -> libc::c_int {
     let current_block: u64;
-    let mut ap: ::core::ffi::VaListImpl;
-    ap = args.clone();
+    let mut ap = args;
     match request {
         CELT_SET_START_BAND_REQUEST => {
             let value: i32 = ap.arg::<i32>();
@@ -1892,5 +1893,17 @@ pub unsafe extern "C" fn opus_custom_decoder_ctl(
     match current_block {
         3689906465960840878 => return OPUS_OK,
         _ => return OPUS_BAD_ARG,
+    };
+}
+#[macro_export]
+macro_rules! opus_custom_decoder_ctl {
+    ($st:expr, $request:expr, $($arg:expr),*) => {
+        $crate::opus_custom_decoder_ctl_impl($st, $request, $crate::varargs!($($arg),*))
+    };
+    ($st:expr, $request:expr) => {
+        opus_custom_decoder_ctl!($st, $request,)
+    };
+    ($st:expr, $request:expr, $($arg:expr),*,) => {
+        opus_custom_decoder_ctl!($st, $request, $($arg),*)
     };
 }

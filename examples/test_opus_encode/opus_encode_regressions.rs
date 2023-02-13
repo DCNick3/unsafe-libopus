@@ -28,19 +28,19 @@ unsafe fn celt_ec_internal_error() -> libc::c_int {
         2048 as libc::c_int,
         &mut err,
     );
-    opus_multistream_encoder_ctl(enc, 4024 as libc::c_int, 3002 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4006 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4020 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4042 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4046 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4016 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4010 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4004 as libc::c_int, 1101 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4008 as libc::c_int, -(1000 as libc::c_int));
-    opus_multistream_encoder_ctl(enc, 4036 as libc::c_int, 8 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4012 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4014 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4002 as libc::c_int, -(1000 as libc::c_int));
+    opus_multistream_encoder_ctl!(enc, 4024 as libc::c_int, 3002 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4006 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4020 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4042 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4046 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4016 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4010 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4004 as libc::c_int, 1101 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4008 as libc::c_int, -(1000 as libc::c_int));
+    opus_multistream_encoder_ctl!(enc, 4036 as libc::c_int, 8 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4012 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4014 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4002 as libc::c_int, -(1000 as libc::c_int));
     static mut pcm: [libc::c_short; 320] = [
         0 as libc::c_int as libc::c_short,
         0 as libc::c_int as libc::c_short,
@@ -371,19 +371,19 @@ unsafe fn celt_ec_internal_error() -> libc::c_int {
         2460 as libc::c_int,
     );
     assert!(err > 0);
-    opus_multistream_encoder_ctl(enc, 4024 as libc::c_int, 3002 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4006 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4020 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4042 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4046 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4016 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4010 as libc::c_int, 10 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4004 as libc::c_int, 1105 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4008 as libc::c_int, 1105 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4036 as libc::c_int, 18 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4012 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4014 as libc::c_int, 90 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4002 as libc::c_int, 280130 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4024 as libc::c_int, 3002 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4006 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4020 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4042 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4046 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4016 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4010 as libc::c_int, 10 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4004 as libc::c_int, 1105 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4008 as libc::c_int, 1105 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4036 as libc::c_int, 18 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4012 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4014 as libc::c_int, 90 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4002 as libc::c_int, 280130 as libc::c_int);
     static mut pcm_0: [libc::c_short; 160] = [
         -(9510 as libc::c_int) as libc::c_short,
         -(9510 as libc::c_int) as libc::c_short,
@@ -554,19 +554,19 @@ unsafe fn celt_ec_internal_error() -> libc::c_int {
         2460 as libc::c_int,
     );
     assert!(err > 0);
-    opus_multistream_encoder_ctl(enc, 4024 as libc::c_int, 3002 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4006 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4020 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4042 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4046 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4016 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4010 as libc::c_int, 10 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4004 as libc::c_int, 1105 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4008 as libc::c_int, 1105 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4036 as libc::c_int, 18 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4012 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4014 as libc::c_int, 90 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4002 as libc::c_int, 280130 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4024 as libc::c_int, 3002 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4006 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4020 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4042 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4046 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4016 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4010 as libc::c_int, 10 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4004 as libc::c_int, 1105 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4008 as libc::c_int, 1105 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4036 as libc::c_int, 18 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4012 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4014 as libc::c_int, 90 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4002 as libc::c_int, 280130 as libc::c_int);
     static mut pcm_1: [libc::c_short; 160] = [
         -(9510 as libc::c_int) as libc::c_short,
         -(9510 as libc::c_int) as libc::c_short,
@@ -737,19 +737,19 @@ unsafe fn celt_ec_internal_error() -> libc::c_int {
         2460 as libc::c_int,
     );
     assert!(err > 0);
-    opus_multistream_encoder_ctl(enc, 4024 as libc::c_int, 3002 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4006 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4020 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4042 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4046 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4016 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4010 as libc::c_int, 10 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4004 as libc::c_int, 1105 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4008 as libc::c_int, 1105 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4036 as libc::c_int, 18 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4012 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4014 as libc::c_int, 90 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4002 as libc::c_int, 280130 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4024 as libc::c_int, 3002 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4006 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4020 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4042 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4046 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4016 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4010 as libc::c_int, 10 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4004 as libc::c_int, 1105 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4008 as libc::c_int, 1105 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4036 as libc::c_int, 18 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4012 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4014 as libc::c_int, 90 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4002 as libc::c_int, 280130 as libc::c_int);
     static mut pcm_2: [libc::c_short; 160] = [
         -(9510 as libc::c_int) as libc::c_short,
         -(9510 as libc::c_int) as libc::c_short,
@@ -920,19 +920,19 @@ unsafe fn celt_ec_internal_error() -> libc::c_int {
         2460 as libc::c_int,
     );
     assert!(err > 0);
-    opus_multistream_encoder_ctl(enc, 4024 as libc::c_int, 3002 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4006 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4020 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4042 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4046 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4016 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4010 as libc::c_int, 10 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4004 as libc::c_int, 1105 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4008 as libc::c_int, 1105 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4036 as libc::c_int, 18 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4012 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4014 as libc::c_int, 90 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4002 as libc::c_int, 280130 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4024 as libc::c_int, 3002 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4006 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4020 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4042 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4046 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4016 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4010 as libc::c_int, 10 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4004 as libc::c_int, 1105 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4008 as libc::c_int, 1105 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4036 as libc::c_int, 18 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4012 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4014 as libc::c_int, 90 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4002 as libc::c_int, 280130 as libc::c_int);
     static mut pcm_3: [libc::c_short; 160] = [
         -(9510 as libc::c_int) as libc::c_short,
         -(9510 as libc::c_int) as libc::c_short,
@@ -1103,19 +1103,19 @@ unsafe fn celt_ec_internal_error() -> libc::c_int {
         2460 as libc::c_int,
     );
     assert!(err > 0);
-    opus_multistream_encoder_ctl(enc, 4024 as libc::c_int, 3001 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4006 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4020 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4042 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4046 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4016 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4010 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4004 as libc::c_int, 1101 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4008 as libc::c_int, -(1000 as libc::c_int));
-    opus_multistream_encoder_ctl(enc, 4036 as libc::c_int, 12 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4012 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4014 as libc::c_int, 41 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4002 as libc::c_int, 21425 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4024 as libc::c_int, 3001 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4006 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4020 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4042 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4046 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4016 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4010 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4004 as libc::c_int, 1101 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4008 as libc::c_int, -(1000 as libc::c_int));
+    opus_multistream_encoder_ctl!(enc, 4036 as libc::c_int, 12 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4012 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4014 as libc::c_int, 41 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4002 as libc::c_int, 21425 as libc::c_int);
     static mut pcm_4: [libc::c_short; 40] = [
         10459 as libc::c_int as libc::c_short,
         -(6474 as libc::c_int) as libc::c_short,
@@ -1440,20 +1440,20 @@ unsafe fn mscbr_encode_fail10() -> libc::c_int {
         2051 as libc::c_int,
         &mut err,
     );
-    opus_multistream_encoder_ctl(enc, 4024 as libc::c_int, 3001 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4006 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4020 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4042 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4022 as libc::c_int, 2 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4046 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4016 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4010 as libc::c_int, 2 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4004 as libc::c_int, 1101 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4008 as libc::c_int, -(1000 as libc::c_int));
-    opus_multistream_encoder_ctl(enc, 4036 as libc::c_int, 14 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4012 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4014 as libc::c_int, 57 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4002 as libc::c_int, 3642675 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4024 as libc::c_int, 3001 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4006 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4020 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4042 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4022 as libc::c_int, 2 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4046 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4016 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4010 as libc::c_int, 2 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4004 as libc::c_int, 1101 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4008 as libc::c_int, -(1000 as libc::c_int));
+    opus_multistream_encoder_ctl!(enc, 4036 as libc::c_int, 14 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4012 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4014 as libc::c_int, 57 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4002 as libc::c_int, 3642675 as libc::c_int);
     static mut pcm: [libc::c_short; 5100] = [
         0 as libc::c_int as libc::c_short,
         0,
@@ -6775,20 +6775,20 @@ unsafe fn mscbr_encode_fail() -> libc::c_int {
         2051 as libc::c_int,
         &mut err,
     );
-    opus_multistream_encoder_ctl(enc, 4024 as libc::c_int, 3002 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4006 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4020 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4042 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4022 as libc::c_int, -(1000 as libc::c_int));
-    opus_multistream_encoder_ctl(enc, 4046 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4016 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4010 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4004 as libc::c_int, 1102 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4008 as libc::c_int, -(1000 as libc::c_int));
-    opus_multistream_encoder_ctl(enc, 4036 as libc::c_int, 8 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4012 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4014 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4002 as libc::c_int, 15360 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4024 as libc::c_int, 3002 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4006 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4020 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4042 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4022 as libc::c_int, -(1000 as libc::c_int));
+    opus_multistream_encoder_ctl!(enc, 4046 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4016 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4010 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4004 as libc::c_int, 1102 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4008 as libc::c_int, -(1000 as libc::c_int));
+    opus_multistream_encoder_ctl!(enc, 4036 as libc::c_int, 8 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4012 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4014 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4002 as libc::c_int, 15360 as libc::c_int);
     static mut pcm: [libc::c_short; 3840] = [
         0 as libc::c_int as libc::c_short,
         0,
@@ -10660,19 +10660,19 @@ unsafe fn surround_analysis_uninit() -> libc::c_int {
         2049 as libc::c_int,
         &mut err,
     );
-    opus_multistream_encoder_ctl(enc, 4024 as libc::c_int, 3001 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4006 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4020 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4042 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4022 as libc::c_int, -(1000 as libc::c_int));
-    opus_multistream_encoder_ctl(enc, 4046 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4016 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4010 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4004 as libc::c_int, 1101 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4008 as libc::c_int, 1101 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4036 as libc::c_int, 8 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4012 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4002 as libc::c_int, 84315 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4024 as libc::c_int, 3001 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4006 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4020 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4042 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4022 as libc::c_int, -(1000 as libc::c_int));
+    opus_multistream_encoder_ctl!(enc, 4046 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4016 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4010 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4004 as libc::c_int, 1101 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4008 as libc::c_int, 1101 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4036 as libc::c_int, 8 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4012 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4002 as libc::c_int, 84315 as libc::c_int);
     static mut pcm: [libc::c_short; 2880] = [
         -(6896 as libc::c_int) as libc::c_short,
         4901 as libc::c_int as libc::c_short,
@@ -13563,20 +13563,20 @@ unsafe fn surround_analysis_uninit() -> libc::c_int {
         7380 as libc::c_int,
     );
     assert!(err > 0);
-    opus_multistream_encoder_ctl(enc, 4024 as libc::c_int, 3002 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4006 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4020 as libc::c_int, 0 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4042 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4022 as libc::c_int, -(1000 as libc::c_int));
-    opus_multistream_encoder_ctl(enc, 4046 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4016 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4010 as libc::c_int, 6 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4004 as libc::c_int, 1101 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4008 as libc::c_int, -(1000 as libc::c_int));
-    opus_multistream_encoder_ctl(enc, 4036 as libc::c_int, 9 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4012 as libc::c_int, 1 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4014 as libc::c_int, 5 as libc::c_int);
-    opus_multistream_encoder_ctl(enc, 4002 as libc::c_int, 775410 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4024 as libc::c_int, 3002 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4006 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4020 as libc::c_int, 0 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4042 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4022 as libc::c_int, -(1000 as libc::c_int));
+    opus_multistream_encoder_ctl!(enc, 4046 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4016 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4010 as libc::c_int, 6 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4004 as libc::c_int, 1101 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4008 as libc::c_int, -(1000 as libc::c_int));
+    opus_multistream_encoder_ctl!(enc, 4036 as libc::c_int, 9 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4012 as libc::c_int, 1 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4014 as libc::c_int, 5 as libc::c_int);
+    opus_multistream_encoder_ctl!(enc, 4002 as libc::c_int, 775410 as libc::c_int);
     static mut pcm_0: [libc::c_short; 4320] = [
         30449 as libc::c_int as libc::c_short,
         15083 as libc::c_int as libc::c_short,
@@ -24648,9 +24648,9 @@ unsafe fn ec_enc_shrink_assert() -> libc::c_int {
         2049 as libc::c_int,
         &mut err,
     );
-    opus_encoder_ctl(enc, 4010 as libc::c_int, 10 as libc::c_int);
-    opus_encoder_ctl(enc, 4014 as libc::c_int, 6 as libc::c_int);
-    opus_encoder_ctl(enc, 4002 as libc::c_int, 6000 as libc::c_int);
+    opus_encoder_ctl!(enc, 4010 as libc::c_int, 10 as libc::c_int);
+    opus_encoder_ctl!(enc, 4014 as libc::c_int, 6 as libc::c_int);
+    opus_encoder_ctl!(enc, 4002 as libc::c_int, 6000 as libc::c_int);
     data_len = opus_encode(
         enc,
         pcm1.as_ptr(),
@@ -24659,11 +24659,11 @@ unsafe fn ec_enc_shrink_assert() -> libc::c_int {
         2000 as libc::c_int,
     );
     assert!(data_len > 0);
-    opus_encoder_ctl(enc, 4024 as libc::c_int, 3001 as libc::c_int);
-    opus_encoder_ctl(enc, 4042 as libc::c_int, 1 as libc::c_int);
-    opus_encoder_ctl(enc, 4008 as libc::c_int, 1104 as libc::c_int);
-    opus_encoder_ctl(enc, 4012 as libc::c_int, 1 as libc::c_int);
-    opus_encoder_ctl(enc, 4002 as libc::c_int, 15600 as libc::c_int);
+    opus_encoder_ctl!(enc, 4024 as libc::c_int, 3001 as libc::c_int);
+    opus_encoder_ctl!(enc, 4042 as libc::c_int, 1 as libc::c_int);
+    opus_encoder_ctl!(enc, 4008 as libc::c_int, 1104 as libc::c_int);
+    opus_encoder_ctl!(enc, 4012 as libc::c_int, 1 as libc::c_int);
+    opus_encoder_ctl!(enc, 4002 as libc::c_int, 15600 as libc::c_int);
     data_len = opus_encode(
         enc,
         pcm2.as_ptr(),
@@ -24672,8 +24672,8 @@ unsafe fn ec_enc_shrink_assert() -> libc::c_int {
         122 as libc::c_int,
     );
     assert!(data_len > 0);
-    opus_encoder_ctl(enc, 4024 as libc::c_int, 3002 as libc::c_int);
-    opus_encoder_ctl(enc, 4002 as libc::c_int, 27000 as libc::c_int);
+    opus_encoder_ctl!(enc, 4024 as libc::c_int, 3002 as libc::c_int);
+    opus_encoder_ctl!(enc, 4002 as libc::c_int, 27000 as libc::c_int);
     data_len = opus_encode(
         enc,
         pcm3.as_ptr(),
@@ -24697,11 +24697,11 @@ unsafe fn ec_enc_shrink_assert2() -> libc::c_int {
         2049 as libc::c_int,
         &mut err,
     );
-    opus_encoder_ctl(enc, 4010 as libc::c_int, 6 as libc::c_int);
-    opus_encoder_ctl(enc, 4024 as libc::c_int, 3001 as libc::c_int);
-    opus_encoder_ctl(enc, 4008 as libc::c_int, 1105 as libc::c_int);
-    opus_encoder_ctl(enc, 4014 as libc::c_int, 26 as libc::c_int);
-    opus_encoder_ctl(enc, 4002 as libc::c_int, 27000 as libc::c_int);
+    opus_encoder_ctl!(enc, 4010 as libc::c_int, 6 as libc::c_int);
+    opus_encoder_ctl!(enc, 4024 as libc::c_int, 3001 as libc::c_int);
+    opus_encoder_ctl!(enc, 4008 as libc::c_int, 1105 as libc::c_int);
+    opus_encoder_ctl!(enc, 4014 as libc::c_int, 26 as libc::c_int);
+    opus_encoder_ctl!(enc, 4002 as libc::c_int, 27000 as libc::c_int);
     static mut pcm: [libc::c_short; 960] = [
         0 as libc::c_int as libc::c_short,
         0,
@@ -25672,7 +25672,7 @@ unsafe fn ec_enc_shrink_assert2() -> libc::c_int {
         2000 as libc::c_int,
     );
     assert!(data_len > 0);
-    opus_encoder_ctl(enc, 4024 as libc::c_int, 3002 as libc::c_int);
+    opus_encoder_ctl!(enc, 4024 as libc::c_int, 3002 as libc::c_int);
     static mut pcm_0: [libc::c_short; 480] = [
         32767 as libc::c_int as libc::c_short,
         32767 as libc::c_int as libc::c_short,
@@ -27302,9 +27302,9 @@ unsafe fn silk_gain_assert() -> libc::c_int {
         2049 as libc::c_int,
         &mut err,
     );
-    opus_encoder_ctl(enc, 4010 as libc::c_int, 3 as libc::c_int);
-    opus_encoder_ctl(enc, 4004 as libc::c_int, 1101 as libc::c_int);
-    opus_encoder_ctl(enc, 4002 as libc::c_int, 6000 as libc::c_int);
+    opus_encoder_ctl!(enc, 4010 as libc::c_int, 3 as libc::c_int);
+    opus_encoder_ctl!(enc, 4004 as libc::c_int, 1101 as libc::c_int);
+    opus_encoder_ctl!(enc, 4002 as libc::c_int, 6000 as libc::c_int);
     data_len = opus_encode(
         enc,
         pcm1.as_ptr(),
@@ -27313,10 +27313,10 @@ unsafe fn silk_gain_assert() -> libc::c_int {
         1000 as libc::c_int,
     );
     assert!(data_len > 0);
-    opus_encoder_ctl(enc, 4006 as libc::c_int, 0 as libc::c_int);
-    opus_encoder_ctl(enc, 4010 as libc::c_int, 0 as libc::c_int);
-    opus_encoder_ctl(enc, 4004 as libc::c_int, 1102 as libc::c_int);
-    opus_encoder_ctl(enc, 4002 as libc::c_int, 2867 as libc::c_int);
+    opus_encoder_ctl!(enc, 4006 as libc::c_int, 0 as libc::c_int);
+    opus_encoder_ctl!(enc, 4010 as libc::c_int, 0 as libc::c_int);
+    opus_encoder_ctl!(enc, 4004 as libc::c_int, 1102 as libc::c_int);
+    opus_encoder_ctl!(enc, 4002 as libc::c_int, 2867 as libc::c_int);
     data_len = opus_encode(
         enc,
         pcm2.as_ptr(),

@@ -1375,7 +1375,7 @@ pub unsafe fn test_msdec_api() -> i32 {
         b"    opus_multistream_decoder_init() .............. OK.\n\0" as *const u8
             as *const libc::c_char,
     );
-    err = opus_multistream_decoder_ctl(
+    err = opus_multistream_decoder_ctl!(
         dec,
         4031 as libc::c_int,
         (&mut dec_final_range as *mut u32).offset(
@@ -1396,7 +1396,7 @@ pub unsafe fn test_msdec_api() -> i32 {
     );
     cfgs += 1;
     streamdec = std::ptr::null_mut::<OpusDecoder>();
-    err = opus_multistream_decoder_ctl(
+    err = opus_multistream_decoder_ctl!(
         dec,
         5122 as libc::c_int,
         -(1 as libc::c_int),
@@ -1413,7 +1413,7 @@ pub unsafe fn test_msdec_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_multistream_decoder_ctl(
+    err = opus_multistream_decoder_ctl!(
         dec,
         5122 as libc::c_int,
         1 as libc::c_int,
@@ -1430,7 +1430,7 @@ pub unsafe fn test_msdec_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_multistream_decoder_ctl(
+    err = opus_multistream_decoder_ctl!(
         dec,
         5122 as libc::c_int,
         2 as libc::c_int,
@@ -1447,7 +1447,7 @@ pub unsafe fn test_msdec_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_multistream_decoder_ctl(
+    err = opus_multistream_decoder_ctl!(
         dec,
         5122 as libc::c_int,
         0 as libc::c_int,
@@ -1472,7 +1472,7 @@ pub unsafe fn test_msdec_api() -> i32 {
     j = 0 as libc::c_int;
     while j < 2 as libc::c_int {
         let mut od: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
-        err = opus_multistream_decoder_ctl(
+        err = opus_multistream_decoder_ctl!(
             dec,
             5122 as libc::c_int,
             j,
@@ -1503,7 +1503,7 @@ pub unsafe fn test_msdec_api() -> i32 {
         cfgs += 1;
         j += 1;
     }
-    err = opus_multistream_decoder_ctl(dec, 4034 as libc::c_int, 15 as libc::c_int);
+    err = opus_multistream_decoder_ctl!(dec, 4034 as libc::c_int, 15 as libc::c_int);
     if err != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -1518,7 +1518,7 @@ pub unsafe fn test_msdec_api() -> i32 {
     j = 0 as libc::c_int;
     while j < 2 as libc::c_int {
         let mut od_0: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
-        err = opus_multistream_decoder_ctl(
+        err = opus_multistream_decoder_ctl!(
             dec,
             5122 as libc::c_int,
             j,
@@ -1554,7 +1554,7 @@ pub unsafe fn test_msdec_api() -> i32 {
         b"    OPUS_GET_GAIN ................................ OK.\n\0" as *const u8
             as *const libc::c_char,
     );
-    err = opus_multistream_decoder_ctl(
+    err = opus_multistream_decoder_ctl!(
         dec,
         4009 as libc::c_int,
         (&mut i as *mut i32)
@@ -1572,7 +1572,7 @@ pub unsafe fn test_msdec_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 1;
-    err = opus_multistream_decoder_ctl(dec, -(5 as libc::c_int));
+    err = opus_multistream_decoder_ctl!(dec, -(5 as libc::c_int));
     if err != -(5 as libc::c_int) {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -1585,7 +1585,7 @@ pub unsafe fn test_msdec_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 1;
-    if opus_multistream_decoder_ctl(dec, 4028 as libc::c_int) != 0 as libc::c_int {
+    if opus_multistream_decoder_ctl!(dec, 4028 as libc::c_int) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             635 as libc::c_int,
@@ -3068,7 +3068,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4027 as libc::c_int,
         (&mut i as *mut i32)
@@ -3095,7 +3095,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4027 as libc::c_int,
         (&mut i as *mut i32)
@@ -3133,7 +3133,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4027 as libc::c_int,
         (&mut i as *mut i32)
@@ -3146,7 +3146,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4027 as libc::c_int,
         null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
@@ -3163,7 +3163,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_GET_LOOKAHEAD ........................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4029 as libc::c_int,
         (&mut i as *mut i32)
@@ -3176,7 +3176,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4029 as libc::c_int,
         null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
@@ -3193,7 +3193,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_GET_SAMPLE_RATE ......................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
-    if opus_encoder_ctl(enc, -(5 as libc::c_int)) != -(5 as libc::c_int) {
+    if opus_encoder_ctl!(enc, -(5 as libc::c_int)) != -(5 as libc::c_int) {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1180 as libc::c_int,
@@ -3205,7 +3205,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 1;
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4001 as libc::c_int,
         null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
@@ -3218,14 +3218,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = -(1 as libc::c_int);
-    if opus_encoder_ctl(enc, 4000 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4000 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1190 as libc::c_int,
         );
     }
     i = -(1000 as libc::c_int);
-    if opus_encoder_ctl(enc, 4000 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4000 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1190 as libc::c_int,
@@ -3233,14 +3233,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 2049 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4000 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4000 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1190 as libc::c_int,
         );
     }
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4001 as libc::c_int,
         (&mut i as *mut i32)
@@ -3254,7 +3254,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 2051 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4000 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4000 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1190 as libc::c_int,
@@ -3266,7 +3266,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4001 as libc::c_int,
         (&mut i as *mut i32)
@@ -3284,7 +3284,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 6 as libc::c_int;
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4003 as libc::c_int,
         null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
@@ -3296,14 +3296,14 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    if opus_encoder_ctl(enc, 4002 as libc::c_int, 1073741832 as libc::c_int) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4002 as libc::c_int, 1073741832 as libc::c_int) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1195 as libc::c_int,
         );
     }
     cfgs += 1;
-    if opus_encoder_ctl(
+    if opus_encoder_ctl!(
         enc,
         4003 as libc::c_int,
         (&mut i as *mut i32)
@@ -3323,14 +3323,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = -(12345 as libc::c_int);
-    if opus_encoder_ctl(enc, 4002 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4002 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1204 as libc::c_int,
         );
     }
     i = 0 as libc::c_int;
-    if opus_encoder_ctl(enc, 4002 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4002 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1204 as libc::c_int,
@@ -3338,14 +3338,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 500 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4002 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4002 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1204 as libc::c_int,
         );
     }
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4003 as libc::c_int,
         (&mut i as *mut i32)
@@ -3359,7 +3359,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 256000 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4002 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4002 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1204 as libc::c_int,
@@ -3371,7 +3371,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4003 as libc::c_int,
         (&mut i as *mut i32)
@@ -3389,7 +3389,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 6 as libc::c_int;
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4023 as libc::c_int,
         null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
@@ -3402,14 +3402,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = -(1 as libc::c_int);
-    if opus_encoder_ctl(enc, 4022 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4022 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1212 as libc::c_int,
         );
     }
     i = 3 as libc::c_int;
-    if opus_encoder_ctl(enc, 4022 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4022 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1212 as libc::c_int,
@@ -3417,14 +3417,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 1 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4022 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4022 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1212 as libc::c_int,
         );
     }
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4023 as libc::c_int,
         (&mut i as *mut i32)
@@ -3438,7 +3438,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = -(1000 as libc::c_int);
     j = i;
-    if opus_encoder_ctl(enc, 4022 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4022 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1212 as libc::c_int,
@@ -3450,7 +3450,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4023 as libc::c_int,
         (&mut i as *mut i32)
@@ -3469,7 +3469,7 @@ pub unsafe fn test_enc_api() -> i32 {
     );
     cfgs += 6 as libc::c_int;
     i = -(2 as libc::c_int);
-    if opus_encoder_ctl(enc, 4008 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4008 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1215 as libc::c_int,
@@ -3477,7 +3477,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = 1105 as libc::c_int + 1 as libc::c_int;
-    if opus_encoder_ctl(enc, 4008 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4008 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1218 as libc::c_int,
@@ -3485,7 +3485,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = 1101 as libc::c_int;
-    if opus_encoder_ctl(enc, 4008 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4008 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1221 as libc::c_int,
@@ -3493,7 +3493,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = 1105 as libc::c_int;
-    if opus_encoder_ctl(enc, 4008 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4008 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1224 as libc::c_int,
@@ -3501,7 +3501,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = 1103 as libc::c_int;
-    if opus_encoder_ctl(enc, 4008 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4008 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1227 as libc::c_int,
@@ -3509,7 +3509,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = 1102 as libc::c_int;
-    if opus_encoder_ctl(enc, 4008 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4008 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1230 as libc::c_int,
@@ -3522,7 +3522,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4009 as libc::c_int,
         (&mut i as *mut i32)
@@ -3541,14 +3541,14 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    if opus_encoder_ctl(enc, 4008 as libc::c_int, -(1000 as libc::c_int)) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4008 as libc::c_int, -(1000 as libc::c_int)) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1242 as libc::c_int,
         );
     }
     cfgs += 1;
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4009 as libc::c_int,
         null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
@@ -3566,7 +3566,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     i = -(2 as libc::c_int);
-    if opus_encoder_ctl(enc, 4004 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4004 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1250 as libc::c_int,
@@ -3574,7 +3574,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = 1105 as libc::c_int + 1 as libc::c_int;
-    if opus_encoder_ctl(enc, 4004 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4004 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1253 as libc::c_int,
@@ -3582,7 +3582,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = 1101 as libc::c_int;
-    if opus_encoder_ctl(enc, 4004 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4004 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1256 as libc::c_int,
@@ -3590,7 +3590,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = 1105 as libc::c_int;
-    if opus_encoder_ctl(enc, 4004 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4004 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1259 as libc::c_int,
@@ -3598,7 +3598,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = 1103 as libc::c_int;
-    if opus_encoder_ctl(enc, 4004 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4004 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1262 as libc::c_int,
@@ -3606,7 +3606,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = 1102 as libc::c_int;
-    if opus_encoder_ctl(enc, 4004 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4004 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1265 as libc::c_int,
@@ -3619,7 +3619,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4005 as libc::c_int,
         (&mut i as *mut i32)
@@ -3637,7 +3637,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4005 as libc::c_int,
         null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
@@ -3654,7 +3654,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_GET_MAX_BANDWIDTH ....................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4017 as libc::c_int,
         null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
@@ -3667,14 +3667,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = -(1 as libc::c_int);
-    if opus_encoder_ctl(enc, 4016 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4016 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1288 as libc::c_int,
         );
     }
     i = 2 as libc::c_int;
-    if opus_encoder_ctl(enc, 4016 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4016 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1288 as libc::c_int,
@@ -3682,14 +3682,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 1 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4016 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4016 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1288 as libc::c_int,
         );
     }
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4017 as libc::c_int,
         (&mut i as *mut i32)
@@ -3703,7 +3703,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 0 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4016 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4016 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1288 as libc::c_int,
@@ -3715,7 +3715,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4017 as libc::c_int,
         (&mut i as *mut i32)
@@ -3733,7 +3733,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 6 as libc::c_int;
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4011 as libc::c_int,
         null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
@@ -3746,14 +3746,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = -(1 as libc::c_int);
-    if opus_encoder_ctl(enc, 4010 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4010 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1296 as libc::c_int,
         );
     }
     i = 11 as libc::c_int;
-    if opus_encoder_ctl(enc, 4010 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4010 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1296 as libc::c_int,
@@ -3761,14 +3761,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 0 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4010 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4010 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1296 as libc::c_int,
         );
     }
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4011 as libc::c_int,
         (&mut i as *mut i32)
@@ -3782,7 +3782,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 10 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4010 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4010 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1296 as libc::c_int,
@@ -3794,7 +3794,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4011 as libc::c_int,
         (&mut i as *mut i32)
@@ -3812,7 +3812,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 6 as libc::c_int;
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4013 as libc::c_int,
         null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
@@ -3825,14 +3825,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = -(1 as libc::c_int);
-    if opus_encoder_ctl(enc, 4012 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4012 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1304 as libc::c_int,
         );
     }
     i = 2 as libc::c_int;
-    if opus_encoder_ctl(enc, 4012 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4012 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1304 as libc::c_int,
@@ -3840,14 +3840,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 1 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4012 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4012 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1304 as libc::c_int,
         );
     }
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4013 as libc::c_int,
         (&mut i as *mut i32)
@@ -3861,7 +3861,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 0 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4012 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4012 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1304 as libc::c_int,
@@ -3873,7 +3873,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4013 as libc::c_int,
         (&mut i as *mut i32)
@@ -3891,7 +3891,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 6 as libc::c_int;
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4015 as libc::c_int,
         null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
@@ -3904,14 +3904,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = -(1 as libc::c_int);
-    if opus_encoder_ctl(enc, 4014 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4014 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1312 as libc::c_int,
         );
     }
     i = 101 as libc::c_int;
-    if opus_encoder_ctl(enc, 4014 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4014 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1312 as libc::c_int,
@@ -3919,14 +3919,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 100 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4014 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4014 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1312 as libc::c_int,
         );
     }
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4015 as libc::c_int,
         (&mut i as *mut i32)
@@ -3940,7 +3940,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 0 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4014 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4014 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1312 as libc::c_int,
@@ -3952,7 +3952,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4015 as libc::c_int,
         (&mut i as *mut i32)
@@ -3970,7 +3970,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 6 as libc::c_int;
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4007 as libc::c_int,
         null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
@@ -3983,14 +3983,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = -(1 as libc::c_int);
-    if opus_encoder_ctl(enc, 4006 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4006 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1320 as libc::c_int,
         );
     }
     i = 2 as libc::c_int;
-    if opus_encoder_ctl(enc, 4006 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4006 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1320 as libc::c_int,
@@ -3998,14 +3998,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 1 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4006 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4006 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1320 as libc::c_int,
         );
     }
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4007 as libc::c_int,
         (&mut i as *mut i32)
@@ -4019,7 +4019,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 0 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4006 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4006 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1320 as libc::c_int,
@@ -4031,7 +4031,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4007 as libc::c_int,
         (&mut i as *mut i32)
@@ -4049,7 +4049,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 6 as libc::c_int;
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4021 as libc::c_int,
         null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
@@ -4062,14 +4062,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = -(1 as libc::c_int);
-    if opus_encoder_ctl(enc, 4020 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4020 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1336 as libc::c_int,
         );
     }
     i = 2 as libc::c_int;
-    if opus_encoder_ctl(enc, 4020 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4020 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1336 as libc::c_int,
@@ -4077,14 +4077,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 1 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4020 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4020 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1336 as libc::c_int,
         );
     }
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4021 as libc::c_int,
         (&mut i as *mut i32)
@@ -4098,7 +4098,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 0 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4020 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4020 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1336 as libc::c_int,
@@ -4110,7 +4110,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4021 as libc::c_int,
         (&mut i as *mut i32)
@@ -4128,7 +4128,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 6 as libc::c_int;
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4025 as libc::c_int,
         null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
@@ -4141,14 +4141,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = -(12345 as libc::c_int);
-    if opus_encoder_ctl(enc, 4024 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4024 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1344 as libc::c_int,
         );
     }
     i = 0x7fffffff as libc::c_int;
-    if opus_encoder_ctl(enc, 4024 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4024 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1344 as libc::c_int,
@@ -4156,14 +4156,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 3002 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4024 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4024 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1344 as libc::c_int,
         );
     }
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4025 as libc::c_int,
         (&mut i as *mut i32)
@@ -4177,7 +4177,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = -(1000 as libc::c_int);
     j = i;
-    if opus_encoder_ctl(enc, 4024 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4024 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1344 as libc::c_int,
@@ -4189,7 +4189,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4025 as libc::c_int,
         (&mut i as *mut i32)
@@ -4207,7 +4207,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 6 as libc::c_int;
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4037 as libc::c_int,
         null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
@@ -4220,14 +4220,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = 7 as libc::c_int;
-    if opus_encoder_ctl(enc, 4036 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4036 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1351 as libc::c_int,
         );
     }
     i = 25 as libc::c_int;
-    if opus_encoder_ctl(enc, 4036 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4036 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1351 as libc::c_int,
@@ -4235,14 +4235,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 16 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4036 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4036 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1351 as libc::c_int,
         );
     }
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4037 as libc::c_int,
         (&mut i as *mut i32)
@@ -4256,7 +4256,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 24 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4036 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4036 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1351 as libc::c_int,
@@ -4268,7 +4268,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4037 as libc::c_int,
         (&mut i as *mut i32)
@@ -4286,7 +4286,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 6 as libc::c_int;
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4043 as libc::c_int,
         (&mut i as *mut i32)
@@ -4299,7 +4299,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4043 as libc::c_int,
         null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
@@ -4312,14 +4312,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = -(1 as libc::c_int);
-    if opus_encoder_ctl(enc, 4042 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4042 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1361 as libc::c_int,
         );
     }
     i = 2 as libc::c_int;
-    if opus_encoder_ctl(enc, 4042 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4042 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1361 as libc::c_int,
@@ -4327,14 +4327,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 1 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4042 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4042 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1361 as libc::c_int,
         );
     }
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4043 as libc::c_int,
         (&mut i as *mut i32)
@@ -4348,7 +4348,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 0 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4042 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4042 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1361 as libc::c_int,
@@ -4360,7 +4360,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4043 as libc::c_int,
         (&mut i as *mut i32)
@@ -4378,7 +4378,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 6 as libc::c_int;
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4041 as libc::c_int,
         null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as libc::c_long as isize),
@@ -4390,7 +4390,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_encoder_ctl(enc, 4040 as libc::c_int, 5001 as libc::c_int);
+    err = opus_encoder_ctl!(enc, 4040 as libc::c_int, 5001 as libc::c_int);
     if err != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -4398,7 +4398,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_encoder_ctl(enc, 4040 as libc::c_int, 5002 as libc::c_int);
+    err = opus_encoder_ctl!(enc, 4040 as libc::c_int, 5002 as libc::c_int);
     if err != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -4406,7 +4406,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_encoder_ctl(enc, 4040 as libc::c_int, 5003 as libc::c_int);
+    err = opus_encoder_ctl!(enc, 4040 as libc::c_int, 5003 as libc::c_int);
     if err != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -4414,7 +4414,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_encoder_ctl(enc, 4040 as libc::c_int, 5004 as libc::c_int);
+    err = opus_encoder_ctl!(enc, 4040 as libc::c_int, 5004 as libc::c_int);
     if err != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -4422,7 +4422,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_encoder_ctl(enc, 4040 as libc::c_int, 5005 as libc::c_int);
+    err = opus_encoder_ctl!(enc, 4040 as libc::c_int, 5005 as libc::c_int);
     if err != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -4430,7 +4430,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_encoder_ctl(enc, 4040 as libc::c_int, 5006 as libc::c_int);
+    err = opus_encoder_ctl!(enc, 4040 as libc::c_int, 5006 as libc::c_int);
     if err != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -4438,7 +4438,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_encoder_ctl(enc, 4040 as libc::c_int, 5007 as libc::c_int);
+    err = opus_encoder_ctl!(enc, 4040 as libc::c_int, 5007 as libc::c_int);
     if err != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -4446,7 +4446,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_encoder_ctl(enc, 4040 as libc::c_int, 5008 as libc::c_int);
+    err = opus_encoder_ctl!(enc, 4040 as libc::c_int, 5008 as libc::c_int);
     if err != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -4454,7 +4454,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_encoder_ctl(enc, 4040 as libc::c_int, 5009 as libc::c_int);
+    err = opus_encoder_ctl!(enc, 4040 as libc::c_int, 5009 as libc::c_int);
     if err != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -4463,14 +4463,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     cfgs += 1;
     i = 0 as libc::c_int;
-    if opus_encoder_ctl(enc, 4040 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4040 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1396 as libc::c_int,
         );
     }
     i = -(1 as libc::c_int);
-    if opus_encoder_ctl(enc, 4040 as libc::c_int, i) == 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4040 as libc::c_int, i) == 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1396 as libc::c_int,
@@ -4478,14 +4478,14 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 5006 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4040 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4040 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1396 as libc::c_int,
         );
     }
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4041 as libc::c_int,
         (&mut i as *mut i32)
@@ -4499,7 +4499,7 @@ pub unsafe fn test_enc_api() -> i32 {
     }
     i = 5000 as libc::c_int;
     j = i;
-    if opus_encoder_ctl(enc, 4040 as libc::c_int, i) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4040 as libc::c_int, i) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1396 as libc::c_int,
@@ -4511,7 +4511,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     i = -(12345 as libc::c_int);
-    err = opus_encoder_ctl(
+    err = opus_encoder_ctl!(
         enc,
         4041 as libc::c_int,
         (&mut i as *mut i32)
@@ -4529,7 +4529,7 @@ pub unsafe fn test_enc_api() -> i32 {
             as *const libc::c_char,
     );
     cfgs += 6 as libc::c_int;
-    err = opus_encoder_ctl(enc, 4031 as libc::c_int, null_uint_ptr as *mut u32);
+    err = opus_encoder_ctl!(enc, 4031 as libc::c_int, null_uint_ptr as *mut u32);
     if err != -(1 as libc::c_int) {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
@@ -4537,7 +4537,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    if opus_encoder_ctl(
+    if opus_encoder_ctl!(
         enc,
         4031 as libc::c_int,
         (&mut enc_final_range as *mut u32).offset(
@@ -4557,7 +4557,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_GET_FINAL_RANGE ......................... OK.\n\0" as *const u8
             as *const libc::c_char,
     );
-    if opus_encoder_ctl(enc, 4028 as libc::c_int) != 0 as libc::c_int {
+    if opus_encoder_ctl!(enc, 4028 as libc::c_int) != 0 as libc::c_int {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const libc::c_char,
             1408 as libc::c_int,
