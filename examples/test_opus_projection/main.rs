@@ -14,7 +14,7 @@ use libc_stdhandle::stderr;
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:37"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
-    pub type opus_val16 = libc::c_float;
+    pub type opus_val16 = f32;
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:37"]
 pub mod xmmintrin_h {
@@ -33,42 +33,38 @@ pub mod test_opus_common_h {
     #[inline]
     #[c2rust::src_loc = "57:1"]
     pub unsafe fn fast_rand() -> u32 {
-        Rz = (36969 as libc::c_int as libc::c_uint)
-            .wrapping_mul(Rz & 65535 as libc::c_int as libc::c_uint)
-            .wrapping_add(Rz >> 16 as libc::c_int);
-        Rw = (18000 as libc::c_int as libc::c_uint)
-            .wrapping_mul(Rw & 65535 as libc::c_int as libc::c_uint)
-            .wrapping_add(Rw >> 16 as libc::c_int);
-        (Rz << 16 as libc::c_int).wrapping_add(Rw)
+        Rz = (36969 as i32 as u32)
+            .wrapping_mul(Rz & 65535 as i32 as u32)
+            .wrapping_add(Rz >> 16 as i32);
+        Rw = (18000 as i32 as u32)
+            .wrapping_mul(Rw & 65535 as i32 as u32)
+            .wrapping_add(Rw >> 16 as i32);
+        (Rz << 16 as i32).wrapping_add(Rw)
     }
     #[c2rust::src_loc = "63:20"]
     pub static mut iseed: u32 = 0;
     #[inline]
     #[c2rust::src_loc = "66:1"]
-    pub unsafe fn _test_failed(mut file: *const libc::c_char, mut line: libc::c_int) -> ! {
+    pub unsafe fn _test_failed(mut file: *const i8, mut line: i32) -> ! {
         fprintf(
             stderr(),
-            b"\n ***************************************************\n\0" as *const u8
-                as *const libc::c_char,
+            b"\n ***************************************************\n\0" as *const u8 as *const i8,
         );
         fprintf(
             stderr(),
-            b" ***         A fatal error was detected.         ***\n\0" as *const u8
-                as *const libc::c_char,
+            b" ***         A fatal error was detected.         ***\n\0" as *const u8 as *const i8,
         );
         fprintf(
             stderr(),
-            b" ***************************************************\n\0" as *const u8
-                as *const libc::c_char,
+            b" ***************************************************\n\0" as *const u8 as *const i8,
         );
         fprintf(
             stderr(),
-            b"Please report this failure and include\n\0" as *const u8 as *const libc::c_char,
+            b"Please report this failure and include\n\0" as *const u8 as *const i8,
         );
         fprintf(
             stderr(),
-            b"'make check SEED=%u fails %s at line %d for %s'\n\0" as *const u8
-                as *const libc::c_char,
+            b"'make check SEED=%u fails %s at line %d for %s'\n\0" as *const u8 as *const i8,
             iseed,
             file,
             line,
@@ -76,8 +72,7 @@ pub mod test_opus_common_h {
         );
         fprintf(
             stderr(),
-            b"and any relevant details about your system.\n\n\0" as *const u8
-                as *const libc::c_char,
+            b"and any relevant details about your system.\n\n\0" as *const u8 as *const i8,
         );
         abort();
     }
@@ -101,57 +96,55 @@ use unsafe_libopus::{
 pub unsafe fn assert_is_equal(
     mut a: *const opus_val16,
     mut b: *const i16,
-    mut size: libc::c_int,
+    mut size: i32,
     mut tolerance: i16,
-) -> libc::c_int {
-    let mut i: libc::c_int = 0;
-    i = 0 as libc::c_int;
+) -> i32 {
+    let mut i: i32 = 0;
+    i = 0 as i32;
     while i < size {
         let left = *a.offset(i as isize);
         let right = *b.offset(i as isize);
 
         let left = (left * 32768.0) as i16;
         if (left - right).abs() > tolerance {
-            return 1 as libc::c_int;
+            return 1 as i32;
         }
         i += 1;
     }
-    0 as libc::c_int
+    0 as i32
 }
 #[c2rust::src_loc = "72:1"]
 pub unsafe fn assert_is_equal_short(
     mut a: *const i16,
     mut b: *const i16,
-    mut size: libc::c_int,
+    mut size: i32,
     mut tolerance: i16,
-) -> libc::c_int {
-    let mut i: libc::c_int = 0;
-    i = 0 as libc::c_int;
+) -> i32 {
+    let mut i: i32 = 0;
+    i = 0 as i32;
     while i < size {
-        if (*a.offset(i as isize) as libc::c_int - *b.offset(i as isize) as libc::c_int).abs()
-            > tolerance as libc::c_int
-        {
-            return 1 as libc::c_int;
+        if (*a.offset(i as isize) as i32 - *b.offset(i as isize) as i32).abs() > tolerance as i32 {
+            return 1 as i32;
         }
         i += 1;
     }
-    0 as libc::c_int
+    0 as i32
 }
 #[c2rust::src_loc = "189:1"]
-pub unsafe fn test_creation_arguments(channels: libc::c_int, mapping_family: libc::c_int) {
-    let mut streams: libc::c_int = 0;
-    let mut coupled_streams: libc::c_int = 0;
-    let mut enc_error: libc::c_int = 0;
-    let mut dec_error: libc::c_int = 0;
-    let mut ret: libc::c_int = 0;
+pub unsafe fn test_creation_arguments(channels: i32, mapping_family: i32) {
+    let mut streams: i32 = 0;
+    let mut coupled_streams: i32 = 0;
+    let mut enc_error: i32 = 0;
+    let mut dec_error: i32 = 0;
+    let mut ret: i32 = 0;
     let mut st_enc: *mut OpusProjectionEncoder = std::ptr::null_mut::<OpusProjectionEncoder>();
     let mut st_dec: *mut OpusProjectionDecoder = std::ptr::null_mut::<OpusProjectionDecoder>();
-    let Fs: i32 = 48000 as libc::c_int;
-    let application: libc::c_int = 2049 as libc::c_int;
-    let mut order_plus_one: libc::c_int = (channels as f32).sqrt().floor() as libc::c_int;
-    let mut nondiegetic_channels: libc::c_int = channels - order_plus_one * order_plus_one;
-    let mut is_channels_valid: libc::c_int = 0 as libc::c_int;
-    let mut is_projection_valid: libc::c_int = 0 as libc::c_int;
+    let Fs: i32 = 48000 as i32;
+    let application: i32 = 2049 as i32;
+    let mut order_plus_one: i32 = (channels as f32).sqrt().floor() as i32;
+    let mut nondiegetic_channels: i32 = channels - order_plus_one * order_plus_one;
+    let mut is_channels_valid: i32 = 0 as i32;
+    let mut is_projection_valid: i32 = 0 as i32;
     st_enc = opus_projection_ambisonics_encoder_create(
         Fs,
         channels,
@@ -163,17 +156,16 @@ pub unsafe fn test_creation_arguments(channels: libc::c_int, mapping_family: lib
     );
     if !st_enc.is_null() {
         let mut matrix_size: i32 = 0;
-        let mut matrix: *mut libc::c_uchar = std::ptr::null_mut::<libc::c_uchar>();
-        ret =
-            opus_projection_encoder_ctl!(st_enc, 6003 as libc::c_int, &mut matrix_size as *mut i32);
-        if ret != 0 as libc::c_int || matrix_size == 0 {
+        let mut matrix: *mut u8 = std::ptr::null_mut::<u8>();
+        ret = opus_projection_encoder_ctl!(st_enc, 6003 as i32, &mut matrix_size as *mut i32);
+        if ret != 0 as i32 || matrix_size == 0 {
             _test_failed(
-                b"tests/test_opus_projection.c\0" as *const u8 as *const libc::c_char,
-                218 as libc::c_int,
+                b"tests/test_opus_projection.c\0" as *const u8 as *const i8,
+                218 as i32,
             );
         }
-        matrix = malloc(matrix_size as _) as *mut libc::c_uchar;
-        ret = opus_projection_encoder_ctl!(st_enc, 6005 as libc::c_int, matrix, matrix_size);
+        matrix = malloc(matrix_size as _) as *mut u8;
+        ret = opus_projection_encoder_ctl!(st_enc, 6005 as i32, matrix, matrix_size);
         opus_projection_encoder_destroy(st_enc);
         st_dec = opus_projection_decoder_create(
             Fs,
@@ -187,36 +179,35 @@ pub unsafe fn test_creation_arguments(channels: libc::c_int, mapping_family: lib
         if !st_dec.is_null() {
             opus_projection_decoder_destroy(st_dec);
         }
-        free(matrix as *mut libc::c_void);
+        free(matrix as *mut core::ffi::c_void);
     }
-    is_channels_valid = (order_plus_one >= 2 as libc::c_int
-        && order_plus_one <= 4 as libc::c_int
-        && (nondiegetic_channels == 0 as libc::c_int || nondiegetic_channels == 2 as libc::c_int))
-        as libc::c_int;
-    is_projection_valid =
-        (enc_error == 0 as libc::c_int && dec_error == 0 as libc::c_int) as libc::c_int;
+    is_channels_valid = (order_plus_one >= 2 as i32
+        && order_plus_one <= 4 as i32
+        && (nondiegetic_channels == 0 as i32 || nondiegetic_channels == 2 as i32))
+        as i32;
+    is_projection_valid = (enc_error == 0 as i32 && dec_error == 0 as i32) as i32;
     if is_channels_valid ^ is_projection_valid != 0 {
         fprintf(
             stderr(),
-            b"Channels: %d, Family: %d\n\0" as *const u8 as *const libc::c_char,
+            b"Channels: %d, Family: %d\n\0" as *const u8 as *const i8,
             channels,
             mapping_family,
         );
         fprintf(
             stderr(),
-            b"Order+1: %d, Non-diegetic Channels: %d\n\0" as *const u8 as *const libc::c_char,
+            b"Order+1: %d, Non-diegetic Channels: %d\n\0" as *const u8 as *const i8,
             order_plus_one,
             nondiegetic_channels,
         );
         fprintf(
             stderr(),
-            b"Streams: %d, Coupled Streams: %d\n\0" as *const u8 as *const libc::c_char,
+            b"Streams: %d, Coupled Streams: %d\n\0" as *const u8 as *const i8,
             streams,
             coupled_streams,
         );
         _test_failed(
-            b"tests/test_opus_projection.c\0" as *const u8 as *const libc::c_char,
-            245 as libc::c_int,
+            b"tests/test_opus_projection.c\0" as *const u8 as *const i8,
+            245 as i32,
         );
     }
 }
@@ -229,99 +220,87 @@ pub unsafe fn generate_music(mut buf: *mut libc::c_short, mut len: i32, mut chan
     let mut b: *mut i32 = std::ptr::null_mut::<i32>();
     let mut c: *mut i32 = std::ptr::null_mut::<i32>();
     let mut d: *mut i32 = std::ptr::null_mut::<i32>();
-    a = malloc(
-        (::core::mem::size_of::<i32>() as libc::c_ulong).wrapping_mul(channels as libc::c_ulong),
-    ) as *mut i32;
-    b = malloc(
-        (::core::mem::size_of::<i32>() as libc::c_ulong).wrapping_mul(channels as libc::c_ulong),
-    ) as *mut i32;
-    c = malloc(
-        (::core::mem::size_of::<i32>() as libc::c_ulong).wrapping_mul(channels as libc::c_ulong),
-    ) as *mut i32;
-    d = malloc(
-        (::core::mem::size_of::<i32>() as libc::c_ulong).wrapping_mul(channels as libc::c_ulong),
-    ) as *mut i32;
+    a = malloc((::core::mem::size_of::<i32>() as u64).wrapping_mul(channels as u64)) as *mut i32;
+    b = malloc((::core::mem::size_of::<i32>() as u64).wrapping_mul(channels as u64)) as *mut i32;
+    c = malloc((::core::mem::size_of::<i32>() as u64).wrapping_mul(channels as u64)) as *mut i32;
+    d = malloc((::core::mem::size_of::<i32>() as u64).wrapping_mul(channels as u64)) as *mut i32;
     memset(
-        a as *mut libc::c_void,
-        0 as libc::c_int,
-        (::core::mem::size_of::<i32>() as libc::c_ulong).wrapping_mul(channels as libc::c_ulong),
+        a as *mut core::ffi::c_void,
+        0 as i32,
+        (::core::mem::size_of::<i32>() as u64).wrapping_mul(channels as u64),
     );
     memset(
-        b as *mut libc::c_void,
-        0 as libc::c_int,
-        (::core::mem::size_of::<i32>() as libc::c_ulong).wrapping_mul(channels as libc::c_ulong),
+        b as *mut core::ffi::c_void,
+        0 as i32,
+        (::core::mem::size_of::<i32>() as u64).wrapping_mul(channels as u64),
     );
     memset(
-        c as *mut libc::c_void,
-        0 as libc::c_int,
-        (::core::mem::size_of::<i32>() as libc::c_ulong).wrapping_mul(channels as libc::c_ulong),
+        c as *mut core::ffi::c_void,
+        0 as i32,
+        (::core::mem::size_of::<i32>() as u64).wrapping_mul(channels as u64),
     );
     memset(
-        d as *mut libc::c_void,
-        0 as libc::c_int,
-        (::core::mem::size_of::<i32>() as libc::c_ulong).wrapping_mul(channels as libc::c_ulong),
+        d as *mut core::ffi::c_void,
+        0 as i32,
+        (::core::mem::size_of::<i32>() as u64).wrapping_mul(channels as u64),
     );
-    j = 0 as libc::c_int;
-    i = 0 as libc::c_int;
+    j = 0 as i32;
+    i = 0 as i32;
     while i < len {
-        k = 0 as libc::c_int;
+        k = 0 as i32;
         while k < channels {
             let mut r: u32 = 0;
             let mut v: i32 = 0;
             v = (((j
-                * (j >> 12 as libc::c_int
-                    ^ (j >> 10 as libc::c_int | j >> 12 as libc::c_int)
-                        & 26 as libc::c_int
-                        & j >> 7 as libc::c_int))
-                & 128 as libc::c_int)
-                + 128 as libc::c_int)
-                << 15 as libc::c_int;
+                * (j >> 12 as i32
+                    ^ (j >> 10 as i32 | j >> 12 as i32) & 26 as i32 & j >> 7 as i32))
+                & 128 as i32)
+                + 128 as i32)
+                << 15 as i32;
             r = fast_rand();
-            v = (v as libc::c_uint).wrapping_add(r & 65535 as libc::c_int as libc::c_uint) as i32
-                as i32;
-            v = (v as libc::c_uint).wrapping_sub(r >> 16 as libc::c_int) as i32 as i32;
+            v = (v as u32).wrapping_add(r & 65535 as i32 as u32) as i32 as i32;
+            v = (v as u32).wrapping_sub(r >> 16 as i32) as i32 as i32;
             *b.offset(k as isize) = v - *a.offset(k as isize)
-                + ((*b.offset(k as isize) * 61 as libc::c_int + 32 as libc::c_int)
-                    >> 6 as libc::c_int);
+                + ((*b.offset(k as isize) * 61 as i32 + 32 as i32) >> 6 as i32);
             *a.offset(k as isize) = v;
-            *c.offset(k as isize) = (30 as libc::c_int
+            *c.offset(k as isize) = (30 as i32
                 * (*c.offset(k as isize) + *b.offset(k as isize) + *d.offset(k as isize))
-                + 32 as libc::c_int)
-                >> 6 as libc::c_int;
+                + 32 as i32)
+                >> 6 as i32;
             *d.offset(k as isize) = *b.offset(k as isize);
-            v = (*c.offset(k as isize) + 128 as libc::c_int) >> 8 as libc::c_int;
-            *buf.offset((i * channels + k) as isize) = (if v > 32767 as libc::c_int {
-                32767 as libc::c_int
-            } else if v < -(32768 as libc::c_int) {
-                -(32768 as libc::c_int)
+            v = (*c.offset(k as isize) + 128 as i32) >> 8 as i32;
+            *buf.offset((i * channels + k) as isize) = (if v > 32767 as i32 {
+                32767 as i32
+            } else if v < -(32768 as i32) {
+                -(32768 as i32)
             } else {
                 v
             }) as libc::c_short;
-            if i % 6 as libc::c_int == 0 as libc::c_int {
+            if i % 6 as i32 == 0 as i32 {
                 j += 1;
             }
             k += 1;
         }
         i += 1;
     }
-    free(a as *mut libc::c_void);
-    free(b as *mut libc::c_void);
-    free(c as *mut libc::c_void);
-    free(d as *mut libc::c_void);
+    free(a as *mut core::ffi::c_void);
+    free(b as *mut core::ffi::c_void);
+    free(c as *mut core::ffi::c_void);
+    free(d as *mut core::ffi::c_void);
 }
 #[c2rust::src_loc = "285:1"]
-pub unsafe fn test_encode_decode(mut bitrate: i32, mut channels: i32, mapping_family: libc::c_int) {
-    let Fs: i32 = 48000 as libc::c_int;
-    let application: libc::c_int = 2049 as libc::c_int;
+pub unsafe fn test_encode_decode(mut bitrate: i32, mut channels: i32, mapping_family: i32) {
+    let Fs: i32 = 48000 as i32;
+    let application: i32 = 2049 as i32;
     let mut st_enc: *mut OpusProjectionEncoder = std::ptr::null_mut::<OpusProjectionEncoder>();
     let mut st_dec: *mut OpusProjectionDecoder = std::ptr::null_mut::<OpusProjectionDecoder>();
-    let mut streams: libc::c_int = 0;
-    let mut coupled: libc::c_int = 0;
-    let mut error: libc::c_int = 0;
+    let mut streams: i32 = 0;
+    let mut coupled: i32 = 0;
+    let mut error: i32 = 0;
     let mut buffer_in: *mut libc::c_short = std::ptr::null_mut::<libc::c_short>();
     let mut buffer_out: *mut libc::c_short = std::ptr::null_mut::<libc::c_short>();
-    let mut data: [libc::c_uchar; 32768] = [
-        0 as libc::c_int as libc::c_uchar,
+    let mut data: [u8; 32768] = [
+        0 as i32 as u8,
         0,
         0,
         0,
@@ -33090,19 +33069,19 @@ pub unsafe fn test_encode_decode(mut bitrate: i32, mut channels: i32, mapping_fa
         0,
         0,
     ];
-    let mut len: libc::c_int = 0;
-    let mut out_samples: libc::c_int = 0;
-    let mut matrix_size: i32 = 0 as libc::c_int;
-    let mut matrix: *mut libc::c_uchar = std::ptr::null_mut::<libc::c_uchar>();
+    let mut len: i32 = 0;
+    let mut out_samples: i32 = 0;
+    let mut matrix_size: i32 = 0 as i32;
+    let mut matrix: *mut u8 = std::ptr::null_mut::<u8>();
     buffer_in = malloc(
-        (::core::mem::size_of::<libc::c_short>() as libc::c_ulong)
-            .wrapping_mul(960 as libc::c_int as libc::c_ulong)
-            .wrapping_mul(channels as libc::c_ulong),
+        (::core::mem::size_of::<libc::c_short>() as u64)
+            .wrapping_mul(960 as i32 as u64)
+            .wrapping_mul(channels as u64),
     ) as *mut libc::c_short;
     buffer_out = malloc(
-        (::core::mem::size_of::<libc::c_short>() as libc::c_ulong)
-            .wrapping_mul(960 as libc::c_int as libc::c_ulong)
-            .wrapping_mul(channels as libc::c_ulong),
+        (::core::mem::size_of::<libc::c_short>() as u64)
+            .wrapping_mul(960 as i32 as u64)
+            .wrapping_mul(channels as u64),
     ) as *mut libc::c_short;
     st_enc = opus_projection_ambisonics_encoder_create(
         Fs,
@@ -33113,32 +33092,31 @@ pub unsafe fn test_encode_decode(mut bitrate: i32, mut channels: i32, mapping_fa
         application,
         &mut error,
     );
-    if error != 0 as libc::c_int {
+    if error != 0 as i32 {
         fprintf(
             stderr(),
             b"Couldn't create encoder with %d channels and mapping family %d.\n\0" as *const u8
-                as *const libc::c_char,
+                as *const i8,
             channels,
             mapping_family,
         );
-        free(buffer_in as *mut libc::c_void);
-        free(buffer_out as *mut libc::c_void);
+        free(buffer_in as *mut core::ffi::c_void);
+        free(buffer_out as *mut core::ffi::c_void);
         _test_failed(
-            b"tests/test_opus_projection.c\0" as *const u8 as *const libc::c_char,
-            315 as libc::c_int,
+            b"tests/test_opus_projection.c\0" as *const u8 as *const i8,
+            315 as i32,
         );
     }
     error = opus_projection_encoder_ctl!(
         st_enc,
-        4002 as libc::c_int,
-        bitrate * 1000 as libc::c_int * (streams + coupled),
+        4002 as i32,
+        bitrate * 1000 as i32 * (streams + coupled),
     );
-    if error == 0 as libc::c_int {
-        error =
-            opus_projection_encoder_ctl!(st_enc, 6003 as libc::c_int, &mut matrix_size as *mut i32);
-        if !(error != 0 as libc::c_int || matrix_size == 0) {
-            matrix = malloc(matrix_size as _) as *mut libc::c_uchar;
-            error = opus_projection_encoder_ctl!(st_enc, 6005 as libc::c_int, matrix, matrix_size);
+    if error == 0 as i32 {
+        error = opus_projection_encoder_ctl!(st_enc, 6003 as i32, &mut matrix_size as *mut i32);
+        if !(error != 0 as i32 || matrix_size == 0) {
+            matrix = malloc(matrix_size as _) as *mut u8;
+            error = opus_projection_encoder_ctl!(st_enc, 6005 as i32, matrix, matrix_size);
             st_dec = opus_projection_decoder_create(
                 Fs,
                 channels,
@@ -33148,29 +33126,29 @@ pub unsafe fn test_encode_decode(mut bitrate: i32, mut channels: i32, mapping_fa
                 matrix_size,
                 &mut error,
             );
-            free(matrix as *mut libc::c_void);
-            if error != 0 as libc::c_int {
+            free(matrix as *mut core::ffi::c_void);
+            if error != 0 as i32 {
                 fprintf(
                     stderr(),
                     b"Couldn't create decoder with %d channels, %d streams and %d coupled streams.\n\0"
-                        as *const u8 as *const libc::c_char,
+                        as *const u8 as *const i8,
                     channels,
                     streams,
                     coupled,
                 );
             } else {
-                generate_music(buffer_in, 960 as libc::c_int, channels);
+                generate_music(buffer_in, 960 as i32, channels);
                 len = opus_projection_encode(
                     st_enc,
                     buffer_in,
-                    960 as libc::c_int,
+                    960 as i32,
                     data.as_mut_ptr(),
-                    32768 as libc::c_int,
+                    32768 as i32,
                 );
-                if len < 0 as libc::c_int || len > 32768 as libc::c_int {
+                if len < 0 as i32 || len > 32768 as i32 {
                     fprintf(
                         stderr(),
-                        b"opus_encode() returned %d\n\0" as *const u8 as *const libc::c_char,
+                        b"opus_encode() returned %d\n\0" as *const u8 as *const i8,
                         len,
                     );
                 } else {
@@ -33179,56 +33157,52 @@ pub unsafe fn test_encode_decode(mut bitrate: i32, mut channels: i32, mapping_fa
                         data.as_mut_ptr(),
                         len,
                         buffer_out,
-                        5760 as libc::c_int,
-                        0 as libc::c_int,
+                        5760 as i32,
+                        0 as i32,
                     );
-                    if out_samples != 960 as libc::c_int {
+                    if out_samples != 960 as i32 {
                         fprintf(
                             stderr(),
-                            b"opus_decode() returned %d\n\0" as *const u8 as *const libc::c_char,
+                            b"opus_decode() returned %d\n\0" as *const u8 as *const i8,
                             out_samples,
                         );
                     } else {
                         opus_projection_decoder_destroy(st_dec);
                         opus_projection_encoder_destroy(st_enc);
-                        free(buffer_in as *mut libc::c_void);
-                        free(buffer_out as *mut libc::c_void);
+                        free(buffer_in as *mut core::ffi::c_void);
+                        free(buffer_out as *mut core::ffi::c_void);
                         return;
                     }
                 }
             }
         }
     }
-    free(buffer_in as *mut libc::c_void);
-    free(buffer_out as *mut libc::c_void);
+    free(buffer_in as *mut core::ffi::c_void);
+    free(buffer_out as *mut core::ffi::c_void);
     _test_failed(
-        b"tests/test_opus_projection.c\0" as *const u8 as *const libc::c_char,
-        371 as libc::c_int,
+        b"tests/test_opus_projection.c\0" as *const u8 as *const i8,
+        371 as i32,
     );
 }
 #[c2rust::src_loc = "374:1"]
-unsafe fn main_0(mut _argc: libc::c_int, mut _argv: *mut *mut libc::c_char) -> libc::c_int {
-    let mut i: libc::c_uint = 0;
+unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
+    let mut i: u32 = 0;
     // not longer tested, because it wants to link to internal opus functions, which is a no-no
     //crate::simple_matrix::test_simple_matrix();
-    i = 0 as libc::c_int as libc::c_uint;
-    while i < 255 as libc::c_int as libc::c_uint {
-        test_creation_arguments(i as libc::c_int, 3 as libc::c_int);
+    i = 0 as i32 as u32;
+    while i < 255 as i32 as u32 {
+        test_creation_arguments(i as i32, 3 as i32);
         i = i.wrapping_add(1);
     }
-    test_encode_decode(
-        64 as libc::c_int * 18 as libc::c_int,
-        18 as libc::c_int,
-        3 as libc::c_int,
-    );
+    test_encode_decode(64 as i32 * 18 as i32, 18 as i32, 3 as i32);
     fprintf(
         stderr(),
-        b"All projection tests passed.\n\0" as *const u8 as *const libc::c_char,
+        b"All projection tests passed.\n\0" as *const u8 as *const i8,
     );
-    0 as libc::c_int
+    0 as i32
 }
 pub fn main() {
-    let mut args: Vec<*mut libc::c_char> = Vec::new();
+    let mut args: Vec<*mut i8> = Vec::new();
     for arg in ::std::env::args() {
         args.push(
             (::std::ffi::CString::new(arg))
@@ -33238,9 +33212,8 @@ pub fn main() {
     }
     args.push(::core::ptr::null_mut());
     unsafe {
-        ::std::process::exit(main_0(
-            (args.len() - 1) as libc::c_int,
-            args.as_mut_ptr() as *mut *mut libc::c_char,
-        ) as i32)
+        ::std::process::exit(
+            main_0((args.len() - 1) as i32, args.as_mut_ptr() as *mut *mut i8) as i32,
+        )
     }
 }

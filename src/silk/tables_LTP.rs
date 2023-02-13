@@ -120,32 +120,20 @@ pub static silk_LTP_vq_sizes: [i8; 3] = [8, 16, 32];
 // some array shenanigans going on here...
 unsafe fn run_static_initializers() {
     silk_LTP_vq_ptrs_Q7 = [
-        &*(*silk_LTP_gain_vq_0
+        &*(*silk_LTP_gain_vq_0.as_ptr().offset(0 as i32 as isize))
             .as_ptr()
-            .offset(0 as libc::c_int as isize))
-        .as_ptr()
-        .offset(0 as libc::c_int as isize) as *const i8 as *mut i8 as *const i8,
-        &*(*silk_LTP_gain_vq_1
+            .offset(0 as i32 as isize) as *const i8 as *mut i8 as *const i8,
+        &*(*silk_LTP_gain_vq_1.as_ptr().offset(0 as i32 as isize))
             .as_ptr()
-            .offset(0 as libc::c_int as isize))
-        .as_ptr()
-        .offset(0 as libc::c_int as isize) as *const i8 as *mut i8 as *const i8,
-        &*(*silk_LTP_gain_vq_2
+            .offset(0 as i32 as isize) as *const i8 as *mut i8 as *const i8,
+        &*(*silk_LTP_gain_vq_2.as_ptr().offset(0 as i32 as isize))
             .as_ptr()
-            .offset(0 as libc::c_int as isize))
-        .as_ptr()
-        .offset(0 as libc::c_int as isize) as *const i8 as *mut i8 as *const i8,
+            .offset(0 as i32 as isize) as *const i8 as *mut i8 as *const i8,
     ];
     silk_LTP_vq_gain_ptrs_Q7 = [
-        &*silk_LTP_gain_vq_0_gain
-            .as_ptr()
-            .offset(0 as libc::c_int as isize) as *const u8,
-        &*silk_LTP_gain_vq_1_gain
-            .as_ptr()
-            .offset(0 as libc::c_int as isize) as *const u8,
-        &*silk_LTP_gain_vq_2_gain
-            .as_ptr()
-            .offset(0 as libc::c_int as isize) as *const u8,
+        &*silk_LTP_gain_vq_0_gain.as_ptr().offset(0 as i32 as isize) as *const u8,
+        &*silk_LTP_gain_vq_1_gain.as_ptr().offset(0 as i32 as isize) as *const u8,
+        &*silk_LTP_gain_vq_2_gain.as_ptr().offset(0 as i32 as isize) as *const u8,
     ];
 }
 #[used]

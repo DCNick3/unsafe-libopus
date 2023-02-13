@@ -5,42 +5,39 @@ use crate::silk::float::scale_vector_FLP::silk_scale_vector_FLP;
 
 #[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_find_LTP_FLP(
-    XX: *mut libc::c_float,
-    xX: *mut libc::c_float,
-    mut r_ptr: *const libc::c_float,
-    lag: *const libc::c_int,
-    subfr_length: libc::c_int,
-    nb_subfr: libc::c_int,
+    XX: *mut f32,
+    xX: *mut f32,
+    mut r_ptr: *const f32,
+    lag: *const i32,
+    subfr_length: i32,
+    nb_subfr: i32,
 ) {
-    let mut k: libc::c_int = 0;
-    let mut xX_ptr: *mut libc::c_float = 0 as *mut libc::c_float;
-    let mut XX_ptr: *mut libc::c_float = 0 as *mut libc::c_float;
-    let mut lag_ptr: *const libc::c_float = 0 as *const libc::c_float;
-    let mut xx: libc::c_float = 0.;
-    let mut temp: libc::c_float = 0.;
+    let mut k: i32 = 0;
+    let mut xX_ptr: *mut f32 = 0 as *mut f32;
+    let mut XX_ptr: *mut f32 = 0 as *mut f32;
+    let mut lag_ptr: *const f32 = 0 as *const f32;
+    let mut xx: f32 = 0.;
+    let mut temp: f32 = 0.;
     xX_ptr = xX;
     XX_ptr = XX;
-    k = 0 as libc::c_int;
+    k = 0 as i32;
     while k < nb_subfr {
-        lag_ptr =
-            r_ptr.offset(-((*lag.offset(k as isize) + LTP_ORDER / 2 as libc::c_int) as isize));
+        lag_ptr = r_ptr.offset(-((*lag.offset(k as isize) + LTP_ORDER / 2 as i32) as isize));
         silk_corrMatrix_FLP(lag_ptr, subfr_length, LTP_ORDER, XX_ptr);
         silk_corrVector_FLP(lag_ptr, r_ptr, subfr_length, LTP_ORDER, xX_ptr);
-        xx = silk_energy_FLP(r_ptr, subfr_length + LTP_ORDER) as libc::c_float;
+        xx = silk_energy_FLP(r_ptr, subfr_length + LTP_ORDER) as f32;
         temp = 1.0f32
             / (if xx
                 > 0.03f32
                     * 0.5f32
-                    * (*XX_ptr.offset(0 as libc::c_int as isize)
-                        + *XX_ptr.offset(24 as libc::c_int as isize))
+                    * (*XX_ptr.offset(0 as i32 as isize) + *XX_ptr.offset(24 as i32 as isize))
                     + 1.0f32
             {
                 xx
             } else {
                 0.03f32
                     * 0.5f32
-                    * (*XX_ptr.offset(0 as libc::c_int as isize)
-                        + *XX_ptr.offset(24 as libc::c_int as isize))
+                    * (*XX_ptr.offset(0 as i32 as isize) + *XX_ptr.offset(24 as i32 as isize))
                     + 1.0f32
             });
         silk_scale_vector_FLP(XX_ptr, temp, LTP_ORDER * LTP_ORDER);

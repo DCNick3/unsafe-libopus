@@ -4,9 +4,9 @@
 pub struct DenseLayer {
     pub bias: *const i8,
     pub input_weights: *const i8,
-    pub nb_inputs: libc::c_int,
-    pub nb_neurons: libc::c_int,
-    pub sigmoid: libc::c_int,
+    pub nb_inputs: i32,
+    pub nb_neurons: i32,
+    pub sigmoid: i32,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -15,14 +15,14 @@ pub struct GRULayer {
     pub bias: *const i8,
     pub input_weights: *const i8,
     pub recurrent_weights: *const i8,
-    pub nb_inputs: libc::c_int,
-    pub nb_neurons: libc::c_int,
+    pub nb_inputs: i32,
+    pub nb_neurons: i32,
 }
 #[c2rust::src_loc = "32:9"]
-pub const WEIGHTS_SCALE: libc::c_float = 1.0f32 / 128 as libc::c_int as libc::c_float;
+pub const WEIGHTS_SCALE: f32 = 1.0f32 / 128 as i32 as f32;
 
 #[c2rust::src_loc = "3:20"]
-const tansig_table: [libc::c_float; 201] = [
+const tansig_table: [f32; 201] = [
     0.000000f32,
     0.039979f32,
     0.079830f32,
@@ -228,53 +228,52 @@ const tansig_table: [libc::c_float; 201] = [
 
 #[inline]
 #[c2rust::src_loc = "39:1"]
-unsafe fn tansig_approx(mut x: libc::c_float) -> libc::c_float {
-    let mut i: libc::c_int = 0;
-    let mut y: libc::c_float = 0.;
-    let mut dy: libc::c_float = 0.;
-    let mut sign: libc::c_float = 1 as libc::c_int as libc::c_float;
-    if !(x < 8 as libc::c_int as libc::c_float) {
-        return 1 as libc::c_int as libc::c_float;
+unsafe fn tansig_approx(mut x: f32) -> f32 {
+    let mut i: i32 = 0;
+    let mut y: f32 = 0.;
+    let mut dy: f32 = 0.;
+    let mut sign: f32 = 1 as i32 as f32;
+    if !(x < 8 as i32 as f32) {
+        return 1 as i32 as f32;
     }
-    if !(x > -(8 as libc::c_int) as libc::c_float) {
-        return -(1 as libc::c_int) as libc::c_float;
+    if !(x > -(8 as i32) as f32) {
+        return -(1 as i32) as f32;
     }
     if x != x {
-        return 0 as libc::c_int as libc::c_float;
+        return 0 as i32 as f32;
     }
-    if x < 0 as libc::c_int as libc::c_float {
+    if x < 0 as i32 as f32 {
         x = -x;
-        sign = -(1 as libc::c_int) as libc::c_float;
+        sign = -(1 as i32) as f32;
     }
-    i = (0.5f32 + 25.0 * x).floor() as libc::c_int;
-    x -= 0.04f32 * i as libc::c_float;
+    i = (0.5f32 + 25.0 * x).floor() as i32;
+    x -= 0.04f32 * i as f32;
     y = tansig_table[i as usize];
-    dy = 1 as libc::c_int as libc::c_float - y * y;
-    y = y + x * dy * (1 as libc::c_int as libc::c_float - y * x);
+    dy = 1 as i32 as f32 - y * y;
+    y = y + x * dy * (1 as i32 as f32 - y * x);
     return sign * y;
 }
 #[inline]
 #[c2rust::src_loc = "67:1"]
-unsafe fn sigmoid_approx(x: libc::c_float) -> libc::c_float {
+unsafe fn sigmoid_approx(x: f32) -> f32 {
     return 0.5f32 + 0.5f32 * tansig_approx(0.5f32 * x);
 }
 #[c2rust::src_loc = "72:1"]
 unsafe fn gemm_accum(
-    out: *mut libc::c_float,
+    out: *mut f32,
     weights: *const i8,
-    rows: libc::c_int,
-    cols: libc::c_int,
-    col_stride: libc::c_int,
-    x: *const libc::c_float,
+    rows: i32,
+    cols: i32,
+    col_stride: i32,
+    x: *const f32,
 ) {
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    i = 0 as libc::c_int;
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    i = 0 as i32;
     while i < rows {
-        j = 0 as libc::c_int;
+        j = 0 as i32;
         while j < cols {
-            *out.offset(i as isize) += *weights.offset((j * col_stride + i) as isize) as libc::c_int
-                as libc::c_float
+            *out.offset(i as isize) += *weights.offset((j * col_stride + i) as isize) as i32 as f32
                 * *x.offset(j as isize);
             j += 1;
         }
@@ -282,37 +281,33 @@ unsafe fn gemm_accum(
     }
 }
 #[c2rust::src_loc = "82:1"]
-pub unsafe fn compute_dense(
-    layer: *const DenseLayer,
-    output: *mut libc::c_float,
-    input: *const libc::c_float,
-) {
-    let mut i: libc::c_int = 0;
-    let mut N: libc::c_int = 0;
-    let mut M: libc::c_int = 0;
-    let mut stride: libc::c_int = 0;
+pub unsafe fn compute_dense(layer: *const DenseLayer, output: *mut f32, input: *const f32) {
+    let mut i: i32 = 0;
+    let mut N: i32 = 0;
+    let mut M: i32 = 0;
+    let mut stride: i32 = 0;
     M = (*layer).nb_inputs;
     N = (*layer).nb_neurons;
     stride = N;
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < N {
-        *output.offset(i as isize) = *((*layer).bias).offset(i as isize) as libc::c_float;
+        *output.offset(i as isize) = *((*layer).bias).offset(i as isize) as f32;
         i += 1;
     }
     gemm_accum(output, (*layer).input_weights, N, M, stride, input);
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < N {
         *output.offset(i as isize) *= WEIGHTS_SCALE;
         i += 1;
     }
     if (*layer).sigmoid != 0 {
-        i = 0 as libc::c_int;
+        i = 0 as i32;
         while i < N {
             *output.offset(i as isize) = sigmoid_approx(*output.offset(i as isize));
             i += 1;
         }
     } else {
-        i = 0 as libc::c_int;
+        i = 0 as i32;
         while i < N {
             *output.offset(i as isize) = tansig_approx(*output.offset(i as isize));
             i += 1;
@@ -320,25 +315,21 @@ pub unsafe fn compute_dense(
     };
 }
 #[c2rust::src_loc = "104:1"]
-pub unsafe fn compute_gru(
-    gru: *const GRULayer,
-    state: *mut libc::c_float,
-    input: *const libc::c_float,
-) {
-    let mut i: libc::c_int = 0;
-    let mut N: libc::c_int = 0;
-    let mut M: libc::c_int = 0;
-    let mut stride: libc::c_int = 0;
-    let mut tmp: [libc::c_float; 32] = [0.; 32];
-    let mut z: [libc::c_float; 32] = [0.; 32];
-    let mut r: [libc::c_float; 32] = [0.; 32];
-    let mut h: [libc::c_float; 32] = [0.; 32];
+pub unsafe fn compute_gru(gru: *const GRULayer, state: *mut f32, input: *const f32) {
+    let mut i: i32 = 0;
+    let mut N: i32 = 0;
+    let mut M: i32 = 0;
+    let mut stride: i32 = 0;
+    let mut tmp: [f32; 32] = [0.; 32];
+    let mut z: [f32; 32] = [0.; 32];
+    let mut r: [f32; 32] = [0.; 32];
+    let mut h: [f32; 32] = [0.; 32];
     M = (*gru).nb_inputs;
     N = (*gru).nb_neurons;
-    stride = 3 as libc::c_int * N;
-    i = 0 as libc::c_int;
+    stride = 3 as i32 * N;
+    i = 0 as i32;
     while i < N {
-        z[i as usize] = *((*gru).bias).offset(i as isize) as libc::c_float;
+        z[i as usize] = *((*gru).bias).offset(i as isize) as f32;
         i += 1;
     }
     gemm_accum(z.as_mut_ptr(), (*gru).input_weights, N, M, stride, input);
@@ -350,14 +341,14 @@ pub unsafe fn compute_gru(
         stride,
         state,
     );
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < N {
         z[i as usize] = sigmoid_approx(WEIGHTS_SCALE * z[i as usize]);
         i += 1;
     }
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < N {
-        r[i as usize] = *((*gru).bias).offset((N + i) as isize) as libc::c_float;
+        r[i as usize] = *((*gru).bias).offset((N + i) as isize) as f32;
         i += 1;
     }
     gemm_accum(
@@ -376,24 +367,24 @@ pub unsafe fn compute_gru(
         stride,
         state,
     );
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < N {
         r[i as usize] = sigmoid_approx(WEIGHTS_SCALE * r[i as usize]);
         i += 1;
     }
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < N {
-        h[i as usize] = *((*gru).bias).offset((2 as libc::c_int * N + i) as isize) as libc::c_float;
+        h[i as usize] = *((*gru).bias).offset((2 as i32 * N + i) as isize) as f32;
         i += 1;
     }
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < N {
         tmp[i as usize] = *state.offset(i as isize) * r[i as usize];
         i += 1;
     }
     gemm_accum(
         h.as_mut_ptr(),
-        &*((*gru).input_weights).offset((2 as libc::c_int * N) as isize),
+        &*((*gru).input_weights).offset((2 as i32 * N) as isize),
         N,
         M,
         stride,
@@ -401,20 +392,19 @@ pub unsafe fn compute_gru(
     );
     gemm_accum(
         h.as_mut_ptr(),
-        &*((*gru).recurrent_weights).offset((2 as libc::c_int * N) as isize),
+        &*((*gru).recurrent_weights).offset((2 as i32 * N) as isize),
         N,
         N,
         stride,
         tmp.as_mut_ptr(),
     );
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < N {
         h[i as usize] = z[i as usize] * *state.offset(i as isize)
-            + (1 as libc::c_int as libc::c_float - z[i as usize])
-                * tansig_approx(WEIGHTS_SCALE * h[i as usize]);
+            + (1 as i32 as f32 - z[i as usize]) * tansig_approx(WEIGHTS_SCALE * h[i as usize]);
         i += 1;
     }
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < N {
         *state.offset(i as isize) = h[i as usize];
         i += 1;

@@ -11,10 +11,10 @@ pub mod internal {
     #[repr(C)]
     #[c2rust::src_loc = "0:0"]
     pub struct __va_list_tag {
-        pub gp_offset: libc::c_uint,
-        pub fp_offset: libc::c_uint,
-        pub overflow_arg_area: *mut libc::c_void,
-        pub reg_save_area: *mut libc::c_void,
+        pub gp_offset: u32,
+        pub fp_offset: u32,
+        pub overflow_arg_area: *mut core::ffi::c_void,
+        pub reg_save_area: *mut core::ffi::c_void,
     }
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stdarg.h:37"]
@@ -26,69 +26,69 @@ pub mod stdarg_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:38"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
-    pub type opus_val16 = libc::c_float;
+    pub type opus_val16 = f32;
     #[c2rust::src_loc = "180:1"]
-    pub type opus_val32 = libc::c_float;
+    pub type opus_val32 = f32;
     #[c2rust::src_loc = "183:1"]
-    pub type celt_sig = libc::c_float;
+    pub type celt_sig = f32;
     #[c2rust::src_loc = "184:1"]
-    pub type celt_norm = libc::c_float;
+    pub type celt_norm = f32;
     #[c2rust::src_loc = "185:1"]
-    pub type celt_ener = libc::c_float;
+    pub type celt_ener = f32;
     #[c2rust::src_loc = "57:9"]
-    pub const CELT_SIG_SCALE: libc::c_float = 32768.0f32;
+    pub const CELT_SIG_SCALE: f32 = 32768.0f32;
     #[c2rust::src_loc = "207:9"]
-    pub const EPSILON: libc::c_float = 1e-15f32;
+    pub const EPSILON: f32 = 1e-15f32;
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "71:9"]
 pub struct SILKInfo {
-    pub signalType: libc::c_int,
-    pub offset: libc::c_int,
+    pub signalType: i32,
+    pub offset: i32,
 }
 
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:36"]
 pub mod opus_defines_h {
     #[c2rust::src_loc = "60:9"]
-    pub const OPUS_ALLOC_FAIL: libc::c_int = -(7 as libc::c_int);
+    pub const OPUS_ALLOC_FAIL: i32 = -(7 as i32);
     #[c2rust::src_loc = "52:9"]
-    pub const OPUS_INTERNAL_ERROR: libc::c_int = -(3 as libc::c_int);
+    pub const OPUS_INTERNAL_ERROR: i32 = -(3 as i32);
     #[c2rust::src_loc = "140:9"]
-    pub const OPUS_SET_COMPLEXITY_REQUEST: libc::c_int = 4010;
+    pub const OPUS_SET_COMPLEXITY_REQUEST: i32 = 4010;
     #[c2rust::src_loc = "46:9"]
-    pub const OPUS_OK: libc::c_int = 0 as libc::c_int;
+    pub const OPUS_OK: i32 = 0 as i32;
     #[c2rust::src_loc = "48:9"]
-    pub const OPUS_BAD_ARG: libc::c_int = -(1 as libc::c_int);
+    pub const OPUS_BAD_ARG: i32 = -(1 as i32);
     #[c2rust::src_loc = "56:9"]
-    pub const OPUS_UNIMPLEMENTED: libc::c_int = -(5 as libc::c_int);
+    pub const OPUS_UNIMPLEMENTED: i32 = -(5 as i32);
     #[c2rust::src_loc = "157:9"]
-    pub const OPUS_GET_FINAL_RANGE_REQUEST: libc::c_int = 4031;
+    pub const OPUS_GET_FINAL_RANGE_REQUEST: i32 = 4031;
     #[c2rust::src_loc = "662:9"]
-    pub const OPUS_RESET_STATE: libc::c_int = 4028;
+    pub const OPUS_RESET_STATE: i32 = 4028;
     #[c2rust::src_loc = "170:9"]
-    pub const OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST: libc::c_int = 4047;
+    pub const OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4047;
     #[c2rust::src_loc = "169:9"]
-    pub const OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST: libc::c_int = 4046;
+    pub const OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4046;
     #[c2rust::src_loc = "162:9"]
-    pub const OPUS_GET_LSB_DEPTH_REQUEST: libc::c_int = 4037;
+    pub const OPUS_GET_LSB_DEPTH_REQUEST: i32 = 4037;
     #[c2rust::src_loc = "161:9"]
-    pub const OPUS_SET_LSB_DEPTH_REQUEST: libc::c_int = 4036;
+    pub const OPUS_SET_LSB_DEPTH_REQUEST: i32 = 4036;
     #[c2rust::src_loc = "189:9"]
-    pub const OPUS_BITRATE_MAX: libc::c_int = -(1 as libc::c_int);
+    pub const OPUS_BITRATE_MAX: i32 = -(1 as i32);
     #[c2rust::src_loc = "132:9"]
-    pub const OPUS_SET_BITRATE_REQUEST: libc::c_int = 4002;
+    pub const OPUS_SET_BITRATE_REQUEST: i32 = 4002;
     #[c2rust::src_loc = "136:9"]
-    pub const OPUS_SET_VBR_REQUEST: libc::c_int = 4006;
+    pub const OPUS_SET_VBR_REQUEST: i32 = 4006;
     #[c2rust::src_loc = "148:9"]
-    pub const OPUS_SET_VBR_CONSTRAINT_REQUEST: libc::c_int = 4020;
+    pub const OPUS_SET_VBR_CONSTRAINT_REQUEST: i32 = 4020;
     #[c2rust::src_loc = "144:9"]
-    pub const OPUS_SET_PACKET_LOSS_PERC_REQUEST: libc::c_int = 4014;
+    pub const OPUS_SET_PACKET_LOSS_PERC_REQUEST: i32 = 4014;
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:37"]
 pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
-    pub const NULL: libc::c_int = 0 as libc::c_int;
+    pub const NULL: i32 = 0 as i32;
 }
 pub use self::arch_h::{
     celt_ener, celt_norm, celt_sig, opus_val16, opus_val32, CELT_SIG_SCALE, EPSILON,
@@ -138,35 +138,35 @@ use crate::varargs::VarArgs;
 #[c2rust::src_loc = "58:8"]
 pub struct OpusCustomEncoder {
     pub mode: *const OpusCustomMode,
-    pub channels: libc::c_int,
-    pub stream_channels: libc::c_int,
-    pub force_intra: libc::c_int,
-    pub clip: libc::c_int,
-    pub disable_pf: libc::c_int,
-    pub complexity: libc::c_int,
-    pub upsample: libc::c_int,
-    pub start: libc::c_int,
-    pub end: libc::c_int,
+    pub channels: i32,
+    pub stream_channels: i32,
+    pub force_intra: i32,
+    pub clip: i32,
+    pub disable_pf: i32,
+    pub complexity: i32,
+    pub upsample: i32,
+    pub start: i32,
+    pub end: i32,
     pub bitrate: i32,
-    pub vbr: libc::c_int,
-    pub signalling: libc::c_int,
-    pub constrained_vbr: libc::c_int,
-    pub loss_rate: libc::c_int,
-    pub lsb_depth: libc::c_int,
-    pub lfe: libc::c_int,
-    pub disable_inv: libc::c_int,
-    pub arch: libc::c_int,
+    pub vbr: i32,
+    pub signalling: i32,
+    pub constrained_vbr: i32,
+    pub loss_rate: i32,
+    pub lsb_depth: i32,
+    pub lfe: i32,
+    pub disable_inv: i32,
+    pub arch: i32,
     pub rng: u32,
-    pub spread_decision: libc::c_int,
+    pub spread_decision: i32,
     pub delayedIntra: opus_val32,
-    pub tonal_average: libc::c_int,
-    pub lastCodedBands: libc::c_int,
-    pub hf_average: libc::c_int,
-    pub tapset_decision: libc::c_int,
-    pub prefilter_period: libc::c_int,
+    pub tonal_average: i32,
+    pub lastCodedBands: i32,
+    pub hf_average: i32,
+    pub tapset_decision: i32,
+    pub prefilter_period: i32,
     pub prefilter_gain: opus_val16,
-    pub prefilter_tapset: libc::c_int,
-    pub consec_transient: libc::c_int,
+    pub prefilter_tapset: i32,
+    pub consec_transient: i32,
     pub analysis: AnalysisInfo,
     pub silk_info: SILKInfo,
     pub preemph_memE: [opus_val32; 2],
@@ -177,75 +177,69 @@ pub struct OpusCustomEncoder {
     pub vbr_count: i32,
     pub overlap_max: opus_val32,
     pub stereo_saving: opus_val16,
-    pub intensity: libc::c_int,
+    pub intensity: i32,
     pub energy_mask: *mut opus_val16,
     pub spec_avg: opus_val16,
     pub in_mem: [celt_sig; 1],
 }
 #[c2rust::src_loc = "130:1"]
-pub unsafe fn celt_encoder_get_size(channels: libc::c_int) -> libc::c_int {
-    let mode: *mut OpusCustomMode = opus_custom_mode_create(
-        48000 as libc::c_int,
-        960 as libc::c_int,
-        NULL as *mut libc::c_int,
-    );
+pub unsafe fn celt_encoder_get_size(channels: i32) -> i32 {
+    let mode: *mut OpusCustomMode =
+        opus_custom_mode_create(48000 as i32, 960 as i32, NULL as *mut i32);
     return opus_custom_encoder_get_size(mode, channels);
 }
 #[inline]
 #[c2rust::src_loc = "136:1"]
-unsafe fn opus_custom_encoder_get_size(
-    mode: *const OpusCustomMode,
-    channels: libc::c_int,
-) -> libc::c_int {
-    let size: libc::c_int = (::core::mem::size_of::<OpusCustomEncoder>() as libc::c_ulong)
+unsafe fn opus_custom_encoder_get_size(mode: *const OpusCustomMode, channels: i32) -> i32 {
+    let size: i32 = (::core::mem::size_of::<OpusCustomEncoder>() as u64)
         .wrapping_add(
-            ((channels * (*mode).overlap - 1 as libc::c_int) as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<celt_sig>() as libc::c_ulong),
+            ((channels * (*mode).overlap - 1 as i32) as u64)
+                .wrapping_mul(::core::mem::size_of::<celt_sig>() as u64),
         )
         .wrapping_add(
-            ((channels * COMBFILTER_MAXPERIOD) as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<celt_sig>() as libc::c_ulong),
+            ((channels * COMBFILTER_MAXPERIOD) as u64)
+                .wrapping_mul(::core::mem::size_of::<celt_sig>() as u64),
         )
         .wrapping_add(
-            ((4 as libc::c_int * channels * (*mode).nbEBands) as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<opus_val16>() as libc::c_ulong),
-        ) as libc::c_int;
+            ((4 as i32 * channels * (*mode).nbEBands) as u64)
+                .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64),
+        ) as i32;
     return size;
 }
 #[c2rust::src_loc = "166:1"]
 unsafe fn opus_custom_encoder_init_arch(
     mut st: *mut OpusCustomEncoder,
     mode: *const OpusCustomMode,
-    channels: libc::c_int,
-    arch: libc::c_int,
-) -> libc::c_int {
-    if channels < 0 as libc::c_int || channels > 2 as libc::c_int {
+    channels: i32,
+    arch: i32,
+) -> i32 {
+    if channels < 0 as i32 || channels > 2 as i32 {
         return OPUS_BAD_ARG;
     }
     if st.is_null() || mode.is_null() {
         return OPUS_ALLOC_FAIL;
     }
     memset(
-        st as *mut libc::c_char as *mut libc::c_void,
-        0 as libc::c_int,
-        (opus_custom_encoder_get_size(mode, channels) as libc::c_ulong)
-            .wrapping_mul(::core::mem::size_of::<libc::c_char>() as libc::c_ulong),
+        st as *mut i8 as *mut core::ffi::c_void,
+        0 as i32,
+        (opus_custom_encoder_get_size(mode, channels) as u64)
+            .wrapping_mul(::core::mem::size_of::<i8>() as u64),
     );
     (*st).mode = mode;
     (*st).channels = channels;
     (*st).stream_channels = (*st).channels;
-    (*st).upsample = 1 as libc::c_int;
-    (*st).start = 0 as libc::c_int;
+    (*st).upsample = 1 as i32;
+    (*st).start = 0 as i32;
     (*st).end = (*(*st).mode).effEBands;
-    (*st).signalling = 1 as libc::c_int;
+    (*st).signalling = 1 as i32;
     (*st).arch = arch;
-    (*st).constrained_vbr = 1 as libc::c_int;
-    (*st).clip = 1 as libc::c_int;
+    (*st).constrained_vbr = 1 as i32;
+    (*st).clip = 1 as i32;
     (*st).bitrate = OPUS_BITRATE_MAX;
-    (*st).vbr = 0 as libc::c_int;
-    (*st).force_intra = 0 as libc::c_int;
-    (*st).complexity = 5 as libc::c_int;
-    (*st).lsb_depth = 24 as libc::c_int;
+    (*st).vbr = 0 as i32;
+    (*st).force_intra = 0 as i32;
+    (*st).complexity = 5 as i32;
+    (*st).lsb_depth = 24 as i32;
     opus_custom_encoder_ctl!(st, OPUS_RESET_STATE);
     return OPUS_OK;
 }
@@ -253,17 +247,13 @@ unsafe fn opus_custom_encoder_init_arch(
 pub unsafe fn celt_encoder_init(
     mut st: *mut OpusCustomEncoder,
     sampling_rate: i32,
-    channels: libc::c_int,
-    arch: libc::c_int,
-) -> libc::c_int {
-    let mut ret: libc::c_int = 0;
+    channels: i32,
+    arch: i32,
+) -> i32 {
+    let mut ret: i32 = 0;
     ret = opus_custom_encoder_init_arch(
         st,
-        opus_custom_mode_create(
-            48000 as libc::c_int,
-            960 as libc::c_int,
-            NULL as *mut libc::c_int,
-        ),
+        opus_custom_mode_create(48000 as i32, 960 as i32, NULL as *mut i32),
         channels,
         arch,
     );
@@ -276,205 +266,200 @@ pub unsafe fn celt_encoder_init(
 #[c2rust::src_loc = "227:1"]
 unsafe fn transient_analysis(
     in_0: *const opus_val32,
-    len: libc::c_int,
-    C: libc::c_int,
+    len: i32,
+    C: i32,
     tf_estimate: *mut opus_val16,
-    tf_chan: *mut libc::c_int,
-    allow_weak_transients: libc::c_int,
-    weak_transient: *mut libc::c_int,
-) -> libc::c_int {
-    let mut i: libc::c_int = 0;
+    tf_chan: *mut i32,
+    allow_weak_transients: i32,
+    weak_transient: *mut i32,
+) -> i32 {
+    let mut i: i32 = 0;
     let mut mem0: opus_val32 = 0.;
     let mut mem1: opus_val32 = 0.;
-    let mut is_transient: libc::c_int = 0 as libc::c_int;
-    let mut mask_metric: i32 = 0 as libc::c_int;
-    let mut c: libc::c_int = 0;
+    let mut is_transient: i32 = 0 as i32;
+    let mut mask_metric: i32 = 0 as i32;
+    let mut c: i32 = 0;
     let mut tf_max: opus_val16 = 0.;
-    let mut len2: libc::c_int = 0;
+    let mut len2: i32 = 0;
     let mut forward_decay: opus_val16 = 0.0625f32;
-    static mut inv_table: [libc::c_uchar; 128] = [
-        255 as libc::c_int as libc::c_uchar,
-        255 as libc::c_int as libc::c_uchar,
-        156 as libc::c_int as libc::c_uchar,
-        110 as libc::c_int as libc::c_uchar,
-        86 as libc::c_int as libc::c_uchar,
-        70 as libc::c_int as libc::c_uchar,
-        59 as libc::c_int as libc::c_uchar,
-        51 as libc::c_int as libc::c_uchar,
-        45 as libc::c_int as libc::c_uchar,
-        40 as libc::c_int as libc::c_uchar,
-        37 as libc::c_int as libc::c_uchar,
-        33 as libc::c_int as libc::c_uchar,
-        31 as libc::c_int as libc::c_uchar,
-        28 as libc::c_int as libc::c_uchar,
-        26 as libc::c_int as libc::c_uchar,
-        25 as libc::c_int as libc::c_uchar,
-        23 as libc::c_int as libc::c_uchar,
-        22 as libc::c_int as libc::c_uchar,
-        21 as libc::c_int as libc::c_uchar,
-        20 as libc::c_int as libc::c_uchar,
-        19 as libc::c_int as libc::c_uchar,
-        18 as libc::c_int as libc::c_uchar,
-        17 as libc::c_int as libc::c_uchar,
-        16 as libc::c_int as libc::c_uchar,
-        16 as libc::c_int as libc::c_uchar,
-        15 as libc::c_int as libc::c_uchar,
-        15 as libc::c_int as libc::c_uchar,
-        14 as libc::c_int as libc::c_uchar,
-        13 as libc::c_int as libc::c_uchar,
-        13 as libc::c_int as libc::c_uchar,
-        12 as libc::c_int as libc::c_uchar,
-        12 as libc::c_int as libc::c_uchar,
-        12 as libc::c_int as libc::c_uchar,
-        12 as libc::c_int as libc::c_uchar,
-        11 as libc::c_int as libc::c_uchar,
-        11 as libc::c_int as libc::c_uchar,
-        11 as libc::c_int as libc::c_uchar,
-        10 as libc::c_int as libc::c_uchar,
-        10 as libc::c_int as libc::c_uchar,
-        10 as libc::c_int as libc::c_uchar,
-        9 as libc::c_int as libc::c_uchar,
-        9 as libc::c_int as libc::c_uchar,
-        9 as libc::c_int as libc::c_uchar,
-        9 as libc::c_int as libc::c_uchar,
-        9 as libc::c_int as libc::c_uchar,
-        9 as libc::c_int as libc::c_uchar,
-        8 as libc::c_int as libc::c_uchar,
-        8 as libc::c_int as libc::c_uchar,
-        8 as libc::c_int as libc::c_uchar,
-        8 as libc::c_int as libc::c_uchar,
-        8 as libc::c_int as libc::c_uchar,
-        7 as libc::c_int as libc::c_uchar,
-        7 as libc::c_int as libc::c_uchar,
-        7 as libc::c_int as libc::c_uchar,
-        7 as libc::c_int as libc::c_uchar,
-        7 as libc::c_int as libc::c_uchar,
-        7 as libc::c_int as libc::c_uchar,
-        6 as libc::c_int as libc::c_uchar,
-        6 as libc::c_int as libc::c_uchar,
-        6 as libc::c_int as libc::c_uchar,
-        6 as libc::c_int as libc::c_uchar,
-        6 as libc::c_int as libc::c_uchar,
-        6 as libc::c_int as libc::c_uchar,
-        6 as libc::c_int as libc::c_uchar,
-        6 as libc::c_int as libc::c_uchar,
-        6 as libc::c_int as libc::c_uchar,
-        6 as libc::c_int as libc::c_uchar,
-        6 as libc::c_int as libc::c_uchar,
-        6 as libc::c_int as libc::c_uchar,
-        6 as libc::c_int as libc::c_uchar,
-        6 as libc::c_int as libc::c_uchar,
-        6 as libc::c_int as libc::c_uchar,
-        6 as libc::c_int as libc::c_uchar,
-        5 as libc::c_int as libc::c_uchar,
-        5 as libc::c_int as libc::c_uchar,
-        5 as libc::c_int as libc::c_uchar,
-        5 as libc::c_int as libc::c_uchar,
-        5 as libc::c_int as libc::c_uchar,
-        5 as libc::c_int as libc::c_uchar,
-        5 as libc::c_int as libc::c_uchar,
-        5 as libc::c_int as libc::c_uchar,
-        5 as libc::c_int as libc::c_uchar,
-        5 as libc::c_int as libc::c_uchar,
-        5 as libc::c_int as libc::c_uchar,
-        5 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        4 as libc::c_int as libc::c_uchar,
-        3 as libc::c_int as libc::c_uchar,
-        3 as libc::c_int as libc::c_uchar,
-        3 as libc::c_int as libc::c_uchar,
-        3 as libc::c_int as libc::c_uchar,
-        3 as libc::c_int as libc::c_uchar,
-        3 as libc::c_int as libc::c_uchar,
-        3 as libc::c_int as libc::c_uchar,
-        3 as libc::c_int as libc::c_uchar,
-        3 as libc::c_int as libc::c_uchar,
-        3 as libc::c_int as libc::c_uchar,
-        3 as libc::c_int as libc::c_uchar,
-        3 as libc::c_int as libc::c_uchar,
-        3 as libc::c_int as libc::c_uchar,
-        3 as libc::c_int as libc::c_uchar,
-        3 as libc::c_int as libc::c_uchar,
-        3 as libc::c_int as libc::c_uchar,
-        3 as libc::c_int as libc::c_uchar,
-        2 as libc::c_int as libc::c_uchar,
+    static mut inv_table: [u8; 128] = [
+        255 as i32 as u8,
+        255 as i32 as u8,
+        156 as i32 as u8,
+        110 as i32 as u8,
+        86 as i32 as u8,
+        70 as i32 as u8,
+        59 as i32 as u8,
+        51 as i32 as u8,
+        45 as i32 as u8,
+        40 as i32 as u8,
+        37 as i32 as u8,
+        33 as i32 as u8,
+        31 as i32 as u8,
+        28 as i32 as u8,
+        26 as i32 as u8,
+        25 as i32 as u8,
+        23 as i32 as u8,
+        22 as i32 as u8,
+        21 as i32 as u8,
+        20 as i32 as u8,
+        19 as i32 as u8,
+        18 as i32 as u8,
+        17 as i32 as u8,
+        16 as i32 as u8,
+        16 as i32 as u8,
+        15 as i32 as u8,
+        15 as i32 as u8,
+        14 as i32 as u8,
+        13 as i32 as u8,
+        13 as i32 as u8,
+        12 as i32 as u8,
+        12 as i32 as u8,
+        12 as i32 as u8,
+        12 as i32 as u8,
+        11 as i32 as u8,
+        11 as i32 as u8,
+        11 as i32 as u8,
+        10 as i32 as u8,
+        10 as i32 as u8,
+        10 as i32 as u8,
+        9 as i32 as u8,
+        9 as i32 as u8,
+        9 as i32 as u8,
+        9 as i32 as u8,
+        9 as i32 as u8,
+        9 as i32 as u8,
+        8 as i32 as u8,
+        8 as i32 as u8,
+        8 as i32 as u8,
+        8 as i32 as u8,
+        8 as i32 as u8,
+        7 as i32 as u8,
+        7 as i32 as u8,
+        7 as i32 as u8,
+        7 as i32 as u8,
+        7 as i32 as u8,
+        7 as i32 as u8,
+        6 as i32 as u8,
+        6 as i32 as u8,
+        6 as i32 as u8,
+        6 as i32 as u8,
+        6 as i32 as u8,
+        6 as i32 as u8,
+        6 as i32 as u8,
+        6 as i32 as u8,
+        6 as i32 as u8,
+        6 as i32 as u8,
+        6 as i32 as u8,
+        6 as i32 as u8,
+        6 as i32 as u8,
+        6 as i32 as u8,
+        6 as i32 as u8,
+        6 as i32 as u8,
+        5 as i32 as u8,
+        5 as i32 as u8,
+        5 as i32 as u8,
+        5 as i32 as u8,
+        5 as i32 as u8,
+        5 as i32 as u8,
+        5 as i32 as u8,
+        5 as i32 as u8,
+        5 as i32 as u8,
+        5 as i32 as u8,
+        5 as i32 as u8,
+        5 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        4 as i32 as u8,
+        3 as i32 as u8,
+        3 as i32 as u8,
+        3 as i32 as u8,
+        3 as i32 as u8,
+        3 as i32 as u8,
+        3 as i32 as u8,
+        3 as i32 as u8,
+        3 as i32 as u8,
+        3 as i32 as u8,
+        3 as i32 as u8,
+        3 as i32 as u8,
+        3 as i32 as u8,
+        3 as i32 as u8,
+        3 as i32 as u8,
+        3 as i32 as u8,
+        3 as i32 as u8,
+        3 as i32 as u8,
+        2 as i32 as u8,
     ];
     let vla = len as usize;
     let mut tmp: Vec<opus_val16> = ::std::vec::from_elem(0., vla);
-    *weak_transient = 0 as libc::c_int;
+    *weak_transient = 0 as i32;
     if allow_weak_transients != 0 {
         forward_decay = 0.03125f32;
     }
-    len2 = len / 2 as libc::c_int;
-    c = 0 as libc::c_int;
+    len2 = len / 2 as i32;
+    c = 0 as i32;
     while c < C {
         let mut mean: opus_val32 = 0.;
-        let mut unmask: i32 = 0 as libc::c_int;
+        let mut unmask: i32 = 0 as i32;
         let mut norm: opus_val32 = 0.;
         let mut maxE: opus_val16 = 0.;
-        mem0 = 0 as libc::c_int as opus_val32;
-        mem1 = 0 as libc::c_int as opus_val32;
-        i = 0 as libc::c_int;
+        mem0 = 0 as i32 as opus_val32;
+        mem1 = 0 as i32 as opus_val32;
+        i = 0 as i32;
         while i < len {
             let mut x: opus_val32 = 0.;
             let mut y: opus_val32 = 0.;
             x = *in_0.offset((i + c * len) as isize);
             y = mem0 + x;
-            mem0 = mem1 + y - 2 as libc::c_int as libc::c_float * x;
+            mem0 = mem1 + y - 2 as i32 as f32 * x;
             mem1 = x - 0.5f32 * y;
             *tmp.as_mut_ptr().offset(i as isize) = y;
             i += 1;
         }
         memset(
-            tmp.as_mut_ptr() as *mut libc::c_void,
-            0 as libc::c_int,
-            (12 as libc::c_int as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<opus_val16>() as libc::c_ulong),
+            tmp.as_mut_ptr() as *mut core::ffi::c_void,
+            0 as i32,
+            (12 as i32 as u64).wrapping_mul(::core::mem::size_of::<opus_val16>() as u64),
         );
-        mean = 0 as libc::c_int as opus_val32;
-        mem0 = 0 as libc::c_int as opus_val32;
-        i = 0 as libc::c_int;
+        mean = 0 as i32 as opus_val32;
+        mem0 = 0 as i32 as opus_val32;
+        i = 0 as i32;
         while i < len2 {
-            let x2: opus_val16 = *tmp.as_mut_ptr().offset((2 as libc::c_int * i) as isize)
-                * *tmp.as_mut_ptr().offset((2 as libc::c_int * i) as isize)
-                + *tmp
-                    .as_mut_ptr()
-                    .offset((2 as libc::c_int * i + 1 as libc::c_int) as isize)
-                    * *tmp
-                        .as_mut_ptr()
-                        .offset((2 as libc::c_int * i + 1 as libc::c_int) as isize);
+            let x2: opus_val16 = *tmp.as_mut_ptr().offset((2 as i32 * i) as isize)
+                * *tmp.as_mut_ptr().offset((2 as i32 * i) as isize)
+                + *tmp.as_mut_ptr().offset((2 as i32 * i + 1 as i32) as isize)
+                    * *tmp.as_mut_ptr().offset((2 as i32 * i + 1 as i32) as isize);
             mean += x2;
             *tmp.as_mut_ptr().offset(i as isize) = mem0 + forward_decay * (x2 - mem0);
             mem0 = *tmp.as_mut_ptr().offset(i as isize);
             i += 1;
         }
-        mem0 = 0 as libc::c_int as opus_val32;
-        maxE = 0 as libc::c_int as opus_val16;
-        i = len2 - 1 as libc::c_int;
-        while i >= 0 as libc::c_int {
+        mem0 = 0 as i32 as opus_val32;
+        maxE = 0 as i32 as opus_val16;
+        i = len2 - 1 as i32;
+        while i >= 0 as i32 {
             *tmp.as_mut_ptr().offset(i as isize) =
                 mem0 + 0.125f32 * (*tmp.as_mut_ptr().offset(i as isize) - mem0);
             mem0 = *tmp.as_mut_ptr().offset(i as isize);
@@ -482,27 +467,27 @@ unsafe fn transient_analysis(
             i -= 1;
         }
         mean = ((mean * maxE) * 0.5f32 * len2 as f32).sqrt();
-        norm = len2 as libc::c_float / (1e-15f32 + mean);
-        unmask = 0 as libc::c_int;
-        if *tmp.as_mut_ptr().offset(0 as libc::c_int as isize)
-            != *tmp.as_mut_ptr().offset(0 as libc::c_int as isize)
+        norm = len2 as f32 / (1e-15f32 + mean);
+        unmask = 0 as i32;
+        if *tmp.as_mut_ptr().offset(0 as i32 as isize)
+            != *tmp.as_mut_ptr().offset(0 as i32 as isize)
         {
             celt_fatal(
-                b"assertion failed: !celt_isnan(tmp[0])\0" as *const u8 as *const libc::c_char,
-                b"celt/celt_encoder.c\0" as *const u8 as *const libc::c_char,
-                369 as libc::c_int,
+                b"assertion failed: !celt_isnan(tmp[0])\0" as *const u8 as *const i8,
+                b"celt/celt_encoder.c\0" as *const u8 as *const i8,
+                369 as i32,
             );
         }
         if norm != norm {
             celt_fatal(
-                b"assertion failed: !celt_isnan(norm)\0" as *const u8 as *const libc::c_char,
-                b"celt/celt_encoder.c\0" as *const u8 as *const libc::c_char,
-                370 as libc::c_int,
+                b"assertion failed: !celt_isnan(norm)\0" as *const u8 as *const i8,
+                b"celt/celt_encoder.c\0" as *const u8 as *const i8,
+                370 as i32,
             );
         }
-        i = 12 as libc::c_int;
-        while i < len2 - 5 as libc::c_int {
-            let mut id: libc::c_int = 0;
+        i = 12 as i32;
+        while i < len2 - 5 as i32 {
+            let mut id: i32 = 0;
             id = (if 0.0
                 > (if 127.0
                     < (64.0 * norm * (*tmp.as_mut_ptr().offset(i as isize) + 1e-15f32)).floor()
@@ -518,47 +503,44 @@ unsafe fn transient_analysis(
                 127.0
             } else {
                 (64.0 * norm * (*tmp.as_mut_ptr().offset(i as isize) + 1e-15f32)).floor()
-            }) as libc::c_int;
-            unmask += inv_table[id as usize] as libc::c_int;
-            i += 4 as libc::c_int;
+            }) as i32;
+            unmask += inv_table[id as usize] as i32;
+            i += 4 as i32;
         }
-        unmask = 64 as libc::c_int * unmask * 4 as libc::c_int
-            / (6 as libc::c_int * (len2 - 17 as libc::c_int));
+        unmask = 64 as i32 * unmask * 4 as i32 / (6 as i32 * (len2 - 17 as i32));
         if unmask > mask_metric {
             *tf_chan = c;
             mask_metric = unmask;
         }
         c += 1;
     }
-    is_transient = (mask_metric > 200 as libc::c_int) as libc::c_int;
-    if allow_weak_transients != 0 && is_transient != 0 && mask_metric < 600 as libc::c_int {
-        is_transient = 0 as libc::c_int;
-        *weak_transient = 1 as libc::c_int;
+    is_transient = (mask_metric > 200 as i32) as i32;
+    if allow_weak_transients != 0 && is_transient != 0 && mask_metric < 600 as i32 {
+        is_transient = 0 as i32;
+        *weak_transient = 1 as i32;
     }
-    tf_max = if 0 as libc::c_int as libc::c_float
-        > ((27 * mask_metric) as f32).sqrt() - 42 as libc::c_int as libc::c_float
-    {
-        0 as libc::c_int as libc::c_float
+    tf_max = if 0 as i32 as f32 > ((27 * mask_metric) as f32).sqrt() - 42 as i32 as f32 {
+        0 as i32 as f32
     } else {
-        ((27 * mask_metric) as f32).sqrt() - 42 as libc::c_int as libc::c_float
+        ((27 * mask_metric) as f32).sqrt() - 42 as i32 as f32
     };
-    *tf_estimate = (if 0 as libc::c_int as libc::c_double
+    *tf_estimate = (if 0 as i32 as f64
         > (0.0069f64 as opus_val32
-            * (if (163 as libc::c_int as libc::c_float) < tf_max {
-                163 as libc::c_int as libc::c_float
+            * (if (163 as i32 as f32) < tf_max {
+                163 as i32 as f32
             } else {
                 tf_max
-            })) as libc::c_double
+            })) as f64
             - 0.139f64
     {
-        0 as libc::c_int as libc::c_double
+        0 as i32 as f64
     } else {
         (0.0069f64 as opus_val32
-            * (if (163 as libc::c_int as libc::c_float) < tf_max {
-                163 as libc::c_int as libc::c_float
+            * (if (163 as i32 as f32) < tf_max {
+                163 as i32 as f32
             } else {
                 tf_max
-            })) as libc::c_double
+            })) as f64
             - 0.139f64
     })
     .sqrt() as f32;
@@ -568,26 +550,25 @@ unsafe fn transient_analysis(
 unsafe fn patch_transient_decision(
     newE: *mut opus_val16,
     oldE: *mut opus_val16,
-    nbEBands: libc::c_int,
-    start: libc::c_int,
-    end: libc::c_int,
-    C: libc::c_int,
-) -> libc::c_int {
-    let mut i: libc::c_int = 0;
-    let mut c: libc::c_int = 0;
-    let mut mean_diff: opus_val32 = 0 as libc::c_int as opus_val32;
+    nbEBands: i32,
+    start: i32,
+    end: i32,
+    C: i32,
+) -> i32 {
+    let mut i: i32 = 0;
+    let mut c: i32 = 0;
+    let mut mean_diff: opus_val32 = 0 as i32 as opus_val32;
     let mut spread_old: [opus_val16; 26] = [0.; 26];
-    if C == 1 as libc::c_int {
+    if C == 1 as i32 {
         spread_old[start as usize] = *oldE.offset(start as isize);
-        i = start + 1 as libc::c_int;
+        i = start + 1 as i32;
         while i < end {
-            spread_old[i as usize] = if spread_old[(i - 1 as libc::c_int) as usize] - 1.0f32
-                > *oldE.offset(i as isize)
-            {
-                spread_old[(i - 1 as libc::c_int) as usize] - 1.0f32
-            } else {
-                *oldE.offset(i as isize)
-            };
+            spread_old[i as usize] =
+                if spread_old[(i - 1 as i32) as usize] - 1.0f32 > *oldE.offset(i as isize) {
+                    spread_old[(i - 1 as i32) as usize] - 1.0f32
+                } else {
+                    *oldE.offset(i as isize)
+                };
             i += 1;
         }
     } else {
@@ -597,15 +578,15 @@ unsafe fn patch_transient_decision(
             } else {
                 *oldE.offset((start + nbEBands) as isize)
             };
-        i = start + 1 as libc::c_int;
+        i = start + 1 as i32;
         while i < end {
-            spread_old[i as usize] = if spread_old[(i - 1 as libc::c_int) as usize] - 1.0f32
+            spread_old[i as usize] = if spread_old[(i - 1 as i32) as usize] - 1.0f32
                 > (if *oldE.offset(i as isize) > *oldE.offset((i + nbEBands) as isize) {
                     *oldE.offset(i as isize)
                 } else {
                     *oldE.offset((i + nbEBands) as isize)
                 }) {
-                spread_old[(i - 1 as libc::c_int) as usize] - 1.0f32
+                spread_old[(i - 1 as i32) as usize] - 1.0f32
             } else if *oldE.offset(i as isize) > *oldE.offset((i + nbEBands) as isize) {
                 *oldE.offset(i as isize)
             } else {
@@ -614,39 +595,35 @@ unsafe fn patch_transient_decision(
             i += 1;
         }
     }
-    i = end - 2 as libc::c_int;
+    i = end - 2 as i32;
     while i >= start {
         spread_old[i as usize] =
-            if spread_old[i as usize] > spread_old[(i + 1 as libc::c_int) as usize] - 1.0f32 {
+            if spread_old[i as usize] > spread_old[(i + 1 as i32) as usize] - 1.0f32 {
                 spread_old[i as usize]
             } else {
-                spread_old[(i + 1 as libc::c_int) as usize] - 1.0f32
+                spread_old[(i + 1 as i32) as usize] - 1.0f32
             };
         i -= 1;
     }
-    c = 0 as libc::c_int;
+    c = 0 as i32;
     loop {
-        i = if 2 as libc::c_int > start {
-            2 as libc::c_int
-        } else {
-            start
-        };
-        while i < end - 1 as libc::c_int {
+        i = if 2 as i32 > start { 2 as i32 } else { start };
+        while i < end - 1 as i32 {
             let mut x1: opus_val16 = 0.;
             let mut x2: opus_val16 = 0.;
-            x1 = if 0 as libc::c_int as libc::c_float > *newE.offset((i + c * nbEBands) as isize) {
-                0 as libc::c_int as libc::c_float
+            x1 = if 0 as i32 as f32 > *newE.offset((i + c * nbEBands) as isize) {
+                0 as i32 as f32
             } else {
                 *newE.offset((i + c * nbEBands) as isize)
             };
-            x2 = if 0 as libc::c_int as libc::c_float > spread_old[i as usize] {
-                0 as libc::c_int as libc::c_float
+            x2 = if 0 as i32 as f32 > spread_old[i as usize] {
+                0 as i32 as f32
             } else {
                 spread_old[i as usize]
             };
             mean_diff = mean_diff
-                + (if 0 as libc::c_int as libc::c_float > x1 - x2 {
-                    0 as libc::c_int as libc::c_float
+                + (if 0 as i32 as f32 > x1 - x2 {
+                    0 as i32 as f32
                 } else {
                     x1 - x2
                 });
@@ -658,46 +635,40 @@ unsafe fn patch_transient_decision(
         }
     }
     mean_diff = mean_diff
-        / (C * (end
-            - 1 as libc::c_int
-            - (if 2 as libc::c_int > start {
-                2 as libc::c_int
-            } else {
-                start
-            }))) as opus_val32;
-    return (mean_diff > 1.0f32) as libc::c_int;
+        / (C * (end - 1 as i32 - (if 2 as i32 > start { 2 as i32 } else { start }))) as opus_val32;
+    return (mean_diff > 1.0f32) as i32;
 }
 #[c2rust::src_loc = "450:1"]
 unsafe fn compute_mdcts(
     mode: *const OpusCustomMode,
-    shortBlocks: libc::c_int,
+    shortBlocks: i32,
     in_0: *mut celt_sig,
     out: *mut celt_sig,
-    C: libc::c_int,
-    CC: libc::c_int,
-    LM: libc::c_int,
-    upsample: libc::c_int,
-    arch: libc::c_int,
+    C: i32,
+    CC: i32,
+    LM: i32,
+    upsample: i32,
+    arch: i32,
 ) {
-    let overlap: libc::c_int = (*mode).overlap;
-    let mut N: libc::c_int = 0;
-    let mut B: libc::c_int = 0;
-    let mut shift: libc::c_int = 0;
-    let mut i: libc::c_int = 0;
-    let mut b: libc::c_int = 0;
-    let mut c: libc::c_int = 0;
+    let overlap: i32 = (*mode).overlap;
+    let mut N: i32 = 0;
+    let mut B: i32 = 0;
+    let mut shift: i32 = 0;
+    let mut i: i32 = 0;
+    let mut b: i32 = 0;
+    let mut c: i32 = 0;
     if shortBlocks != 0 {
         B = shortBlocks;
         N = (*mode).shortMdctSize;
         shift = (*mode).maxLM;
     } else {
-        B = 1 as libc::c_int;
+        B = 1 as i32;
         N = (*mode).shortMdctSize << LM;
         shift = (*mode).maxLM - LM;
     }
-    c = 0 as libc::c_int;
+    c = 0 as i32;
     loop {
-        b = 0 as libc::c_int;
+        b = 0 as i32;
         while b < B {
             clt_mdct_forward_c(
                 &(*mode).mdct,
@@ -717,30 +688,29 @@ unsafe fn compute_mdcts(
             break;
         }
     }
-    if CC == 2 as libc::c_int && C == 1 as libc::c_int {
-        i = 0 as libc::c_int;
+    if CC == 2 as i32 && C == 1 as i32 {
+        i = 0 as i32;
         while i < B * N {
             *out.offset(i as isize) =
                 0.5f32 * *out.offset(i as isize) + 0.5f32 * *out.offset((B * N + i) as isize);
             i += 1;
         }
     }
-    if upsample != 1 as libc::c_int {
-        c = 0 as libc::c_int;
+    if upsample != 1 as i32 {
+        c = 0 as i32;
         loop {
-            let bound: libc::c_int = B * N / upsample;
-            i = 0 as libc::c_int;
+            let bound: i32 = B * N / upsample;
+            i = 0 as i32;
             while i < bound {
                 let ref mut fresh0 = *out.offset((c * B * N + i) as isize);
-                *fresh0 *= upsample as libc::c_float;
+                *fresh0 *= upsample as f32;
                 i += 1;
             }
             memset(
                 &mut *out.offset((c * B * N + bound) as isize) as *mut celt_sig
-                    as *mut libc::c_void,
-                0 as libc::c_int,
-                ((B * N - bound) as libc::c_ulong)
-                    .wrapping_mul(::core::mem::size_of::<celt_sig>() as libc::c_ulong),
+                    as *mut core::ffi::c_void,
+                0 as i32,
+                ((B * N - bound) as u64).wrapping_mul(::core::mem::size_of::<celt_sig>() as u64),
             );
             c += 1;
             if !(c < C) {
@@ -753,24 +723,21 @@ unsafe fn compute_mdcts(
 pub unsafe fn celt_preemphasis(
     pcmp: *const opus_val16,
     inp: *mut celt_sig,
-    N: libc::c_int,
-    CC: libc::c_int,
-    upsample: libc::c_int,
+    N: i32,
+    CC: i32,
+    upsample: i32,
     coef: *const opus_val16,
     mem: *mut celt_sig,
-    clip: libc::c_int,
+    clip: i32,
 ) {
-    let mut i: libc::c_int = 0;
+    let mut i: i32 = 0;
     let mut coef0: opus_val16 = 0.;
     let mut m: celt_sig = 0.;
-    let mut Nu: libc::c_int = 0;
-    coef0 = *coef.offset(0 as libc::c_int as isize);
+    let mut Nu: i32 = 0;
+    coef0 = *coef.offset(0 as i32 as isize);
     m = *mem;
-    if *coef.offset(1 as libc::c_int as isize) == 0 as libc::c_int as libc::c_float
-        && upsample == 1 as libc::c_int
-        && clip == 0
-    {
-        i = 0 as libc::c_int;
+    if *coef.offset(1 as i32 as isize) == 0 as i32 as f32 && upsample == 1 as i32 && clip == 0 {
+        i = 0 as i32;
         while i < N {
             let mut x: opus_val16 = 0.;
             x = *pcmp.offset((CC * i) as isize) * CELT_SIG_SCALE;
@@ -782,20 +749,20 @@ pub unsafe fn celt_preemphasis(
         return;
     }
     Nu = N / upsample;
-    if upsample != 1 as libc::c_int {
+    if upsample != 1 as i32 {
         memset(
-            inp as *mut libc::c_void,
-            0 as libc::c_int,
-            (N as libc::c_ulong).wrapping_mul(::core::mem::size_of::<celt_sig>() as libc::c_ulong),
+            inp as *mut core::ffi::c_void,
+            0 as i32,
+            (N as u64).wrapping_mul(::core::mem::size_of::<celt_sig>() as u64),
         );
     }
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < Nu {
         *inp.offset((i * upsample) as isize) = *pcmp.offset((CC * i) as isize) * CELT_SIG_SCALE;
         i += 1;
     }
     if clip != 0 {
-        i = 0 as libc::c_int;
+        i = 0 as i32;
         while i < Nu {
             *inp.offset((i * upsample) as isize) = if -65536.0f32
                 > (if 65536.0f32 < *inp.offset((i * upsample) as isize) {
@@ -812,7 +779,7 @@ pub unsafe fn celt_preemphasis(
             i += 1;
         }
     }
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < N {
         let mut x_0: opus_val16 = 0.;
         x_0 = *inp.offset(i as isize);
@@ -823,43 +790,38 @@ pub unsafe fn celt_preemphasis(
     *mem = m;
 }
 #[c2rust::src_loc = "571:1"]
-unsafe fn l1_metric(
-    tmp: *const celt_norm,
-    N: libc::c_int,
-    LM: libc::c_int,
-    bias: opus_val16,
-) -> opus_val32 {
-    let mut i: libc::c_int = 0;
+unsafe fn l1_metric(tmp: *const celt_norm, N: i32, LM: i32, bias: opus_val16) -> opus_val32 {
+    let mut i: i32 = 0;
     let mut L1: opus_val32 = 0.;
-    L1 = 0 as libc::c_int as opus_val32;
-    i = 0 as libc::c_int;
+    L1 = 0 as i32 as opus_val32;
+    i = 0 as i32;
     while i < N {
         L1 += (*tmp.offset(i as isize)).abs();
         i += 1;
     }
-    L1 = L1 + LM as libc::c_float * bias * L1;
+    L1 = L1 + LM as f32 * bias * L1;
     return L1;
 }
 #[c2rust::src_loc = "584:1"]
 unsafe fn tf_analysis(
     m: *const OpusCustomMode,
-    len: libc::c_int,
-    isTransient: libc::c_int,
-    tf_res: *mut libc::c_int,
-    lambda: libc::c_int,
+    len: i32,
+    isTransient: i32,
+    tf_res: *mut i32,
+    lambda: i32,
     X: *mut celt_norm,
-    N0: libc::c_int,
-    LM: libc::c_int,
+    N0: i32,
+    LM: i32,
     tf_estimate: opus_val16,
-    tf_chan: libc::c_int,
-    importance: *mut libc::c_int,
-) -> libc::c_int {
-    let mut i: libc::c_int = 0;
-    let mut cost0: libc::c_int = 0;
-    let mut cost1: libc::c_int = 0;
-    let mut sel: libc::c_int = 0;
-    let mut selcost: [libc::c_int; 2] = [0; 2];
-    let mut tf_select: libc::c_int = 0 as libc::c_int;
+    tf_chan: i32,
+    importance: *mut i32,
+) -> i32 {
+    let mut i: i32 = 0;
+    let mut cost0: i32 = 0;
+    let mut cost1: i32 = 0;
+    let mut sel: i32 = 0;
+    let mut selcost: [i32; 2] = [0; 2];
+    let mut tf_select: i32 = 0 as i32;
     let mut bias: opus_val16 = 0.;
     bias = 0.04f32
         * (if -0.25f32 > 0.5f32 - tf_estimate {
@@ -868,137 +830,124 @@ unsafe fn tf_analysis(
             0.5f32 - tf_estimate
         });
     let vla = len as usize;
-    let mut metric: Vec<libc::c_int> = ::std::vec::from_elem(0, vla);
-    let vla_0 = ((*((*m).eBands).offset(len as isize) as libc::c_int
-        - *((*m).eBands).offset((len - 1 as libc::c_int) as isize) as libc::c_int)
+    let mut metric: Vec<i32> = ::std::vec::from_elem(0, vla);
+    let vla_0 = ((*((*m).eBands).offset(len as isize) as i32
+        - *((*m).eBands).offset((len - 1 as i32) as isize) as i32)
         << LM) as usize;
     let mut tmp: Vec<celt_norm> = ::std::vec::from_elem(0., vla_0);
-    let vla_1 = ((*((*m).eBands).offset(len as isize) as libc::c_int
-        - *((*m).eBands).offset((len - 1 as libc::c_int) as isize) as libc::c_int)
+    let vla_1 = ((*((*m).eBands).offset(len as isize) as i32
+        - *((*m).eBands).offset((len - 1 as i32) as isize) as i32)
         << LM) as usize;
     let mut tmp_1: Vec<celt_norm> = ::std::vec::from_elem(0., vla_1);
     let vla_2 = len as usize;
-    let mut path0: Vec<libc::c_int> = ::std::vec::from_elem(0, vla_2);
+    let mut path0: Vec<i32> = ::std::vec::from_elem(0, vla_2);
     let vla_3 = len as usize;
-    let mut path1: Vec<libc::c_int> = ::std::vec::from_elem(0, vla_3);
-    i = 0 as libc::c_int;
+    let mut path1: Vec<i32> = ::std::vec::from_elem(0, vla_3);
+    i = 0 as i32;
     while i < len {
-        let mut k: libc::c_int = 0;
-        let mut N: libc::c_int = 0;
-        let mut narrow: libc::c_int = 0;
+        let mut k: i32 = 0;
+        let mut N: i32 = 0;
+        let mut narrow: i32 = 0;
         let mut L1: opus_val32 = 0.;
         let mut best_L1: opus_val32 = 0.;
-        let mut best_level: libc::c_int = 0 as libc::c_int;
-        N = (*((*m).eBands).offset((i + 1 as libc::c_int) as isize) as libc::c_int
-            - *((*m).eBands).offset(i as isize) as libc::c_int)
+        let mut best_level: i32 = 0 as i32;
+        N = (*((*m).eBands).offset((i + 1 as i32) as isize) as i32
+            - *((*m).eBands).offset(i as isize) as i32)
             << LM;
-        narrow = (*((*m).eBands).offset((i + 1 as libc::c_int) as isize) as libc::c_int
-            - *((*m).eBands).offset(i as isize) as libc::c_int
-            == 1 as libc::c_int) as libc::c_int;
+        narrow = (*((*m).eBands).offset((i + 1 as i32) as isize) as i32
+            - *((*m).eBands).offset(i as isize) as i32
+            == 1 as i32) as i32;
         memcpy(
-            tmp.as_mut_ptr() as *mut libc::c_void,
+            tmp.as_mut_ptr() as *mut core::ffi::c_void,
             &mut *X.offset(
-                (tf_chan * N0 + ((*((*m).eBands).offset(i as isize) as libc::c_int) << LM))
-                    as isize,
-            ) as *mut celt_norm as *const libc::c_void,
-            (N as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<celt_norm>() as libc::c_ulong)
+                (tf_chan * N0 + ((*((*m).eBands).offset(i as isize) as i32) << LM)) as isize,
+            ) as *mut celt_norm as *const core::ffi::c_void,
+            (N as u64)
+                .wrapping_mul(::core::mem::size_of::<celt_norm>() as u64)
                 .wrapping_add(
-                    (0 as libc::c_int as libc::c_long
+                    (0 as i32 as i64
                         * tmp.as_mut_ptr().offset_from(&mut *X.offset(
-                            (tf_chan * N0
-                                + ((*((*m).eBands).offset(i as isize) as libc::c_int) << LM))
+                            (tf_chan * N0 + ((*((*m).eBands).offset(i as isize) as i32) << LM))
                                 as isize,
-                        )) as libc::c_long) as libc::c_ulong,
+                        )) as i64) as u64,
                 ),
         );
         L1 = l1_metric(
             tmp.as_mut_ptr(),
             N,
-            if isTransient != 0 {
-                LM
-            } else {
-                0 as libc::c_int
-            },
+            if isTransient != 0 { LM } else { 0 as i32 },
             bias,
         );
         best_L1 = L1;
         if isTransient != 0 && narrow == 0 {
             memcpy(
-                tmp_1.as_mut_ptr() as *mut libc::c_void,
-                tmp.as_mut_ptr() as *const libc::c_void,
-                (N as libc::c_ulong)
-                    .wrapping_mul(::core::mem::size_of::<celt_norm>() as libc::c_ulong)
+                tmp_1.as_mut_ptr() as *mut core::ffi::c_void,
+                tmp.as_mut_ptr() as *const core::ffi::c_void,
+                (N as u64)
+                    .wrapping_mul(::core::mem::size_of::<celt_norm>() as u64)
                     .wrapping_add(
-                        (0 as libc::c_int as libc::c_long
-                            * tmp_1.as_mut_ptr().offset_from(tmp.as_mut_ptr()) as libc::c_long)
-                            as libc::c_ulong,
+                        (0 as i32 as i64 * tmp_1.as_mut_ptr().offset_from(tmp.as_mut_ptr()) as i64)
+                            as u64,
                     ),
             );
-            haar1(tmp_1.as_mut_ptr(), N >> LM, (1 as libc::c_int) << LM);
-            L1 = l1_metric(tmp_1.as_mut_ptr(), N, LM + 1 as libc::c_int, bias);
+            haar1(tmp_1.as_mut_ptr(), N >> LM, (1 as i32) << LM);
+            L1 = l1_metric(tmp_1.as_mut_ptr(), N, LM + 1 as i32, bias);
             if L1 < best_L1 {
                 best_L1 = L1;
-                best_level = -(1 as libc::c_int);
+                best_level = -(1 as i32);
             }
         }
-        k = 0 as libc::c_int;
-        while k < LM + !(isTransient != 0 || narrow != 0) as libc::c_int {
-            let mut B: libc::c_int = 0;
+        k = 0 as i32;
+        while k < LM + !(isTransient != 0 || narrow != 0) as i32 {
+            let mut B: i32 = 0;
             if isTransient != 0 {
-                B = LM - k - 1 as libc::c_int;
+                B = LM - k - 1 as i32;
             } else {
-                B = k + 1 as libc::c_int;
+                B = k + 1 as i32;
             }
-            haar1(tmp.as_mut_ptr(), N >> k, (1 as libc::c_int) << k);
+            haar1(tmp.as_mut_ptr(), N >> k, (1 as i32) << k);
             L1 = l1_metric(tmp.as_mut_ptr(), N, B, bias);
             if L1 < best_L1 {
                 best_L1 = L1;
-                best_level = k + 1 as libc::c_int;
+                best_level = k + 1 as i32;
             }
             k += 1;
         }
         if isTransient != 0 {
-            *metric.as_mut_ptr().offset(i as isize) = 2 as libc::c_int * best_level;
+            *metric.as_mut_ptr().offset(i as isize) = 2 as i32 * best_level;
         } else {
-            *metric.as_mut_ptr().offset(i as isize) = -(2 as libc::c_int) * best_level;
+            *metric.as_mut_ptr().offset(i as isize) = -(2 as i32) * best_level;
         }
         if narrow != 0
-            && (*metric.as_mut_ptr().offset(i as isize) == 0 as libc::c_int
-                || *metric.as_mut_ptr().offset(i as isize) == -(2 as libc::c_int) * LM)
+            && (*metric.as_mut_ptr().offset(i as isize) == 0 as i32
+                || *metric.as_mut_ptr().offset(i as isize) == -(2 as i32) * LM)
         {
-            *metric.as_mut_ptr().offset(i as isize) -= 1 as libc::c_int;
+            *metric.as_mut_ptr().offset(i as isize) -= 1 as i32;
         }
         i += 1;
     }
-    tf_select = 0 as libc::c_int;
-    sel = 0 as libc::c_int;
-    while sel < 2 as libc::c_int {
-        cost0 = *importance.offset(0 as libc::c_int as isize)
-            * (*metric.as_mut_ptr().offset(0 as libc::c_int as isize)
-                - 2 as libc::c_int
-                    * tf_select_table[LM as usize][(4 as libc::c_int * isTransient
-                        + 2 as libc::c_int * sel
-                        + 0 as libc::c_int)
-                        as usize] as libc::c_int)
+    tf_select = 0 as i32;
+    sel = 0 as i32;
+    while sel < 2 as i32 {
+        cost0 = *importance.offset(0 as i32 as isize)
+            * (*metric.as_mut_ptr().offset(0 as i32 as isize)
+                - 2 as i32
+                    * tf_select_table[LM as usize]
+                        [(4 as i32 * isTransient + 2 as i32 * sel + 0 as i32) as usize]
+                        as i32)
                 .abs();
-        cost1 = *importance.offset(0 as libc::c_int as isize)
-            * (*metric.as_mut_ptr().offset(0 as libc::c_int as isize)
-                - 2 as libc::c_int
-                    * tf_select_table[LM as usize][(4 as libc::c_int * isTransient
-                        + 2 as libc::c_int * sel
-                        + 1 as libc::c_int)
-                        as usize] as libc::c_int)
+        cost1 = *importance.offset(0 as i32 as isize)
+            * (*metric.as_mut_ptr().offset(0 as i32 as isize)
+                - 2 as i32
+                    * tf_select_table[LM as usize]
+                        [(4 as i32 * isTransient + 2 as i32 * sel + 1 as i32) as usize]
+                        as i32)
                 .abs()
-            + (if isTransient != 0 {
-                0 as libc::c_int
-            } else {
-                lambda
-            });
-        i = 1 as libc::c_int;
+            + (if isTransient != 0 { 0 as i32 } else { lambda });
+        i = 1 as i32;
         while i < len {
-            let mut curr0: libc::c_int = 0;
-            let mut curr1: libc::c_int = 0;
+            let mut curr0: i32 = 0;
+            let mut curr1: i32 = 0;
             curr0 = if cost0 < cost1 + lambda {
                 cost0
             } else {
@@ -1012,20 +961,18 @@ unsafe fn tf_analysis(
             cost0 = curr0
                 + *importance.offset(i as isize)
                     * (*metric.as_mut_ptr().offset(i as isize)
-                        - 2 as libc::c_int
-                            * tf_select_table[LM as usize][(4 as libc::c_int * isTransient
-                                + 2 as libc::c_int * sel
-                                + 0 as libc::c_int)
-                                as usize] as libc::c_int)
+                        - 2 as i32
+                            * tf_select_table[LM as usize]
+                                [(4 as i32 * isTransient + 2 as i32 * sel + 0 as i32) as usize]
+                                as i32)
                         .abs();
             cost1 = curr1
                 + *importance.offset(i as isize)
                     * (*metric.as_mut_ptr().offset(i as isize)
-                        - 2 as libc::c_int
-                            * tf_select_table[LM as usize][(4 as libc::c_int * isTransient
-                                + 2 as libc::c_int * sel
-                                + 1 as libc::c_int)
-                                as usize] as libc::c_int)
+                        - 2 as i32
+                            * tf_select_table[LM as usize]
+                                [(4 as i32 * isTransient + 2 as i32 * sel + 1 as i32) as usize]
+                                as i32)
                         .abs();
             i += 1;
         }
@@ -1033,85 +980,73 @@ unsafe fn tf_analysis(
         selcost[sel as usize] = cost0;
         sel += 1;
     }
-    if selcost[1 as libc::c_int as usize] < selcost[0 as libc::c_int as usize] && isTransient != 0 {
-        tf_select = 1 as libc::c_int;
+    if selcost[1 as i32 as usize] < selcost[0 as i32 as usize] && isTransient != 0 {
+        tf_select = 1 as i32;
     }
-    cost0 = *importance.offset(0 as libc::c_int as isize)
-        * (*metric.as_mut_ptr().offset(0 as libc::c_int as isize)
-            - 2 as libc::c_int
-                * tf_select_table[LM as usize][(4 as libc::c_int * isTransient
-                    + 2 as libc::c_int * tf_select
-                    + 0 as libc::c_int) as usize] as libc::c_int)
+    cost0 = *importance.offset(0 as i32 as isize)
+        * (*metric.as_mut_ptr().offset(0 as i32 as isize)
+            - 2 as i32
+                * tf_select_table[LM as usize]
+                    [(4 as i32 * isTransient + 2 as i32 * tf_select + 0 as i32) as usize]
+                    as i32)
             .abs();
-    cost1 = *importance.offset(0 as libc::c_int as isize)
-        * (*metric.as_mut_ptr().offset(0 as libc::c_int as isize)
-            - 2 as libc::c_int
-                * tf_select_table[LM as usize][(4 as libc::c_int * isTransient
-                    + 2 as libc::c_int * tf_select
-                    + 1 as libc::c_int) as usize] as libc::c_int)
+    cost1 = *importance.offset(0 as i32 as isize)
+        * (*metric.as_mut_ptr().offset(0 as i32 as isize)
+            - 2 as i32
+                * tf_select_table[LM as usize]
+                    [(4 as i32 * isTransient + 2 as i32 * tf_select + 1 as i32) as usize]
+                    as i32)
             .abs()
-        + (if isTransient != 0 {
-            0 as libc::c_int
-        } else {
-            lambda
-        });
-    i = 1 as libc::c_int;
+        + (if isTransient != 0 { 0 as i32 } else { lambda });
+    i = 1 as i32;
     while i < len {
-        let mut curr0_0: libc::c_int = 0;
-        let mut curr1_0: libc::c_int = 0;
-        let mut from0: libc::c_int = 0;
-        let mut from1: libc::c_int = 0;
+        let mut curr0_0: i32 = 0;
+        let mut curr1_0: i32 = 0;
+        let mut from0: i32 = 0;
+        let mut from1: i32 = 0;
         from0 = cost0;
         from1 = cost1 + lambda;
         if from0 < from1 {
             curr0_0 = from0;
-            *path0.as_mut_ptr().offset(i as isize) = 0 as libc::c_int;
+            *path0.as_mut_ptr().offset(i as isize) = 0 as i32;
         } else {
             curr0_0 = from1;
-            *path0.as_mut_ptr().offset(i as isize) = 1 as libc::c_int;
+            *path0.as_mut_ptr().offset(i as isize) = 1 as i32;
         }
         from0 = cost0 + lambda;
         from1 = cost1;
         if from0 < from1 {
             curr1_0 = from0;
-            *path1.as_mut_ptr().offset(i as isize) = 0 as libc::c_int;
+            *path1.as_mut_ptr().offset(i as isize) = 0 as i32;
         } else {
             curr1_0 = from1;
-            *path1.as_mut_ptr().offset(i as isize) = 1 as libc::c_int;
+            *path1.as_mut_ptr().offset(i as isize) = 1 as i32;
         }
         cost0 = curr0_0
             + *importance.offset(i as isize)
                 * (*metric.as_mut_ptr().offset(i as isize)
-                    - 2 as libc::c_int
-                        * tf_select_table[LM as usize][(4 as libc::c_int * isTransient
-                            + 2 as libc::c_int * tf_select
-                            + 0 as libc::c_int)
-                            as usize] as libc::c_int)
+                    - 2 as i32
+                        * tf_select_table[LM as usize]
+                            [(4 as i32 * isTransient + 2 as i32 * tf_select + 0 as i32) as usize]
+                            as i32)
                     .abs();
         cost1 = curr1_0
             + *importance.offset(i as isize)
                 * (*metric.as_mut_ptr().offset(i as isize)
-                    - 2 as libc::c_int
-                        * tf_select_table[LM as usize][(4 as libc::c_int * isTransient
-                            + 2 as libc::c_int * tf_select
-                            + 1 as libc::c_int)
-                            as usize] as libc::c_int)
+                    - 2 as i32
+                        * tf_select_table[LM as usize]
+                            [(4 as i32 * isTransient + 2 as i32 * tf_select + 1 as i32) as usize]
+                            as i32)
                     .abs();
         i += 1;
     }
-    *tf_res.offset((len - 1 as libc::c_int) as isize) = if cost0 < cost1 {
-        0 as libc::c_int
-    } else {
-        1 as libc::c_int
-    };
-    i = len - 2 as libc::c_int;
-    while i >= 0 as libc::c_int {
-        if *tf_res.offset((i + 1 as libc::c_int) as isize) == 1 as libc::c_int {
-            *tf_res.offset(i as isize) =
-                *path1.as_mut_ptr().offset((i + 1 as libc::c_int) as isize);
+    *tf_res.offset((len - 1 as i32) as isize) = if cost0 < cost1 { 0 as i32 } else { 1 as i32 };
+    i = len - 2 as i32;
+    while i >= 0 as i32 {
+        if *tf_res.offset((i + 1 as i32) as isize) == 1 as i32 {
+            *tf_res.offset(i as isize) = *path1.as_mut_ptr().offset((i + 1 as i32) as isize);
         } else {
-            *tf_res.offset(i as isize) =
-                *path0.as_mut_ptr().offset((i + 1 as libc::c_int) as isize);
+            *tf_res.offset(i as isize) = *path0.as_mut_ptr().offset((i + 1 as i32) as isize);
         }
         i -= 1;
     }
@@ -1119,71 +1054,58 @@ unsafe fn tf_analysis(
 }
 #[c2rust::src_loc = "745:1"]
 unsafe fn tf_encode(
-    start: libc::c_int,
-    end: libc::c_int,
-    isTransient: libc::c_int,
-    tf_res: *mut libc::c_int,
-    LM: libc::c_int,
-    mut tf_select: libc::c_int,
+    start: i32,
+    end: i32,
+    isTransient: i32,
+    tf_res: *mut i32,
+    LM: i32,
+    mut tf_select: i32,
     enc: *mut ec_enc,
 ) {
-    let mut curr: libc::c_int = 0;
-    let mut i: libc::c_int = 0;
-    let mut tf_select_rsv: libc::c_int = 0;
-    let mut tf_changed: libc::c_int = 0;
-    let mut logp: libc::c_int = 0;
+    let mut curr: i32 = 0;
+    let mut i: i32 = 0;
+    let mut tf_select_rsv: i32 = 0;
+    let mut tf_changed: i32 = 0;
+    let mut logp: i32 = 0;
     let mut budget: u32 = 0;
     let mut tell: u32 = 0;
-    budget = ((*enc).storage).wrapping_mul(8 as libc::c_int as libc::c_uint);
+    budget = ((*enc).storage).wrapping_mul(8 as i32 as u32);
     tell = ec_tell(enc) as u32;
-    logp = if isTransient != 0 {
-        2 as libc::c_int
-    } else {
-        4 as libc::c_int
-    };
-    tf_select_rsv = (LM > 0 as libc::c_int
-        && tell
-            .wrapping_add(logp as libc::c_uint)
-            .wrapping_add(1 as libc::c_int as libc::c_uint)
-            <= budget) as libc::c_int;
-    budget = (budget as libc::c_uint).wrapping_sub(tf_select_rsv as libc::c_uint) as u32 as u32;
-    tf_changed = 0 as libc::c_int;
+    logp = if isTransient != 0 { 2 as i32 } else { 4 as i32 };
+    tf_select_rsv = (LM > 0 as i32
+        && tell.wrapping_add(logp as u32).wrapping_add(1 as i32 as u32) <= budget)
+        as i32;
+    budget = (budget as u32).wrapping_sub(tf_select_rsv as u32) as u32 as u32;
+    tf_changed = 0 as i32;
     curr = tf_changed;
     i = start;
     while i < end {
-        if tell.wrapping_add(logp as libc::c_uint) <= budget {
-            ec_enc_bit_logp(enc, *tf_res.offset(i as isize) ^ curr, logp as libc::c_uint);
+        if tell.wrapping_add(logp as u32) <= budget {
+            ec_enc_bit_logp(enc, *tf_res.offset(i as isize) ^ curr, logp as u32);
             tell = ec_tell(enc) as u32;
             curr = *tf_res.offset(i as isize);
             tf_changed |= curr;
         } else {
             *tf_res.offset(i as isize) = curr;
         }
-        logp = if isTransient != 0 {
-            4 as libc::c_int
-        } else {
-            5 as libc::c_int
-        };
+        logp = if isTransient != 0 { 4 as i32 } else { 5 as i32 };
         i += 1;
     }
     if tf_select_rsv != 0
-        && tf_select_table[LM as usize]
-            [(4 as libc::c_int * isTransient + 0 as libc::c_int + tf_changed) as usize]
-            as libc::c_int
+        && tf_select_table[LM as usize][(4 as i32 * isTransient + 0 as i32 + tf_changed) as usize]
+            as i32
             != tf_select_table[LM as usize]
-                [(4 as libc::c_int * isTransient + 2 as libc::c_int + tf_changed) as usize]
-                as libc::c_int
+                [(4 as i32 * isTransient + 2 as i32 + tf_changed) as usize] as i32
     {
-        ec_enc_bit_logp(enc, tf_select, 1 as libc::c_int as libc::c_uint);
+        ec_enc_bit_logp(enc, tf_select, 1 as i32 as u32);
     } else {
-        tf_select = 0 as libc::c_int;
+        tf_select = 0 as i32;
     }
     i = start;
     while i < end {
-        *tf_res.offset(i as isize) = tf_select_table[LM as usize][(4 as libc::c_int * isTransient
-            + 2 as libc::c_int * tf_select
-            + *tf_res.offset(i as isize))
-            as usize] as libc::c_int;
+        *tf_res.offset(i as isize) = tf_select_table[LM as usize]
+            [(4 as i32 * isTransient + 2 as i32 * tf_select + *tf_res.offset(i as isize)) as usize]
+            as i32;
         i += 1;
     }
 }
@@ -1192,66 +1114,62 @@ unsafe fn alloc_trim_analysis(
     m: *const OpusCustomMode,
     X: *const celt_norm,
     bandLogE: *const opus_val16,
-    end: libc::c_int,
-    LM: libc::c_int,
-    C: libc::c_int,
-    N0: libc::c_int,
+    end: i32,
+    LM: i32,
+    C: i32,
+    N0: i32,
     analysis: *mut AnalysisInfo,
     stereo_saving: *mut opus_val16,
     tf_estimate: opus_val16,
-    intensity: libc::c_int,
+    intensity: i32,
     surround_trim: opus_val16,
     equiv_rate: i32,
-    _arch: libc::c_int,
-) -> libc::c_int {
-    let mut i: libc::c_int = 0;
-    let mut diff: opus_val32 = 0 as libc::c_int as opus_val32;
-    let mut c: libc::c_int = 0;
-    let mut trim_index: libc::c_int = 0;
+    _arch: i32,
+) -> i32 {
+    let mut i: i32 = 0;
+    let mut diff: opus_val32 = 0 as i32 as opus_val32;
+    let mut c: i32 = 0;
+    let mut trim_index: i32 = 0;
     let mut trim: opus_val16 = 5.0f32;
     let mut logXC: opus_val16 = 0.;
     let mut logXC2: opus_val16 = 0.;
-    if equiv_rate < 64000 as libc::c_int {
+    if equiv_rate < 64000 as i32 {
         trim = 4.0f32;
-    } else if equiv_rate < 80000 as libc::c_int {
-        let frac: i32 = equiv_rate - 64000 as libc::c_int >> 10 as libc::c_int;
-        trim = 4.0f32 + 1.0f32 / 16.0f32 * frac as libc::c_float;
+    } else if equiv_rate < 80000 as i32 {
+        let frac: i32 = equiv_rate - 64000 as i32 >> 10 as i32;
+        trim = 4.0f32 + 1.0f32 / 16.0f32 * frac as f32;
     }
-    if C == 2 as libc::c_int {
-        let mut sum: opus_val16 = 0 as libc::c_int as opus_val16;
+    if C == 2 as i32 {
+        let mut sum: opus_val16 = 0 as i32 as opus_val16;
         let mut minXC: opus_val16 = 0.;
-        i = 0 as libc::c_int;
-        while i < 8 as libc::c_int {
+        i = 0 as i32;
+        while i < 8 as i32 {
             let mut partial: opus_val32 = 0.;
             partial = celt_inner_prod_c(
-                &*X.offset(((*((*m).eBands).offset(i as isize) as libc::c_int) << LM) as isize),
-                &*X.offset(
-                    (N0 + ((*((*m).eBands).offset(i as isize) as libc::c_int) << LM)) as isize,
-                ),
-                (*((*m).eBands).offset((i + 1 as libc::c_int) as isize) as libc::c_int
-                    - *((*m).eBands).offset(i as isize) as libc::c_int)
+                &*X.offset(((*((*m).eBands).offset(i as isize) as i32) << LM) as isize),
+                &*X.offset((N0 + ((*((*m).eBands).offset(i as isize) as i32) << LM)) as isize),
+                (*((*m).eBands).offset((i + 1 as i32) as isize) as i32
+                    - *((*m).eBands).offset(i as isize) as i32)
                     << LM,
             );
             sum = sum + partial;
             i += 1;
         }
-        sum = 1.0f32 / 8 as libc::c_int as libc::c_float * sum;
+        sum = 1.0f32 / 8 as i32 as f32 * sum;
         sum = if 1.0f32 < (sum).abs() {
             1.0f32
         } else {
             (sum).abs()
         };
         minXC = sum;
-        i = 8 as libc::c_int;
+        i = 8 as i32;
         while i < intensity {
             let mut partial_0: opus_val32 = 0.;
             partial_0 = celt_inner_prod_c(
-                &*X.offset(((*((*m).eBands).offset(i as isize) as libc::c_int) << LM) as isize),
-                &*X.offset(
-                    (N0 + ((*((*m).eBands).offset(i as isize) as libc::c_int) << LM)) as isize,
-                ),
-                (*((*m).eBands).offset((i + 1 as libc::c_int) as isize) as libc::c_int
-                    - *((*m).eBands).offset(i as isize) as libc::c_int)
+                &*X.offset(((*((*m).eBands).offset(i as isize) as i32) << LM) as isize),
+                &*X.offset((N0 + ((*((*m).eBands).offset(i as isize) as i32) << LM)) as isize),
+                (*((*m).eBands).offset((i + 1 as i32) as isize) as i32
+                    - *((*m).eBands).offset(i as isize) as i32)
                     << LM,
             );
             minXC = if minXC < (partial_0).abs() {
@@ -1283,12 +1201,12 @@ unsafe fn alloc_trim_analysis(
             -(0.5f32 * logXC2)
         };
     }
-    c = 0 as libc::c_int;
+    c = 0 as i32;
     loop {
-        i = 0 as libc::c_int;
-        while i < end - 1 as libc::c_int {
+        i = 0 as i32;
+        while i < end - 1 as i32 {
             diff += *bandLogE.offset((i + c * (*m).nbEBands) as isize)
-                * (2 as libc::c_int + 2 as libc::c_int * i - end) as libc::c_float;
+                * (2 as i32 + 2 as i32 * i - end) as f32;
             i += 1;
         }
         c += 1;
@@ -1296,21 +1214,21 @@ unsafe fn alloc_trim_analysis(
             break;
         }
     }
-    diff /= (C * (end - 1 as libc::c_int)) as libc::c_float;
+    diff /= (C * (end - 1 as i32)) as f32;
     trim -= if -2.0f32
-        > (if 2.0f32 < (diff + 1.0f32) / 6 as libc::c_int as libc::c_float {
+        > (if 2.0f32 < (diff + 1.0f32) / 6 as i32 as f32 {
             2.0f32
         } else {
-            (diff + 1.0f32) / 6 as libc::c_int as libc::c_float
+            (diff + 1.0f32) / 6 as i32 as f32
         }) {
         -2.0f32
-    } else if 2.0f32 < (diff + 1.0f32) / 6 as libc::c_int as libc::c_float {
+    } else if 2.0f32 < (diff + 1.0f32) / 6 as i32 as f32 {
         2.0f32
     } else {
-        (diff + 1.0f32) / 6 as libc::c_int as libc::c_float
+        (diff + 1.0f32) / 6 as i32 as f32
     };
     trim -= surround_trim;
-    trim -= 2 as libc::c_int as libc::c_float * tf_estimate;
+    trim -= 2 as i32 as f32 * tf_estimate;
     if (*analysis).valid != 0 {
         trim -= if -2.0f32
             > (if 2.0f32 < 2.0f32 * ((*analysis).tonality_slope + 0.05f32) {
@@ -1325,37 +1243,32 @@ unsafe fn alloc_trim_analysis(
             2.0f32 * ((*analysis).tonality_slope + 0.05f32)
         };
     }
-    trim_index = (0.5f32 + trim).floor() as libc::c_int;
-    trim_index = if 0 as libc::c_int
-        > (if (10 as libc::c_int) < trim_index {
-            10 as libc::c_int
+    trim_index = (0.5f32 + trim).floor() as i32;
+    trim_index = if 0 as i32
+        > (if (10 as i32) < trim_index {
+            10 as i32
         } else {
             trim_index
         }) {
-        0 as libc::c_int
-    } else if (10 as libc::c_int) < trim_index {
-        10 as libc::c_int
+        0 as i32
+    } else if (10 as i32) < trim_index {
+        10 as i32
     } else {
         trim_index
     };
     return trim_index;
 }
 #[c2rust::src_loc = "878:1"]
-unsafe fn stereo_analysis(
-    m: *const OpusCustomMode,
-    X: *const celt_norm,
-    LM: libc::c_int,
-    N0: libc::c_int,
-) -> libc::c_int {
-    let mut i: libc::c_int = 0;
-    let mut thetas: libc::c_int = 0;
+unsafe fn stereo_analysis(m: *const OpusCustomMode, X: *const celt_norm, LM: i32, N0: i32) -> i32 {
+    let mut i: i32 = 0;
+    let mut thetas: i32 = 0;
     let mut sumLR: opus_val32 = EPSILON;
     let mut sumMS: opus_val32 = EPSILON;
-    i = 0 as libc::c_int;
-    while i < 13 as libc::c_int {
-        let mut j: libc::c_int = 0;
-        j = (*((*m).eBands).offset(i as isize) as libc::c_int) << LM;
-        while j < (*((*m).eBands).offset((i + 1 as libc::c_int) as isize) as libc::c_int) << LM {
+    i = 0 as i32;
+    while i < 13 as i32 {
+        let mut j: i32 = 0;
+        j = (*((*m).eBands).offset(i as isize) as i32) << LM;
+        while j < (*((*m).eBands).offset((i + 1 as i32) as isize) as i32) << LM {
             let mut L: opus_val32 = 0.;
             let mut R: opus_val32 = 0.;
             let mut M: opus_val32 = 0.;
@@ -1371,17 +1284,14 @@ unsafe fn stereo_analysis(
         i += 1;
     }
     sumMS = 0.707107f32 * sumMS;
-    thetas = 13 as libc::c_int;
-    if LM <= 1 as libc::c_int {
-        thetas -= 8 as libc::c_int;
+    thetas = 13 as i32;
+    if LM <= 1 as i32 {
+        thetas -= 8 as i32;
     }
-    return ((((*((*m).eBands).offset(13 as libc::c_int as isize) as libc::c_int)
-        << LM + 1 as libc::c_int)
-        + thetas) as libc::c_float
+    return ((((*((*m).eBands).offset(13 as i32 as isize) as i32) << LM + 1 as i32) + thetas) as f32
         * sumMS
-        > ((*((*m).eBands).offset(13 as libc::c_int as isize) as libc::c_int)
-            << LM + 1 as libc::c_int) as libc::c_float
-            * sumLR) as libc::c_int;
+        > ((*((*m).eBands).offset(13 as i32 as isize) as i32) << LM + 1 as i32) as f32 * sumLR)
+        as i32;
 }
 #[c2rust::src_loc = "911:1"]
 unsafe fn median_of_5(x: *const opus_val16) -> opus_val16 {
@@ -1390,20 +1300,20 @@ unsafe fn median_of_5(x: *const opus_val16) -> opus_val16 {
     let mut t2: opus_val16 = 0.;
     let mut t3: opus_val16 = 0.;
     let mut t4: opus_val16 = 0.;
-    t2 = *x.offset(2 as libc::c_int as isize);
-    if *x.offset(0 as libc::c_int as isize) > *x.offset(1 as libc::c_int as isize) {
-        t0 = *x.offset(1 as libc::c_int as isize);
-        t1 = *x.offset(0 as libc::c_int as isize);
+    t2 = *x.offset(2 as i32 as isize);
+    if *x.offset(0 as i32 as isize) > *x.offset(1 as i32 as isize) {
+        t0 = *x.offset(1 as i32 as isize);
+        t1 = *x.offset(0 as i32 as isize);
     } else {
-        t0 = *x.offset(0 as libc::c_int as isize);
-        t1 = *x.offset(1 as libc::c_int as isize);
+        t0 = *x.offset(0 as i32 as isize);
+        t1 = *x.offset(1 as i32 as isize);
     }
-    if *x.offset(3 as libc::c_int as isize) > *x.offset(4 as libc::c_int as isize) {
-        t3 = *x.offset(4 as libc::c_int as isize);
-        t4 = *x.offset(3 as libc::c_int as isize);
+    if *x.offset(3 as i32 as isize) > *x.offset(4 as i32 as isize) {
+        t3 = *x.offset(4 as i32 as isize);
+        t4 = *x.offset(3 as i32 as isize);
     } else {
-        t3 = *x.offset(3 as libc::c_int as isize);
-        t4 = *x.offset(4 as libc::c_int as isize);
+        t3 = *x.offset(3 as i32 as isize);
+        t4 = *x.offset(4 as i32 as isize);
     }
     if t0 > t3 {
         let tmp: opus_val16 = t0;
@@ -1430,14 +1340,14 @@ unsafe fn median_of_3(x: *const opus_val16) -> opus_val16 {
     let mut t0: opus_val16 = 0.;
     let mut t1: opus_val16 = 0.;
     let mut t2: opus_val16 = 0.;
-    if *x.offset(0 as libc::c_int as isize) > *x.offset(1 as libc::c_int as isize) {
-        t0 = *x.offset(1 as libc::c_int as isize);
-        t1 = *x.offset(0 as libc::c_int as isize);
+    if *x.offset(0 as i32 as isize) > *x.offset(1 as i32 as isize) {
+        t0 = *x.offset(1 as i32 as isize);
+        t1 = *x.offset(0 as i32 as isize);
     } else {
-        t0 = *x.offset(0 as libc::c_int as isize);
-        t1 = *x.offset(1 as libc::c_int as isize);
+        t0 = *x.offset(0 as i32 as isize);
+        t1 = *x.offset(1 as i32 as isize);
     }
-    t2 = *x.offset(2 as libc::c_int as isize);
+    t2 = *x.offset(2 as i32 as isize);
     if t1 < t2 {
         return t1;
     } else if t0 < t2 {
@@ -1450,55 +1360,53 @@ unsafe fn median_of_3(x: *const opus_val16) -> opus_val16 {
 unsafe fn dynalloc_analysis(
     bandLogE: *const opus_val16,
     bandLogE2: *const opus_val16,
-    nbEBands: libc::c_int,
-    start: libc::c_int,
-    end: libc::c_int,
-    C: libc::c_int,
-    offsets: *mut libc::c_int,
-    lsb_depth: libc::c_int,
+    nbEBands: i32,
+    start: i32,
+    end: i32,
+    C: i32,
+    offsets: *mut i32,
+    lsb_depth: i32,
     logN: *const i16,
-    isTransient: libc::c_int,
-    vbr: libc::c_int,
-    constrained_vbr: libc::c_int,
+    isTransient: i32,
+    vbr: i32,
+    constrained_vbr: i32,
     eBands: *const i16,
-    LM: libc::c_int,
-    effectiveBytes: libc::c_int,
+    LM: i32,
+    effectiveBytes: i32,
     tot_boost_: *mut i32,
-    lfe: libc::c_int,
+    lfe: i32,
     surround_dynalloc: *mut opus_val16,
     analysis: *mut AnalysisInfo,
-    importance: *mut libc::c_int,
-    spread_weight: *mut libc::c_int,
+    importance: *mut i32,
+    spread_weight: *mut i32,
 ) -> opus_val16 {
-    let mut i: libc::c_int = 0;
-    let mut c: libc::c_int = 0;
-    let mut tot_boost: i32 = 0 as libc::c_int;
+    let mut i: i32 = 0;
+    let mut c: i32 = 0;
+    let mut tot_boost: i32 = 0 as i32;
     let mut maxDepth: opus_val16 = 0.;
     let vla = (C * nbEBands) as usize;
     let mut follower: Vec<opus_val16> = ::std::vec::from_elem(0., vla);
     let vla_0 = (C * nbEBands) as usize;
     let mut noise_floor: Vec<opus_val16> = ::std::vec::from_elem(0., vla_0);
     memset(
-        offsets as *mut libc::c_void,
-        0 as libc::c_int,
-        (nbEBands as libc::c_ulong)
-            .wrapping_mul(::core::mem::size_of::<libc::c_int>() as libc::c_ulong),
+        offsets as *mut core::ffi::c_void,
+        0 as i32,
+        (nbEBands as u64).wrapping_mul(::core::mem::size_of::<i32>() as u64),
     );
     maxDepth = -31.9f32;
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < end {
         *noise_floor.as_mut_ptr().offset(i as isize) = 0.0625f32
             * *logN.offset(i as isize) as opus_val32
             + 0.5f32
-            + (9 as libc::c_int - lsb_depth) as libc::c_float
+            + (9 as i32 - lsb_depth) as f32
             - eMeans[i as usize]
-            + 0.0062f64 as opus_val32
-                * ((i + 5 as libc::c_int) * (i + 5 as libc::c_int)) as opus_val32;
+            + 0.0062f64 as opus_val32 * ((i + 5 as i32) * (i + 5 as i32)) as opus_val32;
         i += 1;
     }
-    c = 0 as libc::c_int;
+    c = 0 as i32;
     loop {
-        i = 0 as libc::c_int;
+        i = 0 as i32;
         while i < end {
             maxDepth = if maxDepth
                 > *bandLogE.offset((c * nbEBands + i) as isize)
@@ -1520,14 +1428,14 @@ unsafe fn dynalloc_analysis(
     let mut mask: Vec<opus_val16> = ::std::vec::from_elem(0., vla_1);
     let vla_2 = nbEBands as usize;
     let mut sig: Vec<opus_val16> = ::std::vec::from_elem(0., vla_2);
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < end {
         *mask.as_mut_ptr().offset(i as isize) =
             *bandLogE.offset(i as isize) - *noise_floor.as_mut_ptr().offset(i as isize);
         i += 1;
     }
-    if C == 2 as libc::c_int {
-        i = 0 as libc::c_int;
+    if C == 2 as i32 {
+        i = 0 as i32;
         while i < end {
             *mask.as_mut_ptr().offset(i as isize) = if *mask.as_mut_ptr().offset(i as isize)
                 > *bandLogE.offset((nbEBands + i) as isize)
@@ -1542,156 +1450,150 @@ unsafe fn dynalloc_analysis(
         }
     }
     memcpy(
-        sig.as_mut_ptr() as *mut libc::c_void,
-        mask.as_mut_ptr() as *const libc::c_void,
-        (end as libc::c_ulong)
-            .wrapping_mul(::core::mem::size_of::<opus_val16>() as libc::c_ulong)
+        sig.as_mut_ptr() as *mut core::ffi::c_void,
+        mask.as_mut_ptr() as *const core::ffi::c_void,
+        (end as u64)
+            .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64)
             .wrapping_add(
-                (0 as libc::c_int as libc::c_long
-                    * sig.as_mut_ptr().offset_from(mask.as_mut_ptr()) as libc::c_long)
-                    as libc::c_ulong,
+                (0 as i32 as i64 * sig.as_mut_ptr().offset_from(mask.as_mut_ptr()) as i64) as u64,
             ),
     );
-    i = 1 as libc::c_int;
+    i = 1 as i32;
     while i < end {
         *mask.as_mut_ptr().offset(i as isize) = if *mask.as_mut_ptr().offset(i as isize)
-            > *mask.as_mut_ptr().offset((i - 1 as libc::c_int) as isize) - 2.0f32
+            > *mask.as_mut_ptr().offset((i - 1 as i32) as isize) - 2.0f32
         {
             *mask.as_mut_ptr().offset(i as isize)
         } else {
-            *mask.as_mut_ptr().offset((i - 1 as libc::c_int) as isize) - 2.0f32
+            *mask.as_mut_ptr().offset((i - 1 as i32) as isize) - 2.0f32
         };
         i += 1;
     }
-    i = end - 2 as libc::c_int;
-    while i >= 0 as libc::c_int {
+    i = end - 2 as i32;
+    while i >= 0 as i32 {
         *mask.as_mut_ptr().offset(i as isize) = if *mask.as_mut_ptr().offset(i as isize)
-            > *mask.as_mut_ptr().offset((i + 1 as libc::c_int) as isize) - 3.0f32
+            > *mask.as_mut_ptr().offset((i + 1 as i32) as isize) - 3.0f32
         {
             *mask.as_mut_ptr().offset(i as isize)
         } else {
-            *mask.as_mut_ptr().offset((i + 1 as libc::c_int) as isize) - 3.0f32
+            *mask.as_mut_ptr().offset((i + 1 as i32) as isize) - 3.0f32
         };
         i -= 1;
     }
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < end {
         let smr: opus_val16 = *sig.as_mut_ptr().offset(i as isize)
-            - (if (if 0 as libc::c_int as libc::c_float > maxDepth - 12.0f32 {
-                0 as libc::c_int as libc::c_float
+            - (if (if 0 as i32 as f32 > maxDepth - 12.0f32 {
+                0 as i32 as f32
             } else {
                 maxDepth - 12.0f32
             }) > *mask.as_mut_ptr().offset(i as isize)
             {
-                if 0 as libc::c_int as libc::c_float > maxDepth - 12.0f32 {
-                    0 as libc::c_int as libc::c_float
+                if 0 as i32 as f32 > maxDepth - 12.0f32 {
+                    0 as i32 as f32
                 } else {
                     maxDepth - 12.0f32
                 }
             } else {
                 *mask.as_mut_ptr().offset(i as isize)
             });
-        let shift: libc::c_int = if (5 as libc::c_int)
-            < (if 0 as libc::c_int > -((0.5f32 + smr).floor() as libc::c_int) {
-                0 as libc::c_int
+        let shift: i32 = if (5 as i32)
+            < (if 0 as i32 > -((0.5f32 + smr).floor() as i32) {
+                0 as i32
             } else {
-                -((0.5f32 + smr).floor() as libc::c_int)
+                -((0.5f32 + smr).floor() as i32)
             }) {
-            5 as libc::c_int
-        } else if 0 as libc::c_int > -((0.5f32 + smr).floor() as libc::c_int) {
-            0 as libc::c_int
+            5 as i32
+        } else if 0 as i32 > -((0.5f32 + smr).floor() as i32) {
+            0 as i32
         } else {
-            -((0.5f32 + smr).floor() as libc::c_int)
+            -((0.5f32 + smr).floor() as i32)
         };
-        *spread_weight.offset(i as isize) = 32 as libc::c_int >> shift;
+        *spread_weight.offset(i as isize) = 32 as i32 >> shift;
         i += 1;
     }
-    if effectiveBytes > 50 as libc::c_int && LM >= 1 as libc::c_int && lfe == 0 {
-        let mut last: libc::c_int = 0 as libc::c_int;
-        c = 0 as libc::c_int;
+    if effectiveBytes > 50 as i32 && LM >= 1 as i32 && lfe == 0 {
+        let mut last: i32 = 0 as i32;
+        c = 0 as i32;
         loop {
             let mut offset: opus_val16 = 0.;
             let mut tmp: opus_val16 = 0.;
             let mut f: *mut opus_val16 = 0 as *mut opus_val16;
             f = &mut *follower.as_mut_ptr().offset((c * nbEBands) as isize) as *mut opus_val16;
-            *f.offset(0 as libc::c_int as isize) = *bandLogE2.offset((c * nbEBands) as isize);
-            i = 1 as libc::c_int;
+            *f.offset(0 as i32 as isize) = *bandLogE2.offset((c * nbEBands) as isize);
+            i = 1 as i32;
             while i < end {
                 if *bandLogE2.offset((c * nbEBands + i) as isize)
-                    > *bandLogE2.offset((c * nbEBands + i - 1 as libc::c_int) as isize) + 0.5f32
+                    > *bandLogE2.offset((c * nbEBands + i - 1 as i32) as isize) + 0.5f32
                 {
                     last = i;
                 }
-                *f.offset(i as isize) = if *f.offset((i - 1 as libc::c_int) as isize) + 1.5f32
+                *f.offset(i as isize) = if *f.offset((i - 1 as i32) as isize) + 1.5f32
                     < *bandLogE2.offset((c * nbEBands + i) as isize)
                 {
-                    *f.offset((i - 1 as libc::c_int) as isize) + 1.5f32
+                    *f.offset((i - 1 as i32) as isize) + 1.5f32
                 } else {
                     *bandLogE2.offset((c * nbEBands + i) as isize)
                 };
                 i += 1;
             }
-            i = last - 1 as libc::c_int;
-            while i >= 0 as libc::c_int {
+            i = last - 1 as i32;
+            while i >= 0 as i32 {
                 *f.offset(i as isize) = if *f.offset(i as isize)
-                    < (if *f.offset((i + 1 as libc::c_int) as isize) + 2.0f32
+                    < (if *f.offset((i + 1 as i32) as isize) + 2.0f32
                         < *bandLogE2.offset((c * nbEBands + i) as isize)
                     {
-                        *f.offset((i + 1 as libc::c_int) as isize) + 2.0f32
+                        *f.offset((i + 1 as i32) as isize) + 2.0f32
                     } else {
                         *bandLogE2.offset((c * nbEBands + i) as isize)
                     }) {
                     *f.offset(i as isize)
-                } else if *f.offset((i + 1 as libc::c_int) as isize) + 2.0f32
+                } else if *f.offset((i + 1 as i32) as isize) + 2.0f32
                     < *bandLogE2.offset((c * nbEBands + i) as isize)
                 {
-                    *f.offset((i + 1 as libc::c_int) as isize) + 2.0f32
+                    *f.offset((i + 1 as i32) as isize) + 2.0f32
                 } else {
                     *bandLogE2.offset((c * nbEBands + i) as isize)
                 };
                 i -= 1;
             }
             offset = 1.0f32;
-            i = 2 as libc::c_int;
-            while i < end - 2 as libc::c_int {
+            i = 2 as i32;
+            while i < end - 2 as i32 {
                 *f.offset(i as isize) = if *f.offset(i as isize)
-                    > median_of_5(
-                        &*bandLogE2.offset((c * nbEBands + i - 2 as libc::c_int) as isize),
-                    ) - offset
+                    > median_of_5(&*bandLogE2.offset((c * nbEBands + i - 2 as i32) as isize))
+                        - offset
                 {
                     *f.offset(i as isize)
                 } else {
-                    median_of_5(&*bandLogE2.offset((c * nbEBands + i - 2 as libc::c_int) as isize))
-                        - offset
+                    median_of_5(&*bandLogE2.offset((c * nbEBands + i - 2 as i32) as isize)) - offset
                 };
                 i += 1;
             }
             tmp = median_of_3(&*bandLogE2.offset((c * nbEBands) as isize)) - offset;
-            *f.offset(0 as libc::c_int as isize) = if *f.offset(0 as libc::c_int as isize) > tmp {
-                *f.offset(0 as libc::c_int as isize)
+            *f.offset(0 as i32 as isize) = if *f.offset(0 as i32 as isize) > tmp {
+                *f.offset(0 as i32 as isize)
             } else {
                 tmp
             };
-            *f.offset(1 as libc::c_int as isize) = if *f.offset(1 as libc::c_int as isize) > tmp {
-                *f.offset(1 as libc::c_int as isize)
+            *f.offset(1 as i32 as isize) = if *f.offset(1 as i32 as isize) > tmp {
+                *f.offset(1 as i32 as isize)
             } else {
                 tmp
             };
-            tmp = median_of_3(&*bandLogE2.offset((c * nbEBands + end - 3 as libc::c_int) as isize))
-                - offset;
-            *f.offset((end - 2 as libc::c_int) as isize) =
-                if *f.offset((end - 2 as libc::c_int) as isize) > tmp {
-                    *f.offset((end - 2 as libc::c_int) as isize)
-                } else {
-                    tmp
-                };
-            *f.offset((end - 1 as libc::c_int) as isize) =
-                if *f.offset((end - 1 as libc::c_int) as isize) > tmp {
-                    *f.offset((end - 1 as libc::c_int) as isize)
-                } else {
-                    tmp
-                };
-            i = 0 as libc::c_int;
+            tmp =
+                median_of_3(&*bandLogE2.offset((c * nbEBands + end - 3 as i32) as isize)) - offset;
+            *f.offset((end - 2 as i32) as isize) = if *f.offset((end - 2 as i32) as isize) > tmp {
+                *f.offset((end - 2 as i32) as isize)
+            } else {
+                tmp
+            };
+            *f.offset((end - 1 as i32) as isize) = if *f.offset((end - 1 as i32) as isize) > tmp {
+                *f.offset((end - 1 as i32) as isize)
+            } else {
+                tmp
+            };
+            i = 0 as i32;
             while i < end {
                 *f.offset(i as isize) =
                     if *f.offset(i as isize) > *noise_floor.as_mut_ptr().offset(i as isize) {
@@ -1706,7 +1608,7 @@ unsafe fn dynalloc_analysis(
                 break;
             }
         }
-        if C == 2 as libc::c_int {
+        if C == 2 as i32 {
             i = start;
             while i < end {
                 *follower.as_mut_ptr().offset((nbEBands + i) as isize) =
@@ -1726,17 +1628,17 @@ unsafe fn dynalloc_analysis(
                         *follower.as_mut_ptr().offset((nbEBands + i) as isize) - 4.0f32
                     };
                 *follower.as_mut_ptr().offset(i as isize) = 0.5f32
-                    * ((if 0 as libc::c_int as libc::c_float
+                    * ((if 0 as i32 as f32
                         > *bandLogE.offset(i as isize) - *follower.as_mut_ptr().offset(i as isize)
                     {
-                        0 as libc::c_int as libc::c_float
+                        0 as i32 as f32
                     } else {
                         *bandLogE.offset(i as isize) - *follower.as_mut_ptr().offset(i as isize)
-                    }) + (if 0 as libc::c_int as libc::c_float
+                    }) + (if 0 as i32 as f32
                         > *bandLogE.offset((nbEBands + i) as isize)
                             - *follower.as_mut_ptr().offset((nbEBands + i) as isize)
                     {
-                        0 as libc::c_int as libc::c_float
+                        0 as i32 as f32
                     } else {
                         *bandLogE.offset((nbEBands + i) as isize)
                             - *follower.as_mut_ptr().offset((nbEBands + i) as isize)
@@ -1746,10 +1648,10 @@ unsafe fn dynalloc_analysis(
         } else {
             i = start;
             while i < end {
-                *follower.as_mut_ptr().offset(i as isize) = if 0 as libc::c_int as libc::c_float
+                *follower.as_mut_ptr().offset(i as isize) = if 0 as i32 as f32
                     > *bandLogE.offset(i as isize) - *follower.as_mut_ptr().offset(i as isize)
                 {
-                    0 as libc::c_int as libc::c_float
+                    0 as i32 as f32
                 } else {
                     *bandLogE.offset(i as isize) - *follower.as_mut_ptr().offset(i as isize)
                 };
@@ -1778,7 +1680,7 @@ unsafe fn dynalloc_analysis(
                             4.0f32
                         }))
                     .exp())
-            .floor() as libc::c_int;
+            .floor() as i32;
             i += 1;
         }
         if (vbr == 0 || constrained_vbr != 0) && isTransient == 0 {
@@ -1791,11 +1693,11 @@ unsafe fn dynalloc_analysis(
         }
         i = start;
         while i < end {
-            if i < 8 as libc::c_int {
+            if i < 8 as i32 {
                 let ref mut fresh1 = *follower.as_mut_ptr().offset(i as isize);
-                *fresh1 *= 2 as libc::c_int as libc::c_float;
+                *fresh1 *= 2 as i32 as f32;
             }
-            if i >= 12 as libc::c_int {
+            if i >= 12 as i32 {
                 *follower.as_mut_ptr().offset(i as isize) =
                     0.5f32 * *follower.as_mut_ptr().offset(i as isize);
             }
@@ -1803,54 +1705,44 @@ unsafe fn dynalloc_analysis(
         }
         if (*analysis).valid != 0 {
             i = start;
-            while i
-                < (if (19 as libc::c_int) < end {
-                    19 as libc::c_int
-                } else {
-                    end
-                })
-            {
+            while i < (if (19 as i32) < end { 19 as i32 } else { end }) {
                 *follower.as_mut_ptr().offset(i as isize) =
                     *follower.as_mut_ptr().offset(i as isize)
-                        + 1.0f32 / 64.0f32
-                            * (*analysis).leak_boost[i as usize] as libc::c_int as libc::c_float;
+                        + 1.0f32 / 64.0f32 * (*analysis).leak_boost[i as usize] as i32 as f32;
                 i += 1;
             }
         }
         i = start;
         while i < end {
-            let mut width: libc::c_int = 0;
-            let mut boost: libc::c_int = 0;
-            let mut boost_bits: libc::c_int = 0;
+            let mut width: i32 = 0;
+            let mut boost: i32 = 0;
+            let mut boost_bits: i32 = 0;
             *follower.as_mut_ptr().offset(i as isize) =
-                if *follower.as_mut_ptr().offset(i as isize) < 4 as libc::c_int as libc::c_float {
+                if *follower.as_mut_ptr().offset(i as isize) < 4 as i32 as f32 {
                     *follower.as_mut_ptr().offset(i as isize)
                 } else {
-                    4 as libc::c_int as libc::c_float
+                    4 as i32 as f32
                 };
             width = C
-                * (*eBands.offset((i + 1 as libc::c_int) as isize) as libc::c_int
-                    - *eBands.offset(i as isize) as libc::c_int)
+                * (*eBands.offset((i + 1 as i32) as isize) as i32
+                    - *eBands.offset(i as isize) as i32)
                 << LM;
-            if width < 6 as libc::c_int {
-                boost = *follower.as_mut_ptr().offset(i as isize) as libc::c_int;
+            if width < 6 as i32 {
+                boost = *follower.as_mut_ptr().offset(i as isize) as i32;
                 boost_bits = boost * width << BITRES;
-            } else if width > 48 as libc::c_int {
-                boost = (*follower.as_mut_ptr().offset(i as isize)
-                    * 8 as libc::c_int as libc::c_float) as libc::c_int;
-                boost_bits = (boost * width << BITRES) / 8 as libc::c_int;
+            } else if width > 48 as i32 {
+                boost = (*follower.as_mut_ptr().offset(i as isize) * 8 as i32 as f32) as i32;
+                boost_bits = (boost * width << BITRES) / 8 as i32;
             } else {
-                boost = (*follower.as_mut_ptr().offset(i as isize) * width as libc::c_float
-                    / 6 as libc::c_int as libc::c_float) as libc::c_int;
-                boost_bits = (boost * 6 as libc::c_int) << BITRES;
+                boost = (*follower.as_mut_ptr().offset(i as isize) * width as f32 / 6 as i32 as f32)
+                    as i32;
+                boost_bits = (boost * 6 as i32) << BITRES;
             }
             if (vbr == 0 || constrained_vbr != 0 && isTransient == 0)
-                && tot_boost + boost_bits >> BITRES >> 3 as libc::c_int
-                    > 2 as libc::c_int * effectiveBytes / 3 as libc::c_int
+                && tot_boost + boost_bits >> BITRES >> 3 as i32
+                    > 2 as i32 * effectiveBytes / 3 as i32
             {
-                let cap: i32 = (2 as libc::c_int * effectiveBytes / 3 as libc::c_int)
-                    << BITRES
-                    << 3 as libc::c_int;
+                let cap: i32 = (2 as i32 * effectiveBytes / 3 as i32) << BITRES << 3 as i32;
                 *offsets.offset(i as isize) = cap - tot_boost;
                 tot_boost = cap;
                 break;
@@ -1863,7 +1755,7 @@ unsafe fn dynalloc_analysis(
     } else {
         i = start;
         while i < end {
-            *importance.offset(i as isize) = 13 as libc::c_int;
+            *importance.offset(i as isize) = 13 as i32;
             i += 1;
         }
     }
@@ -1875,61 +1767,59 @@ unsafe fn run_prefilter(
     mut st: *mut OpusCustomEncoder,
     in_0: *mut celt_sig,
     prefilter_mem: *mut celt_sig,
-    CC: libc::c_int,
-    N: libc::c_int,
-    prefilter_tapset: libc::c_int,
-    pitch: *mut libc::c_int,
+    CC: i32,
+    N: i32,
+    prefilter_tapset: i32,
+    pitch: *mut i32,
     gain: *mut opus_val16,
-    qgain: *mut libc::c_int,
-    enabled: libc::c_int,
-    nbAvailableBytes: libc::c_int,
+    qgain: *mut i32,
+    enabled: i32,
+    nbAvailableBytes: i32,
     analysis: *mut AnalysisInfo,
-) -> libc::c_int {
-    let mut c: libc::c_int = 0;
+) -> i32 {
+    let mut c: i32 = 0;
     let mut pre: [*mut celt_sig; 2] = [0 as *mut celt_sig; 2];
     let mut mode: *const OpusCustomMode = 0 as *const OpusCustomMode;
-    let mut pitch_index: libc::c_int = 0;
+    let mut pitch_index: i32 = 0;
     let mut gain1: opus_val16 = 0.;
     let mut pf_threshold: opus_val16 = 0.;
-    let mut pf_on: libc::c_int = 0;
-    let mut qg: libc::c_int = 0;
-    let mut overlap: libc::c_int = 0;
+    let mut pf_on: i32 = 0;
+    let mut qg: i32 = 0;
+    let mut overlap: i32 = 0;
     mode = (*st).mode;
     overlap = (*mode).overlap;
-    let vla = (CC * (N + 1024 as libc::c_int)) as usize;
+    let vla = (CC * (N + 1024 as i32)) as usize;
     let mut _pre: Vec<celt_sig> = ::std::vec::from_elem(0., vla);
-    pre[0 as libc::c_int as usize] = _pre.as_mut_ptr();
-    pre[1 as libc::c_int as usize] = _pre
+    pre[0 as i32 as usize] = _pre.as_mut_ptr();
+    pre[1 as i32 as usize] = _pre
         .as_mut_ptr()
         .offset((N + COMBFILTER_MAXPERIOD) as isize);
-    c = 0 as libc::c_int;
+    c = 0 as i32;
     loop {
         memcpy(
-            pre[c as usize] as *mut libc::c_void,
-            prefilter_mem.offset((c * 1024 as libc::c_int) as isize) as *const libc::c_void,
-            (1024 as libc::c_int as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<celt_sig>() as libc::c_ulong)
+            pre[c as usize] as *mut core::ffi::c_void,
+            prefilter_mem.offset((c * 1024 as i32) as isize) as *const core::ffi::c_void,
+            (1024 as i32 as u64)
+                .wrapping_mul(::core::mem::size_of::<celt_sig>() as u64)
                 .wrapping_add(
-                    (0 as libc::c_int as libc::c_long
+                    (0 as i32 as i64
                         * (pre[c as usize])
-                            .offset_from(prefilter_mem.offset((c * 1024 as libc::c_int) as isize))
-                            as libc::c_long) as libc::c_ulong,
+                            .offset_from(prefilter_mem.offset((c * 1024 as i32) as isize))
+                            as i64) as u64,
                 ),
         );
         memcpy(
-            (pre[c as usize]).offset(1024 as libc::c_int as isize) as *mut libc::c_void,
+            (pre[c as usize]).offset(1024 as i32 as isize) as *mut core::ffi::c_void,
             in_0.offset((c * (N + overlap)) as isize)
-                .offset(overlap as isize) as *const libc::c_void,
-            (N as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<celt_sig>() as libc::c_ulong)
+                .offset(overlap as isize) as *const core::ffi::c_void,
+            (N as u64)
+                .wrapping_mul(::core::mem::size_of::<celt_sig>() as u64)
                 .wrapping_add(
-                    (0 as libc::c_int as libc::c_long
-                        * (pre[c as usize])
-                            .offset(1024 as libc::c_int as isize)
-                            .offset_from(
-                                in_0.offset((c * (N + overlap)) as isize)
-                                    .offset(overlap as isize),
-                            ) as libc::c_long) as libc::c_ulong,
+                    (0 as i32 as i64
+                        * (pre[c as usize]).offset(1024 as i32 as isize).offset_from(
+                            in_0.offset((c * (N + overlap)) as isize)
+                                .offset(overlap as isize),
+                        ) as i64) as u64,
                 ),
         );
         c += 1;
@@ -1938,7 +1828,7 @@ unsafe fn run_prefilter(
         }
     }
     if enabled != 0 {
-        let vla_0 = (1024 as libc::c_int + N >> 1 as libc::c_int) as usize;
+        let vla_0 = (1024 as i32 + N >> 1 as i32) as usize;
         let mut pitch_buf: Vec<opus_val16> = ::std::vec::from_elem(0., vla_0);
         pitch_downsample(
             pre.as_mut_ptr() as *mut *mut celt_sig,
@@ -1950,10 +1840,10 @@ unsafe fn run_prefilter(
         pitch_search(
             pitch_buf
                 .as_mut_ptr()
-                .offset((COMBFILTER_MAXPERIOD >> 1 as libc::c_int) as isize),
+                .offset((COMBFILTER_MAXPERIOD >> 1 as i32) as isize),
             pitch_buf.as_mut_ptr(),
             N,
-            COMBFILTER_MAXPERIOD - 3 as libc::c_int * COMBFILTER_MINPERIOD,
+            COMBFILTER_MAXPERIOD - 3 as i32 * COMBFILTER_MINPERIOD,
             &mut pitch_index,
             (*st).arch,
         );
@@ -1968,34 +1858,34 @@ unsafe fn run_prefilter(
             (*st).prefilter_gain,
             (*st).arch,
         );
-        if pitch_index > COMBFILTER_MAXPERIOD - 2 as libc::c_int {
-            pitch_index = COMBFILTER_MAXPERIOD - 2 as libc::c_int;
+        if pitch_index > COMBFILTER_MAXPERIOD - 2 as i32 {
+            pitch_index = COMBFILTER_MAXPERIOD - 2 as i32;
         }
         gain1 = 0.7f32 * gain1;
-        if (*st).loss_rate > 2 as libc::c_int {
+        if (*st).loss_rate > 2 as i32 {
             gain1 = 0.5f32 * gain1;
         }
-        if (*st).loss_rate > 4 as libc::c_int {
+        if (*st).loss_rate > 4 as i32 {
             gain1 = 0.5f32 * gain1;
         }
-        if (*st).loss_rate > 8 as libc::c_int {
-            gain1 = 0 as libc::c_int as opus_val16;
+        if (*st).loss_rate > 8 as i32 {
+            gain1 = 0 as i32 as opus_val16;
         }
     } else {
-        gain1 = 0 as libc::c_int as opus_val16;
+        gain1 = 0 as i32 as opus_val16;
         pitch_index = COMBFILTER_MINPERIOD;
     }
     if (*analysis).valid != 0 {
         gain1 = gain1 * (*analysis).max_pitch_ratio;
     }
     pf_threshold = 0.2f32;
-    if (pitch_index - (*st).prefilter_period).abs() * 10 as libc::c_int > pitch_index {
+    if (pitch_index - (*st).prefilter_period).abs() * 10 as i32 > pitch_index {
         pf_threshold += 0.2f32;
     }
-    if nbAvailableBytes < 25 as libc::c_int {
+    if nbAvailableBytes < 25 as i32 {
         pf_threshold += 0.1f32;
     }
-    if nbAvailableBytes < 35 as libc::c_int {
+    if nbAvailableBytes < 35 as i32 {
         pf_threshold += 0.1f32;
     }
     if (*st).prefilter_gain > 0.4f32 {
@@ -2010,51 +1900,43 @@ unsafe fn run_prefilter(
         0.2f32
     };
     if gain1 < pf_threshold {
-        gain1 = 0 as libc::c_int as opus_val16;
-        pf_on = 0 as libc::c_int;
-        qg = 0 as libc::c_int;
+        gain1 = 0 as i32 as opus_val16;
+        pf_on = 0 as i32;
+        qg = 0 as i32;
     } else {
         if ((gain1 - (*st).prefilter_gain).abs()) < 0.1f32 {
             gain1 = (*st).prefilter_gain;
         }
-        qg = (0.5f32
-            + gain1 * 32 as libc::c_int as libc::c_float / 3 as libc::c_int as libc::c_float)
-            .floor() as libc::c_int
-            - 1 as libc::c_int;
-        qg = if 0 as libc::c_int
-            > (if (7 as libc::c_int) < qg {
-                7 as libc::c_int
-            } else {
-                qg
-            }) {
-            0 as libc::c_int
-        } else if (7 as libc::c_int) < qg {
-            7 as libc::c_int
+        qg = (0.5f32 + gain1 * 32 as i32 as f32 / 3 as i32 as f32).floor() as i32 - 1 as i32;
+        qg = if 0 as i32 > (if (7 as i32) < qg { 7 as i32 } else { qg }) {
+            0 as i32
+        } else if (7 as i32) < qg {
+            7 as i32
         } else {
             qg
         };
-        gain1 = 0.09375f32 * (qg + 1 as libc::c_int) as libc::c_float;
-        pf_on = 1 as libc::c_int;
+        gain1 = 0.09375f32 * (qg + 1 as i32) as f32;
+        pf_on = 1 as i32;
     }
-    c = 0 as libc::c_int;
+    c = 0 as i32;
     loop {
-        let offset: libc::c_int = (*mode).shortMdctSize - overlap;
-        (*st).prefilter_period = if (*st).prefilter_period > 15 as libc::c_int {
+        let offset: i32 = (*mode).shortMdctSize - overlap;
+        (*st).prefilter_period = if (*st).prefilter_period > 15 as i32 {
             (*st).prefilter_period
         } else {
-            15 as libc::c_int
+            15 as i32
         };
         memcpy(
-            in_0.offset((c * (N + overlap)) as isize) as *mut libc::c_void,
-            ((*st).in_mem).as_mut_ptr().offset((c * overlap) as isize) as *const libc::c_void,
-            (overlap as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<celt_sig>() as libc::c_ulong)
+            in_0.offset((c * (N + overlap)) as isize) as *mut core::ffi::c_void,
+            ((*st).in_mem).as_mut_ptr().offset((c * overlap) as isize) as *const core::ffi::c_void,
+            (overlap as u64)
+                .wrapping_mul(::core::mem::size_of::<celt_sig>() as u64)
                 .wrapping_add(
-                    (0 as libc::c_int as libc::c_long
+                    (0 as i32 as i64
                         * in_0
                             .offset((c * (N + overlap)) as isize)
                             .offset_from(((*st).in_mem).as_mut_ptr().offset((c * overlap) as isize))
-                            as libc::c_long) as libc::c_ulong,
+                            as i64) as u64,
                 ),
         );
         if offset != 0 {
@@ -2070,7 +1952,7 @@ unsafe fn run_prefilter(
                 (*st).prefilter_tapset,
                 (*st).prefilter_tapset,
                 NULL as *const opus_val16,
-                0 as libc::c_int,
+                0 as i32,
                 (*st).arch,
             );
         }
@@ -2093,69 +1975,70 @@ unsafe fn run_prefilter(
             (*st).arch,
         );
         memcpy(
-            ((*st).in_mem).as_mut_ptr().offset((c * overlap) as isize) as *mut libc::c_void,
-            in_0.offset((c * (N + overlap)) as isize).offset(N as isize) as *const libc::c_void,
-            (overlap as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<celt_sig>() as libc::c_ulong)
+            ((*st).in_mem).as_mut_ptr().offset((c * overlap) as isize) as *mut core::ffi::c_void,
+            in_0.offset((c * (N + overlap)) as isize).offset(N as isize)
+                as *const core::ffi::c_void,
+            (overlap as u64)
+                .wrapping_mul(::core::mem::size_of::<celt_sig>() as u64)
                 .wrapping_add(
-                    (0 as libc::c_int as libc::c_long
+                    (0 as i32 as i64
                         * ((*st).in_mem)
                             .as_mut_ptr()
                             .offset((c * overlap) as isize)
                             .offset_from(
                                 in_0.offset((c * (N + overlap)) as isize).offset(N as isize),
-                            ) as libc::c_long) as libc::c_ulong,
+                            ) as i64) as u64,
                 ),
         );
         if N > COMBFILTER_MAXPERIOD {
             memcpy(
-                prefilter_mem.offset((c * 1024 as libc::c_int) as isize) as *mut libc::c_void,
-                (pre[c as usize]).offset(N as isize) as *const libc::c_void,
-                (1024 as libc::c_int as libc::c_ulong)
-                    .wrapping_mul(::core::mem::size_of::<celt_sig>() as libc::c_ulong)
+                prefilter_mem.offset((c * 1024 as i32) as isize) as *mut core::ffi::c_void,
+                (pre[c as usize]).offset(N as isize) as *const core::ffi::c_void,
+                (1024 as i32 as u64)
+                    .wrapping_mul(::core::mem::size_of::<celt_sig>() as u64)
                     .wrapping_add(
-                        (0 as libc::c_int as libc::c_long
+                        (0 as i32 as i64
                             * prefilter_mem
-                                .offset((c * 1024 as libc::c_int) as isize)
+                                .offset((c * 1024 as i32) as isize)
                                 .offset_from((pre[c as usize]).offset(N as isize))
-                                as libc::c_long) as libc::c_ulong,
+                                as i64) as u64,
                     ),
             );
         } else {
             memmove(
-                prefilter_mem.offset((c * 1024 as libc::c_int) as isize) as *mut libc::c_void,
+                prefilter_mem.offset((c * 1024 as i32) as isize) as *mut core::ffi::c_void,
                 prefilter_mem
-                    .offset((c * 1024 as libc::c_int) as isize)
-                    .offset(N as isize) as *const libc::c_void,
-                ((1024 as libc::c_int - N) as libc::c_ulong)
-                    .wrapping_mul(::core::mem::size_of::<celt_sig>() as libc::c_ulong)
+                    .offset((c * 1024 as i32) as isize)
+                    .offset(N as isize) as *const core::ffi::c_void,
+                ((1024 as i32 - N) as u64)
+                    .wrapping_mul(::core::mem::size_of::<celt_sig>() as u64)
                     .wrapping_add(
-                        (0 as libc::c_int as libc::c_long
+                        (0 as i32 as i64
                             * prefilter_mem
-                                .offset((c * 1024 as libc::c_int) as isize)
+                                .offset((c * 1024 as i32) as isize)
                                 .offset_from(
                                     prefilter_mem
-                                        .offset((c * 1024 as libc::c_int) as isize)
+                                        .offset((c * 1024 as i32) as isize)
                                         .offset(N as isize),
-                                ) as libc::c_long) as libc::c_ulong,
+                                ) as i64) as u64,
                     ),
             );
             memcpy(
                 prefilter_mem
-                    .offset((c * 1024 as libc::c_int) as isize)
-                    .offset(1024 as libc::c_int as isize)
-                    .offset(-(N as isize)) as *mut libc::c_void,
-                (pre[c as usize]).offset(1024 as libc::c_int as isize) as *const libc::c_void,
-                (N as libc::c_ulong)
-                    .wrapping_mul(::core::mem::size_of::<celt_sig>() as libc::c_ulong)
+                    .offset((c * 1024 as i32) as isize)
+                    .offset(1024 as i32 as isize)
+                    .offset(-(N as isize)) as *mut core::ffi::c_void,
+                (pre[c as usize]).offset(1024 as i32 as isize) as *const core::ffi::c_void,
+                (N as u64)
+                    .wrapping_mul(::core::mem::size_of::<celt_sig>() as u64)
                     .wrapping_add(
-                        (0 as libc::c_int as libc::c_long
+                        (0 as i32 as i64
                             * prefilter_mem
-                                .offset((c * 1024 as libc::c_int) as isize)
-                                .offset(1024 as libc::c_int as isize)
+                                .offset((c * 1024 as i32) as isize)
+                                .offset(1024 as i32 as isize)
                                 .offset(-(N as isize))
-                                .offset_from((pre[c as usize]).offset(1024 as libc::c_int as isize))
-                                as libc::c_long) as libc::c_ulong,
+                                .offset_from((pre[c as usize]).offset(1024 as i32 as isize))
+                                as i64) as u64,
                     ),
             );
         }
@@ -2174,27 +2057,27 @@ unsafe fn compute_vbr(
     mode: *const OpusCustomMode,
     analysis: *mut AnalysisInfo,
     base_target: i32,
-    LM: libc::c_int,
+    LM: i32,
     bitrate: i32,
-    lastCodedBands: libc::c_int,
-    C: libc::c_int,
-    intensity: libc::c_int,
-    constrained_vbr: libc::c_int,
+    lastCodedBands: i32,
+    C: i32,
+    intensity: i32,
+    constrained_vbr: i32,
     mut stereo_saving: opus_val16,
-    tot_boost: libc::c_int,
+    tot_boost: i32,
     tf_estimate: opus_val16,
-    pitch_change: libc::c_int,
+    pitch_change: i32,
     maxDepth: opus_val16,
-    lfe: libc::c_int,
-    has_surround_mask: libc::c_int,
+    lfe: i32,
+    has_surround_mask: i32,
     surround_masking: opus_val16,
     temporal_vbr: opus_val16,
-) -> libc::c_int {
+) -> i32 {
     let mut target: i32 = 0;
-    let mut coded_bins: libc::c_int = 0;
-    let mut coded_bands: libc::c_int = 0;
+    let mut coded_bins: i32 = 0;
+    let mut coded_bands: i32 = 0;
     let mut tf_calibration: opus_val16 = 0.;
-    let mut nbEBands: libc::c_int = 0;
+    let mut nbEBands: i32 = 0;
     let mut eBands: *const i16 = 0 as *const i16;
     nbEBands = (*mode).nbEBands;
     eBands = (*mode).eBands;
@@ -2203,81 +2086,80 @@ unsafe fn compute_vbr(
     } else {
         nbEBands
     };
-    coded_bins = (*eBands.offset(coded_bands as isize) as libc::c_int) << LM;
-    if C == 2 as libc::c_int {
+    coded_bins = (*eBands.offset(coded_bands as isize) as i32) << LM;
+    if C == 2 as i32 {
         coded_bins += (*eBands.offset(
             (if intensity < coded_bands {
                 intensity
             } else {
                 coded_bands
             }) as isize,
-        ) as libc::c_int)
+        ) as i32)
             << LM;
     }
     target = base_target;
-    if (*analysis).valid != 0 && ((*analysis).activity as libc::c_double) < 0.4f64 {
-        target -=
-            ((coded_bins << BITRES) as libc::c_float * (0.4f32 - (*analysis).activity)) as i32;
+    if (*analysis).valid != 0 && ((*analysis).activity as f64) < 0.4f64 {
+        target -= ((coded_bins << BITRES) as f32 * (0.4f32 - (*analysis).activity)) as i32;
     }
-    if C == 2 as libc::c_int {
-        let mut coded_stereo_bands: libc::c_int = 0;
-        let mut coded_stereo_dof: libc::c_int = 0;
+    if C == 2 as i32 {
+        let mut coded_stereo_bands: i32 = 0;
+        let mut coded_stereo_dof: i32 = 0;
         let mut max_frac: opus_val16 = 0.;
         coded_stereo_bands = if intensity < coded_bands {
             intensity
         } else {
             coded_bands
         };
-        coded_stereo_dof = ((*eBands.offset(coded_stereo_bands as isize) as libc::c_int) << LM)
-            - coded_stereo_bands;
+        coded_stereo_dof =
+            ((*eBands.offset(coded_stereo_bands as isize) as i32) << LM) - coded_stereo_bands;
         max_frac = 0.8f32 * coded_stereo_dof as opus_val32 / coded_bins as opus_val16;
         stereo_saving = if stereo_saving < 1.0f32 {
             stereo_saving
         } else {
             1.0f32
         };
-        target -= (if (max_frac * target as libc::c_float)
-            < (stereo_saving - 0.1f32) * (coded_stereo_dof << 3 as libc::c_int) as opus_val32
+        target -= (if (max_frac * target as f32)
+            < (stereo_saving - 0.1f32) * (coded_stereo_dof << 3 as i32) as opus_val32
         {
-            max_frac * target as libc::c_float
+            max_frac * target as f32
         } else {
-            (stereo_saving - 0.1f32) * (coded_stereo_dof << 3 as libc::c_int) as opus_val32
+            (stereo_saving - 0.1f32) * (coded_stereo_dof << 3 as i32) as opus_val32
         }) as i32;
     }
-    target += tot_boost - ((19 as libc::c_int) << LM);
+    target += tot_boost - ((19 as i32) << LM);
     tf_calibration = 0.044f32;
-    target += ((tf_estimate - tf_calibration) * target as libc::c_float) as i32;
+    target += ((tf_estimate - tf_calibration) * target as f32) as i32;
     if (*analysis).valid != 0 && lfe == 0 {
         let mut tonal_target: i32 = 0;
-        let mut tonal: libc::c_float = 0.;
+        let mut tonal: f32 = 0.;
         tonal = (if 0.0f32 > (*analysis).tonality - 0.15f32 {
             0.0f32
         } else {
             (*analysis).tonality - 0.15f32
         }) - 0.12f32;
-        tonal_target = target + ((coded_bins << BITRES) as libc::c_float * 1.2f32 * tonal) as i32;
+        tonal_target = target + ((coded_bins << BITRES) as f32 * 1.2f32 * tonal) as i32;
         if pitch_change != 0 {
-            tonal_target += ((coded_bins << BITRES) as libc::c_float * 0.8f32) as i32;
+            tonal_target += ((coded_bins << BITRES) as f32 * 0.8f32) as i32;
         }
         target = tonal_target;
     }
     if has_surround_mask != 0 && lfe == 0 {
         let surround_target: i32 =
-            target + (surround_masking * (coded_bins << 3 as libc::c_int) as opus_val32) as i32;
-        target = if target / 4 as libc::c_int > surround_target {
-            target / 4 as libc::c_int
+            target + (surround_masking * (coded_bins << 3 as i32) as opus_val32) as i32;
+        target = if target / 4 as i32 > surround_target {
+            target / 4 as i32
         } else {
             surround_target
         };
     }
     let mut floor_depth: i32 = 0;
-    let mut bins: libc::c_int = 0;
-    bins = (*eBands.offset((nbEBands - 2 as libc::c_int) as isize) as libc::c_int) << LM;
-    floor_depth = ((C * bins << 3 as libc::c_int) as opus_val32 * maxDepth) as i32;
-    floor_depth = if floor_depth > target >> 2 as libc::c_int {
+    let mut bins: i32 = 0;
+    bins = (*eBands.offset((nbEBands - 2 as i32) as isize) as i32) << LM;
+    floor_depth = ((C * bins << 3 as i32) as opus_val32 * maxDepth) as i32;
+    floor_depth = if floor_depth > target >> 2 as i32 {
         floor_depth
     } else {
-        target >> 2 as libc::c_int
+        target >> 2 as i32
     };
     target = if target < floor_depth {
         target
@@ -2285,32 +2167,32 @@ unsafe fn compute_vbr(
         floor_depth
     };
     if (has_surround_mask == 0 || lfe != 0) && constrained_vbr != 0 {
-        target = base_target + (0.67f32 * (target - base_target) as libc::c_float) as i32;
+        target = base_target + (0.67f32 * (target - base_target) as f32) as i32;
     }
     if has_surround_mask == 0 && tf_estimate < 0.2f32 {
         let mut amount: opus_val16 = 0.;
         let mut tvbr_factor: opus_val16 = 0.;
         amount = 0.0000031f32
-            * (if 0 as libc::c_int
-                > (if (32000 as libc::c_int) < 96000 as libc::c_int - bitrate {
-                    32000 as libc::c_int
+            * (if 0 as i32
+                > (if (32000 as i32) < 96000 as i32 - bitrate {
+                    32000 as i32
                 } else {
-                    96000 as libc::c_int - bitrate
+                    96000 as i32 - bitrate
                 })
             {
-                0 as libc::c_int
+                0 as i32
             } else {
-                if (32000 as libc::c_int) < 96000 as libc::c_int - bitrate {
-                    32000 as libc::c_int
+                if (32000 as i32) < 96000 as i32 - bitrate {
+                    32000 as i32
                 } else {
-                    96000 as libc::c_int - bitrate
+                    96000 as i32 - bitrate
                 }
-            }) as libc::c_float;
+            }) as f32;
         tvbr_factor = temporal_vbr * amount;
-        target += (tvbr_factor * target as libc::c_float) as i32;
+        target += (tvbr_factor * target as f32) as i32;
     }
-    target = if 2 as libc::c_int * base_target < target {
-        2 as libc::c_int * base_target
+    target = if 2 as i32 * base_target < target {
+        2 as i32 * base_target
     } else {
         target
     };
@@ -2320,17 +2202,17 @@ unsafe fn compute_vbr(
 pub unsafe fn celt_encode_with_ec(
     mut st: *mut OpusCustomEncoder,
     pcm: *const opus_val16,
-    mut frame_size: libc::c_int,
-    compressed: *mut libc::c_uchar,
-    mut nbCompressedBytes: libc::c_int,
+    mut frame_size: i32,
+    compressed: *mut u8,
+    mut nbCompressedBytes: i32,
     mut enc: *mut ec_enc,
-) -> libc::c_int {
-    let mut i: libc::c_int = 0;
-    let mut c: libc::c_int = 0;
-    let mut N: libc::c_int = 0;
+) -> i32 {
+    let mut i: i32 = 0;
+    let mut c: i32 = 0;
+    let mut N: i32 = 0;
     let mut bits: i32 = 0;
     let mut _enc: ec_enc = ec_enc {
-        buf: 0 as *mut libc::c_uchar,
+        buf: 0 as *mut u8,
         storage: 0,
         end_offs: 0,
         end_window: 0,
@@ -2348,69 +2230,69 @@ pub unsafe fn celt_encode_with_ec(
     let mut oldLogE: *mut opus_val16 = 0 as *mut opus_val16;
     let mut oldLogE2: *mut opus_val16 = 0 as *mut opus_val16;
     let mut energyError: *mut opus_val16 = 0 as *mut opus_val16;
-    let mut shortBlocks: libc::c_int = 0 as libc::c_int;
-    let mut isTransient: libc::c_int = 0 as libc::c_int;
-    let CC: libc::c_int = (*st).channels;
-    let C: libc::c_int = (*st).stream_channels;
-    let mut LM: libc::c_int = 0;
-    let mut M: libc::c_int = 0;
-    let mut tf_select: libc::c_int = 0;
-    let mut nbFilledBytes: libc::c_int = 0;
-    let mut nbAvailableBytes: libc::c_int = 0;
-    let mut start: libc::c_int = 0;
-    let mut end: libc::c_int = 0;
-    let mut effEnd: libc::c_int = 0;
-    let mut codedBands: libc::c_int = 0;
-    let mut alloc_trim: libc::c_int = 0;
-    let mut pitch_index: libc::c_int = COMBFILTER_MINPERIOD;
-    let mut gain1: opus_val16 = 0 as libc::c_int as opus_val16;
-    let mut dual_stereo: libc::c_int = 0 as libc::c_int;
-    let mut effectiveBytes: libc::c_int = 0;
-    let mut dynalloc_logp: libc::c_int = 0;
+    let mut shortBlocks: i32 = 0 as i32;
+    let mut isTransient: i32 = 0 as i32;
+    let CC: i32 = (*st).channels;
+    let C: i32 = (*st).stream_channels;
+    let mut LM: i32 = 0;
+    let mut M: i32 = 0;
+    let mut tf_select: i32 = 0;
+    let mut nbFilledBytes: i32 = 0;
+    let mut nbAvailableBytes: i32 = 0;
+    let mut start: i32 = 0;
+    let mut end: i32 = 0;
+    let mut effEnd: i32 = 0;
+    let mut codedBands: i32 = 0;
+    let mut alloc_trim: i32 = 0;
+    let mut pitch_index: i32 = COMBFILTER_MINPERIOD;
+    let mut gain1: opus_val16 = 0 as i32 as opus_val16;
+    let mut dual_stereo: i32 = 0 as i32;
+    let mut effectiveBytes: i32 = 0;
+    let mut dynalloc_logp: i32 = 0;
     let mut vbr_rate: i32 = 0;
     let mut total_bits: i32 = 0;
     let mut total_boost: i32 = 0;
     let mut balance: i32 = 0;
     let mut tell: i32 = 0;
     let mut tell0_frac: i32 = 0;
-    let mut prefilter_tapset: libc::c_int = 0 as libc::c_int;
-    let mut pf_on: libc::c_int = 0;
-    let mut anti_collapse_rsv: libc::c_int = 0;
-    let mut anti_collapse_on: libc::c_int = 0 as libc::c_int;
-    let mut silence: libc::c_int = 0 as libc::c_int;
-    let mut tf_chan: libc::c_int = 0 as libc::c_int;
+    let mut prefilter_tapset: i32 = 0 as i32;
+    let mut pf_on: i32 = 0;
+    let mut anti_collapse_rsv: i32 = 0;
+    let mut anti_collapse_on: i32 = 0 as i32;
+    let mut silence: i32 = 0 as i32;
+    let mut tf_chan: i32 = 0 as i32;
     let mut tf_estimate: opus_val16 = 0.;
-    let mut pitch_change: libc::c_int = 0 as libc::c_int;
+    let mut pitch_change: i32 = 0 as i32;
     let mut tot_boost: i32 = 0;
     let mut sample_max: opus_val32 = 0.;
     let mut maxDepth: opus_val16 = 0.;
     let mut mode: *const OpusCustomMode = 0 as *const OpusCustomMode;
-    let mut nbEBands: libc::c_int = 0;
-    let mut overlap: libc::c_int = 0;
+    let mut nbEBands: i32 = 0;
+    let mut overlap: i32 = 0;
     let mut eBands: *const i16 = 0 as *const i16;
-    let mut secondMdct: libc::c_int = 0;
-    let mut signalBandwidth: libc::c_int = 0;
-    let mut transient_got_disabled: libc::c_int = 0 as libc::c_int;
-    let mut surround_masking: opus_val16 = 0 as libc::c_int as opus_val16;
-    let mut temporal_vbr: opus_val16 = 0 as libc::c_int as opus_val16;
-    let mut surround_trim: opus_val16 = 0 as libc::c_int as opus_val16;
+    let mut secondMdct: i32 = 0;
+    let mut signalBandwidth: i32 = 0;
+    let mut transient_got_disabled: i32 = 0 as i32;
+    let mut surround_masking: opus_val16 = 0 as i32 as opus_val16;
+    let mut temporal_vbr: opus_val16 = 0 as i32 as opus_val16;
+    let mut surround_trim: opus_val16 = 0 as i32 as opus_val16;
     let mut equiv_rate: i32 = 0;
-    let mut hybrid: libc::c_int = 0;
-    let mut weak_transient: libc::c_int = 0 as libc::c_int;
-    let mut enable_tf_analysis: libc::c_int = 0;
+    let mut hybrid: i32 = 0;
+    let mut weak_transient: i32 = 0 as i32;
+    let mut enable_tf_analysis: i32 = 0;
     mode = (*st).mode;
     nbEBands = (*mode).nbEBands;
     overlap = (*mode).overlap;
     eBands = (*mode).eBands;
     start = (*st).start;
     end = (*st).end;
-    hybrid = (start != 0 as libc::c_int) as libc::c_int;
-    tf_estimate = 0 as libc::c_int as opus_val16;
-    if nbCompressedBytes < 2 as libc::c_int || pcm.is_null() {
+    hybrid = (start != 0 as i32) as i32;
+    tf_estimate = 0 as i32 as opus_val16;
+    if nbCompressedBytes < 2 as i32 || pcm.is_null() {
         return OPUS_BAD_ARG;
     }
     frame_size *= (*st).upsample;
-    LM = 0 as libc::c_int;
+    LM = 0 as i32;
     while LM <= (*mode).maxLM {
         if (*mode).shortMdctSize << LM == frame_size {
             break;
@@ -2420,7 +2302,7 @@ pub unsafe fn celt_encode_with_ec(
     if LM > (*mode).maxLM {
         return OPUS_BAD_ARG;
     }
-    M = (1 as libc::c_int) << LM;
+    M = (1 as i32) << LM;
     N = M * (*mode).shortMdctSize;
     prefilter_mem = ((*st).in_mem).as_mut_ptr().offset((CC * overlap) as isize);
     oldBandE = ((*st).in_mem)
@@ -2430,119 +2312,104 @@ pub unsafe fn celt_encode_with_ec(
     oldLogE2 = oldLogE.offset((CC * nbEBands) as isize);
     energyError = oldLogE2.offset((CC * nbEBands) as isize);
     if enc.is_null() {
-        tell = 1 as libc::c_int;
+        tell = 1 as i32;
         tell0_frac = tell;
-        nbFilledBytes = 0 as libc::c_int;
+        nbFilledBytes = 0 as i32;
     } else {
         tell0_frac = ec_tell_frac(enc) as i32;
         tell = ec_tell(enc);
-        nbFilledBytes = tell + 4 as libc::c_int >> 3 as libc::c_int;
+        nbFilledBytes = tell + 4 as i32 >> 3 as i32;
     }
-    if !((*st).signalling == 0 as libc::c_int) {
+    if !((*st).signalling == 0 as i32) {
         celt_fatal(
-            b"assertion failed: st->signalling==0\0" as *const u8 as *const libc::c_char,
-            b"celt/celt_encoder.c\0" as *const u8 as *const libc::c_char,
-            1547 as libc::c_int,
+            b"assertion failed: st->signalling==0\0" as *const u8 as *const i8,
+            b"celt/celt_encoder.c\0" as *const u8 as *const i8,
+            1547 as i32,
         );
     }
-    nbCompressedBytes = if nbCompressedBytes < 1275 as libc::c_int {
+    nbCompressedBytes = if nbCompressedBytes < 1275 as i32 {
         nbCompressedBytes
     } else {
-        1275 as libc::c_int
+        1275 as i32
     };
     nbAvailableBytes = nbCompressedBytes - nbFilledBytes;
     if (*st).vbr != 0 && (*st).bitrate != OPUS_BITRATE_MAX {
         let den: i32 = (*mode).Fs >> BITRES;
-        vbr_rate = ((*st).bitrate * frame_size + (den >> 1 as libc::c_int)) / den;
-        effectiveBytes = vbr_rate >> 3 as libc::c_int + BITRES;
+        vbr_rate = ((*st).bitrate * frame_size + (den >> 1 as i32)) / den;
+        effectiveBytes = vbr_rate >> 3 as i32 + BITRES;
     } else {
         let mut tmp: i32 = 0;
-        vbr_rate = 0 as libc::c_int;
+        vbr_rate = 0 as i32;
         tmp = (*st).bitrate * frame_size;
-        if tell > 1 as libc::c_int {
+        if tell > 1 as i32 {
             tmp += tell;
         }
         if (*st).bitrate != OPUS_BITRATE_MAX {
-            nbCompressedBytes = if 2 as libc::c_int
+            nbCompressedBytes = if 2 as i32
                 > (if nbCompressedBytes
-                    < (tmp + 4 as libc::c_int * (*mode).Fs) / (8 as libc::c_int * (*mode).Fs)
-                        - ((*st).signalling != 0) as libc::c_int
+                    < (tmp + 4 as i32 * (*mode).Fs) / (8 as i32 * (*mode).Fs)
+                        - ((*st).signalling != 0) as i32
                 {
                     nbCompressedBytes
                 } else {
-                    (tmp + 4 as libc::c_int * (*mode).Fs) / (8 as libc::c_int * (*mode).Fs)
-                        - ((*st).signalling != 0) as libc::c_int
+                    (tmp + 4 as i32 * (*mode).Fs) / (8 as i32 * (*mode).Fs)
+                        - ((*st).signalling != 0) as i32
                 }) {
-                2 as libc::c_int
+                2 as i32
             } else if nbCompressedBytes
-                < (tmp + 4 as libc::c_int * (*mode).Fs) / (8 as libc::c_int * (*mode).Fs)
-                    - ((*st).signalling != 0) as libc::c_int
+                < (tmp + 4 as i32 * (*mode).Fs) / (8 as i32 * (*mode).Fs)
+                    - ((*st).signalling != 0) as i32
             {
                 nbCompressedBytes
             } else {
-                (tmp + 4 as libc::c_int * (*mode).Fs) / (8 as libc::c_int * (*mode).Fs)
-                    - ((*st).signalling != 0) as libc::c_int
+                (tmp + 4 as i32 * (*mode).Fs) / (8 as i32 * (*mode).Fs)
+                    - ((*st).signalling != 0) as i32
             };
         }
         effectiveBytes = nbCompressedBytes - nbFilledBytes;
     }
-    equiv_rate = (nbCompressedBytes * 8 as libc::c_int * 50 as libc::c_int
-        >> 3 as libc::c_int - LM)
-        - (40 as libc::c_int * C + 20 as libc::c_int)
-            * ((400 as libc::c_int >> LM) - 50 as libc::c_int);
+    equiv_rate = (nbCompressedBytes * 8 as i32 * 50 as i32 >> 3 as i32 - LM)
+        - (40 as i32 * C + 20 as i32) * ((400 as i32 >> LM) - 50 as i32);
     if (*st).bitrate != OPUS_BITRATE_MAX {
         equiv_rate = if equiv_rate
-            < (*st).bitrate
-                - (40 as libc::c_int * C + 20 as libc::c_int)
-                    * ((400 as libc::c_int >> LM) - 50 as libc::c_int)
+            < (*st).bitrate - (40 as i32 * C + 20 as i32) * ((400 as i32 >> LM) - 50 as i32)
         {
             equiv_rate
         } else {
-            (*st).bitrate
-                - (40 as libc::c_int * C + 20 as libc::c_int)
-                    * ((400 as libc::c_int >> LM) - 50 as libc::c_int)
+            (*st).bitrate - (40 as i32 * C + 20 as i32) * ((400 as i32 >> LM) - 50 as i32)
         };
     }
     if enc.is_null() {
         ec_enc_init(&mut _enc, compressed, nbCompressedBytes as u32);
         enc = &mut _enc;
     }
-    if vbr_rate > 0 as libc::c_int {
+    if vbr_rate > 0 as i32 {
         if (*st).constrained_vbr != 0 {
             let mut vbr_bound: i32 = 0;
             let mut max_allowed: i32 = 0;
             vbr_bound = vbr_rate;
-            max_allowed = if (if (if tell == 1 as libc::c_int {
-                2 as libc::c_int
-            } else {
-                0 as libc::c_int
-            }) > vbr_rate + vbr_bound - (*st).vbr_reservoir
-                >> 3 as libc::c_int + 3 as libc::c_int
+            max_allowed = if (if (if tell == 1 as i32 { 2 as i32 } else { 0 as i32 })
+                > vbr_rate + vbr_bound - (*st).vbr_reservoir >> 3 as i32 + 3 as i32
             {
-                if tell == 1 as libc::c_int {
-                    2 as libc::c_int
+                if tell == 1 as i32 {
+                    2 as i32
                 } else {
-                    0 as libc::c_int
+                    0 as i32
                 }
             } else {
-                vbr_rate + vbr_bound - (*st).vbr_reservoir >> 3 as libc::c_int + 3 as libc::c_int
+                vbr_rate + vbr_bound - (*st).vbr_reservoir >> 3 as i32 + 3 as i32
             }) < nbAvailableBytes
             {
-                if (if tell == 1 as libc::c_int {
-                    2 as libc::c_int
-                } else {
-                    0 as libc::c_int
-                }) > vbr_rate + vbr_bound - (*st).vbr_reservoir
-                    >> 3 as libc::c_int + 3 as libc::c_int
+                if (if tell == 1 as i32 { 2 as i32 } else { 0 as i32 })
+                    > vbr_rate + vbr_bound - (*st).vbr_reservoir >> 3 as i32 + 3 as i32
                 {
-                    if tell == 1 as libc::c_int {
-                        2 as libc::c_int
+                    if tell == 1 as i32 {
+                        2 as i32
                     } else {
-                        0 as libc::c_int
+                        0 as i32
                     }
                 } else {
-                    vbr_rate + vbr_bound - (*st).vbr_reservoir
-                        >> 3 as libc::c_int + 3 as libc::c_int
+                    vbr_rate + vbr_bound - (*st).vbr_reservoir >> 3 as i32 + 3 as i32
                 }
             } else {
                 nbAvailableBytes
@@ -2554,7 +2421,7 @@ pub unsafe fn celt_encode_with_ec(
             }
         }
     }
-    total_bits = nbCompressedBytes * 8 as libc::c_int;
+    total_bits = nbCompressedBytes * 8 as i32;
     effEnd = end;
     if effEnd > (*mode).effEBands {
         effEnd = (*mode).effEBands;
@@ -2575,34 +2442,32 @@ pub unsafe fn celt_encode_with_ec(
     } else {
         (*st).overlap_max
     };
-    silence = (sample_max
-        <= 1 as libc::c_int as opus_val16
-            / ((1 as libc::c_int) << (*st).lsb_depth) as libc::c_float)
-        as libc::c_int;
-    if tell == 1 as libc::c_int {
-        ec_enc_bit_logp(enc, silence, 15 as libc::c_int as libc::c_uint);
+    silence =
+        (sample_max <= 1 as i32 as opus_val16 / ((1 as i32) << (*st).lsb_depth) as f32) as i32;
+    if tell == 1 as i32 {
+        ec_enc_bit_logp(enc, silence, 15 as i32 as u32);
     } else {
-        silence = 0 as libc::c_int;
+        silence = 0 as i32;
     }
     if silence != 0 {
-        if vbr_rate > 0 as libc::c_int {
-            nbCompressedBytes = if nbCompressedBytes < nbFilledBytes + 2 as libc::c_int {
+        if vbr_rate > 0 as i32 {
+            nbCompressedBytes = if nbCompressedBytes < nbFilledBytes + 2 as i32 {
                 nbCompressedBytes
             } else {
-                nbFilledBytes + 2 as libc::c_int
+                nbFilledBytes + 2 as i32
             };
             effectiveBytes = nbCompressedBytes;
-            total_bits = nbCompressedBytes * 8 as libc::c_int;
-            nbAvailableBytes = 2 as libc::c_int;
+            total_bits = nbCompressedBytes * 8 as i32;
+            nbAvailableBytes = 2 as i32;
             ec_enc_shrink(enc, nbCompressedBytes as u32);
         }
-        tell = nbCompressedBytes * 8 as libc::c_int;
+        tell = nbCompressedBytes * 8 as i32;
         (*enc).nbits_total += tell - ec_tell(enc);
     }
-    c = 0 as libc::c_int;
+    c = 0 as i32;
     loop {
-        let mut need_clip: libc::c_int = 0 as libc::c_int;
-        need_clip = ((*st).clip != 0 && sample_max > 65536.0f32) as libc::c_int;
+        let mut need_clip: i32 = 0 as i32;
+        need_clip = ((*st).clip != 0 && sample_max > 65536.0f32) as i32;
         celt_preemphasis(
             pcm.offset(c as isize),
             in_0.as_mut_ptr()
@@ -2620,14 +2485,13 @@ pub unsafe fn celt_encode_with_ec(
             break;
         }
     }
-    let mut enabled: libc::c_int = 0;
-    let mut qg: libc::c_int = 0;
-    enabled = (((*st).lfe != 0 && nbAvailableBytes > 3 as libc::c_int
-        || nbAvailableBytes > 12 as libc::c_int * C)
+    let mut enabled: i32 = 0;
+    let mut qg: i32 = 0;
+    enabled = (((*st).lfe != 0 && nbAvailableBytes > 3 as i32 || nbAvailableBytes > 12 as i32 * C)
         && hybrid == 0
         && silence == 0
         && (*st).disable_pf == 0
-        && (*st).complexity >= 5 as libc::c_int) as libc::c_int;
+        && (*st).complexity >= 5 as i32) as i32;
     prefilter_tapset = (*st).tapset_decision;
     pf_on = run_prefilter(
         st,
@@ -2644,43 +2508,37 @@ pub unsafe fn celt_encode_with_ec(
         &mut (*st).analysis,
     );
     if (gain1 > 0.4f32 || (*st).prefilter_gain > 0.4f32)
-        && ((*st).analysis.valid == 0 || (*st).analysis.tonality as libc::c_double > 0.3f64)
-        && (pitch_index as libc::c_double > 1.26f64 * (*st).prefilter_period as libc::c_double
-            || (pitch_index as libc::c_double) < 0.79f64 * (*st).prefilter_period as libc::c_double)
+        && ((*st).analysis.valid == 0 || (*st).analysis.tonality as f64 > 0.3f64)
+        && (pitch_index as f64 > 1.26f64 * (*st).prefilter_period as f64
+            || (pitch_index as f64) < 0.79f64 * (*st).prefilter_period as f64)
     {
-        pitch_change = 1 as libc::c_int;
+        pitch_change = 1 as i32;
     }
-    if pf_on == 0 as libc::c_int {
-        if hybrid == 0 && tell + 16 as libc::c_int <= total_bits {
-            ec_enc_bit_logp(enc, 0 as libc::c_int, 1 as libc::c_int as libc::c_uint);
+    if pf_on == 0 as i32 {
+        if hybrid == 0 && tell + 16 as i32 <= total_bits {
+            ec_enc_bit_logp(enc, 0 as i32, 1 as i32 as u32);
         }
     } else {
-        let mut octave: libc::c_int = 0;
-        ec_enc_bit_logp(enc, 1 as libc::c_int, 1 as libc::c_int as libc::c_uint);
-        pitch_index += 1 as libc::c_int;
-        octave = EC_CLZ0 - (pitch_index as libc::c_uint).leading_zeros() as i32 - 5 as libc::c_int;
-        ec_enc_uint(enc, octave as u32, 6 as libc::c_int as u32);
+        let mut octave: i32 = 0;
+        ec_enc_bit_logp(enc, 1 as i32, 1 as i32 as u32);
+        pitch_index += 1 as i32;
+        octave = EC_CLZ0 - (pitch_index as u32).leading_zeros() as i32 - 5 as i32;
+        ec_enc_uint(enc, octave as u32, 6 as i32 as u32);
         ec_enc_bits(
             enc,
-            (pitch_index - ((16 as libc::c_int) << octave)) as u32,
-            (4 as libc::c_int + octave) as libc::c_uint,
+            (pitch_index - ((16 as i32) << octave)) as u32,
+            (4 as i32 + octave) as u32,
         );
-        pitch_index -= 1 as libc::c_int;
-        ec_enc_bits(enc, qg as u32, 3 as libc::c_int as libc::c_uint);
-        ec_enc_icdf(
-            enc,
-            prefilter_tapset,
-            tapset_icdf.as_ptr(),
-            2 as libc::c_int as libc::c_uint,
-        );
+        pitch_index -= 1 as i32;
+        ec_enc_bits(enc, qg as u32, 3 as i32 as u32);
+        ec_enc_icdf(enc, prefilter_tapset, tapset_icdf.as_ptr(), 2 as i32 as u32);
     }
-    isTransient = 0 as libc::c_int;
-    shortBlocks = 0 as libc::c_int;
-    if (*st).complexity >= 1 as libc::c_int && (*st).lfe == 0 {
-        let allow_weak_transients: libc::c_int = (hybrid != 0
-            && effectiveBytes < 15 as libc::c_int
-            && (*st).silk_info.signalType != 2 as libc::c_int)
-            as libc::c_int;
+    isTransient = 0 as i32;
+    shortBlocks = 0 as i32;
+    if (*st).complexity >= 1 as i32 && (*st).lfe == 0 {
+        let allow_weak_transients: i32 =
+            (hybrid != 0 && effectiveBytes < 15 as i32 && (*st).silk_info.signalType != 2 as i32)
+                as i32;
         isTransient = transient_analysis(
             in_0.as_mut_ptr(),
             N + overlap,
@@ -2691,13 +2549,13 @@ pub unsafe fn celt_encode_with_ec(
             &mut weak_transient,
         );
     }
-    if LM > 0 as libc::c_int && ec_tell(enc) + 3 as libc::c_int <= total_bits {
+    if LM > 0 as i32 && ec_tell(enc) + 3 as i32 <= total_bits {
         if isTransient != 0 {
             shortBlocks = M;
         }
     } else {
-        isTransient = 0 as libc::c_int;
-        transient_got_disabled = 1 as libc::c_int;
+        isTransient = 0 as i32;
+        transient_got_disabled = 1 as i32;
     }
     let vla_0 = (CC * N) as usize;
     let mut freq: Vec<celt_sig> = ::std::vec::from_elem(0., vla_0);
@@ -2705,13 +2563,13 @@ pub unsafe fn celt_encode_with_ec(
     let mut bandE: Vec<celt_ener> = ::std::vec::from_elem(0., vla_1);
     let vla_2 = (nbEBands * CC) as usize;
     let mut bandLogE: Vec<opus_val16> = ::std::vec::from_elem(0., vla_2);
-    secondMdct = (shortBlocks != 0 && (*st).complexity >= 8 as libc::c_int) as libc::c_int;
+    secondMdct = (shortBlocks != 0 && (*st).complexity >= 8 as i32) as i32;
     let vla_3 = (C * nbEBands) as usize;
     let mut bandLogE2: Vec<opus_val16> = ::std::vec::from_elem(0., vla_3);
     if secondMdct != 0 {
         compute_mdcts(
             mode,
-            0 as libc::c_int,
+            0 as i32,
             in_0.as_mut_ptr(),
             freq.as_mut_ptr(),
             C,
@@ -2737,10 +2595,10 @@ pub unsafe fn celt_encode_with_ec(
             bandLogE2.as_mut_ptr(),
             C,
         );
-        i = 0 as libc::c_int;
+        i = 0 as i32;
         while i < C * nbEBands {
             let ref mut fresh2 = *bandLogE2.as_mut_ptr().offset(i as isize);
-            *fresh2 += 0.5f32 * LM as libc::c_float;
+            *fresh2 += 0.5f32 * LM as f32;
             i += 1;
         }
     }
@@ -2755,20 +2613,20 @@ pub unsafe fn celt_encode_with_ec(
         (*st).upsample,
         (*st).arch,
     );
-    if !(!(*freq.as_mut_ptr().offset(0 as libc::c_int as isize)
-        != *freq.as_mut_ptr().offset(0 as libc::c_int as isize))
-        && (C == 1 as libc::c_int
+    if !(!(*freq.as_mut_ptr().offset(0 as i32 as isize)
+        != *freq.as_mut_ptr().offset(0 as i32 as isize))
+        && (C == 1 as i32
             || !(*freq.as_mut_ptr().offset(N as isize) != *freq.as_mut_ptr().offset(N as isize))))
     {
         celt_fatal(
             b"assertion failed: !celt_isnan(freq[0]) && (C==1 || !celt_isnan(freq[N]))\0"
-                as *const u8 as *const libc::c_char,
-            b"celt/celt_encoder.c\0" as *const u8 as *const libc::c_char,
-            1729 as libc::c_int,
+                as *const u8 as *const i8,
+            b"celt/celt_encoder.c\0" as *const u8 as *const i8,
+            1729 as i32,
         );
     }
-    if CC == 2 as libc::c_int && C == 1 as libc::c_int {
-        tf_chan = 0 as libc::c_int;
+    if CC == 2 as i32 && C == 1 as i32 {
+        tf_chan = 0 as i32;
     }
     compute_band_energies(
         mode,
@@ -2780,14 +2638,14 @@ pub unsafe fn celt_encode_with_ec(
         (*st).arch,
     );
     if (*st).lfe != 0 {
-        i = 2 as libc::c_int;
+        i = 2 as i32;
         while i < end {
             *bandE.as_mut_ptr().offset(i as isize) = if *bandE.as_mut_ptr().offset(i as isize)
-                < 1e-4f32 * *bandE.as_mut_ptr().offset(0 as libc::c_int as isize)
+                < 1e-4f32 * *bandE.as_mut_ptr().offset(0 as i32 as isize)
             {
                 *bandE.as_mut_ptr().offset(i as isize)
             } else {
-                1e-4f32 * *bandE.as_mut_ptr().offset(0 as libc::c_int as isize)
+                1e-4f32 * *bandE.as_mut_ptr().offset(0 as i32 as isize)
             };
             *bandE.as_mut_ptr().offset(i as isize) =
                 if *bandE.as_mut_ptr().offset(i as isize) > 1e-15f32 {
@@ -2809,25 +2667,25 @@ pub unsafe fn celt_encode_with_ec(
     let vla_4 = (C * nbEBands) as usize;
     let mut surround_dynalloc: Vec<opus_val16> = ::std::vec::from_elem(0., vla_4);
     memset(
-        surround_dynalloc.as_mut_ptr() as *mut libc::c_void,
-        0 as libc::c_int,
-        (end as libc::c_ulong).wrapping_mul(::core::mem::size_of::<opus_val16>() as libc::c_ulong),
+        surround_dynalloc.as_mut_ptr() as *mut core::ffi::c_void,
+        0 as i32,
+        (end as u64).wrapping_mul(::core::mem::size_of::<opus_val16>() as u64),
     );
     if hybrid == 0 && !((*st).energy_mask).is_null() && (*st).lfe == 0 {
-        let mut mask_end: libc::c_int = 0;
-        let mut midband: libc::c_int = 0;
-        let mut count_dynalloc: libc::c_int = 0;
-        let mut mask_avg: opus_val32 = 0 as libc::c_int as opus_val32;
-        let mut diff: opus_val32 = 0 as libc::c_int as opus_val32;
-        let mut count: libc::c_int = 0 as libc::c_int;
-        mask_end = if 2 as libc::c_int > (*st).lastCodedBands {
-            2 as libc::c_int
+        let mut mask_end: i32 = 0;
+        let mut midband: i32 = 0;
+        let mut count_dynalloc: i32 = 0;
+        let mut mask_avg: opus_val32 = 0 as i32 as opus_val32;
+        let mut diff: opus_val32 = 0 as i32 as opus_val32;
+        let mut count: i32 = 0 as i32;
+        mask_end = if 2 as i32 > (*st).lastCodedBands {
+            2 as i32
         } else {
             (*st).lastCodedBands
         };
-        c = 0 as libc::c_int;
+        c = 0 as i32;
         while c < C {
-            i = 0 as libc::c_int;
+            i = 0 as i32;
             while i < mask_end {
                 let mut mask: opus_val16 = 0.;
                 mask = if (if *((*st).energy_mask).offset((nbEBands * c + i) as isize) < 0.25f32 {
@@ -2844,32 +2702,30 @@ pub unsafe fn celt_encode_with_ec(
                 } else {
                     -2.0f32
                 };
-                if mask > 0 as libc::c_int as libc::c_float {
+                if mask > 0 as i32 as f32 {
                     mask = 0.5f32 * mask;
                 }
                 mask_avg += mask
-                    * (*eBands.offset((i + 1 as libc::c_int) as isize) as libc::c_int
-                        - *eBands.offset(i as isize) as libc::c_int)
-                        as opus_val32;
-                count += *eBands.offset((i + 1 as libc::c_int) as isize) as libc::c_int
-                    - *eBands.offset(i as isize) as libc::c_int;
-                diff += mask * (1 as libc::c_int + 2 as libc::c_int * i - mask_end) as opus_val32;
+                    * (*eBands.offset((i + 1 as i32) as isize) as i32
+                        - *eBands.offset(i as isize) as i32) as opus_val32;
+                count += *eBands.offset((i + 1 as i32) as isize) as i32
+                    - *eBands.offset(i as isize) as i32;
+                diff += mask * (1 as i32 + 2 as i32 * i - mask_end) as opus_val32;
                 i += 1;
             }
             c += 1;
         }
-        if !(count > 0 as libc::c_int) {
+        if !(count > 0 as i32) {
             celt_fatal(
-                b"assertion failed: count>0\0" as *const u8 as *const libc::c_char,
-                b"celt/celt_encoder.c\0" as *const u8 as *const libc::c_char,
-                1770 as libc::c_int,
+                b"assertion failed: count>0\0" as *const u8 as *const i8,
+                b"celt/celt_encoder.c\0" as *const u8 as *const i8,
+                1770 as i32,
             );
         }
         mask_avg = mask_avg / count as opus_val16;
         mask_avg += 0.2f32;
-        diff = diff * 6 as libc::c_int as libc::c_float
-            / (C * (mask_end - 1 as libc::c_int) * (mask_end + 1 as libc::c_int) * mask_end)
-                as libc::c_float;
+        diff = diff * 6 as i32 as f32
+            / (C * (mask_end - 1 as i32) * (mask_end + 1 as i32) * mask_end) as f32;
         diff = 0.5f32 * diff;
         diff = if (if diff < 0.031f32 { diff } else { 0.031f32 }) > -0.031f32 {
             if diff < 0.031f32 {
@@ -2880,19 +2736,19 @@ pub unsafe fn celt_encode_with_ec(
         } else {
             -0.031f32
         };
-        midband = 0 as libc::c_int;
-        while (*eBands.offset((midband + 1 as libc::c_int) as isize) as libc::c_int)
-            < *eBands.offset(mask_end as isize) as libc::c_int / 2 as libc::c_int
+        midband = 0 as i32;
+        while (*eBands.offset((midband + 1 as i32) as isize) as i32)
+            < *eBands.offset(mask_end as isize) as i32 / 2 as i32
         {
             midband += 1;
         }
-        count_dynalloc = 0 as libc::c_int;
-        i = 0 as libc::c_int;
+        count_dynalloc = 0 as i32;
+        i = 0 as i32;
         while i < mask_end {
             let mut lin: opus_val32 = 0.;
             let mut unmask: opus_val16 = 0.;
-            lin = mask_avg + diff * (i - midband) as libc::c_float;
-            if C == 2 as libc::c_int {
+            lin = mask_avg + diff * (i - midband) as f32;
+            if C == 2 as i32 {
                 unmask = if *((*st).energy_mask).offset(i as isize)
                     > *((*st).energy_mask).offset((nbEBands + i) as isize)
                 {
@@ -2911,25 +2767,23 @@ pub unsafe fn celt_encode_with_ec(
             }
             i += 1;
         }
-        if count_dynalloc >= 3 as libc::c_int {
+        if count_dynalloc >= 3 as i32 {
             mask_avg += 0.25f32;
-            if mask_avg > 0 as libc::c_int as libc::c_float {
-                mask_avg = 0 as libc::c_int as opus_val32;
-                diff = 0 as libc::c_int as opus_val32;
+            if mask_avg > 0 as i32 as f32 {
+                mask_avg = 0 as i32 as opus_val32;
+                diff = 0 as i32 as opus_val32;
                 memset(
-                    surround_dynalloc.as_mut_ptr() as *mut libc::c_void,
-                    0 as libc::c_int,
-                    (mask_end as libc::c_ulong)
-                        .wrapping_mul(::core::mem::size_of::<opus_val16>() as libc::c_ulong),
+                    surround_dynalloc.as_mut_ptr() as *mut core::ffi::c_void,
+                    0 as i32,
+                    (mask_end as u64).wrapping_mul(::core::mem::size_of::<opus_val16>() as u64),
                 );
             } else {
-                i = 0 as libc::c_int;
+                i = 0 as i32;
                 while i < mask_end {
-                    *surround_dynalloc.as_mut_ptr().offset(i as isize) = if 0 as libc::c_int
-                        as libc::c_float
+                    *surround_dynalloc.as_mut_ptr().offset(i as isize) = if 0 as i32 as f32
                         > *surround_dynalloc.as_mut_ptr().offset(i as isize) - 0.25f32
                     {
-                        0 as libc::c_int as libc::c_float
+                        0 as i32 as f32
                     } else {
                         *surround_dynalloc.as_mut_ptr().offset(i as isize) - 0.25f32
                     };
@@ -2938,16 +2792,16 @@ pub unsafe fn celt_encode_with_ec(
             }
         }
         mask_avg += 0.2f32;
-        surround_trim = 64 as libc::c_int as libc::c_float * diff;
+        surround_trim = 64 as i32 as f32 * diff;
         surround_masking = mask_avg;
     }
     if (*st).lfe == 0 {
         let mut follow: opus_val16 = -10.0f32;
-        let mut frame_avg: opus_val32 = 0 as libc::c_int as opus_val32;
+        let mut frame_avg: opus_val32 = 0 as i32 as opus_val32;
         let offset: opus_val16 = if shortBlocks != 0 {
-            0.5f32 * LM as libc::c_float
+            0.5f32 * LM as f32
         } else {
-            0 as libc::c_int as libc::c_float
+            0 as i32 as f32
         };
         i = start;
         while i < end {
@@ -2956,7 +2810,7 @@ pub unsafe fn celt_encode_with_ec(
             } else {
                 *bandLogE.as_mut_ptr().offset(i as isize) - offset
             };
-            if C == 2 as libc::c_int {
+            if C == 2 as i32 {
                 follow = if follow > *bandLogE.as_mut_ptr().offset((i + nbEBands) as isize) - offset
                 {
                     follow
@@ -2967,7 +2821,7 @@ pub unsafe fn celt_encode_with_ec(
             frame_avg += follow;
             i += 1;
         }
-        frame_avg /= (end - start) as libc::c_float;
+        frame_avg /= (end - start) as f32;
         temporal_vbr = frame_avg - (*st).spec_avg;
         temporal_vbr = if 3.0f32
             < (if -1.5f32 > temporal_vbr {
@@ -2985,26 +2839,26 @@ pub unsafe fn celt_encode_with_ec(
     }
     if secondMdct == 0 {
         memcpy(
-            bandLogE2.as_mut_ptr() as *mut libc::c_void,
-            bandLogE.as_mut_ptr() as *const libc::c_void,
-            ((C * nbEBands) as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<opus_val16>() as libc::c_ulong)
+            bandLogE2.as_mut_ptr() as *mut core::ffi::c_void,
+            bandLogE.as_mut_ptr() as *const core::ffi::c_void,
+            ((C * nbEBands) as u64)
+                .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64)
                 .wrapping_add(
-                    (0 as libc::c_int as libc::c_long
-                        * bandLogE2.as_mut_ptr().offset_from(bandLogE.as_mut_ptr()) as libc::c_long)
-                        as libc::c_ulong,
+                    (0 as i32 as i64
+                        * bandLogE2.as_mut_ptr().offset_from(bandLogE.as_mut_ptr()) as i64)
+                        as u64,
                 ),
         );
     }
-    if LM > 0 as libc::c_int
-        && ec_tell(enc) + 3 as libc::c_int <= total_bits
+    if LM > 0 as i32
+        && ec_tell(enc) + 3 as i32 <= total_bits
         && isTransient == 0
-        && (*st).complexity >= 5 as libc::c_int
+        && (*st).complexity >= 5 as i32
         && (*st).lfe == 0
         && hybrid == 0
     {
         if patch_transient_decision(bandLogE.as_mut_ptr(), oldBandE, nbEBands, start, end, C) != 0 {
-            isTransient = 1 as libc::c_int;
+            isTransient = 1 as i32;
             shortBlocks = M;
             compute_mdcts(
                 mode,
@@ -3034,17 +2888,17 @@ pub unsafe fn celt_encode_with_ec(
                 bandLogE.as_mut_ptr(),
                 C,
             );
-            i = 0 as libc::c_int;
+            i = 0 as i32;
             while i < C * nbEBands {
                 let ref mut fresh3 = *bandLogE2.as_mut_ptr().offset(i as isize);
-                *fresh3 += 0.5f32 * LM as libc::c_float;
+                *fresh3 += 0.5f32 * LM as f32;
                 i += 1;
             }
             tf_estimate = 0.2f32;
         }
     }
-    if LM > 0 as libc::c_int && ec_tell(enc) + 3 as libc::c_int <= total_bits {
-        ec_enc_bit_logp(enc, isTransient, 3 as libc::c_int as libc::c_uint);
+    if LM > 0 as i32 && ec_tell(enc) + 3 as i32 <= total_bits {
+        ec_enc_bit_logp(enc, isTransient, 3 as i32 as u32);
     }
     let vla_5 = (C * N) as usize;
     let mut X: Vec<celt_norm> = ::std::vec::from_elem(0., vla_5);
@@ -3057,16 +2911,16 @@ pub unsafe fn celt_encode_with_ec(
         C,
         M,
     );
-    enable_tf_analysis = (effectiveBytes >= 15 as libc::c_int * C
+    enable_tf_analysis = (effectiveBytes >= 15 as i32 * C
         && hybrid == 0
-        && (*st).complexity >= 2 as libc::c_int
-        && (*st).lfe == 0) as libc::c_int;
+        && (*st).complexity >= 2 as i32
+        && (*st).lfe == 0) as i32;
     let vla_6 = nbEBands as usize;
-    let mut offsets: Vec<libc::c_int> = ::std::vec::from_elem(0, vla_6);
+    let mut offsets: Vec<i32> = ::std::vec::from_elem(0, vla_6);
     let vla_7 = nbEBands as usize;
-    let mut importance: Vec<libc::c_int> = ::std::vec::from_elem(0, vla_7);
+    let mut importance: Vec<i32> = ::std::vec::from_elem(0, vla_7);
     let vla_8 = nbEBands as usize;
-    let mut spread_weight: Vec<libc::c_int> = ::std::vec::from_elem(0, vla_8);
+    let mut spread_weight: Vec<i32> = ::std::vec::from_elem(0, vla_8);
     maxDepth = dynalloc_analysis(
         bandLogE.as_mut_ptr(),
         bandLogE2.as_mut_ptr(),
@@ -3091,13 +2945,13 @@ pub unsafe fn celt_encode_with_ec(
         spread_weight.as_mut_ptr(),
     );
     let vla_9 = nbEBands as usize;
-    let mut tf_res: Vec<libc::c_int> = ::std::vec::from_elem(0, vla_9);
+    let mut tf_res: Vec<i32> = ::std::vec::from_elem(0, vla_9);
     if enable_tf_analysis != 0 {
-        let mut lambda: libc::c_int = 0;
-        lambda = if 80 as libc::c_int > 20480 as libc::c_int / effectiveBytes + 2 as libc::c_int {
-            80 as libc::c_int
+        let mut lambda: i32 = 0;
+        lambda = if 80 as i32 > 20480 as i32 / effectiveBytes + 2 as i32 {
+            80 as i32
         } else {
-            20480 as libc::c_int / effectiveBytes + 2 as libc::c_int
+            20480 as i32 / effectiveBytes + 2 as i32
         };
         tf_select = tf_analysis(
             mode,
@@ -3114,39 +2968,35 @@ pub unsafe fn celt_encode_with_ec(
         );
         i = effEnd;
         while i < end {
-            *tf_res.as_mut_ptr().offset(i as isize) = *tf_res
-                .as_mut_ptr()
-                .offset((effEnd - 1 as libc::c_int) as isize);
+            *tf_res.as_mut_ptr().offset(i as isize) =
+                *tf_res.as_mut_ptr().offset((effEnd - 1 as i32) as isize);
             i += 1;
         }
     } else if hybrid != 0 && weak_transient != 0 {
-        i = 0 as libc::c_int;
+        i = 0 as i32;
         while i < end {
-            *tf_res.as_mut_ptr().offset(i as isize) = 1 as libc::c_int;
+            *tf_res.as_mut_ptr().offset(i as isize) = 1 as i32;
             i += 1;
         }
-        tf_select = 0 as libc::c_int;
-    } else if hybrid != 0
-        && effectiveBytes < 15 as libc::c_int
-        && (*st).silk_info.signalType != 2 as libc::c_int
-    {
-        i = 0 as libc::c_int;
+        tf_select = 0 as i32;
+    } else if hybrid != 0 && effectiveBytes < 15 as i32 && (*st).silk_info.signalType != 2 as i32 {
+        i = 0 as i32;
         while i < end {
-            *tf_res.as_mut_ptr().offset(i as isize) = 0 as libc::c_int;
+            *tf_res.as_mut_ptr().offset(i as isize) = 0 as i32;
             i += 1;
         }
         tf_select = isTransient;
     } else {
-        i = 0 as libc::c_int;
+        i = 0 as i32;
         while i < end {
             *tf_res.as_mut_ptr().offset(i as isize) = isTransient;
             i += 1;
         }
-        tf_select = 0 as libc::c_int;
+        tf_select = 0 as i32;
     }
     let vla_10 = (C * nbEBands) as usize;
     let mut error: Vec<opus_val16> = ::std::vec::from_elem(0., vla_10);
-    c = 0 as libc::c_int;
+    c = 0 as i32;
     loop {
         i = start;
         while i < end {
@@ -3180,7 +3030,7 @@ pub unsafe fn celt_encode_with_ec(
         nbAvailableBytes,
         (*st).force_intra,
         &mut (*st).delayedIntra,
-        ((*st).complexity >= 4 as libc::c_int) as libc::c_int,
+        ((*st).complexity >= 4 as i32) as i32,
         (*st).loss_rate,
         (*st).lfe,
     );
@@ -3193,12 +3043,12 @@ pub unsafe fn celt_encode_with_ec(
         tf_select,
         enc,
     );
-    if ec_tell(enc) + 4 as libc::c_int <= total_bits {
+    if ec_tell(enc) + 4 as i32 <= total_bits {
         if (*st).lfe != 0 {
-            (*st).tapset_decision = 0 as libc::c_int;
+            (*st).tapset_decision = 0 as i32;
             (*st).spread_decision = SPREAD_NORMAL;
         } else if hybrid != 0 {
-            if (*st).complexity == 0 as libc::c_int {
+            if (*st).complexity == 0 as i32 {
                 (*st).spread_decision = SPREAD_NONE;
             } else if isTransient != 0 {
                 (*st).spread_decision = SPREAD_NORMAL;
@@ -3206,10 +3056,10 @@ pub unsafe fn celt_encode_with_ec(
                 (*st).spread_decision = SPREAD_AGGRESSIVE;
             }
         } else if shortBlocks != 0
-            || (*st).complexity < 3 as libc::c_int
-            || nbAvailableBytes < 10 as libc::c_int * C
+            || (*st).complexity < 3 as i32
+            || nbAvailableBytes < 10 as i32 * C
         {
-            if (*st).complexity == 0 as libc::c_int {
+            if (*st).complexity == 0 as i32 {
                 (*st).spread_decision = SPREAD_NONE;
             } else {
                 (*st).spread_decision = SPREAD_NORMAL;
@@ -3222,7 +3072,7 @@ pub unsafe fn celt_encode_with_ec(
                 (*st).spread_decision,
                 &mut (*st).hf_average,
                 &mut (*st).tapset_decision,
-                (pf_on != 0 && shortBlocks == 0) as libc::c_int,
+                (pf_on != 0 && shortBlocks == 0) as i32,
                 effEnd,
                 C,
                 M,
@@ -3233,130 +3083,129 @@ pub unsafe fn celt_encode_with_ec(
             enc,
             (*st).spread_decision,
             spread_icdf.as_ptr(),
-            5 as libc::c_int as libc::c_uint,
+            5 as i32 as u32,
         );
     }
     if (*st).lfe != 0 {
-        *offsets.as_mut_ptr().offset(0 as libc::c_int as isize) =
-            if (8 as libc::c_int) < effectiveBytes / 3 as libc::c_int {
-                8 as libc::c_int
-            } else {
-                effectiveBytes / 3 as libc::c_int
-            };
+        *offsets.as_mut_ptr().offset(0 as i32 as isize) = if (8 as i32) < effectiveBytes / 3 as i32
+        {
+            8 as i32
+        } else {
+            effectiveBytes / 3 as i32
+        };
     }
     let vla_11 = nbEBands as usize;
-    let mut cap: Vec<libc::c_int> = ::std::vec::from_elem(0, vla_11);
+    let mut cap: Vec<i32> = ::std::vec::from_elem(0, vla_11);
     init_caps(mode, cap.as_mut_ptr(), LM, C);
-    dynalloc_logp = 6 as libc::c_int;
+    dynalloc_logp = 6 as i32;
     total_bits <<= BITRES;
-    total_boost = 0 as libc::c_int;
+    total_boost = 0 as i32;
     tell = ec_tell_frac(enc) as i32;
     i = start;
     while i < end {
-        let mut width: libc::c_int = 0;
-        let mut quanta: libc::c_int = 0;
-        let mut dynalloc_loop_logp: libc::c_int = 0;
-        let mut boost: libc::c_int = 0;
-        let mut j: libc::c_int = 0;
+        let mut width: i32 = 0;
+        let mut quanta: i32 = 0;
+        let mut dynalloc_loop_logp: i32 = 0;
+        let mut boost: i32 = 0;
+        let mut j: i32 = 0;
         width = C
-            * (*eBands.offset((i + 1 as libc::c_int) as isize) as libc::c_int
-                - *eBands.offset(i as isize) as libc::c_int)
+            * (*eBands.offset((i + 1 as i32) as isize) as i32 - *eBands.offset(i as isize) as i32)
             << LM;
-        quanta = if (width << 3 as libc::c_int)
-            < (if (6 as libc::c_int) << 3 as libc::c_int > width {
-                (6 as libc::c_int) << 3 as libc::c_int
+        quanta = if (width << 3 as i32)
+            < (if (6 as i32) << 3 as i32 > width {
+                (6 as i32) << 3 as i32
             } else {
                 width
             }) {
-            width << 3 as libc::c_int
-        } else if (6 as libc::c_int) << 3 as libc::c_int > width {
-            (6 as libc::c_int) << 3 as libc::c_int
+            width << 3 as i32
+        } else if (6 as i32) << 3 as i32 > width {
+            (6 as i32) << 3 as i32
         } else {
             width
         };
         dynalloc_loop_logp = dynalloc_logp;
-        boost = 0 as libc::c_int;
-        j = 0 as libc::c_int;
+        boost = 0 as i32;
+        j = 0 as i32;
         while tell + (dynalloc_loop_logp << BITRES) < total_bits - total_boost
             && boost < *cap.as_mut_ptr().offset(i as isize)
         {
-            let mut flag: libc::c_int = 0;
-            flag = (j < *offsets.as_mut_ptr().offset(i as isize)) as libc::c_int;
-            ec_enc_bit_logp(enc, flag, dynalloc_loop_logp as libc::c_uint);
+            let mut flag: i32 = 0;
+            flag = (j < *offsets.as_mut_ptr().offset(i as isize)) as i32;
+            ec_enc_bit_logp(enc, flag, dynalloc_loop_logp as u32);
             tell = ec_tell_frac(enc) as i32;
             if flag == 0 {
                 break;
             }
             boost += quanta;
             total_boost += quanta;
-            dynalloc_loop_logp = 1 as libc::c_int;
+            dynalloc_loop_logp = 1 as i32;
             j += 1;
         }
         if j != 0 {
-            dynalloc_logp = if 2 as libc::c_int > dynalloc_logp - 1 as libc::c_int {
-                2 as libc::c_int
+            dynalloc_logp = if 2 as i32 > dynalloc_logp - 1 as i32 {
+                2 as i32
             } else {
-                dynalloc_logp - 1 as libc::c_int
+                dynalloc_logp - 1 as i32
             };
         }
         *offsets.as_mut_ptr().offset(i as isize) = boost;
         i += 1;
     }
-    if C == 2 as libc::c_int {
+    if C == 2 as i32 {
         static mut intensity_thresholds: [opus_val16; 21] = [
-            1 as libc::c_int as opus_val16,
-            2 as libc::c_int as opus_val16,
-            3 as libc::c_int as opus_val16,
-            4 as libc::c_int as opus_val16,
-            5 as libc::c_int as opus_val16,
-            6 as libc::c_int as opus_val16,
-            7 as libc::c_int as opus_val16,
-            8 as libc::c_int as opus_val16,
-            16 as libc::c_int as opus_val16,
-            24 as libc::c_int as opus_val16,
-            36 as libc::c_int as opus_val16,
-            44 as libc::c_int as opus_val16,
-            50 as libc::c_int as opus_val16,
-            56 as libc::c_int as opus_val16,
-            62 as libc::c_int as opus_val16,
-            67 as libc::c_int as opus_val16,
-            72 as libc::c_int as opus_val16,
-            79 as libc::c_int as opus_val16,
-            88 as libc::c_int as opus_val16,
-            106 as libc::c_int as opus_val16,
-            134 as libc::c_int as opus_val16,
+            1 as i32 as opus_val16,
+            2 as i32 as opus_val16,
+            3 as i32 as opus_val16,
+            4 as i32 as opus_val16,
+            5 as i32 as opus_val16,
+            6 as i32 as opus_val16,
+            7 as i32 as opus_val16,
+            8 as i32 as opus_val16,
+            16 as i32 as opus_val16,
+            24 as i32 as opus_val16,
+            36 as i32 as opus_val16,
+            44 as i32 as opus_val16,
+            50 as i32 as opus_val16,
+            56 as i32 as opus_val16,
+            62 as i32 as opus_val16,
+            67 as i32 as opus_val16,
+            72 as i32 as opus_val16,
+            79 as i32 as opus_val16,
+            88 as i32 as opus_val16,
+            106 as i32 as opus_val16,
+            134 as i32 as opus_val16,
         ];
         static mut intensity_histeresis: [opus_val16; 21] = [
-            1 as libc::c_int as opus_val16,
-            1 as libc::c_int as opus_val16,
-            1 as libc::c_int as opus_val16,
-            1 as libc::c_int as opus_val16,
-            1 as libc::c_int as opus_val16,
-            1 as libc::c_int as opus_val16,
-            1 as libc::c_int as opus_val16,
-            2 as libc::c_int as opus_val16,
-            2 as libc::c_int as opus_val16,
-            2 as libc::c_int as opus_val16,
-            2 as libc::c_int as opus_val16,
-            2 as libc::c_int as opus_val16,
-            2 as libc::c_int as opus_val16,
-            2 as libc::c_int as opus_val16,
-            3 as libc::c_int as opus_val16,
-            3 as libc::c_int as opus_val16,
-            4 as libc::c_int as opus_val16,
-            5 as libc::c_int as opus_val16,
-            6 as libc::c_int as opus_val16,
-            8 as libc::c_int as opus_val16,
-            8 as libc::c_int as opus_val16,
+            1 as i32 as opus_val16,
+            1 as i32 as opus_val16,
+            1 as i32 as opus_val16,
+            1 as i32 as opus_val16,
+            1 as i32 as opus_val16,
+            1 as i32 as opus_val16,
+            1 as i32 as opus_val16,
+            2 as i32 as opus_val16,
+            2 as i32 as opus_val16,
+            2 as i32 as opus_val16,
+            2 as i32 as opus_val16,
+            2 as i32 as opus_val16,
+            2 as i32 as opus_val16,
+            2 as i32 as opus_val16,
+            3 as i32 as opus_val16,
+            3 as i32 as opus_val16,
+            4 as i32 as opus_val16,
+            5 as i32 as opus_val16,
+            6 as i32 as opus_val16,
+            8 as i32 as opus_val16,
+            8 as i32 as opus_val16,
         ];
-        if LM != 0 as libc::c_int {
+        if LM != 0 as i32 {
             dual_stereo = stereo_analysis(mode, X.as_mut_ptr(), LM, N);
         }
         (*st).intensity = hysteresis_decision(
-            (equiv_rate / 1000 as libc::c_int) as opus_val16,
+            (equiv_rate / 1000 as i32) as opus_val16,
             intensity_thresholds.as_ptr(),
             intensity_histeresis.as_ptr(),
-            21 as libc::c_int,
+            21 as i32,
             (*st).intensity,
         );
         (*st).intensity = if end
@@ -3372,11 +3221,11 @@ pub unsafe fn celt_encode_with_ec(
             (*st).intensity
         };
     }
-    alloc_trim = 5 as libc::c_int;
-    if tell + ((6 as libc::c_int) << BITRES) <= total_bits - total_boost {
-        if start > 0 as libc::c_int || (*st).lfe != 0 {
-            (*st).stereo_saving = 0 as libc::c_int as opus_val16;
-            alloc_trim = 5 as libc::c_int;
+    alloc_trim = 5 as i32;
+    if tell + ((6 as i32) << BITRES) <= total_bits - total_boost {
+        if start > 0 as i32 || (*st).lfe != 0 {
+            (*st).stereo_saving = 0 as i32 as opus_val16;
+            alloc_trim = 5 as i32;
         } else {
             alloc_trim = alloc_trim_analysis(
                 mode,
@@ -3395,35 +3244,28 @@ pub unsafe fn celt_encode_with_ec(
                 (*st).arch,
             );
         }
-        ec_enc_icdf(
-            enc,
-            alloc_trim,
-            trim_icdf.as_ptr(),
-            7 as libc::c_int as libc::c_uint,
-        );
+        ec_enc_icdf(enc, alloc_trim, trim_icdf.as_ptr(), 7 as i32 as u32);
         tell = ec_tell_frac(enc) as i32;
     }
-    if vbr_rate > 0 as libc::c_int {
+    if vbr_rate > 0 as i32 {
         let mut alpha: opus_val16 = 0.;
         let mut delta: i32 = 0;
         let mut target: i32 = 0;
         let mut base_target: i32 = 0;
         let mut min_allowed: i32 = 0;
-        let lm_diff: libc::c_int = (*mode).maxLM - LM;
-        nbCompressedBytes = if nbCompressedBytes < 1275 as libc::c_int >> 3 as libc::c_int - LM {
+        let lm_diff: i32 = (*mode).maxLM - LM;
+        nbCompressedBytes = if nbCompressedBytes < 1275 as i32 >> 3 as i32 - LM {
             nbCompressedBytes
         } else {
-            1275 as libc::c_int >> 3 as libc::c_int - LM
+            1275 as i32 >> 3 as i32 - LM
         };
         if hybrid == 0 {
-            base_target = vbr_rate - ((40 as libc::c_int * C + 20 as libc::c_int) << BITRES);
+            base_target = vbr_rate - ((40 as i32 * C + 20 as i32) << BITRES);
         } else {
-            base_target = if 0 as libc::c_int
-                > vbr_rate - ((9 as libc::c_int * C + 4 as libc::c_int) << 3 as libc::c_int)
-            {
-                0 as libc::c_int
+            base_target = if 0 as i32 > vbr_rate - ((9 as i32 * C + 4 as i32) << 3 as i32) {
+                0 as i32
             } else {
-                vbr_rate - ((9 as libc::c_int * C + 4 as libc::c_int) << 3 as libc::c_int)
+                vbr_rate - ((9 as i32 * C + 4 as i32) << 3 as i32)
             };
         }
         if (*st).constrained_vbr != 0 {
@@ -3446,55 +3288,51 @@ pub unsafe fn celt_encode_with_ec(
                 pitch_change,
                 maxDepth,
                 (*st).lfe,
-                ((*st).energy_mask != NULL as *mut opus_val16) as libc::c_int,
+                ((*st).energy_mask != NULL as *mut opus_val16) as i32,
                 surround_masking,
                 temporal_vbr,
             );
         } else {
             target = base_target;
-            if (*st).silk_info.offset < 100 as libc::c_int {
-                target += (12 as libc::c_int) << BITRES >> 3 as libc::c_int - LM;
+            if (*st).silk_info.offset < 100 as i32 {
+                target += (12 as i32) << BITRES >> 3 as i32 - LM;
             }
-            if (*st).silk_info.offset > 100 as libc::c_int {
-                target -= (18 as libc::c_int) << BITRES >> 3 as libc::c_int - LM;
+            if (*st).silk_info.offset > 100 as i32 {
+                target -= (18 as i32) << BITRES >> 3 as i32 - LM;
             }
-            target += ((tf_estimate - 0.25f32)
-                * ((50 as libc::c_int) << 3 as libc::c_int) as libc::c_float)
-                as i32;
+            target += ((tf_estimate - 0.25f32) * ((50 as i32) << 3 as i32) as f32) as i32;
             if tf_estimate > 0.7f32 {
-                target = if target > (50 as libc::c_int) << 3 as libc::c_int {
+                target = if target > (50 as i32) << 3 as i32 {
                     target
                 } else {
-                    (50 as libc::c_int) << 3 as libc::c_int
+                    (50 as i32) << 3 as i32
                 };
             }
         }
         target = target + tell;
-        min_allowed = (tell + total_boost + ((1 as libc::c_int) << BITRES + 3 as libc::c_int)
-            - 1 as libc::c_int
-            >> BITRES + 3 as libc::c_int)
-            + 2 as libc::c_int;
+        min_allowed = (tell + total_boost + ((1 as i32) << BITRES + 3 as i32) - 1 as i32
+            >> BITRES + 3 as i32)
+            + 2 as i32;
         if hybrid != 0 {
             min_allowed = if min_allowed
                 > tell0_frac
-                    + ((37 as libc::c_int) << 3 as libc::c_int)
+                    + ((37 as i32) << 3 as i32)
                     + total_boost
-                    + ((1 as libc::c_int) << 3 as libc::c_int + 3 as libc::c_int)
-                    - 1 as libc::c_int
-                    >> 3 as libc::c_int + 3 as libc::c_int
+                    + ((1 as i32) << 3 as i32 + 3 as i32)
+                    - 1 as i32
+                    >> 3 as i32 + 3 as i32
             {
                 min_allowed
             } else {
                 tell0_frac
-                    + ((37 as libc::c_int) << 3 as libc::c_int)
+                    + ((37 as i32) << 3 as i32)
                     + total_boost
-                    + ((1 as libc::c_int) << 3 as libc::c_int + 3 as libc::c_int)
-                    - 1 as libc::c_int
-                    >> 3 as libc::c_int + 3 as libc::c_int
+                    + ((1 as i32) << 3 as i32 + 3 as i32)
+                    - 1 as i32
+                    >> 3 as i32 + 3 as i32
             };
         }
-        nbAvailableBytes =
-            target + ((1 as libc::c_int) << BITRES + 2 as libc::c_int) >> BITRES + 3 as libc::c_int;
+        nbAvailableBytes = target + ((1 as i32) << BITRES + 2 as i32) >> BITRES + 3 as i32;
         nbAvailableBytes = if min_allowed > nbAvailableBytes {
             min_allowed
         } else {
@@ -3506,15 +3344,15 @@ pub unsafe fn celt_encode_with_ec(
             nbAvailableBytes
         };
         delta = target - vbr_rate;
-        target = nbAvailableBytes << BITRES + 3 as libc::c_int;
+        target = nbAvailableBytes << BITRES + 3 as i32;
         if silence != 0 {
-            nbAvailableBytes = 2 as libc::c_int;
-            target = (2 as libc::c_int * 8 as libc::c_int) << BITRES;
-            delta = 0 as libc::c_int;
+            nbAvailableBytes = 2 as i32;
+            target = (2 as i32 * 8 as i32) << BITRES;
+            delta = 0 as i32;
         }
-        if (*st).vbr_count < 970 as libc::c_int {
+        if (*st).vbr_count < 970 as i32 {
             (*st).vbr_count += 1;
-            alpha = 1.0f32 / ((*st).vbr_count + 20 as libc::c_int) as libc::c_float;
+            alpha = 1.0f32 / ((*st).vbr_count + 20 as i32) as f32;
         } else {
             alpha = 0.001f32;
         }
@@ -3523,18 +3361,14 @@ pub unsafe fn celt_encode_with_ec(
         }
         if (*st).constrained_vbr != 0 {
             (*st).vbr_drift += (alpha
-                * (delta * ((1 as libc::c_int) << lm_diff) - (*st).vbr_offset - (*st).vbr_drift)
-                    as libc::c_float) as i32;
+                * (delta * ((1 as i32) << lm_diff) - (*st).vbr_offset - (*st).vbr_drift) as f32)
+                as i32;
             (*st).vbr_offset = -(*st).vbr_drift;
         }
-        if (*st).constrained_vbr != 0 && (*st).vbr_reservoir < 0 as libc::c_int {
-            let adjust: libc::c_int = -(*st).vbr_reservoir / ((8 as libc::c_int) << BITRES);
-            nbAvailableBytes += if silence != 0 {
-                0 as libc::c_int
-            } else {
-                adjust
-            };
-            (*st).vbr_reservoir = 0 as libc::c_int;
+        if (*st).constrained_vbr != 0 && (*st).vbr_reservoir < 0 as i32 {
+            let adjust: i32 = -(*st).vbr_reservoir / ((8 as i32) << BITRES);
+            nbAvailableBytes += if silence != 0 { 0 as i32 } else { adjust };
+            (*st).vbr_reservoir = 0 as i32;
         }
         nbCompressedBytes = if nbCompressedBytes < nbAvailableBytes {
             nbCompressedBytes
@@ -3544,36 +3378,33 @@ pub unsafe fn celt_encode_with_ec(
         ec_enc_shrink(enc, nbCompressedBytes as u32);
     }
     let vla_12 = nbEBands as usize;
-    let mut fine_quant: Vec<libc::c_int> = ::std::vec::from_elem(0, vla_12);
+    let mut fine_quant: Vec<i32> = ::std::vec::from_elem(0, vla_12);
     let vla_13 = nbEBands as usize;
-    let mut pulses: Vec<libc::c_int> = ::std::vec::from_elem(0, vla_13);
+    let mut pulses: Vec<i32> = ::std::vec::from_elem(0, vla_13);
     let vla_14 = nbEBands as usize;
-    let mut fine_priority: Vec<libc::c_int> = ::std::vec::from_elem(0, vla_14);
-    bits = (((nbCompressedBytes * 8 as libc::c_int) << BITRES) as libc::c_uint)
+    let mut fine_priority: Vec<i32> = ::std::vec::from_elem(0, vla_14);
+    bits = (((nbCompressedBytes * 8 as i32) << BITRES) as u32)
         .wrapping_sub(ec_tell_frac(enc))
-        .wrapping_sub(1 as libc::c_int as libc::c_uint) as i32;
-    anti_collapse_rsv = if isTransient != 0
-        && LM >= 2 as libc::c_int
-        && bits >= (LM + 2 as libc::c_int) << BITRES
-    {
-        (1 as libc::c_int) << BITRES
+        .wrapping_sub(1 as i32 as u32) as i32;
+    anti_collapse_rsv = if isTransient != 0 && LM >= 2 as i32 && bits >= (LM + 2 as i32) << BITRES {
+        (1 as i32) << BITRES
     } else {
-        0 as libc::c_int
+        0 as i32
     };
     bits -= anti_collapse_rsv;
-    signalBandwidth = end - 1 as libc::c_int;
+    signalBandwidth = end - 1 as i32;
     if (*st).analysis.valid != 0 {
-        let mut min_bandwidth: libc::c_int = 0;
-        if equiv_rate < 32000 as libc::c_int * C {
-            min_bandwidth = 13 as libc::c_int;
-        } else if equiv_rate < 48000 as libc::c_int * C {
-            min_bandwidth = 16 as libc::c_int;
-        } else if equiv_rate < 60000 as libc::c_int * C {
-            min_bandwidth = 18 as libc::c_int;
-        } else if equiv_rate < 80000 as libc::c_int * C {
-            min_bandwidth = 19 as libc::c_int;
+        let mut min_bandwidth: i32 = 0;
+        if equiv_rate < 32000 as i32 * C {
+            min_bandwidth = 13 as i32;
+        } else if equiv_rate < 48000 as i32 * C {
+            min_bandwidth = 16 as i32;
+        } else if equiv_rate < 60000 as i32 * C {
+            min_bandwidth = 18 as i32;
+        } else if equiv_rate < 80000 as i32 * C {
+            min_bandwidth = 19 as i32;
         } else {
-            min_bandwidth = 20 as libc::c_int;
+            min_bandwidth = 20 as i32;
         }
         signalBandwidth = if (*st).analysis.bandwidth > min_bandwidth {
             (*st).analysis.bandwidth
@@ -3582,7 +3413,7 @@ pub unsafe fn celt_encode_with_ec(
         };
     }
     if (*st).lfe != 0 {
-        signalBandwidth = 1 as libc::c_int;
+        signalBandwidth = 1 as i32;
     }
     codedBands = clt_compute_allocation(
         mode,
@@ -3601,20 +3432,20 @@ pub unsafe fn celt_encode_with_ec(
         C,
         LM,
         enc,
-        1 as libc::c_int,
+        1 as i32,
         (*st).lastCodedBands,
         signalBandwidth,
     );
     if (*st).lastCodedBands != 0 {
-        (*st).lastCodedBands = if ((*st).lastCodedBands + 1 as libc::c_int)
-            < (if (*st).lastCodedBands - 1 as libc::c_int > codedBands {
-                (*st).lastCodedBands - 1 as libc::c_int
+        (*st).lastCodedBands = if ((*st).lastCodedBands + 1 as i32)
+            < (if (*st).lastCodedBands - 1 as i32 > codedBands {
+                (*st).lastCodedBands - 1 as i32
             } else {
                 codedBands
             }) {
-            (*st).lastCodedBands + 1 as libc::c_int
-        } else if (*st).lastCodedBands - 1 as libc::c_int > codedBands {
-            (*st).lastCodedBands - 1 as libc::c_int
+            (*st).lastCodedBands + 1 as i32
+        } else if (*st).lastCodedBands - 1 as i32 > codedBands {
+            (*st).lastCodedBands - 1 as i32
         } else {
             codedBands
         };
@@ -3632,14 +3463,14 @@ pub unsafe fn celt_encode_with_ec(
         C,
     );
     let vla_15 = (C * nbEBands) as usize;
-    let mut collapse_masks: Vec<libc::c_uchar> = ::std::vec::from_elem(0, vla_15);
+    let mut collapse_masks: Vec<u8> = ::std::vec::from_elem(0, vla_15);
     quant_all_bands(
-        1 as libc::c_int,
+        1 as i32,
         mode,
         start,
         end,
         X.as_mut_ptr(),
-        if C == 2 as libc::c_int {
+        if C == 2 as i32 {
             X.as_mut_ptr().offset(N as isize)
         } else {
             NULL as *mut celt_norm
@@ -3652,7 +3483,7 @@ pub unsafe fn celt_encode_with_ec(
         dual_stereo,
         (*st).intensity,
         tf_res.as_mut_ptr(),
-        nbCompressedBytes * ((8 as libc::c_int) << BITRES) - anti_collapse_rsv,
+        nbCompressedBytes * ((8 as i32) << BITRES) - anti_collapse_rsv,
         balance,
         enc,
         LM,
@@ -3662,13 +3493,9 @@ pub unsafe fn celt_encode_with_ec(
         (*st).arch,
         (*st).disable_inv,
     );
-    if anti_collapse_rsv > 0 as libc::c_int {
-        anti_collapse_on = ((*st).consec_transient < 2 as libc::c_int) as libc::c_int;
-        ec_enc_bits(
-            enc,
-            anti_collapse_on as u32,
-            1 as libc::c_int as libc::c_uint,
-        );
+    if anti_collapse_rsv > 0 as i32 {
+        anti_collapse_on = ((*st).consec_transient < 2 as i32) as i32;
+        ec_enc_bits(enc, anti_collapse_on as u32, 1 as i32 as u32);
     }
     quant_energy_finalise(
         mode,
@@ -3678,17 +3505,16 @@ pub unsafe fn celt_encode_with_ec(
         error.as_mut_ptr(),
         fine_quant.as_mut_ptr(),
         fine_priority.as_mut_ptr(),
-        nbCompressedBytes * 8 as libc::c_int - ec_tell(enc),
+        nbCompressedBytes * 8 as i32 - ec_tell(enc),
         enc,
         C,
     );
     memset(
-        energyError as *mut libc::c_void,
-        0 as libc::c_int,
-        ((nbEBands * CC) as libc::c_ulong)
-            .wrapping_mul(::core::mem::size_of::<opus_val16>() as libc::c_ulong),
+        energyError as *mut core::ffi::c_void,
+        0 as i32,
+        ((nbEBands * CC) as u64).wrapping_mul(::core::mem::size_of::<opus_val16>() as u64),
     );
-    c = 0 as libc::c_int;
+    c = 0 as i32;
     loop {
         i = start;
         while i < end {
@@ -3712,7 +3538,7 @@ pub unsafe fn celt_encode_with_ec(
         }
     }
     if silence != 0 {
-        i = 0 as libc::c_int;
+        i = 0 as i32;
         while i < C * nbEBands {
             *oldBandE.offset(i as isize) = -28.0f32;
             i += 1;
@@ -3721,45 +3547,36 @@ pub unsafe fn celt_encode_with_ec(
     (*st).prefilter_period = pitch_index;
     (*st).prefilter_gain = gain1;
     (*st).prefilter_tapset = prefilter_tapset;
-    if CC == 2 as libc::c_int && C == 1 as libc::c_int {
+    if CC == 2 as i32 && C == 1 as i32 {
         memcpy(
-            &mut *oldBandE.offset(nbEBands as isize) as *mut opus_val16 as *mut libc::c_void,
-            oldBandE as *const libc::c_void,
-            (nbEBands as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<opus_val16>() as libc::c_ulong)
+            &mut *oldBandE.offset(nbEBands as isize) as *mut opus_val16 as *mut core::ffi::c_void,
+            oldBandE as *const core::ffi::c_void,
+            (nbEBands as u64)
+                .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64)
                 .wrapping_add(
-                    (0 as libc::c_int as libc::c_long
+                    (0 as i32 as i64
                         * (&mut *oldBandE.offset(nbEBands as isize) as *mut opus_val16)
-                            .offset_from(oldBandE) as libc::c_long)
-                        as libc::c_ulong,
+                            .offset_from(oldBandE) as i64) as u64,
                 ),
         );
     }
     if isTransient == 0 {
         memcpy(
-            oldLogE2 as *mut libc::c_void,
-            oldLogE as *const libc::c_void,
-            ((CC * nbEBands) as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<opus_val16>() as libc::c_ulong)
-                .wrapping_add(
-                    (0 as libc::c_int as libc::c_long
-                        * oldLogE2.offset_from(oldLogE) as libc::c_long)
-                        as libc::c_ulong,
-                ),
+            oldLogE2 as *mut core::ffi::c_void,
+            oldLogE as *const core::ffi::c_void,
+            ((CC * nbEBands) as u64)
+                .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64)
+                .wrapping_add((0 as i32 as i64 * oldLogE2.offset_from(oldLogE) as i64) as u64),
         );
         memcpy(
-            oldLogE as *mut libc::c_void,
-            oldBandE as *const libc::c_void,
-            ((CC * nbEBands) as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<opus_val16>() as libc::c_ulong)
-                .wrapping_add(
-                    (0 as libc::c_int as libc::c_long
-                        * oldLogE.offset_from(oldBandE) as libc::c_long)
-                        as libc::c_ulong,
-                ),
+            oldLogE as *mut core::ffi::c_void,
+            oldBandE as *const core::ffi::c_void,
+            ((CC * nbEBands) as u64)
+                .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64)
+                .wrapping_add((0 as i32 as i64 * oldLogE.offset_from(oldBandE) as i64) as u64),
         );
     } else {
-        i = 0 as libc::c_int;
+        i = 0 as i32;
         while i < CC * nbEBands {
             *oldLogE.offset(i as isize) =
                 if *oldLogE.offset(i as isize) < *oldBandE.offset(i as isize) {
@@ -3770,11 +3587,11 @@ pub unsafe fn celt_encode_with_ec(
             i += 1;
         }
     }
-    c = 0 as libc::c_int;
+    c = 0 as i32;
     loop {
-        i = 0 as libc::c_int;
+        i = 0 as i32;
         while i < start {
-            *oldBandE.offset((c * nbEBands + i) as isize) = 0 as libc::c_int as opus_val16;
+            *oldBandE.offset((c * nbEBands + i) as isize) = 0 as i32 as opus_val16;
             let ref mut fresh5 = *oldLogE2.offset((c * nbEBands + i) as isize);
             *fresh5 = -28.0f32;
             *oldLogE.offset((c * nbEBands + i) as isize) = *fresh5;
@@ -3782,7 +3599,7 @@ pub unsafe fn celt_encode_with_ec(
         }
         i = end;
         while i < nbEBands {
-            *oldBandE.offset((c * nbEBands + i) as isize) = 0 as libc::c_int as opus_val16;
+            *oldBandE.offset((c * nbEBands + i) as isize) = 0 as i32 as opus_val16;
             let ref mut fresh6 = *oldLogE2.offset((c * nbEBands + i) as isize);
             *fresh6 = -28.0f32;
             *oldLogE.offset((c * nbEBands + i) as isize) = *fresh6;
@@ -3796,7 +3613,7 @@ pub unsafe fn celt_encode_with_ec(
     if isTransient != 0 || transient_got_disabled != 0 {
         (*st).consec_transient += 1;
     } else {
-        (*st).consec_transient = 0 as libc::c_int;
+        (*st).consec_transient = 0 as i32;
     }
     (*st).rng = (*enc).rng;
     ec_enc_done(enc);
@@ -3809,15 +3626,15 @@ pub unsafe fn celt_encode_with_ec(
 #[c2rust::src_loc = "2409:1"]
 pub unsafe fn opus_custom_encoder_ctl_impl(
     mut st: *mut OpusCustomEncoder,
-    request: libc::c_int,
+    request: i32,
     args: VarArgs,
-) -> libc::c_int {
+) -> i32 {
     let current_block: u64;
     let mut ap = args;
     match request {
         OPUS_SET_COMPLEXITY_REQUEST => {
-            let value: libc::c_int = ap.arg::<i32>();
-            if value < 0 as libc::c_int || value > 10 as libc::c_int {
+            let value: i32 = ap.arg::<i32>();
+            if value < 0 as i32 || value > 10 as i32 {
                 current_block = 2472048668343472511;
             } else {
                 (*st).complexity = value;
@@ -3826,7 +3643,7 @@ pub unsafe fn opus_custom_encoder_ctl_impl(
         }
         CELT_SET_START_BAND_REQUEST => {
             let value_0: i32 = ap.arg::<i32>();
-            if value_0 < 0 as libc::c_int || value_0 >= (*(*st).mode).nbEBands {
+            if value_0 < 0 as i32 || value_0 >= (*(*st).mode).nbEBands {
                 current_block = 2472048668343472511;
             } else {
                 (*st).start = value_0;
@@ -3835,7 +3652,7 @@ pub unsafe fn opus_custom_encoder_ctl_impl(
         }
         CELT_SET_END_BAND_REQUEST => {
             let value_1: i32 = ap.arg::<i32>();
-            if value_1 < 1 as libc::c_int || value_1 > (*(*st).mode).nbEBands {
+            if value_1 < 1 as i32 || value_1 > (*(*st).mode).nbEBands {
                 current_block = 2472048668343472511;
             } else {
                 (*st).end = value_1;
@@ -3843,18 +3660,18 @@ pub unsafe fn opus_custom_encoder_ctl_impl(
             }
         }
         CELT_SET_PREDICTION_REQUEST => {
-            let value_2: libc::c_int = ap.arg::<i32>();
-            if value_2 < 0 as libc::c_int || value_2 > 2 as libc::c_int {
+            let value_2: i32 = ap.arg::<i32>();
+            if value_2 < 0 as i32 || value_2 > 2 as i32 {
                 current_block = 2472048668343472511;
             } else {
-                (*st).disable_pf = (value_2 <= 1 as libc::c_int) as libc::c_int;
-                (*st).force_intra = (value_2 == 0 as libc::c_int) as libc::c_int;
+                (*st).disable_pf = (value_2 <= 1 as i32) as i32;
+                (*st).force_intra = (value_2 == 0 as i32) as i32;
                 current_block = 10007731352114176167;
             }
         }
         OPUS_SET_PACKET_LOSS_PERC_REQUEST => {
-            let value_3: libc::c_int = ap.arg::<i32>();
-            if value_3 < 0 as libc::c_int || value_3 > 100 as libc::c_int {
+            let value_3: i32 = ap.arg::<i32>();
+            if value_3 < 0 as i32 || value_3 > 100 as i32 {
                 current_block = 2472048668343472511;
             } else {
                 (*st).loss_rate = value_3;
@@ -3873,13 +3690,13 @@ pub unsafe fn opus_custom_encoder_ctl_impl(
         }
         OPUS_SET_BITRATE_REQUEST => {
             let mut value_6: i32 = ap.arg::<i32>();
-            if value_6 <= 500 as libc::c_int && value_6 != OPUS_BITRATE_MAX {
+            if value_6 <= 500 as i32 && value_6 != OPUS_BITRATE_MAX {
                 current_block = 2472048668343472511;
             } else {
-                value_6 = if value_6 < 260000 as libc::c_int * (*st).channels {
+                value_6 = if value_6 < 260000 as i32 * (*st).channels {
                     value_6
                 } else {
-                    260000 as libc::c_int * (*st).channels
+                    260000 as i32 * (*st).channels
                 };
                 (*st).bitrate = value_6;
                 current_block = 10007731352114176167;
@@ -3887,7 +3704,7 @@ pub unsafe fn opus_custom_encoder_ctl_impl(
         }
         CELT_SET_CHANNELS_REQUEST => {
             let value_7: i32 = ap.arg::<i32>();
-            if value_7 < 1 as libc::c_int || value_7 > 2 as libc::c_int {
+            if value_7 < 1 as i32 || value_7 > 2 as i32 {
                 current_block = 2472048668343472511;
             } else {
                 (*st).stream_channels = value_7;
@@ -3896,7 +3713,7 @@ pub unsafe fn opus_custom_encoder_ctl_impl(
         }
         OPUS_SET_LSB_DEPTH_REQUEST => {
             let value_8: i32 = ap.arg::<i32>();
-            if value_8 < 8 as libc::c_int || value_8 > 24 as libc::c_int {
+            if value_8 < 8 as i32 || value_8 > 24 as i32 {
                 current_block = 2472048668343472511;
             } else {
                 (*st).lsb_depth = value_8;
@@ -3910,7 +3727,7 @@ pub unsafe fn opus_custom_encoder_ctl_impl(
         }
         OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST => {
             let value_10: i32 = ap.arg::<i32>();
-            if value_10 < 0 as libc::c_int || value_10 > 1 as libc::c_int {
+            if value_10 < 0 as i32 || value_10 > 1 as i32 {
                 current_block = 2472048668343472511;
             } else {
                 (*st).disable_inv = value_10;
@@ -3927,7 +3744,7 @@ pub unsafe fn opus_custom_encoder_ctl_impl(
             }
         }
         OPUS_RESET_STATE => {
-            let mut i: libc::c_int = 0;
+            let mut i: i32 = 0;
             let mut oldBandE: *mut opus_val16 = 0 as *mut opus_val16;
             let mut oldLogE: *mut opus_val16 = 0 as *mut opus_val16;
             let mut oldLogE2: *mut opus_val16 = 0 as *mut opus_val16;
@@ -3938,27 +3755,26 @@ pub unsafe fn opus_custom_encoder_ctl_impl(
             oldLogE = oldBandE.offset(((*st).channels * (*(*st).mode).nbEBands) as isize);
             oldLogE2 = oldLogE.offset(((*st).channels * (*(*st).mode).nbEBands) as isize);
             memset(
-                &mut (*st).rng as *mut u32 as *mut libc::c_char as *mut libc::c_void,
-                0 as libc::c_int,
-                ((opus_custom_encoder_get_size((*st).mode, (*st).channels) as libc::c_long
-                    - (&mut (*st).rng as *mut u32 as *mut libc::c_char)
-                        .offset_from(st as *mut libc::c_char) as libc::c_long)
-                    as libc::c_ulong)
-                    .wrapping_mul(::core::mem::size_of::<libc::c_char>() as libc::c_ulong),
+                &mut (*st).rng as *mut u32 as *mut i8 as *mut core::ffi::c_void,
+                0 as i32,
+                ((opus_custom_encoder_get_size((*st).mode, (*st).channels) as i64
+                    - (&mut (*st).rng as *mut u32 as *mut i8).offset_from(st as *mut i8) as i64)
+                    as u64)
+                    .wrapping_mul(::core::mem::size_of::<i8>() as u64),
             );
-            i = 0 as libc::c_int;
+            i = 0 as i32;
             while i < (*st).channels * (*(*st).mode).nbEBands {
                 let ref mut fresh7 = *oldLogE2.offset(i as isize);
                 *fresh7 = -28.0f32;
                 *oldLogE.offset(i as isize) = *fresh7;
                 i += 1;
             }
-            (*st).vbr_offset = 0 as libc::c_int;
-            (*st).delayedIntra = 1 as libc::c_int as opus_val32;
+            (*st).vbr_offset = 0 as i32;
+            (*st).delayedIntra = 1 as i32 as opus_val32;
             (*st).spread_decision = SPREAD_NORMAL;
-            (*st).tonal_average = 256 as libc::c_int;
-            (*st).hf_average = 0 as libc::c_int;
-            (*st).tapset_decision = 0 as libc::c_int;
+            (*st).tonal_average = 256 as i32;
+            (*st).hf_average = 0 as i32;
+            (*st).tapset_decision = 0 as i32;
             current_block = 10007731352114176167;
         }
         CELT_SET_SIGNALLING_REQUEST => {
@@ -3970,14 +3786,14 @@ pub unsafe fn opus_custom_encoder_ctl_impl(
             let info: *mut AnalysisInfo = ap.arg::<*mut AnalysisInfo>();
             if !info.is_null() {
                 memcpy(
-                    &mut (*st).analysis as *mut AnalysisInfo as *mut libc::c_void,
-                    info as *const libc::c_void,
-                    (1 as libc::c_int as libc::c_ulong)
-                        .wrapping_mul(::core::mem::size_of::<AnalysisInfo>() as libc::c_ulong)
+                    &mut (*st).analysis as *mut AnalysisInfo as *mut core::ffi::c_void,
+                    info as *const core::ffi::c_void,
+                    (1 as i32 as u64)
+                        .wrapping_mul(::core::mem::size_of::<AnalysisInfo>() as u64)
                         .wrapping_add(
-                            (0 as libc::c_int as libc::c_long
+                            (0 as i32 as i64
                                 * (&mut (*st).analysis as *mut AnalysisInfo).offset_from(info)
-                                    as libc::c_long) as libc::c_ulong,
+                                    as i64) as u64,
                         ),
                 );
             }
@@ -3987,14 +3803,14 @@ pub unsafe fn opus_custom_encoder_ctl_impl(
             let info_0: *mut SILKInfo = ap.arg::<*mut SILKInfo>();
             if !info_0.is_null() {
                 memcpy(
-                    &mut (*st).silk_info as *mut SILKInfo as *mut libc::c_void,
-                    info_0 as *const libc::c_void,
-                    (1 as libc::c_int as libc::c_ulong)
-                        .wrapping_mul(::core::mem::size_of::<SILKInfo>() as libc::c_ulong)
+                    &mut (*st).silk_info as *mut SILKInfo as *mut core::ffi::c_void,
+                    info_0 as *const core::ffi::c_void,
+                    (1 as i32 as u64)
+                        .wrapping_mul(::core::mem::size_of::<SILKInfo>() as u64)
                         .wrapping_add(
-                            (0 as libc::c_int as libc::c_long
+                            (0 as i32 as i64
                                 * (&mut (*st).silk_info as *mut SILKInfo).offset_from(info_0)
-                                    as libc::c_long) as libc::c_ulong,
+                                    as i64) as u64,
                         ),
                 );
             }

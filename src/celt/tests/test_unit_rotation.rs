@@ -1,14 +1,14 @@
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:36"]
 pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]
-    pub type size_t = libc::c_ulong;
+    pub type size_t = u64;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:38"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
-    pub type opus_val16 = libc::c_float;
+    pub type opus_val16 = f32;
     #[c2rust::src_loc = "184:1"]
-    pub type celt_norm = libc::c_float;
+    pub type celt_norm = f32;
 }
 #[c2rust::header_src = "/usr/include/stdio.h:36"]
 pub mod stdio_h {
@@ -17,23 +17,23 @@ pub mod stdio_h {
         #[c2rust::src_loc = "145:14"]
         pub static mut stderr: *mut FILE;
         #[c2rust::src_loc = "350:12"]
-        pub fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
+        pub fn fprintf(_: *mut FILE, _: *const i8, _: ...) -> i32;
         #[c2rust::src_loc = "356:12"]
-        pub fn printf(_: *const libc::c_char, _: ...) -> libc::c_int;
+        pub fn printf(_: *const i8, _: ...) -> i32;
     }
 }
 #[c2rust::header_src = "/usr/include/stdlib.h:37"]
 pub mod stdlib_h {
     {
         #[c2rust::src_loc = "454:1"]
-        pub fn rand() -> libc::c_int;
+        pub fn rand() -> i32;
     }
 }
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:38"]
 pub mod mathcalls_h {
     {
         #[c2rust::src_loc = "107:17"]
-        pub fn log10(_: libc::c_double) -> libc::c_double;
+        pub fn log10(_: f64) -> f64;
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/vq.h:38"]
@@ -43,11 +43,11 @@ pub mod vq_h {
         #[c2rust::src_loc = "44:1"]
         pub fn exp_rotation(
             X: *mut celt_norm,
-            len: libc::c_int,
-            dir: libc::c_int,
-            stride: libc::c_int,
-            K: libc::c_int,
-            spread: libc::c_int,
+            len: i32,
+            dir: i32,
+            stride: i32,
+            K: i32,
+            spread: i32,
         );
     }
 }
@@ -61,75 +61,75 @@ pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data
 use self::vq_h::exp_rotation;
 pub use self::FILE_h::FILE;
 #[c2rust::src_loc = "46:5"]
-pub static mut ret: libc::c_int = 0 as libc::c_int;
+pub static mut ret: i32 = 0 as i32;
 #[c2rust::src_loc = "47:1"]
-pub unsafe fn test_rotation(mut N: libc::c_int, mut K: libc::c_int) {
-    let mut i: libc::c_int = 0;
-    let mut err: libc::c_double = 0 as libc::c_int as libc::c_double;
-    let mut ener: libc::c_double = 0 as libc::c_int as libc::c_double;
-    let mut snr: libc::c_double = 0.;
-    let mut snr0: libc::c_double = 0.;
+pub unsafe fn test_rotation(mut N: i32, mut K: i32) {
+    let mut i: i32 = 0;
+    let mut err: f64 = 0 as i32 as f64;
+    let mut ener: f64 = 0 as i32 as f64;
+    let mut snr: f64 = 0.;
+    let mut snr0: f64 = 0.;
     let mut x0: [opus_val16; 100] = [0.; 100];
     let mut x1: [opus_val16; 100] = [0.; 100];
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < N {
-        x0[i as usize] = (rand() % 32767 as libc::c_int - 16384 as libc::c_int) as opus_val16;
+        x0[i as usize] = (rand() % 32767 as i32 - 16384 as i32) as opus_val16;
         x1[i as usize] = x0[i as usize];
         i += 1;
     }
     exp_rotation(
         x1.as_mut_ptr(),
         N,
-        1 as libc::c_int,
-        1 as libc::c_int,
+        1 as i32,
+        1 as i32,
         K,
-        2 as libc::c_int,
+        2 as i32,
     );
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < N {
-        err += (x0[i as usize] as libc::c_double - x1[i as usize] as libc::c_double)
-            * (x0[i as usize] as libc::c_double - x1[i as usize] as libc::c_double);
-        ener += x0[i as usize] as libc::c_double * x0[i as usize] as libc::c_double;
+        err += (x0[i as usize] as f64 - x1[i as usize] as f64)
+            * (x0[i as usize] as f64 - x1[i as usize] as f64);
+        ener += x0[i as usize] as f64 * x0[i as usize] as f64;
         i += 1;
     }
-    snr0 = 20 as libc::c_int as libc::c_double * log10(ener / err);
-    ener = 0 as libc::c_int as libc::c_double;
+    snr0 = 20 as i32 as f64 * log10(ener / err);
+    ener = 0 as i32 as f64;
     err = ener;
     exp_rotation(
         x1.as_mut_ptr(),
         N,
-        -(1 as libc::c_int),
-        1 as libc::c_int,
+        -(1 as i32),
+        1 as i32,
         K,
-        2 as libc::c_int,
+        2 as i32,
     );
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < N {
-        err += (x0[i as usize] as libc::c_double - x1[i as usize] as libc::c_double)
-            * (x0[i as usize] as libc::c_double - x1[i as usize] as libc::c_double);
-        ener += x0[i as usize] as libc::c_double * x0[i as usize] as libc::c_double;
+        err += (x0[i as usize] as f64 - x1[i as usize] as f64)
+            * (x0[i as usize] as f64 - x1[i as usize] as f64);
+        ener += x0[i as usize] as f64 * x0[i as usize] as f64;
         i += 1;
     }
-    snr = 20 as libc::c_int as libc::c_double * log10(ener / err);
+    snr = 20 as i32 as f64 * log10(ener / err);
     printf(
         b"SNR for size %d (%d pulses) is %f (was %f without inverse)\n\0" as *const u8
-            as *const libc::c_char,
+            as *const i8,
         N,
         K,
         snr,
         snr0,
     );
-    if snr < 60 as libc::c_int as libc::c_double || snr0 > 20 as libc::c_int as libc::c_double {
-        fprintf(stderr(), b"FAIL!\n\0" as *const u8 as *const libc::c_char);
-        ret = 1 as libc::c_int;
+    if snr < 60 as i32 as f64 || snr0 > 20 as i32 as f64 {
+        fprintf(stderr(), b"FAIL!\n\0" as *const u8 as *const i8);
+        ret = 1 as i32;
     }
 }
 #[c2rust::src_loc = "78:1"]
-unsafe fn main_0() -> libc::c_int {
-    test_rotation(15 as libc::c_int, 3 as libc::c_int);
-    test_rotation(23 as libc::c_int, 5 as libc::c_int);
-    test_rotation(50 as libc::c_int, 3 as libc::c_int);
-    test_rotation(80 as libc::c_int, 1 as libc::c_int);
+unsafe fn main_0() -> i32 {
+    test_rotation(15 as i32, 3 as i32);
+    test_rotation(23 as i32, 5 as i32);
+    test_rotation(50 as i32, 3 as i32);
+    test_rotation(80 as i32, 1 as i32);
     return ret;
 }
 pub fn main() {

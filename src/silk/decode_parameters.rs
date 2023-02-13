@@ -13,11 +13,11 @@ use crate::silk::NLSF2A::silk_NLSF2A;
 pub unsafe fn silk_decode_parameters(
     mut psDec: *mut silk_decoder_state,
     mut psDecCtrl: *mut silk_decoder_control,
-    condCoding: libc::c_int,
+    condCoding: i32,
 ) {
-    let mut i: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
-    let mut Ix: libc::c_int = 0;
+    let mut i: i32 = 0;
+    let mut k: i32 = 0;
+    let mut Ix: i32 = 0;
     let mut pNLSF_Q15: [i16; 16] = [0; 16];
     let mut pNLSF0_Q15: [i16; 16] = [0; 16];
     let mut cbk_ptr_Q7: *const i8 = 0 as *const i8;
@@ -25,7 +25,7 @@ pub unsafe fn silk_decode_parameters(
         ((*psDecCtrl).Gains_Q16).as_mut_ptr(),
         ((*psDec).indices.GainsIndices).as_mut_ptr() as *const i8,
         &mut (*psDec).LastGainIndex,
-        (condCoding == CODE_CONDITIONALLY) as libc::c_int,
+        (condCoding == CODE_CONDITIONALLY) as i32,
         (*psDec).nb_subfr,
     );
     silk_NLSF_decode(
@@ -34,59 +34,54 @@ pub unsafe fn silk_decode_parameters(
         (*psDec).psNLSF_CB,
     );
     silk_NLSF2A(
-        ((*psDecCtrl).PredCoef_Q12[1 as libc::c_int as usize]).as_mut_ptr(),
+        ((*psDecCtrl).PredCoef_Q12[1 as i32 as usize]).as_mut_ptr(),
         pNLSF_Q15.as_mut_ptr(),
         (*psDec).LPC_order,
         (*psDec).arch,
     );
-    if (*psDec).first_frame_after_reset == 1 as libc::c_int {
-        (*psDec).indices.NLSFInterpCoef_Q2 = 4 as libc::c_int as i8;
+    if (*psDec).first_frame_after_reset == 1 as i32 {
+        (*psDec).indices.NLSFInterpCoef_Q2 = 4 as i32 as i8;
     }
-    if ((*psDec).indices.NLSFInterpCoef_Q2 as libc::c_int) < 4 as libc::c_int {
-        i = 0 as libc::c_int;
+    if ((*psDec).indices.NLSFInterpCoef_Q2 as i32) < 4 as i32 {
+        i = 0 as i32;
         while i < (*psDec).LPC_order {
-            pNLSF0_Q15[i as usize] = ((*psDec).prevNLSF_Q15[i as usize] as libc::c_int
-                + ((*psDec).indices.NLSFInterpCoef_Q2 as libc::c_int
-                    * (pNLSF_Q15[i as usize] as libc::c_int
-                        - (*psDec).prevNLSF_Q15[i as usize] as libc::c_int)
-                    >> 2 as libc::c_int)) as i16;
+            pNLSF0_Q15[i as usize] = ((*psDec).prevNLSF_Q15[i as usize] as i32
+                + ((*psDec).indices.NLSFInterpCoef_Q2 as i32
+                    * (pNLSF_Q15[i as usize] as i32 - (*psDec).prevNLSF_Q15[i as usize] as i32)
+                    >> 2 as i32)) as i16;
             i += 1;
         }
         silk_NLSF2A(
-            ((*psDecCtrl).PredCoef_Q12[0 as libc::c_int as usize]).as_mut_ptr(),
+            ((*psDecCtrl).PredCoef_Q12[0 as i32 as usize]).as_mut_ptr(),
             pNLSF0_Q15.as_mut_ptr(),
             (*psDec).LPC_order,
             (*psDec).arch,
         );
     } else {
         memcpy(
-            ((*psDecCtrl).PredCoef_Q12[0 as libc::c_int as usize]).as_mut_ptr()
-                as *mut libc::c_void,
-            ((*psDecCtrl).PredCoef_Q12[1 as libc::c_int as usize]).as_mut_ptr()
-                as *const libc::c_void,
-            ((*psDec).LPC_order as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<i16>() as libc::c_ulong),
+            ((*psDecCtrl).PredCoef_Q12[0 as i32 as usize]).as_mut_ptr() as *mut core::ffi::c_void,
+            ((*psDecCtrl).PredCoef_Q12[1 as i32 as usize]).as_mut_ptr() as *const core::ffi::c_void,
+            ((*psDec).LPC_order as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
         );
     }
     memcpy(
-        ((*psDec).prevNLSF_Q15).as_mut_ptr() as *mut libc::c_void,
-        pNLSF_Q15.as_mut_ptr() as *const libc::c_void,
-        ((*psDec).LPC_order as libc::c_ulong)
-            .wrapping_mul(::core::mem::size_of::<i16>() as libc::c_ulong),
+        ((*psDec).prevNLSF_Q15).as_mut_ptr() as *mut core::ffi::c_void,
+        pNLSF_Q15.as_mut_ptr() as *const core::ffi::c_void,
+        ((*psDec).LPC_order as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
     );
     if (*psDec).lossCnt != 0 {
         silk_bwexpander(
-            ((*psDecCtrl).PredCoef_Q12[0 as libc::c_int as usize]).as_mut_ptr(),
+            ((*psDecCtrl).PredCoef_Q12[0 as i32 as usize]).as_mut_ptr(),
             (*psDec).LPC_order,
             BWE_AFTER_LOSS_Q16,
         );
         silk_bwexpander(
-            ((*psDecCtrl).PredCoef_Q12[1 as libc::c_int as usize]).as_mut_ptr(),
+            ((*psDecCtrl).PredCoef_Q12[1 as i32 as usize]).as_mut_ptr(),
             (*psDec).LPC_order,
             BWE_AFTER_LOSS_Q16,
         );
     }
-    if (*psDec).indices.signalType as libc::c_int == TYPE_VOICED {
+    if (*psDec).indices.signalType as i32 == TYPE_VOICED {
         silk_decode_pitch(
             (*psDec).indices.lagIndex,
             (*psDec).indices.contourIndex,
@@ -95,34 +90,33 @@ pub unsafe fn silk_decode_parameters(
             (*psDec).nb_subfr,
         );
         cbk_ptr_Q7 = silk_LTP_vq_ptrs_Q7[(*psDec).indices.PERIndex as usize];
-        k = 0 as libc::c_int;
+        k = 0 as i32;
         while k < (*psDec).nb_subfr {
-            Ix = (*psDec).indices.LTPIndex[k as usize] as libc::c_int;
-            i = 0 as libc::c_int;
+            Ix = (*psDec).indices.LTPIndex[k as usize] as i32;
+            i = 0 as i32;
             while i < LTP_ORDER {
                 (*psDecCtrl).LTPCoef_Q14[(k * LTP_ORDER + i) as usize] =
-                    ((*cbk_ptr_Q7.offset((Ix * 5 as libc::c_int + i) as isize) as u32)
-                        << 7 as libc::c_int) as i32 as i16;
+                    ((*cbk_ptr_Q7.offset((Ix * 5 as i32 + i) as isize) as u32) << 7 as i32) as i32
+                        as i16;
                 i += 1;
             }
             k += 1;
         }
-        Ix = (*psDec).indices.LTP_scaleIndex as libc::c_int;
-        (*psDecCtrl).LTP_scale_Q14 = silk_LTPScales_table_Q14[Ix as usize] as libc::c_int;
+        Ix = (*psDec).indices.LTP_scaleIndex as i32;
+        (*psDecCtrl).LTP_scale_Q14 = silk_LTPScales_table_Q14[Ix as usize] as i32;
     } else {
         memset(
-            ((*psDecCtrl).pitchL).as_mut_ptr() as *mut libc::c_void,
-            0 as libc::c_int,
-            ((*psDec).nb_subfr as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<libc::c_int>() as libc::c_ulong),
+            ((*psDecCtrl).pitchL).as_mut_ptr() as *mut core::ffi::c_void,
+            0 as i32,
+            ((*psDec).nb_subfr as u64).wrapping_mul(::core::mem::size_of::<i32>() as u64),
         );
         memset(
-            ((*psDecCtrl).LTPCoef_Q14).as_mut_ptr() as *mut libc::c_void,
-            0 as libc::c_int,
-            ((5 as libc::c_int * (*psDec).nb_subfr) as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<i16>() as libc::c_ulong),
+            ((*psDecCtrl).LTPCoef_Q14).as_mut_ptr() as *mut core::ffi::c_void,
+            0 as i32,
+            ((5 as i32 * (*psDec).nb_subfr) as u64)
+                .wrapping_mul(::core::mem::size_of::<i16>() as u64),
         );
-        (*psDec).indices.PERIndex = 0 as libc::c_int as i8;
-        (*psDecCtrl).LTP_scale_Q14 = 0 as libc::c_int;
+        (*psDec).indices.PERIndex = 0 as i32 as i8;
+        (*psDecCtrl).LTP_scale_Q14 = 0 as i32;
     };
 }

@@ -1,24 +1,24 @@
-pub const PE_NB_CBKS_STAGE3_MIN: libc::c_int = 16;
-pub const PE_NB_CBKS_STAGE3_MID: libc::c_int = 24;
-pub const PE_NB_CBKS_STAGE3_MAX: libc::c_int = 34;
-pub const PE_NB_CBKS_STAGE3_10MS: libc::c_int = 12;
-pub const PE_NB_STAGE3_LAGS: libc::c_int = 5 as libc::c_int;
-pub const PE_NB_CBKS_STAGE2_EXT: libc::c_int = 11;
-pub const PE_NB_CBKS_STAGE2_10MS: libc::c_int = 3;
-pub const PE_MAX_NB_SUBFR: libc::c_int = 4;
-pub const PE_SUBFR_LENGTH_MS: libc::c_int = 5 as libc::c_int;
-pub const PE_LTP_MEM_LENGTH_MS: libc::c_int = 4 as libc::c_int * PE_SUBFR_LENGTH_MS;
-pub const PE_MAX_LAG_MS: libc::c_int = 18 as libc::c_int;
-pub const PE_MIN_LAG_MS: libc::c_int = 2 as libc::c_int;
-pub const PE_NB_CBKS_STAGE2: libc::c_int = 3 as libc::c_int;
+pub const PE_NB_CBKS_STAGE3_MIN: i32 = 16;
+pub const PE_NB_CBKS_STAGE3_MID: i32 = 24;
+pub const PE_NB_CBKS_STAGE3_MAX: i32 = 34;
+pub const PE_NB_CBKS_STAGE3_10MS: i32 = 12;
+pub const PE_NB_STAGE3_LAGS: i32 = 5 as i32;
+pub const PE_NB_CBKS_STAGE2_EXT: i32 = 11;
+pub const PE_NB_CBKS_STAGE2_10MS: i32 = 3;
+pub const PE_MAX_NB_SUBFR: i32 = 4;
+pub const PE_SUBFR_LENGTH_MS: i32 = 5 as i32;
+pub const PE_LTP_MEM_LENGTH_MS: i32 = 4 as i32 * PE_SUBFR_LENGTH_MS;
+pub const PE_MAX_LAG_MS: i32 = 18 as i32;
+pub const PE_MIN_LAG_MS: i32 = 2 as i32;
+pub const PE_NB_CBKS_STAGE2: i32 = 3 as i32;
 
-pub const SILK_PE_MIN_COMPLEX: libc::c_int = 0 as libc::c_int;
-pub const SILK_PE_MID_COMPLEX: libc::c_int = 1 as libc::c_int;
-pub const SILK_PE_MAX_COMPLEX: libc::c_int = 2 as libc::c_int;
+pub const SILK_PE_MIN_COMPLEX: i32 = 0 as i32;
+pub const SILK_PE_MID_COMPLEX: i32 = 1 as i32;
+pub const SILK_PE_MAX_COMPLEX: i32 = 2 as i32;
 
-pub const PE_SHORTLAG_BIAS: libc::c_float = 0.2f32;
-pub const PE_PREVLAG_BIAS: libc::c_float = 0.2f32;
-pub const PE_FLATCONTOUR_BIAS: libc::c_float = 0.05f32;
+pub const PE_SHORTLAG_BIAS: f32 = 0.2f32;
+pub const PE_PREVLAG_BIAS: f32 = 0.2f32;
+pub const PE_FLATCONTOUR_BIAS: f32 = 0.05f32;
 
 #[c2rust::src_loc = "35:17"]
 pub static silk_CB_lags_stage2_10_ms: [[i8; 3]; 2] = [[0, 1, 0], [0, 0, 1]];

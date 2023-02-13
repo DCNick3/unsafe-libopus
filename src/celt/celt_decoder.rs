@@ -11,10 +11,10 @@ pub mod internal {
     #[repr(C)]
     #[c2rust::src_loc = "0:0"]
     pub struct __va_list_tag {
-        pub gp_offset: libc::c_uint,
-        pub fp_offset: libc::c_uint,
-        pub overflow_arg_area: *mut libc::c_void,
-        pub reg_save_area: *mut libc::c_void,
+        pub gp_offset: u32,
+        pub fp_offset: u32,
+        pub overflow_arg_area: *mut core::ffi::c_void,
+        pub reg_save_area: *mut core::ffi::c_void,
     }
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stdarg.h:37"]
@@ -26,60 +26,60 @@ pub mod stdarg_h {
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:38"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
-    pub type opus_val16 = libc::c_float;
+    pub type opus_val16 = f32;
     #[c2rust::src_loc = "180:1"]
-    pub type opus_val32 = libc::c_float;
+    pub type opus_val32 = f32;
     #[c2rust::src_loc = "183:1"]
-    pub type celt_sig = libc::c_float;
+    pub type celt_sig = f32;
     #[c2rust::src_loc = "184:1"]
-    pub type celt_norm = libc::c_float;
+    pub type celt_norm = f32;
     #[c2rust::src_loc = "185:1"]
-    pub type celt_ener = libc::c_float;
+    pub type celt_ener = f32;
     #[c2rust::src_loc = "203:9"]
-    pub const Q15ONE: libc::c_float = 1.0f32;
+    pub const Q15ONE: f32 = 1.0f32;
     #[c2rust::src_loc = "208:9"]
-    pub const VERY_SMALL: libc::c_float = 1e-30f32;
+    pub const VERY_SMALL: f32 = 1e-30f32;
     #[c2rust::src_loc = "57:9"]
-    pub const CELT_SIG_SCALE: libc::c_float = 32768.0f32;
+    pub const CELT_SIG_SCALE: f32 = 32768.0f32;
 }
 
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:36"]
 pub mod opus_defines_h {
     #[c2rust::src_loc = "46:9"]
-    pub const OPUS_OK: libc::c_int = 0 as libc::c_int;
+    pub const OPUS_OK: i32 = 0 as i32;
     #[c2rust::src_loc = "48:9"]
-    pub const OPUS_BAD_ARG: libc::c_int = -(1 as libc::c_int);
+    pub const OPUS_BAD_ARG: i32 = -(1 as i32);
     #[c2rust::src_loc = "52:9"]
-    pub const OPUS_INTERNAL_ERROR: libc::c_int = -(3 as libc::c_int);
+    pub const OPUS_INTERNAL_ERROR: i32 = -(3 as i32);
     #[c2rust::src_loc = "56:9"]
-    pub const OPUS_UNIMPLEMENTED: libc::c_int = -(5 as libc::c_int);
+    pub const OPUS_UNIMPLEMENTED: i32 = -(5 as i32);
     #[c2rust::src_loc = "154:9"]
-    pub const OPUS_GET_LOOKAHEAD_REQUEST: libc::c_int = 4027;
+    pub const OPUS_GET_LOOKAHEAD_REQUEST: i32 = 4027;
     #[c2rust::src_loc = "662:9"]
-    pub const OPUS_RESET_STATE: libc::c_int = 4028;
+    pub const OPUS_RESET_STATE: i32 = 4028;
     #[c2rust::src_loc = "157:9"]
-    pub const OPUS_GET_FINAL_RANGE_REQUEST: libc::c_int = 4031;
+    pub const OPUS_GET_FINAL_RANGE_REQUEST: i32 = 4031;
     #[c2rust::src_loc = "170:9"]
-    pub const OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST: libc::c_int = 4047;
+    pub const OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4047;
     #[c2rust::src_loc = "169:9"]
-    pub const OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST: libc::c_int = 4046;
+    pub const OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4046;
     #[c2rust::src_loc = "158:9"]
-    pub const OPUS_GET_PITCH_REQUEST: libc::c_int = 4033;
+    pub const OPUS_GET_PITCH_REQUEST: i32 = 4033;
     #[c2rust::src_loc = "60:9"]
-    pub const OPUS_ALLOC_FAIL: libc::c_int = -(7 as libc::c_int);
+    pub const OPUS_ALLOC_FAIL: i32 = -(7 as i32);
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cpu_support.h:36"]
 pub mod cpu_support_h {
     #[inline]
     #[c2rust::src_loc = "65:1"]
-    pub unsafe fn opus_select_arch() -> libc::c_int {
-        return 0 as libc::c_int;
+    pub unsafe fn opus_select_arch() -> i32 {
+        return 0 as i32;
     }
 }
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:37"]
 pub mod stddef_h {
     #[c2rust::src_loc = "89:11"]
-    pub const NULL: libc::c_int = 0 as libc::c_int;
+    pub const NULL: i32 = 0 as i32;
 }
 pub use self::arch_h::{
     celt_ener, celt_norm, celt_sig, opus_val16, opus_val32, CELT_SIG_SCALE, Q15ONE, VERY_SMALL,
@@ -122,253 +122,228 @@ use crate::varargs::VarArgs;
 #[c2rust::src_loc = "75:8"]
 pub struct OpusCustomDecoder {
     pub mode: *const OpusCustomMode,
-    pub overlap: libc::c_int,
-    pub channels: libc::c_int,
-    pub stream_channels: libc::c_int,
-    pub downsample: libc::c_int,
-    pub start: libc::c_int,
-    pub end: libc::c_int,
-    pub signalling: libc::c_int,
-    pub disable_inv: libc::c_int,
-    pub arch: libc::c_int,
+    pub overlap: i32,
+    pub channels: i32,
+    pub stream_channels: i32,
+    pub downsample: i32,
+    pub start: i32,
+    pub end: i32,
+    pub signalling: i32,
+    pub disable_inv: i32,
+    pub arch: i32,
     pub rng: u32,
-    pub error: libc::c_int,
-    pub last_pitch_index: libc::c_int,
-    pub loss_count: libc::c_int,
-    pub skip_plc: libc::c_int,
-    pub postfilter_period: libc::c_int,
-    pub postfilter_period_old: libc::c_int,
+    pub error: i32,
+    pub last_pitch_index: i32,
+    pub loss_count: i32,
+    pub skip_plc: i32,
+    pub postfilter_period: i32,
+    pub postfilter_period_old: i32,
     pub postfilter_gain: opus_val16,
     pub postfilter_gain_old: opus_val16,
-    pub postfilter_tapset: libc::c_int,
-    pub postfilter_tapset_old: libc::c_int,
+    pub postfilter_tapset: i32,
+    pub postfilter_tapset_old: i32,
     pub preemph_memD: [celt_sig; 2],
     pub _decode_mem: [celt_sig; 1],
 }
 #[c2rust::src_loc = "57:9"]
-pub const PLC_PITCH_LAG_MAX: libc::c_int = 720 as libc::c_int;
+pub const PLC_PITCH_LAG_MAX: i32 = 720 as i32;
 #[c2rust::src_loc = "60:9"]
-pub const PLC_PITCH_LAG_MIN: libc::c_int = 100 as libc::c_int;
+pub const PLC_PITCH_LAG_MIN: i32 = 100 as i32;
 #[c2rust::src_loc = "70:9"]
-pub const DECODE_BUFFER_SIZE: libc::c_int = 2048 as libc::c_int;
+pub const DECODE_BUFFER_SIZE: i32 = 2048 as i32;
 #[c2rust::src_loc = "115:1"]
 pub unsafe fn validate_celt_decoder(st: *mut OpusCustomDecoder) {
     if !((*st).mode
-        == opus_custom_mode_create(
-            48000 as libc::c_int,
-            960 as libc::c_int,
-            0 as *mut libc::c_int,
-        ) as *const OpusCustomMode)
+        == opus_custom_mode_create(48000 as i32, 960 as i32, 0 as *mut i32)
+            as *const OpusCustomMode)
     {
         celt_fatal(
             b"assertion failed: st->mode == opus_custom_mode_create(48000, 960, NULL)\0"
-                as *const u8 as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            118 as libc::c_int,
+                as *const u8 as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            118 as i32,
         );
     }
-    if !((*st).overlap == 120 as libc::c_int) {
+    if !((*st).overlap == 120 as i32) {
         celt_fatal(
-            b"assertion failed: st->overlap == 120\0" as *const u8 as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            119 as libc::c_int,
+            b"assertion failed: st->overlap == 120\0" as *const u8 as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            119 as i32,
         );
     }
-    if !((*st).channels == 1 as libc::c_int || (*st).channels == 2 as libc::c_int) {
+    if !((*st).channels == 1 as i32 || (*st).channels == 2 as i32) {
         celt_fatal(
-            b"assertion failed: st->channels == 1 || st->channels == 2\0" as *const u8
-                as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            121 as libc::c_int,
+            b"assertion failed: st->channels == 1 || st->channels == 2\0" as *const u8 as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            121 as i32,
         );
     }
-    if !((*st).stream_channels == 1 as libc::c_int || (*st).stream_channels == 2 as libc::c_int) {
+    if !((*st).stream_channels == 1 as i32 || (*st).stream_channels == 2 as i32) {
         celt_fatal(
             b"assertion failed: st->stream_channels == 1 || st->stream_channels == 2\0" as *const u8
-                as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            122 as libc::c_int,
+                as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            122 as i32,
         );
     }
-    if !((*st).downsample > 0 as libc::c_int) {
+    if !((*st).downsample > 0 as i32) {
         celt_fatal(
-            b"assertion failed: st->downsample > 0\0" as *const u8 as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            123 as libc::c_int,
+            b"assertion failed: st->downsample > 0\0" as *const u8 as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            123 as i32,
         );
     }
-    if !((*st).start == 0 as libc::c_int || (*st).start == 17 as libc::c_int) {
+    if !((*st).start == 0 as i32 || (*st).start == 17 as i32) {
         celt_fatal(
-            b"assertion failed: st->start == 0 || st->start == 17\0" as *const u8
-                as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            124 as libc::c_int,
+            b"assertion failed: st->start == 0 || st->start == 17\0" as *const u8 as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            124 as i32,
         );
     }
     if !((*st).start < (*st).end) {
         celt_fatal(
-            b"assertion failed: st->start < st->end\0" as *const u8 as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            125 as libc::c_int,
+            b"assertion failed: st->start < st->end\0" as *const u8 as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            125 as i32,
         );
     }
-    if !((*st).end <= 21 as libc::c_int) {
+    if !((*st).end <= 21 as i32) {
         celt_fatal(
-            b"assertion failed: st->end <= 21\0" as *const u8 as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            126 as libc::c_int,
+            b"assertion failed: st->end <= 21\0" as *const u8 as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            126 as i32,
         );
     }
-    if !((*st).arch >= 0 as libc::c_int) {
+    if !((*st).arch >= 0 as i32) {
         celt_fatal(
-            b"assertion failed: st->arch >= 0\0" as *const u8 as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            128 as libc::c_int,
+            b"assertion failed: st->arch >= 0\0" as *const u8 as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            128 as i32,
         );
     }
-    if !((*st).arch <= 0 as libc::c_int) {
+    if !((*st).arch <= 0 as i32) {
         celt_fatal(
-            b"assertion failed: st->arch <= OPUS_ARCHMASK\0" as *const u8 as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            129 as libc::c_int,
+            b"assertion failed: st->arch <= OPUS_ARCHMASK\0" as *const u8 as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            129 as i32,
         );
     }
-    if !((*st).last_pitch_index <= 720 as libc::c_int) {
+    if !((*st).last_pitch_index <= 720 as i32) {
         celt_fatal(
             b"assertion failed: st->last_pitch_index <= PLC_PITCH_LAG_MAX\0" as *const u8
-                as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            131 as libc::c_int,
+                as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            131 as i32,
         );
     }
-    if !((*st).last_pitch_index >= 100 as libc::c_int || (*st).last_pitch_index == 0 as libc::c_int)
-    {
+    if !((*st).last_pitch_index >= 100 as i32 || (*st).last_pitch_index == 0 as i32) {
         celt_fatal(
             b"assertion failed: st->last_pitch_index >= PLC_PITCH_LAG_MIN || st->last_pitch_index == 0\0"
-                as *const u8 as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            132 as libc::c_int,
+                as *const u8 as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            132 as i32,
         );
     }
-    if !((*st).postfilter_period < 1024 as libc::c_int) {
+    if !((*st).postfilter_period < 1024 as i32) {
         celt_fatal(
-            b"assertion failed: st->postfilter_period < MAX_PERIOD\0" as *const u8
-                as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            133 as libc::c_int,
+            b"assertion failed: st->postfilter_period < MAX_PERIOD\0" as *const u8 as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            133 as i32,
         );
     }
-    if !((*st).postfilter_period >= 15 as libc::c_int
-        || (*st).postfilter_period == 0 as libc::c_int)
-    {
+    if !((*st).postfilter_period >= 15 as i32 || (*st).postfilter_period == 0 as i32) {
         celt_fatal(
             b"assertion failed: st->postfilter_period >= COMBFILTER_MINPERIOD || st->postfilter_period == 0\0"
-                as *const u8 as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            134 as libc::c_int,
+                as *const u8 as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            134 as i32,
         );
     }
-    if !((*st).postfilter_period_old < 1024 as libc::c_int) {
+    if !((*st).postfilter_period_old < 1024 as i32) {
         celt_fatal(
-            b"assertion failed: st->postfilter_period_old < MAX_PERIOD\0" as *const u8
-                as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            135 as libc::c_int,
+            b"assertion failed: st->postfilter_period_old < MAX_PERIOD\0" as *const u8 as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            135 as i32,
         );
     }
-    if !((*st).postfilter_period_old >= 15 as libc::c_int
-        || (*st).postfilter_period_old == 0 as libc::c_int)
-    {
+    if !((*st).postfilter_period_old >= 15 as i32 || (*st).postfilter_period_old == 0 as i32) {
         celt_fatal(
             b"assertion failed: st->postfilter_period_old >= COMBFILTER_MINPERIOD || st->postfilter_period_old == 0\0"
-                as *const u8 as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            136 as libc::c_int,
+                as *const u8 as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            136 as i32,
         );
     }
-    if !((*st).postfilter_tapset <= 2 as libc::c_int) {
+    if !((*st).postfilter_tapset <= 2 as i32) {
         celt_fatal(
-            b"assertion failed: st->postfilter_tapset <= 2\0" as *const u8 as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            137 as libc::c_int,
+            b"assertion failed: st->postfilter_tapset <= 2\0" as *const u8 as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            137 as i32,
         );
     }
-    if !((*st).postfilter_tapset >= 0 as libc::c_int) {
+    if !((*st).postfilter_tapset >= 0 as i32) {
         celt_fatal(
-            b"assertion failed: st->postfilter_tapset >= 0\0" as *const u8 as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            138 as libc::c_int,
+            b"assertion failed: st->postfilter_tapset >= 0\0" as *const u8 as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            138 as i32,
         );
     }
-    if !((*st).postfilter_tapset_old <= 2 as libc::c_int) {
+    if !((*st).postfilter_tapset_old <= 2 as i32) {
         celt_fatal(
-            b"assertion failed: st->postfilter_tapset_old <= 2\0" as *const u8
-                as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            139 as libc::c_int,
+            b"assertion failed: st->postfilter_tapset_old <= 2\0" as *const u8 as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            139 as i32,
         );
     }
-    if !((*st).postfilter_tapset_old >= 0 as libc::c_int) {
+    if !((*st).postfilter_tapset_old >= 0 as i32) {
         celt_fatal(
-            b"assertion failed: st->postfilter_tapset_old >= 0\0" as *const u8
-                as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            140 as libc::c_int,
+            b"assertion failed: st->postfilter_tapset_old >= 0\0" as *const u8 as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            140 as i32,
         );
     }
 }
 #[c2rust::src_loc = "144:1"]
-pub unsafe fn celt_decoder_get_size(channels: libc::c_int) -> libc::c_int {
-    let mode: *const OpusCustomMode = opus_custom_mode_create(
-        48000 as libc::c_int,
-        960 as libc::c_int,
-        NULL as *mut libc::c_int,
-    );
+pub unsafe fn celt_decoder_get_size(channels: i32) -> i32 {
+    let mode: *const OpusCustomMode =
+        opus_custom_mode_create(48000 as i32, 960 as i32, NULL as *mut i32);
     return opus_custom_decoder_get_size(mode, channels);
 }
 #[inline]
 #[c2rust::src_loc = "150:1"]
-unsafe fn opus_custom_decoder_get_size(
-    mode: *const OpusCustomMode,
-    channels: libc::c_int,
-) -> libc::c_int {
-    let size: libc::c_int = (::core::mem::size_of::<OpusCustomDecoder>() as libc::c_ulong)
+unsafe fn opus_custom_decoder_get_size(mode: *const OpusCustomMode, channels: i32) -> i32 {
+    let size: i32 = (::core::mem::size_of::<OpusCustomDecoder>() as u64)
         .wrapping_add(
-            ((channels * (DECODE_BUFFER_SIZE + (*mode).overlap) - 1 as libc::c_int)
-                as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<celt_sig>() as libc::c_ulong),
+            ((channels * (DECODE_BUFFER_SIZE + (*mode).overlap) - 1 as i32) as u64)
+                .wrapping_mul(::core::mem::size_of::<celt_sig>() as u64),
         )
         .wrapping_add(
-            ((channels * LPC_ORDER) as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<opus_val16>() as libc::c_ulong),
+            ((channels * LPC_ORDER) as u64)
+                .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64),
         )
         .wrapping_add(
-            ((4 as libc::c_int * 2 as libc::c_int * (*mode).nbEBands) as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<opus_val16>() as libc::c_ulong),
-        ) as libc::c_int;
+            ((4 as i32 * 2 as i32 * (*mode).nbEBands) as u64)
+                .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64),
+        ) as i32;
     return size;
 }
 #[c2rust::src_loc = "176:1"]
 pub unsafe fn celt_decoder_init(
     mut st: *mut OpusCustomDecoder,
     sampling_rate: i32,
-    channels: libc::c_int,
-) -> libc::c_int {
-    let mut ret: libc::c_int = 0;
+    channels: i32,
+) -> i32 {
+    let mut ret: i32 = 0;
     ret = opus_custom_decoder_init(
         st,
-        opus_custom_mode_create(
-            48000 as libc::c_int,
-            960 as libc::c_int,
-            NULL as *mut libc::c_int,
-        ),
+        opus_custom_mode_create(48000 as i32, 960 as i32, NULL as *mut i32),
         channels,
     );
     if ret != OPUS_OK {
         return ret;
     }
     (*st).downsample = resampling_factor(sampling_rate);
-    if (*st).downsample == 0 as libc::c_int {
+    if (*st).downsample == 0 as i32 {
         return OPUS_BAD_ARG;
     } else {
         return OPUS_OK;
@@ -379,29 +354,29 @@ pub unsafe fn celt_decoder_init(
 unsafe fn opus_custom_decoder_init(
     mut st: *mut OpusCustomDecoder,
     mode: *const OpusCustomMode,
-    channels: libc::c_int,
-) -> libc::c_int {
-    if channels < 0 as libc::c_int || channels > 2 as libc::c_int {
+    channels: i32,
+) -> i32 {
+    if channels < 0 as i32 || channels > 2 as i32 {
         return OPUS_BAD_ARG;
     }
     if st.is_null() {
         return OPUS_ALLOC_FAIL;
     }
     memset(
-        st as *mut libc::c_char as *mut libc::c_void,
-        0 as libc::c_int,
-        (opus_custom_decoder_get_size(mode, channels) as libc::c_ulong)
-            .wrapping_mul(::core::mem::size_of::<libc::c_char>() as libc::c_ulong),
+        st as *mut i8 as *mut core::ffi::c_void,
+        0 as i32,
+        (opus_custom_decoder_get_size(mode, channels) as u64)
+            .wrapping_mul(::core::mem::size_of::<i8>() as u64),
     );
     (*st).mode = mode;
     (*st).overlap = (*mode).overlap;
     (*st).channels = channels;
     (*st).stream_channels = (*st).channels;
-    (*st).downsample = 1 as libc::c_int;
-    (*st).start = 0 as libc::c_int;
+    (*st).downsample = 1 as i32;
+    (*st).start = 0 as i32;
     (*st).end = (*(*st).mode).effEBands;
-    (*st).signalling = 1 as libc::c_int;
-    (*st).disable_inv = (channels == 1 as libc::c_int) as libc::c_int;
+    (*st).signalling = 1 as i32;
+    (*st).disable_inv = (channels == 1 as i32) as i32;
     (*st).arch = opus_select_arch();
     opus_custom_decoder_ctl!(st, OPUS_RESET_STATE);
     return OPUS_OK;
@@ -410,7 +385,7 @@ unsafe fn opus_custom_decoder_init(
 unsafe fn deemphasis_stereo_simple(
     in_0: *mut *mut celt_sig,
     pcm: *mut opus_val16,
-    N: libc::c_int,
+    N: i32,
     coef0: opus_val16,
     mem: *mut celt_sig,
 ) {
@@ -418,12 +393,12 @@ unsafe fn deemphasis_stereo_simple(
     let mut x1: *mut celt_sig = 0 as *mut celt_sig;
     let mut m0: celt_sig = 0.;
     let mut m1: celt_sig = 0.;
-    let mut j: libc::c_int = 0;
-    x0 = *in_0.offset(0 as libc::c_int as isize);
-    x1 = *in_0.offset(1 as libc::c_int as isize);
-    m0 = *mem.offset(0 as libc::c_int as isize);
-    m1 = *mem.offset(1 as libc::c_int as isize);
-    j = 0 as libc::c_int;
+    let mut j: i32 = 0;
+    x0 = *in_0.offset(0 as i32 as isize);
+    x1 = *in_0.offset(1 as i32 as isize);
+    m0 = *mem.offset(0 as i32 as isize);
+    m1 = *mem.offset(1 as i32 as isize);
+    j = 0 as i32;
     while j < N {
         let mut tmp0: celt_sig = 0.;
         let mut tmp1: celt_sig = 0.;
@@ -431,79 +406,76 @@ unsafe fn deemphasis_stereo_simple(
         tmp1 = *x1.offset(j as isize) + VERY_SMALL + m1;
         m0 = coef0 * tmp0;
         m1 = coef0 * tmp1;
-        *pcm.offset((2 as libc::c_int * j) as isize) =
-            tmp0 * (1 as libc::c_int as libc::c_float / CELT_SIG_SCALE);
-        *pcm.offset((2 as libc::c_int * j + 1 as libc::c_int) as isize) =
-            tmp1 * (1 as libc::c_int as libc::c_float / CELT_SIG_SCALE);
+        *pcm.offset((2 as i32 * j) as isize) = tmp0 * (1 as i32 as f32 / CELT_SIG_SCALE);
+        *pcm.offset((2 as i32 * j + 1 as i32) as isize) = tmp1 * (1 as i32 as f32 / CELT_SIG_SCALE);
         j += 1;
     }
-    *mem.offset(0 as libc::c_int as isize) = m0;
-    *mem.offset(1 as libc::c_int as isize) = m1;
+    *mem.offset(0 as i32 as isize) = m0;
+    *mem.offset(1 as i32 as isize) = m1;
 }
 #[c2rust::src_loc = "258:1"]
 unsafe fn deemphasis(
     in_0: *mut *mut celt_sig,
     pcm: *mut opus_val16,
-    N: libc::c_int,
-    C: libc::c_int,
-    downsample: libc::c_int,
+    N: i32,
+    C: i32,
+    downsample: i32,
     coef: *const opus_val16,
     mem: *mut celt_sig,
-    accum: libc::c_int,
+    accum: i32,
 ) {
-    let mut c: libc::c_int = 0;
-    let mut Nd: libc::c_int = 0;
-    let mut apply_downsampling: libc::c_int = 0 as libc::c_int;
+    let mut c: i32 = 0;
+    let mut Nd: i32 = 0;
+    let mut apply_downsampling: i32 = 0 as i32;
     let mut coef0: opus_val16 = 0.;
-    if downsample == 1 as libc::c_int && C == 2 as libc::c_int && accum == 0 {
-        deemphasis_stereo_simple(in_0, pcm, N, *coef.offset(0 as libc::c_int as isize), mem);
+    if downsample == 1 as i32 && C == 2 as i32 && accum == 0 {
+        deemphasis_stereo_simple(in_0, pcm, N, *coef.offset(0 as i32 as isize), mem);
         return;
     }
-    if !(accum == 0 as libc::c_int) {
+    if !(accum == 0 as i32) {
         celt_fatal(
-            b"assertion failed: accum==0\0" as *const u8 as *const libc::c_char,
-            b"celt/celt_decoder.c\0" as *const u8 as *const libc::c_char,
-            279 as libc::c_int,
+            b"assertion failed: accum==0\0" as *const u8 as *const i8,
+            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
+            279 as i32,
         );
     }
     let vla = N as usize;
     let mut scratch: Vec<celt_sig> = ::std::vec::from_elem(0., vla);
-    coef0 = *coef.offset(0 as libc::c_int as isize);
+    coef0 = *coef.offset(0 as i32 as isize);
     Nd = N / downsample;
-    c = 0 as libc::c_int;
+    c = 0 as i32;
     loop {
-        let mut j: libc::c_int = 0;
+        let mut j: i32 = 0;
         let mut x: *mut celt_sig = 0 as *mut celt_sig;
         let mut y: *mut opus_val16 = 0 as *mut opus_val16;
         let mut m: celt_sig = *mem.offset(c as isize);
         x = *in_0.offset(c as isize);
         y = pcm.offset(c as isize);
-        if downsample > 1 as libc::c_int {
-            j = 0 as libc::c_int;
+        if downsample > 1 as i32 {
+            j = 0 as i32;
             while j < N {
                 let tmp: celt_sig = *x.offset(j as isize) + VERY_SMALL + m;
                 m = coef0 * tmp;
                 *scratch.as_mut_ptr().offset(j as isize) = tmp;
                 j += 1;
             }
-            apply_downsampling = 1 as libc::c_int;
+            apply_downsampling = 1 as i32;
         } else {
-            j = 0 as libc::c_int;
+            j = 0 as i32;
             while j < N {
                 let tmp_0: celt_sig = *x.offset(j as isize) + VERY_SMALL + m;
                 m = coef0 * tmp_0;
-                *y.offset((j * C) as isize) =
-                    tmp_0 * (1 as libc::c_int as libc::c_float / CELT_SIG_SCALE);
+                *y.offset((j * C) as isize) = tmp_0 * (1 as i32 as f32 / CELT_SIG_SCALE);
                 j += 1;
             }
         }
         *mem.offset(c as isize) = m;
         if apply_downsampling != 0 {
-            j = 0 as libc::c_int;
+            j = 0 as i32;
             while j < Nd {
                 *y.offset((j * C) as isize) =
                     *scratch.as_mut_ptr().offset((j * downsample) as isize)
-                        * (1 as libc::c_int as libc::c_float / CELT_SIG_SCALE);
+                        * (1 as i32 as f32 / CELT_SIG_SCALE);
                 j += 1;
             }
         }
@@ -519,42 +491,42 @@ unsafe fn celt_synthesis(
     X: *mut celt_norm,
     out_syn: *mut *mut celt_sig,
     oldBandE: *mut opus_val16,
-    start: libc::c_int,
-    effEnd: libc::c_int,
-    C: libc::c_int,
-    CC: libc::c_int,
-    isTransient: libc::c_int,
-    LM: libc::c_int,
-    downsample: libc::c_int,
-    silence: libc::c_int,
-    arch: libc::c_int,
+    start: i32,
+    effEnd: i32,
+    C: i32,
+    CC: i32,
+    isTransient: i32,
+    LM: i32,
+    downsample: i32,
+    silence: i32,
+    arch: i32,
 ) {
-    let mut c: libc::c_int = 0;
-    let mut i: libc::c_int = 0;
-    let mut M: libc::c_int = 0;
-    let mut b: libc::c_int = 0;
-    let mut B: libc::c_int = 0;
-    let mut N: libc::c_int = 0;
-    let mut NB: libc::c_int = 0;
-    let mut shift: libc::c_int = 0;
-    let mut nbEBands: libc::c_int = 0;
-    let mut overlap: libc::c_int = 0;
+    let mut c: i32 = 0;
+    let mut i: i32 = 0;
+    let mut M: i32 = 0;
+    let mut b: i32 = 0;
+    let mut B: i32 = 0;
+    let mut N: i32 = 0;
+    let mut NB: i32 = 0;
+    let mut shift: i32 = 0;
+    let mut nbEBands: i32 = 0;
+    let mut overlap: i32 = 0;
     overlap = (*mode).overlap;
     nbEBands = (*mode).nbEBands;
     N = (*mode).shortMdctSize << LM;
     let vla = N as usize;
     let mut freq: Vec<celt_sig> = ::std::vec::from_elem(0., vla);
-    M = (1 as libc::c_int) << LM;
+    M = (1 as i32) << LM;
     if isTransient != 0 {
         B = M;
         NB = (*mode).shortMdctSize;
         shift = (*mode).maxLM;
     } else {
-        B = 1 as libc::c_int;
+        B = 1 as i32;
         NB = (*mode).shortMdctSize << LM;
         shift = (*mode).maxLM - LM;
     }
-    if CC == 2 as libc::c_int && C == 1 as libc::c_int {
+    if CC == 2 as i32 && C == 1 as i32 {
         let mut freq2: *mut celt_sig = 0 as *mut celt_sig;
         denormalise_bands(
             mode,
@@ -567,25 +539,22 @@ unsafe fn celt_synthesis(
             downsample,
             silence,
         );
-        freq2 = (*out_syn.offset(1 as libc::c_int as isize))
-            .offset((overlap / 2 as libc::c_int) as isize);
+        freq2 = (*out_syn.offset(1 as i32 as isize)).offset((overlap / 2 as i32) as isize);
         memcpy(
-            freq2 as *mut libc::c_void,
-            freq.as_mut_ptr() as *const libc::c_void,
-            (N as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<celt_sig>() as libc::c_ulong)
+            freq2 as *mut core::ffi::c_void,
+            freq.as_mut_ptr() as *const core::ffi::c_void,
+            (N as u64)
+                .wrapping_mul(::core::mem::size_of::<celt_sig>() as u64)
                 .wrapping_add(
-                    (0 as libc::c_int as libc::c_long
-                        * freq2.offset_from(freq.as_mut_ptr()) as libc::c_long)
-                        as libc::c_ulong,
+                    (0 as i32 as i64 * freq2.offset_from(freq.as_mut_ptr()) as i64) as u64,
                 ),
         );
-        b = 0 as libc::c_int;
+        b = 0 as i32;
         while b < B {
             clt_mdct_backward_c(
                 &(*mode).mdct,
                 &mut *freq2.offset(b as isize),
-                (*out_syn.offset(0 as libc::c_int as isize)).offset((NB * b) as isize),
+                (*out_syn.offset(0 as i32 as isize)).offset((NB * b) as isize),
                 (*mode).window,
                 overlap,
                 shift,
@@ -594,12 +563,12 @@ unsafe fn celt_synthesis(
             );
             b += 1;
         }
-        b = 0 as libc::c_int;
+        b = 0 as i32;
         while b < B {
             clt_mdct_backward_c(
                 &(*mode).mdct,
                 &mut *freq.as_mut_ptr().offset(b as isize),
-                (*out_syn.offset(1 as libc::c_int as isize)).offset((NB * b) as isize),
+                (*out_syn.offset(1 as i32 as isize)).offset((NB * b) as isize),
                 (*mode).window,
                 overlap,
                 shift,
@@ -608,10 +577,9 @@ unsafe fn celt_synthesis(
             );
             b += 1;
         }
-    } else if CC == 1 as libc::c_int && C == 2 as libc::c_int {
+    } else if CC == 1 as i32 && C == 2 as i32 {
         let mut freq2_0: *mut celt_sig = 0 as *mut celt_sig;
-        freq2_0 = (*out_syn.offset(0 as libc::c_int as isize))
-            .offset((overlap / 2 as libc::c_int) as isize);
+        freq2_0 = (*out_syn.offset(0 as i32 as isize)).offset((overlap / 2 as i32) as isize);
         denormalise_bands(
             mode,
             X,
@@ -634,18 +602,18 @@ unsafe fn celt_synthesis(
             downsample,
             silence,
         );
-        i = 0 as libc::c_int;
+        i = 0 as i32;
         while i < N {
             *freq.as_mut_ptr().offset(i as isize) = 0.5f32 * *freq.as_mut_ptr().offset(i as isize)
                 + 0.5f32 * *freq2_0.offset(i as isize);
             i += 1;
         }
-        b = 0 as libc::c_int;
+        b = 0 as i32;
         while b < B {
             clt_mdct_backward_c(
                 &(*mode).mdct,
                 &mut *freq.as_mut_ptr().offset(b as isize),
-                (*out_syn.offset(0 as libc::c_int as isize)).offset((NB * b) as isize),
+                (*out_syn.offset(0 as i32 as isize)).offset((NB * b) as isize),
                 (*mode).window,
                 overlap,
                 shift,
@@ -655,7 +623,7 @@ unsafe fn celt_synthesis(
             b += 1;
         }
     } else {
-        c = 0 as libc::c_int;
+        c = 0 as i32;
         loop {
             denormalise_bands(
                 mode,
@@ -668,7 +636,7 @@ unsafe fn celt_synthesis(
                 downsample,
                 silence,
             );
-            b = 0 as libc::c_int;
+            b = 0 as i32;
             while b < B {
                 clt_mdct_backward_c(
                     &(*mode).mdct,
@@ -688,9 +656,9 @@ unsafe fn celt_synthesis(
             }
         }
     }
-    c = 0 as libc::c_int;
+    c = 0 as i32;
     loop {
-        i = 0 as libc::c_int;
+        i = 0 as i32;
         while i < N {
             *(*out_syn.offset(c as isize)).offset(i as isize) =
                 *(*out_syn.offset(c as isize)).offset(i as isize);
@@ -704,78 +672,61 @@ unsafe fn celt_synthesis(
 }
 #[c2rust::src_loc = "441:1"]
 unsafe fn tf_decode(
-    start: libc::c_int,
-    end: libc::c_int,
-    isTransient: libc::c_int,
-    tf_res: *mut libc::c_int,
-    LM: libc::c_int,
+    start: i32,
+    end: i32,
+    isTransient: i32,
+    tf_res: *mut i32,
+    LM: i32,
     dec: *mut ec_dec,
 ) {
-    let mut i: libc::c_int = 0;
-    let mut curr: libc::c_int = 0;
-    let mut tf_select: libc::c_int = 0;
-    let mut tf_select_rsv: libc::c_int = 0;
-    let mut tf_changed: libc::c_int = 0;
-    let mut logp: libc::c_int = 0;
+    let mut i: i32 = 0;
+    let mut curr: i32 = 0;
+    let mut tf_select: i32 = 0;
+    let mut tf_select_rsv: i32 = 0;
+    let mut tf_changed: i32 = 0;
+    let mut logp: i32 = 0;
     let mut budget: u32 = 0;
     let mut tell: u32 = 0;
-    budget = ((*dec).storage).wrapping_mul(8 as libc::c_int as libc::c_uint);
+    budget = ((*dec).storage).wrapping_mul(8 as i32 as u32);
     tell = ec_tell(dec) as u32;
-    logp = if isTransient != 0 {
-        2 as libc::c_int
-    } else {
-        4 as libc::c_int
-    };
-    tf_select_rsv = (LM > 0 as libc::c_int
-        && tell
-            .wrapping_add(logp as libc::c_uint)
-            .wrapping_add(1 as libc::c_int as libc::c_uint)
-            <= budget) as libc::c_int;
-    budget = (budget as libc::c_uint).wrapping_sub(tf_select_rsv as libc::c_uint) as u32 as u32;
-    curr = 0 as libc::c_int;
+    logp = if isTransient != 0 { 2 as i32 } else { 4 as i32 };
+    tf_select_rsv = (LM > 0 as i32
+        && tell.wrapping_add(logp as u32).wrapping_add(1 as i32 as u32) <= budget)
+        as i32;
+    budget = (budget as u32).wrapping_sub(tf_select_rsv as u32) as u32 as u32;
+    curr = 0 as i32;
     tf_changed = curr;
     i = start;
     while i < end {
-        if tell.wrapping_add(logp as libc::c_uint) <= budget {
-            curr ^= ec_dec_bit_logp(dec, logp as libc::c_uint);
+        if tell.wrapping_add(logp as u32) <= budget {
+            curr ^= ec_dec_bit_logp(dec, logp as u32);
             tell = ec_tell(dec) as u32;
             tf_changed |= curr;
         }
         *tf_res.offset(i as isize) = curr;
-        logp = if isTransient != 0 {
-            4 as libc::c_int
-        } else {
-            5 as libc::c_int
-        };
+        logp = if isTransient != 0 { 4 as i32 } else { 5 as i32 };
         i += 1;
     }
-    tf_select = 0 as libc::c_int;
+    tf_select = 0 as i32;
     if tf_select_rsv != 0
-        && tf_select_table[LM as usize]
-            [(4 as libc::c_int * isTransient + 0 as libc::c_int + tf_changed) as usize]
-            as libc::c_int
+        && tf_select_table[LM as usize][(4 as i32 * isTransient + 0 as i32 + tf_changed) as usize]
+            as i32
             != tf_select_table[LM as usize]
-                [(4 as libc::c_int * isTransient + 2 as libc::c_int + tf_changed) as usize]
-                as libc::c_int
+                [(4 as i32 * isTransient + 2 as i32 + tf_changed) as usize] as i32
     {
-        tf_select = ec_dec_bit_logp(dec, 1 as libc::c_int as libc::c_uint);
+        tf_select = ec_dec_bit_logp(dec, 1 as i32 as u32);
     }
     i = start;
     while i < end {
-        *tf_res.offset(i as isize) = tf_select_table[LM as usize][(4 as libc::c_int * isTransient
-            + 2 as libc::c_int * tf_select
-            + *tf_res.offset(i as isize))
-            as usize] as libc::c_int;
+        *tf_res.offset(i as isize) = tf_select_table[LM as usize]
+            [(4 as i32 * isTransient + 2 as i32 * tf_select + *tf_res.offset(i as isize)) as usize]
+            as i32;
         i += 1;
     }
 }
 #[c2rust::src_loc = "480:1"]
-unsafe fn celt_plc_pitch_search(
-    decode_mem: *mut *mut celt_sig,
-    C: libc::c_int,
-    arch: libc::c_int,
-) -> libc::c_int {
-    let mut pitch_index: libc::c_int = 0;
+unsafe fn celt_plc_pitch_search(decode_mem: *mut *mut celt_sig, C: i32, arch: i32) -> i32 {
+    let mut pitch_index: i32 = 0;
     let mut lp_pitch_buf: [opus_val16; 1024] = [0.; 1024];
     pitch_downsample(
         decode_mem as *mut *mut celt_sig,
@@ -787,7 +738,7 @@ unsafe fn celt_plc_pitch_search(
     pitch_search(
         lp_pitch_buf
             .as_mut_ptr()
-            .offset((PLC_PITCH_LAG_MAX >> 1 as libc::c_int) as isize),
+            .offset((PLC_PITCH_LAG_MAX >> 1 as i32) as isize),
         lp_pitch_buf.as_mut_ptr(),
         DECODE_BUFFER_SIZE - PLC_PITCH_LAG_MAX,
         PLC_PITCH_LAG_MAX - PLC_PITCH_LAG_MIN,
@@ -798,10 +749,10 @@ unsafe fn celt_plc_pitch_search(
     return pitch_index;
 }
 #[c2rust::src_loc = "496:1"]
-unsafe fn celt_decode_lost(mut st: *mut OpusCustomDecoder, N: libc::c_int, LM: libc::c_int) {
-    let mut c: libc::c_int = 0;
-    let mut i: libc::c_int = 0;
-    let C: libc::c_int = (*st).channels;
+unsafe fn celt_decode_lost(mut st: *mut OpusCustomDecoder, N: i32, LM: i32) {
+    let mut c: i32 = 0;
+    let mut i: i32 = 0;
+    let C: i32 = (*st).channels;
     let mut decode_mem: [*mut celt_sig; 2] = [0 as *mut celt_sig; 2];
     let mut out_syn: [*mut celt_sig; 2] = [0 as *mut celt_sig; 2];
     let mut lpc: *mut opus_val16 = 0 as *mut opus_val16;
@@ -810,17 +761,17 @@ unsafe fn celt_decode_lost(mut st: *mut OpusCustomDecoder, N: libc::c_int, LM: l
     let mut oldLogE2: *mut opus_val16 = 0 as *mut opus_val16;
     let mut backgroundLogE: *mut opus_val16 = 0 as *mut opus_val16;
     let mut mode: *const OpusCustomMode = 0 as *const OpusCustomMode;
-    let mut nbEBands: libc::c_int = 0;
-    let mut overlap: libc::c_int = 0;
-    let mut start: libc::c_int = 0;
-    let mut loss_count: libc::c_int = 0;
-    let mut noise_based: libc::c_int = 0;
+    let mut nbEBands: i32 = 0;
+    let mut overlap: i32 = 0;
+    let mut start: i32 = 0;
+    let mut loss_count: i32 = 0;
+    let mut noise_based: i32 = 0;
     let mut eBands: *const i16 = 0 as *const i16;
     mode = (*st).mode;
     nbEBands = (*mode).nbEBands;
     overlap = (*mode).overlap;
     eBands = (*mode).eBands;
-    c = 0 as libc::c_int;
+    c = 0 as i32;
     loop {
         decode_mem[c as usize] = ((*st)._decode_mem)
             .as_mut_ptr()
@@ -837,18 +788,16 @@ unsafe fn celt_decode_lost(mut st: *mut OpusCustomDecoder, N: libc::c_int, LM: l
         .as_mut_ptr()
         .offset(((DECODE_BUFFER_SIZE + overlap) * C) as isize) as *mut opus_val16;
     oldBandE = lpc.offset((C * LPC_ORDER) as isize);
-    oldLogE = oldBandE.offset((2 as libc::c_int * nbEBands) as isize);
-    oldLogE2 = oldLogE.offset((2 as libc::c_int * nbEBands) as isize);
-    backgroundLogE = oldLogE2.offset((2 as libc::c_int * nbEBands) as isize);
+    oldLogE = oldBandE.offset((2 as i32 * nbEBands) as isize);
+    oldLogE2 = oldLogE.offset((2 as i32 * nbEBands) as isize);
+    backgroundLogE = oldLogE2.offset((2 as i32 * nbEBands) as isize);
     loss_count = (*st).loss_count;
     start = (*st).start;
-    noise_based = (loss_count >= 5 as libc::c_int
-        || start != 0 as libc::c_int
-        || (*st).skip_plc != 0) as libc::c_int;
+    noise_based = (loss_count >= 5 as i32 || start != 0 as i32 || (*st).skip_plc != 0) as i32;
     if noise_based != 0 {
         let mut seed: u32 = 0;
-        let mut end: libc::c_int = 0;
-        let mut effEnd: libc::c_int = 0;
+        let mut end: i32 = 0;
+        let mut effEnd: i32 = 0;
         let mut decay: opus_val16 = 0.;
         end = (*st).end;
         effEnd = if start
@@ -865,12 +814,12 @@ unsafe fn celt_decode_lost(mut st: *mut OpusCustomDecoder, N: libc::c_int, LM: l
         };
         let vla = (C * N) as usize;
         let mut X: Vec<celt_norm> = ::std::vec::from_elem(0., vla);
-        decay = if loss_count == 0 as libc::c_int {
+        decay = if loss_count == 0 as i32 {
             1.5f32
         } else {
             0.5f32
         };
-        c = 0 as libc::c_int;
+        c = 0 as i32;
         loop {
             i = start;
             while i < end {
@@ -890,22 +839,22 @@ unsafe fn celt_decode_lost(mut st: *mut OpusCustomDecoder, N: libc::c_int, LM: l
             }
         }
         seed = (*st).rng;
-        c = 0 as libc::c_int;
+        c = 0 as i32;
         while c < C {
             i = start;
             while i < effEnd {
-                let mut j: libc::c_int = 0;
-                let mut boffs: libc::c_int = 0;
-                let mut blen: libc::c_int = 0;
-                boffs = N * c + ((*eBands.offset(i as isize) as libc::c_int) << LM);
-                blen = (*eBands.offset((i + 1 as libc::c_int) as isize) as libc::c_int
-                    - *eBands.offset(i as isize) as libc::c_int)
+                let mut j: i32 = 0;
+                let mut boffs: i32 = 0;
+                let mut blen: i32 = 0;
+                boffs = N * c + ((*eBands.offset(i as isize) as i32) << LM);
+                blen = (*eBands.offset((i + 1 as i32) as isize) as i32
+                    - *eBands.offset(i as isize) as i32)
                     << LM;
-                j = 0 as libc::c_int;
+                j = 0 as i32;
                 while j < blen {
                     seed = celt_lcg_rand(seed);
                     *X.as_mut_ptr().offset((boffs + j) as isize) =
-                        (seed as i32 >> 20 as libc::c_int) as celt_norm;
+                        (seed as i32 >> 20 as i32) as celt_norm;
                     j += 1;
                 }
                 renormalise_vector(
@@ -919,18 +868,18 @@ unsafe fn celt_decode_lost(mut st: *mut OpusCustomDecoder, N: libc::c_int, LM: l
             c += 1;
         }
         (*st).rng = seed;
-        c = 0 as libc::c_int;
+        c = 0 as i32;
         loop {
             memmove(
-                decode_mem[c as usize] as *mut libc::c_void,
-                (decode_mem[c as usize]).offset(N as isize) as *const libc::c_void,
-                ((2048 as libc::c_int - N + (overlap >> 1 as libc::c_int)) as libc::c_ulong)
-                    .wrapping_mul(::core::mem::size_of::<celt_sig>() as libc::c_ulong)
+                decode_mem[c as usize] as *mut core::ffi::c_void,
+                (decode_mem[c as usize]).offset(N as isize) as *const core::ffi::c_void,
+                ((2048 as i32 - N + (overlap >> 1 as i32)) as u64)
+                    .wrapping_mul(::core::mem::size_of::<celt_sig>() as u64)
                     .wrapping_add(
-                        (0 as libc::c_int as libc::c_long
+                        (0 as i32 as i64
                             * (decode_mem[c as usize])
                                 .offset_from((decode_mem[c as usize]).offset(N as isize))
-                                as libc::c_long) as libc::c_ulong,
+                                as i64) as u64,
                     ),
             );
             c += 1;
@@ -947,29 +896,29 @@ unsafe fn celt_decode_lost(mut st: *mut OpusCustomDecoder, N: libc::c_int, LM: l
             effEnd,
             C,
             C,
-            0 as libc::c_int,
+            0 as i32,
             LM,
             (*st).downsample,
-            0 as libc::c_int,
+            0 as i32,
             (*st).arch,
         );
     } else {
-        let mut exc_length: libc::c_int = 0;
+        let mut exc_length: i32 = 0;
         let mut window: *const opus_val16 = 0 as *const opus_val16;
         let mut exc: *mut opus_val16 = 0 as *mut opus_val16;
         let mut fade: opus_val16 = Q15ONE;
-        let mut pitch_index: libc::c_int = 0;
-        if loss_count == 0 as libc::c_int {
+        let mut pitch_index: i32 = 0;
+        if loss_count == 0 as i32 {
             pitch_index = celt_plc_pitch_search(decode_mem.as_mut_ptr(), C, (*st).arch);
             (*st).last_pitch_index = pitch_index;
         } else {
             pitch_index = (*st).last_pitch_index;
             fade = 0.8f32;
         }
-        exc_length = if 2 as libc::c_int * pitch_index < 1024 as libc::c_int {
-            2 as libc::c_int * pitch_index
+        exc_length = if 2 as i32 * pitch_index < 1024 as i32 {
+            2 as i32 * pitch_index
         } else {
-            1024 as libc::c_int
+            1024 as i32
         };
         let vla_0 = overlap as usize;
         let mut etmp: Vec<opus_val32> = ::std::vec::from_elem(0., vla_0);
@@ -978,24 +927,23 @@ unsafe fn celt_decode_lost(mut st: *mut OpusCustomDecoder, N: libc::c_int, LM: l
         let mut fir_tmp: Vec<opus_val16> = ::std::vec::from_elem(0., vla_1);
         exc = _exc.as_mut_ptr().offset(LPC_ORDER as isize);
         window = (*mode).window;
-        c = 0 as libc::c_int;
+        c = 0 as i32;
         loop {
             let mut decay_0: opus_val16 = 0.;
             let mut attenuation: opus_val16 = 0.;
-            let mut S1: opus_val32 = 0 as libc::c_int as opus_val32;
+            let mut S1: opus_val32 = 0 as i32 as opus_val32;
             let mut buf: *mut celt_sig = 0 as *mut celt_sig;
-            let mut extrapolation_offset: libc::c_int = 0;
-            let mut extrapolation_len: libc::c_int = 0;
-            let mut j_0: libc::c_int = 0;
+            let mut extrapolation_offset: i32 = 0;
+            let mut extrapolation_len: i32 = 0;
+            let mut j_0: i32 = 0;
             buf = decode_mem[c as usize];
-            i = 0 as libc::c_int;
+            i = 0 as i32;
             while i < MAX_PERIOD + LPC_ORDER {
-                *exc.offset((i - LPC_ORDER) as isize) = *buf.offset(
-                    (2048 as libc::c_int - 1024 as libc::c_int - 24 as libc::c_int + i) as isize,
-                );
+                *exc.offset((i - LPC_ORDER) as isize) =
+                    *buf.offset((2048 as i32 - 1024 as i32 - 24 as i32 + i) as isize);
                 i += 1;
             }
-            if loss_count == 0 as libc::c_int {
+            if loss_count == 0 as i32 {
                 let mut ac: [opus_val32; 25] = [0.; 25];
                 _celt_autocorr(
                     exc,
@@ -1006,13 +954,10 @@ unsafe fn celt_decode_lost(mut st: *mut OpusCustomDecoder, N: libc::c_int, LM: l
                     MAX_PERIOD,
                     (*st).arch,
                 );
-                ac[0 as libc::c_int as usize] *= 1.0001f32;
-                i = 1 as libc::c_int;
+                ac[0 as i32 as usize] *= 1.0001f32;
+                i = 1 as i32;
                 while i <= LPC_ORDER {
-                    ac[i as usize] -= ac[i as usize]
-                        * (0.008f32 * 0.008f32)
-                        * i as libc::c_float
-                        * i as libc::c_float;
+                    ac[i as usize] -= ac[i as usize] * (0.008f32 * 0.008f32) * i as f32 * i as f32;
                     i += 1;
                 }
                 _celt_lpc(
@@ -1022,59 +967,57 @@ unsafe fn celt_decode_lost(mut st: *mut OpusCustomDecoder, N: libc::c_int, LM: l
                 );
             }
             celt_fir_c(
-                exc.offset(1024 as libc::c_int as isize)
+                exc.offset(1024 as i32 as isize)
                     .offset(-(exc_length as isize)),
-                lpc.offset((c * 24 as libc::c_int) as isize),
+                lpc.offset((c * 24 as i32) as isize),
                 fir_tmp.as_mut_ptr(),
                 exc_length,
-                24 as libc::c_int,
+                24 as i32,
                 (*st).arch,
             );
             memcpy(
-                exc.offset(1024 as libc::c_int as isize)
-                    .offset(-(exc_length as isize)) as *mut libc::c_void,
-                fir_tmp.as_mut_ptr() as *const libc::c_void,
-                (exc_length as libc::c_ulong)
-                    .wrapping_mul(::core::mem::size_of::<opus_val16>() as libc::c_ulong)
+                exc.offset(1024 as i32 as isize)
+                    .offset(-(exc_length as isize)) as *mut core::ffi::c_void,
+                fir_tmp.as_mut_ptr() as *const core::ffi::c_void,
+                (exc_length as u64)
+                    .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64)
                     .wrapping_add(
-                        (0 as libc::c_int as libc::c_long
+                        (0 as i32 as i64
                             * exc
-                                .offset(1024 as libc::c_int as isize)
+                                .offset(1024 as i32 as isize)
                                 .offset(-(exc_length as isize))
                                 .offset_from(fir_tmp.as_mut_ptr())
-                                as libc::c_long) as libc::c_ulong,
+                                as i64) as u64,
                     ),
             );
-            let mut E1: opus_val32 = 1 as libc::c_int as opus_val32;
-            let mut E2: opus_val32 = 1 as libc::c_int as opus_val32;
-            let mut decay_length: libc::c_int = 0;
-            decay_length = exc_length >> 1 as libc::c_int;
-            i = 0 as libc::c_int;
+            let mut E1: opus_val32 = 1 as i32 as opus_val32;
+            let mut E2: opus_val32 = 1 as i32 as opus_val32;
+            let mut decay_length: i32 = 0;
+            decay_length = exc_length >> 1 as i32;
+            i = 0 as i32;
             while i < decay_length {
                 let mut e: opus_val16 = 0.;
                 e = *exc.offset((MAX_PERIOD - decay_length + i) as isize);
                 E1 += e * e;
-                e = *exc.offset((MAX_PERIOD - 2 as libc::c_int * decay_length + i) as isize);
+                e = *exc.offset((MAX_PERIOD - 2 as i32 * decay_length + i) as isize);
                 E2 += e * e;
                 i += 1;
             }
             E1 = if E1 < E2 { E1 } else { E2 };
             decay_0 = (E1 / E2).sqrt();
             memmove(
-                buf as *mut libc::c_void,
-                buf.offset(N as isize) as *const libc::c_void,
-                ((2048 as libc::c_int - N) as libc::c_ulong)
-                    .wrapping_mul(::core::mem::size_of::<celt_sig>() as libc::c_ulong)
+                buf as *mut core::ffi::c_void,
+                buf.offset(N as isize) as *const core::ffi::c_void,
+                ((2048 as i32 - N) as u64)
+                    .wrapping_mul(::core::mem::size_of::<celt_sig>() as u64)
                     .wrapping_add(
-                        (0 as libc::c_int as libc::c_long
-                            * buf.offset_from(buf.offset(N as isize)) as libc::c_long)
-                            as libc::c_ulong,
+                        (0 as i32 as i64 * buf.offset_from(buf.offset(N as isize)) as i64) as u64,
                     ),
             );
             extrapolation_offset = MAX_PERIOD - pitch_index;
             extrapolation_len = N + overlap;
             attenuation = fade * decay_0;
-            j_0 = 0 as libc::c_int;
+            j_0 = 0 as i32;
             i = j_0;
             while i < extrapolation_len {
                 let mut tmp: opus_val16 = 0.;
@@ -1084,19 +1027,16 @@ unsafe fn celt_decode_lost(mut st: *mut OpusCustomDecoder, N: libc::c_int, LM: l
                 }
                 *buf.offset((DECODE_BUFFER_SIZE - N + i) as isize) =
                     attenuation * *exc.offset((extrapolation_offset + j_0) as isize);
-                tmp = *buf.offset(
-                    (2048 as libc::c_int - 1024 as libc::c_int - N + extrapolation_offset + j_0)
-                        as isize,
-                );
+                tmp = *buf
+                    .offset((2048 as i32 - 1024 as i32 - N + extrapolation_offset + j_0) as isize);
                 S1 += tmp * tmp;
                 i += 1;
                 j_0 += 1;
             }
             let mut lpc_mem: [opus_val16; 24] = [0.; 24];
-            i = 0 as libc::c_int;
+            i = 0 as i32;
             while i < LPC_ORDER {
-                lpc_mem[i as usize] =
-                    *buf.offset((2048 as libc::c_int - N - 1 as libc::c_int - i) as isize);
+                lpc_mem[i as usize] = *buf.offset((2048 as i32 - N - 1 as i32 - i) as isize);
                 i += 1;
             }
             celt_iir(
@@ -1110,33 +1050,32 @@ unsafe fn celt_decode_lost(mut st: *mut OpusCustomDecoder, N: libc::c_int, LM: l
                 lpc_mem.as_mut_ptr(),
                 (*st).arch,
             );
-            let mut S2: opus_val32 = 0 as libc::c_int as opus_val32;
-            i = 0 as libc::c_int;
+            let mut S2: opus_val32 = 0 as i32 as opus_val32;
+            i = 0 as i32;
             while i < extrapolation_len {
-                let tmp_0: opus_val16 = *buf.offset((2048 as libc::c_int - N + i) as isize);
+                let tmp_0: opus_val16 = *buf.offset((2048 as i32 - N + i) as isize);
                 S2 += tmp_0 * tmp_0;
                 i += 1;
             }
             if !(S1 > 0.2f32 * S2) {
-                i = 0 as libc::c_int;
+                i = 0 as i32;
                 while i < extrapolation_len {
-                    *buf.offset((DECODE_BUFFER_SIZE - N + i) as isize) =
-                        0 as libc::c_int as celt_sig;
+                    *buf.offset((DECODE_BUFFER_SIZE - N + i) as isize) = 0 as i32 as celt_sig;
                     i += 1;
                 }
             } else if S1 < S2 {
                 let ratio: opus_val16 = ((S1 + 1 as f32) / (S2 + 1 as f32)).sqrt();
-                i = 0 as libc::c_int;
+                i = 0 as i32;
                 while i < overlap {
                     let tmp_g: opus_val16 = Q15ONE - *window.offset(i as isize) * (1.0f32 - ratio);
                     *buf.offset((DECODE_BUFFER_SIZE - N + i) as isize) =
-                        tmp_g * *buf.offset((2048 as libc::c_int - N + i) as isize);
+                        tmp_g * *buf.offset((2048 as i32 - N + i) as isize);
                     i += 1;
                 }
                 i = overlap;
                 while i < extrapolation_len {
                     *buf.offset((DECODE_BUFFER_SIZE - N + i) as isize) =
-                        ratio * *buf.offset((2048 as libc::c_int - N + i) as isize);
+                        ratio * *buf.offset((2048 as i32 - N + i) as isize);
                     i += 1;
                 }
             }
@@ -1151,16 +1090,14 @@ unsafe fn celt_decode_lost(mut st: *mut OpusCustomDecoder, N: libc::c_int, LM: l
                 (*st).postfilter_tapset,
                 (*st).postfilter_tapset,
                 NULL as *const opus_val16,
-                0 as libc::c_int,
+                0 as i32,
                 (*st).arch,
             );
-            i = 0 as libc::c_int;
-            while i < overlap / 2 as libc::c_int {
+            i = 0 as i32;
+            while i < overlap / 2 as i32 {
                 *buf.offset((DECODE_BUFFER_SIZE + i) as isize) = *window.offset(i as isize)
-                    * *etmp
-                        .as_mut_ptr()
-                        .offset((overlap - 1 as libc::c_int - i) as isize)
-                    + *window.offset((overlap - i - 1 as libc::c_int) as isize)
+                    * *etmp.as_mut_ptr().offset((overlap - 1 as i32 - i) as isize)
+                    + *window.offset((overlap - i - 1 as i32) as isize)
                         * *etmp.as_mut_ptr().offset(i as isize);
                 i += 1;
             }
@@ -1170,25 +1107,25 @@ unsafe fn celt_decode_lost(mut st: *mut OpusCustomDecoder, N: libc::c_int, LM: l
             }
         }
     }
-    (*st).loss_count = loss_count + 1 as libc::c_int;
+    (*st).loss_count = loss_count + 1 as i32;
 }
 #[c2rust::src_loc = "814:1"]
 pub unsafe fn celt_decode_with_ec(
     mut st: *mut OpusCustomDecoder,
-    data: *const libc::c_uchar,
-    len: libc::c_int,
+    data: *const u8,
+    len: i32,
     pcm: *mut opus_val16,
-    mut frame_size: libc::c_int,
+    mut frame_size: i32,
     mut dec: *mut ec_dec,
-    accum: libc::c_int,
-) -> libc::c_int {
-    let mut c: libc::c_int = 0;
-    let mut i: libc::c_int = 0;
-    let mut N: libc::c_int = 0;
-    let mut spread_decision: libc::c_int = 0;
+    accum: i32,
+) -> i32 {
+    let mut c: i32 = 0;
+    let mut i: i32 = 0;
+    let mut N: i32 = 0;
+    let mut spread_decision: i32 = 0;
     let mut bits: i32 = 0;
     let mut _dec: ec_dec = ec_dec {
-        buf: 0 as *mut libc::c_uchar,
+        buf: 0 as *mut u8,
         storage: 0,
         end_offs: 0,
         end_window: 0,
@@ -1208,33 +1145,33 @@ pub unsafe fn celt_decode_with_ec(
     let mut oldLogE: *mut opus_val16 = 0 as *mut opus_val16;
     let mut oldLogE2: *mut opus_val16 = 0 as *mut opus_val16;
     let mut backgroundLogE: *mut opus_val16 = 0 as *mut opus_val16;
-    let mut shortBlocks: libc::c_int = 0;
-    let mut isTransient: libc::c_int = 0;
-    let mut intra_ener: libc::c_int = 0;
-    let CC: libc::c_int = (*st).channels;
-    let mut LM: libc::c_int = 0;
-    let mut M: libc::c_int = 0;
-    let mut start: libc::c_int = 0;
-    let mut end: libc::c_int = 0;
-    let mut effEnd: libc::c_int = 0;
-    let mut codedBands: libc::c_int = 0;
-    let mut alloc_trim: libc::c_int = 0;
-    let mut postfilter_pitch: libc::c_int = 0;
+    let mut shortBlocks: i32 = 0;
+    let mut isTransient: i32 = 0;
+    let mut intra_ener: i32 = 0;
+    let CC: i32 = (*st).channels;
+    let mut LM: i32 = 0;
+    let mut M: i32 = 0;
+    let mut start: i32 = 0;
+    let mut end: i32 = 0;
+    let mut effEnd: i32 = 0;
+    let mut codedBands: i32 = 0;
+    let mut alloc_trim: i32 = 0;
+    let mut postfilter_pitch: i32 = 0;
     let mut postfilter_gain: opus_val16 = 0.;
-    let mut intensity: libc::c_int = 0 as libc::c_int;
-    let mut dual_stereo: libc::c_int = 0 as libc::c_int;
+    let mut intensity: i32 = 0 as i32;
+    let mut dual_stereo: i32 = 0 as i32;
     let mut total_bits: i32 = 0;
     let mut balance: i32 = 0;
     let mut tell: i32 = 0;
-    let mut dynalloc_logp: libc::c_int = 0;
-    let mut postfilter_tapset: libc::c_int = 0;
-    let mut anti_collapse_rsv: libc::c_int = 0;
-    let mut anti_collapse_on: libc::c_int = 0 as libc::c_int;
-    let mut silence: libc::c_int = 0;
-    let C: libc::c_int = (*st).stream_channels;
+    let mut dynalloc_logp: i32 = 0;
+    let mut postfilter_tapset: i32 = 0;
+    let mut anti_collapse_rsv: i32 = 0;
+    let mut anti_collapse_on: i32 = 0 as i32;
+    let mut silence: i32 = 0;
+    let C: i32 = (*st).stream_channels;
     let mut mode: *const OpusCustomMode = 0 as *const OpusCustomMode;
-    let mut nbEBands: libc::c_int = 0;
-    let mut overlap: libc::c_int = 0;
+    let mut nbEBands: i32 = 0;
+    let mut overlap: i32 = 0;
     let mut eBands: *const i16 = 0 as *const i16;
     validate_celt_decoder(st);
     mode = (*st).mode;
@@ -1248,10 +1185,10 @@ pub unsafe fn celt_decode_with_ec(
         .as_mut_ptr()
         .offset(((DECODE_BUFFER_SIZE + overlap) * CC) as isize) as *mut opus_val16;
     oldBandE = lpc.offset((CC * LPC_ORDER) as isize);
-    oldLogE = oldBandE.offset((2 as libc::c_int * nbEBands) as isize);
-    oldLogE2 = oldLogE.offset((2 as libc::c_int * nbEBands) as isize);
-    backgroundLogE = oldLogE2.offset((2 as libc::c_int * nbEBands) as isize);
-    LM = 0 as libc::c_int;
+    oldLogE = oldBandE.offset((2 as i32 * nbEBands) as isize);
+    oldLogE2 = oldLogE.offset((2 as i32 * nbEBands) as isize);
+    backgroundLogE = oldLogE2.offset((2 as i32 * nbEBands) as isize);
+    LM = 0 as i32;
     while LM <= (*mode).maxLM {
         if (*mode).shortMdctSize << LM == frame_size {
             break;
@@ -1261,12 +1198,12 @@ pub unsafe fn celt_decode_with_ec(
     if LM > (*mode).maxLM {
         return OPUS_BAD_ARG;
     }
-    M = (1 as libc::c_int) << LM;
-    if len < 0 as libc::c_int || len > 1275 as libc::c_int || pcm.is_null() {
+    M = (1 as i32) << LM;
+    if len < 0 as i32 || len > 1275 as i32 || pcm.is_null() {
         return OPUS_BAD_ARG;
     }
     N = M * (*mode).shortMdctSize;
-    c = 0 as libc::c_int;
+    c = 0 as i32;
     loop {
         decode_mem[c as usize] = ((*st)._decode_mem)
             .as_mut_ptr()
@@ -1283,7 +1220,7 @@ pub unsafe fn celt_decode_with_ec(
     if effEnd > (*mode).effEBands {
         effEnd = (*mode).effEBands;
     }
-    if data.is_null() || len <= 1 as libc::c_int {
+    if data.is_null() || len <= 1 as i32 {
         celt_decode_lost(st, N, LM);
         deemphasis(
             out_syn.as_mut_ptr(),
@@ -1297,13 +1234,13 @@ pub unsafe fn celt_decode_with_ec(
         );
         return frame_size / (*st).downsample;
     }
-    (*st).skip_plc = ((*st).loss_count != 0 as libc::c_int) as libc::c_int;
+    (*st).skip_plc = ((*st).loss_count != 0 as i32) as i32;
     if dec.is_null() {
-        ec_dec_init(&mut _dec, data as *mut libc::c_uchar, len as u32);
+        ec_dec_init(&mut _dec, data as *mut u8, len as u32);
         dec = &mut _dec;
     }
-    if C == 1 as libc::c_int {
-        i = 0 as libc::c_int;
+    if C == 1 as i32 {
+        i = 0 as i32;
         while i < nbEBands {
             *oldBandE.offset(i as isize) =
                 if *oldBandE.offset(i as isize) > *oldBandE.offset((nbEBands + i) as isize) {
@@ -1314,146 +1251,137 @@ pub unsafe fn celt_decode_with_ec(
             i += 1;
         }
     }
-    total_bits = len * 8 as libc::c_int;
+    total_bits = len * 8 as i32;
     tell = ec_tell(dec);
     if tell >= total_bits {
-        silence = 1 as libc::c_int;
-    } else if tell == 1 as libc::c_int {
-        silence = ec_dec_bit_logp(dec, 15 as libc::c_int as libc::c_uint);
+        silence = 1 as i32;
+    } else if tell == 1 as i32 {
+        silence = ec_dec_bit_logp(dec, 15 as i32 as u32);
     } else {
-        silence = 0 as libc::c_int;
+        silence = 0 as i32;
     }
     if silence != 0 {
-        tell = len * 8 as libc::c_int;
+        tell = len * 8 as i32;
         (*dec).nbits_total += tell - ec_tell(dec);
     }
-    postfilter_gain = 0 as libc::c_int as opus_val16;
-    postfilter_pitch = 0 as libc::c_int;
-    postfilter_tapset = 0 as libc::c_int;
-    if start == 0 as libc::c_int && tell + 16 as libc::c_int <= total_bits {
-        if ec_dec_bit_logp(dec, 1 as libc::c_int as libc::c_uint) != 0 {
-            let mut qg: libc::c_int = 0;
-            let mut octave: libc::c_int = 0;
-            octave = ec_dec_uint(dec, 6 as libc::c_int as u32) as libc::c_int;
-            postfilter_pitch = (((16 as libc::c_int) << octave) as libc::c_uint)
-                .wrapping_add(ec_dec_bits(
-                    dec,
-                    (4 as libc::c_int + octave) as libc::c_uint,
-                ))
-                .wrapping_sub(1 as libc::c_int as libc::c_uint)
-                as libc::c_int;
-            qg = ec_dec_bits(dec, 3 as libc::c_int as libc::c_uint) as libc::c_int;
-            if ec_tell(dec) + 2 as libc::c_int <= total_bits {
-                postfilter_tapset =
-                    ec_dec_icdf(dec, tapset_icdf.as_ptr(), 2 as libc::c_int as libc::c_uint);
+    postfilter_gain = 0 as i32 as opus_val16;
+    postfilter_pitch = 0 as i32;
+    postfilter_tapset = 0 as i32;
+    if start == 0 as i32 && tell + 16 as i32 <= total_bits {
+        if ec_dec_bit_logp(dec, 1 as i32 as u32) != 0 {
+            let mut qg: i32 = 0;
+            let mut octave: i32 = 0;
+            octave = ec_dec_uint(dec, 6 as i32 as u32) as i32;
+            postfilter_pitch = (((16 as i32) << octave) as u32)
+                .wrapping_add(ec_dec_bits(dec, (4 as i32 + octave) as u32))
+                .wrapping_sub(1 as i32 as u32) as i32;
+            qg = ec_dec_bits(dec, 3 as i32 as u32) as i32;
+            if ec_tell(dec) + 2 as i32 <= total_bits {
+                postfilter_tapset = ec_dec_icdf(dec, tapset_icdf.as_ptr(), 2 as i32 as u32);
             }
-            postfilter_gain = 0.09375f32 * (qg + 1 as libc::c_int) as libc::c_float;
+            postfilter_gain = 0.09375f32 * (qg + 1 as i32) as f32;
         }
         tell = ec_tell(dec);
     }
-    if LM > 0 as libc::c_int && tell + 3 as libc::c_int <= total_bits {
-        isTransient = ec_dec_bit_logp(dec, 3 as libc::c_int as libc::c_uint);
+    if LM > 0 as i32 && tell + 3 as i32 <= total_bits {
+        isTransient = ec_dec_bit_logp(dec, 3 as i32 as u32);
         tell = ec_tell(dec);
     } else {
-        isTransient = 0 as libc::c_int;
+        isTransient = 0 as i32;
     }
     if isTransient != 0 {
         shortBlocks = M;
     } else {
-        shortBlocks = 0 as libc::c_int;
+        shortBlocks = 0 as i32;
     }
-    intra_ener = if tell + 3 as libc::c_int <= total_bits {
-        ec_dec_bit_logp(dec, 3 as libc::c_int as libc::c_uint)
+    intra_ener = if tell + 3 as i32 <= total_bits {
+        ec_dec_bit_logp(dec, 3 as i32 as u32)
     } else {
-        0 as libc::c_int
+        0 as i32
     };
     unquant_coarse_energy(mode, start, end, oldBandE, intra_ener, dec, C, LM);
     let vla = nbEBands as usize;
-    let mut tf_res: Vec<libc::c_int> = ::std::vec::from_elem(0, vla);
+    let mut tf_res: Vec<i32> = ::std::vec::from_elem(0, vla);
     tf_decode(start, end, isTransient, tf_res.as_mut_ptr(), LM, dec);
     tell = ec_tell(dec);
     spread_decision = SPREAD_NORMAL;
-    if tell + 4 as libc::c_int <= total_bits {
-        spread_decision = ec_dec_icdf(dec, spread_icdf.as_ptr(), 5 as libc::c_int as libc::c_uint);
+    if tell + 4 as i32 <= total_bits {
+        spread_decision = ec_dec_icdf(dec, spread_icdf.as_ptr(), 5 as i32 as u32);
     }
     let vla_0 = nbEBands as usize;
-    let mut cap: Vec<libc::c_int> = ::std::vec::from_elem(0, vla_0);
+    let mut cap: Vec<i32> = ::std::vec::from_elem(0, vla_0);
     init_caps(mode, cap.as_mut_ptr(), LM, C);
     let vla_1 = nbEBands as usize;
-    let mut offsets: Vec<libc::c_int> = ::std::vec::from_elem(0, vla_1);
-    dynalloc_logp = 6 as libc::c_int;
+    let mut offsets: Vec<i32> = ::std::vec::from_elem(0, vla_1);
+    dynalloc_logp = 6 as i32;
     total_bits <<= BITRES;
     tell = ec_tell_frac(dec) as i32;
     i = start;
     while i < end {
-        let mut width: libc::c_int = 0;
-        let mut quanta: libc::c_int = 0;
-        let mut dynalloc_loop_logp: libc::c_int = 0;
-        let mut boost: libc::c_int = 0;
+        let mut width: i32 = 0;
+        let mut quanta: i32 = 0;
+        let mut dynalloc_loop_logp: i32 = 0;
+        let mut boost: i32 = 0;
         width = C
-            * (*eBands.offset((i + 1 as libc::c_int) as isize) as libc::c_int
-                - *eBands.offset(i as isize) as libc::c_int)
+            * (*eBands.offset((i + 1 as i32) as isize) as i32 - *eBands.offset(i as isize) as i32)
             << LM;
-        quanta = if (width << 3 as libc::c_int)
-            < (if (6 as libc::c_int) << 3 as libc::c_int > width {
-                (6 as libc::c_int) << 3 as libc::c_int
+        quanta = if (width << 3 as i32)
+            < (if (6 as i32) << 3 as i32 > width {
+                (6 as i32) << 3 as i32
             } else {
                 width
             }) {
-            width << 3 as libc::c_int
-        } else if (6 as libc::c_int) << 3 as libc::c_int > width {
-            (6 as libc::c_int) << 3 as libc::c_int
+            width << 3 as i32
+        } else if (6 as i32) << 3 as i32 > width {
+            (6 as i32) << 3 as i32
         } else {
             width
         };
         dynalloc_loop_logp = dynalloc_logp;
-        boost = 0 as libc::c_int;
+        boost = 0 as i32;
         while tell + (dynalloc_loop_logp << BITRES) < total_bits
             && boost < *cap.as_mut_ptr().offset(i as isize)
         {
-            let mut flag: libc::c_int = 0;
-            flag = ec_dec_bit_logp(dec, dynalloc_loop_logp as libc::c_uint);
+            let mut flag: i32 = 0;
+            flag = ec_dec_bit_logp(dec, dynalloc_loop_logp as u32);
             tell = ec_tell_frac(dec) as i32;
             if flag == 0 {
                 break;
             }
             boost += quanta;
             total_bits -= quanta;
-            dynalloc_loop_logp = 1 as libc::c_int;
+            dynalloc_loop_logp = 1 as i32;
         }
         *offsets.as_mut_ptr().offset(i as isize) = boost;
-        if boost > 0 as libc::c_int {
-            dynalloc_logp = if 2 as libc::c_int > dynalloc_logp - 1 as libc::c_int {
-                2 as libc::c_int
+        if boost > 0 as i32 {
+            dynalloc_logp = if 2 as i32 > dynalloc_logp - 1 as i32 {
+                2 as i32
             } else {
-                dynalloc_logp - 1 as libc::c_int
+                dynalloc_logp - 1 as i32
             };
         }
         i += 1;
     }
     let vla_2 = nbEBands as usize;
-    let mut fine_quant: Vec<libc::c_int> = ::std::vec::from_elem(0, vla_2);
-    alloc_trim = if tell + ((6 as libc::c_int) << BITRES) <= total_bits {
-        ec_dec_icdf(dec, trim_icdf.as_ptr(), 7 as libc::c_int as libc::c_uint)
+    let mut fine_quant: Vec<i32> = ::std::vec::from_elem(0, vla_2);
+    alloc_trim = if tell + ((6 as i32) << BITRES) <= total_bits {
+        ec_dec_icdf(dec, trim_icdf.as_ptr(), 7 as i32 as u32)
     } else {
-        5 as libc::c_int
+        5 as i32
     };
-    bits = (((len * 8 as libc::c_int) << BITRES) as libc::c_uint)
+    bits = (((len * 8 as i32) << BITRES) as u32)
         .wrapping_sub(ec_tell_frac(dec))
-        .wrapping_sub(1 as libc::c_int as libc::c_uint) as i32;
-    anti_collapse_rsv = if isTransient != 0
-        && LM >= 2 as libc::c_int
-        && bits >= (LM + 2 as libc::c_int) << BITRES
-    {
-        (1 as libc::c_int) << BITRES
+        .wrapping_sub(1 as i32 as u32) as i32;
+    anti_collapse_rsv = if isTransient != 0 && LM >= 2 as i32 && bits >= (LM + 2 as i32) << BITRES {
+        (1 as i32) << BITRES
     } else {
-        0 as libc::c_int
+        0 as i32
     };
     bits -= anti_collapse_rsv;
     let vla_3 = nbEBands as usize;
-    let mut pulses: Vec<libc::c_int> = ::std::vec::from_elem(0, vla_3);
+    let mut pulses: Vec<i32> = ::std::vec::from_elem(0, vla_3);
     let vla_4 = nbEBands as usize;
-    let mut fine_priority: Vec<libc::c_int> = ::std::vec::from_elem(0, vla_4);
+    let mut fine_priority: Vec<i32> = ::std::vec::from_elem(0, vla_4);
     codedBands = clt_compute_allocation(
         mode,
         start,
@@ -1471,23 +1399,23 @@ pub unsafe fn celt_decode_with_ec(
         C,
         LM,
         dec,
-        0 as libc::c_int,
-        0 as libc::c_int,
-        0 as libc::c_int,
+        0 as i32,
+        0 as i32,
+        0 as i32,
     );
     unquant_fine_energy(mode, start, end, oldBandE, fine_quant.as_mut_ptr(), dec, C);
-    c = 0 as libc::c_int;
+    c = 0 as i32;
     loop {
         memmove(
-            decode_mem[c as usize] as *mut libc::c_void,
-            (decode_mem[c as usize]).offset(N as isize) as *const libc::c_void,
-            ((2048 as libc::c_int - N + overlap / 2 as libc::c_int) as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<celt_sig>() as libc::c_ulong)
+            decode_mem[c as usize] as *mut core::ffi::c_void,
+            (decode_mem[c as usize]).offset(N as isize) as *const core::ffi::c_void,
+            ((2048 as i32 - N + overlap / 2 as i32) as u64)
+                .wrapping_mul(::core::mem::size_of::<celt_sig>() as u64)
                 .wrapping_add(
-                    (0 as libc::c_int as libc::c_long
+                    (0 as i32 as i64
                         * (decode_mem[c as usize])
                             .offset_from((decode_mem[c as usize]).offset(N as isize))
-                            as libc::c_long) as libc::c_ulong,
+                            as i64) as u64,
                 ),
         );
         c += 1;
@@ -1496,16 +1424,16 @@ pub unsafe fn celt_decode_with_ec(
         }
     }
     let vla_5 = (C * nbEBands) as usize;
-    let mut collapse_masks: Vec<libc::c_uchar> = ::std::vec::from_elem(0, vla_5);
+    let mut collapse_masks: Vec<u8> = ::std::vec::from_elem(0, vla_5);
     let vla_6 = (C * N) as usize;
     let mut X: Vec<celt_norm> = ::std::vec::from_elem(0., vla_6);
     quant_all_bands(
-        0 as libc::c_int,
+        0 as i32,
         mode,
         start,
         end,
         X.as_mut_ptr(),
-        if C == 2 as libc::c_int {
+        if C == 2 as i32 {
             X.as_mut_ptr().offset(N as isize)
         } else {
             NULL as *mut celt_norm
@@ -1518,18 +1446,18 @@ pub unsafe fn celt_decode_with_ec(
         dual_stereo,
         intensity,
         tf_res.as_mut_ptr(),
-        len * ((8 as libc::c_int) << BITRES) - anti_collapse_rsv,
+        len * ((8 as i32) << BITRES) - anti_collapse_rsv,
         balance,
         dec,
         LM,
         codedBands,
         &mut (*st).rng,
-        0 as libc::c_int,
+        0 as i32,
         (*st).arch,
         (*st).disable_inv,
     );
-    if anti_collapse_rsv > 0 as libc::c_int {
-        anti_collapse_on = ec_dec_bits(dec, 1 as libc::c_int as libc::c_uint) as libc::c_int;
+    if anti_collapse_rsv > 0 as i32 {
+        anti_collapse_on = ec_dec_bits(dec, 1 as i32 as u32) as i32;
     }
     unquant_energy_finalise(
         mode,
@@ -1538,7 +1466,7 @@ pub unsafe fn celt_decode_with_ec(
         oldBandE,
         fine_quant.as_mut_ptr(),
         fine_priority.as_mut_ptr(),
-        len * 8 as libc::c_int - ec_tell(dec),
+        len * 8 as i32 - ec_tell(dec),
         dec,
         C,
     );
@@ -1561,7 +1489,7 @@ pub unsafe fn celt_decode_with_ec(
         );
     }
     if silence != 0 {
-        i = 0 as libc::c_int;
+        i = 0 as i32;
         while i < C * nbEBands {
             *oldBandE.offset(i as isize) = -28.0f32;
             i += 1;
@@ -1582,17 +1510,17 @@ pub unsafe fn celt_decode_with_ec(
         silence,
         (*st).arch,
     );
-    c = 0 as libc::c_int;
+    c = 0 as i32;
     loop {
-        (*st).postfilter_period = if (*st).postfilter_period > 15 as libc::c_int {
+        (*st).postfilter_period = if (*st).postfilter_period > 15 as i32 {
             (*st).postfilter_period
         } else {
-            15 as libc::c_int
+            15 as i32
         };
-        (*st).postfilter_period_old = if (*st).postfilter_period_old > 15 as libc::c_int {
+        (*st).postfilter_period_old = if (*st).postfilter_period_old > 15 as i32 {
             (*st).postfilter_period_old
         } else {
-            15 as libc::c_int
+            15 as i32
         };
         comb_filter(
             out_syn[c as usize],
@@ -1608,7 +1536,7 @@ pub unsafe fn celt_decode_with_ec(
             overlap,
             (*st).arch,
         );
-        if LM != 0 as libc::c_int {
+        if LM != 0 as i32 {
             comb_filter(
                 (out_syn[c as usize]).offset((*mode).shortMdctSize as isize),
                 (out_syn[c as usize]).offset((*mode).shortMdctSize as isize),
@@ -1635,56 +1563,47 @@ pub unsafe fn celt_decode_with_ec(
     (*st).postfilter_period = postfilter_pitch;
     (*st).postfilter_gain = postfilter_gain;
     (*st).postfilter_tapset = postfilter_tapset;
-    if LM != 0 as libc::c_int {
+    if LM != 0 as i32 {
         (*st).postfilter_period_old = (*st).postfilter_period;
         (*st).postfilter_gain_old = (*st).postfilter_gain;
         (*st).postfilter_tapset_old = (*st).postfilter_tapset;
     }
-    if C == 1 as libc::c_int {
+    if C == 1 as i32 {
         memcpy(
-            &mut *oldBandE.offset(nbEBands as isize) as *mut opus_val16 as *mut libc::c_void,
-            oldBandE as *const libc::c_void,
-            (nbEBands as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<opus_val16>() as libc::c_ulong)
+            &mut *oldBandE.offset(nbEBands as isize) as *mut opus_val16 as *mut core::ffi::c_void,
+            oldBandE as *const core::ffi::c_void,
+            (nbEBands as u64)
+                .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64)
                 .wrapping_add(
-                    (0 as libc::c_int as libc::c_long
+                    (0 as i32 as i64
                         * (&mut *oldBandE.offset(nbEBands as isize) as *mut opus_val16)
-                            .offset_from(oldBandE) as libc::c_long)
-                        as libc::c_ulong,
+                            .offset_from(oldBandE) as i64) as u64,
                 ),
         );
     }
     if isTransient == 0 {
         let mut max_background_increase: opus_val16 = 0.;
         memcpy(
-            oldLogE2 as *mut libc::c_void,
-            oldLogE as *const libc::c_void,
-            ((2 as libc::c_int * nbEBands) as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<opus_val16>() as libc::c_ulong)
-                .wrapping_add(
-                    (0 as libc::c_int as libc::c_long
-                        * oldLogE2.offset_from(oldLogE) as libc::c_long)
-                        as libc::c_ulong,
-                ),
+            oldLogE2 as *mut core::ffi::c_void,
+            oldLogE as *const core::ffi::c_void,
+            ((2 as i32 * nbEBands) as u64)
+                .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64)
+                .wrapping_add((0 as i32 as i64 * oldLogE2.offset_from(oldLogE) as i64) as u64),
         );
         memcpy(
-            oldLogE as *mut libc::c_void,
-            oldBandE as *const libc::c_void,
-            ((2 as libc::c_int * nbEBands) as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<opus_val16>() as libc::c_ulong)
-                .wrapping_add(
-                    (0 as libc::c_int as libc::c_long
-                        * oldLogE.offset_from(oldBandE) as libc::c_long)
-                        as libc::c_ulong,
-                ),
+            oldLogE as *mut core::ffi::c_void,
+            oldBandE as *const core::ffi::c_void,
+            ((2 as i32 * nbEBands) as u64)
+                .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64)
+                .wrapping_add((0 as i32 as i64 * oldLogE.offset_from(oldBandE) as i64) as u64),
         );
-        if (*st).loss_count < 10 as libc::c_int {
-            max_background_increase = M as libc::c_float * 0.001f32;
+        if (*st).loss_count < 10 as i32 {
+            max_background_increase = M as f32 * 0.001f32;
         } else {
             max_background_increase = 1.0f32;
         }
-        i = 0 as libc::c_int;
-        while i < 2 as libc::c_int * nbEBands {
+        i = 0 as i32;
+        while i < 2 as i32 * nbEBands {
             *backgroundLogE.offset(i as isize) = if *backgroundLogE.offset(i as isize)
                 + max_background_increase
                 < *oldBandE.offset(i as isize)
@@ -1696,8 +1615,8 @@ pub unsafe fn celt_decode_with_ec(
             i += 1;
         }
     } else {
-        i = 0 as libc::c_int;
-        while i < 2 as libc::c_int * nbEBands {
+        i = 0 as i32;
+        while i < 2 as i32 * nbEBands {
             *oldLogE.offset(i as isize) =
                 if *oldLogE.offset(i as isize) < *oldBandE.offset(i as isize) {
                     *oldLogE.offset(i as isize)
@@ -1707,11 +1626,11 @@ pub unsafe fn celt_decode_with_ec(
             i += 1;
         }
     }
-    c = 0 as libc::c_int;
+    c = 0 as i32;
     loop {
-        i = 0 as libc::c_int;
+        i = 0 as i32;
         while i < start {
-            *oldBandE.offset((c * nbEBands + i) as isize) = 0 as libc::c_int as opus_val16;
+            *oldBandE.offset((c * nbEBands + i) as isize) = 0 as i32 as opus_val16;
             let ref mut fresh0 = *oldLogE2.offset((c * nbEBands + i) as isize);
             *fresh0 = -28.0f32;
             *oldLogE.offset((c * nbEBands + i) as isize) = *fresh0;
@@ -1719,14 +1638,14 @@ pub unsafe fn celt_decode_with_ec(
         }
         i = end;
         while i < nbEBands {
-            *oldBandE.offset((c * nbEBands + i) as isize) = 0 as libc::c_int as opus_val16;
+            *oldBandE.offset((c * nbEBands + i) as isize) = 0 as i32 as opus_val16;
             let ref mut fresh1 = *oldLogE2.offset((c * nbEBands + i) as isize);
             *fresh1 = -28.0f32;
             *oldLogE.offset((c * nbEBands + i) as isize) = *fresh1;
             i += 1;
         }
         c += 1;
-        if !(c < 2 as libc::c_int) {
+        if !(c < 2 as i32) {
             break;
         }
     }
@@ -1741,27 +1660,27 @@ pub unsafe fn celt_decode_with_ec(
         ((*st).preemph_memD).as_mut_ptr(),
         accum,
     );
-    (*st).loss_count = 0 as libc::c_int;
-    if ec_tell(dec) > 8 as libc::c_int * len {
+    (*st).loss_count = 0 as i32;
+    if ec_tell(dec) > 8 as i32 * len {
         return OPUS_INTERNAL_ERROR;
     }
     if ec_get_error(dec) != 0 {
-        (*st).error = 1 as libc::c_int;
+        (*st).error = 1 as i32;
     }
     return frame_size / (*st).downsample;
 }
 #[c2rust::src_loc = "1247:1"]
 pub unsafe fn opus_custom_decoder_ctl_impl(
     mut st: *mut OpusCustomDecoder,
-    request: libc::c_int,
+    request: i32,
     args: VarArgs,
-) -> libc::c_int {
+) -> i32 {
     let current_block: u64;
     let mut ap = args;
     match request {
         CELT_SET_START_BAND_REQUEST => {
             let value: i32 = ap.arg::<i32>();
-            if value < 0 as libc::c_int || value >= (*(*st).mode).nbEBands {
+            if value < 0 as i32 || value >= (*(*st).mode).nbEBands {
                 current_block = 7990025728955927862;
             } else {
                 (*st).start = value;
@@ -1770,7 +1689,7 @@ pub unsafe fn opus_custom_decoder_ctl_impl(
         }
         CELT_SET_END_BAND_REQUEST => {
             let value_0: i32 = ap.arg::<i32>();
-            if value_0 < 1 as libc::c_int || value_0 > (*(*st).mode).nbEBands {
+            if value_0 < 1 as i32 || value_0 > (*(*st).mode).nbEBands {
                 current_block = 7990025728955927862;
             } else {
                 (*st).end = value_0;
@@ -1779,7 +1698,7 @@ pub unsafe fn opus_custom_decoder_ctl_impl(
         }
         CELT_SET_CHANNELS_REQUEST => {
             let value_1: i32 = ap.arg::<i32>();
-            if value_1 < 1 as libc::c_int || value_1 > 2 as libc::c_int {
+            if value_1 < 1 as i32 || value_1 > 2 as i32 {
                 current_block = 7990025728955927862;
             } else {
                 (*st).stream_channels = value_1;
@@ -1792,7 +1711,7 @@ pub unsafe fn opus_custom_decoder_ctl_impl(
                 current_block = 7990025728955927862;
             } else {
                 *value_2 = (*st).error;
-                (*st).error = 0 as libc::c_int;
+                (*st).error = 0 as i32;
                 current_block = 3689906465960840878;
             }
         }
@@ -1806,7 +1725,7 @@ pub unsafe fn opus_custom_decoder_ctl_impl(
             }
         }
         OPUS_RESET_STATE => {
-            let mut i: libc::c_int = 0;
+            let mut i: i32 = 0;
             let mut lpc: *mut opus_val16 = 0 as *mut opus_val16;
             let mut oldBandE: *mut opus_val16 = 0 as *mut opus_val16;
             let mut oldLogE: *mut opus_val16 = 0 as *mut opus_val16;
@@ -1816,25 +1735,24 @@ pub unsafe fn opus_custom_decoder_ctl_impl(
                 .offset(((DECODE_BUFFER_SIZE + (*st).overlap) * (*st).channels) as isize)
                 as *mut opus_val16;
             oldBandE = lpc.offset(((*st).channels * LPC_ORDER) as isize);
-            oldLogE = oldBandE.offset((2 as libc::c_int * (*(*st).mode).nbEBands) as isize);
-            oldLogE2 = oldLogE.offset((2 as libc::c_int * (*(*st).mode).nbEBands) as isize);
+            oldLogE = oldBandE.offset((2 as i32 * (*(*st).mode).nbEBands) as isize);
+            oldLogE2 = oldLogE.offset((2 as i32 * (*(*st).mode).nbEBands) as isize);
             memset(
-                &mut (*st).rng as *mut u32 as *mut libc::c_char as *mut libc::c_void,
-                0 as libc::c_int,
-                ((opus_custom_decoder_get_size((*st).mode, (*st).channels) as libc::c_long
-                    - (&mut (*st).rng as *mut u32 as *mut libc::c_char)
-                        .offset_from(st as *mut libc::c_char) as libc::c_long)
-                    as libc::c_ulong)
-                    .wrapping_mul(::core::mem::size_of::<libc::c_char>() as libc::c_ulong),
+                &mut (*st).rng as *mut u32 as *mut i8 as *mut core::ffi::c_void,
+                0 as i32,
+                ((opus_custom_decoder_get_size((*st).mode, (*st).channels) as i64
+                    - (&mut (*st).rng as *mut u32 as *mut i8).offset_from(st as *mut i8) as i64)
+                    as u64)
+                    .wrapping_mul(::core::mem::size_of::<i8>() as u64),
             );
-            i = 0 as libc::c_int;
-            while i < 2 as libc::c_int * (*(*st).mode).nbEBands {
+            i = 0 as i32;
+            while i < 2 as i32 * (*(*st).mode).nbEBands {
                 let ref mut fresh2 = *oldLogE2.offset(i as isize);
                 *fresh2 = -28.0f32;
                 *oldLogE.offset(i as isize) = *fresh2;
                 i += 1;
             }
-            (*st).skip_plc = 1 as libc::c_int;
+            (*st).skip_plc = 1 as i32;
             current_block = 3689906465960840878;
         }
         OPUS_GET_PITCH_REQUEST => {
@@ -1871,7 +1789,7 @@ pub unsafe fn opus_custom_decoder_ctl_impl(
         }
         OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST => {
             let value_8: i32 = ap.arg::<i32>();
-            if value_8 < 0 as libc::c_int || value_8 > 1 as libc::c_int {
+            if value_8 < 0 as i32 || value_8 > 1 as i32 {
                 current_block = 7990025728955927862;
             } else {
                 (*st).disable_inv = value_8;

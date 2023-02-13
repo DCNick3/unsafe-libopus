@@ -2,48 +2,46 @@ use crate::silk::define::MAX_PREDICTION_POWER_GAIN;
 
 use crate::externs::memcpy;
 #[c2rust::src_loc = "39:1"]
-pub unsafe fn silk_LPC_inverse_pred_gain_FLP(A: *const libc::c_float, order: i32) -> libc::c_float {
-    let mut k: libc::c_int = 0;
-    let mut n: libc::c_int = 0;
-    let mut invGain: libc::c_double = 0.;
-    let mut rc: libc::c_double = 0.;
-    let mut rc_mult1: libc::c_double = 0.;
-    let mut rc_mult2: libc::c_double = 0.;
-    let mut tmp1: libc::c_double = 0.;
-    let mut tmp2: libc::c_double = 0.;
-    let mut Atmp: [libc::c_float; 24] = [0.; 24];
+pub unsafe fn silk_LPC_inverse_pred_gain_FLP(A: *const f32, order: i32) -> f32 {
+    let mut k: i32 = 0;
+    let mut n: i32 = 0;
+    let mut invGain: f64 = 0.;
+    let mut rc: f64 = 0.;
+    let mut rc_mult1: f64 = 0.;
+    let mut rc_mult2: f64 = 0.;
+    let mut tmp1: f64 = 0.;
+    let mut tmp2: f64 = 0.;
+    let mut Atmp: [f32; 24] = [0.; 24];
     memcpy(
-        Atmp.as_mut_ptr() as *mut libc::c_void,
-        A as *const libc::c_void,
-        (order as libc::c_ulong)
-            .wrapping_mul(::core::mem::size_of::<libc::c_float>() as libc::c_ulong),
+        Atmp.as_mut_ptr() as *mut core::ffi::c_void,
+        A as *const core::ffi::c_void,
+        (order as u64).wrapping_mul(::core::mem::size_of::<f32>() as u64),
     );
     invGain = 1.0f64;
-    k = order - 1 as libc::c_int;
-    while k > 0 as libc::c_int {
-        rc = -Atmp[k as usize] as libc::c_double;
-        rc_mult1 = 1.0f32 as libc::c_double - rc * rc;
+    k = order - 1 as i32;
+    while k > 0 as i32 {
+        rc = -Atmp[k as usize] as f64;
+        rc_mult1 = 1.0f32 as f64 - rc * rc;
         invGain *= rc_mult1;
-        if (invGain * MAX_PREDICTION_POWER_GAIN as libc::c_double) < 1.0f32 as libc::c_double {
+        if (invGain * MAX_PREDICTION_POWER_GAIN as f64) < 1.0f32 as f64 {
             return 0.0f32;
         }
-        rc_mult2 = 1.0f32 as libc::c_double / rc_mult1;
-        n = 0 as libc::c_int;
-        while n < k + 1 as libc::c_int >> 1 as libc::c_int {
-            tmp1 = Atmp[n as usize] as libc::c_double;
-            tmp2 = Atmp[(k - n - 1 as libc::c_int) as usize] as libc::c_double;
-            Atmp[n as usize] = ((tmp1 - tmp2 * rc) * rc_mult2) as libc::c_float;
-            Atmp[(k - n - 1 as libc::c_int) as usize] =
-                ((tmp2 - tmp1 * rc) * rc_mult2) as libc::c_float;
+        rc_mult2 = 1.0f32 as f64 / rc_mult1;
+        n = 0 as i32;
+        while n < k + 1 as i32 >> 1 as i32 {
+            tmp1 = Atmp[n as usize] as f64;
+            tmp2 = Atmp[(k - n - 1 as i32) as usize] as f64;
+            Atmp[n as usize] = ((tmp1 - tmp2 * rc) * rc_mult2) as f32;
+            Atmp[(k - n - 1 as i32) as usize] = ((tmp2 - tmp1 * rc) * rc_mult2) as f32;
             n += 1;
         }
         k -= 1;
     }
-    rc = -Atmp[0 as libc::c_int as usize] as libc::c_double;
-    rc_mult1 = 1.0f32 as libc::c_double - rc * rc;
+    rc = -Atmp[0 as i32 as usize] as f64;
+    rc_mult1 = 1.0f32 as f64 - rc * rc;
     invGain *= rc_mult1;
-    if (invGain * MAX_PREDICTION_POWER_GAIN as libc::c_double) < 1.0f32 as libc::c_double {
+    if (invGain * MAX_PREDICTION_POWER_GAIN as f64) < 1.0f32 as f64 {
         return 0.0f32;
     }
-    return invGain as libc::c_float;
+    return invGain as f32;
 }

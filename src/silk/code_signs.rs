@@ -7,43 +7,42 @@ use crate::silk::tables_pulses_per_block::silk_sign_iCDF;
 pub unsafe fn silk_encode_signs(
     psRangeEnc: *mut ec_enc,
     pulses: *const i8,
-    mut length: libc::c_int,
-    signalType: libc::c_int,
-    quantOffsetType: libc::c_int,
-    sum_pulses: *const libc::c_int,
+    mut length: i32,
+    signalType: i32,
+    quantOffsetType: i32,
+    sum_pulses: *const i32,
 ) {
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut p: libc::c_int = 0;
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut p: i32 = 0;
     let mut icdf: [u8; 2] = [0; 2];
     let mut q_ptr: *const i8 = 0 as *const i8;
     let mut icdf_ptr: *const u8 = 0 as *const u8;
-    icdf[1 as libc::c_int as usize] = 0 as libc::c_int as u8;
+    icdf[1 as i32 as usize] = 0 as i32 as u8;
     q_ptr = pulses;
-    i = 7 as libc::c_int as i16 as i32
-        * (quantOffsetType + ((signalType as u32) << 1 as libc::c_int) as i32) as i16 as i32;
+    i = 7 as i32 as i16 as i32
+        * (quantOffsetType + ((signalType as u32) << 1 as i32) as i32) as i16 as i32;
     icdf_ptr = &*silk_sign_iCDF.as_ptr().offset(i as isize) as *const u8;
-    length = length + 16 as libc::c_int / 2 as libc::c_int >> 4 as libc::c_int;
-    i = 0 as libc::c_int;
+    length = length + 16 as i32 / 2 as i32 >> 4 as i32;
+    i = 0 as i32;
     while i < length {
         p = *sum_pulses.offset(i as isize);
-        if p > 0 as libc::c_int {
-            icdf[0 as libc::c_int as usize] = *icdf_ptr.offset(
-                (if (p & 0x1f as libc::c_int) < 6 as libc::c_int {
-                    p & 0x1f as libc::c_int
+        if p > 0 as i32 {
+            icdf[0 as i32 as usize] = *icdf_ptr.offset(
+                (if (p & 0x1f as i32) < 6 as i32 {
+                    p & 0x1f as i32
                 } else {
-                    6 as libc::c_int
+                    6 as i32
                 }) as isize,
             );
-            j = 0 as libc::c_int;
+            j = 0 as i32;
             while j < SHELL_CODEC_FRAME_LENGTH {
-                if *q_ptr.offset(j as isize) as libc::c_int != 0 as libc::c_int {
+                if *q_ptr.offset(j as isize) as i32 != 0 as i32 {
                     ec_enc_icdf(
                         psRangeEnc,
-                        (*q_ptr.offset(j as isize) as libc::c_int >> 15 as libc::c_int)
-                            + 1 as libc::c_int,
+                        (*q_ptr.offset(j as isize) as i32 >> 15 as i32) + 1 as i32,
                         icdf.as_mut_ptr(),
-                        8 as libc::c_int as libc::c_uint,
+                        8 as i32 as u32,
                     );
                 }
                 j += 1;
@@ -57,46 +56,42 @@ pub unsafe fn silk_encode_signs(
 pub unsafe fn silk_decode_signs(
     psRangeDec: *mut ec_dec,
     pulses: *mut i16,
-    mut length: libc::c_int,
-    signalType: libc::c_int,
-    quantOffsetType: libc::c_int,
-    sum_pulses: *const libc::c_int,
+    mut length: i32,
+    signalType: i32,
+    quantOffsetType: i32,
+    sum_pulses: *const i32,
 ) {
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut p: libc::c_int = 0;
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut p: i32 = 0;
     let mut icdf: [u8; 2] = [0; 2];
     let mut q_ptr: *mut i16 = 0 as *mut i16;
     let mut icdf_ptr: *const u8 = 0 as *const u8;
-    icdf[1 as libc::c_int as usize] = 0 as libc::c_int as u8;
+    icdf[1 as i32 as usize] = 0 as i32 as u8;
     q_ptr = pulses;
-    i = 7 as libc::c_int as i16 as i32
-        * (quantOffsetType + ((signalType as u32) << 1 as libc::c_int) as i32) as i16 as i32;
+    i = 7 as i32 as i16 as i32
+        * (quantOffsetType + ((signalType as u32) << 1 as i32) as i32) as i16 as i32;
     icdf_ptr = &*silk_sign_iCDF.as_ptr().offset(i as isize) as *const u8;
-    length = length + 16 as libc::c_int / 2 as libc::c_int >> 4 as libc::c_int;
-    i = 0 as libc::c_int;
+    length = length + 16 as i32 / 2 as i32 >> 4 as i32;
+    i = 0 as i32;
     while i < length {
         p = *sum_pulses.offset(i as isize);
-        if p > 0 as libc::c_int {
-            icdf[0 as libc::c_int as usize] = *icdf_ptr.offset(
-                (if (p & 0x1f as libc::c_int) < 6 as libc::c_int {
-                    p & 0x1f as libc::c_int
+        if p > 0 as i32 {
+            icdf[0 as i32 as usize] = *icdf_ptr.offset(
+                (if (p & 0x1f as i32) < 6 as i32 {
+                    p & 0x1f as i32
                 } else {
-                    6 as libc::c_int
+                    6 as i32
                 }) as isize,
             );
-            j = 0 as libc::c_int;
+            j = 0 as i32;
             while j < SHELL_CODEC_FRAME_LENGTH {
-                if *q_ptr.offset(j as isize) as libc::c_int > 0 as libc::c_int {
+                if *q_ptr.offset(j as isize) as i32 > 0 as i32 {
                     let ref mut fresh0 = *q_ptr.offset(j as isize);
-                    *fresh0 = (*fresh0 as libc::c_int
-                        * (((ec_dec_icdf(
-                            psRangeDec,
-                            icdf.as_mut_ptr(),
-                            8 as libc::c_int as libc::c_uint,
-                        ) as u32)
-                            << 1 as libc::c_int) as i32
-                            - 1 as libc::c_int)) as i16;
+                    *fresh0 = (*fresh0 as i32
+                        * (((ec_dec_icdf(psRangeDec, icdf.as_mut_ptr(), 8 as i32 as u32) as u32)
+                            << 1 as i32) as i32
+                            - 1 as i32)) as i16;
                 }
                 j += 1;
             }

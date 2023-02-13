@@ -1,23 +1,22 @@
 #[c2rust::src_loc = "35:1"]
-pub unsafe fn silk_energy_FLP(data: *const libc::c_float, dataSize: libc::c_int) -> libc::c_double {
-    let mut i: libc::c_int = 0;
-    let mut result: libc::c_double = 0.;
+pub unsafe fn silk_energy_FLP(data: *const f32, dataSize: i32) -> f64 {
+    let mut i: i32 = 0;
+    let mut result: f64 = 0.;
     result = 0.0f64;
-    i = 0 as libc::c_int;
-    while i < dataSize - 3 as libc::c_int {
-        result += *data.offset((i + 0 as libc::c_int) as isize) as libc::c_double
-            * *data.offset((i + 0 as libc::c_int) as isize) as libc::c_double
-            + *data.offset((i + 1 as libc::c_int) as isize) as libc::c_double
-                * *data.offset((i + 1 as libc::c_int) as isize) as libc::c_double
-            + *data.offset((i + 2 as libc::c_int) as isize) as libc::c_double
-                * *data.offset((i + 2 as libc::c_int) as isize) as libc::c_double
-            + *data.offset((i + 3 as libc::c_int) as isize) as libc::c_double
-                * *data.offset((i + 3 as libc::c_int) as isize) as libc::c_double;
-        i += 4 as libc::c_int;
+    i = 0 as i32;
+    while i < dataSize - 3 as i32 {
+        result += *data.offset((i + 0 as i32) as isize) as f64
+            * *data.offset((i + 0 as i32) as isize) as f64
+            + *data.offset((i + 1 as i32) as isize) as f64
+                * *data.offset((i + 1 as i32) as isize) as f64
+            + *data.offset((i + 2 as i32) as isize) as f64
+                * *data.offset((i + 2 as i32) as isize) as f64
+            + *data.offset((i + 3 as i32) as isize) as f64
+                * *data.offset((i + 3 as i32) as isize) as f64;
+        i += 4 as i32;
     }
     while i < dataSize {
-        result +=
-            *data.offset(i as isize) as libc::c_double * *data.offset(i as isize) as libc::c_double;
+        result += *data.offset(i as isize) as f64 * *data.offset(i as isize) as f64;
         i += 1;
     }
     return result;

@@ -82,14 +82,12 @@ static silk_NLSF_DELTA_MIN_NB_MB_Q15: [i16; 11] = [250, 3, 6, 3, 3, 3, 4, 3, 3, 
 #[c2rust::src_loc = "181:27"]
 pub static mut silk_NLSF_CB_NB_MB: silk_NLSF_CB_struct = {
     let init = silk_NLSF_CB_struct {
-        nVectors: 32 as libc::c_int as i16,
-        order: 10 as libc::c_int as i16,
-        quantStepSize_Q16: (0.18f64
-            * ((1 as libc::c_int as i64) << 16 as libc::c_int) as libc::c_double
-            + 0.5f64) as i32 as i16,
-        invQuantStepSize_Q6: (1.0f64 / 0.18f64
-            * ((1 as libc::c_int as i64) << 6 as libc::c_int) as libc::c_double
-            + 0.5f64) as i32 as i16,
+        nVectors: 32 as i32 as i16,
+        order: 10 as i32 as i16,
+        quantStepSize_Q16: (0.18f64 * ((1 as i32 as i64) << 16 as i32) as f64 + 0.5f64) as i32
+            as i16,
+        invQuantStepSize_Q6: (1.0f64 / 0.18f64 * ((1 as i32 as i64) << 6 as i32) as f64 + 0.5f64)
+            as i32 as i16,
         CB1_NLSF_Q8: silk_NLSF_CB1_NB_MB_Q8.as_ptr(),
         CB1_Wght_Q9: silk_NLSF_CB1_Wght_Q9.as_ptr(),
         CB1_iCDF: silk_NLSF_CB1_iCDF_NB_MB.as_ptr(),

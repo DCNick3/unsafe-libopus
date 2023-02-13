@@ -13,7 +13,7 @@ crate-type = ["staticlib", "rlib"]
 debug = 1
 
 [dependencies]
-libc = "0.2"
 
 [dev-dependencies]
+libc = "0.2"
 libc-stdhandle = "0.1.0"

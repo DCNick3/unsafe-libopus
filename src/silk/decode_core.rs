@@ -1,13 +1,13 @@
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
     #[c2rust::src_loc = "45:9"]
-    pub const silk_int16_MIN: libc::c_int = 0x8000 as libc::c_int;
+    pub const silk_int16_MIN: i32 = 0x8000 as i32;
     #[c2rust::src_loc = "44:9"]
-    pub const silk_int16_MAX: libc::c_int = 0x7fff as libc::c_int;
+    pub const silk_int16_MAX: i32 = 0x7fff as i32;
     #[c2rust::src_loc = "42:9"]
-    pub const silk_int32_MAX: libc::c_int = 0x7fffffff as libc::c_int;
+    pub const silk_int32_MAX: i32 = 0x7fffffff as i32;
     #[c2rust::src_loc = "43:9"]
-    pub const silk_int32_MIN: libc::c_uint = 0x80000000 as libc::c_uint;
+    pub const silk_int32_MIN: u32 = 0x80000000 as u32;
 }
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN, silk_int32_MAX, silk_int32_MIN};
 use crate::celt::celt::celt_fatal;
@@ -26,15 +26,15 @@ pub unsafe fn silk_decode_core(
     mut psDecCtrl: *mut silk_decoder_control,
     xq: *mut i16,
     pulses: *const i16,
-    arch: libc::c_int,
+    arch: i32,
 ) {
-    let mut i: libc::c_int = 0;
-    let mut k: libc::c_int = 0;
-    let mut lag: libc::c_int = 0 as libc::c_int;
-    let mut start_idx: libc::c_int = 0;
-    let mut sLTP_buf_idx: libc::c_int = 0;
-    let mut NLSF_interpolation_flag: libc::c_int = 0;
-    let mut signalType: libc::c_int = 0;
+    let mut i: i32 = 0;
+    let mut k: i32 = 0;
+    let mut lag: i32 = 0 as i32;
+    let mut start_idx: i32 = 0;
+    let mut sLTP_buf_idx: i32 = 0;
+    let mut NLSF_interpolation_flag: i32 = 0;
+    let mut signalType: i32 = 0;
     let mut A_Q12: *mut i16 = 0 as *mut i16;
     let mut B_Q14: *mut i16 = 0 as *mut i16;
     let mut pxq: *mut i16 = 0 as *mut i16;
@@ -55,120 +55,112 @@ pub unsafe fn silk_decode_core(
     let mut sLTP_Q15: Vec<i32> = ::std::vec::from_elem(0, vla_0);
     let vla_1 = (*psDec).subfr_length as usize;
     let mut res_Q14: Vec<i32> = ::std::vec::from_elem(0, vla_1);
-    let vla_2 = ((*psDec).subfr_length + 16 as libc::c_int) as usize;
+    let vla_2 = ((*psDec).subfr_length + 16 as i32) as usize;
     let mut sLPC_Q14: Vec<i32> = ::std::vec::from_elem(0, vla_2);
     offset_Q10 = silk_Quantization_Offsets_Q10
-        [((*psDec).indices.signalType as libc::c_int >> 1 as libc::c_int) as usize]
+        [((*psDec).indices.signalType as i32 >> 1 as i32) as usize]
         [(*psDec).indices.quantOffsetType as usize] as i32;
-    if ((*psDec).indices.NLSFInterpCoef_Q2 as libc::c_int) < (1 as libc::c_int) << 2 as libc::c_int
-    {
-        NLSF_interpolation_flag = 1 as libc::c_int;
+    if ((*psDec).indices.NLSFInterpCoef_Q2 as i32) < (1 as i32) << 2 as i32 {
+        NLSF_interpolation_flag = 1 as i32;
     } else {
-        NLSF_interpolation_flag = 0 as libc::c_int;
+        NLSF_interpolation_flag = 0 as i32;
     }
     rand_seed = (*psDec).indices.Seed as i32;
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < (*psDec).frame_length {
-        rand_seed = (907633515 as libc::c_int as u32)
-            .wrapping_add((rand_seed as u32).wrapping_mul(196314165 as libc::c_int as u32))
+        rand_seed = (907633515 as i32 as u32)
+            .wrapping_add((rand_seed as u32).wrapping_mul(196314165 as i32 as u32))
             as i32;
         (*psDec).exc_Q14[i as usize] =
-            ((*pulses.offset(i as isize) as i32 as u32) << 14 as libc::c_int) as i32;
-        if (*psDec).exc_Q14[i as usize] > 0 as libc::c_int {
-            (*psDec).exc_Q14[i as usize] -= QUANT_LEVEL_ADJUST_Q10 << 4 as libc::c_int;
-        } else if (*psDec).exc_Q14[i as usize] < 0 as libc::c_int {
-            (*psDec).exc_Q14[i as usize] += QUANT_LEVEL_ADJUST_Q10 << 4 as libc::c_int;
+            ((*pulses.offset(i as isize) as i32 as u32) << 14 as i32) as i32;
+        if (*psDec).exc_Q14[i as usize] > 0 as i32 {
+            (*psDec).exc_Q14[i as usize] -= QUANT_LEVEL_ADJUST_Q10 << 4 as i32;
+        } else if (*psDec).exc_Q14[i as usize] < 0 as i32 {
+            (*psDec).exc_Q14[i as usize] += QUANT_LEVEL_ADJUST_Q10 << 4 as i32;
         }
-        (*psDec).exc_Q14[i as usize] += offset_Q10 << 4 as libc::c_int;
-        if rand_seed < 0 as libc::c_int {
+        (*psDec).exc_Q14[i as usize] += offset_Q10 << 4 as i32;
+        if rand_seed < 0 as i32 {
             (*psDec).exc_Q14[i as usize] = -(*psDec).exc_Q14[i as usize];
         }
         rand_seed = (rand_seed as u32).wrapping_add(*pulses.offset(i as isize) as u32) as i32;
         i += 1;
     }
     memcpy(
-        sLPC_Q14.as_mut_ptr() as *mut libc::c_void,
-        ((*psDec).sLPC_Q14_buf).as_mut_ptr() as *const libc::c_void,
-        (16 as libc::c_int as libc::c_ulong)
-            .wrapping_mul(::core::mem::size_of::<i32>() as libc::c_ulong),
+        sLPC_Q14.as_mut_ptr() as *mut core::ffi::c_void,
+        ((*psDec).sLPC_Q14_buf).as_mut_ptr() as *const core::ffi::c_void,
+        (16 as i32 as u64).wrapping_mul(::core::mem::size_of::<i32>() as u64),
     );
     pexc_Q14 = ((*psDec).exc_Q14).as_mut_ptr();
     pxq = xq;
     sLTP_buf_idx = (*psDec).ltp_mem_length;
-    k = 0 as libc::c_int;
+    k = 0 as i32;
     while k < (*psDec).nb_subfr {
         pres_Q14 = res_Q14.as_mut_ptr();
-        A_Q12 = ((*psDecCtrl).PredCoef_Q12[(k >> 1 as libc::c_int) as usize]).as_mut_ptr();
+        A_Q12 = ((*psDecCtrl).PredCoef_Q12[(k >> 1 as i32) as usize]).as_mut_ptr();
         memcpy(
-            A_Q12_tmp.as_mut_ptr() as *mut libc::c_void,
-            A_Q12 as *const libc::c_void,
-            ((*psDec).LPC_order as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<i16>() as libc::c_ulong),
+            A_Q12_tmp.as_mut_ptr() as *mut core::ffi::c_void,
+            A_Q12 as *const core::ffi::c_void,
+            ((*psDec).LPC_order as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
         );
         B_Q14 = &mut *((*psDecCtrl).LTPCoef_Q14)
             .as_mut_ptr()
             .offset((k * LTP_ORDER) as isize) as *mut i16;
-        signalType = (*psDec).indices.signalType as libc::c_int;
-        Gain_Q10 = (*psDecCtrl).Gains_Q16[k as usize] >> 6 as libc::c_int;
-        inv_gain_Q31 = silk_INVERSE32_varQ((*psDecCtrl).Gains_Q16[k as usize], 47 as libc::c_int);
+        signalType = (*psDec).indices.signalType as i32;
+        Gain_Q10 = (*psDecCtrl).Gains_Q16[k as usize] >> 6 as i32;
+        inv_gain_Q31 = silk_INVERSE32_varQ((*psDecCtrl).Gains_Q16[k as usize], 47 as i32);
         if (*psDecCtrl).Gains_Q16[k as usize] != (*psDec).prev_gain_Q16 {
             gain_adj_Q16 = silk_DIV32_varQ(
                 (*psDec).prev_gain_Q16,
                 (*psDecCtrl).Gains_Q16[k as usize],
-                16 as libc::c_int,
+                16 as i32,
             );
-            i = 0 as libc::c_int;
+            i = 0 as i32;
             while i < MAX_LPC_ORDER {
-                *sLPC_Q14.as_mut_ptr().offset(i as isize) = (gain_adj_Q16 as i64
-                    * *sLPC_Q14.as_mut_ptr().offset(i as isize) as libc::c_long
-                    >> 16 as libc::c_int)
-                    as i32;
+                *sLPC_Q14.as_mut_ptr().offset(i as isize) =
+                    (gain_adj_Q16 as i64 * *sLPC_Q14.as_mut_ptr().offset(i as isize) as i64
+                        >> 16 as i32) as i32;
                 i += 1;
             }
         } else {
-            gain_adj_Q16 = (1 as libc::c_int) << 16 as libc::c_int;
+            gain_adj_Q16 = (1 as i32) << 16 as i32;
         }
         (*psDec).prev_gain_Q16 = (*psDecCtrl).Gains_Q16[k as usize];
         if (*psDec).lossCnt != 0
             && (*psDec).prevSignalType == TYPE_VOICED
-            && (*psDec).indices.signalType as libc::c_int != TYPE_VOICED
-            && k < MAX_NB_SUBFR / 2 as libc::c_int
+            && (*psDec).indices.signalType as i32 != TYPE_VOICED
+            && k < MAX_NB_SUBFR / 2 as i32
         {
             memset(
-                B_Q14 as *mut libc::c_void,
-                0 as libc::c_int,
-                (5 as libc::c_int as libc::c_ulong)
-                    .wrapping_mul(::core::mem::size_of::<i16>() as libc::c_ulong),
+                B_Q14 as *mut core::ffi::c_void,
+                0 as i32,
+                (5 as i32 as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
             );
-            *B_Q14.offset((LTP_ORDER / 2 as libc::c_int) as isize) =
-                (0.25f64 * ((1 as libc::c_int as i64) << 14 as libc::c_int) as libc::c_double
-                    + 0.5f64) as i32 as i16;
+            *B_Q14.offset((LTP_ORDER / 2 as i32) as isize) =
+                (0.25f64 * ((1 as i32 as i64) << 14 as i32) as f64 + 0.5f64) as i32 as i16;
             signalType = TYPE_VOICED;
             (*psDecCtrl).pitchL[k as usize] = (*psDec).lagPrev;
         }
         if signalType == TYPE_VOICED {
             lag = (*psDecCtrl).pitchL[k as usize];
-            if k == 0 as libc::c_int || k == 2 as libc::c_int && NLSF_interpolation_flag != 0 {
-                start_idx = (*psDec).ltp_mem_length
-                    - lag
-                    - (*psDec).LPC_order
-                    - LTP_ORDER / 2 as libc::c_int;
-                if !(start_idx > 0 as libc::c_int) {
+            if k == 0 as i32 || k == 2 as i32 && NLSF_interpolation_flag != 0 {
+                start_idx =
+                    (*psDec).ltp_mem_length - lag - (*psDec).LPC_order - LTP_ORDER / 2 as i32;
+                if !(start_idx > 0 as i32) {
                     celt_fatal(
-                        b"assertion failed: start_idx > 0\0" as *const u8 as *const libc::c_char,
-                        b"silk/decode_core.c\0" as *const u8 as *const libc::c_char,
-                        144 as libc::c_int,
+                        b"assertion failed: start_idx > 0\0" as *const u8 as *const i8,
+                        b"silk/decode_core.c\0" as *const u8 as *const i8,
+                        144 as i32,
                     );
                 }
-                if k == 2 as libc::c_int {
+                if k == 2 as i32 {
                     memcpy(
                         &mut *((*psDec).outBuf)
                             .as_mut_ptr()
                             .offset((*psDec).ltp_mem_length as isize)
-                            as *mut i16 as *mut libc::c_void,
-                        xq as *const libc::c_void,
-                        ((2 as libc::c_int * (*psDec).subfr_length) as libc::c_ulong)
-                            .wrapping_mul(::core::mem::size_of::<i16>() as libc::c_ulong),
+                            as *mut i16 as *mut core::ffi::c_void,
+                        xq as *const core::ffi::c_void,
+                        ((2 as i32 * (*psDec).subfr_length) as u64)
+                            .wrapping_mul(::core::mem::size_of::<i16>() as u64),
                     );
                 }
                 silk_LPC_analysis_filter(
@@ -181,37 +173,37 @@ pub unsafe fn silk_decode_core(
                     (*psDec).LPC_order,
                     arch,
                 );
-                if k == 0 as libc::c_int {
-                    inv_gain_Q31 = (((inv_gain_Q31 as libc::c_long
+                if k == 0 as i32 {
+                    inv_gain_Q31 = (((inv_gain_Q31 as i64
                         * (*psDecCtrl).LTP_scale_Q14 as i16 as i64
-                        >> 16 as libc::c_int) as i32 as u32)
-                        << 2 as libc::c_int) as i32;
+                        >> 16 as i32) as i32 as u32)
+                        << 2 as i32) as i32;
                 }
-                i = 0 as libc::c_int;
-                while i < lag + LTP_ORDER / 2 as libc::c_int {
+                i = 0 as i32;
+                while i < lag + LTP_ORDER / 2 as i32 {
                     *sLTP_Q15
                         .as_mut_ptr()
-                        .offset((sLTP_buf_idx - i - 1 as libc::c_int) as isize) =
-                        (inv_gain_Q31 as libc::c_long
-                            * *sLTP
-                                .as_mut_ptr()
-                                .offset(((*psDec).ltp_mem_length - i - 1 as libc::c_int) as isize)
-                                as i64
-                            >> 16 as libc::c_int) as i32;
+                        .offset((sLTP_buf_idx - i - 1 as i32) as isize) = (inv_gain_Q31 as i64
+                        * *sLTP
+                            .as_mut_ptr()
+                            .offset(((*psDec).ltp_mem_length - i - 1 as i32) as isize)
+                            as i64
+                        >> 16 as i32)
+                        as i32;
                     i += 1;
                 }
-            } else if gain_adj_Q16 != (1 as libc::c_int) << 16 as libc::c_int {
-                i = 0 as libc::c_int;
-                while i < lag + LTP_ORDER / 2 as libc::c_int {
+            } else if gain_adj_Q16 != (1 as i32) << 16 as i32 {
+                i = 0 as i32;
+                while i < lag + LTP_ORDER / 2 as i32 {
                     *sLTP_Q15
                         .as_mut_ptr()
-                        .offset((sLTP_buf_idx - i - 1 as libc::c_int) as isize) =
-                        (gain_adj_Q16 as i64
-                            * *sLTP_Q15
-                                .as_mut_ptr()
-                                .offset((sLTP_buf_idx - i - 1 as libc::c_int) as isize)
-                                as libc::c_long
-                            >> 16 as libc::c_int) as i32;
+                        .offset((sLTP_buf_idx - i - 1 as i32) as isize) = (gain_adj_Q16 as i64
+                        * *sLTP_Q15
+                            .as_mut_ptr()
+                            .offset((sLTP_buf_idx - i - 1 as i32) as isize)
+                            as i64
+                        >> 16 as i32)
+                        as i32;
                     i += 1;
                 }
             }
@@ -219,408 +211,356 @@ pub unsafe fn silk_decode_core(
         if signalType == TYPE_VOICED {
             pred_lag_ptr = &mut *sLTP_Q15
                 .as_mut_ptr()
-                .offset((sLTP_buf_idx - lag + LTP_ORDER / 2 as libc::c_int) as isize)
+                .offset((sLTP_buf_idx - lag + LTP_ORDER / 2 as i32) as isize)
                 as *mut i32;
-            i = 0 as libc::c_int;
+            i = 0 as i32;
             while i < (*psDec).subfr_length {
-                LTP_pred_Q13 = 2 as libc::c_int;
-                LTP_pred_Q13 = (LTP_pred_Q13 as libc::c_long
-                    + (*pred_lag_ptr.offset(0 as libc::c_int as isize) as libc::c_long
-                        * *B_Q14.offset(0 as libc::c_int as isize) as i64
-                        >> 16 as libc::c_int)) as i32;
-                LTP_pred_Q13 = (LTP_pred_Q13 as libc::c_long
-                    + (*pred_lag_ptr.offset(-(1 as libc::c_int) as isize) as libc::c_long
-                        * *B_Q14.offset(1 as libc::c_int as isize) as i64
-                        >> 16 as libc::c_int)) as i32;
-                LTP_pred_Q13 = (LTP_pred_Q13 as libc::c_long
-                    + (*pred_lag_ptr.offset(-(2 as libc::c_int) as isize) as libc::c_long
-                        * *B_Q14.offset(2 as libc::c_int as isize) as i64
-                        >> 16 as libc::c_int)) as i32;
-                LTP_pred_Q13 = (LTP_pred_Q13 as libc::c_long
-                    + (*pred_lag_ptr.offset(-(3 as libc::c_int) as isize) as libc::c_long
-                        * *B_Q14.offset(3 as libc::c_int as isize) as i64
-                        >> 16 as libc::c_int)) as i32;
-                LTP_pred_Q13 = (LTP_pred_Q13 as libc::c_long
-                    + (*pred_lag_ptr.offset(-(4 as libc::c_int) as isize) as libc::c_long
-                        * *B_Q14.offset(4 as libc::c_int as isize) as i64
-                        >> 16 as libc::c_int)) as i32;
+                LTP_pred_Q13 = 2 as i32;
+                LTP_pred_Q13 = (LTP_pred_Q13 as i64
+                    + (*pred_lag_ptr.offset(0 as i32 as isize) as i64
+                        * *B_Q14.offset(0 as i32 as isize) as i64
+                        >> 16 as i32)) as i32;
+                LTP_pred_Q13 = (LTP_pred_Q13 as i64
+                    + (*pred_lag_ptr.offset(-(1 as i32) as isize) as i64
+                        * *B_Q14.offset(1 as i32 as isize) as i64
+                        >> 16 as i32)) as i32;
+                LTP_pred_Q13 = (LTP_pred_Q13 as i64
+                    + (*pred_lag_ptr.offset(-(2 as i32) as isize) as i64
+                        * *B_Q14.offset(2 as i32 as isize) as i64
+                        >> 16 as i32)) as i32;
+                LTP_pred_Q13 = (LTP_pred_Q13 as i64
+                    + (*pred_lag_ptr.offset(-(3 as i32) as isize) as i64
+                        * *B_Q14.offset(3 as i32 as isize) as i64
+                        >> 16 as i32)) as i32;
+                LTP_pred_Q13 = (LTP_pred_Q13 as i64
+                    + (*pred_lag_ptr.offset(-(4 as i32) as isize) as i64
+                        * *B_Q14.offset(4 as i32 as isize) as i64
+                        >> 16 as i32)) as i32;
                 pred_lag_ptr = pred_lag_ptr.offset(1);
-                *pres_Q14.offset(i as isize) = *pexc_Q14.offset(i as isize)
-                    + ((LTP_pred_Q13 as u32) << 1 as libc::c_int) as i32;
+                *pres_Q14.offset(i as isize) =
+                    *pexc_Q14.offset(i as isize) + ((LTP_pred_Q13 as u32) << 1 as i32) as i32;
                 *sLTP_Q15.as_mut_ptr().offset(sLTP_buf_idx as isize) =
-                    ((*pres_Q14.offset(i as isize) as u32) << 1 as libc::c_int) as i32;
+                    ((*pres_Q14.offset(i as isize) as u32) << 1 as i32) as i32;
                 sLTP_buf_idx += 1;
                 i += 1;
             }
         } else {
             pres_Q14 = pexc_Q14;
         }
-        i = 0 as libc::c_int;
+        i = 0 as i32;
         while i < (*psDec).subfr_length {
-            if !((*psDec).LPC_order == 10 as libc::c_int || (*psDec).LPC_order == 16 as libc::c_int)
-            {
+            if !((*psDec).LPC_order == 10 as i32 || (*psDec).LPC_order == 16 as i32) {
                 celt_fatal(
                     b"assertion failed: psDec->LPC_order == 10 || psDec->LPC_order == 16\0"
-                        as *const u8 as *const libc::c_char,
-                    b"silk/decode_core.c\0" as *const u8 as *const libc::c_char,
-                    199 as libc::c_int,
+                        as *const u8 as *const i8,
+                    b"silk/decode_core.c\0" as *const u8 as *const i8,
+                    199 as i32,
                 );
             }
-            LPC_pred_Q10 = (*psDec).LPC_order >> 1 as libc::c_int;
-            LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
+            LPC_pred_Q10 = (*psDec).LPC_order >> 1 as i32;
+            LPC_pred_Q10 = (LPC_pred_Q10 as i64
                 + (*sLPC_Q14
                     .as_mut_ptr()
-                    .offset((16 as libc::c_int + i - 1 as libc::c_int) as isize)
-                    as libc::c_long
-                    * A_Q12_tmp[0 as libc::c_int as usize] as i64
-                    >> 16 as libc::c_int)) as i32;
-            LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
+                    .offset((16 as i32 + i - 1 as i32) as isize) as i64
+                    * A_Q12_tmp[0 as i32 as usize] as i64
+                    >> 16 as i32)) as i32;
+            LPC_pred_Q10 = (LPC_pred_Q10 as i64
                 + (*sLPC_Q14
                     .as_mut_ptr()
-                    .offset((16 as libc::c_int + i - 2 as libc::c_int) as isize)
-                    as libc::c_long
-                    * A_Q12_tmp[1 as libc::c_int as usize] as i64
-                    >> 16 as libc::c_int)) as i32;
-            LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
+                    .offset((16 as i32 + i - 2 as i32) as isize) as i64
+                    * A_Q12_tmp[1 as i32 as usize] as i64
+                    >> 16 as i32)) as i32;
+            LPC_pred_Q10 = (LPC_pred_Q10 as i64
                 + (*sLPC_Q14
                     .as_mut_ptr()
-                    .offset((16 as libc::c_int + i - 3 as libc::c_int) as isize)
-                    as libc::c_long
-                    * A_Q12_tmp[2 as libc::c_int as usize] as i64
-                    >> 16 as libc::c_int)) as i32;
-            LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
+                    .offset((16 as i32 + i - 3 as i32) as isize) as i64
+                    * A_Q12_tmp[2 as i32 as usize] as i64
+                    >> 16 as i32)) as i32;
+            LPC_pred_Q10 = (LPC_pred_Q10 as i64
                 + (*sLPC_Q14
                     .as_mut_ptr()
-                    .offset((16 as libc::c_int + i - 4 as libc::c_int) as isize)
-                    as libc::c_long
-                    * A_Q12_tmp[3 as libc::c_int as usize] as i64
-                    >> 16 as libc::c_int)) as i32;
-            LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
+                    .offset((16 as i32 + i - 4 as i32) as isize) as i64
+                    * A_Q12_tmp[3 as i32 as usize] as i64
+                    >> 16 as i32)) as i32;
+            LPC_pred_Q10 = (LPC_pred_Q10 as i64
                 + (*sLPC_Q14
                     .as_mut_ptr()
-                    .offset((16 as libc::c_int + i - 5 as libc::c_int) as isize)
-                    as libc::c_long
-                    * A_Q12_tmp[4 as libc::c_int as usize] as i64
-                    >> 16 as libc::c_int)) as i32;
-            LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
+                    .offset((16 as i32 + i - 5 as i32) as isize) as i64
+                    * A_Q12_tmp[4 as i32 as usize] as i64
+                    >> 16 as i32)) as i32;
+            LPC_pred_Q10 = (LPC_pred_Q10 as i64
                 + (*sLPC_Q14
                     .as_mut_ptr()
-                    .offset((16 as libc::c_int + i - 6 as libc::c_int) as isize)
-                    as libc::c_long
-                    * A_Q12_tmp[5 as libc::c_int as usize] as i64
-                    >> 16 as libc::c_int)) as i32;
-            LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
+                    .offset((16 as i32 + i - 6 as i32) as isize) as i64
+                    * A_Q12_tmp[5 as i32 as usize] as i64
+                    >> 16 as i32)) as i32;
+            LPC_pred_Q10 = (LPC_pred_Q10 as i64
                 + (*sLPC_Q14
                     .as_mut_ptr()
-                    .offset((16 as libc::c_int + i - 7 as libc::c_int) as isize)
-                    as libc::c_long
-                    * A_Q12_tmp[6 as libc::c_int as usize] as i64
-                    >> 16 as libc::c_int)) as i32;
-            LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
+                    .offset((16 as i32 + i - 7 as i32) as isize) as i64
+                    * A_Q12_tmp[6 as i32 as usize] as i64
+                    >> 16 as i32)) as i32;
+            LPC_pred_Q10 = (LPC_pred_Q10 as i64
                 + (*sLPC_Q14
                     .as_mut_ptr()
-                    .offset((16 as libc::c_int + i - 8 as libc::c_int) as isize)
-                    as libc::c_long
-                    * A_Q12_tmp[7 as libc::c_int as usize] as i64
-                    >> 16 as libc::c_int)) as i32;
-            LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
+                    .offset((16 as i32 + i - 8 as i32) as isize) as i64
+                    * A_Q12_tmp[7 as i32 as usize] as i64
+                    >> 16 as i32)) as i32;
+            LPC_pred_Q10 = (LPC_pred_Q10 as i64
                 + (*sLPC_Q14
                     .as_mut_ptr()
-                    .offset((16 as libc::c_int + i - 9 as libc::c_int) as isize)
-                    as libc::c_long
-                    * A_Q12_tmp[8 as libc::c_int as usize] as i64
-                    >> 16 as libc::c_int)) as i32;
-            LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
+                    .offset((16 as i32 + i - 9 as i32) as isize) as i64
+                    * A_Q12_tmp[8 as i32 as usize] as i64
+                    >> 16 as i32)) as i32;
+            LPC_pred_Q10 = (LPC_pred_Q10 as i64
                 + (*sLPC_Q14
                     .as_mut_ptr()
-                    .offset((16 as libc::c_int + i - 10 as libc::c_int) as isize)
-                    as libc::c_long
-                    * A_Q12_tmp[9 as libc::c_int as usize] as i64
-                    >> 16 as libc::c_int)) as i32;
-            if (*psDec).LPC_order == 16 as libc::c_int {
-                LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
+                    .offset((16 as i32 + i - 10 as i32) as isize) as i64
+                    * A_Q12_tmp[9 as i32 as usize] as i64
+                    >> 16 as i32)) as i32;
+            if (*psDec).LPC_order == 16 as i32 {
+                LPC_pred_Q10 = (LPC_pred_Q10 as i64
                     + (*sLPC_Q14
                         .as_mut_ptr()
-                        .offset((16 as libc::c_int + i - 11 as libc::c_int) as isize)
-                        as libc::c_long
-                        * A_Q12_tmp[10 as libc::c_int as usize] as i64
-                        >> 16 as libc::c_int)) as i32;
-                LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
+                        .offset((16 as i32 + i - 11 as i32) as isize)
+                        as i64
+                        * A_Q12_tmp[10 as i32 as usize] as i64
+                        >> 16 as i32)) as i32;
+                LPC_pred_Q10 = (LPC_pred_Q10 as i64
                     + (*sLPC_Q14
                         .as_mut_ptr()
-                        .offset((16 as libc::c_int + i - 12 as libc::c_int) as isize)
-                        as libc::c_long
-                        * A_Q12_tmp[11 as libc::c_int as usize] as i64
-                        >> 16 as libc::c_int)) as i32;
-                LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
+                        .offset((16 as i32 + i - 12 as i32) as isize)
+                        as i64
+                        * A_Q12_tmp[11 as i32 as usize] as i64
+                        >> 16 as i32)) as i32;
+                LPC_pred_Q10 = (LPC_pred_Q10 as i64
                     + (*sLPC_Q14
                         .as_mut_ptr()
-                        .offset((16 as libc::c_int + i - 13 as libc::c_int) as isize)
-                        as libc::c_long
-                        * A_Q12_tmp[12 as libc::c_int as usize] as i64
-                        >> 16 as libc::c_int)) as i32;
-                LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
+                        .offset((16 as i32 + i - 13 as i32) as isize)
+                        as i64
+                        * A_Q12_tmp[12 as i32 as usize] as i64
+                        >> 16 as i32)) as i32;
+                LPC_pred_Q10 = (LPC_pred_Q10 as i64
                     + (*sLPC_Q14
                         .as_mut_ptr()
-                        .offset((16 as libc::c_int + i - 14 as libc::c_int) as isize)
-                        as libc::c_long
-                        * A_Q12_tmp[13 as libc::c_int as usize] as i64
-                        >> 16 as libc::c_int)) as i32;
-                LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
+                        .offset((16 as i32 + i - 14 as i32) as isize)
+                        as i64
+                        * A_Q12_tmp[13 as i32 as usize] as i64
+                        >> 16 as i32)) as i32;
+                LPC_pred_Q10 = (LPC_pred_Q10 as i64
                     + (*sLPC_Q14
                         .as_mut_ptr()
-                        .offset((16 as libc::c_int + i - 15 as libc::c_int) as isize)
-                        as libc::c_long
-                        * A_Q12_tmp[14 as libc::c_int as usize] as i64
-                        >> 16 as libc::c_int)) as i32;
-                LPC_pred_Q10 = (LPC_pred_Q10 as libc::c_long
+                        .offset((16 as i32 + i - 15 as i32) as isize)
+                        as i64
+                        * A_Q12_tmp[14 as i32 as usize] as i64
+                        >> 16 as i32)) as i32;
+                LPC_pred_Q10 = (LPC_pred_Q10 as i64
                     + (*sLPC_Q14
                         .as_mut_ptr()
-                        .offset((16 as libc::c_int + i - 16 as libc::c_int) as isize)
-                        as libc::c_long
-                        * A_Q12_tmp[15 as libc::c_int as usize] as i64
-                        >> 16 as libc::c_int)) as i32;
+                        .offset((16 as i32 + i - 16 as i32) as isize)
+                        as i64
+                        * A_Q12_tmp[15 as i32 as usize] as i64
+                        >> 16 as i32)) as i32;
             }
             *sLPC_Q14.as_mut_ptr().offset((MAX_LPC_ORDER + i) as isize) = if (*pres_Q14
                 .offset(i as isize)
                 as u32)
                 .wrapping_add(
-                    (((if 0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int
-                        > 0x7fffffff as libc::c_int >> 4 as libc::c_int
-                    {
-                        if LPC_pred_Q10 > 0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int {
-                            0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int
+                    (((if 0x80000000 as u32 as i32 >> 4 as i32 > 0x7fffffff as i32 >> 4 as i32 {
+                        if LPC_pred_Q10 > 0x80000000 as u32 as i32 >> 4 as i32 {
+                            0x80000000 as u32 as i32 >> 4 as i32
                         } else {
-                            if LPC_pred_Q10 < 0x7fffffff as libc::c_int >> 4 as libc::c_int {
-                                0x7fffffff as libc::c_int >> 4 as libc::c_int
+                            if LPC_pred_Q10 < 0x7fffffff as i32 >> 4 as i32 {
+                                0x7fffffff as i32 >> 4 as i32
                             } else {
                                 LPC_pred_Q10
                             }
                         }
                     } else {
-                        if LPC_pred_Q10 > 0x7fffffff as libc::c_int >> 4 as libc::c_int {
-                            0x7fffffff as libc::c_int >> 4 as libc::c_int
+                        if LPC_pred_Q10 > 0x7fffffff as i32 >> 4 as i32 {
+                            0x7fffffff as i32 >> 4 as i32
                         } else {
-                            if LPC_pred_Q10 < 0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int
-                            {
-                                0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int
+                            if LPC_pred_Q10 < 0x80000000 as u32 as i32 >> 4 as i32 {
+                                0x80000000 as u32 as i32 >> 4 as i32
                             } else {
                                 LPC_pred_Q10
                             }
                         }
                     }) as u32)
-                        << 4 as libc::c_int) as i32 as u32,
+                        << 4 as i32) as i32 as u32,
                 )
-                & 0x80000000 as libc::c_uint
-                == 0 as libc::c_int as libc::c_uint
+                & 0x80000000 as u32
+                == 0 as i32 as u32
             {
                 if (*pres_Q14.offset(i as isize)
-                    & (((if 0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int
-                        > 0x7fffffff as libc::c_int >> 4 as libc::c_int
-                    {
-                        if LPC_pred_Q10 > 0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int {
-                            0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int
+                    & (((if 0x80000000 as u32 as i32 >> 4 as i32 > 0x7fffffff as i32 >> 4 as i32 {
+                        if LPC_pred_Q10 > 0x80000000 as u32 as i32 >> 4 as i32 {
+                            0x80000000 as u32 as i32 >> 4 as i32
                         } else {
-                            if LPC_pred_Q10 < 0x7fffffff as libc::c_int >> 4 as libc::c_int {
-                                0x7fffffff as libc::c_int >> 4 as libc::c_int
+                            if LPC_pred_Q10 < 0x7fffffff as i32 >> 4 as i32 {
+                                0x7fffffff as i32 >> 4 as i32
                             } else {
                                 LPC_pred_Q10
                             }
                         }
                     } else {
-                        if LPC_pred_Q10 > 0x7fffffff as libc::c_int >> 4 as libc::c_int {
-                            0x7fffffff as libc::c_int >> 4 as libc::c_int
+                        if LPC_pred_Q10 > 0x7fffffff as i32 >> 4 as i32 {
+                            0x7fffffff as i32 >> 4 as i32
                         } else {
-                            if LPC_pred_Q10 < 0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int
-                            {
-                                0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int
+                            if LPC_pred_Q10 < 0x80000000 as u32 as i32 >> 4 as i32 {
+                                0x80000000 as u32 as i32 >> 4 as i32
                             } else {
                                 LPC_pred_Q10
                             }
                         }
                     }) as u32)
-                        << 4 as libc::c_int) as i32) as libc::c_uint
-                    & 0x80000000 as libc::c_uint
-                    != 0 as libc::c_int as libc::c_uint
+                        << 4 as i32) as i32) as u32
+                    & 0x80000000 as u32
+                    != 0 as i32 as u32
                 {
                     silk_int32_MIN as i32
                 } else {
                     *pres_Q14.offset(i as isize)
-                        + (((if 0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int
-                            > 0x7fffffff as libc::c_int >> 4 as libc::c_int
+                        + (((if 0x80000000 as u32 as i32 >> 4 as i32 > 0x7fffffff as i32 >> 4 as i32
                         {
-                            if LPC_pred_Q10 > 0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int
-                            {
-                                0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int
+                            if LPC_pred_Q10 > 0x80000000 as u32 as i32 >> 4 as i32 {
+                                0x80000000 as u32 as i32 >> 4 as i32
                             } else {
-                                if LPC_pred_Q10 < 0x7fffffff as libc::c_int >> 4 as libc::c_int {
-                                    0x7fffffff as libc::c_int >> 4 as libc::c_int
+                                if LPC_pred_Q10 < 0x7fffffff as i32 >> 4 as i32 {
+                                    0x7fffffff as i32 >> 4 as i32
                                 } else {
                                     LPC_pred_Q10
                                 }
                             }
                         } else {
-                            if LPC_pred_Q10 > 0x7fffffff as libc::c_int >> 4 as libc::c_int {
-                                0x7fffffff as libc::c_int >> 4 as libc::c_int
+                            if LPC_pred_Q10 > 0x7fffffff as i32 >> 4 as i32 {
+                                0x7fffffff as i32 >> 4 as i32
                             } else {
-                                if LPC_pred_Q10
-                                    < 0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int
-                                {
-                                    0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int
+                                if LPC_pred_Q10 < 0x80000000 as u32 as i32 >> 4 as i32 {
+                                    0x80000000 as u32 as i32 >> 4 as i32
                                 } else {
                                     LPC_pred_Q10
                                 }
                             }
                         }) as u32)
-                            << 4 as libc::c_int) as i32
+                            << 4 as i32) as i32
                 }
             } else if (*pres_Q14.offset(i as isize)
-                | (((if 0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int
-                    > 0x7fffffff as libc::c_int >> 4 as libc::c_int
-                {
-                    if LPC_pred_Q10 > 0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int {
-                        0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int
+                | (((if 0x80000000 as u32 as i32 >> 4 as i32 > 0x7fffffff as i32 >> 4 as i32 {
+                    if LPC_pred_Q10 > 0x80000000 as u32 as i32 >> 4 as i32 {
+                        0x80000000 as u32 as i32 >> 4 as i32
                     } else {
-                        if LPC_pred_Q10 < 0x7fffffff as libc::c_int >> 4 as libc::c_int {
-                            0x7fffffff as libc::c_int >> 4 as libc::c_int
+                        if LPC_pred_Q10 < 0x7fffffff as i32 >> 4 as i32 {
+                            0x7fffffff as i32 >> 4 as i32
                         } else {
                             LPC_pred_Q10
                         }
                     }
                 } else {
-                    if LPC_pred_Q10 > 0x7fffffff as libc::c_int >> 4 as libc::c_int {
-                        0x7fffffff as libc::c_int >> 4 as libc::c_int
+                    if LPC_pred_Q10 > 0x7fffffff as i32 >> 4 as i32 {
+                        0x7fffffff as i32 >> 4 as i32
                     } else {
-                        if LPC_pred_Q10 < 0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int {
-                            0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int
+                        if LPC_pred_Q10 < 0x80000000 as u32 as i32 >> 4 as i32 {
+                            0x80000000 as u32 as i32 >> 4 as i32
                         } else {
                             LPC_pred_Q10
                         }
                     }
                 }) as u32)
-                    << 4 as libc::c_int) as i32) as libc::c_uint
-                & 0x80000000 as libc::c_uint
-                == 0 as libc::c_int as libc::c_uint
+                    << 4 as i32) as i32) as u32
+                & 0x80000000 as u32
+                == 0 as i32 as u32
             {
                 silk_int32_MAX
             } else {
                 *pres_Q14.offset(i as isize)
-                    + (((if 0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int
-                        > 0x7fffffff as libc::c_int >> 4 as libc::c_int
-                    {
-                        if LPC_pred_Q10 > 0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int {
-                            0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int
+                    + (((if 0x80000000 as u32 as i32 >> 4 as i32 > 0x7fffffff as i32 >> 4 as i32 {
+                        if LPC_pred_Q10 > 0x80000000 as u32 as i32 >> 4 as i32 {
+                            0x80000000 as u32 as i32 >> 4 as i32
                         } else {
-                            if LPC_pred_Q10 < 0x7fffffff as libc::c_int >> 4 as libc::c_int {
-                                0x7fffffff as libc::c_int >> 4 as libc::c_int
+                            if LPC_pred_Q10 < 0x7fffffff as i32 >> 4 as i32 {
+                                0x7fffffff as i32 >> 4 as i32
                             } else {
                                 LPC_pred_Q10
                             }
                         }
                     } else {
-                        if LPC_pred_Q10 > 0x7fffffff as libc::c_int >> 4 as libc::c_int {
-                            0x7fffffff as libc::c_int >> 4 as libc::c_int
+                        if LPC_pred_Q10 > 0x7fffffff as i32 >> 4 as i32 {
+                            0x7fffffff as i32 >> 4 as i32
                         } else {
-                            if LPC_pred_Q10 < 0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int
-                            {
-                                0x80000000 as libc::c_uint as i32 >> 4 as libc::c_int
+                            if LPC_pred_Q10 < 0x80000000 as u32 as i32 >> 4 as i32 {
+                                0x80000000 as u32 as i32 >> 4 as i32
                             } else {
                                 LPC_pred_Q10
                             }
                         }
                     }) as u32)
-                        << 4 as libc::c_int) as i32
+                        << 4 as i32) as i32
             };
-            *pxq.offset(i as isize) = (if (if 8 as libc::c_int == 1 as libc::c_int {
-                ((*sLPC_Q14
-                    .as_mut_ptr()
-                    .offset((16 as libc::c_int + i) as isize) as i64
-                    * Gain_Q10 as libc::c_long
-                    >> 16 as libc::c_int) as i32
-                    >> 1 as libc::c_int)
-                    + ((*sLPC_Q14
-                        .as_mut_ptr()
-                        .offset((16 as libc::c_int + i) as isize) as i64
-                        * Gain_Q10 as libc::c_long
-                        >> 16 as libc::c_int) as i32
-                        & 1 as libc::c_int)
+            *pxq.offset(i as isize) = (if (if 8 as i32 == 1 as i32 {
+                ((*sLPC_Q14.as_mut_ptr().offset((16 as i32 + i) as isize) as i64 * Gain_Q10 as i64
+                    >> 16 as i32) as i32
+                    >> 1 as i32)
+                    + ((*sLPC_Q14.as_mut_ptr().offset((16 as i32 + i) as isize) as i64
+                        * Gain_Q10 as i64
+                        >> 16 as i32) as i32
+                        & 1 as i32)
             } else {
-                ((*sLPC_Q14
-                    .as_mut_ptr()
-                    .offset((16 as libc::c_int + i) as isize) as i64
-                    * Gain_Q10 as libc::c_long
-                    >> 16 as libc::c_int) as i32
-                    >> 8 as libc::c_int - 1 as libc::c_int)
-                    + 1 as libc::c_int
-                    >> 1 as libc::c_int
+                ((*sLPC_Q14.as_mut_ptr().offset((16 as i32 + i) as isize) as i64 * Gain_Q10 as i64
+                    >> 16 as i32) as i32
+                    >> 8 as i32 - 1 as i32)
+                    + 1 as i32
+                    >> 1 as i32
             }) > silk_int16_MAX
             {
                 silk_int16_MAX
-            } else if (if 8 as libc::c_int == 1 as libc::c_int {
-                ((*sLPC_Q14
-                    .as_mut_ptr()
-                    .offset((16 as libc::c_int + i) as isize) as i64
-                    * Gain_Q10 as libc::c_long
-                    >> 16 as libc::c_int) as i32
-                    >> 1 as libc::c_int)
-                    + ((*sLPC_Q14
-                        .as_mut_ptr()
-                        .offset((16 as libc::c_int + i) as isize) as i64
-                        * Gain_Q10 as libc::c_long
-                        >> 16 as libc::c_int) as i32
-                        & 1 as libc::c_int)
+            } else if (if 8 as i32 == 1 as i32 {
+                ((*sLPC_Q14.as_mut_ptr().offset((16 as i32 + i) as isize) as i64 * Gain_Q10 as i64
+                    >> 16 as i32) as i32
+                    >> 1 as i32)
+                    + ((*sLPC_Q14.as_mut_ptr().offset((16 as i32 + i) as isize) as i64
+                        * Gain_Q10 as i64
+                        >> 16 as i32) as i32
+                        & 1 as i32)
             } else {
-                ((*sLPC_Q14
-                    .as_mut_ptr()
-                    .offset((16 as libc::c_int + i) as isize) as i64
-                    * Gain_Q10 as libc::c_long
-                    >> 16 as libc::c_int) as i32
-                    >> 8 as libc::c_int - 1 as libc::c_int)
-                    + 1 as libc::c_int
-                    >> 1 as libc::c_int
+                ((*sLPC_Q14.as_mut_ptr().offset((16 as i32 + i) as isize) as i64 * Gain_Q10 as i64
+                    >> 16 as i32) as i32
+                    >> 8 as i32 - 1 as i32)
+                    + 1 as i32
+                    >> 1 as i32
             }) < silk_int16_MIN
             {
                 silk_int16_MIN
-            } else if 8 as libc::c_int == 1 as libc::c_int {
-                ((*sLPC_Q14
-                    .as_mut_ptr()
-                    .offset((16 as libc::c_int + i) as isize) as i64
-                    * Gain_Q10 as libc::c_long
-                    >> 16 as libc::c_int) as i32
-                    >> 1 as libc::c_int)
-                    + ((*sLPC_Q14
-                        .as_mut_ptr()
-                        .offset((16 as libc::c_int + i) as isize) as i64
-                        * Gain_Q10 as libc::c_long
-                        >> 16 as libc::c_int) as i32
-                        & 1 as libc::c_int)
+            } else if 8 as i32 == 1 as i32 {
+                ((*sLPC_Q14.as_mut_ptr().offset((16 as i32 + i) as isize) as i64 * Gain_Q10 as i64
+                    >> 16 as i32) as i32
+                    >> 1 as i32)
+                    + ((*sLPC_Q14.as_mut_ptr().offset((16 as i32 + i) as isize) as i64
+                        * Gain_Q10 as i64
+                        >> 16 as i32) as i32
+                        & 1 as i32)
             } else {
-                ((*sLPC_Q14
-                    .as_mut_ptr()
-                    .offset((16 as libc::c_int + i) as isize) as i64
-                    * Gain_Q10 as libc::c_long
-                    >> 16 as libc::c_int) as i32
-                    >> 8 as libc::c_int - 1 as libc::c_int)
-                    + 1 as libc::c_int
-                    >> 1 as libc::c_int
+                ((*sLPC_Q14.as_mut_ptr().offset((16 as i32 + i) as isize) as i64 * Gain_Q10 as i64
+                    >> 16 as i32) as i32
+                    >> 8 as i32 - 1 as i32)
+                    + 1 as i32
+                    >> 1 as i32
             }) as i16;
             i += 1;
         }
         memcpy(
-            sLPC_Q14.as_mut_ptr() as *mut libc::c_void,
+            sLPC_Q14.as_mut_ptr() as *mut core::ffi::c_void,
             &mut *sLPC_Q14.as_mut_ptr().offset((*psDec).subfr_length as isize) as *mut i32
-                as *const libc::c_void,
-            (16 as libc::c_int as libc::c_ulong)
-                .wrapping_mul(::core::mem::size_of::<i32>() as libc::c_ulong),
+                as *const core::ffi::c_void,
+            (16 as i32 as u64).wrapping_mul(::core::mem::size_of::<i32>() as u64),
         );
         pexc_Q14 = pexc_Q14.offset((*psDec).subfr_length as isize);
         pxq = pxq.offset((*psDec).subfr_length as isize);
         k += 1;
     }
     memcpy(
-        ((*psDec).sLPC_Q14_buf).as_mut_ptr() as *mut libc::c_void,
-        sLPC_Q14.as_mut_ptr() as *const libc::c_void,
-        (16 as libc::c_int as libc::c_ulong)
-            .wrapping_mul(::core::mem::size_of::<i32>() as libc::c_ulong),
+        ((*psDec).sLPC_Q14_buf).as_mut_ptr() as *mut core::ffi::c_void,
+        sLPC_Q14.as_mut_ptr() as *const core::ffi::c_void,
+        (16 as i32 as u64).wrapping_mul(::core::mem::size_of::<i32>() as u64),
     );
 }

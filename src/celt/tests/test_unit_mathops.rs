@@ -1,14 +1,14 @@
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:37"]
 pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]
-    pub type size_t = libc::c_ulong;
+    pub type size_t = u64;
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:39"]
 pub mod arch_h {
     #[c2rust::src_loc = "179:1"]
-    pub type opus_val16 = libc::c_float;
+    pub type opus_val16 = f32;
     #[c2rust::src_loc = "180:1"]
-    pub type opus_val32 = libc::c_float;
+    pub type opus_val32 = f32;
 }
 #[c2rust::header_src = "/usr/include/stdio.h:37"]
 pub mod stdio_h {
@@ -17,20 +17,20 @@ pub mod stdio_h {
         #[c2rust::src_loc = "145:14"]
         pub static mut stderr: *mut FILE;
         #[c2rust::src_loc = "350:12"]
-        pub fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
+        pub fn fprintf(_: *mut FILE, _: *const i8, _: ...) -> i32;
     }
 }
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:38"]
 pub mod mathcalls_h {
     {
         #[c2rust::src_loc = "95:17"]
-        pub fn exp(_: libc::c_double) -> libc::c_double;
+        pub fn exp(_: f64) -> f64;
         #[c2rust::src_loc = "104:17"]
-        pub fn log(_: libc::c_double) -> libc::c_double;
+        pub fn log(_: f64) -> f64;
         #[c2rust::src_loc = "143:13"]
-        pub fn sqrt(_: libc::c_double) -> libc::c_double;
+        pub fn sqrt(_: f64) -> f64;
         #[c2rust::src_loc = "162:14"]
-        pub fn fabs(_: libc::c_double) -> libc::c_double;
+        pub fn fabs(_: f64) -> f64;
     }
 }
 use self::arch_h::{opus_val16, opus_val32};
@@ -43,25 +43,25 @@ pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data
 
 pub use self::FILE_h::FILE;
 #[c2rust::src_loc = "48:5"]
-pub static mut ret: libc::c_int = 0 as libc::c_int;
+pub static mut ret: i32 = 0 as i32;
 #[c2rust::src_loc = "50:1"]
 pub unsafe fn testdiv() {
     let mut i: i32 = 0;
-    i = 1 as libc::c_int;
-    while i <= 327670 as libc::c_int {
-        let mut prod: libc::c_double = 0.;
+    i = 1 as i32;
+    while i <= 327670 as i32 {
+        let mut prod: f64 = 0.;
         let mut val: opus_val32 = 0.;
-        val = 1.0f32 / i as libc::c_float;
-        prod = (val * i as libc::c_float) as libc::c_double;
-        if fabs(prod - 1 as libc::c_int as libc::c_double) > 0.00025f64 {
+        val = 1.0f32 / i as f32;
+        prod = (val * i as f32) as f64;
+        if fabs(prod - 1 as i32 as f64) > 0.00025f64 {
             fprintf(
                 stderr(),
-                b"div failed: 1/%d=%f (product = %f)\n\0" as *const u8 as *const libc::c_char,
+                b"div failed: 1/%d=%f (product = %f)\n\0" as *const u8 as *const i8,
                 i,
-                val as libc::c_double,
+                val as f64,
                 prod,
             );
-            ret = 1 as libc::c_int;
+            ret = 1 as i32;
         }
         i += 1;
     }
@@ -69,42 +69,42 @@ pub unsafe fn testdiv() {
 #[c2rust::src_loc = "71:1"]
 pub unsafe fn testsqrt() {
     let mut i: i32 = 0;
-    i = 1 as libc::c_int;
-    while i <= 1000000000 as libc::c_int {
-        let mut ratio: libc::c_double = 0.;
+    i = 1 as i32;
+    while i <= 1000000000 as i32 {
+        let mut ratio: f64 = 0.;
         let mut val: opus_val16 = 0.;
-        val = sqrt(i as libc::c_double) as libc::c_float;
-        ratio = val as libc::c_double / sqrt(i as libc::c_double);
-        if fabs(ratio - 1 as libc::c_int as libc::c_double) > 0.0005f64
-            && fabs(val as libc::c_double - sqrt(i as libc::c_double))
-                > 2 as libc::c_int as libc::c_double
+        val = sqrt(i as f64) as f32;
+        ratio = val as f64 / sqrt(i as f64);
+        if fabs(ratio - 1 as i32 as f64) > 0.0005f64
+            && fabs(val as f64 - sqrt(i as f64))
+                > 2 as i32 as f64
         {
             fprintf(
                 stderr(),
-                b"sqrt failed: sqrt(%d)=%f (ratio = %f)\n\0" as *const u8 as *const libc::c_char,
+                b"sqrt failed: sqrt(%d)=%f (ratio = %f)\n\0" as *const u8 as *const i8,
                 i,
-                val as libc::c_double,
+                val as f64,
                 ratio,
             );
-            ret = 1 as libc::c_int;
+            ret = 1 as i32;
         }
-        i += i >> 10 as libc::c_int;
+        i += i >> 10 as i32;
         i += 1;
     }
 }
 #[c2rust::src_loc = "89:1"]
 pub unsafe fn testbitexactcos() {
-    let mut i: libc::c_int = 0;
+    let mut i: i32 = 0;
     let mut min_d: i32 = 0;
     let mut max_d: i32 = 0;
     let mut last: i32 = 0;
     let mut chk: i32 = 0;
-    max_d = 0 as libc::c_int;
+    max_d = 0 as i32;
     chk = max_d;
-    min_d = 32767 as libc::c_int;
+    min_d = 32767 as i32;
     last = min_d;
-    i = 64 as libc::c_int;
-    while i <= 16320 as libc::c_int {
+    i = 64 as i32;
+    while i <= 16320 as i32 {
         let mut d: i32 = 0;
         let mut q: i32 = bitexact_cos(i as i16) as i32;
         chk ^= q * i;
@@ -118,43 +118,43 @@ pub unsafe fn testbitexactcos() {
         last = q;
         i += 1;
     }
-    if chk != 89408644 as libc::c_int
-        || max_d != 5 as libc::c_int
-        || min_d != 0 as libc::c_int
-        || bitexact_cos(64 as libc::c_int as i16) as libc::c_int != 32767 as libc::c_int
-        || bitexact_cos(16320 as libc::c_int as i16) as libc::c_int != 200 as libc::c_int
-        || bitexact_cos(8192 as libc::c_int as i16) as libc::c_int != 23171 as libc::c_int
+    if chk != 89408644 as i32
+        || max_d != 5 as i32
+        || min_d != 0 as i32
+        || bitexact_cos(64 as i32 as i16) as i32 != 32767 as i32
+        || bitexact_cos(16320 as i32 as i16) as i32 != 200 as i32
+        || bitexact_cos(8192 as i32 as i16) as i32 != 23171 as i32
     {
         fprintf(
             stderr(),
-            b"bitexact_cos failed\n\0" as *const u8 as *const libc::c_char,
+            b"bitexact_cos failed\n\0" as *const u8 as *const i8,
         );
-        ret = 1 as libc::c_int;
+        ret = 1 as i32;
     }
 }
 #[c2rust::src_loc = "113:1"]
 pub unsafe fn testbitexactlog2tan() {
-    let mut i: libc::c_int = 0;
-    let mut fail: libc::c_int = 0;
+    let mut i: i32 = 0;
+    let mut fail: i32 = 0;
     let mut min_d: i32 = 0;
     let mut max_d: i32 = 0;
     let mut last: i32 = 0;
     let mut chk: i32 = 0;
-    max_d = 0 as libc::c_int;
+    max_d = 0 as i32;
     chk = max_d;
     fail = chk;
-    min_d = 15059 as libc::c_int;
+    min_d = 15059 as i32;
     last = min_d;
-    i = 64 as libc::c_int;
-    while i < 8193 as libc::c_int {
+    i = 64 as i32;
+    while i < 8193 as i32 {
         let mut d: i32 = 0;
         let mut mid: i32 = bitexact_cos(i as i16) as i32;
-        let mut side: i32 = bitexact_cos((16384 as libc::c_int - i) as i16) as i32;
+        let mut side: i32 = bitexact_cos((16384 as i32 - i) as i16) as i32;
         let mut q: i32 = bitexact_log2tan(mid, side);
         chk ^= q * i;
         d = last - q;
-        if q != -(1 as libc::c_int) * bitexact_log2tan(side, mid) {
-            fail = 1 as libc::c_int;
+        if q != -(1 as i32) * bitexact_log2tan(side, mid) {
+            fail = 1 as i32;
         }
         if d > max_d {
             max_d = d;
@@ -165,97 +165,97 @@ pub unsafe fn testbitexactlog2tan() {
         last = q;
         i += 1;
     }
-    if chk != 15821257 as libc::c_int
-        || max_d != 61 as libc::c_int
-        || min_d != -(2 as libc::c_int)
+    if chk != 15821257 as i32
+        || max_d != 61 as i32
+        || min_d != -(2 as i32)
         || fail != 0
-        || bitexact_log2tan(32767 as libc::c_int, 200 as libc::c_int) != 15059 as libc::c_int
-        || bitexact_log2tan(30274 as libc::c_int, 12540 as libc::c_int) != 2611 as libc::c_int
-        || bitexact_log2tan(23171 as libc::c_int, 23171 as libc::c_int) != 0 as libc::c_int
+        || bitexact_log2tan(32767 as i32, 200 as i32) != 15059 as i32
+        || bitexact_log2tan(30274 as i32, 12540 as i32) != 2611 as i32
+        || bitexact_log2tan(23171 as i32, 23171 as i32) != 0 as i32
     {
         fprintf(
             stderr(),
-            b"bitexact_log2tan failed\n\0" as *const u8 as *const libc::c_char,
+            b"bitexact_log2tan failed\n\0" as *const u8 as *const i8,
         );
-        ret = 1 as libc::c_int;
+        ret = 1 as i32;
     }
 }
 #[c2rust::src_loc = "143:1"]
 pub unsafe fn testlog2() {
-    let mut x: libc::c_float = 0.;
-    x = 0.001f64 as libc::c_float;
-    while (x as libc::c_double) < 1677700.0f64 {
-        let mut error: libc::c_float = fabs(
-            1.442695040888963387f64 * log(x as libc::c_double)
-                - (1.442695040888963387f64 * log(x as libc::c_double)) as libc::c_float
-                    as libc::c_double,
-        ) as libc::c_float;
-        if error as libc::c_double > 0.0009f64 {
+    let mut x: f32 = 0.;
+    x = 0.001f64 as f32;
+    while (x as f64) < 1677700.0f64 {
+        let mut error: f32 = fabs(
+            1.442695040888963387f64 * log(x as f64)
+                - (1.442695040888963387f64 * log(x as f64)) as f32
+                    as f64,
+        ) as f32;
+        if error as f64 > 0.0009f64 {
             fprintf(
                 stderr(),
                 b"celt_log2 failed: fabs((1.442695040888963387*log(x))-celt_log2(x))>0.001 (x = %f, error = %f)\n\0"
-                    as *const u8 as *const libc::c_char,
-                x as libc::c_double,
-                error as libc::c_double,
+                    as *const u8 as *const i8,
+                x as f64,
+                error as f64,
             );
-            ret = 1 as libc::c_int;
+            ret = 1 as i32;
         }
-        x = (x as libc::c_double + x as libc::c_double / 8.0f64) as libc::c_float;
+        x = (x as f64 + x as f64 / 8.0f64) as f32;
     }
 }
 #[c2rust::src_loc = "157:1"]
 pub unsafe fn testexp2() {
-    let mut x: libc::c_float = 0.;
-    x = -11.0f64 as libc::c_float;
-    while (x as libc::c_double) < 24.0f64 {
-        let mut error: libc::c_float = fabs(
-            x as libc::c_double
+    let mut x: f32 = 0.;
+    x = -11.0f64 as f32;
+    while (x as f64) < 24.0f64 {
+        let mut error: f32 = fabs(
+            x as f64
                 - 1.442695040888963387f64
                     * log(
-                        exp(0.6931471805599453094f64 * x as libc::c_double) as libc::c_float
-                            as libc::c_double,
+                        exp(0.6931471805599453094f64 * x as f64) as f32
+                            as f64,
                     ),
-        ) as libc::c_float;
-        if error as libc::c_double > 0.0002f64 {
+        ) as f32;
+        if error as f64 > 0.0002f64 {
             fprintf(
                 stderr(),
                 b"celt_exp2 failed: fabs(x-(1.442695040888963387*log(celt_exp2(x))))>0.0005 (x = %f, error = %f)\n\0"
-                    as *const u8 as *const libc::c_char,
-                x as libc::c_double,
-                error as libc::c_double,
+                    as *const u8 as *const i8,
+                x as f64,
+                error as f64,
             );
-            ret = 1 as libc::c_int;
+            ret = 1 as i32;
         }
-        x = (x as libc::c_double + 0.0007f64) as libc::c_float;
+        x = (x as f64 + 0.0007f64) as f32;
     }
 }
 #[c2rust::src_loc = "171:1"]
 pub unsafe fn testexp2log2() {
-    let mut x: libc::c_float = 0.;
-    x = -11.0f64 as libc::c_float;
-    while (x as libc::c_double) < 24.0f64 {
-        let mut error: libc::c_float = fabs(
+    let mut x: f32 = 0.;
+    x = -11.0f64 as f32;
+    while (x as f64) < 24.0f64 {
+        let mut error: f32 = fabs(
             (x - (1.442695040888963387f64
                 * log(
-                    exp(0.6931471805599453094f64 * x as libc::c_double) as libc::c_float
-                        as libc::c_double,
-                )) as libc::c_float) as libc::c_double,
-        ) as libc::c_float;
-        if error as libc::c_double > 0.001f64 {
+                    exp(0.6931471805599453094f64 * x as f64) as f32
+                        as f64,
+                )) as f32) as f64,
+        ) as f32;
+        if error as f64 > 0.001f64 {
             fprintf(
                 stderr(),
                 b"celt_log2/celt_exp2 failed: fabs(x-(celt_log2(celt_exp2(x))))>0.001 (x = %f, error = %f)\n\0"
-                    as *const u8 as *const libc::c_char,
-                x as libc::c_double,
-                error as libc::c_double,
+                    as *const u8 as *const i8,
+                x as f64,
+                error as f64,
             );
-            ret = 1 as libc::c_int;
+            ret = 1 as i32;
         }
-        x = (x as libc::c_double + 0.0007f64) as libc::c_float;
+        x = (x as f64 + 0.0007f64) as f32;
     }
 }
 #[c2rust::src_loc = "253:1"]
-unsafe fn main_0() -> libc::c_int {
+unsafe fn main_0() -> i32 {
     testbitexactcos();
     testbitexactlog2tan();
     testdiv();

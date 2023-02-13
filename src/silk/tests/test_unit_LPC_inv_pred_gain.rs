@@ -1,7 +1,7 @@
 #[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:32"]
 pub mod stddef_h {
     #[c2rust::src_loc = "46:1"]
-    pub type size_t = libc::c_ulong;
+    pub type size_t = u64;
 }
 #[c2rust::header_src = "/usr/include/stdio.h:32"]
 pub mod stdio_h {
@@ -10,33 +10,33 @@ pub mod stdio_h {
         #[c2rust::src_loc = "145:14"]
         pub static mut stderr: *mut FILE;
         #[c2rust::src_loc = "350:12"]
-        pub fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
+        pub fn fprintf(_: *mut FILE, _: *const i8, _: ...) -> i32;
         #[c2rust::src_loc = "356:12"]
-        pub fn printf(_: *const libc::c_char, _: ...) -> libc::c_int;
+        pub fn printf(_: *const i8, _: ...) -> i32;
     }
 }
 #[c2rust::header_src = "/usr/include/stdlib.h:33"]
 pub mod stdlib_h {
     {
         #[c2rust::src_loc = "454:1"]
-        pub fn rand() -> libc::c_int;
+        pub fn rand() -> i32;
         #[c2rust::src_loc = "456:1"]
-        pub fn srand(__seed: libc::c_uint);
+        pub fn srand(__seed: u32);
     }
 }
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cpu_support.h:35"]
 pub mod cpu_support_h {
     #[inline]
     #[c2rust::src_loc = "65:1"]
-    pub unsafe fn opus_select_arch() -> libc::c_int {
-        return 0 as libc::c_int;
+    pub unsafe fn opus_select_arch() -> i32 {
+        return 0 as i32;
     }
 }
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:36"]
 pub mod mathcalls_h {
     {
         #[c2rust::src_loc = "162:14"]
-        pub fn fabs(_: libc::c_double) -> libc::c_double;
+        pub fn fabs(_: f64) -> f64;
     }
 }
 use self::cpu_support_h::opus_select_arch;
@@ -48,31 +48,31 @@ use self::stdlib_h::{rand, srand};
 pub use self::FILE_h::FILE;
 use self::SigProc_FIX_h::silk_LPC_inverse_pred_gain_c;
 #[c2rust::src_loc = "42:1"]
-pub unsafe fn check_stability(A_Q12: *mut i16, order: libc::c_int) -> libc::c_int {
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    let mut sum_a: libc::c_int = 0;
-    let mut sum_abs_a: libc::c_int = 0;
-    sum_abs_a = 0 as libc::c_int;
+pub unsafe fn check_stability(A_Q12: *mut i16, order: i32) -> i32 {
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    let mut sum_a: i32 = 0;
+    let mut sum_abs_a: i32 = 0;
+    sum_abs_a = 0 as i32;
     sum_a = sum_abs_a;
-    j = 0 as libc::c_int;
+    j = 0 as i32;
     while j < order {
-        sum_a += *A_Q12.offset(j as isize) as libc::c_int;
-        sum_abs_a += if *A_Q12.offset(j as isize) as libc::c_int > 0 as libc::c_int {
-            *A_Q12.offset(j as isize) as libc::c_int
+        sum_a += *A_Q12.offset(j as isize) as i32;
+        sum_abs_a += if *A_Q12.offset(j as isize) as i32 > 0 as i32 {
+            *A_Q12.offset(j as isize) as i32
         } else {
-            -(*A_Q12.offset(j as isize) as libc::c_int)
+            -(*A_Q12.offset(j as isize) as i32)
         };
         j += 1;
     }
-    if sum_a >= 4096 as libc::c_int {
-        return 0 as libc::c_int;
+    if sum_a >= 4096 as i32 {
+        return 0 as i32;
     }
-    if sum_abs_a < 4096 as libc::c_int {
-        return 1 as libc::c_int;
+    if sum_abs_a < 4096 as i32 {
+        return 1 as i32;
     }
-    let mut y: [libc::c_double; 24] = [
-        0 as libc::c_int as libc::c_double,
+    let mut y: [f64; 24] = [
+        0 as i32 as f64,
         0.,
         0.,
         0.,
@@ -97,92 +97,92 @@ pub unsafe fn check_stability(A_Q12: *mut i16, order: libc::c_int) -> libc::c_in
         0.,
         0.,
     ];
-    y[0 as libc::c_int as usize] = 1 as libc::c_int as libc::c_double;
-    i = 0 as libc::c_int;
-    while i < 10000 as libc::c_int {
-        let mut sum: libc::c_double = 0 as libc::c_int as libc::c_double;
-        j = 0 as libc::c_int;
+    y[0 as i32 as usize] = 1 as i32 as f64;
+    i = 0 as i32;
+    while i < 10000 as i32 {
+        let mut sum: f64 = 0 as i32 as f64;
+        j = 0 as i32;
         while j < order {
-            sum += y[j as usize] * *A_Q12.offset(j as isize) as libc::c_int as libc::c_double;
+            sum += y[j as usize] * *A_Q12.offset(j as isize) as i32 as f64;
             j += 1;
         }
-        j = order - 1 as libc::c_int;
-        while j > 0 as libc::c_int {
-            y[j as usize] = y[(j - 1 as libc::c_int) as usize];
+        j = order - 1 as i32;
+        while j > 0 as i32 {
+            y[j as usize] = y[(j - 1 as i32) as usize];
             j -= 1;
         }
-        y[0 as libc::c_int as usize] = sum * (1.0f64 / 4096 as libc::c_int as libc::c_double);
-        if !(y[0 as libc::c_int as usize] < 10000 as libc::c_int as libc::c_double
-            && y[0 as libc::c_int as usize] > -(10000 as libc::c_int) as libc::c_double)
+        y[0 as i32 as usize] = sum * (1.0f64 / 4096 as i32 as f64);
+        if !(y[0 as i32 as usize] < 10000 as i32 as f64
+            && y[0 as i32 as usize] > -(10000 as i32) as f64)
         {
-            return 0 as libc::c_int;
+            return 0 as i32;
         }
-        if i & 0x7 as libc::c_int == 0 as libc::c_int {
-            let mut amp: libc::c_double = 0 as libc::c_int as libc::c_double;
-            j = 0 as libc::c_int;
+        if i & 0x7 as i32 == 0 as i32 {
+            let mut amp: f64 = 0 as i32 as f64;
+            j = 0 as i32;
             while j < order {
                 amp += y[j as usize].abs();
                 j += 1;
             }
             if amp < 0.00001f64 {
-                return 1 as libc::c_int;
+                return 1 as i32;
             }
         }
         i += 1;
     }
-    return 1 as libc::c_int;
+    return 1 as i32;
 }
 #[c2rust::src_loc = "90:1"]
-unsafe fn main_0() -> libc::c_int {
-    let _arch: libc::c_int = opus_select_arch();
-    let loop_num: libc::c_int = 10000 as libc::c_int;
-    let mut count: libc::c_int = 0 as libc::c_int;
-    srand(0 as libc::c_int as libc::c_uint);
+unsafe fn main_0() -> i32 {
+    let _arch: i32 = opus_select_arch();
+    let loop_num: i32 = 10000 as i32;
+    let mut count: i32 = 0 as i32;
+    srand(0 as i32 as u32);
     printf(
         b"Testing silk_LPC_inverse_pred_gain() optimization ...\n\0" as *const u8
-            as *const libc::c_char,
+            as *const i8,
     );
-    count = 0 as libc::c_int;
+    count = 0 as i32;
     while count < loop_num {
-        let mut i: libc::c_uint = 0;
-        let mut order: libc::c_int = 0;
-        let mut shift: libc::c_uint = 0;
+        let mut i: u32 = 0;
+        let mut order: i32 = 0;
+        let mut shift: u32 = 0;
         let mut A_Q12: [i16; 24] = [0; 24];
         let mut gain: i32 = 0;
-        order = 2 as libc::c_int;
-        while order <= 24 as libc::c_int {
-            shift = 0 as libc::c_int as libc::c_uint;
-            while shift < 16 as libc::c_int as libc::c_uint {
-                i = 0 as libc::c_int as libc::c_uint;
-                while i < 24 as libc::c_int as libc::c_uint {
-                    A_Q12[i as usize] = (rand() as i16 as libc::c_int >> shift) as i16;
+        order = 2 as i32;
+        while order <= 24 as i32 {
+            shift = 0 as i32 as u32;
+            while shift < 16 as i32 as u32 {
+                i = 0 as i32 as u32;
+                while i < 24 as i32 as u32 {
+                    A_Q12[i as usize] = (rand() as i16 as i32 >> shift) as i16;
                     i = i.wrapping_add(1);
                 }
                 gain = silk_LPC_inverse_pred_gain_c(A_Q12.as_mut_ptr(), order);
-                if gain != 0 as libc::c_int && check_stability(A_Q12.as_mut_ptr(), order) == 0 {
+                if gain != 0 as i32 && check_stability(A_Q12.as_mut_ptr(), order) == 0 {
                     fprintf(
                         stderr(),
-                        b"**Loop %4d failed!**\n\0" as *const u8 as *const libc::c_char,
+                        b"**Loop %4d failed!**\n\0" as *const u8 as *const i8,
                         count,
                     );
-                    return 1 as libc::c_int;
+                    return 1 as i32;
                 }
                 shift = shift.wrapping_add(1);
             }
-            order += 2 as libc::c_int;
+            order += 2 as i32;
         }
-        if count % 500 as libc::c_int == 0 {
+        if count % 500 as i32 == 0 {
             printf(
-                b"Loop %4d passed\n\0" as *const u8 as *const libc::c_char,
+                b"Loop %4d passed\n\0" as *const u8 as *const i8,
                 count,
             );
         }
         count += 1;
     }
     printf(
-        b"silk_LPC_inverse_pred_gain() optimization passed\n\0" as *const u8 as *const libc::c_char,
+        b"silk_LPC_inverse_pred_gain() optimization passed\n\0" as *const u8 as *const i8,
     );
-    return 0 as libc::c_int;
+    return 0 as i32;
 }
 pub fn main() {
     unsafe { ::std::process::exit(main_0() as i32) }

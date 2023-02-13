@@ -11,7 +11,7 @@ const HEADER: usize = mem::size_of::<usize>();
 
 const MALLOC_ALIGN: usize = mem::align_of::<usize>();
 
-pub unsafe fn malloc(size: libc::c_ulong) -> *mut libc::c_void {
+pub unsafe fn malloc(size: u64) -> *mut core::ffi::c_void {
     let size = HEADER + size as usize;
     let layout = Layout::from_size_align_unchecked(size, MALLOC_ALIGN);
     let memory = rust::alloc(layout);
@@ -23,13 +23,13 @@ pub unsafe fn malloc(size: libc::c_ulong) -> *mut libc::c_void {
     result
 }
 
-pub unsafe fn calloc(n: libc::c_ulong, size: libc::c_ulong) -> *mut libc::c_void {
+pub unsafe fn calloc(n: u64, size: u64) -> *mut core::ffi::c_void {
     let mem = malloc(n * size);
     ptr::write_bytes(mem, 0, (n * size) as usize);
     mem
 }
 
-pub unsafe fn realloc(ptr: *mut libc::c_void, new_size: libc::c_ulong) -> *mut libc::c_void {
+pub unsafe fn realloc(ptr: *mut core::ffi::c_void, new_size: u64) -> *mut core::ffi::c_void {
     if ptr.is_null() {
         return calloc(1, new_size);
     }
@@ -47,7 +47,7 @@ pub unsafe fn realloc(ptr: *mut libc::c_void, new_size: libc::c_ulong) -> *mut l
     memory.add(HEADER).cast()
 }
 
-pub unsafe fn free(ptr: *mut libc::c_void) {
+pub unsafe fn free(ptr: *mut core::ffi::c_void) {
     if ptr == ptr::null_mut() {
         return;
     }
@@ -59,20 +59,20 @@ pub unsafe fn free(ptr: *mut libc::c_void) {
 }
 
 pub unsafe fn memcmp(
-    lhs: *const libc::c_void,
-    rhs: *const libc::c_void,
-    count: libc::c_ulong,
-) -> libc::c_int {
+    lhs: *const core::ffi::c_void,
+    rhs: *const core::ffi::c_void,
+    count: u64,
+) -> i32 {
     let lhs = slice::from_raw_parts(lhs.cast::<u8>(), count as usize);
     let rhs = slice::from_raw_parts(rhs.cast::<u8>(), count as usize);
-    lhs.cmp(rhs) as libc::c_int
+    lhs.cmp(rhs) as i32
 }
 
 pub unsafe fn memcpy(
-    dest: *mut libc::c_void,
-    src: *const libc::c_void,
-    count: libc::c_ulong,
-) -> *mut libc::c_void {
+    dest: *mut core::ffi::c_void,
+    src: *const core::ffi::c_void,
+    count: u64,
+) -> *mut core::ffi::c_void {
     ptr::copy_nonoverlapping(
         src.cast::<MaybeUninit<u8>>(),
         dest.cast::<MaybeUninit<u8>>(),
@@ -82,10 +82,10 @@ pub unsafe fn memcpy(
 }
 
 pub unsafe fn memmove(
-    dest: *mut libc::c_void,
-    src: *const libc::c_void,
-    count: libc::c_ulong,
-) -> *mut libc::c_void {
+    dest: *mut core::ffi::c_void,
+    src: *const core::ffi::c_void,
+    count: u64,
+) -> *mut core::ffi::c_void {
     ptr::copy(
         src.cast::<MaybeUninit<u8>>(),
         dest.cast::<MaybeUninit<u8>>(),
@@ -94,41 +94,33 @@ pub unsafe fn memmove(
     dest
 }
 
-pub unsafe fn memset(
-    dest: *mut libc::c_void,
-    ch: libc::c_int,
-    count: libc::c_ulong,
-) -> *mut libc::c_void {
+pub unsafe fn memset(dest: *mut core::ffi::c_void, ch: i32, count: u64) -> *mut core::ffi::c_void {
     ptr::write_bytes(dest.cast::<u8>(), ch as u8, count as usize);
     dest
 }
 
-pub unsafe fn strcmp(lhs: *const libc::c_char, rhs: *const libc::c_char) -> libc::c_int {
+pub unsafe fn strcmp(lhs: *const i8, rhs: *const i8) -> i32 {
     let lhs = slice::from_raw_parts(lhs.cast::<u8>(), strlen(lhs) as usize);
     let rhs = slice::from_raw_parts(rhs.cast::<u8>(), strlen(rhs) as usize);
-    lhs.cmp(rhs) as libc::c_int
+    lhs.cmp(rhs) as i32
 }
 
-pub unsafe fn strdup(src: *const libc::c_char) -> *mut libc::c_char {
+pub unsafe fn strdup(src: *const i8) -> *mut i8 {
     let len = strlen(src);
     let dest = malloc(len + 1);
     memcpy(dest, src.cast(), len + 1);
     dest.cast()
 }
 
-pub unsafe fn strlen(str: *const libc::c_char) -> libc::c_ulong {
+pub unsafe fn strlen(str: *const i8) -> u64 {
     let mut end = str;
     while *end != 0 {
         end = end.add(1);
     }
-    end.offset_from(str) as libc::c_ulong
+    end.offset_from(str) as u64
 }
 
-pub unsafe fn strncmp(
-    lhs: *const libc::c_char,
-    rhs: *const libc::c_char,
-    mut count: libc::c_ulong,
-) -> libc::c_int {
+pub unsafe fn strncmp(lhs: *const i8, rhs: *const i8, mut count: u64) -> i32 {
     let mut lhs = lhs.cast::<u8>();
     let mut rhs = rhs.cast::<u8>();
     while count > 0 && *lhs != 0 && *lhs == *rhs {
@@ -139,7 +131,7 @@ pub unsafe fn strncmp(
     if count == 0 {
         0
     } else {
-        (*lhs).cmp(&*rhs) as libc::c_int
+        (*lhs).cmp(&*rhs) as i32
     }
 }
 

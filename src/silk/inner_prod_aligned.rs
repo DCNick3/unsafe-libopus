@@ -2,12 +2,12 @@
 pub unsafe fn silk_inner_prod_aligned_scale(
     inVec1: *const i16,
     inVec2: *const i16,
-    scale: libc::c_int,
-    len: libc::c_int,
+    scale: i32,
+    len: i32,
 ) -> i32 {
-    let mut i: libc::c_int = 0;
-    let mut sum: i32 = 0 as libc::c_int;
-    i = 0 as libc::c_int;
+    let mut i: i32 = 0;
+    let mut sum: i32 = 0 as i32;
+    i = 0 as i32;
     while i < len {
         sum =
             sum + (*inVec1.offset(i as isize) as i32 * *inVec2.offset(i as isize) as i32 >> scale);

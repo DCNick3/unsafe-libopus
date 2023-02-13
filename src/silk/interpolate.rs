@@ -5,31 +5,30 @@ pub unsafe fn silk_interpolate(
     xi: *mut i16,
     x0: *const i16,
     x1: *const i16,
-    ifact_Q2: libc::c_int,
-    d: libc::c_int,
+    ifact_Q2: i32,
+    d: i32,
 ) {
-    let mut i: libc::c_int = 0;
-    if !(ifact_Q2 >= 0 as libc::c_int) {
+    let mut i: i32 = 0;
+    if !(ifact_Q2 >= 0 as i32) {
         celt_fatal(
-            b"assertion failed: ifact_Q2 >= 0\0" as *const u8 as *const libc::c_char,
-            b"silk/interpolate.c\0" as *const u8 as *const libc::c_char,
-            45 as libc::c_int,
+            b"assertion failed: ifact_Q2 >= 0\0" as *const u8 as *const i8,
+            b"silk/interpolate.c\0" as *const u8 as *const i8,
+            45 as i32,
         );
     }
-    if !(ifact_Q2 <= 4 as libc::c_int) {
+    if !(ifact_Q2 <= 4 as i32) {
         celt_fatal(
-            b"assertion failed: ifact_Q2 <= 4\0" as *const u8 as *const libc::c_char,
-            b"silk/interpolate.c\0" as *const u8 as *const libc::c_char,
-            46 as libc::c_int,
+            b"assertion failed: ifact_Q2 <= 4\0" as *const u8 as *const i8,
+            b"silk/interpolate.c\0" as *const u8 as *const i8,
+            46 as i32,
         );
     }
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < d {
-        *xi.offset(i as isize) = (*x0.offset(i as isize) as libc::c_int
-            + ((*x1.offset(i as isize) as libc::c_int - *x0.offset(i as isize) as libc::c_int)
-                as i16 as i32
+        *xi.offset(i as isize) = (*x0.offset(i as isize) as i32
+            + ((*x1.offset(i as isize) as i32 - *x0.offset(i as isize) as i32) as i16 as i32
                 * ifact_Q2 as i16 as i32
-                >> 2 as libc::c_int)) as i16;
+                >> 2 as i32)) as i16;
         i += 1;
     }
 }

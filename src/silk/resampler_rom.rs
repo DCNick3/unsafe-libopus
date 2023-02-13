@@ -1,24 +1,24 @@
-pub const RESAMPLER_DOWN_ORDER_FIR2: libc::c_int = 36 as libc::c_int;
-pub const RESAMPLER_DOWN_ORDER_FIR1: libc::c_int = 24 as libc::c_int;
-pub const RESAMPLER_DOWN_ORDER_FIR0: libc::c_int = 18 as libc::c_int;
-pub const RESAMPLER_ORDER_FIR_12: libc::c_int = 8 as libc::c_int;
+pub const RESAMPLER_DOWN_ORDER_FIR2: i32 = 36 as i32;
+pub const RESAMPLER_DOWN_ORDER_FIR1: i32 = 24 as i32;
+pub const RESAMPLER_DOWN_ORDER_FIR0: i32 = 18 as i32;
+pub const RESAMPLER_ORDER_FIR_12: i32 = 8 as i32;
 
 #[c2rust::src_loc = "45:25"]
-pub const silk_resampler_down2_0: i16 = 9872 as libc::c_int as i16;
+pub const silk_resampler_down2_0: i16 = 9872 as i32 as i16;
 #[c2rust::src_loc = "46:25"]
-pub const silk_resampler_down2_1: i16 = (39809 as libc::c_int - 65536 as libc::c_int) as i16;
+pub const silk_resampler_down2_1: i16 = (39809 as i32 - 65536 as i32) as i16;
 
 #[c2rust::src_loc = "49:25"]
 pub const silk_resampler_up2_hq_0: [i16; 3] = [
-    1746 as libc::c_int as i16,
-    14986 as libc::c_int as i16,
-    (39083 as libc::c_int - 65536 as libc::c_int) as i16,
+    1746 as i32 as i16,
+    14986 as i32 as i16,
+    (39083 as i32 - 65536 as i32) as i16,
 ];
 #[c2rust::src_loc = "50:25"]
 pub const silk_resampler_up2_hq_1: [i16; 3] = [
-    6854 as libc::c_int as i16,
-    25769 as libc::c_int as i16,
-    (55542 as libc::c_int - 65536 as libc::c_int) as i16,
+    6854 as i32 as i16,
+    25769 as i32 as i16,
+    (55542 as i32 - 65536 as i32) as i16,
 ];
 
 #[c2rust::src_loc = "43:35"]

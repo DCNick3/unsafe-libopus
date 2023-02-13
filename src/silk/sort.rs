@@ -1,91 +1,86 @@
 use crate::celt::celt::celt_fatal;
 
 #[c2rust::src_loc = "40:1"]
-pub unsafe fn silk_insertion_sort_increasing(
-    a: *mut i32,
-    idx: *mut libc::c_int,
-    L: libc::c_int,
-    K: libc::c_int,
-) {
+pub unsafe fn silk_insertion_sort_increasing(a: *mut i32, idx: *mut i32, L: i32, K: i32) {
     let mut value: i32 = 0;
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    if !(K > 0 as libc::c_int) {
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    if !(K > 0 as i32) {
         celt_fatal(
-            b"assertion failed: K > 0\0" as *const u8 as *const libc::c_char,
-            b"silk/sort.c\0" as *const u8 as *const libc::c_char,
-            51 as libc::c_int,
+            b"assertion failed: K > 0\0" as *const u8 as *const i8,
+            b"silk/sort.c\0" as *const u8 as *const i8,
+            51 as i32,
         );
     }
-    if !(L > 0 as libc::c_int) {
+    if !(L > 0 as i32) {
         celt_fatal(
-            b"assertion failed: L > 0\0" as *const u8 as *const libc::c_char,
-            b"silk/sort.c\0" as *const u8 as *const libc::c_char,
-            52 as libc::c_int,
+            b"assertion failed: L > 0\0" as *const u8 as *const i8,
+            b"silk/sort.c\0" as *const u8 as *const i8,
+            52 as i32,
         );
     }
     if !(L >= K) {
         celt_fatal(
-            b"assertion failed: L >= K\0" as *const u8 as *const libc::c_char,
-            b"silk/sort.c\0" as *const u8 as *const libc::c_char,
-            53 as libc::c_int,
+            b"assertion failed: L >= K\0" as *const u8 as *const i8,
+            b"silk/sort.c\0" as *const u8 as *const i8,
+            53 as i32,
         );
     }
-    i = 0 as libc::c_int;
+    i = 0 as i32;
     while i < K {
         *idx.offset(i as isize) = i;
         i += 1;
     }
-    i = 1 as libc::c_int;
+    i = 1 as i32;
     while i < K {
         value = *a.offset(i as isize);
-        j = i - 1 as libc::c_int;
-        while j >= 0 as libc::c_int && value < *a.offset(j as isize) {
-            *a.offset((j + 1 as libc::c_int) as isize) = *a.offset(j as isize);
-            *idx.offset((j + 1 as libc::c_int) as isize) = *idx.offset(j as isize);
+        j = i - 1 as i32;
+        while j >= 0 as i32 && value < *a.offset(j as isize) {
+            *a.offset((j + 1 as i32) as isize) = *a.offset(j as isize);
+            *idx.offset((j + 1 as i32) as isize) = *idx.offset(j as isize);
             j -= 1;
         }
-        *a.offset((j + 1 as libc::c_int) as isize) = value;
-        *idx.offset((j + 1 as libc::c_int) as isize) = i;
+        *a.offset((j + 1 as i32) as isize) = value;
+        *idx.offset((j + 1 as i32) as isize) = i;
         i += 1;
     }
     i = K;
     while i < L {
         value = *a.offset(i as isize);
-        if value < *a.offset((K - 1 as libc::c_int) as isize) {
-            j = K - 2 as libc::c_int;
-            while j >= 0 as libc::c_int && value < *a.offset(j as isize) {
-                *a.offset((j + 1 as libc::c_int) as isize) = *a.offset(j as isize);
-                *idx.offset((j + 1 as libc::c_int) as isize) = *idx.offset(j as isize);
+        if value < *a.offset((K - 1 as i32) as isize) {
+            j = K - 2 as i32;
+            while j >= 0 as i32 && value < *a.offset(j as isize) {
+                *a.offset((j + 1 as i32) as isize) = *a.offset(j as isize);
+                *idx.offset((j + 1 as i32) as isize) = *idx.offset(j as isize);
                 j -= 1;
             }
-            *a.offset((j + 1 as libc::c_int) as isize) = value;
-            *idx.offset((j + 1 as libc::c_int) as isize) = i;
+            *a.offset((j + 1 as i32) as isize) = value;
+            *idx.offset((j + 1 as i32) as isize) = i;
         }
         i += 1;
     }
 }
 #[c2rust::src_loc = "135:1"]
-pub unsafe fn silk_insertion_sort_increasing_all_values_int16(a: *mut i16, L: libc::c_int) {
-    let mut value: libc::c_int = 0;
-    let mut i: libc::c_int = 0;
-    let mut j: libc::c_int = 0;
-    if !(L > 0 as libc::c_int) {
+pub unsafe fn silk_insertion_sort_increasing_all_values_int16(a: *mut i16, L: i32) {
+    let mut value: i32 = 0;
+    let mut i: i32 = 0;
+    let mut j: i32 = 0;
+    if !(L > 0 as i32) {
         celt_fatal(
-            b"assertion failed: L > 0\0" as *const u8 as *const libc::c_char,
-            b"silk/sort.c\0" as *const u8 as *const libc::c_char,
-            144 as libc::c_int,
+            b"assertion failed: L > 0\0" as *const u8 as *const i8,
+            b"silk/sort.c\0" as *const u8 as *const i8,
+            144 as i32,
         );
     }
-    i = 1 as libc::c_int;
+    i = 1 as i32;
     while i < L {
-        value = *a.offset(i as isize) as libc::c_int;
-        j = i - 1 as libc::c_int;
-        while j >= 0 as libc::c_int && value < *a.offset(j as isize) as libc::c_int {
-            *a.offset((j + 1 as libc::c_int) as isize) = *a.offset(j as isize);
+        value = *a.offset(i as isize) as i32;
+        j = i - 1 as i32;
+        while j >= 0 as i32 && value < *a.offset(j as isize) as i32 {
+            *a.offset((j + 1 as i32) as isize) = *a.offset(j as isize);
             j -= 1;
         }
-        *a.offset((j + 1 as libc::c_int) as isize) = value as i16;
+        *a.offset((j + 1 as i32) as isize) = value as i16;
         i += 1;
     }
 }

@@ -4,26 +4,20 @@ use crate::silk::lin2log::silk_lin2log;
 use crate::silk::VAD::silk_VAD_Init;
 
 #[c2rust::src_loc = "42:1"]
-pub unsafe fn silk_init_encoder(
-    mut psEnc: *mut silk_encoder_state_FLP,
-    arch: libc::c_int,
-) -> libc::c_int {
-    let mut ret: libc::c_int = 0 as libc::c_int;
+pub unsafe fn silk_init_encoder(mut psEnc: *mut silk_encoder_state_FLP, arch: i32) -> i32 {
+    let mut ret: i32 = 0 as i32;
     memset(
-        psEnc as *mut libc::c_void,
-        0 as libc::c_int,
-        ::core::mem::size_of::<silk_encoder_state_FLP>() as libc::c_ulong,
+        psEnc as *mut core::ffi::c_void,
+        0 as i32,
+        ::core::mem::size_of::<silk_encoder_state_FLP>() as u64,
     );
     (*psEnc).sCmn.arch = arch;
     (*psEnc).sCmn.variable_HP_smth1_Q15 = (((silk_lin2log(
-        ((60 as libc::c_int as libc::c_long * ((1 as libc::c_int as i64) << 16 as libc::c_int))
-            as libc::c_double
-            + 0.5f64) as i32,
-    ) - ((16 as libc::c_int) << 7 as libc::c_int))
-        as u32)
-        << 8 as libc::c_int) as i32;
+        ((60 as i32 as i64 * ((1 as i32 as i64) << 16 as i32)) as f64 + 0.5f64) as i32,
+    ) - ((16 as i32) << 7 as i32)) as u32)
+        << 8 as i32) as i32;
     (*psEnc).sCmn.variable_HP_smth2_Q15 = (*psEnc).sCmn.variable_HP_smth1_Q15;
-    (*psEnc).sCmn.first_frame_after_reset = 1 as libc::c_int;
+    (*psEnc).sCmn.first_frame_after_reset = 1 as i32;
     ret += silk_VAD_Init(&mut (*psEnc).sCmn.sVAD);
     return ret;
 }
