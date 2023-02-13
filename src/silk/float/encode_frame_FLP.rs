@@ -1,7 +1,5 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:33"]
 pub mod SigProc_FLP_h {
     #[inline]
-    #[c2rust::src_loc = "175:1"]
     pub unsafe fn silk_short2float_array(out: *mut f32, in_0: *const i16, length: i32) {
         let mut k: i32 = 0;
         k = length - 1 as i32;
@@ -35,7 +33,6 @@ use crate::silk::LP_variable_cutoff::silk_LP_variable_cutoff;
 use crate::silk::SigProc_FIX::silk_min_int;
 use crate::silk::VAD::silk_VAD_GetSA_Q8_c;
 
-#[c2rust::src_loc = "44:1"]
 pub unsafe fn silk_encode_do_VAD_FLP(mut psEnc: *mut silk_encoder_state_FLP, activity: i32) {
     let activity_threshold: i32 =
         ((0.05f32 * ((1 as i32 as i64) << 8 as i32) as f32) as f64 + 0.5f64) as i32;
@@ -66,7 +63,6 @@ pub unsafe fn silk_encode_do_VAD_FLP(mut psEnc: *mut silk_encoder_state_FLP, act
         (*psEnc).sCmn.VAD_flags[(*psEnc).sCmn.nFramesEncoded as usize] = 1 as i32 as i8;
     };
 }
-#[c2rust::src_loc = "84:1"]
 pub unsafe fn silk_encode_frame_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,
     pnBytesOut: *mut i32,
@@ -576,7 +572,6 @@ pub unsafe fn silk_encode_frame_FLP(
     return ret;
 }
 #[inline]
-#[c2rust::src_loc = "382:1"]
 unsafe fn silk_LBRR_encode_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,
     mut psEncCtrl: *mut silk_encoder_control_FLP,

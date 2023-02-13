@@ -5,16 +5,12 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_assignments)]
 #![allow(unused_mut)]
-#![feature(register_tool)]
-#![register_tool(c2rust)]
 
 use libc::{atoi, fprintf, getenv, getpid, strtol, time};
 use libc_stdhandle::{stderr, stdout};
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/tests/test_opus_common.h:48"]
 pub mod test_opus_common_h {
     #[inline]
-    #[c2rust::src_loc = "28:1"]
     pub unsafe fn deb2_impl(
         mut _t: *mut u8,
         mut _p: *mut *mut u8,
@@ -44,7 +40,6 @@ pub mod test_opus_common_h {
         };
     }
     #[inline]
-    #[c2rust::src_loc = "44:1"]
     pub unsafe fn debruijn2(mut _k: i32, mut _res: *mut u8) {
         let mut p: *mut u8 = std::ptr::null_mut::<u8>();
         let mut t: *mut u8 = std::ptr::null_mut::<u8>();
@@ -64,12 +59,9 @@ pub mod test_opus_common_h {
         deb2_impl(t, &mut p, _k, 1 as i32, 1 as i32);
         free(t as *mut core::ffi::c_void);
     }
-    #[c2rust::src_loc = "56:20"]
     pub static mut Rz: u32 = 0;
-    #[c2rust::src_loc = "56:24"]
     pub static mut Rw: u32 = 0;
     #[inline]
-    #[c2rust::src_loc = "57:1"]
     pub unsafe fn fast_rand() -> u32 {
         Rz = (36969 as i32 as u32)
             .wrapping_mul(Rz & 65535 as i32 as u32)
@@ -79,10 +71,8 @@ pub mod test_opus_common_h {
             .wrapping_add(Rw >> 16 as i32);
         (Rz << 16 as i32).wrapping_add(Rw)
     }
-    #[c2rust::src_loc = "63:20"]
     pub static mut iseed: u32 = 0;
     #[inline]
-    #[c2rust::src_loc = "66:1"]
     pub unsafe fn _test_failed(mut file: *const i8, mut line: i32) -> ! {
         fprintf(
             stderr(),
@@ -138,7 +128,6 @@ use unsafe_libopus::{
 mod opus_encode_regressions;
 use opus_encode_regressions::regression_test;
 
-#[c2rust::src_loc = "57:1"]
 pub unsafe fn generate_music(mut buf: *mut libc::c_short, mut len: i32) {
     let mut a1: i32 = 0;
     let mut b1: i32 = 0;
@@ -213,7 +202,6 @@ pub unsafe fn generate_music(mut buf: *mut libc::c_short, mut len: i32) {
         i += 1;
     }
 }
-#[c2rust::src_loc = "115:1"]
 pub unsafe fn get_frame_size_enum(mut frame_size: i32, mut sampling_rate: i32) -> i32 {
     let mut frame_size_enum: i32 = 0;
     if frame_size == sampling_rate / 400 as i32 {
@@ -242,7 +230,6 @@ pub unsafe fn get_frame_size_enum(mut frame_size: i32, mut sampling_rate: i32) -
     }
     frame_size_enum
 }
-#[c2rust::src_loc = "143:1"]
 pub unsafe fn test_encode(
     mut enc: *mut OpusEncoder,
     mut channels: i32,
@@ -304,7 +291,6 @@ pub unsafe fn test_encode(
     free(outbuf as *mut core::ffi::c_void);
     ret
 }
-#[c2rust::src_loc = "185:1"]
 pub unsafe fn fuzz_encoder_settings(num_encoders: i32, num_setting_changes: i32) {
     let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
     let mut dec: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
@@ -559,7 +545,6 @@ pub unsafe fn fuzz_encoder_settings(num_encoders: i32, num_setting_changes: i32)
         i += 1;
     }
 }
-#[c2rust::src_loc = "272:1"]
 pub unsafe fn run_test1(mut no_fuzz: i32) -> i32 {
     static mut fsizes: [i32; 6] = [
         960 as i32 * 3 as i32,
@@ -2127,7 +2112,6 @@ pub unsafe fn run_test1(mut no_fuzz: i32) -> i32 {
     free(out2buf as *mut core::ffi::c_void);
     0 as i32
 }
-#[c2rust::src_loc = "632:1"]
 pub unsafe fn print_usage(mut _argv: *mut *mut i8) {
     fprintf(
         stderr(),
@@ -2136,7 +2120,6 @@ pub unsafe fn print_usage(mut _argv: *mut *mut i8) {
         *_argv.offset(0 as i32 as isize),
     );
 }
-#[c2rust::src_loc = "637:1"]
 unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
     let mut args: i32 = 1 as i32;
     let mut strtol_str: *mut i8 = std::ptr::null_mut::<i8>();

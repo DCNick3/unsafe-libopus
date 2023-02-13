@@ -1,7 +1,6 @@
 use crate::celt::celt::celt_fatal;
 use crate::externs::memset;
 #[inline]
-#[c2rust::src_loc = "43:1"]
 unsafe fn silk_LPC_analysis_filter16_FLP(
     r_LPC: *mut f32,
     PredCoef: *const f32,
@@ -35,7 +34,6 @@ unsafe fn silk_LPC_analysis_filter16_FLP(
     }
 }
 #[inline]
-#[c2rust::src_loc = "81:1"]
 unsafe fn silk_LPC_analysis_filter12_FLP(
     r_LPC: *mut f32,
     PredCoef: *const f32,
@@ -65,7 +63,6 @@ unsafe fn silk_LPC_analysis_filter12_FLP(
     }
 }
 #[inline]
-#[c2rust::src_loc = "115:1"]
 unsafe fn silk_LPC_analysis_filter10_FLP(
     r_LPC: *mut f32,
     PredCoef: *const f32,
@@ -93,7 +90,6 @@ unsafe fn silk_LPC_analysis_filter10_FLP(
     }
 }
 #[inline]
-#[c2rust::src_loc = "147:1"]
 unsafe fn silk_LPC_analysis_filter8_FLP(
     r_LPC: *mut f32,
     PredCoef: *const f32,
@@ -119,7 +115,6 @@ unsafe fn silk_LPC_analysis_filter8_FLP(
     }
 }
 #[inline]
-#[c2rust::src_loc = "177:1"]
 unsafe fn silk_LPC_analysis_filter6_FLP(
     r_LPC: *mut f32,
     PredCoef: *const f32,
@@ -142,7 +137,6 @@ unsafe fn silk_LPC_analysis_filter6_FLP(
         ix += 1;
     }
 }
-#[c2rust::src_loc = "210:1"]
 pub unsafe fn silk_LPC_analysis_filter_FLP(
     r_LPC: *mut f32,
     PredCoef: *const f32,

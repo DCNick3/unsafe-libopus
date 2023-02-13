@@ -5,18 +5,13 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_assignments)]
 #![allow(unused_mut)]
-#![feature(register_tool)]
-#![register_tool(c2rust)]
 
 use libc::{fprintf, printf};
 use libc_stdhandle::{stderr, stdout};
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/tests/test_opus_common.h:55"]
 pub mod test_opus_common_h {
-    #[c2rust::src_loc = "63:20"]
     pub static mut iseed: u32 = 0;
     #[inline]
-    #[c2rust::src_loc = "66:1"]
     pub unsafe fn _test_failed(mut file: *const i8, mut line: i32) -> ! {
         fprintf(
             stderr(),
@@ -74,13 +69,10 @@ use unsafe_libopus::{
     OpusMSDecoder, OpusRepacketizer,
 };
 
-#[c2rust::src_loc = "81:13"]
 pub static mut null_int_ptr: *mut i32 =
     0 as *const core::ffi::c_void as *mut core::ffi::c_void as *mut i32;
-#[c2rust::src_loc = "82:14"]
 pub static mut null_uint_ptr: *mut u32 =
     0 as *const core::ffi::c_void as *mut core::ffi::c_void as *mut u32;
-#[c2rust::src_loc = "84:25"]
 static mut opus_rates: [i32; 5] = [
     48000 as i32,
     24000 as i32,
@@ -88,7 +80,6 @@ static mut opus_rates: [i32; 5] = [
     12000 as i32,
     8000 as i32,
 ];
-#[c2rust::src_loc = "86:1"]
 pub unsafe fn test_dec_api() -> i32 {
     let mut dec_final_range: u32 = 0;
     let mut dec: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
@@ -818,7 +809,6 @@ pub unsafe fn test_dec_api() -> i32 {
     );
     cfgs
 }
-#[c2rust::src_loc = "343:1"]
 pub unsafe fn test_msdec_api() -> i32 {
     let mut dec_final_range: u32 = 0;
     let mut dec: *mut OpusMSDecoder = std::ptr::null_mut::<OpusMSDecoder>();
@@ -1660,7 +1650,6 @@ pub unsafe fn test_msdec_api() -> i32 {
     );
     cfgs
 }
-#[c2rust::src_loc = "707:1"]
 pub unsafe fn test_parse() -> i32 {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -2720,7 +2709,6 @@ pub unsafe fn test_parse() -> i32 {
     );
     cfgs_total
 }
-#[c2rust::src_loc = "1065:1"]
 pub unsafe fn test_enc_api() -> i32 {
     let mut enc_final_range: u32 = 0;
     let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
@@ -4388,7 +4376,6 @@ pub unsafe fn test_enc_api() -> i32 {
     );
     cfgs
 }
-#[c2rust::src_loc = "1444:1"]
 pub unsafe fn test_repacketizer_api() -> i32 {
     let mut ret: i32 = 0;
     let mut cfgs: i32 = 0;
@@ -5229,7 +5216,6 @@ pub unsafe fn test_repacketizer_api() -> i32 {
     );
     cfgs
 }
-#[c2rust::src_loc = "1766:1"]
 pub unsafe fn test_malloc_fail() -> i32 {
     fprintf(
         stdout(),
@@ -5265,7 +5251,6 @@ pub unsafe fn test_malloc_fail() -> i32 {
     );
     0 as i32
 }
-#[c2rust::src_loc = "1875:1"]
 unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
     let mut total: i32 = 0;
     let mut oversion: *const i8 = std::ptr::null::<i8>();

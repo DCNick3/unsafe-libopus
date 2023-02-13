@@ -5,7 +5,6 @@ use crate::silk::pitch_est_tables::{
     PE_NB_CBKS_STAGE3_MAX,
 };
 
-#[c2rust::src_loc = "38:1"]
 pub unsafe fn silk_decode_pitch(
     lagIndex: i16,
     contourIndex: i8,

@@ -1,6 +1,5 @@
 use crate::silk::structs::silk_NLSF_CB_struct;
 
-#[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_NLSF_unpack(
     ec_ix: *mut i16,
     pred_Q8: *mut u8,

@@ -2,7 +2,6 @@ use crate::silk::resampler_structs::silk_resampler_state_struct;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "85:9"]
 pub struct silk_NLSF_CB_struct {
     pub nVectors: i16,
     pub order: i16,
@@ -19,7 +18,6 @@ pub struct silk_NLSF_CB_struct {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "118:9"]
 pub struct SideInfoIndices {
     pub GainsIndices: [i8; 4],
     pub LTPIndex: [i8; 4],
@@ -35,7 +33,6 @@ pub struct SideInfoIndices {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "232:9"]
 pub struct silk_PLC_struct {
     pub pitchL_Q8: i32,
     pub LTPCoef_Q14: [i16; 5],
@@ -53,7 +50,6 @@ pub struct silk_PLC_struct {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "249:9"]
 pub struct silk_CNG_struct {
     pub CNG_exc_buf_Q14: [i32; 320],
     pub CNG_smth_NLSF_Q15: [i16; 16],
@@ -64,7 +60,6 @@ pub struct silk_CNG_struct {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "261:9"]
 pub struct silk_decoder_state {
     pub prev_gain_Q16: i32,
     pub exc_Q14: [i32; 320],
@@ -101,7 +96,6 @@ pub struct silk_decoder_state {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "314:9"]
 pub struct silk_decoder_control {
     pub pitchL: [i32; 4],
     pub Gains_Q16: [i32; 4],
@@ -112,7 +106,6 @@ pub struct silk_decoder_control {
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "45:9"]
 pub struct silk_nsq_state {
     pub xq: [i16; 640],
     pub sLTP_shp_Q14: [i32; 640],
@@ -129,7 +122,6 @@ pub struct silk_nsq_state {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "63:9"]
 pub struct silk_VAD_state {
     pub AnaState: [i32; 2],
     pub AnaState1: [i32; 2],
@@ -144,7 +136,6 @@ pub struct silk_VAD_state {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "77:9"]
 pub struct silk_LP_state {
     pub In_LP_State: [i32; 2],
     pub transition_frame_no: i32,
@@ -153,7 +144,6 @@ pub struct silk_LP_state {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "135:9"]
 pub struct silk_encoder_state {
     pub In_HP_State: [i32; 2],
     pub variable_HP_smth1_Q15: i32,
@@ -236,7 +226,6 @@ pub struct silk_encoder_state {
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "100:9"]
 pub struct stereo_enc_state {
     pub pred_prev_Q13: [i16; 2],
     pub sMid: [i16; 2],
@@ -251,7 +240,6 @@ pub struct stereo_enc_state {
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "112:9"]
 pub struct stereo_dec_state {
     pub pred_prev_Q13: [i16; 2],
     pub sMid: [i16; 2],

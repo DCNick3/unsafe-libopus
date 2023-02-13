@@ -3,7 +3,6 @@ use crate::silk::float::corrMatrix_FLP::{silk_corrMatrix_FLP, silk_corrVector_FL
 use crate::silk::float::energy_FLP::silk_energy_FLP;
 use crate::silk::float::scale_vector_FLP::silk_scale_vector_FLP;
 
-#[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_find_LTP_FLP(
     XX: *mut f32,
     xX: *mut f32,

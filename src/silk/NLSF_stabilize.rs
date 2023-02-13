@@ -1,19 +1,14 @@
 use crate::silk::sort::silk_insertion_sort_increasing_all_values_int16;
 use crate::silk::SigProc_FIX::{silk_max_int, silk_min_int};
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:41"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "45:9"]
     pub const silk_int16_MIN: i32 = 0x8000 as i32;
-    #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: i32 = 0x7fff as i32;
 }
 
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 
-#[c2rust::src_loc = "44:9"]
 pub const MAX_LOOPS: i32 = 20 as i32;
-#[c2rust::src_loc = "47:1"]
 pub unsafe fn silk_NLSF_stabilize(NLSF_Q15: *mut i16, NDeltaMin_Q15: *const i16, L: i32) {
     let mut i: i32 = 0;
     let mut I: i32 = 0 as i32;

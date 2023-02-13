@@ -1,15 +1,10 @@
 use crate::celt::bands::SPREAD_NONE;
 use std::f32::consts::PI;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = f32;
-    #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = f32;
-    #[c2rust::src_loc = "184:1"]
     pub type celt_norm = f32;
-    #[c2rust::src_loc = "207:9"]
     pub const EPSILON: f32 = 1e-15f32;
 }
 use self::arch_h::{celt_norm, opus_val16, opus_val32, EPSILON};
@@ -21,7 +16,6 @@ use crate::celt::entenc::ec_enc;
 use crate::celt::mathops::fast_atan2f;
 use crate::celt::pitch::celt_inner_prod_c;
 
-#[c2rust::src_loc = "47:1"]
 unsafe fn exp_rotation1(X: *mut celt_norm, len: i32, stride: i32, c: opus_val16, s: opus_val16) {
     let mut i: i32 = 0;
     let mut ms: opus_val16 = 0.;
@@ -54,7 +48,6 @@ unsafe fn exp_rotation1(X: *mut celt_norm, len: i32, stride: i32, c: opus_val16,
         i -= 1;
     }
 }
-#[c2rust::src_loc = "74:1"]
 pub unsafe fn exp_rotation(
     X: *mut celt_norm,
     mut len: i32,
@@ -102,7 +95,6 @@ pub unsafe fn exp_rotation(
         i += 1;
     }
 }
-#[c2rust::src_loc = "121:1"]
 unsafe fn normalise_residual(
     iy: *mut i32,
     X: *mut celt_norm,
@@ -124,7 +116,6 @@ unsafe fn normalise_residual(
         }
     }
 }
-#[c2rust::src_loc = "143:1"]
 unsafe fn extract_collapse_mask(iy: *mut i32, N: i32, B: i32) -> u32 {
     let mut collapse_mask: u32 = 0;
     let mut N0: i32 = 0;
@@ -154,7 +145,6 @@ unsafe fn extract_collapse_mask(iy: *mut i32, N: i32, B: i32) -> u32 {
     }
     return collapse_mask;
 }
-#[c2rust::src_loc = "165:1"]
 pub unsafe fn op_pvq_search_c(
     X: *mut celt_norm,
     iy: *mut i32,
@@ -280,7 +270,6 @@ pub unsafe fn op_pvq_search_c(
     }
     return yy;
 }
-#[c2rust::src_loc = "330:1"]
 pub unsafe fn alg_quant(
     X: *mut celt_norm,
     N: i32,
@@ -322,7 +311,6 @@ pub unsafe fn alg_quant(
     collapse_mask = extract_collapse_mask(iy.as_mut_ptr(), N, B);
     return collapse_mask;
 }
-#[c2rust::src_loc = "363:1"]
 pub unsafe fn alg_unquant(
     X: *mut celt_norm,
     N: i32,
@@ -358,7 +346,6 @@ pub unsafe fn alg_unquant(
     collapse_mask = extract_collapse_mask(iy.as_mut_ptr(), N, B);
     return collapse_mask;
 }
-#[c2rust::src_loc = "383:1"]
 pub unsafe fn renormalise_vector(X: *mut celt_norm, N: i32, gain: opus_val16, _arch: i32) {
     let mut i: i32 = 0;
     let mut E: opus_val32 = 0.;
@@ -376,7 +363,6 @@ pub unsafe fn renormalise_vector(X: *mut celt_norm, N: i32, gain: opus_val16, _a
         i += 1;
     }
 }
-#[c2rust::src_loc = "410:1"]
 pub unsafe fn stereo_itheta(
     X: *const celt_norm,
     Y: *const celt_norm,

@@ -6,7 +6,6 @@ use crate::silk::NLSF_VQ_weights_laroia::silk_NLSF_VQ_weights_laroia;
 use crate::silk::NLSF_encode::silk_NLSF_encode;
 use crate::silk::NLSF2A::silk_NLSF2A;
 
-#[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_process_NLSFs(
     psEncC: *mut silk_encoder_state,
     PredCoef_Q12: *mut [i16; 16],

@@ -2,7 +2,6 @@ use crate::silk::structs::{silk_encoder_state, stereo_enc_state};
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "95:9"]
 pub struct silk_encoder {
     pub state_Fxx: [silk_encoder_state_FLP; 2],
     pub sStereo: stereo_enc_state,
@@ -17,7 +16,6 @@ pub struct silk_encoder {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "52:9"]
 pub struct silk_encoder_state_FLP {
     pub sCmn: silk_encoder_state,
     pub sShape: silk_shape_state_FLP,
@@ -26,7 +24,6 @@ pub struct silk_encoder_state_FLP {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "43:9"]
 pub struct silk_shape_state_FLP {
     pub LastGainIndex: i8,
     pub HarmShapeGain_smth: f32,
@@ -34,7 +31,6 @@ pub struct silk_shape_state_FLP {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "64:9"]
 pub struct silk_encoder_control_FLP {
     pub Gains: [f32; 4],
     pub PredCoef: [[f32; 16]; 2],

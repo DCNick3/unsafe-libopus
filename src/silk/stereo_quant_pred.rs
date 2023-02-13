@@ -1,13 +1,10 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "42:9"]
     pub const silk_int32_MAX: i32 = 0x7fffffff as i32;
 }
 pub use self::typedef_h::silk_int32_MAX;
 use crate::silk::define::{STEREO_QUANT_SUB_STEPS, STEREO_QUANT_TAB_SIZE};
 use crate::silk::tables_other::silk_stereo_pred_quant_Q13;
 
-#[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_stereo_quant_pred(pred_Q13: *mut i32, ix: *mut [i8; 3]) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;

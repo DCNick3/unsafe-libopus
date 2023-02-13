@@ -1,12 +1,9 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/errors.h:32"]
 pub mod errors_h {
-    #[c2rust::src_loc = "39:9"]
     pub const SILK_NO_ERROR: i32 = 0 as i32;
 }
 pub use self::errors_h::SILK_NO_ERROR;
 use crate::silk::structs::silk_encoder_state;
 
-#[c2rust::src_loc = "40:28"]
 static mut silk_TargetRate_NB_21: [u8; 107] = [
     0 as i32 as u8,
     15 as i32 as u8,
@@ -116,7 +113,6 @@ static mut silk_TargetRate_NB_21: [u8; 107] = [
     253 as i32 as u8,
     255 as i32 as u8,
 ];
-#[c2rust::src_loc = "51:28"]
 static mut silk_TargetRate_MB_21: [u8; 155] = [
     0 as i32 as u8,
     0 as i32 as u8,
@@ -274,7 +270,6 @@ static mut silk_TargetRate_MB_21: [u8; 155] = [
     254 as i32 as u8,
     255 as i32 as u8,
 ];
-#[c2rust::src_loc = "65:28"]
 static mut silk_TargetRate_WB_21: [u8; 191] = [
     0 as i32 as u8,
     0 as i32 as u8,
@@ -468,7 +463,6 @@ static mut silk_TargetRate_WB_21: [u8; 191] = [
     253 as i32 as u8,
     255 as i32 as u8,
 ];
-#[c2rust::src_loc = "82:1"]
 pub unsafe fn silk_control_SNR(
     mut psEncC: *mut silk_encoder_state,
     mut TargetRate_bps: i32,

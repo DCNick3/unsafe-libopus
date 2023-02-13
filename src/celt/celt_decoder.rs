@@ -3,13 +3,10 @@ use crate::celt::bands::{
 };
 use crate::opus_custom_decoder_ctl;
 
-#[c2rust::header_src = "internal:0"]
 pub mod internal {
-    #[c2rust::src_loc = "0:0"]
     pub type __builtin_va_list = [__va_list_tag; 1];
     #[derive(Copy, Clone)]
     #[repr(C)]
-    #[c2rust::src_loc = "0:0"]
     pub struct __va_list_tag {
         pub gp_offset: u32,
         pub fp_offset: u32,
@@ -17,68 +14,41 @@ pub mod internal {
         pub reg_save_area: *mut core::ffi::c_void,
     }
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stdarg.h:37"]
 pub mod stdarg_h {
-    #[c2rust::src_loc = "14:1"]
     pub type va_list = __builtin_va_list;
     use super::internal::__builtin_va_list;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:38"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = f32;
-    #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = f32;
-    #[c2rust::src_loc = "183:1"]
     pub type celt_sig = f32;
-    #[c2rust::src_loc = "184:1"]
     pub type celt_norm = f32;
-    #[c2rust::src_loc = "185:1"]
     pub type celt_ener = f32;
-    #[c2rust::src_loc = "203:9"]
     pub const Q15ONE: f32 = 1.0f32;
-    #[c2rust::src_loc = "208:9"]
     pub const VERY_SMALL: f32 = 1e-30f32;
-    #[c2rust::src_loc = "57:9"]
     pub const CELT_SIG_SCALE: f32 = 32768.0f32;
 }
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:36"]
 pub mod opus_defines_h {
-    #[c2rust::src_loc = "46:9"]
     pub const OPUS_OK: i32 = 0 as i32;
-    #[c2rust::src_loc = "48:9"]
     pub const OPUS_BAD_ARG: i32 = -(1 as i32);
-    #[c2rust::src_loc = "52:9"]
     pub const OPUS_INTERNAL_ERROR: i32 = -(3 as i32);
-    #[c2rust::src_loc = "56:9"]
     pub const OPUS_UNIMPLEMENTED: i32 = -(5 as i32);
-    #[c2rust::src_loc = "154:9"]
     pub const OPUS_GET_LOOKAHEAD_REQUEST: i32 = 4027;
-    #[c2rust::src_loc = "662:9"]
     pub const OPUS_RESET_STATE: i32 = 4028;
-    #[c2rust::src_loc = "157:9"]
     pub const OPUS_GET_FINAL_RANGE_REQUEST: i32 = 4031;
-    #[c2rust::src_loc = "170:9"]
     pub const OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4047;
-    #[c2rust::src_loc = "169:9"]
     pub const OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4046;
-    #[c2rust::src_loc = "158:9"]
     pub const OPUS_GET_PITCH_REQUEST: i32 = 4033;
-    #[c2rust::src_loc = "60:9"]
     pub const OPUS_ALLOC_FAIL: i32 = -(7 as i32);
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cpu_support.h:36"]
 pub mod cpu_support_h {
     #[inline]
-    #[c2rust::src_loc = "65:1"]
     pub unsafe fn opus_select_arch() -> i32 {
         return 0 as i32;
     }
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:37"]
 pub mod stddef_h {
-    #[c2rust::src_loc = "89:11"]
     pub const NULL: i32 = 0 as i32;
 }
 pub use self::arch_h::{
@@ -119,7 +89,6 @@ use crate::varargs::VarArgs;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "75:8"]
 pub struct OpusCustomDecoder {
     pub mode: *const OpusCustomMode,
     pub overlap: i32,
@@ -145,13 +114,9 @@ pub struct OpusCustomDecoder {
     pub preemph_memD: [celt_sig; 2],
     pub _decode_mem: [celt_sig; 1],
 }
-#[c2rust::src_loc = "57:9"]
 pub const PLC_PITCH_LAG_MAX: i32 = 720 as i32;
-#[c2rust::src_loc = "60:9"]
 pub const PLC_PITCH_LAG_MIN: i32 = 100 as i32;
-#[c2rust::src_loc = "70:9"]
 pub const DECODE_BUFFER_SIZE: i32 = 2048 as i32;
-#[c2rust::src_loc = "115:1"]
 pub unsafe fn validate_celt_decoder(st: *mut OpusCustomDecoder) {
     if !((*st).mode
         == opus_custom_mode_create(48000 as i32, 960 as i32, 0 as *mut i32)
@@ -303,14 +268,12 @@ pub unsafe fn validate_celt_decoder(st: *mut OpusCustomDecoder) {
         );
     }
 }
-#[c2rust::src_loc = "144:1"]
 pub unsafe fn celt_decoder_get_size(channels: i32) -> i32 {
     let mode: *const OpusCustomMode =
         opus_custom_mode_create(48000 as i32, 960 as i32, NULL as *mut i32);
     return opus_custom_decoder_get_size(mode, channels);
 }
 #[inline]
-#[c2rust::src_loc = "150:1"]
 unsafe fn opus_custom_decoder_get_size(mode: *const OpusCustomMode, channels: i32) -> i32 {
     let size: i32 = (::core::mem::size_of::<OpusCustomDecoder>() as u64)
         .wrapping_add(
@@ -327,7 +290,6 @@ unsafe fn opus_custom_decoder_get_size(mode: *const OpusCustomMode, channels: i3
         ) as i32;
     return size;
 }
-#[c2rust::src_loc = "176:1"]
 pub unsafe fn celt_decoder_init(
     mut st: *mut OpusCustomDecoder,
     sampling_rate: i32,
@@ -350,7 +312,6 @@ pub unsafe fn celt_decoder_init(
     };
 }
 #[inline]
-#[c2rust::src_loc = "189:1"]
 unsafe fn opus_custom_decoder_init(
     mut st: *mut OpusCustomDecoder,
     mode: *const OpusCustomMode,
@@ -381,7 +342,6 @@ unsafe fn opus_custom_decoder_init(
     opus_custom_decoder_ctl!(st, OPUS_RESET_STATE);
     return OPUS_OK;
 }
-#[c2rust::src_loc = "230:1"]
 unsafe fn deemphasis_stereo_simple(
     in_0: *mut *mut celt_sig,
     pcm: *mut opus_val16,
@@ -413,7 +373,6 @@ unsafe fn deemphasis_stereo_simple(
     *mem.offset(0 as i32 as isize) = m0;
     *mem.offset(1 as i32 as isize) = m1;
 }
-#[c2rust::src_loc = "258:1"]
 unsafe fn deemphasis(
     in_0: *mut *mut celt_sig,
     pcm: *mut opus_val16,
@@ -485,7 +444,6 @@ unsafe fn deemphasis(
         }
     }
 }
-#[c2rust::src_loc = "361:1"]
 unsafe fn celt_synthesis(
     mode: *const OpusCustomMode,
     X: *mut celt_norm,
@@ -670,7 +628,6 @@ unsafe fn celt_synthesis(
         }
     }
 }
-#[c2rust::src_loc = "441:1"]
 unsafe fn tf_decode(
     start: i32,
     end: i32,
@@ -724,7 +681,6 @@ unsafe fn tf_decode(
         i += 1;
     }
 }
-#[c2rust::src_loc = "480:1"]
 unsafe fn celt_plc_pitch_search(decode_mem: *mut *mut celt_sig, C: i32, arch: i32) -> i32 {
     let mut pitch_index: i32 = 0;
     let mut lp_pitch_buf: [opus_val16; 1024] = [0.; 1024];
@@ -748,7 +704,6 @@ unsafe fn celt_plc_pitch_search(decode_mem: *mut *mut celt_sig, C: i32, arch: i3
     pitch_index = PLC_PITCH_LAG_MAX - pitch_index;
     return pitch_index;
 }
-#[c2rust::src_loc = "496:1"]
 unsafe fn celt_decode_lost(mut st: *mut OpusCustomDecoder, N: i32, LM: i32) {
     let mut c: i32 = 0;
     let mut i: i32 = 0;
@@ -1109,7 +1064,6 @@ unsafe fn celt_decode_lost(mut st: *mut OpusCustomDecoder, N: i32, LM: i32) {
     }
     (*st).loss_count = loss_count + 1 as i32;
 }
-#[c2rust::src_loc = "814:1"]
 pub unsafe fn celt_decode_with_ec(
     mut st: *mut OpusCustomDecoder,
     data: *const u8,
@@ -1669,7 +1623,6 @@ pub unsafe fn celt_decode_with_ec(
     }
     return frame_size / (*st).downsample;
 }
-#[c2rust::src_loc = "1247:1"]
 pub unsafe fn opus_custom_decoder_ctl_impl(
     mut st: *mut OpusCustomDecoder,
     request: i32,

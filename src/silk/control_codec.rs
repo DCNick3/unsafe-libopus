@@ -1,21 +1,15 @@
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:35"]
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]
     pub use core::arch::x86::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
     #[cfg(target_arch = "x86_64")]
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/errors.h:35"]
 pub mod errors_h {
-    #[c2rust::src_loc = "52:9"]
     pub const SILK_ENC_PACKET_SIZE_NOT_SUPPORTED: i32 = -(103 as i32);
-    #[c2rust::src_loc = "39:9"]
     pub const SILK_NO_ERROR: i32 = 0 as i32;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:35"]
 pub mod SigProc_FLP_h {
     #[inline]
-    #[c2rust::src_loc = "162:1"]
     pub unsafe fn silk_float2short_array(out: *mut i16, in_0: *const f32, length: i32) {
         let mut k: i32 = 0;
         k = length - 1 as i32;
@@ -31,7 +25,6 @@ pub mod SigProc_FLP_h {
         }
     }
     #[inline]
-    #[c2rust::src_loc = "175:1"]
     pub unsafe fn silk_short2float_array(out: *mut f32, in_0: *const i16, length: i32) {
         let mut k: i32 = 0;
         k = length - 1 as i32;
@@ -43,11 +36,8 @@ pub mod SigProc_FLP_h {
     use super::typedef_h::{silk_int16_MAX, silk_int16_MIN};
     use crate::celt::float_cast::float2int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:35"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "45:9"]
     pub const silk_int16_MIN: i32 = 0x8000 as i32;
-    #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: i32 = 0x7fff as i32;
 }
 use self::errors_h::{SILK_ENC_PACKET_SIZE_NOT_SUPPORTED, SILK_NO_ERROR};
@@ -77,7 +67,6 @@ use crate::silk::tables_pitch_lag::{
 };
 use crate::silk::SigProc_FIX::{silk_max_int, silk_min_int};
 
-#[c2rust::src_loc = "65:1"]
 pub unsafe fn silk_control_encoder(
     mut psEnc: *mut silk_encoder_state_FLP,
     encControl: *mut silk_EncControlStruct,
@@ -120,7 +109,6 @@ pub unsafe fn silk_control_encoder(
     (*psEnc).sCmn.controlled_since_last_payload = 1 as i32;
     return ret;
 }
-#[c2rust::src_loc = "134:1"]
 unsafe fn silk_setup_resamplers(mut psEnc: *mut silk_encoder_state_FLP, fs_kHz: i32) -> i32 {
     let mut ret: i32 = SILK_NO_ERROR;
     if (*psEnc).sCmn.fs_kHz != fs_kHz || (*psEnc).sCmn.prev_API_fs_Hz != (*psEnc).sCmn.API_fs_Hz {
@@ -203,7 +191,6 @@ unsafe fn silk_setup_resamplers(mut psEnc: *mut silk_encoder_state_FLP, fs_kHz: 
     (*psEnc).sCmn.prev_API_fs_Hz = (*psEnc).sCmn.API_fs_Hz;
     return ret;
 }
-#[c2rust::src_loc = "199:1"]
 unsafe fn silk_setup_fs(
     mut psEnc: *mut silk_encoder_state_FLP,
     fs_kHz: i32,
@@ -344,7 +331,6 @@ unsafe fn silk_setup_fs(
     }
     return ret;
 }
-#[c2rust::src_loc = "307:1"]
 unsafe fn silk_setup_complexity(mut psEncC: *mut silk_encoder_state, Complexity: i32) -> i32 {
     let ret: i32 = 0 as i32;
     if !(Complexity >= 0 as i32 && Complexity <= 10 as i32) {
@@ -489,7 +475,6 @@ unsafe fn silk_setup_complexity(mut psEncC: *mut silk_encoder_state, Complexity:
     return ret;
 }
 #[inline]
-#[c2rust::src_loc = "403:1"]
 unsafe fn silk_setup_LBRR(
     mut psEncC: *mut silk_encoder_state,
     encControl: *const silk_EncControlStruct,

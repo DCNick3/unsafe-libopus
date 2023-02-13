@@ -1,20 +1,11 @@
-#[c2rust::src_loc = "38:9"]
 pub const RAND_BUF_MASK: i32 = RAND_BUF_SIZE - 1 as i32;
-#[c2rust::src_loc = "37:9"]
 pub const RAND_BUF_SIZE: i32 = 128 as i32;
-#[c2rust::src_loc = "34:9"]
 pub const V_PITCH_GAIN_START_MIN_Q14: i32 = 11469 as i32;
-#[c2rust::src_loc = "35:9"]
 pub const V_PITCH_GAIN_START_MAX_Q14: i32 = 15565 as i32;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "43:9"]
     pub const silk_int32_MIN: u32 = 0x80000000 as u32;
-    #[c2rust::src_loc = "42:9"]
     pub const silk_int32_MAX: i32 = 0x7fffffff as i32;
-    #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: i32 = 0x7fff as i32;
-    #[c2rust::src_loc = "45:9"]
     pub const silk_int16_MIN: i32 = 0x8000 as i32;
 }
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN, silk_int32_MAX, silk_int32_MIN};
@@ -32,15 +23,10 @@ use crate::silk::LPC_analysis_filter::silk_LPC_analysis_filter;
 use crate::silk::LPC_inv_pred_gain::silk_LPC_inverse_pred_gain_c;
 use crate::silk::SigProc_FIX::{silk_max_16, silk_max_32, silk_max_int, silk_min_32, silk_min_int};
 
-#[c2rust::src_loc = "36:9"]
 pub const NB_ATT: i32 = 2 as i32;
-#[c2rust::src_loc = "37:25"]
 static mut HARM_ATT_Q15: [i16; 2] = [32440 as i32 as i16, 31130 as i32 as i16];
-#[c2rust::src_loc = "38:25"]
 static mut PLC_RAND_ATTENUATE_V_Q15: [i16; 2] = [31130 as i32 as i16, 26214 as i32 as i16];
-#[c2rust::src_loc = "39:25"]
 static mut PLC_RAND_ATTENUATE_UV_Q15: [i16; 2] = [32440 as i32 as i16, 29491 as i32 as i16];
-#[c2rust::src_loc = "54:1"]
 pub unsafe fn silk_PLC_Reset(mut psDec: *mut silk_decoder_state) {
     (*psDec).sPLC.pitchL_Q8 = (((*psDec).frame_length as u32) << 8 as i32 - 1 as i32) as i32;
     (*psDec).sPLC.prevGain_Q16[0 as i32 as usize] =
@@ -50,7 +36,6 @@ pub unsafe fn silk_PLC_Reset(mut psDec: *mut silk_decoder_state) {
     (*psDec).sPLC.subfr_length = 20 as i32;
     (*psDec).sPLC.nb_subfr = 2 as i32;
 }
-#[c2rust::src_loc = "65:1"]
 pub unsafe fn silk_PLC(
     mut psDec: *mut silk_decoder_state,
     psDecCtrl: *mut silk_decoder_control,
@@ -70,7 +55,6 @@ pub unsafe fn silk_PLC(
     };
 }
 #[inline]
-#[c2rust::src_loc = "97:1"]
 unsafe fn silk_PLC_update(
     mut psDec: *mut silk_decoder_state,
     psDecCtrl: *mut silk_decoder_control,
@@ -183,7 +167,6 @@ unsafe fn silk_PLC_update(
     (*psPLC).nb_subfr = (*psDec).nb_subfr;
 }
 #[inline]
-#[c2rust::src_loc = "170:1"]
 unsafe fn silk_PLC_energy(
     energy1: *mut i32,
     shift1: *mut i32,
@@ -241,7 +224,6 @@ unsafe fn silk_PLC_energy(
     );
 }
 #[inline]
-#[c2rust::src_loc = "194:1"]
 unsafe fn silk_PLC_conceal(
     psDec: *mut silk_decoder_state,
     mut psDecCtrl: *mut silk_decoder_control,
@@ -850,7 +832,6 @@ unsafe fn silk_PLC_conceal(
         i += 1;
     }
 }
-#[c2rust::src_loc = "392:1"]
 pub unsafe fn silk_PLC_glue_frames(psDec: *mut silk_decoder_state, frame: *mut i16, length: i32) {
     let mut i: i32 = 0;
     let mut energy_shift: i32 = 0;

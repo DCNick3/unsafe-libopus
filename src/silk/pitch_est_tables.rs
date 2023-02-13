@@ -20,23 +20,18 @@ pub const PE_SHORTLAG_BIAS: f32 = 0.2f32;
 pub const PE_PREVLAG_BIAS: f32 = 0.2f32;
 pub const PE_FLATCONTOUR_BIAS: f32 = 0.05f32;
 
-#[c2rust::src_loc = "35:17"]
 pub static silk_CB_lags_stage2_10_ms: [[i8; 3]; 2] = [[0, 1, 0], [0, 0, 1]];
-#[c2rust::src_loc = "41:17"]
 pub static silk_CB_lags_stage3_10_ms: [[i8; 12]; 2] = [
     [0, 0, 1, -1, 1, -1, 2, -2, 2, -2, 3, -3],
     [0, 1, 0, 1, -1, 2, -1, 2, -2, 3, -2, 3],
 ];
-#[c2rust::src_loc = "47:17"]
 pub static silk_Lag_range_stage3_10_ms: [[i8; 2]; 2] = [[-3, 7], [-2, 7]];
-#[c2rust::src_loc = "53:17"]
 pub static silk_CB_lags_stage2: [[i8; 11]; 4] = [
     [0, 2, -1, -1, -1, 0, 0, 1, 1, 0, 1],
     [0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0],
     [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
     [0, -1, 2, 1, 0, 1, 1, 0, 0, -1, -1],
 ];
-#[c2rust::src_loc = "61:17"]
 pub static silk_CB_lags_stage3: [[i8; 34]; 4] = [
     [
         0, 0, 1, -1, 0, 1, -1, 0, -1, 1, -2, 2, -2, -2, 2, -3, 2, 3, -3, -4, 3, -4, 4, 4, -5, 5,
@@ -55,13 +50,11 @@ pub static silk_CB_lags_stage3: [[i8; 34]; 4] = [
         5, -5, 8, -6, -5, -7, 9,
     ],
 ];
-#[c2rust::src_loc = "69:17"]
 pub static silk_Lag_range_stage3: [[[i8; 2]; 4]; 3] = [
     [[-5, 8], [-1, 6], [-1, 6], [-4, 10]],
     [[-6, 10], [-2, 6], [-1, 6], [-5, 10]],
     [[-9, 12], [-3, 7], [-2, 7], [-7, 13]],
 ];
-#[c2rust::src_loc = "94:17"]
 pub static silk_nb_cbk_searchs_stage3: [i8; 3] = [
     PE_NB_CBKS_STAGE3_MIN as i8,
     PE_NB_CBKS_STAGE3_MID as i8,

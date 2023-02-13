@@ -1,14 +1,10 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:39"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "45:9"]
     pub const silk_int16_MIN: i32 = 0x8000 as i32;
-    #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: i32 = 0x7fff as i32;
 }
 
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 
-#[c2rust::src_loc = "42:1"]
 pub unsafe fn silk_biquad_alt_stride1(
     in_0: *const i16,
     B_Q28: *const i32,
@@ -78,7 +74,6 @@ pub unsafe fn silk_biquad_alt_stride1(
         k += 1;
     }
 }
-#[c2rust::src_loc = "79:1"]
 pub unsafe fn silk_biquad_alt_stride2_c(
     in_0: *const i16,
     B_Q28: *const i32,

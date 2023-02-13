@@ -1,6 +1,4 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "42:9"]
     pub const silk_int32_MAX: i32 = 0x7fffffff as i32;
 }
 pub use self::typedef_h::silk_int32_MAX;
@@ -13,7 +11,6 @@ use crate::silk::tables_LTP::{
 };
 use crate::silk::VQ_WMat_EC::silk_VQ_WMat_EC_c;
 
-#[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_quant_LTP_gains(
     B_Q14: *mut i16,
     cbk_index: *mut i8,

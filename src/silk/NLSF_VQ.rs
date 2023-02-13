@@ -1,6 +1,5 @@
 use crate::celt::celt::celt_fatal;
 
-#[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_NLSF_VQ(
     err_Q24: *mut i32,
     in_Q15: *const i16,

@@ -1,12 +1,9 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "42:9"]
     pub const silk_int32_MAX: i32 = 0x7fffffff as i32;
 }
 
 pub use self::typedef_h::silk_int32_MAX;
 
-#[c2rust::src_loc = "36:1"]
 pub unsafe fn silk_log2lin(inLog_Q7: i32) -> i32 {
     let mut out: i32 = 0;
     let mut frac_Q7: i32 = 0;

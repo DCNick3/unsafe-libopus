@@ -1,24 +1,15 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:32"]
 pub mod SigProc_FLP_h {
     #[inline]
-    #[c2rust::src_loc = "150:1"]
     pub unsafe fn silk_sigmoid(x: f32) -> f32 {
         return (1.0f64 / (1.0f64 + (-x as f64).exp())) as f32;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tuning_parameters.h:33"]
 pub mod tuning_parameters_h {
-    #[c2rust::src_loc = "138:9"]
     pub const LAMBDA_OFFSET: f32 = 1.2f32;
-    #[c2rust::src_loc = "139:9"]
     pub const LAMBDA_SPEECH_ACT: f32 = -0.2f32;
-    #[c2rust::src_loc = "140:9"]
     pub const LAMBDA_DELAYED_DECISIONS: f32 = -0.05f32;
-    #[c2rust::src_loc = "141:9"]
     pub const LAMBDA_INPUT_QUALITY: f32 = -0.1f32;
-    #[c2rust::src_loc = "142:9"]
     pub const LAMBDA_CODING_QUALITY: f32 = -0.2f32;
-    #[c2rust::src_loc = "143:9"]
     pub const LAMBDA_QUANT_OFFSET: f32 = 0.8f32;
 }
 
@@ -35,7 +26,6 @@ use crate::silk::float::structs_FLP::{
 use crate::silk::gain_quant::silk_gains_quant;
 use crate::silk::tables_other::silk_Quantization_Offsets_Q10;
 
-#[c2rust::src_loc = "36:1"]
 pub unsafe fn silk_process_gains_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,
     mut psEncCtrl: *mut silk_encoder_control_FLP,

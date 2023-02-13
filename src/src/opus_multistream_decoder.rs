@@ -1,12 +1,9 @@
 use crate::externs::{free, malloc};
 
-#[c2rust::header_src = "internal:0"]
 pub mod internal {
-    #[c2rust::src_loc = "0:0"]
     pub type __builtin_va_list = [__va_list_tag; 1];
     #[derive(Copy, Clone)]
     #[repr(C)]
-    #[c2rust::src_loc = "0:0"]
     pub struct __va_list_tag {
         pub gp_offset: u32,
         pub fp_offset: u32,
@@ -17,7 +14,6 @@ pub mod internal {
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "73:8"]
 pub struct OpusMSDecoder {
     pub layout: ChannelLayout,
 }
@@ -34,68 +30,41 @@ pub type opus_copy_channel_out_func = Option<
     ) -> (),
 >;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:34"]
 pub mod arch_h {
-    #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = f32;
-    #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = f32;
-    #[c2rust::src_loc = "57:9"]
     pub const CELT_SIG_SCALE: f32 = 32768.0f32;
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:34"]
 pub mod stddef_h {
-    #[c2rust::src_loc = "46:1"]
     pub type size_t = u64;
-    #[c2rust::src_loc = "89:11"]
     pub const NULL: i32 = 0 as i32;
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:37"]
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]
     pub use core::arch::x86::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
     #[cfg(target_arch = "x86_64")]
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stdarg.h:34"]
 pub mod stdarg_h {
-    #[c2rust::src_loc = "14:1"]
     pub type va_list = __builtin_va_list;
     use super::internal::__builtin_va_list;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:32"]
 pub mod opus_defines_h {
-    #[c2rust::src_loc = "139:9"]
     pub const OPUS_GET_BANDWIDTH_REQUEST: i32 = 4009;
-    #[c2rust::src_loc = "156:9"]
     pub const OPUS_GET_SAMPLE_RATE_REQUEST: i32 = 4029;
-    #[c2rust::src_loc = "160:9"]
     pub const OPUS_GET_GAIN_REQUEST: i32 = 4045;
-    #[c2rust::src_loc = "163:9"]
     pub const OPUS_GET_LAST_PACKET_DURATION_REQUEST: i32 = 4039;
-    #[c2rust::src_loc = "170:9"]
     pub const OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4047;
-    #[c2rust::src_loc = "157:9"]
     pub const OPUS_GET_FINAL_RANGE_REQUEST: i32 = 4031;
-    #[c2rust::src_loc = "662:9"]
     pub const OPUS_RESET_STATE: i32 = 4028 as i32;
-    #[c2rust::src_loc = "159:9"]
     pub const OPUS_SET_GAIN_REQUEST: i32 = 4034;
-    #[c2rust::src_loc = "169:9"]
     pub const OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4046;
-    #[c2rust::src_loc = "56:9"]
     pub const OPUS_UNIMPLEMENTED: i32 = -(5 as i32);
-    #[c2rust::src_loc = "54:9"]
     pub const OPUS_INVALID_PACKET: i32 = -(4 as i32);
-    #[c2rust::src_loc = "46:9"]
     pub const OPUS_OK: i32 = 0 as i32;
-    #[c2rust::src_loc = "50:9"]
     pub const OPUS_BUFFER_TOO_SMALL: i32 = -(2 as i32);
-    #[c2rust::src_loc = "48:9"]
     pub const OPUS_BAD_ARG: i32 = -(1 as i32);
-    #[c2rust::src_loc = "52:9"]
     pub const OPUS_INTERNAL_ERROR: i32 = -(3 as i32);
-    #[c2rust::src_loc = "60:9"]
     pub const OPUS_ALLOC_FAIL: i32 = -(7 as i32);
 }
 use self::arch_h::opus_val16;
@@ -125,11 +94,9 @@ use crate::{
 
 pub const OPUS_MULTISTREAM_GET_DECODER_STATE_REQUEST: i32 = 5122;
 
-#[c2rust::src_loc = "43:1"]
 unsafe fn validate_ms_decoder(st: *mut OpusMSDecoder) {
     validate_layout(&mut (*st).layout);
 }
-#[c2rust::src_loc = "53:1"]
 pub unsafe fn opus_multistream_decoder_get_size(nb_streams: i32, nb_coupled_streams: i32) -> i32 {
     let mut coupled_size: i32 = 0;
     let mut mono_size: i32 = 0;
@@ -142,7 +109,6 @@ pub unsafe fn opus_multistream_decoder_get_size(nb_streams: i32, nb_coupled_stre
         + nb_coupled_streams * align(coupled_size)
         + (nb_streams - nb_coupled_streams) * align(mono_size);
 }
-#[c2rust::src_loc = "66:1"]
 pub unsafe fn opus_multistream_decoder_init(
     mut st: *mut OpusMSDecoder,
     Fs: i32,
@@ -199,7 +165,6 @@ pub unsafe fn opus_multistream_decoder_init(
     }
     return OPUS_OK;
 }
-#[c2rust::src_loc = "113:1"]
 pub unsafe fn opus_multistream_decoder_create(
     Fs: i32,
     channels: i32,
@@ -240,7 +205,6 @@ pub unsafe fn opus_multistream_decoder_create(
     }
     return st;
 }
-#[c2rust::src_loc = "149:1"]
 unsafe fn opus_multistream_packet_validate(
     mut data: *const u8,
     mut len: i32,
@@ -283,7 +247,6 @@ unsafe fn opus_multistream_packet_validate(
     }
     return samples;
 }
-#[c2rust::src_loc = "178:1"]
 pub unsafe fn opus_multistream_decode_native(
     st: *mut OpusMSDecoder,
     mut data: *const u8,
@@ -465,7 +428,6 @@ pub unsafe fn opus_multistream_decode_native(
     }
     return frame_size;
 }
-#[c2rust::src_loc = "307:1"]
 unsafe fn opus_copy_channel_out_float(
     dst: *mut core::ffi::c_void,
     dst_stride: i32,
@@ -493,7 +455,6 @@ unsafe fn opus_copy_channel_out_float(
         }
     };
 }
-#[c2rust::src_loc = "338:1"]
 unsafe fn opus_copy_channel_out_short(
     dst: *mut core::ffi::c_void,
     dst_stride: i32,
@@ -521,7 +482,6 @@ unsafe fn opus_copy_channel_out_short(
         }
     };
 }
-#[c2rust::src_loc = "395:1"]
 pub unsafe fn opus_multistream_decode(
     st: *mut OpusMSDecoder,
     data: *const u8,
@@ -553,7 +513,6 @@ pub unsafe fn opus_multistream_decode(
         NULL as *mut core::ffi::c_void,
     );
 }
-#[c2rust::src_loc = "402:1"]
 pub unsafe fn opus_multistream_decode_float(
     st: *mut OpusMSDecoder,
     data: *const u8,
@@ -585,7 +544,6 @@ pub unsafe fn opus_multistream_decode_float(
         NULL as *mut core::ffi::c_void,
     );
 }
-#[c2rust::src_loc = "416:1"]
 pub unsafe fn opus_multistream_decoder_ctl_va_list(
     st: *mut OpusMSDecoder,
     request: i32,
@@ -714,7 +672,6 @@ pub unsafe fn opus_multistream_decoder_ctl_va_list(
         _ => return ret,
     };
 }
-#[c2rust::src_loc = "536:1"]
 pub unsafe fn opus_multistream_decoder_ctl_impl(
     st: *mut OpusMSDecoder,
     request: i32,
@@ -736,7 +693,6 @@ macro_rules! opus_multistream_decoder_ctl {
         opus_multistream_decoder_ctl!($st, $request, $($arg),*)
     };
 }
-#[c2rust::src_loc = "546:1"]
 pub unsafe fn opus_multistream_decoder_destroy(st: *mut OpusMSDecoder) {
     free(st as *mut core::ffi::c_void);
 }

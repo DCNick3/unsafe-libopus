@@ -1,16 +1,10 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "42:9"]
     pub const silk_int32_MAX: i32 = 0x7fffffff as i32;
-    #[c2rust::src_loc = "45:9"]
     pub const silk_int16_MIN: i32 = 0x8000 as i32;
-    #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: i32 = 0x7fff as i32;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/NSQ.h:34"]
 pub mod NSQ_h {
     #[inline]
-    #[c2rust::src_loc = "35:1"]
     pub unsafe fn silk_noise_shape_quantizer_short_prediction_c(
         buf32: *const i32,
         coef16: *const i16,
@@ -102,7 +96,6 @@ use crate::silk::SigProc_FIX::silk_min_int;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "37:9"]
 pub struct NSQ_del_dec_struct {
     pub sLPC_Q14: [i32; 96],
     pub RandState: [i32; 40],
@@ -119,7 +112,6 @@ pub struct NSQ_del_dec_struct {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "52:9"]
 pub struct NSQ_sample_struct {
     pub Q_Q10: i32,
     pub RD_Q10: i32,
@@ -129,9 +121,7 @@ pub struct NSQ_sample_struct {
     pub sLTP_shp_Q14: i32,
     pub LPC_exc_Q14: i32,
 }
-#[c2rust::src_loc = "62:1"]
 pub type NSQ_sample_pair = [NSQ_sample_struct; 2];
-#[c2rust::src_loc = "117:1"]
 pub unsafe fn silk_NSQ_del_dec_c(
     psEncC: *const silk_encoder_state,
     mut NSQ: *mut silk_nsq_state,
@@ -545,7 +535,6 @@ pub unsafe fn silk_NSQ_del_dec_c(
     );
 }
 #[inline]
-#[c2rust::src_loc = "318:1"]
 unsafe fn silk_noise_shape_quantizer_del_dec(
     mut NSQ: *mut silk_nsq_state,
     psDelDec: *mut NSQ_del_dec_struct,
@@ -1046,7 +1035,6 @@ unsafe fn silk_noise_shape_quantizer_del_dec(
     }
 }
 #[inline]
-#[c2rust::src_loc = "651:1"]
 unsafe fn silk_nsq_del_dec_scale_states(
     psEncC: *const silk_encoder_state,
     mut NSQ: *mut silk_nsq_state,

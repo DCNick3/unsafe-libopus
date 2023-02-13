@@ -1,17 +1,11 @@
 use crate::celt::modes::OpusCustomMode;
 
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:36"]
 pub mod stddef_h {
-    #[c2rust::src_loc = "46:1"]
     pub type size_t = u64;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:37"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = f32;
-    #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = f32;
-    #[c2rust::src_loc = "71:1"]
     pub unsafe fn celt_fatal(str: *const i8, file: *const i8, line: i32) -> ! {
         let str = std::ffi::CStr::from_ptr(str);
         let file = std::ffi::CStr::from_ptr(file);
@@ -29,13 +23,9 @@ pub use self::stddef_h::size_t;
 
 use crate::externs::memmove;
 
-#[c2rust::src_loc = "165:28"]
 pub static trim_icdf: [u8; 11] = [126, 124, 119, 109, 87, 41, 19, 9, 4, 2, 0];
-#[c2rust::src_loc = "167:28"]
 pub static spread_icdf: [u8; 4] = [25, 23, 2, 0];
-#[c2rust::src_loc = "169:28"]
 pub static tapset_icdf: [u8; 3] = [2, 1, 0];
-#[c2rust::src_loc = "263:19"]
 pub static tf_select_table: [[i8; 8]; 4] = [
     [0, -1, 0, -1, 0, -1, 0, -1],
     [0, -1, 0, -2, 1, 0, 1, -1],
@@ -58,7 +48,6 @@ pub const CELT_GET_AND_CLEAR_ERROR_REQUEST: i32 = 10007;
 pub const COMBFILTER_MAXPERIOD: i32 = 1024 as i32;
 pub const COMBFILTER_MINPERIOD: i32 = 16 as i32;
 
-#[c2rust::src_loc = "62:1"]
 pub unsafe fn resampling_factor(rate: i32) -> i32 {
     let mut ret: i32 = 0;
     match rate {
@@ -90,7 +79,6 @@ pub unsafe fn resampling_factor(rate: i32) -> i32 {
     }
     return ret;
 }
-#[c2rust::src_loc = "160:1"]
 unsafe fn comb_filter_const_c(
     y: *mut opus_val32,
     x: *mut opus_val32,
@@ -123,7 +111,6 @@ unsafe fn comb_filter_const_c(
         i += 1;
     }
 }
-#[c2rust::src_loc = "190:1"]
 pub unsafe fn comb_filter(
     y: *mut opus_val32,
     x: *mut opus_val32,
@@ -234,7 +221,6 @@ pub unsafe fn comb_filter(
         g12,
     );
 }
-#[c2rust::src_loc = "272:1"]
 pub unsafe fn init_caps(m: *const OpusCustomMode, cap: *mut i32, LM: i32, C: i32) {
     let mut i: i32 = 0;
     i = 0 as i32;
@@ -253,7 +239,6 @@ pub unsafe fn init_caps(m: *const OpusCustomMode, cap: *mut i32, LM: i32, C: i32
         i += 1;
     }
 }
-#[c2rust::src_loc = "285:1"]
 pub unsafe fn opus_strerror(error: i32) -> *const i8 {
     static mut error_strings: [*const i8; 8] = [
         b"success\0" as *const u8 as *const i8,
@@ -271,7 +256,6 @@ pub unsafe fn opus_strerror(error: i32) -> *const i8 {
         return error_strings[-error as usize];
     };
 }
-#[c2rust::src_loc = "303:1"]
 pub unsafe fn opus_get_version_string() -> *const i8 {
     return b"libopus 1.3.1\0" as *const u8 as *const i8;
 }

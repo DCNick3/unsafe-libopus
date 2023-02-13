@@ -1,4 +1,3 @@
-#[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_k2a_FLP(A: *mut f32, rc: *const f32, order: i32) {
     let mut k: i32 = 0;
     let mut n: i32 = 0;

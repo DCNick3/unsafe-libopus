@@ -1,37 +1,29 @@
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:38"]
 pub mod stddef_h {
-    #[c2rust::src_loc = "46:1"]
     pub type size_t = u64;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:38"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = f32;
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "65:9"]
 pub struct kiss_fft_cpx {
     pub r: f32,
     pub i: f32,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "70:9"]
 pub struct kiss_twiddle_cpx {
     pub r: f32,
     pub i: f32,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "81:16"]
 pub struct arch_fft_state {
     pub is_supported: i32,
     pub priv_0: *mut core::ffi::c_void,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "86:16"]
 pub struct kiss_fft_state {
     pub nfft: i32,
     pub scale: opus_val16,
@@ -45,7 +37,6 @@ pub use self::arch_h::opus_val16;
 pub use self::stddef_h::size_t;
 use crate::celt::celt::celt_fatal;
 
-#[c2rust::src_loc = "48:1"]
 unsafe fn kf_bfly2(mut Fout: *mut kiss_fft_cpx, m: i32, N: i32) {
     let mut Fout2: *mut kiss_fft_cpx = 0 as *mut kiss_fft_cpx;
     let mut i: i32 = 0;
@@ -89,7 +80,6 @@ unsafe fn kf_bfly2(mut Fout: *mut kiss_fft_cpx, m: i32, N: i32) {
         i += 1;
     }
 }
-#[c2rust::src_loc = "104:1"]
 unsafe fn kf_bfly4(
     mut Fout: *mut kiss_fft_cpx,
     fstride: size_t,
@@ -186,7 +176,6 @@ unsafe fn kf_bfly4(
         }
     };
 }
-#[c2rust::src_loc = "176:1"]
 unsafe fn kf_bfly3(
     mut Fout: *mut kiss_fft_cpx,
     fstride: size_t,
@@ -252,7 +241,6 @@ unsafe fn kf_bfly3(
         i += 1;
     }
 }
-#[c2rust::src_loc = "235:1"]
 unsafe fn kf_bfly5(
     mut Fout: *mut kiss_fft_cpx,
     fstride: size_t,
@@ -370,7 +358,6 @@ unsafe fn kf_bfly5(
         i += 1;
     }
 }
-#[c2rust::src_loc = "521:1"]
 pub unsafe fn opus_fft_impl(st: *const kiss_fft_state, fout: *mut kiss_fft_cpx) {
     let mut m2: i32 = 0;
     let mut m: i32 = 0;
@@ -443,7 +430,6 @@ pub unsafe fn opus_fft_impl(st: *const kiss_fft_state, fout: *mut kiss_fft_cpx) 
         i -= 1;
     }
 }
-#[c2rust::src_loc = "569:1"]
 pub unsafe fn opus_fft_c(
     st: *const kiss_fft_state,
     fin: *const kiss_fft_cpx,
@@ -469,7 +455,6 @@ pub unsafe fn opus_fft_c(
     }
     opus_fft_impl(st, fout);
 }
-#[c2rust::src_loc = "592:1"]
 pub unsafe fn opus_ifft_c(
     st: *const kiss_fft_state,
     fin: *const kiss_fft_cpx,

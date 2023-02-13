@@ -1,5 +1,4 @@
 #[inline]
-#[c2rust::src_loc = "398:1"]
 pub unsafe fn silk_ROR32(a32: i32, rot: i32) -> i32 {
     let x: u32 = a32 as u32;
     let r: u32 = rot as u32;
@@ -14,7 +13,6 @@ pub unsafe fn silk_ROR32(a32: i32, rot: i32) -> i32 {
 }
 
 #[inline]
-#[c2rust::src_loc = "568:1"]
 pub unsafe fn silk_max_16(a: i16, b: i16) -> i16 {
     return (if a as i32 > b as i32 {
         a as i32
@@ -24,23 +22,19 @@ pub unsafe fn silk_max_16(a: i16, b: i16) -> i16 {
 }
 
 #[inline]
-#[c2rust::src_loc = "554:1"]
 pub unsafe fn silk_min_32(a: i32, b: i32) -> i32 {
     return if a < b { a } else { b };
 }
 #[inline]
-#[c2rust::src_loc = "572:1"]
 pub unsafe fn silk_max_32(a: i32, b: i32) -> i32 {
     return if a > b { a } else { b };
 }
 
 #[inline]
-#[c2rust::src_loc = "546:1"]
 pub unsafe fn silk_min_int(a: i32, b: i32) -> i32 {
     return if a < b { a } else { b };
 }
 #[inline]
-#[c2rust::src_loc = "564:1"]
 pub unsafe fn silk_max_int(a: i32, b: i32) -> i32 {
     return if a > b { a } else { b };
 }

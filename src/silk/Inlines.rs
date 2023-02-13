@@ -2,14 +2,12 @@ use crate::silk::macros::silk_CLZ32;
 use crate::silk::SigProc_FIX::silk_ROR32;
 
 #[inline]
-#[c2rust::src_loc = "56:1"]
 pub unsafe fn silk_CLZ_FRAC(in_0: i32, lz: *mut i32, frac_Q7: *mut i32) {
     let lzeros: i32 = silk_CLZ32(in_0);
     *lz = lzeros;
     *frac_Q7 = silk_ROR32(in_0, 24 as i32 - lzeros) & 0x7f as i32;
 }
 #[inline]
-#[c2rust::src_loc = "71:1"]
 pub unsafe fn silk_SQRT_APPROX(x: i32) -> i32 {
     let mut y: i32 = 0;
     let mut lz: i32 = 0;
@@ -30,7 +28,6 @@ pub unsafe fn silk_SQRT_APPROX(x: i32) -> i32 {
     return y;
 }
 #[inline]
-#[c2rust::src_loc = "97:1"]
 pub unsafe fn silk_DIV32_varQ(a32: i32, b32: i32, Qres: i32) -> i32 {
     let mut a_headrm: i32 = 0;
     let mut b_headrm: i32 = 0;
@@ -80,7 +77,6 @@ pub unsafe fn silk_DIV32_varQ(a32: i32, b32: i32, Qres: i32) -> i32 {
     };
 }
 #[inline]
-#[c2rust::src_loc = "143:1"]
 pub unsafe fn silk_INVERSE32_varQ(b32: i32, Qres: i32) -> i32 {
     let mut b_headrm: i32 = 0;
     let mut lshift: i32 = 0;

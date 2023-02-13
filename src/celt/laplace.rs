@@ -3,19 +3,14 @@ use crate::celt::celt::celt_fatal;
 use crate::celt::entdec::{ec_dec, ec_dec_update, ec_decode_bin};
 use crate::celt::entenc::{ec_enc, ec_encode_bin};
 
-#[c2rust::src_loc = "37:9"]
 pub const LAPLACE_LOG_MINP: i32 = 0 as i32;
-#[c2rust::src_loc = "38:9"]
 pub const LAPLACE_MINP: i32 = (1 as i32) << LAPLACE_LOG_MINP;
-#[c2rust::src_loc = "41:9"]
 pub const LAPLACE_NMIN: i32 = 16 as i32;
-#[c2rust::src_loc = "44:1"]
 unsafe fn ec_laplace_get_freq1(fs0: u32, decay: i32) -> u32 {
     let mut ft: u32 = 0;
     ft = ((32768 as i32 - LAPLACE_MINP * (2 as i32 * LAPLACE_NMIN)) as u32).wrapping_sub(fs0);
     return ft.wrapping_mul((16384 as i32 - decay) as u32) >> 15 as i32;
 }
-#[c2rust::src_loc = "51:1"]
 pub unsafe fn ec_laplace_encode(enc: *mut ec_enc, value: *mut i32, mut fs: u32, decay: i32) {
     let mut fl: u32 = 0;
     let mut val: i32 = *value;
@@ -76,7 +71,6 @@ pub unsafe fn ec_laplace_encode(enc: *mut ec_enc, value: *mut i32, mut fs: u32, 
     }
     ec_encode_bin(enc, fl, fl.wrapping_add(fs), 15 as i32 as u32);
 }
-#[c2rust::src_loc = "94:1"]
 pub unsafe fn ec_laplace_decode(dec: *mut ec_dec, mut fs: u32, decay: i32) -> i32 {
     let mut val: i32 = 0 as i32;
     let mut fl: u32 = 0;

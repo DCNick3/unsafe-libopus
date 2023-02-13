@@ -1,6 +1,4 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:35"]
 pub mod arch_h {
-    #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = f32;
 }
 pub use self::arch_h::opus_val32;
@@ -8,7 +6,6 @@ use crate::celt::celt::celt_fatal;
 use crate::celt::entdec::{ec_dec, ec_dec_uint};
 use crate::celt::entenc::{ec_enc, ec_enc_uint};
 
-#[c2rust::src_loc = "213:26"]
 static mut CELT_PVQ_U_DATA: [u32; 1272] = [
     1 as i32 as u32,
     0 as i32 as u32,
@@ -1283,9 +1280,7 @@ static mut CELT_PVQ_U_DATA: [u32; 1272] = [
     2653649025 as u32,
     1409933619 as i32 as u32,
 ];
-#[c2rust::src_loc = "421:33"]
 static mut CELT_PVQ_U_ROW: [*const u32; 15] = [0 as *const u32; 15];
-#[c2rust::src_loc = "440:1"]
 unsafe fn icwrs(mut _n: i32, mut _y: *const i32) -> u32 {
     let mut i: u32 = 0;
     let mut j: i32 = 0;
@@ -1329,7 +1324,6 @@ unsafe fn icwrs(mut _n: i32, mut _y: *const i32) -> u32 {
     }
     return i;
 }
-#[c2rust::src_loc = "458:1"]
 pub unsafe fn encode_pulses(mut _y: *const i32, mut _n: i32, mut _k: i32, mut _enc: *mut ec_enc) {
     if !(_k > 0 as i32) {
         celt_fatal(
@@ -1359,7 +1353,6 @@ pub unsafe fn encode_pulses(mut _y: *const i32, mut _n: i32, mut _k: i32, mut _e
         ),
     );
 }
-#[c2rust::src_loc = "463:1"]
 unsafe fn cwrsi(mut _n: i32, mut _k: i32, mut _i: u32, mut _y: *mut i32) -> opus_val32 {
     let mut p: u32 = 0;
     let mut s: i32 = 0;
@@ -1460,7 +1453,6 @@ unsafe fn cwrsi(mut _n: i32, mut _k: i32, mut _i: u32, mut _y: *mut i32) -> opus
     yy = yy + val as opus_val32 * val as opus_val32;
     return yy;
 }
-#[c2rust::src_loc = "539:1"]
 pub unsafe fn decode_pulses(
     mut _y: *mut i32,
     mut _n: i32,

@@ -1,12 +1,7 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "45:9"]
     pub const silk_int16_MIN: i32 = 0x8000 as i32;
-    #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: i32 = 0x7fff as i32;
-    #[c2rust::src_loc = "42:9"]
     pub const silk_int32_MAX: i32 = 0x7fffffff as i32;
-    #[c2rust::src_loc = "43:9"]
     pub const silk_int32_MIN: u32 = 0x80000000 as u32;
 }
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN, silk_int32_MAX, silk_int32_MIN};
@@ -20,7 +15,6 @@ use crate::silk::tables_other::silk_Quantization_Offsets_Q10;
 use crate::silk::Inlines::{silk_DIV32_varQ, silk_INVERSE32_varQ};
 use crate::silk::LPC_analysis_filter::silk_LPC_analysis_filter;
 
-#[c2rust::src_loc = "38:1"]
 pub unsafe fn silk_decode_core(
     mut psDec: *mut silk_decoder_state,
     mut psDecCtrl: *mut silk_decoder_control,

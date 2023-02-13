@@ -5,8 +5,6 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_assignments)]
 #![allow(unused_mut)]
-#![feature(register_tool)]
-#![register_tool(c2rust)]
 
 use libc::{atoi, fclose, feof, fopen, fprintf, fread, fwrite, FILE};
 use libc_stdhandle::stderr;
@@ -17,7 +15,6 @@ use unsafe_libopus::{
     opus_repacketizer_init, opus_repacketizer_out, opus_repacketizer_out_range, opus_strerror,
     OpusRepacketizer,
 };
-#[c2rust::src_loc = "39:1"]
 pub unsafe fn usage(mut argv0: *mut i8) {
     fprintf(
         stderr(),
@@ -25,21 +22,18 @@ pub unsafe fn usage(mut argv0: *mut i8) {
         argv0,
     );
 }
-#[c2rust::src_loc = "44:1"]
 unsafe fn int_to_char(mut i: u32, mut ch: *mut u8) {
     *ch.offset(0 as i32 as isize) = (i >> 24 as i32) as u8;
     *ch.offset(1 as i32 as isize) = (i >> 16 as i32 & 0xff as i32 as u32) as u8;
     *ch.offset(2 as i32 as isize) = (i >> 8 as i32 & 0xff as i32 as u32) as u8;
     *ch.offset(3 as i32 as isize) = (i & 0xff as i32 as u32) as u8;
 }
-#[c2rust::src_loc = "52:1"]
 unsafe fn char_to_int(mut ch: *mut u8) -> u32 {
     (*ch.offset(0 as i32 as isize) as u32) << 24 as i32
         | (*ch.offset(1 as i32 as isize) as u32) << 16 as i32
         | (*ch.offset(2 as i32 as isize) as u32) << 8 as i32
         | *ch.offset(3 as i32 as isize) as u32
 }
-#[c2rust::src_loc = "58:1"]
 unsafe fn main_0(mut argc: i32, mut argv: *mut *mut i8) -> i32 {
     let mut i: i32 = 0;
     let mut eof: i32 = 0 as i32;

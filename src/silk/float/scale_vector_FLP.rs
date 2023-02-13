@@ -1,4 +1,3 @@
-#[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_scale_vector_FLP(data1: *mut f32, gain: f32, dataSize: i32) {
     let mut i: i32 = 0;
     let mut dataSize4: i32 = 0;

@@ -1,5 +1,4 @@
 use crate::silk::define::LTP_ORDER;
-#[c2rust::src_loc = "34:1"]
 pub unsafe fn silk_LTP_analysis_filter_FLP(
     LTP_res: *mut f32,
     x: *const f32,

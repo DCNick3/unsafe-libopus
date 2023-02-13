@@ -5,18 +5,13 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_assignments)]
 #![allow(unused_mut)]
-#![feature(register_tool)]
-#![register_tool(c2rust)]
 
 use libc::fprintf;
 use libc_stdhandle::stderr;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:37"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = f32;
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:37"]
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]
     pub use core::arch::x86::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
@@ -24,14 +19,10 @@ pub mod xmmintrin_h {
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
 mod simple_matrix;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/tests/test_opus_common.h:39"]
 pub mod test_opus_common_h {
-    #[c2rust::src_loc = "56:20"]
     pub static mut Rz: u32 = 0;
-    #[c2rust::src_loc = "56:24"]
     pub static mut Rw: u32 = 0;
     #[inline]
-    #[c2rust::src_loc = "57:1"]
     pub unsafe fn fast_rand() -> u32 {
         Rz = (36969 as i32 as u32)
             .wrapping_mul(Rz & 65535 as i32 as u32)
@@ -41,10 +32,8 @@ pub mod test_opus_common_h {
             .wrapping_add(Rw >> 16 as i32);
         (Rz << 16 as i32).wrapping_add(Rw)
     }
-    #[c2rust::src_loc = "63:20"]
     pub static mut iseed: u32 = 0;
     #[inline]
-    #[c2rust::src_loc = "66:1"]
     pub unsafe fn _test_failed(mut file: *const i8, mut line: i32) -> ! {
         fprintf(
             stderr(),
@@ -92,7 +81,6 @@ use unsafe_libopus::{
     OpusProjectionEncoder,
 };
 
-#[c2rust::src_loc = "55:1"]
 pub unsafe fn assert_is_equal(
     mut a: *const opus_val16,
     mut b: *const i16,
@@ -113,7 +101,6 @@ pub unsafe fn assert_is_equal(
     }
     0 as i32
 }
-#[c2rust::src_loc = "72:1"]
 pub unsafe fn assert_is_equal_short(
     mut a: *const i16,
     mut b: *const i16,
@@ -130,7 +117,6 @@ pub unsafe fn assert_is_equal_short(
     }
     0 as i32
 }
-#[c2rust::src_loc = "189:1"]
 pub unsafe fn test_creation_arguments(channels: i32, mapping_family: i32) {
     let mut streams: i32 = 0;
     let mut coupled_streams: i32 = 0;
@@ -211,7 +197,6 @@ pub unsafe fn test_creation_arguments(channels: i32, mapping_family: i32) {
         );
     }
 }
-#[c2rust::src_loc = "249:1"]
 pub unsafe fn generate_music(mut buf: *mut libc::c_short, mut len: i32, mut channels: i32) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -288,7 +273,6 @@ pub unsafe fn generate_music(mut buf: *mut libc::c_short, mut len: i32, mut chan
     free(c as *mut core::ffi::c_void);
     free(d as *mut core::ffi::c_void);
 }
-#[c2rust::src_loc = "285:1"]
 pub unsafe fn test_encode_decode(mut bitrate: i32, mut channels: i32, mapping_family: i32) {
     let Fs: i32 = 48000 as i32;
     let application: i32 = 2049 as i32;
@@ -33184,7 +33168,6 @@ pub unsafe fn test_encode_decode(mut bitrate: i32, mut channels: i32, mapping_fa
         371 as i32,
     );
 }
-#[c2rust::src_loc = "374:1"]
 unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
     let mut i: u32 = 0;
     // not longer tested, because it wants to link to internal opus functions, which is a no-no

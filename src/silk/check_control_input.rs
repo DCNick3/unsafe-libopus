@@ -1,22 +1,12 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/errors.h:32"]
 pub mod errors_h {
-    #[c2rust::src_loc = "39:9"]
     pub const SILK_NO_ERROR: i32 = 0 as i32;
-    #[c2rust::src_loc = "61:9"]
     pub const SILK_ENC_INVALID_COMPLEXITY_SETTING: i32 = -(106 as i32);
-    #[c2rust::src_loc = "76:9"]
     pub const SILK_ENC_INVALID_NUMBER_OF_CHANNELS_ERROR: i32 = -(111 as i32);
-    #[c2rust::src_loc = "64:9"]
     pub const SILK_ENC_INVALID_INBAND_FEC_SETTING: i32 = -(107 as i32);
-    #[c2rust::src_loc = "70:9"]
     pub const SILK_ENC_INVALID_CBR_SETTING: i32 = -(109 as i32);
-    #[c2rust::src_loc = "67:9"]
     pub const SILK_ENC_INVALID_DTX_SETTING: i32 = -(108 as i32);
-    #[c2rust::src_loc = "58:9"]
     pub const SILK_ENC_INVALID_LOSS_RATE: i32 = -(105 as i32);
-    #[c2rust::src_loc = "52:9"]
     pub const SILK_ENC_PACKET_SIZE_NOT_SUPPORTED: i32 = -(103 as i32);
-    #[c2rust::src_loc = "49:9"]
     pub const SILK_ENC_FS_NOT_SUPPORTED: i32 = -(102 as i32);
 }
 
@@ -29,7 +19,6 @@ use crate::celt::celt::celt_fatal;
 use crate::silk::define::ENCODER_NUM_CHANNELS;
 use crate::silk::enc_API::silk_EncControlStruct;
 
-#[c2rust::src_loc = "37:1"]
 pub unsafe fn check_control_input(encControl: *mut silk_EncControlStruct) -> i32 {
     if encControl.is_null() {
         celt_fatal(

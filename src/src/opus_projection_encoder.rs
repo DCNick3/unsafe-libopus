@@ -6,13 +6,10 @@ use crate::src::opus_multistream_encoder::{
 use crate::src::opus_private::align;
 use crate::{opus_multistream_encoder_get_size, opus_multistream_encoder_init, OpusMSEncoder};
 
-#[c2rust::header_src = "internal:0"]
 pub mod internal {
-    #[c2rust::src_loc = "0:0"]
     pub type __builtin_va_list = [__va_list_tag; 1];
     #[derive(Copy, Clone)]
     #[repr(C)]
-    #[c2rust::src_loc = "0:0"]
     pub struct __va_list_tag {
         pub gp_offset: u32,
         pub fp_offset: u32,
@@ -20,44 +17,27 @@ pub mod internal {
         pub reg_save_area: *mut core::ffi::c_void,
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = f32;
-    #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = f32;
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:32"]
 pub mod stddef_h {
-    #[c2rust::src_loc = "46:1"]
     pub type size_t = u64;
-    #[c2rust::src_loc = "89:11"]
     pub const NULL: i32 = 0 as i32;
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stdarg.h:32"]
 pub mod stdarg_h {
-    #[c2rust::src_loc = "14:1"]
     pub type va_list = __builtin_va_list;
     use super::internal::__builtin_va_list;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:32"]
 pub mod opus_defines_h {
-    #[c2rust::src_loc = "60:9"]
     pub const OPUS_ALLOC_FAIL: i32 = -(7 as i32);
-    #[c2rust::src_loc = "56:9"]
     pub const OPUS_UNIMPLEMENTED: i32 = -(5 as i32);
-    #[c2rust::src_loc = "48:9"]
     pub const OPUS_BAD_ARG: i32 = -(1 as i32);
-    #[c2rust::src_loc = "46:9"]
     pub const OPUS_OK: i32 = 0 as i32;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_projection.h:36"]
 pub mod opus_projection_h {
-    #[c2rust::src_loc = "48:9"]
     pub const OPUS_PROJECTION_GET_DEMIXING_MATRIX_GAIN_REQUEST: i32 = 6001;
-    #[c2rust::src_loc = "49:9"]
     pub const OPUS_PROJECTION_GET_DEMIXING_MATRIX_SIZE_REQUEST: i32 = 6003;
-    #[c2rust::src_loc = "50:9"]
     pub const OPUS_PROJECTION_GET_DEMIXING_MATRIX_REQUEST: i32 = 6005;
 }
 pub use self::arch_h::{opus_val16, opus_val32};
@@ -83,12 +63,10 @@ use crate::varargs::VarArgs;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "41:8"]
 pub struct OpusProjectionEncoder {
     pub mixing_matrix_size_in_bytes: i32,
     pub demixing_matrix_size_in_bytes: i32,
 }
-#[c2rust::src_loc = "49:1"]
 unsafe fn opus_projection_copy_channel_in_float(
     dst: *mut opus_val16,
     dst_stride: i32,
@@ -108,7 +86,6 @@ unsafe fn opus_projection_copy_channel_in_float(
         frame_size,
     );
 }
-#[c2rust::src_loc = "64:1"]
 unsafe fn opus_projection_copy_channel_in_short(
     dst: *mut opus_val16,
     dst_stride: i32,
@@ -128,7 +105,6 @@ unsafe fn opus_projection_copy_channel_in_short(
         frame_size,
     );
 }
-#[c2rust::src_loc = "78:1"]
 unsafe fn get_order_plus_one_from_channels(channels: i32, order_plus_one: *mut i32) -> i32 {
     let mut order_plus_one_: i32 = 0;
     let mut acn_channels: i32 = 0;
@@ -147,7 +123,6 @@ unsafe fn get_order_plus_one_from_channels(channels: i32, order_plus_one: *mut i
     }
     return OPUS_OK;
 }
-#[c2rust::src_loc = "101:1"]
 unsafe fn get_streams_from_channels(
     channels: i32,
     mapping_family: i32,
@@ -169,20 +144,17 @@ unsafe fn get_streams_from_channels(
     }
     return OPUS_BAD_ARG;
 }
-#[c2rust::src_loc = "118:1"]
 unsafe fn get_mixing_matrix(st: *mut OpusProjectionEncoder) -> *mut MappingMatrix {
     return (st as *mut i8)
         .offset(align(::core::mem::size_of::<OpusProjectionEncoder>() as u64 as i32) as isize)
         as *mut core::ffi::c_void as *mut MappingMatrix;
 }
-#[c2rust::src_loc = "125:1"]
 unsafe fn get_enc_demixing_matrix(st: *mut OpusProjectionEncoder) -> *mut MappingMatrix {
     return (st as *mut i8).offset(align(
         (::core::mem::size_of::<OpusProjectionEncoder>() as u64)
             .wrapping_add((*st).mixing_matrix_size_in_bytes as u64) as i32,
     ) as isize) as *mut core::ffi::c_void as *mut MappingMatrix;
 }
-#[c2rust::src_loc = "133:1"]
 unsafe fn get_multistream_encoder(st: *mut OpusProjectionEncoder) -> *mut OpusMSEncoder {
     return (st as *mut i8).offset(align(
         (::core::mem::size_of::<OpusProjectionEncoder>() as u64)
@@ -190,7 +162,6 @@ unsafe fn get_multistream_encoder(st: *mut OpusProjectionEncoder) -> *mut OpusMS
             .wrapping_add((*st).demixing_matrix_size_in_bytes as u64) as i32,
     ) as isize) as *mut core::ffi::c_void as *mut OpusMSEncoder;
 }
-#[c2rust::src_loc = "142:1"]
 pub unsafe fn opus_projection_ambisonics_encoder_get_size(
     channels: i32,
     mapping_family: i32,
@@ -251,7 +222,6 @@ pub unsafe fn opus_projection_ambisonics_encoder_get_size(
         + demixing_matrix_size
         + encoder_size;
 }
-#[c2rust::src_loc = "202:1"]
 pub unsafe fn opus_projection_ambisonics_encoder_init(
     mut st: *mut OpusProjectionEncoder,
     Fs: i32,
@@ -381,7 +351,6 @@ pub unsafe fn opus_projection_ambisonics_encoder_init(
     );
     return ret;
 }
-#[c2rust::src_loc = "308:1"]
 pub unsafe fn opus_projection_ambisonics_encoder_create(
     Fs: i32,
     channels: i32,
@@ -426,7 +395,6 @@ pub unsafe fn opus_projection_ambisonics_encoder_create(
     }
     return st;
 }
-#[c2rust::src_loc = "344:1"]
 pub unsafe fn opus_projection_encode(
     st: *mut OpusProjectionEncoder,
     pcm: *const i16,
@@ -469,7 +437,6 @@ pub unsafe fn opus_projection_encode(
         get_mixing_matrix(st) as *mut core::ffi::c_void,
     );
 }
-#[c2rust::src_loc = "364:1"]
 pub unsafe fn opus_projection_encode_float(
     st: *mut OpusProjectionEncoder,
     pcm: *const f32,
@@ -512,11 +479,9 @@ pub unsafe fn opus_projection_encode_float(
         get_mixing_matrix(st) as *mut core::ffi::c_void,
     );
 }
-#[c2rust::src_loc = "375:1"]
 pub unsafe fn opus_projection_encoder_destroy(st: *mut OpusProjectionEncoder) {
     free(st as *mut core::ffi::c_void);
 }
-#[c2rust::src_loc = "380:1"]
 pub unsafe fn opus_projection_encoder_ctl_impl(
     st: *mut OpusProjectionEncoder,
     request: i32,

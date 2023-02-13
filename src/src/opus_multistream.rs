@@ -1,13 +1,11 @@
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "47:16"]
 pub struct ChannelLayout {
     pub nb_channels: i32,
     pub nb_streams: i32,
     pub nb_coupled_streams: i32,
     pub mapping: [u8; 256],
 }
-#[c2rust::src_loc = "41:1"]
 pub unsafe fn validate_layout(layout: *const ChannelLayout) -> i32 {
     let mut i: i32 = 0;
     let mut max_channel: i32 = 0;
@@ -26,7 +24,6 @@ pub unsafe fn validate_layout(layout: *const ChannelLayout) -> i32 {
     }
     return 1 as i32;
 }
-#[c2rust::src_loc = "57:1"]
 pub unsafe fn get_left_channel(layout: *const ChannelLayout, stream_id: i32, prev: i32) -> i32 {
     let mut i: i32 = 0;
     i = if prev < 0 as i32 {
@@ -42,7 +39,6 @@ pub unsafe fn get_left_channel(layout: *const ChannelLayout, stream_id: i32, pre
     }
     return -(1 as i32);
 }
-#[c2rust::src_loc = "69:1"]
 pub unsafe fn get_right_channel(layout: *const ChannelLayout, stream_id: i32, prev: i32) -> i32 {
     let mut i: i32 = 0;
     i = if prev < 0 as i32 {
@@ -58,7 +54,6 @@ pub unsafe fn get_right_channel(layout: *const ChannelLayout, stream_id: i32, pr
     }
     return -(1 as i32);
 }
-#[c2rust::src_loc = "81:1"]
 pub unsafe fn get_mono_channel(layout: *const ChannelLayout, stream_id: i32, prev: i32) -> i32 {
     let mut i: i32 = 0;
     i = if prev < 0 as i32 {

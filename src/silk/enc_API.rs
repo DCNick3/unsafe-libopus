@@ -1,6 +1,5 @@
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "46:9"]
 pub struct silk_EncControlStruct {
     pub nChannelsAPI: i32,
     pub nChannelsInternal: i32,
@@ -28,11 +27,8 @@ pub struct silk_EncControlStruct {
     pub signalType: i32,
     pub offset: i32,
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/errors.h:31"]
 pub mod errors_h {
-    #[c2rust::src_loc = "46:9"]
     pub const SILK_ENC_INPUT_INVALID_NO_OF_SAMPLES: i32 = -(101 as i32);
-    #[c2rust::src_loc = "39:9"]
     pub const SILK_NO_ERROR: i32 = 0 as i32;
 }
 use self::errors_h::{SILK_ENC_INPUT_INVALID_NO_OF_SAMPLES, SILK_NO_ERROR};
@@ -60,13 +56,11 @@ use crate::silk::structs::{silk_LP_state, silk_nsq_state};
 use crate::silk::tables_other::{silk_LBRR_flags_iCDF_ptr, silk_Quantization_Offsets_Q10};
 use crate::silk::HP_variable_cutoff::silk_HP_variable_cutoff;
 
-#[c2rust::src_loc = "56:1"]
 pub unsafe fn silk_Get_Encoder_Size(encSizeBytes: *mut i32) -> i32 {
     let ret: i32 = SILK_NO_ERROR;
     *encSizeBytes = ::core::mem::size_of::<silk_encoder>() as u64 as i32;
     return ret;
 }
-#[c2rust::src_loc = "70:1"]
 pub unsafe fn silk_InitEncoder(
     encState: *mut core::ffi::c_void,
     arch: i32,
@@ -112,7 +106,6 @@ pub unsafe fn silk_InitEncoder(
     }
     return ret;
 }
-#[c2rust::src_loc = "103:1"]
 unsafe fn silk_QueryEncoder(
     encState: *const core::ffi::c_void,
     mut encStatus: *mut silk_EncControlStruct,
@@ -151,7 +144,6 @@ unsafe fn silk_QueryEncoder(
             && (*state_Fxx.offset(0 as i32 as isize)).sCmn.sLP.mode == 0 as i32) as i32;
     return ret;
 }
-#[c2rust::src_loc = "140:1"]
 pub unsafe fn silk_Encode(
     encState: *mut core::ffi::c_void,
     mut encControl: *mut silk_EncControlStruct,

@@ -1,36 +1,23 @@
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:37"]
 pub mod stddef_h {
-    #[c2rust::src_loc = "46:1"]
-    pub type size_t = u64;
+        pub type size_t = u64;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:39"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
-    pub type opus_val16 = f32;
-    #[c2rust::src_loc = "180:1"]
-    pub type opus_val32 = f32;
+        pub type opus_val16 = f32;
+        pub type opus_val32 = f32;
 }
-#[c2rust::header_src = "/usr/include/stdio.h:37"]
 pub mod stdio_h {
     use super::FILE_h::FILE;
     {
-        #[c2rust::src_loc = "145:14"]
-        pub static mut stderr: *mut FILE;
-        #[c2rust::src_loc = "350:12"]
-        pub fn fprintf(_: *mut FILE, _: *const i8, _: ...) -> i32;
+                pub static mut stderr: *mut FILE;
+                pub fn fprintf(_: *mut FILE, _: *const i8, _: ...) -> i32;
     }
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:38"]
 pub mod mathcalls_h {
     {
-        #[c2rust::src_loc = "95:17"]
-        pub fn exp(_: f64) -> f64;
-        #[c2rust::src_loc = "104:17"]
-        pub fn log(_: f64) -> f64;
-        #[c2rust::src_loc = "143:13"]
-        pub fn sqrt(_: f64) -> f64;
-        #[c2rust::src_loc = "162:14"]
-        pub fn fabs(_: f64) -> f64;
+                pub fn exp(_: f64) -> f64;
+                pub fn log(_: f64) -> f64;
+                pub fn sqrt(_: f64) -> f64;
+                pub fn fabs(_: f64) -> f64;
     }
 }
 use self::arch_h::{opus_val16, opus_val32};
@@ -42,9 +29,7 @@ use self::stdio_h::{fprintf, stderr};
 pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
 
 pub use self::FILE_h::FILE;
-#[c2rust::src_loc = "48:5"]
 pub static mut ret: i32 = 0 as i32;
-#[c2rust::src_loc = "50:1"]
 pub unsafe fn testdiv() {
     let mut i: i32 = 0;
     i = 1 as i32;
@@ -66,7 +51,6 @@ pub unsafe fn testdiv() {
         i += 1;
     }
 }
-#[c2rust::src_loc = "71:1"]
 pub unsafe fn testsqrt() {
     let mut i: i32 = 0;
     i = 1 as i32;
@@ -92,7 +76,6 @@ pub unsafe fn testsqrt() {
         i += 1;
     }
 }
-#[c2rust::src_loc = "89:1"]
 pub unsafe fn testbitexactcos() {
     let mut i: i32 = 0;
     let mut min_d: i32 = 0;
@@ -132,7 +115,6 @@ pub unsafe fn testbitexactcos() {
         ret = 1 as i32;
     }
 }
-#[c2rust::src_loc = "113:1"]
 pub unsafe fn testbitexactlog2tan() {
     let mut i: i32 = 0;
     let mut fail: i32 = 0;
@@ -180,7 +162,6 @@ pub unsafe fn testbitexactlog2tan() {
         ret = 1 as i32;
     }
 }
-#[c2rust::src_loc = "143:1"]
 pub unsafe fn testlog2() {
     let mut x: f32 = 0.;
     x = 0.001f64 as f32;
@@ -203,7 +184,6 @@ pub unsafe fn testlog2() {
         x = (x as f64 + x as f64 / 8.0f64) as f32;
     }
 }
-#[c2rust::src_loc = "157:1"]
 pub unsafe fn testexp2() {
     let mut x: f32 = 0.;
     x = -11.0f64 as f32;
@@ -229,7 +209,6 @@ pub unsafe fn testexp2() {
         x = (x as f64 + 0.0007f64) as f32;
     }
 }
-#[c2rust::src_loc = "171:1"]
 pub unsafe fn testexp2log2() {
     let mut x: f32 = 0.;
     x = -11.0f64 as f32;
@@ -254,7 +233,6 @@ pub unsafe fn testexp2log2() {
         x = (x as f64 + 0.0007f64) as f32;
     }
 }
-#[c2rust::src_loc = "253:1"]
 unsafe fn main_0() -> i32 {
     testbitexactcos();
     testbitexactlog2tan();

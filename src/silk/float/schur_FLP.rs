@@ -1,5 +1,4 @@
 use crate::celt::celt::celt_fatal;
-#[c2rust::src_loc = "34:1"]
 pub unsafe fn silk_schur_FLP(refl_coef: *mut f32, auto_corr: *const f32, order: i32) -> f32 {
     let mut k: i32 = 0;
     let mut n: i32 = 0;

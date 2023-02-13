@@ -1,7 +1,6 @@
 use crate::externs::{free, malloc};
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "39:8"]
 pub struct OpusRepacketizer {
     pub(crate) toc: u8,
     pub(crate) nb_frames: i32,
@@ -10,22 +9,14 @@ pub struct OpusRepacketizer {
     pub(crate) framesize: i32,
 }
 
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:33"]
 pub mod stddef_h {
-    #[c2rust::src_loc = "46:1"]
     pub type size_t = u64;
-    #[c2rust::src_loc = "89:11"]
     pub const NULL: i32 = 0 as i32;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:32"]
 pub mod opus_defines_h {
-    #[c2rust::src_loc = "48:9"]
     pub const OPUS_BAD_ARG: i32 = -(1 as i32);
-    #[c2rust::src_loc = "50:9"]
     pub const OPUS_BUFFER_TOO_SMALL: i32 = -(2 as i32);
-    #[c2rust::src_loc = "54:9"]
     pub const OPUS_INVALID_PACKET: i32 = -(4 as i32);
-    #[c2rust::src_loc = "46:9"]
     pub const OPUS_OK: i32 = 0 as i32;
 }
 pub use self::opus_defines_h::{OPUS_BAD_ARG, OPUS_BUFFER_TOO_SMALL, OPUS_INVALID_PACKET, OPUS_OK};
@@ -36,16 +27,13 @@ use crate::externs::memmove;
 use crate::src::opus::{encode_size, opus_packet_parse_impl};
 use crate::{opus_packet_get_nb_frames, opus_packet_get_samples_per_frame};
 
-#[c2rust::src_loc = "37:1"]
 pub unsafe fn opus_repacketizer_get_size() -> i32 {
     return ::core::mem::size_of::<OpusRepacketizer>() as u64 as i32;
 }
-#[c2rust::src_loc = "42:1"]
 pub unsafe fn opus_repacketizer_init(mut rp: *mut OpusRepacketizer) -> *mut OpusRepacketizer {
     (*rp).nb_frames = 0 as i32;
     return rp;
 }
-#[c2rust::src_loc = "48:1"]
 pub unsafe fn opus_repacketizer_create() -> *mut OpusRepacketizer {
     let mut rp: *mut OpusRepacketizer = 0 as *mut OpusRepacketizer;
     rp = malloc(opus_repacketizer_get_size() as size_t) as *mut OpusRepacketizer;
@@ -54,11 +42,9 @@ pub unsafe fn opus_repacketizer_create() -> *mut OpusRepacketizer {
     }
     return opus_repacketizer_init(rp);
 }
-#[c2rust::src_loc = "56:1"]
 pub unsafe fn opus_repacketizer_destroy(rp: *mut OpusRepacketizer) {
     free(rp as *mut core::ffi::c_void);
 }
-#[c2rust::src_loc = "61:1"]
 unsafe fn opus_repacketizer_cat_impl(
     mut rp: *mut OpusRepacketizer,
     data: *const u8,
@@ -101,15 +87,12 @@ unsafe fn opus_repacketizer_cat_impl(
     (*rp).nb_frames += curr_nb_frames;
     return OPUS_OK;
 }
-#[c2rust::src_loc = "92:1"]
 pub unsafe fn opus_repacketizer_cat(rp: *mut OpusRepacketizer, data: *const u8, len: i32) -> i32 {
     return opus_repacketizer_cat_impl(rp, data, len, 0 as i32);
 }
-#[c2rust::src_loc = "97:1"]
 pub unsafe fn opus_repacketizer_get_nb_frames(rp: *mut OpusRepacketizer) -> i32 {
     return (*rp).nb_frames;
 }
-#[c2rust::src_loc = "102:1"]
 pub unsafe fn opus_repacketizer_out_range_impl(
     rp: *mut OpusRepacketizer,
     begin: i32,
@@ -277,7 +260,6 @@ pub unsafe fn opus_repacketizer_out_range_impl(
     }
     return tot_size;
 }
-#[c2rust::src_loc = "230:1"]
 pub unsafe fn opus_repacketizer_out_range(
     rp: *mut OpusRepacketizer,
     begin: i32,
@@ -287,7 +269,6 @@ pub unsafe fn opus_repacketizer_out_range(
 ) -> i32 {
     return opus_repacketizer_out_range_impl(rp, begin, end, data, maxlen, 0 as i32, 0 as i32);
 }
-#[c2rust::src_loc = "235:1"]
 pub unsafe fn opus_repacketizer_out(rp: *mut OpusRepacketizer, data: *mut u8, maxlen: i32) -> i32 {
     return opus_repacketizer_out_range_impl(
         rp,
@@ -299,7 +280,6 @@ pub unsafe fn opus_repacketizer_out(rp: *mut OpusRepacketizer, data: *mut u8, ma
         0 as i32,
     );
 }
-#[c2rust::src_loc = "240:1"]
 pub unsafe fn opus_packet_pad(data: *mut u8, len: i32, new_len: i32) -> i32 {
     let mut rp: OpusRepacketizer = OpusRepacketizer {
         toc: 0,
@@ -356,7 +336,6 @@ pub unsafe fn opus_packet_pad(data: *mut u8, len: i32, new_len: i32) -> i32 {
         return ret;
     };
 }
-#[c2rust::src_loc = "263:1"]
 pub unsafe fn opus_packet_unpad(data: *mut u8, len: i32) -> i32 {
     let mut rp: OpusRepacketizer = OpusRepacketizer {
         toc: 0,
@@ -392,7 +371,6 @@ pub unsafe fn opus_packet_unpad(data: *mut u8, len: i32) -> i32 {
     }
     return ret;
 }
-#[c2rust::src_loc = "278:1"]
 pub unsafe fn opus_multistream_packet_pad(
     mut data: *mut u8,
     mut len: i32,
@@ -440,7 +418,6 @@ pub unsafe fn opus_multistream_packet_pad(
     }
     return opus_packet_pad(data, len, len + amount);
 }
-#[c2rust::src_loc = "309:1"]
 pub unsafe fn opus_multistream_packet_unpad(
     mut data: *mut u8,
     mut len: i32,

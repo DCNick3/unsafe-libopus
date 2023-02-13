@@ -1,12 +1,7 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "45:9"]
     pub const silk_int16_MIN: i32 = 0x8000 as i32;
-    #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: i32 = 0x7fff as i32;
-    #[c2rust::src_loc = "42:9"]
     pub const silk_int32_MAX: i32 = 0x7fffffff as i32;
-    #[c2rust::src_loc = "43:9"]
     pub const silk_int32_MIN: u32 = 0x80000000 as u32;
 }
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN, silk_int32_MAX, silk_int32_MIN};
@@ -17,7 +12,6 @@ use crate::silk::structs::{silk_CNG_struct, silk_decoder_control, silk_decoder_s
 use crate::silk::Inlines::silk_SQRT_APPROX;
 use crate::silk::NLSF2A::silk_NLSF2A;
 #[inline]
-#[c2rust::src_loc = "36:1"]
 unsafe fn silk_CNG_exc(exc_Q14: *mut i32, exc_buf_Q14: *mut i32, length: i32, rand_seed: *mut i32) {
     let mut seed: i32 = 0;
     let mut i: i32 = 0;
@@ -39,7 +33,6 @@ unsafe fn silk_CNG_exc(exc_Q14: *mut i32, exc_buf_Q14: *mut i32, length: i32, ra
     }
     *rand_seed = seed;
 }
-#[c2rust::src_loc = "62:1"]
 pub unsafe fn silk_CNG_Reset(mut psDec: *mut silk_decoder_state) {
     let mut i: i32 = 0;
     let mut NLSF_step_Q15: i32 = 0;
@@ -55,7 +48,6 @@ pub unsafe fn silk_CNG_Reset(mut psDec: *mut silk_decoder_state) {
     (*psDec).sCNG.CNG_smth_Gain_Q16 = 0 as i32;
     (*psDec).sCNG.rand_seed = 3176576 as i32;
 }
-#[c2rust::src_loc = "79:1"]
 pub unsafe fn silk_CNG(
     psDec: *mut silk_decoder_state,
     psDecCtrl: *mut silk_decoder_control,

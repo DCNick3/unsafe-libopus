@@ -5,26 +5,19 @@ use crate::celt::laplace::{ec_laplace_decode, ec_laplace_encode};
 use crate::celt::modes::OpusCustomMode;
 use crate::celt::rate::MAX_FINE_BITS;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = f32;
-    #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = f32;
-    #[c2rust::src_loc = "185:1"]
     pub type celt_ener = f32;
 }
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/stack_alloc.h:39"]
 pub mod stack_alloc_h {
-    #[c2rust::src_loc = "99:9"]
     pub const ALLOC_NONE: i32 = 1 as i32;
 }
 pub use self::arch_h::{celt_ener, opus_val16, opus_val32};
 pub use self::stack_alloc_h::ALLOC_NONE;
 
 use crate::externs::memcpy;
-#[c2rust::src_loc = "53:18"]
 pub static eMeans: [opus_val16; 25] = [
     6.437500f32,
     6.250000f32,
@@ -52,23 +45,19 @@ pub static eMeans: [opus_val16; 25] = [
     3.750000f32,
     3.750000f32,
 ];
-#[c2rust::src_loc = "67:25"]
 static mut pred_coef: [opus_val16; 4] = [
     (29440 as i32 as f64 / 32768.0f64) as opus_val16,
     (26112 as i32 as f64 / 32768.0f64) as opus_val16,
     (21248 as i32 as f64 / 32768.0f64) as opus_val16,
     (16384 as i32 as f64 / 32768.0f64) as opus_val16,
 ];
-#[c2rust::src_loc = "68:25"]
 static mut beta_coef: [opus_val16; 4] = [
     (30147 as i32 as f64 / 32768.0f64) as opus_val16,
     (22282 as i32 as f64 / 32768.0f64) as opus_val16,
     (12124 as i32 as f64 / 32768.0f64) as opus_val16,
     (6554 as i32 as f64 / 32768.0f64) as opus_val16,
 ];
-#[c2rust::src_loc = "69:25"]
 static mut beta_intra: opus_val16 = (4915 as i32 as f64 / 32768.0f64) as opus_val16;
-#[c2rust::src_loc = "77:28"]
 static mut e_prob_model: [[[u8; 42]; 2]; 4] = [
     [
         [
@@ -431,9 +420,7 @@ static mut e_prob_model: [[[u8; 42]; 2]; 4] = [
         ],
     ],
 ];
-#[c2rust::src_loc = "140:28"]
 static mut small_energy_icdf: [u8; 3] = [2 as i32 as u8, 1 as i32 as u8, 0 as i32 as u8];
-#[c2rust::src_loc = "142:1"]
 unsafe fn loss_distortion(
     eBands: *const opus_val16,
     oldEBands: *mut opus_val16,
@@ -465,7 +452,6 @@ unsafe fn loss_distortion(
         dist
     };
 }
-#[c2rust::src_loc = "156:1"]
 unsafe fn quant_coarse_energy_impl(
     m: *const OpusCustomMode,
     start: i32,
@@ -589,7 +575,6 @@ unsafe fn quant_coarse_energy_impl(
     }
     return if lfe != 0 { 0 as i32 } else { badness };
 }
-#[c2rust::src_loc = "261:1"]
 pub unsafe fn quant_coarse_energy(
     m: *const OpusCustomMode,
     start: i32,
@@ -812,7 +797,6 @@ pub unsafe fn quant_coarse_energy(
             pred_coef[LM as usize] * pred_coef[LM as usize] * *delayedIntra + new_distortion;
     };
 }
-#[c2rust::src_loc = "361:1"]
 pub unsafe fn quant_fine_energy(
     m: *const OpusCustomMode,
     start: i32,
@@ -860,7 +844,6 @@ pub unsafe fn quant_fine_energy(
         i += 1;
     }
 }
-#[c2rust::src_loc = "398:1"]
 pub unsafe fn quant_energy_finalise(
     m: *const OpusCustomMode,
     start: i32,
@@ -913,7 +896,6 @@ pub unsafe fn quant_energy_finalise(
         prio += 1;
     }
 }
-#[c2rust::src_loc = "428:1"]
 pub unsafe fn unquant_coarse_energy(
     m: *const OpusCustomMode,
     start: i32,
@@ -982,7 +964,6 @@ pub unsafe fn unquant_coarse_energy(
         i += 1;
     }
 }
-#[c2rust::src_loc = "493:1"]
 pub unsafe fn unquant_fine_energy(
     m: *const OpusCustomMode,
     start: i32,
@@ -1017,7 +998,6 @@ pub unsafe fn unquant_fine_energy(
         i += 1;
     }
 }
-#[c2rust::src_loc = "516:1"]
 pub unsafe fn unquant_energy_finalise(
     m: *const OpusCustomMode,
     start: i32,
@@ -1062,7 +1042,6 @@ pub unsafe fn unquant_energy_finalise(
         prio += 1;
     }
 }
-#[c2rust::src_loc = "544:1"]
 pub unsafe fn amp2Log2(
     m: *const OpusCustomMode,
     effEnd: i32,

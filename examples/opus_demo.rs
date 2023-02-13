@@ -5,8 +5,6 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_assignments)]
 #![allow(unused_mut)]
-#![feature(register_tool)]
-#![register_tool(c2rust)]
 
 use libc::{
     abs, atoi, atol, fclose, fopen, fprintf, fread, fseek, ftell, fwrite, printf, rand, FILE,
@@ -23,7 +21,6 @@ use unsafe_libopus::{
     OpusEncoder,
 };
 
-#[c2rust::src_loc = "45:1"]
 pub unsafe fn print_usage(mut argv: *mut *mut i8) {
     fprintf(
         stderr(),
@@ -106,21 +103,18 @@ pub unsafe fn print_usage(mut argv: *mut *mut i8) {
             as *const u8 as *const i8,
     );
 }
-#[c2rust::src_loc = "68:1"]
 unsafe fn int_to_char(mut i: u32, mut ch: *mut u8) {
     *ch.offset(0 as i32 as isize) = (i >> 24 as i32) as u8;
     *ch.offset(1 as i32 as isize) = (i >> 16 as i32 & 0xff as i32 as u32) as u8;
     *ch.offset(2 as i32 as isize) = (i >> 8 as i32 & 0xff as i32 as u32) as u8;
     *ch.offset(3 as i32 as isize) = (i & 0xff as i32 as u32) as u8;
 }
-#[c2rust::src_loc = "76:1"]
 unsafe fn char_to_int(mut ch: *mut u8) -> u32 {
     (*ch.offset(0 as i32 as isize) as u32) << 24 as i32
         | (*ch.offset(1 as i32 as isize) as u32) << 16 as i32
         | (*ch.offset(2 as i32 as isize) as u32) << 8 as i32
         | *ch.offset(3 as i32 as isize) as u32
 }
-#[c2rust::src_loc = "84:18"]
 static mut silk8_test: [[i32; 4]; 8] = [
     [1000 as i32, 1101 as i32, 960 as i32 * 3 as i32, 1 as i32],
     [1000 as i32, 1101 as i32, 960 as i32 * 2 as i32, 1 as i32],
@@ -131,7 +125,6 @@ static mut silk8_test: [[i32; 4]; 8] = [
     [1000 as i32, 1101 as i32, 960 as i32, 2 as i32],
     [1000 as i32, 1101 as i32, 480 as i32, 2 as i32],
 ];
-#[c2rust::src_loc = "95:18"]
 static mut silk12_test: [[i32; 4]; 8] = [
     [1000 as i32, 1102 as i32, 960 as i32 * 3 as i32, 1 as i32],
     [1000 as i32, 1102 as i32, 960 as i32 * 2 as i32, 1 as i32],
@@ -142,7 +135,6 @@ static mut silk12_test: [[i32; 4]; 8] = [
     [1000 as i32, 1102 as i32, 960 as i32, 2 as i32],
     [1000 as i32, 1102 as i32, 480 as i32, 2 as i32],
 ];
-#[c2rust::src_loc = "106:18"]
 static mut silk16_test: [[i32; 4]; 8] = [
     [1000 as i32, 1103 as i32, 960 as i32 * 3 as i32, 1 as i32],
     [1000 as i32, 1103 as i32, 960 as i32 * 2 as i32, 1 as i32],
@@ -153,21 +145,18 @@ static mut silk16_test: [[i32; 4]; 8] = [
     [1000 as i32, 1103 as i32, 960 as i32, 2 as i32],
     [1000 as i32, 1103 as i32, 480 as i32, 2 as i32],
 ];
-#[c2rust::src_loc = "117:18"]
 static mut hybrid24_test: [[i32; 4]; 4] = [
     [1000 as i32, 1104 as i32, 960 as i32, 1 as i32],
     [1000 as i32, 1104 as i32, 480 as i32, 1 as i32],
     [1000 as i32, 1104 as i32, 960 as i32, 2 as i32],
     [1000 as i32, 1104 as i32, 480 as i32, 2 as i32],
 ];
-#[c2rust::src_loc = "124:18"]
 static mut hybrid48_test: [[i32; 4]; 4] = [
     [1000 as i32, 1105 as i32, 960 as i32, 1 as i32],
     [1000 as i32, 1105 as i32, 480 as i32, 1 as i32],
     [1000 as i32, 1105 as i32, 960 as i32, 2 as i32],
     [1000 as i32, 1105 as i32, 480 as i32, 2 as i32],
 ];
-#[c2rust::src_loc = "131:18"]
 static mut celt_test: [[i32; 4]; 32] = [
     [1002 as i32, 1105 as i32, 960 as i32, 1 as i32],
     [1002 as i32, 1104 as i32, 960 as i32, 1 as i32],
@@ -202,14 +191,12 @@ static mut celt_test: [[i32; 4]; 32] = [
     [1002 as i32, 1103 as i32, 120 as i32, 2 as i32],
     [1002 as i32, 1101 as i32, 120 as i32, 2 as i32],
 ];
-#[c2rust::src_loc = "174:18"]
 static mut celt_hq_test: [[i32; 4]; 4] = [
     [1002 as i32, 1105 as i32, 960 as i32, 2 as i32],
     [1002 as i32, 1105 as i32, 480 as i32, 2 as i32],
     [1002 as i32, 1105 as i32, 240 as i32, 2 as i32],
     [1002 as i32, 1105 as i32, 120 as i32, 2 as i32],
 ];
-#[c2rust::src_loc = "210:1"]
 unsafe fn main_0(mut argc: i32, mut argv: *mut *mut i8) -> i32 {
     let mut current_block: u64;
     let mut err: i32 = 0;

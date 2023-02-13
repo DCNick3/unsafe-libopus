@@ -4,7 +4,6 @@ use crate::silk::SigProc_FIX::silk_max_int;
 
 use crate::silk::Inlines::{silk_DIV32_varQ, silk_SQRT_APPROX};
 
-#[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_stereo_find_predictor(
     ratio_Q14: *mut i32,
     x: *const i16,

@@ -9,7 +9,6 @@ use unsafe_libopus::{
     opus_encode, opus_encoder_create, opus_encoder_ctl, opus_encoder_destroy, OpusEncoder,
 };
 
-#[c2rust::src_loc = "44:1"]
 unsafe fn celt_ec_internal_error() -> i32 {
     let mut enc: *mut OpusMSEncoder = std::ptr::null_mut::<OpusMSEncoder>();
     let mut err: i32 = 0;
@@ -232,7 +231,6 @@ unsafe fn celt_ec_internal_error() -> i32 {
     opus_multistream_encoder_destroy(enc);
     0 as i32
 }
-#[c2rust::src_loc = "291:1"]
 unsafe fn mscbr_encode_fail10() -> i32 {
     let mut enc: *mut OpusMSEncoder = std::ptr::null_mut::<OpusMSEncoder>();
     let mut err: i32 = 0;
@@ -458,7 +456,6 @@ unsafe fn mscbr_encode_fail10() -> i32 {
     opus_multistream_encoder_destroy(enc);
     0 as i32
 }
-#[c2rust::src_loc = "344:1"]
 unsafe fn mscbr_encode_fail() -> i32 {
     let mut enc: *mut OpusMSEncoder = std::ptr::null_mut::<OpusMSEncoder>();
     let mut err: i32 = 0;
@@ -639,7 +636,6 @@ unsafe fn mscbr_encode_fail() -> i32 {
     opus_multistream_encoder_destroy(enc);
     0 as i32
 }
-#[c2rust::src_loc = "394:1"]
 unsafe fn surround_analysis_uninit() -> i32 {
     let mut enc: *mut OpusMSEncoder = std::ptr::null_mut::<OpusMSEncoder>();
     let mut err: i32 = 0;
@@ -1135,7 +1131,6 @@ unsafe fn surround_analysis_uninit() -> i32 {
     opus_multistream_encoder_destroy(enc);
     0 as i32
 }
-#[c2rust::src_loc = "894:1"]
 unsafe fn ec_enc_shrink_assert() -> i32 {
     let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
     let mut err: i32 = 0;
@@ -1419,7 +1414,6 @@ unsafe fn ec_enc_shrink_assert() -> i32 {
     opus_encoder_destroy(enc);
     0 as i32
 }
-#[c2rust::src_loc = "957:1"]
 unsafe fn ec_enc_shrink_assert2() -> i32 {
     let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
     let mut err: i32 = 0;
@@ -1504,7 +1498,6 @@ unsafe fn ec_enc_shrink_assert2() -> i32 {
     opus_encoder_destroy(enc);
     0 as i32
 }
-#[c2rust::src_loc = "989:1"]
 unsafe fn silk_gain_assert() -> i32 {
     let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
     let mut err: i32 = 0;
@@ -1580,7 +1573,6 @@ unsafe fn silk_gain_assert() -> i32 {
     opus_encoder_destroy(enc);
     0 as i32
 }
-#[c2rust::src_loc = "1025:1"]
 pub unsafe fn regression_test() {
     fprintf(
         stderr(),

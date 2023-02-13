@@ -6,9 +6,7 @@ use crate::silk::define::{
     MAX_DELTA_GAIN_QUANT, MIN_DELTA_GAIN_QUANT, MIN_QGAIN_DB, N_LEVELS_QGAIN,
 };
 
-#[c2rust::src_loc = "34:9"]
 pub const OFFSET: i32 = MIN_QGAIN_DB * 128 as i32 / 6 as i32 + 16 as i32 * 128 as i32;
-#[c2rust::src_loc = "39:1"]
 pub unsafe fn silk_gains_quant(
     ind: *mut i8,
     gain_Q16: *mut i32,
@@ -109,7 +107,6 @@ pub unsafe fn silk_gains_quant(
         k += 1;
     }
 }
-#[c2rust::src_loc = "94:1"]
 pub unsafe fn silk_gains_dequant(
     gain_Q16: *mut i32,
     ind: *const i8,
@@ -163,7 +160,6 @@ pub unsafe fn silk_gains_dequant(
         k += 1;
     }
 }
-#[c2rust::src_loc = "128:1"]
 pub unsafe fn silk_gains_ID(ind: *const i8, nb_subfr: i32) -> i32 {
     let mut k: i32 = 0;
     let mut gainsID: i32 = 0;

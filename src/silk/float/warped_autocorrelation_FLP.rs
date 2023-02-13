@@ -1,5 +1,4 @@
 use crate::celt::celt::celt_fatal;
-#[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_warped_autocorrelation_FLP(
     corr: *mut f32,
     input: *const f32,

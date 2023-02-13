@@ -1,6 +1,4 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "42:9"]
     pub const silk_int32_MAX: i32 = 0x7fffffff as i32;
 }
 pub use self::typedef_h::silk_int32_MAX;
@@ -17,7 +15,6 @@ use crate::silk::tables_pulses_per_block::{
 };
 
 #[inline]
-#[c2rust::src_loc = "39:1"]
 unsafe fn combine_and_check(
     pulses_comb: *mut i32,
     pulses_in: *const i32,
@@ -38,7 +35,6 @@ unsafe fn combine_and_check(
     }
     return 0 as i32;
 }
-#[c2rust::src_loc = "60:1"]
 pub unsafe fn silk_encode_pulses(
     psRangeEnc: *mut ec_enc,
     signalType: i32,

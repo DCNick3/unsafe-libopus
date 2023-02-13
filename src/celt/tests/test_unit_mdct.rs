@@ -1,33 +1,25 @@
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:32"]
 pub mod stddef_h {
-    #[c2rust::src_loc = "46:1"]
-    pub type size_t = u64;
+        pub type size_t = u64;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:34"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
-    pub type opus_val16 = f32;
+        pub type opus_val16 = f32;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/kiss_fft.h:34"]
 pub mod kiss_fft_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
-    #[c2rust::src_loc = "70:9"]
-    pub struct kiss_twiddle_cpx {
+        pub struct kiss_twiddle_cpx {
         pub r: f32,
         pub i: f32,
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
-    #[c2rust::src_loc = "81:16"]
-    pub struct arch_fft_state {
+        pub struct arch_fft_state {
         pub is_supported: i32,
         pub priv_0: *mut core::ffi::c_void,
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
-    #[c2rust::src_loc = "86:16"]
-    pub struct kiss_fft_state {
+        pub struct kiss_fft_state {
         pub nfft: i32,
         pub scale: opus_val16,
         pub shift: i32,
@@ -38,12 +30,10 @@ pub mod kiss_fft_h {
     }
     use super::arch_h::opus_val16;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/mdct.h:34"]
 pub mod mdct_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
-    #[c2rust::src_loc = "49:9"]
-    pub struct mdct_lookup {
+        pub struct mdct_lookup {
         pub n: i32,
         pub maxshift: i32,
         pub kfft: [*const kiss_fft_state; 4],
@@ -52,8 +42,7 @@ pub mod mdct_h {
     use super::arch_h::opus_val16;
     use super::kiss_fft_h::kiss_fft_state;
     {
-        #[c2rust::src_loc = "72:1"]
-        pub fn clt_mdct_backward_c(
+                pub fn clt_mdct_backward_c(
             l: *const mdct_lookup,
             in_0: *mut f32,
             out: *mut f32,
@@ -63,8 +52,7 @@ pub mod mdct_h {
             stride: i32,
             arch: i32,
         );
-        #[c2rust::src_loc = "65:1"]
-        pub fn clt_mdct_forward_c(
+                pub fn clt_mdct_forward_c(
             l: *const mdct_lookup,
             in_0: *mut f32,
             out: *mut f32,
@@ -76,12 +64,10 @@ pub mod mdct_h {
         );
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/modes.h:38"]
 pub mod modes_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
-    #[c2rust::src_loc = "52:8"]
-    pub struct OpusCustomMode {
+        pub struct OpusCustomMode {
         pub Fs: i32,
         pub overlap: i32,
         pub nbEBands: i32,
@@ -100,8 +86,7 @@ pub mod modes_h {
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
-    #[c2rust::src_loc = "42:9"]
-    pub struct PulseCache {
+        pub struct PulseCache {
         pub size: i32,
         pub index: *const i16,
         pub bits: *const u8,
@@ -110,27 +95,20 @@ pub mod modes_h {
     use super::arch_h::opus_val16;
     use crate::celt::mdct::mdct_lookup;
 }
-#[c2rust::header_src = "/usr/include/stdio.h:32"]
 pub mod stdio_h {
     {
-        #[c2rust::src_loc = "356:12"]
-        pub fn printf(_: *const i8, _: ...) -> i32;
+                pub fn printf(_: *const i8, _: ...) -> i32;
     }
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:34"]
 pub mod mathcalls_h {
     {
-        #[c2rust::src_loc = "62:17"]
-        pub fn cos(_: f64) -> f64;
-        #[c2rust::src_loc = "107:17"]
-        pub fn log10(_: f64) -> f64;
+                pub fn cos(_: f64) -> f64;
+                pub fn log10(_: f64) -> f64;
     }
 }
-#[c2rust::header_src = "/usr/include/stdlib.h:34"]
 pub mod stdlib_h {
     #[inline]
-    #[c2rust::src_loc = "361:1"]
-    pub unsafe fn atoi(mut __nptr: *const i8) -> i32 {
+        pub unsafe fn atoi(mut __nptr: *const i8) -> i32 {
         return strtol(
             __nptr,
             0 as *mut core::ffi::c_void as *mut *mut i8,
@@ -138,34 +116,26 @@ pub mod stdlib_h {
         ) as i32;
     }
     {
-        #[c2rust::src_loc = "454:1"]
-        pub fn rand() -> i32;
-        #[c2rust::src_loc = "553:14"]
-        pub fn malloc(_: u64) -> *mut core::ffi::c_void;
-        #[c2rust::src_loc = "568:13"]
-        pub fn free(_: *mut core::ffi::c_void);
-        #[c2rust::src_loc = "177:17"]
-        pub fn strtol(
+                pub fn rand() -> i32;
+                pub fn malloc(_: u64) -> *mut core::ffi::c_void;
+                pub fn free(_: *mut core::ffi::c_void);
+                pub fn strtol(
             _: *const i8,
             _: *mut *mut i8,
             _: i32,
         ) -> i64;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cpu_support.h:34"]
 pub mod cpu_support_h {
     #[inline]
-    #[c2rust::src_loc = "65:1"]
-    pub unsafe fn opus_select_arch() -> i32 {
+        pub unsafe fn opus_select_arch() -> i32 {
         return 0 as i32;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_custom.h:38"]
 pub mod opus_custom_h {
     use super::modes_h::OpusCustomMode;
     {
-        #[c2rust::src_loc = "121:20"]
-        pub fn opus_custom_mode_create(
+                pub fn opus_custom_mode_create(
             Fs: i32,
             frame_size: i32,
             error: *mut i32,
@@ -184,9 +154,7 @@ pub use self::stddef_h::size_t;
 use self::stdio_h::printf;
 pub use self::stdlib_h::{atoi, free, malloc, rand, strtol};
 
-#[c2rust::src_loc = "44:5"]
 pub static mut ret: i32 = 0 as i32;
-#[c2rust::src_loc = "45:1"]
 pub unsafe fn check(
     mut in_0: *mut f32,
     mut out: *mut f32,
@@ -234,7 +202,6 @@ pub unsafe fn check(
         ret = 1 as i32;
     }
 }
-#[c2rust::src_loc = "75:1"]
 pub unsafe fn check_inv(
     mut in_0: *mut f32,
     mut out: *mut f32,
@@ -281,7 +248,6 @@ pub unsafe fn check_inv(
         ret = 1 as i32;
     }
 }
-#[c2rust::src_loc = "106:1"]
 pub unsafe fn test1d(
     mut nfft: i32,
     mut isinverse: i32,
@@ -390,7 +356,6 @@ pub unsafe fn test1d(
     free(out as *mut core::ffi::c_void);
     free(window as *mut core::ffi::c_void);
 }
-#[c2rust::src_loc = "185:1"]
 unsafe fn main_0(mut argc: i32, mut argv: *mut *mut i8) -> i32 {
     let mut arch: i32 = opus_select_arch();
     if argc > 1 as i32 {

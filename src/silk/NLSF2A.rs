@@ -5,10 +5,8 @@ use crate::silk::table_LSF_cos::silk_LSFCosTab_FIX_Q12;
 use crate::silk::LPC_fit::silk_LPC_fit;
 use crate::silk::LPC_inv_pred_gain::silk_LPC_inverse_pred_gain_c;
 
-#[c2rust::src_loc = "41:9"]
 pub const QA: i32 = 16 as i32;
 #[inline]
-#[c2rust::src_loc = "44:1"]
 unsafe fn silk_NLSF2A_find_poly(out: *mut i32, cLSF: *const i32, dd: i32) {
     let mut k: i32 = 0;
     let mut n: i32 = 0;
@@ -49,7 +47,6 @@ unsafe fn silk_NLSF2A_find_poly(out: *mut i32, cLSF: *const i32, dd: i32) {
         k += 1;
     }
 }
-#[c2rust::src_loc = "66:1"]
 pub unsafe fn silk_NLSF2A(a_Q12: *mut i16, NLSF: *const i16, d: i32, _arch: i32) {
     static mut ordering16: [u8; 16] = [
         0 as i32 as u8,

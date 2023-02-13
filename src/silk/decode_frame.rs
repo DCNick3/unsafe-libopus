@@ -10,7 +10,6 @@ use crate::silk::structs::{silk_decoder_control, silk_decoder_state};
 use crate::silk::CNG::silk_CNG;
 use crate::silk::PLC::{silk_PLC, silk_PLC_glue_frames};
 
-#[c2rust::src_loc = "39:1"]
 pub unsafe fn silk_decode_frame(
     mut psDec: *mut silk_decoder_state,
     psRangeDec: *mut ec_dec,

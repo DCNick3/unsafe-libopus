@@ -3,11 +3,8 @@ use crate::silk::define::MAX_NB_SUBFR;
 use crate::silk::float::energy_FLP::silk_energy_FLP;
 use crate::silk::float::LPC_analysis_filter_FLP::silk_LPC_analysis_filter_FLP;
 
-#[c2rust::src_loc = "34:9"]
 pub const MAX_ITERATIONS_RESIDUAL_NRG: i32 = 10 as i32;
-#[c2rust::src_loc = "35:9"]
 pub const REGULARIZATION_FACTOR: f32 = 1e-8f32;
-#[c2rust::src_loc = "38:1"]
 pub unsafe fn silk_residual_energy_covar_FLP(
     c: *const f32,
     wXX: *mut f32,
@@ -68,7 +65,6 @@ pub unsafe fn silk_residual_energy_covar_FLP(
     }
     return nrg;
 }
-#[c2rust::src_loc = "91:1"]
 pub unsafe fn silk_residual_energy_FLP(
     nrgs: *mut f32,
     x: *const f32,

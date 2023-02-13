@@ -5,8 +5,6 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_assignments)]
 #![allow(unused_mut)]
-#![feature(register_tool)]
-#![register_tool(c2rust)]
 
 use libc::{atoi, fclose, fopen, fprintf, fread, FILE};
 use libc_stdhandle::stderr;
@@ -14,7 +12,6 @@ use unsafe_libopus::externs::{free, malloc, realloc, strcmp};
 
 type size_t = u64;
 
-#[c2rust::src_loc = "54:1"]
 unsafe fn read_pcm16(
     mut _samples: *mut *mut f32,
     mut _fin: *mut FILE,
@@ -87,7 +84,6 @@ unsafe fn read_pcm16(
     ) as *mut f32;
     return nsamples;
 }
-#[c2rust::src_loc = "88:1"]
 unsafe fn band_energy(
     mut _out: *mut f32,
     mut _ps: *mut f32,
@@ -217,13 +213,11 @@ unsafe fn band_energy(
     }
     free(window as *mut core::ffi::c_void);
 }
-#[c2rust::src_loc = "158:18"]
 static mut BANDS: [i32; 22] = [
     0 as i32, 2 as i32, 4 as i32, 6 as i32, 8 as i32, 10 as i32, 12 as i32, 14 as i32, 16 as i32,
     20 as i32, 24 as i32, 28 as i32, 32 as i32, 40 as i32, 48 as i32, 56 as i32, 68 as i32,
     80 as i32, 96 as i32, 120 as i32, 156 as i32, 200 as i32,
 ];
-#[c2rust::src_loc = "165:1"]
 unsafe fn main_0(mut _argc: i32, mut _argv: *mut *const i8) -> i32 {
     let mut fin1: *mut FILE = 0 as *mut FILE;
     let mut fin2: *mut FILE = 0 as *mut FILE;

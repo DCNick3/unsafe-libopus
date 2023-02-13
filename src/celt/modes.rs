@@ -1,6 +1,5 @@
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "52:8"]
 pub struct OpusCustomMode {
     pub(crate) Fs: i32,
     pub(crate) overlap: i32,
@@ -20,7 +19,6 @@ pub struct OpusCustomMode {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "42:9"]
 pub struct PulseCache {
     pub size: i32,
     pub index: *const i16,
@@ -29,26 +27,17 @@ pub struct PulseCache {
 }
 pub const MAX_PERIOD: i32 = 1024;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:34"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = f32;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:34"]
 pub mod opus_defines_h {
-    #[c2rust::src_loc = "46:9"]
     pub const OPUS_OK: i32 = 0 as i32;
-    #[c2rust::src_loc = "48:9"]
     pub const OPUS_BAD_ARG: i32 = -(1 as i32);
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:34"]
 pub mod stddef_h {
-    #[c2rust::src_loc = "89:11"]
     pub const NULL: i32 = 0 as i32;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/static_modes_float.h:69"]
 pub mod static_modes_float_h {
-    #[c2rust::src_loc = "14:25"]
     pub static mut window120: [opus_val16; 120] = [
         6.7286966e-05f32,
         0.00060551348f32,
@@ -171,7 +160,6 @@ pub mod static_modes_float_h {
         0.99999982f32,
         1.0000000f32,
     ];
-    #[c2rust::src_loc = "44:25"]
     pub static mut logN400: [i16; 21] = [
         0 as i32 as i16,
         0 as i32 as i16,
@@ -195,7 +183,6 @@ pub mod static_modes_float_h {
         34 as i32 as i16,
         36 as i32 as i16,
     ];
-    #[c2rust::src_loc = "50:25"]
     pub static mut cache_index50: [i16; 105] = [
         -(1 as i32) as i16,
         -(1 as i32) as i16,
@@ -303,7 +290,6 @@ pub mod static_modes_float_h {
         382 as i32 as i16,
         387 as i32 as i16,
     ];
-    #[c2rust::src_loc = "59:28"]
     pub static mut cache_bits50: [u8; 392] = [
         40 as i32 as u8,
         7 as i32 as u8,
@@ -698,7 +684,6 @@ pub mod static_modes_float_h {
         182 as i32 as u8,
         234 as i32 as u8,
     ];
-    #[c2rust::src_loc = "87:28"]
     pub static mut cache_caps50: [u8; 168] = [
         224 as i32 as u8,
         224 as i32 as u8,
@@ -869,7 +854,6 @@ pub mod static_modes_float_h {
         66 as i32 as u8,
         40 as i32 as u8,
     ];
-    #[c2rust::src_loc = "104:31"]
     pub static mut fft_twiddles48000_960: [kiss_twiddle_cpx; 480] = [
         {
             let init = kiss_twiddle_cpx {
@@ -4232,7 +4216,6 @@ pub mod static_modes_float_h {
             init
         },
     ];
-    #[c2rust::src_loc = "348:25"]
     pub static mut fft_bitrev480: [i16; 480] = [
         0 as i32 as i16,
         96 as i32 as i16,
@@ -4715,7 +4698,6 @@ pub mod static_modes_float_h {
         383 as i32 as i16,
         479 as i32 as i16,
     ];
-    #[c2rust::src_loc = "386:25"]
     pub static mut fft_bitrev240: [i16; 240] = [
         0 as i32 as i16,
         48 as i32 as i16,
@@ -4958,7 +4940,6 @@ pub mod static_modes_float_h {
         191 as i32 as i16,
         239 as i32 as i16,
     ];
-    #[c2rust::src_loc = "408:25"]
     pub static mut fft_bitrev120: [i16; 120] = [
         0 as i32 as i16,
         24 as i32 as i16,
@@ -5081,7 +5062,6 @@ pub mod static_modes_float_h {
         95 as i32 as i16,
         119 as i32 as i16,
     ];
-    #[c2rust::src_loc = "422:25"]
     pub static mut fft_bitrev60: [i16; 60] = [
         0 as i32 as i16,
         12 as i32 as i16,
@@ -5144,7 +5124,6 @@ pub mod static_modes_float_h {
         47 as i32 as i16,
         59 as i32 as i16,
     ];
-    #[c2rust::src_loc = "432:29"]
     pub static mut fft_state48000_960_0: kiss_fft_state = unsafe {
         {
             let init = kiss_fft_state {
@@ -5176,7 +5155,6 @@ pub mod static_modes_float_h {
             init
         }
     };
-    #[c2rust::src_loc = "449:29"]
     pub static mut fft_state48000_960_1: kiss_fft_state = unsafe {
         {
             let init = kiss_fft_state {
@@ -5208,7 +5186,6 @@ pub mod static_modes_float_h {
             init
         }
     };
-    #[c2rust::src_loc = "466:29"]
     pub static mut fft_state48000_960_2: kiss_fft_state = unsafe {
         {
             let init = kiss_fft_state {
@@ -5240,7 +5217,6 @@ pub mod static_modes_float_h {
             init
         }
     };
-    #[c2rust::src_loc = "483:29"]
     pub static mut fft_state48000_960_3: kiss_fft_state = unsafe {
         {
             let init = kiss_fft_state {
@@ -5272,7 +5248,6 @@ pub mod static_modes_float_h {
             init
         }
     };
-    #[c2rust::src_loc = "502:25"]
     pub static mut mdct_twiddles960: [opus_val16; 1800] = [
         0.99999994f32,
         0.99999321f32,
@@ -7075,7 +7050,6 @@ pub mod static_modes_float_h {
         -0.99879545f32,
         -0.99973762f32,
     ];
-    #[c2rust::src_loc = "866:23"]
     pub static mut mode48000_960_120: OpusCustomMode = unsafe {
         {
             let init = OpusCustomMode {
@@ -7119,9 +7093,7 @@ pub mod static_modes_float_h {
             init
         }
     };
-    #[c2rust::src_loc = "885:9"]
     pub const TOTAL_MODES: i32 = 1 as i32;
-    #[c2rust::src_loc = "886:31"]
     pub static mut static_mode_list: [*const OpusCustomMode; 1] =
         unsafe { [&mode48000_960_120 as *const OpusCustomMode] };
 
@@ -7143,7 +7115,6 @@ pub use self::static_modes_float_h::{
 pub use self::stddef_h::NULL;
 use crate::celt::mdct::mdct_lookup;
 
-#[c2rust::src_loc = "42:25"]
 static mut eband5ms: [i16; 22] = [
     0 as i32 as i16,
     1 as i32 as i16,
@@ -7168,7 +7139,6 @@ static mut eband5ms: [i16; 22] = [
     78 as i32 as i16,
     100 as i32 as i16,
 ];
-#[c2rust::src_loc = "50:28"]
 static mut band_allocation: [u8; 231] = [
     0 as i32 as u8,
     0 as i32 as u8,
@@ -7402,7 +7372,6 @@ static mut band_allocation: [u8; 231] = [
     129 as i32 as u8,
     104 as i32 as u8,
 ];
-#[c2rust::src_loc = "224:1"]
 pub unsafe fn opus_custom_mode_create(
     Fs: i32,
     frame_size: i32,

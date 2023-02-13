@@ -1,14 +1,11 @@
 use crate::silk::lin2log::silk_lin2log;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "42:9"]
     pub const silk_int32_MAX: i32 = 0x7fffffff as i32;
 }
 pub use self::typedef_h::silk_int32_MAX;
 use crate::silk::define::LTP_ORDER;
 
-#[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_VQ_WMat_EC_c(
     ind: *mut i8,
     res_nrg_Q15: *mut i32,

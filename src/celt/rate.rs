@@ -1,14 +1,9 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:34"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = f32;
 }
-#[c2rust::src_loc = "39:9"]
 pub const FINE_OFFSET: i32 = 21 as i32;
-#[c2rust::src_loc = "37:9"]
 pub const MAX_FINE_BITS: i32 = 8 as i32;
 #[inline]
-#[c2rust::src_loc = "48:1"]
 pub unsafe fn get_pulses(i: i32) -> i32 {
     return if i < 8 as i32 {
         i
@@ -17,7 +12,6 @@ pub unsafe fn get_pulses(i: i32) -> i32 {
     };
 }
 #[inline]
-#[c2rust::src_loc = "53:1"]
 pub unsafe fn bits2pulses(m: *const OpusCustomMode, band: i32, mut LM: i32, mut bits: i32) -> i32 {
     let mut i: i32 = 0;
     let mut lo: i32 = 0;
@@ -52,10 +46,8 @@ pub unsafe fn bits2pulses(m: *const OpusCustomMode, band: i32, mut LM: i32, mut 
         return hi;
     };
 }
-#[c2rust::src_loc = "33:9"]
 pub const LOG_MAX_PSEUDO: i32 = 6 as i32;
 #[inline]
-#[c2rust::src_loc = "80:1"]
 pub unsafe fn pulses2bits(m: *const OpusCustomMode, band: i32, mut LM: i32, pulses: i32) -> i32 {
     let mut cache: *const u8 = 0 as *const u8;
     LM += 1;
@@ -67,9 +59,7 @@ pub unsafe fn pulses2bits(m: *const OpusCustomMode, band: i32, mut LM: i32, puls
         *cache.offset(pulses as isize) as i32 + 1 as i32
     };
 }
-#[c2rust::src_loc = "41:9"]
 pub const QTHETA_OFFSET_TWOPHASE: i32 = 16 as i32;
-#[c2rust::src_loc = "40:9"]
 pub const QTHETA_OFFSET: i32 = 4 as i32;
 
 pub use self::arch_h::opus_val16;
@@ -79,7 +69,6 @@ use crate::celt::entdec::{ec_dec_bit_logp, ec_dec_uint};
 use crate::celt::entenc::{ec_enc_bit_logp, ec_enc_uint};
 use crate::celt::modes::OpusCustomMode;
 
-#[c2rust::src_loc = "42:28"]
 static mut LOG2_FRAC_TABLE: [u8; 24] = [
     0 as i32 as u8,
     8 as i32 as u8,
@@ -106,10 +95,8 @@ static mut LOG2_FRAC_TABLE: [u8; 24] = [
     37 as i32 as u8,
     37 as i32 as u8,
 ];
-#[c2rust::src_loc = "246:9"]
 pub const ALLOC_STEPS: i32 = 6 as i32;
 #[inline]
-#[c2rust::src_loc = "248:1"]
 unsafe fn interp_bits2pulses(
     m: *const OpusCustomMode,
     start: i32,
@@ -480,7 +467,6 @@ unsafe fn interp_bits2pulses(
     }
     return codedBands;
 }
-#[c2rust::src_loc = "532:1"]
 pub unsafe fn clt_compute_allocation(
     m: *const OpusCustomMode,
     start: i32,

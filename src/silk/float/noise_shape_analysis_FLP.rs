@@ -1,43 +1,26 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:32"]
 pub mod SigProc_FLP_h {
     #[inline]
-    #[c2rust::src_loc = "150:1"]
     pub unsafe fn silk_sigmoid(x: f32) -> f32 {
         return (1.0f64 / (1.0f64 + (-x as f64).exp())) as f32;
     }
     #[inline]
-    #[c2rust::src_loc = "188:1"]
     pub unsafe fn silk_log2(x: f64) -> f32 {
         return (3.32192809488736f64 * x.log10()) as f32;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tuning_parameters.h:33"]
 pub mod tuning_parameters_h {
-    #[c2rust::src_loc = "44:9"]
     pub const FIND_PITCH_WHITE_NOISE_FRACTION: f32 = 1e-3f32;
-    #[c2rust::src_loc = "90:9"]
     pub const BG_SNR_DECR_dB: f32 = 2.0f32;
-    #[c2rust::src_loc = "93:9"]
     pub const HARM_SNR_INCR_dB: f32 = 2.0f32;
-    #[c2rust::src_loc = "99:9"]
     pub const ENERGY_VARIATION_THRESHOLD_QNT_OFFSET: f32 = 0.6f32;
-    #[c2rust::src_loc = "105:9"]
     pub const SHAPE_WHITE_NOISE_FRACTION: f32 = 3e-5f32;
-    #[c2rust::src_loc = "108:9"]
     pub const BANDWIDTH_EXPANSION: f32 = 0.94f32;
-    #[c2rust::src_loc = "111:9"]
     pub const HARMONIC_SHAPING: f32 = 0.3f32;
-    #[c2rust::src_loc = "114:9"]
     pub const HIGH_RATE_OR_LOW_QUALITY_HARMONIC_SHAPING: f32 = 0.2f32;
-    #[c2rust::src_loc = "117:9"]
     pub const HP_NOISE_COEF: f32 = 0.25f32;
-    #[c2rust::src_loc = "120:9"]
     pub const HARM_HP_NOISE_COEF: f32 = 0.35f32;
-    #[c2rust::src_loc = "129:9"]
     pub const LOW_FREQ_SHAPING: f32 = 4.0f32;
-    #[c2rust::src_loc = "132:9"]
     pub const LOW_QUALITY_LOW_FREQ_SHAPING_DECR: f32 = 0.5f32;
-    #[c2rust::src_loc = "135:9"]
     pub const SUBFR_SMTH_COEF: f32 = 0.4f32;
 }
 pub use self::tuning_parameters_h::{
@@ -62,7 +45,6 @@ use crate::silk::float::schur_FLP::silk_schur_FLP;
 use crate::silk::float::warped_autocorrelation_FLP::silk_warped_autocorrelation_FLP;
 
 #[inline]
-#[c2rust::src_loc = "39:1"]
 unsafe fn warped_gain(coefs: *const f32, mut lambda: f32, order: i32) -> f32 {
     let mut i: i32 = 0;
     let mut gain: f32 = 0.;
@@ -76,7 +58,6 @@ unsafe fn warped_gain(coefs: *const f32, mut lambda: f32, order: i32) -> f32 {
     return 1.0f32 / (1.0f32 - lambda * gain);
 }
 #[inline]
-#[c2rust::src_loc = "57:1"]
 unsafe fn warped_true2monic_coefs(coefs: *mut f32, lambda: f32, limit: f32, order: i32) {
     let mut i: i32 = 0;
     let mut iter: i32 = 0;
@@ -141,7 +122,6 @@ unsafe fn warped_true2monic_coefs(coefs: *mut f32, lambda: f32, limit: f32, orde
     }
 }
 #[inline]
-#[c2rust::src_loc = "116:1"]
 unsafe fn limit_coefs(coefs: *mut f32, limit: f32, order: i32) {
     let mut i: i32 = 0;
     let mut iter: i32 = 0;
@@ -171,7 +151,6 @@ unsafe fn limit_coefs(coefs: *mut f32, limit: f32, order: i32) {
         iter += 1;
     }
 }
-#[c2rust::src_loc = "147:1"]
 pub unsafe fn silk_noise_shape_analysis_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,
     mut psEncCtrl: *mut silk_encoder_control_FLP,

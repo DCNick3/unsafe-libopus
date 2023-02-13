@@ -1,7 +1,6 @@
 use crate::silk::define::MAX_PREDICTION_POWER_GAIN;
 
 use crate::externs::memcpy;
-#[c2rust::src_loc = "39:1"]
 pub unsafe fn silk_LPC_inverse_pred_gain_FLP(A: *const f32, order: i32) -> f32 {
     let mut k: i32 = 0;
     let mut n: i32 = 0;

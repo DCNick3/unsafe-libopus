@@ -1,18 +1,12 @@
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/float.h:32"]
 pub mod float_h {
-    #[c2rust::src_loc = "121:9"]
     pub const FLT_MAX: f32 = __FLT_MAX__;
     use super::internal::__FLT_MAX__;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "37:10"]
     pub const silk_float_MAX: f32 = FLT_MAX;
     use super::float_h::FLT_MAX;
 }
-#[c2rust::header_src = "internal:0"]
 pub mod internal {
-    #[c2rust::src_loc = "133:9"]
     pub const __FLT_MAX__: f32 = 3.40282347e+38f32;
 }
 pub use self::float_h::FLT_MAX;
@@ -27,7 +21,6 @@ use crate::silk::float::LPC_analysis_filter_FLP::silk_LPC_analysis_filter_FLP;
 use crate::silk::interpolate::silk_interpolate;
 use crate::silk::structs::silk_encoder_state;
 
-#[c2rust::src_loc = "37:1"]
 pub unsafe fn silk_find_LPC_FLP(
     mut psEncC: *mut silk_encoder_state,
     NLSF_Q15: *mut i16,

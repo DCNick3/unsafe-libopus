@@ -1,17 +1,13 @@
 use crate::silk::resampler_rom::{silk_resampler_up2_hq_0, silk_resampler_up2_hq_1};
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: i32 = 0x7fff as i32;
-    #[c2rust::src_loc = "45:9"]
     pub const silk_int16_MIN: i32 = 0x8000 as i32;
 }
 use crate::silk::resampler_structs::silk_resampler_state_struct;
 
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 
-#[c2rust::src_loc = "38:1"]
 pub unsafe fn silk_resampler_private_up2_HQ(
     S: *mut i32,
     out: *mut i16,
@@ -94,7 +90,6 @@ pub unsafe fn silk_resampler_private_up2_HQ(
         k += 1;
     }
 }
-#[c2rust::src_loc = "104:1"]
 pub unsafe fn silk_resampler_private_up2_HQ_wrapper(
     SS: *mut core::ffi::c_void,
     out: *mut i16,

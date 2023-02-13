@@ -2,16 +2,11 @@ use crate::silk::macros::EC_CLZ0;
 
 use std::f32::consts::PI;
 
-#[c2rust::src_loc = "50:9"]
 pub const cA: f32 = 0.43157974f32;
-#[c2rust::src_loc = "51:9"]
 pub const cB: f32 = 0.67848403f32;
-#[c2rust::src_loc = "52:9"]
 pub const cC: f32 = 0.08595542f32;
-#[c2rust::src_loc = "53:9"]
 pub const cE: f32 = PI / 2 as i32 as f32;
 
-#[c2rust::src_loc = "43:1"]
 pub unsafe fn isqrt32(mut _val: u32) -> u32 {
     let mut b: u32 = 0;
     let mut g: u32 = 0;
@@ -36,7 +31,6 @@ pub unsafe fn isqrt32(mut _val: u32) -> u32 {
 }
 
 #[inline]
-#[c2rust::src_loc = "54:1"]
 pub unsafe fn fast_atan2f(y: f32, x: f32) -> f32 {
     let mut x2: f32 = 0.;
     let mut y2: f32 = 0.;
@@ -59,7 +53,6 @@ pub type opus_val16 = f32;
 pub type opus_val32 = f32;
 
 #[inline]
-#[c2rust::src_loc = "80:1"]
 pub unsafe fn celt_maxabs16(x: *const opus_val16, len: i32) -> opus_val32 {
     let mut i: i32 = 0;
     let mut maxval: opus_val16 = 0 as i32 as opus_val16;

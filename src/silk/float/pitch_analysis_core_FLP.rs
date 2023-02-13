@@ -1,21 +1,15 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:35"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = f32;
-    #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = f32;
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:35"]
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]
     pub use core::arch::x86::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
     #[cfg(target_arch = "x86_64")]
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:35"]
 pub mod SigProc_FLP_h {
     #[inline]
-    #[c2rust::src_loc = "162:1"]
     pub unsafe fn silk_float2short_array(out: *mut i16, in_0: *const f32, length: i32) {
         let mut k: i32 = 0;
         k = length - 1 as i32;
@@ -31,7 +25,6 @@ pub mod SigProc_FLP_h {
         }
     }
     #[inline]
-    #[c2rust::src_loc = "175:1"]
     pub unsafe fn silk_short2float_array(out: *mut f32, in_0: *const i16, length: i32) {
         let mut k: i32 = 0;
         k = length - 1 as i32;
@@ -41,18 +34,14 @@ pub mod SigProc_FLP_h {
         }
     }
     #[inline]
-    #[c2rust::src_loc = "188:1"]
     pub unsafe fn silk_log2(x: f64) -> f32 {
         return (3.32192809488736f64 * x.log10()) as f32;
     }
     use super::typedef_h::{silk_int16_MAX, silk_int16_MIN};
     use crate::celt::float_cast::float2int;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:35"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: i32 = 0x7fff as i32;
-    #[c2rust::src_loc = "45:9"]
     pub const silk_int16_MIN: i32 = 0x8000 as i32;
 }
 use self::arch_h::opus_val32;
@@ -76,7 +65,6 @@ use crate::silk::resampler_down2::silk_resampler_down2;
 use crate::silk::resampler_down2_3::silk_resampler_down2_3;
 use crate::silk::SigProc_FIX::{silk_max_int, silk_min_int};
 
-#[c2rust::src_loc = "67:1"]
 pub unsafe fn silk_pitch_analysis_core_FLP(
     frame: *const f32,
     pitch_out: *mut i32,
@@ -700,7 +688,6 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
     }
     return 0 as i32;
 }
-#[c2rust::src_loc = "492:1"]
 unsafe fn silk_P_Ana_calc_corr_st3(
     cross_corr_st3: *mut [[f32; 5]; 34],
     frame: *const f32,
@@ -807,7 +794,6 @@ unsafe fn silk_P_Ana_calc_corr_st3(
         k += 1;
     }
 }
-#[c2rust::src_loc = "559:1"]
 unsafe fn silk_P_Ana_calc_energy_st3(
     energies_st3: *mut [[f32; 5]; 34],
     frame: *const f32,

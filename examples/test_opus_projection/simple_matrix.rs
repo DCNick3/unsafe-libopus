@@ -1,8 +1,6 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/src/mapping_matrix.h:42"]
 pub mod mapping_matrix_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
-    #[c2rust::src_loc = "43:16"]
     pub struct MappingMatrix {
         pub rows: i32,
         pub cols: i32,
@@ -11,9 +9,7 @@ pub mod mapping_matrix_h {
 
     use crate::opus_val16;
     extern "C" {
-        #[c2rust::src_loc = "51:1"]
         pub fn mapping_matrix_get_size(rows: i32, cols: i32) -> i32;
-        #[c2rust::src_loc = "55:1"]
         pub fn mapping_matrix_init(
             matrix: *mut MappingMatrix,
             rows: i32,
@@ -22,7 +18,6 @@ pub mod mapping_matrix_h {
             data: *const i16,
             data_size: i32,
         );
-        #[c2rust::src_loc = "65:1"]
         pub fn mapping_matrix_multiply_channel_in_float(
             matrix: *const MappingMatrix,
             input: *const f32,
@@ -32,7 +27,6 @@ pub mod mapping_matrix_h {
             output_rows: i32,
             frame_size: i32,
         );
-        #[c2rust::src_loc = "75:1"]
         pub fn mapping_matrix_multiply_channel_out_float(
             matrix: *const MappingMatrix,
             input: *const opus_val16,
@@ -42,7 +36,6 @@ pub mod mapping_matrix_h {
             output_rows: i32,
             frame_size: i32,
         );
-        #[c2rust::src_loc = "86:1"]
         pub fn mapping_matrix_multiply_channel_in_short(
             matrix: *const MappingMatrix,
             input: *const i16,
@@ -52,7 +45,6 @@ pub mod mapping_matrix_h {
             output_rows: i32,
             frame_size: i32,
         );
-        #[c2rust::src_loc = "96:1"]
         pub fn mapping_matrix_multiply_channel_out_short(
             matrix: *const MappingMatrix,
             input: *const opus_val16,
@@ -73,7 +65,6 @@ pub use self::mapping_matrix_h::{
 use crate::{_test_failed, assert_is_equal, assert_is_equal_short, opus_val16};
 use unsafe_libopus::externs::{free, malloc};
 
-#[c2rust::src_loc = "82:1"]
 pub unsafe fn test_simple_matrix() {
     let simple_matrix_params: MappingMatrix = {
         MappingMatrix {

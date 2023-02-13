@@ -1,12 +1,9 @@
 use crate::externs::{free, malloc};
 
-#[c2rust::header_src = "internal:0"]
 pub mod internal {
-    #[c2rust::src_loc = "0:0"]
     pub type __builtin_va_list = [__va_list_tag; 1];
     #[derive(Copy, Clone)]
     #[repr(C)]
-    #[c2rust::src_loc = "0:0"]
     pub struct __va_list_tag {
         pub gp_offset: u32,
         pub fp_offset: u32,
@@ -14,97 +11,59 @@ pub mod internal {
         pub reg_save_area: *mut core::ffi::c_void,
     }
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stdarg.h:40"]
 pub mod stdarg_h {
-    #[c2rust::src_loc = "14:1"]
     pub type va_list = __builtin_va_list;
     use super::internal::__builtin_va_list;
 }
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:41"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = f32;
-    #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = f32;
-    #[c2rust::src_loc = "57:9"]
     pub const CELT_SIG_SCALE: f32 = 32768.0f32;
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:41"]
 pub mod stddef_h {
-    #[c2rust::src_loc = "46:1"]
     pub type size_t = u64;
-    #[c2rust::src_loc = "89:11"]
     pub const NULL: i32 = 0 as i32;
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:47"]
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]
     pub use core::arch::x86::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
     #[cfg(target_arch = "x86_64")]
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:41"]
 pub mod opus_defines_h {
-    #[c2rust::src_loc = "139:9"]
     pub const OPUS_GET_BANDWIDTH_REQUEST: i32 = 4009;
-    #[c2rust::src_loc = "157:9"]
     pub const OPUS_GET_FINAL_RANGE_REQUEST: i32 = 4031;
-    #[c2rust::src_loc = "662:9"]
     pub const OPUS_RESET_STATE: i32 = 4028;
-    #[c2rust::src_loc = "156:9"]
     pub const OPUS_GET_SAMPLE_RATE_REQUEST: i32 = 4029;
-    #[c2rust::src_loc = "158:9"]
     pub const OPUS_GET_PITCH_REQUEST: i32 = 4033;
-    #[c2rust::src_loc = "160:9"]
     pub const OPUS_GET_GAIN_REQUEST: i32 = 4045;
-    #[c2rust::src_loc = "159:9"]
     pub const OPUS_SET_GAIN_REQUEST: i32 = 4034;
-    #[c2rust::src_loc = "163:9"]
     pub const OPUS_GET_LAST_PACKET_DURATION_REQUEST: i32 = 4039;
-    #[c2rust::src_loc = "169:9"]
     pub const OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4046 as i32;
-    #[c2rust::src_loc = "170:9"]
     pub const OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4047;
-    #[c2rust::src_loc = "56:9"]
     pub const OPUS_UNIMPLEMENTED: i32 = -(5 as i32);
-    #[c2rust::src_loc = "54:9"]
     pub const OPUS_INVALID_PACKET: i32 = -(4 as i32);
-    #[c2rust::src_loc = "50:9"]
     pub const OPUS_BUFFER_TOO_SMALL: i32 = -(2 as i32);
-    #[c2rust::src_loc = "203:9"]
     pub const OPUS_BANDWIDTH_NARROWBAND: i32 = 1101 as i32;
-    #[c2rust::src_loc = "204:9"]
     pub const OPUS_BANDWIDTH_MEDIUMBAND: i32 = 1102 as i32;
-    #[c2rust::src_loc = "205:9"]
     pub const OPUS_BANDWIDTH_WIDEBAND: i32 = 1103;
-    #[c2rust::src_loc = "206:9"]
     pub const OPUS_BANDWIDTH_SUPERWIDEBAND: i32 = 1104 as i32;
-    #[c2rust::src_loc = "207:9"]
     pub const OPUS_BANDWIDTH_FULLBAND: i32 = 1105 as i32;
-    #[c2rust::src_loc = "60:9"]
     pub const OPUS_ALLOC_FAIL: i32 = -(7 as i32);
-    #[c2rust::src_loc = "48:9"]
     pub const OPUS_BAD_ARG: i32 = -(1 as i32);
-    #[c2rust::src_loc = "52:9"]
     pub const OPUS_INTERNAL_ERROR: i32 = -(3 as i32);
-    #[c2rust::src_loc = "46:9"]
     pub const OPUS_OK: i32 = 0 as i32;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cpu_support.h:44"]
 pub mod cpu_support_h {
     #[inline]
-    #[c2rust::src_loc = "65:1"]
     pub unsafe fn opus_select_arch() -> i32 {
         return 0 as i32;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/stack_alloc.h:46"]
 pub mod stack_alloc_h {
-    #[c2rust::src_loc = "99:9"]
     pub const ALLOC_NONE: i32 = 1 as i32;
     #[inline]
-    #[c2rust::src_loc = "175:1"]
     pub unsafe fn _opus_false() -> i32 {
         return 0 as i32;
     }
@@ -145,7 +104,6 @@ use crate::{opus_custom_decoder_ctl, opus_packet_get_samples_per_frame, opus_pcm
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "55:8"]
 pub struct OpusDecoder {
     pub(crate) celt_dec_offset: i32,
     pub(crate) silk_dec_offset: i32,
@@ -164,7 +122,6 @@ pub struct OpusDecoder {
     pub(crate) softclip_mem: [opus_val16; 2],
     pub(crate) rangeFinal: u32,
 }
-#[c2rust::src_loc = "82:1"]
 unsafe fn validate_opus_decoder(st: *mut OpusDecoder) {
     if !((*st).channels == 1 as i32 || (*st).channels == 2 as i32) {
         celt_fatal(
@@ -261,7 +218,6 @@ unsafe fn validate_opus_decoder(st: *mut OpusDecoder) {
         );
     }
 }
-#[c2rust::src_loc = "102:1"]
 pub unsafe fn opus_decoder_get_size(channels: i32) -> i32 {
     let mut silkDecSizeBytes: i32 = 0;
     let mut celtDecSizeBytes: i32 = 0;
@@ -279,7 +235,6 @@ pub unsafe fn opus_decoder_get_size(channels: i32) -> i32 {
         + silkDecSizeBytes
         + celtDecSizeBytes;
 }
-#[c2rust::src_loc = "116:1"]
 pub unsafe fn opus_decoder_init(mut st: *mut OpusDecoder, Fs: i32, channels: i32) -> i32 {
     let mut silk_dec: *mut core::ffi::c_void = 0 as *mut core::ffi::c_void;
     let mut celt_dec: *mut OpusCustomDecoder = 0 as *mut OpusCustomDecoder;
@@ -327,7 +282,6 @@ pub unsafe fn opus_decoder_init(mut st: *mut OpusDecoder, Fs: i32, channels: i32
     (*st).arch = opus_select_arch();
     return OPUS_OK;
 }
-#[c2rust::src_loc = "159:1"]
 pub unsafe fn opus_decoder_create(Fs: i32, channels: i32, error: *mut i32) -> *mut OpusDecoder {
     let mut ret: i32 = 0;
     let mut st: *mut OpusDecoder = 0 as *mut OpusDecoder;
@@ -360,7 +314,6 @@ pub unsafe fn opus_decoder_create(Fs: i32, channels: i32, error: *mut i32) -> *m
     }
     return st;
 }
-#[c2rust::src_loc = "188:1"]
 unsafe fn smooth_fade(
     in1: *const opus_val16,
     in2: *const opus_val16,
@@ -386,7 +339,6 @@ unsafe fn smooth_fade(
         c += 1;
     }
 }
-#[c2rust::src_loc = "205:1"]
 unsafe fn opus_packet_get_mode(data: *const u8) -> i32 {
     let mut mode: i32 = 0;
     if *data.offset(0 as i32 as isize) as i32 & 0x80 as i32 != 0 {
@@ -398,7 +350,6 @@ unsafe fn opus_packet_get_mode(data: *const u8) -> i32 {
     }
     return mode;
 }
-#[c2rust::src_loc = "220:1"]
 unsafe fn opus_decode_frame(
     mut st: *mut OpusDecoder,
     mut data: *const u8,
@@ -988,7 +939,6 @@ unsafe fn opus_decode_frame(
         audiosize
     };
 }
-#[c2rust::src_loc = "626:1"]
 pub unsafe fn opus_decode_native(
     mut st: *mut OpusDecoder,
     mut data: *const u8,
@@ -1185,7 +1135,6 @@ pub unsafe fn opus_decode_native(
     }
     return nb_samples;
 }
-#[c2rust::src_loc = "788:1"]
 pub unsafe fn opus_decode(
     st: *mut OpusDecoder,
     data: *const u8,
@@ -1241,7 +1190,6 @@ pub unsafe fn opus_decode(
     }
     return ret;
 }
-#[c2rust::src_loc = "823:1"]
 pub unsafe fn opus_decode_float(
     st: *mut OpusDecoder,
     data: *const u8,
@@ -1265,7 +1213,6 @@ pub unsafe fn opus_decode_float(
         0 as i32,
     );
 }
-#[c2rust::src_loc = "833:1"]
 pub unsafe fn opus_decoder_ctl_impl(mut st: *mut OpusDecoder, request: i32, args: VarArgs) -> i32 {
     let mut silk_dec: *mut core::ffi::c_void = 0 as *mut core::ffi::c_void;
     let mut celt_dec: *mut OpusCustomDecoder = 0 as *mut OpusCustomDecoder;
@@ -1406,11 +1353,9 @@ macro_rules! opus_decoder_ctl {
         opus_decoder_ctl!($st, $request,)
     };
 }
-#[c2rust::src_loc = "966:1"]
 pub unsafe fn opus_decoder_destroy(st: *mut OpusDecoder) {
     free(st as *mut core::ffi::c_void);
 }
-#[c2rust::src_loc = "972:1"]
 pub unsafe fn opus_packet_get_bandwidth(data: *const u8) -> i32 {
     let mut bandwidth: i32 = 0;
     if *data.offset(0 as i32 as isize) as i32 & 0x80 as i32 != 0 {
@@ -1431,7 +1376,6 @@ pub unsafe fn opus_packet_get_bandwidth(data: *const u8) -> i32 {
     }
     return bandwidth;
 }
-#[c2rust::src_loc = "990:1"]
 pub unsafe fn opus_packet_get_nb_channels(data: *const u8) -> i32 {
     return if *data.offset(0 as i32 as isize) as i32 & 0x4 as i32 != 0 {
         2 as i32
@@ -1439,7 +1383,6 @@ pub unsafe fn opus_packet_get_nb_channels(data: *const u8) -> i32 {
         1 as i32
     };
 }
-#[c2rust::src_loc = "995:1"]
 pub unsafe fn opus_packet_get_nb_frames(packet: *const u8, len: i32) -> i32 {
     let mut count: i32 = 0;
     if len < 1 as i32 {
@@ -1456,7 +1399,6 @@ pub unsafe fn opus_packet_get_nb_frames(packet: *const u8, len: i32) -> i32 {
         return *packet.offset(1 as i32 as isize) as i32 & 0x3f as i32;
     };
 }
-#[c2rust::src_loc = "1011:1"]
 pub unsafe fn opus_packet_get_nb_samples(packet: *const u8, len: i32, Fs: i32) -> i32 {
     let mut samples: i32 = 0;
     let count: i32 = opus_packet_get_nb_frames(packet, len);
@@ -1470,7 +1412,6 @@ pub unsafe fn opus_packet_get_nb_samples(packet: *const u8, len: i32, Fs: i32) -
         return samples;
     };
 }
-#[c2rust::src_loc = "1028:1"]
 pub unsafe fn opus_decoder_get_nb_samples(
     dec: *const OpusDecoder,
     packet: *const u8,

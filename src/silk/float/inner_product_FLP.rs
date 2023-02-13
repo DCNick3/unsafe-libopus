@@ -1,4 +1,3 @@
-#[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_inner_product_FLP(data1: *const f32, data2: *const f32, dataSize: i32) -> f64 {
     let mut i: i32 = 0;
     let mut result: f64 = 0.;

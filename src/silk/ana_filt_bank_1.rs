@@ -1,18 +1,12 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "45:9"]
     pub const silk_int16_MIN: i32 = 0x8000 as i32;
-    #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: i32 = 0x7fff as i32;
 }
 
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 
-#[c2rust::src_loc = "35:19"]
 static mut A_fb1_20: i16 = ((5394 as i32) << 1 as i32) as i16;
-#[c2rust::src_loc = "36:19"]
 static mut A_fb1_21: i16 = -(24290 as i32) as i16;
-#[c2rust::src_loc = "39:1"]
 pub unsafe fn silk_ana_filt_bank_1(
     in_0: *const i16,
     S: *mut i32,

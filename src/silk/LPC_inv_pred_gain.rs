@@ -1,17 +1,12 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "43:9"]
     pub const silk_int32_MIN: u32 = 0x80000000 as u32;
-    #[c2rust::src_loc = "42:9"]
     pub const silk_int32_MAX: i32 = 0x7fffffff as i32;
 }
 pub use self::typedef_h::{silk_int32_MAX, silk_int32_MIN};
 use crate::silk::macros::silk_CLZ32;
 use crate::silk::Inlines::silk_INVERSE32_varQ;
 
-#[c2rust::src_loc = "36:9"]
 pub const A_LIMIT: f64 = 0.99975f64 * ((1 as i32 as i64) << 24 as i32) as f64 + 0.5f64;
-#[c2rust::src_loc = "42:1"]
 unsafe fn LPC_inverse_pred_gain_QA_c(A_QA: *mut i32, order: i32) -> i32 {
     let mut k: i32 = 0;
     let mut n: i32 = 0;
@@ -445,7 +440,6 @@ unsafe fn LPC_inverse_pred_gain_QA_c(A_QA: *mut i32, order: i32) -> i32 {
     }
     return invGain_Q30;
 }
-#[c2rust::src_loc = "122:1"]
 pub unsafe fn silk_LPC_inverse_pred_gain_c(A_Q12: *const i16, order: i32) -> i32 {
     let mut k: i32 = 0;
     let mut Atmp_QA: [i32; 24] = [0; 24];

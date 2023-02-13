@@ -1,8 +1,5 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = f32;
-    #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = f32;
 }
 pub use self::arch_h::{opus_val16, opus_val32};
@@ -10,10 +7,8 @@ use crate::celt::celt::celt_fatal;
 use crate::celt::pitch::{celt_pitch_xcorr_c, xcorr_kernel_c};
 use crate::externs::memset;
 
-#[c2rust::src_loc = "38:9"]
 pub const LPC_ORDER: i32 = 24 as i32;
 
-#[c2rust::src_loc = "37:1"]
 pub unsafe fn _celt_lpc(mut _lpc: *mut opus_val16, ac: *const opus_val32, p: i32) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -55,7 +50,6 @@ pub unsafe fn _celt_lpc(mut _lpc: *mut opus_val16, ac: *const opus_val32, p: i32
         }
     }
 }
-#[c2rust::src_loc = "91:1"]
 pub unsafe fn celt_fir_c(
     x: *const opus_val16,
     num: *const opus_val16,
@@ -111,7 +105,6 @@ pub unsafe fn celt_fir_c(
         i += 1;
     }
 }
-#[c2rust::src_loc = "129:1"]
 pub unsafe fn celt_iir(
     mut _x: *const opus_val32,
     den: *const opus_val16,
@@ -204,7 +197,6 @@ pub unsafe fn celt_iir(
         i += 1;
     }
 }
-#[c2rust::src_loc = "210:1"]
 pub unsafe fn _celt_autocorr(
     x: *const opus_val16,
     ac: *mut opus_val32,

@@ -1,8 +1,5 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "45:9"]
     pub const silk_int16_MIN: i32 = 0x8000 as i32;
-    #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: i32 = 0x7fff as i32;
 }
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
@@ -14,7 +11,6 @@ use crate::silk::structs::stereo_enc_state;
 use crate::silk::Inlines::silk_DIV32_varQ;
 use crate::silk::SigProc_FIX::silk_max_int;
 
-#[c2rust::src_loc = "36:1"]
 pub unsafe fn silk_stereo_LR_to_MS(
     mut state: *mut stereo_enc_state,
     x1: *mut i16,

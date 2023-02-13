@@ -1,19 +1,13 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:32"]
 pub mod opus_defines_h {
-    #[c2rust::src_loc = "54:9"]
     pub const OPUS_INVALID_PACKET: i32 = -(4 as i32);
-    #[c2rust::src_loc = "48:9"]
     pub const OPUS_BAD_ARG: i32 = -(1 as i32);
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:33"]
 pub mod stddef_h {
-    #[c2rust::src_loc = "89:11"]
     pub const NULL: i32 = 0 as i32;
 }
 pub use self::opus_defines_h::{OPUS_BAD_ARG, OPUS_INVALID_PACKET};
 pub use self::stddef_h::NULL;
 
-#[c2rust::src_loc = "36:1"]
 pub unsafe fn opus_pcm_soft_clip(mut _x: *mut f32, N: i32, C: i32, declip_mem: *mut f32) {
     let mut c: i32 = 0;
     let mut i: i32 = 0;
@@ -141,7 +135,6 @@ pub unsafe fn opus_pcm_soft_clip(mut _x: *mut f32, N: i32, C: i32, declip_mem: *
         c += 1;
     }
 }
-#[c2rust::src_loc = "140:1"]
 pub unsafe fn encode_size(size: i32, data: *mut u8) -> i32 {
     if size < 252 as i32 {
         *data.offset(0 as i32 as isize) = size as u8;
@@ -153,7 +146,6 @@ pub unsafe fn encode_size(size: i32, data: *mut u8) -> i32 {
         return 2 as i32;
     };
 }
-#[c2rust::src_loc = "153:1"]
 unsafe fn parse_size(data: *const u8, len: i32, size: *mut i16) -> i32 {
     if len < 1 as i32 {
         *size = -(1 as i32) as i16;
@@ -170,7 +162,6 @@ unsafe fn parse_size(data: *const u8, len: i32, size: *mut i16) -> i32 {
         return 2 as i32;
     };
 }
-#[c2rust::src_loc = "173:1"]
 pub unsafe fn opus_packet_get_samples_per_frame(data: *const u8, Fs: i32) -> i32 {
     let mut audiosize: i32 = 0;
     if *data.offset(0 as i32 as isize) as i32 & 0x80 as i32 != 0 {
@@ -192,7 +183,6 @@ pub unsafe fn opus_packet_get_samples_per_frame(data: *const u8, Fs: i32) -> i32
     }
     return audiosize;
 }
-#[c2rust::src_loc = "194:1"]
 pub unsafe fn opus_packet_parse_impl(
     mut data: *const u8,
     mut len: i32,
@@ -370,7 +360,6 @@ pub unsafe fn opus_packet_parse_impl(
     }
     return count;
 }
-#[c2rust::src_loc = "349:1"]
 pub unsafe fn opus_packet_parse(
     data: *const u8,
     len: i32,

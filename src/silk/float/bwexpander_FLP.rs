@@ -1,4 +1,3 @@
-#[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_bwexpander_FLP(ar: *mut f32, d: i32, chirp: f32) {
     let mut i: i32 = 0;
     let mut cfac: f32 = chirp;

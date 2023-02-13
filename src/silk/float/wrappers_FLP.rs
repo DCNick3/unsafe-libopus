@@ -1,17 +1,14 @@
 use crate::silk::A2NLSF::silk_A2NLSF;
 use crate::silk::NLSF2A::silk_NLSF2A;
 
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:32"]
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]
     pub use core::arch::x86::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
     #[cfg(target_arch = "x86_64")]
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/float/SigProc_FLP.h:32"]
 pub mod SigProc_FLP_h {
     #[inline]
-    #[c2rust::src_loc = "156:1"]
     pub unsafe fn silk_float2int(x: f32) -> i32 {
         return float2int(x);
     }
@@ -28,7 +25,6 @@ use crate::silk::tables_other::silk_LTPScales_table_Q14;
 use crate::silk::NSQ_del_dec::silk_NSQ_del_dec_c;
 use crate::silk::NSQ::silk_NSQ_c;
 
-#[c2rust::src_loc = "37:1"]
 pub unsafe fn silk_A2NLSF_FLP(NLSF_Q15: *mut i16, pAR: *const f32, LPC_order: i32) {
     let mut i: i32 = 0;
     let mut a_fix_Q16: [i32; 16] = [0; 16];
@@ -39,7 +35,6 @@ pub unsafe fn silk_A2NLSF_FLP(NLSF_Q15: *mut i16, pAR: *const f32, LPC_order: i3
     }
     silk_A2NLSF(NLSF_Q15, a_fix_Q16.as_mut_ptr(), LPC_order);
 }
-#[c2rust::src_loc = "54:1"]
 pub unsafe fn silk_NLSF2A_FLP(pAR: *mut f32, NLSF_Q15: *const i16, LPC_order: i32, arch: i32) {
     let mut i: i32 = 0;
     let mut a_fix_Q12: [i16; 16] = [0; 16];
@@ -50,7 +45,6 @@ pub unsafe fn silk_NLSF2A_FLP(pAR: *mut f32, NLSF_Q15: *const i16, LPC_order: i3
         i += 1;
     }
 }
-#[c2rust::src_loc = "74:1"]
 pub unsafe fn silk_process_NLSFs_FLP(
     psEncC: *mut silk_encoder_state,
     PredCoef: *mut [f32; 16],
@@ -72,7 +66,6 @@ pub unsafe fn silk_process_NLSFs_FLP(
         j += 1;
     }
 }
-#[c2rust::src_loc = "96:1"]
 pub unsafe fn silk_NSQ_wrapper_FLP(
     psEnc: *mut silk_encoder_state_FLP,
     psEncCtrl: *mut silk_encoder_control_FLP,
@@ -185,7 +178,6 @@ pub unsafe fn silk_NSQ_wrapper_FLP(
         );
     };
 }
-#[c2rust::src_loc = "175:1"]
 pub unsafe fn silk_quant_LTP_gains_FLP(
     B: *mut f32,
     cbk_index: *mut i8,

@@ -1,13 +1,8 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = f32;
-    #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = f32;
-    #[c2rust::src_loc = "57:9"]
     pub const CELT_SIG_SCALE: f32 = 32768.0f32;
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:33"]
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]
     pub use core::arch::x86::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
@@ -21,14 +16,12 @@ use crate::src::opus_private::align;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "43:16"]
 pub struct MappingMatrix {
     pub rows: i32,
     pub cols: i32,
     pub gain: i32,
 }
 
-#[c2rust::src_loc = "40:1"]
 pub unsafe fn mapping_matrix_get_size(rows: i32, cols: i32) -> i32 {
     let mut size: i32 = 0;
     if rows > 255 as i32 || cols > 255 as i32 {
@@ -40,13 +33,11 @@ pub unsafe fn mapping_matrix_get_size(rows: i32, cols: i32) -> i32 {
     }
     return align(::core::mem::size_of::<MappingMatrix>() as u64 as i32) + align(size);
 }
-#[c2rust::src_loc = "57:1"]
 pub unsafe fn mapping_matrix_get_data(matrix: *const MappingMatrix) -> *mut i16 {
     return (matrix as *mut i8)
         .offset(align(::core::mem::size_of::<MappingMatrix>() as u64 as i32) as isize)
         as *mut core::ffi::c_void as *mut i16;
 }
-#[c2rust::src_loc = "63:1"]
 pub unsafe fn mapping_matrix_init(
     matrix: *mut MappingMatrix,
     rows: i32,
@@ -77,7 +68,6 @@ pub unsafe fn mapping_matrix_init(
         i += 1;
     }
 }
-#[c2rust::src_loc = "85:1"]
 pub unsafe fn mapping_matrix_multiply_channel_in_float(
     matrix: *const MappingMatrix,
     input: *const f32,
@@ -112,7 +102,6 @@ pub unsafe fn mapping_matrix_multiply_channel_in_float(
         i += 1;
     }
 }
-#[c2rust::src_loc = "119:1"]
 pub unsafe fn mapping_matrix_multiply_channel_out_float(
     matrix: *const MappingMatrix,
     input: *const opus_val16,
@@ -149,7 +138,6 @@ pub unsafe fn mapping_matrix_multiply_channel_out_float(
         i += 1;
     }
 }
-#[c2rust::src_loc = "156:1"]
 pub unsafe fn mapping_matrix_multiply_channel_in_short(
     matrix: *const MappingMatrix,
     input: *const i16,
@@ -185,7 +173,6 @@ pub unsafe fn mapping_matrix_multiply_channel_in_short(
         i += 1;
     }
 }
-#[c2rust::src_loc = "196:1"]
 pub unsafe fn mapping_matrix_multiply_channel_out_short(
     matrix: *const MappingMatrix,
     input: *const opus_val16,
@@ -222,7 +209,6 @@ pub unsafe fn mapping_matrix_multiply_channel_out_short(
         i += 1;
     }
 }
-#[c2rust::src_loc = "231:21"]
 pub static mut mapping_matrix_foa_mixing: MappingMatrix = {
     let init = MappingMatrix {
         rows: 6 as i32,
@@ -231,7 +217,6 @@ pub static mut mapping_matrix_foa_mixing: MappingMatrix = {
     };
     init
 };
-#[c2rust::src_loc = "232:18"]
 pub static mut mapping_matrix_foa_mixing_data: [i16; 36] = [
     16384 as i32 as i16,
     0 as i32 as i16,
@@ -270,7 +255,6 @@ pub static mut mapping_matrix_foa_mixing_data: [i16; 36] = [
     0 as i32 as i16,
     32767 as i32 as i16,
 ];
-#[c2rust::src_loc = "240:21"]
 pub static mut mapping_matrix_soa_mixing: MappingMatrix = {
     let init = MappingMatrix {
         rows: 11 as i32,
@@ -279,7 +263,6 @@ pub static mut mapping_matrix_soa_mixing: MappingMatrix = {
     };
     init
 };
-#[c2rust::src_loc = "241:18"]
 pub static mut mapping_matrix_soa_mixing_data: [i16; 121] = [
     10923 as i32 as i16,
     7723 as i32 as i16,
@@ -403,7 +386,6 @@ pub static mut mapping_matrix_soa_mixing_data: [i16; 121] = [
     0 as i32 as i16,
     32767 as i32 as i16,
 ];
-#[c2rust::src_loc = "260:21"]
 pub static mut mapping_matrix_toa_mixing: MappingMatrix = {
     let init = MappingMatrix {
         rows: 18 as i32,
@@ -412,7 +394,6 @@ pub static mut mapping_matrix_toa_mixing: MappingMatrix = {
     };
     init
 };
-#[c2rust::src_loc = "261:18"]
 pub static mut mapping_matrix_toa_mixing_data: [i16; 324] = [
     8208 as i32 as i16,
     0 as i32 as i16,
@@ -739,7 +720,6 @@ pub static mut mapping_matrix_toa_mixing_data: [i16; 324] = [
     0 as i32 as i16,
     32767 as i32 as i16,
 ];
-#[c2rust::src_loc = "305:21"]
 pub static mut mapping_matrix_foa_demixing: MappingMatrix = {
     let init = MappingMatrix {
         rows: 6 as i32,
@@ -748,7 +728,6 @@ pub static mut mapping_matrix_foa_demixing: MappingMatrix = {
     };
     init
 };
-#[c2rust::src_loc = "306:18"]
 pub static mut mapping_matrix_foa_demixing_data: [i16; 36] = [
     16384 as i32 as i16,
     16384 as i32 as i16,
@@ -787,7 +766,6 @@ pub static mut mapping_matrix_foa_demixing_data: [i16; 36] = [
     0 as i32 as i16,
     32767 as i32 as i16,
 ];
-#[c2rust::src_loc = "314:21"]
 pub static mut mapping_matrix_soa_demixing: MappingMatrix = {
     let init = MappingMatrix {
         rows: 11 as i32,
@@ -796,7 +774,6 @@ pub static mut mapping_matrix_soa_demixing: MappingMatrix = {
     };
     init
 };
-#[c2rust::src_loc = "315:18"]
 pub static mut mapping_matrix_soa_demixing_data: [i16; 121] = [
     2771 as i32 as i16,
     2771 as i32 as i16,
@@ -920,7 +897,6 @@ pub static mut mapping_matrix_soa_demixing_data: [i16; 121] = [
     0 as i32 as i16,
     8312 as i32 as i16,
 ];
-#[c2rust::src_loc = "334:21"]
 pub static mut mapping_matrix_toa_demixing: MappingMatrix = {
     let init = MappingMatrix {
         rows: 18 as i32,
@@ -929,7 +905,6 @@ pub static mut mapping_matrix_toa_demixing: MappingMatrix = {
     };
     init
 };
-#[c2rust::src_loc = "335:18"]
 pub static mut mapping_matrix_toa_demixing_data: [i16; 324] = [
     8192 as i32 as i16,
     8192 as i32 as i16,

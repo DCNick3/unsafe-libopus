@@ -1,4 +1,3 @@
-#[c2rust::src_loc = "36:1"]
 pub unsafe fn silk_resampler_private_AR2(
     S: *mut i32,
     out_Q8: *mut i32,

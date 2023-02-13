@@ -1,21 +1,16 @@
 use crate::silk::bwexpander_32::silk_bwexpander_32;
 use crate::silk::SigProc_FIX::silk_min_32;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:38"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: i32 = 0x7fff as i32;
 }
 pub use self::typedef_h::silk_int16_MAX;
 use crate::silk::define::LSF_COS_TAB_SZ_FIX;
 use crate::silk::table_LSF_cos::silk_LSFCosTab_FIX_Q12;
 
-#[c2rust::src_loc = "42:9"]
 pub const BIN_DIV_STEPS_A2NLSF_FIX: i32 = 3 as i32;
-#[c2rust::src_loc = "43:9"]
 pub const MAX_ITERATIONS_A2NLSF_FIX: i32 = 16 as i32;
 #[inline]
-#[c2rust::src_loc = "47:1"]
 unsafe fn silk_A2NLSF_trans_poly(p: *mut i32, dd: i32) {
     let mut k: i32 = 0;
     let mut n: i32 = 0;
@@ -33,7 +28,6 @@ unsafe fn silk_A2NLSF_trans_poly(p: *mut i32, dd: i32) {
     }
 }
 #[inline]
-#[c2rust::src_loc = "63:1"]
 unsafe fn silk_A2NLSF_eval_poly(p: *mut i32, x: i32, dd: i32) -> i32 {
     let mut n: i32 = 0;
     let mut x_Q16: i32 = 0;
@@ -67,7 +61,6 @@ unsafe fn silk_A2NLSF_eval_poly(p: *mut i32, x: i32, dd: i32) -> i32 {
     return y32;
 }
 #[inline]
-#[c2rust::src_loc = "95:1"]
 unsafe fn silk_A2NLSF_init(a_Q16: *const i32, P: *mut i32, Q: *mut i32, dd: i32) {
     let mut k: i32 = 0;
     *P.offset(dd as isize) = ((1 as i32 as u32) << 16 as i32) as i32;
@@ -91,7 +84,6 @@ unsafe fn silk_A2NLSF_init(a_Q16: *const i32, P: *mut i32, Q: *mut i32, dd: i32)
     silk_A2NLSF_trans_poly(P, dd);
     silk_A2NLSF_trans_poly(Q, dd);
 }
-#[c2rust::src_loc = "127:1"]
 pub unsafe fn silk_A2NLSF(NLSF: *mut i16, a_Q16: *mut i32, d: i32) {
     let mut i: i32 = 0;
     let mut k: i32 = 0;

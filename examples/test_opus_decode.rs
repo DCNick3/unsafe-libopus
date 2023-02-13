@@ -5,16 +5,12 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_assignments)]
 #![allow(unused_mut)]
-#![feature(register_tool)]
-#![register_tool(c2rust)]
 
 use libc::{atoi, fprintf, getenv, getpid, printf, rand, time};
 use libc_stdhandle::{stderr, stdout};
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/tests/test_opus_common.h:46"]
 pub mod test_opus_common_h {
     #[inline]
-    #[c2rust::src_loc = "28:1"]
     pub unsafe fn deb2_impl(
         mut _t: *mut u8,
         mut _p: *mut *mut u8,
@@ -44,7 +40,6 @@ pub mod test_opus_common_h {
         };
     }
     #[inline]
-    #[c2rust::src_loc = "44:1"]
     pub unsafe fn debruijn2(mut _k: i32, mut _res: *mut u8) {
         let mut p: *mut u8 = std::ptr::null_mut::<u8>();
         let mut t: *mut u8 = std::ptr::null_mut::<u8>();
@@ -64,12 +59,9 @@ pub mod test_opus_common_h {
         deb2_impl(t, &mut p, _k, 1 as i32, 1 as i32);
         free(t as *mut core::ffi::c_void);
     }
-    #[c2rust::src_loc = "56:20"]
     pub static mut Rz: u32 = 0;
-    #[c2rust::src_loc = "56:24"]
     pub static mut Rw: u32 = 0;
     #[inline]
-    #[c2rust::src_loc = "57:1"]
     pub unsafe fn fast_rand() -> u32 {
         Rz = (36969 as i32 as u32)
             .wrapping_mul(Rz & 65535 as i32 as u32)
@@ -79,10 +71,8 @@ pub mod test_opus_common_h {
             .wrapping_add(Rw >> 16 as i32);
         (Rz << 16 as i32).wrapping_add(Rw)
     }
-    #[c2rust::src_loc = "63:20"]
     pub static mut iseed: u32 = 0;
     #[inline]
-    #[c2rust::src_loc = "66:1"]
     pub unsafe fn _test_failed(mut file: *const i8, mut line: i32) -> ! {
         fprintf(
             stderr(),
@@ -131,7 +121,6 @@ use unsafe_libopus::{
     opus_packet_get_nb_channels, opus_pcm_soft_clip, OpusDecoder,
 };
 
-#[c2rust::src_loc = "51:1"]
 pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
     static mut fsv: [i32; 5] = [
         48000 as i32,
@@ -1112,7 +1101,6 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
     free(packet as *mut core::ffi::c_void);
     0 as i32
 }
-#[c2rust::src_loc = "384:1"]
 pub unsafe fn test_soft_clip() {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -1206,7 +1194,6 @@ pub unsafe fn test_soft_clip() {
     );
     printf(b"OK.\n\0" as *const u8 as *const i8);
 }
-#[c2rust::src_loc = "426:1"]
 unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
     let mut oversion: *const i8 = std::ptr::null::<i8>();
     let mut env_seed: *const i8 = std::ptr::null::<i8>();

@@ -1,8 +1,5 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tuning_parameters.h:34"]
 pub mod tuning_parameters_h {
-    #[c2rust::src_loc = "44:9"]
     pub const FIND_PITCH_WHITE_NOISE_FRACTION: f32 = 1e-3f32;
-    #[c2rust::src_loc = "47:9"]
     pub const FIND_PITCH_BANDWIDTH_EXPANSION: f32 = 0.99f32;
 }
 pub use self::tuning_parameters_h::{
@@ -20,7 +17,6 @@ use crate::silk::float::schur_FLP::silk_schur_FLP;
 use crate::silk::float::structs_FLP::{silk_encoder_control_FLP, silk_encoder_state_FLP};
 use crate::silk::float::LPC_analysis_filter_FLP::silk_LPC_analysis_filter_FLP;
 
-#[c2rust::src_loc = "36:1"]
 pub unsafe fn silk_find_pitch_lags_FLP(
     mut psEnc: *mut silk_encoder_state_FLP,
     mut psEncCtrl: *mut silk_encoder_control_FLP,

@@ -1,6 +1,5 @@
 use crate::celt::celt::celt_fatal;
 
-#[c2rust::src_loc = "40:1"]
 pub unsafe fn silk_insertion_sort_increasing(a: *mut i32, idx: *mut i32, L: i32, K: i32) {
     let mut value: i32 = 0;
     let mut i: i32 = 0;
@@ -60,7 +59,6 @@ pub unsafe fn silk_insertion_sort_increasing(a: *mut i32, idx: *mut i32, L: i32,
         i += 1;
     }
 }
-#[c2rust::src_loc = "135:1"]
 pub unsafe fn silk_insertion_sort_increasing_all_values_int16(a: *mut i16, L: i32) {
     let mut value: i32 = 0;
     let mut i: i32 = 0;

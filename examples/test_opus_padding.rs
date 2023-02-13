@@ -5,18 +5,13 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_assignments)]
 #![allow(unused_mut)]
-#![feature(register_tool)]
-#![register_tool(c2rust)]
 
 use libc::fprintf;
 use libc_stdhandle::stderr;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/tests/test_opus_common.h:36"]
 pub mod test_opus_common_h {
-    #[c2rust::src_loc = "63:20"]
     pub static mut iseed: u32 = 0;
     #[inline]
-    #[c2rust::src_loc = "66:1"]
     pub unsafe fn _test_failed(mut file: *const i8, mut line: i32) -> ! {
         fprintf(
             stderr(),
@@ -60,7 +55,6 @@ use unsafe_libopus::{
     opus_decode, opus_decoder_create, opus_decoder_destroy, opus_get_version_string, OpusDecoder,
 };
 
-#[c2rust::src_loc = "42:1"]
 pub unsafe fn test_overflow() -> i32 {
     let mut decoder: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
     let mut result: i32 = 0;
@@ -103,7 +97,6 @@ pub unsafe fn test_overflow() -> i32 {
     fprintf(stderr(), b"OK.\n\0" as *const u8 as *const i8);
     1 as i32
 }
-#[c2rust::src_loc = "78:1"]
 unsafe fn main_0() -> i32 {
     let mut oversion: *const i8 = std::ptr::null::<i8>();
     let mut _tests: i32 = 0 as i32;

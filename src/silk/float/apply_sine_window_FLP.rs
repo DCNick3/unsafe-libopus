@@ -1,5 +1,4 @@
 use crate::celt::celt::celt_fatal;
-#[c2rust::src_loc = "38:1"]
 pub unsafe fn silk_apply_sine_window_FLP(
     px_win: *mut f32,
     px: *const f32,

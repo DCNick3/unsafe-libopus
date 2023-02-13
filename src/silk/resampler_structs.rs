@@ -3,7 +3,6 @@ pub const SILK_RESAMPLER_MAX_IIR_ORDER: usize = 6;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "38:16"]
 pub struct silk_resampler_state_struct {
     pub sIIR: [i32; SILK_RESAMPLER_MAX_IIR_ORDER],
     pub sFIR: sFIR_union,
@@ -20,7 +19,6 @@ pub struct silk_resampler_state_struct {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "40:5"]
 pub union sFIR_union {
     pub i32_0: [i32; SILK_RESAMPLER_MAX_FIR_ORDER],
     pub i16_0: [i16; SILK_RESAMPLER_MAX_FIR_ORDER],

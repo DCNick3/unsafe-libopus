@@ -2,14 +2,12 @@ use crate::celt::celt::celt_fatal;
 use crate::celt::entcode::{celt_udiv, ec_ctx, ec_window, EC_UINT_BITS, EC_WINDOW_SIZE};
 use crate::silk::macros::EC_CLZ0;
 
-#[c2rust::src_loc = "48:1"]
 pub type ec_dec = ec_ctx;
 
 use crate::celt::entcode::{
     EC_CODE_BITS, EC_CODE_BOT, EC_CODE_EXTRA, EC_CODE_TOP, EC_SYM_BITS, EC_SYM_MAX,
 };
 
-#[c2rust::src_loc = "91:1"]
 unsafe fn ec_read_byte(mut _this: *mut ec_dec) -> i32 {
     return if (*_this).offs < (*_this).storage {
         let fresh0 = (*_this).offs;
@@ -19,7 +17,6 @@ unsafe fn ec_read_byte(mut _this: *mut ec_dec) -> i32 {
         0 as i32
     };
 }
-#[c2rust::src_loc = "95:1"]
 unsafe fn ec_read_byte_from_end(mut _this: *mut ec_dec) -> i32 {
     return if (*_this).end_offs < (*_this).storage {
         (*_this).end_offs = ((*_this).end_offs).wrapping_add(1);
@@ -28,7 +25,6 @@ unsafe fn ec_read_byte_from_end(mut _this: *mut ec_dec) -> i32 {
         0 as i32
     };
 }
-#[c2rust::src_loc = "102:1"]
 unsafe fn ec_dec_normalize(mut _this: *mut ec_dec) {
     while (*_this).rng <= EC_CODE_BOT {
         let mut sym: i32 = 0;
@@ -41,7 +37,6 @@ unsafe fn ec_dec_normalize(mut _this: *mut ec_dec) {
             & EC_CODE_TOP.wrapping_sub(1 as i32 as u32);
     }
 }
-#[c2rust::src_loc = "119:1"]
 pub unsafe fn ec_dec_init(mut _this: *mut ec_dec, mut _buf: *mut u8, mut _storage: u32) {
     (*_this).buf = _buf;
     (*_this).storage = _storage;
@@ -59,7 +54,6 @@ pub unsafe fn ec_dec_init(mut _this: *mut ec_dec, mut _buf: *mut u8, mut _storag
     (*_this).error = 0 as i32;
     ec_dec_normalize(_this);
 }
-#[c2rust::src_loc = "139:1"]
 pub unsafe fn ec_decode(mut _this: *mut ec_dec, mut _ft: u32) -> u32 {
     let mut s: u32 = 0;
     (*_this).ext = celt_udiv((*_this).rng, _ft);
@@ -69,7 +63,6 @@ pub unsafe fn ec_decode(mut _this: *mut ec_dec, mut _ft: u32) -> u32 {
             & -((_ft < s.wrapping_add(1 as i32 as u32)) as i32) as u32,
     ));
 }
-#[c2rust::src_loc = "146:1"]
 pub unsafe fn ec_decode_bin(mut _this: *mut ec_dec, mut _bits: u32) -> u32 {
     let mut s: u32 = 0;
     (*_this).ext = (*_this).rng >> _bits;
@@ -79,7 +72,6 @@ pub unsafe fn ec_decode_bin(mut _this: *mut ec_dec, mut _bits: u32) -> u32 {
             & -(((1 as u32) << _bits < s.wrapping_add(1 as u32)) as i32) as u32,
     ));
 }
-#[c2rust::src_loc = "153:1"]
 pub unsafe fn ec_dec_update(mut _this: *mut ec_dec, mut _fl: u32, mut _fh: u32, mut _ft: u32) {
     let mut s: u32 = 0;
     s = ((*_this).ext).wrapping_mul(_ft.wrapping_sub(_fh));
@@ -91,7 +83,6 @@ pub unsafe fn ec_dec_update(mut _this: *mut ec_dec, mut _fl: u32, mut _fh: u32, 
     };
     ec_dec_normalize(_this);
 }
-#[c2rust::src_loc = "162:1"]
 pub unsafe fn ec_dec_bit_logp(mut _this: *mut ec_dec, mut _logp: u32) -> i32 {
     let mut r: u32 = 0;
     let mut d: u32 = 0;
@@ -108,7 +99,6 @@ pub unsafe fn ec_dec_bit_logp(mut _this: *mut ec_dec, mut _logp: u32) -> i32 {
     ec_dec_normalize(_this);
     return ret;
 }
-#[c2rust::src_loc = "177:1"]
 pub unsafe fn ec_dec_icdf(mut _this: *mut ec_dec, mut _icdf: *const u8, mut _ftb: u32) -> i32 {
     let mut r: u32 = 0;
     let mut d: u32 = 0;
@@ -132,7 +122,6 @@ pub unsafe fn ec_dec_icdf(mut _this: *mut ec_dec, mut _icdf: *const u8, mut _ftb
     ec_dec_normalize(_this);
     return ret;
 }
-#[c2rust::src_loc = "198:1"]
 pub unsafe fn ec_dec_uint(mut _this: *mut ec_dec, mut _ft: u32) -> u32 {
     let mut ft: u32 = 0;
     let mut s: u32 = 0;
@@ -165,7 +154,6 @@ pub unsafe fn ec_dec_uint(mut _this: *mut ec_dec, mut _ft: u32) -> u32 {
         return s;
     };
 }
-#[c2rust::src_loc = "225:1"]
 pub unsafe fn ec_dec_bits(mut _this: *mut ec_dec, mut _bits: u32) -> u32 {
     let mut window: ec_window = 0;
     let mut available: i32 = 0;

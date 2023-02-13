@@ -11,7 +11,6 @@ use crate::silk::tables_pitch_lag::{
     silk_pitch_contour_iCDF,
 };
 
-#[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_decoder_set_fs(
     mut psDec: *mut silk_decoder_state,
     fs_kHz: i32,

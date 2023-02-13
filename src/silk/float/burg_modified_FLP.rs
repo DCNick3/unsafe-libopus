@@ -1,6 +1,4 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/tuning_parameters.h:33"]
 pub mod tuning_parameters_h {
-    #[c2rust::src_loc = "54:9"]
     pub const FIND_LPC_COND_FAC: f32 = 1e-5f32;
 }
 pub use self::tuning_parameters_h::FIND_LPC_COND_FAC;
@@ -9,7 +7,6 @@ use crate::externs::{memcpy, memset};
 use crate::silk::float::energy_FLP::silk_energy_FLP;
 use crate::silk::float::inner_product_FLP::silk_inner_product_FLP;
 
-#[c2rust::src_loc = "39:1"]
 pub unsafe fn silk_burg_modified_FLP(
     A: *mut f32,
     x: *const f32,

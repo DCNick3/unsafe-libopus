@@ -1,12 +1,9 @@
 use crate::externs::{free, malloc};
 
-#[c2rust::header_src = "internal:0"]
 pub mod internal {
-    #[c2rust::src_loc = "0:0"]
     pub type __builtin_va_list = [__va_list_tag; 1];
     #[derive(Copy, Clone)]
     #[repr(C)]
-    #[c2rust::src_loc = "0:0"]
     pub struct __va_list_tag {
         pub gp_offset: u32,
         pub fp_offset: u32,
@@ -14,33 +11,21 @@ pub mod internal {
         pub reg_save_area: *mut core::ffi::c_void,
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:32"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = f32;
-    #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = f32;
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:32"]
 pub mod stddef_h {
-    #[c2rust::src_loc = "46:1"]
     pub type size_t = u64;
-    #[c2rust::src_loc = "89:11"]
     pub const NULL: i32 = 0 as i32;
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stdarg.h:32"]
 pub mod stdarg_h {
-    #[c2rust::src_loc = "14:1"]
     pub type va_list = __builtin_va_list;
     use super::internal::__builtin_va_list;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:32"]
 pub mod opus_defines_h {
-    #[c2rust::src_loc = "60:9"]
     pub const OPUS_ALLOC_FAIL: i32 = -(7 as i32);
-    #[c2rust::src_loc = "48:9"]
     pub const OPUS_BAD_ARG: i32 = -(1 as i32);
-    #[c2rust::src_loc = "46:9"]
     pub const OPUS_OK: i32 = 0 as i32;
 }
 pub use self::arch_h::{opus_val16, opus_val32};
@@ -63,11 +48,9 @@ use crate::{opus_multistream_decoder_get_size, opus_multistream_decoder_init, Op
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "41:8"]
 pub struct OpusProjectionDecoder {
     pub demixing_matrix_size_in_bytes: i32,
 }
-#[c2rust::src_loc = "48:1"]
 unsafe fn opus_projection_copy_channel_out_float(
     dst: *mut core::ffi::c_void,
     dst_stride: i32,
@@ -100,7 +83,6 @@ unsafe fn opus_projection_copy_channel_out_float(
         );
     }
 }
-#[c2rust::src_loc = "71:1"]
 unsafe fn opus_projection_copy_channel_out_short(
     dst: *mut core::ffi::c_void,
     dst_stride: i32,
@@ -133,20 +115,17 @@ unsafe fn opus_projection_copy_channel_out_short(
         );
     }
 }
-#[c2rust::src_loc = "92:1"]
 unsafe fn get_dec_demixing_matrix(st: *mut OpusProjectionDecoder) -> *mut MappingMatrix {
     return (st as *mut i8)
         .offset(align(::core::mem::size_of::<OpusProjectionDecoder>() as u64 as i32) as isize)
         as *mut core::ffi::c_void as *mut MappingMatrix;
 }
-#[c2rust::src_loc = "99:1"]
 unsafe fn get_multistream_decoder(st: *mut OpusProjectionDecoder) -> *mut OpusMSDecoder {
     return (st as *mut i8).offset(align(
         (::core::mem::size_of::<OpusProjectionDecoder>() as u64)
             .wrapping_add((*st).demixing_matrix_size_in_bytes as u64) as i32,
     ) as isize) as *mut core::ffi::c_void as *mut OpusMSDecoder;
 }
-#[c2rust::src_loc = "107:1"]
 pub unsafe fn opus_projection_decoder_get_size(
     channels: i32,
     streams: i32,
@@ -166,7 +145,6 @@ pub unsafe fn opus_projection_decoder_get_size(
         + matrix_size
         + decoder_size;
 }
-#[c2rust::src_loc = "125:1"]
 pub unsafe fn opus_projection_decoder_init(
     mut st: *mut OpusProjectionDecoder,
     Fs: i32,
@@ -225,7 +203,6 @@ pub unsafe fn opus_projection_decoder_init(
     );
     return ret;
 }
-#[c2rust::src_loc = "176:1"]
 pub unsafe fn opus_projection_decoder_create(
     Fs: i32,
     channels: i32,
@@ -270,7 +247,6 @@ pub unsafe fn opus_projection_decoder_create(
     }
     return st;
 }
-#[c2rust::src_loc = "222:1"]
 pub unsafe fn opus_projection_decode(
     st: *mut OpusProjectionDecoder,
     data: *const u8,
@@ -302,7 +278,6 @@ pub unsafe fn opus_projection_decode(
         get_dec_demixing_matrix(st) as *mut core::ffi::c_void,
     );
 }
-#[c2rust::src_loc = "233:1"]
 pub unsafe fn opus_projection_decode_float(
     st: *mut OpusProjectionDecoder,
     data: *const u8,
@@ -334,7 +309,6 @@ pub unsafe fn opus_projection_decode_float(
         get_dec_demixing_matrix(st) as *mut core::ffi::c_void,
     );
 }
-#[c2rust::src_loc = "242:1"]
 pub unsafe fn opus_projection_decoder_ctl_impl(
     st: *mut OpusProjectionDecoder,
     request: i32,
@@ -356,7 +330,6 @@ macro_rules! opus_projection_decoder_ctl {
         opus_projection_decoder_ctl!($st, $request, $($arg),*)
     };
 }
-#[c2rust::src_loc = "254:1"]
 pub unsafe fn opus_projection_decoder_destroy(st: *mut OpusProjectionDecoder) {
     free(st as *mut core::ffi::c_void);
 }

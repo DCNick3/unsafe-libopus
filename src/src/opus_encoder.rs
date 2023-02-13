@@ -1,12 +1,9 @@
 use crate::externs::{free, malloc};
 
-#[c2rust::header_src = "internal:0"]
 pub mod internal {
-    #[c2rust::src_loc = "0:0"]
     pub type __builtin_va_list = [__va_list_tag; 1];
     #[derive(Copy, Clone)]
     #[repr(C)]
-    #[c2rust::src_loc = "0:0"]
     pub struct __va_list_tag {
         pub gp_offset: u32,
         pub fp_offset: u32,
@@ -14,179 +11,98 @@ pub mod internal {
         pub reg_save_area: *mut core::ffi::c_void,
     }
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stdarg.h:32"]
 pub mod stdarg_h {
-    #[c2rust::src_loc = "14:1"]
     pub type va_list = __builtin_va_list;
     use super::internal::__builtin_va_list;
 }
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:33"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = f32;
-    #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = f32;
-    #[c2rust::src_loc = "57:9"]
     pub const CELT_SIG_SCALE: f32 = 32768.0f32;
-    #[c2rust::src_loc = "203:9"]
     pub const Q15ONE: f32 = 1.0f32;
-    #[c2rust::src_loc = "207:9"]
     pub const EPSILON: f32 = 1e-15f32;
-    #[c2rust::src_loc = "208:9"]
     pub const VERY_SMALL: f32 = 1e-30f32;
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:33"]
 pub mod stddef_h {
-    #[c2rust::src_loc = "46:1"]
     pub type size_t = u64;
-    #[c2rust::src_loc = "89:11"]
     pub const NULL: i32 = 0 as i32;
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:38"]
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]
     pub use core::arch::x86::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
     #[cfg(target_arch = "x86_64")]
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:33"]
 pub mod opus_defines_h {
-    #[c2rust::src_loc = "130:9"]
     pub const OPUS_SET_APPLICATION_REQUEST: i32 = 4000;
-    #[c2rust::src_loc = "131:9"]
     pub const OPUS_GET_APPLICATION_REQUEST: i32 = 4001;
-    #[c2rust::src_loc = "133:9"]
     pub const OPUS_GET_BITRATE_REQUEST: i32 = 4003;
-    #[c2rust::src_loc = "150:9"]
     pub const OPUS_SET_FORCE_CHANNELS_REQUEST: i32 = 4022;
-    #[c2rust::src_loc = "151:9"]
     pub const OPUS_GET_FORCE_CHANNELS_REQUEST: i32 = 4023;
-    #[c2rust::src_loc = "134:9"]
     pub const OPUS_SET_MAX_BANDWIDTH_REQUEST: i32 = 4004;
-    #[c2rust::src_loc = "135:9"]
     pub const OPUS_GET_MAX_BANDWIDTH_REQUEST: i32 = 4005;
-    #[c2rust::src_loc = "138:9"]
     pub const OPUS_SET_BANDWIDTH_REQUEST: i32 = 4008;
-    #[c2rust::src_loc = "139:9"]
     pub const OPUS_GET_BANDWIDTH_REQUEST: i32 = 4009;
-    #[c2rust::src_loc = "146:9"]
     pub const OPUS_SET_DTX_REQUEST: i32 = 4016;
-    #[c2rust::src_loc = "147:9"]
     pub const OPUS_GET_DTX_REQUEST: i32 = 4017;
-    #[c2rust::src_loc = "141:9"]
     pub const OPUS_GET_COMPLEXITY_REQUEST: i32 = 4011;
-    #[c2rust::src_loc = "142:9"]
     pub const OPUS_SET_INBAND_FEC_REQUEST: i32 = 4012;
-    #[c2rust::src_loc = "143:9"]
     pub const OPUS_GET_INBAND_FEC_REQUEST: i32 = 4013;
-    #[c2rust::src_loc = "144:9"]
     pub const OPUS_SET_PACKET_LOSS_PERC_REQUEST: i32 = 4014 as i32;
-    #[c2rust::src_loc = "145:9"]
     pub const OPUS_GET_PACKET_LOSS_PERC_REQUEST: i32 = 4015;
-    #[c2rust::src_loc = "137:9"]
     pub const OPUS_GET_VBR_REQUEST: i32 = 4007;
-    #[c2rust::src_loc = "149:9"]
     pub const OPUS_GET_VBR_CONSTRAINT_REQUEST: i32 = 4021;
-    #[c2rust::src_loc = "152:9"]
     pub const OPUS_SET_SIGNAL_REQUEST: i32 = 4024;
-    #[c2rust::src_loc = "153:9"]
     pub const OPUS_GET_SIGNAL_REQUEST: i32 = 4025;
-    #[c2rust::src_loc = "154:9"]
     pub const OPUS_GET_LOOKAHEAD_REQUEST: i32 = 4027;
-    #[c2rust::src_loc = "156:9"]
     pub const OPUS_GET_SAMPLE_RATE_REQUEST: i32 = 4029;
-    #[c2rust::src_loc = "162:9"]
     pub const OPUS_GET_LSB_DEPTH_REQUEST: i32 = 4037;
-    #[c2rust::src_loc = "164:9"]
     pub const OPUS_SET_EXPERT_FRAME_DURATION_REQUEST: i32 = 4040;
-    #[c2rust::src_loc = "211:9"]
     pub const OPUS_FRAMESIZE_5_MS: i32 = 5002 as i32;
-    #[c2rust::src_loc = "212:9"]
     pub const OPUS_FRAMESIZE_10_MS: i32 = 5003 as i32;
-    #[c2rust::src_loc = "213:9"]
     pub const OPUS_FRAMESIZE_20_MS: i32 = 5004 as i32;
-    #[c2rust::src_loc = "215:9"]
     pub const OPUS_FRAMESIZE_60_MS: i32 = 5006 as i32;
-    #[c2rust::src_loc = "216:9"]
     pub const OPUS_FRAMESIZE_80_MS: i32 = 5007 as i32;
-    #[c2rust::src_loc = "217:9"]
     pub const OPUS_FRAMESIZE_100_MS: i32 = 5008 as i32;
-    #[c2rust::src_loc = "165:9"]
     pub const OPUS_GET_EXPERT_FRAME_DURATION_REQUEST: i32 = 4041;
-    #[c2rust::src_loc = "166:9"]
     pub const OPUS_SET_PREDICTION_DISABLED_REQUEST: i32 = 4042;
-    #[c2rust::src_loc = "167:9"]
     pub const OPUS_GET_PREDICTION_DISABLED_REQUEST: i32 = 4043;
-    #[c2rust::src_loc = "169:9"]
     pub const OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4046 as i32;
-    #[c2rust::src_loc = "170:9"]
     pub const OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4047;
-    #[c2rust::src_loc = "171:9"]
     pub const OPUS_GET_IN_DTX_REQUEST: i32 = 4049;
-    #[c2rust::src_loc = "56:9"]
     pub const OPUS_UNIMPLEMENTED: i32 = -(5 as i32);
-    #[c2rust::src_loc = "218:9"]
     pub const OPUS_FRAMESIZE_120_MS: i32 = 5009 as i32;
-    #[c2rust::src_loc = "214:9"]
     pub const OPUS_FRAMESIZE_40_MS: i32 = 5005 as i32;
-    #[c2rust::src_loc = "210:9"]
     pub const OPUS_FRAMESIZE_2_5_MS: i32 = 5001 as i32;
-    #[c2rust::src_loc = "201:9"]
     pub const OPUS_SIGNAL_VOICE: i32 = 3001 as i32;
-    #[c2rust::src_loc = "202:9"]
     pub const OPUS_SIGNAL_MUSIC: i32 = 3002 as i32;
-    #[c2rust::src_loc = "161:9"]
     pub const OPUS_SET_LSB_DEPTH_REQUEST: i32 = 4036 as i32;
-    #[c2rust::src_loc = "189:9"]
     pub const OPUS_BITRATE_MAX: i32 = -(1 as i32);
-    #[c2rust::src_loc = "205:9"]
     pub const OPUS_BANDWIDTH_WIDEBAND: i32 = 1103 as i32;
-    #[c2rust::src_loc = "148:9"]
     pub const OPUS_SET_VBR_CONSTRAINT_REQUEST: i32 = 4020 as i32;
-    #[c2rust::src_loc = "662:9"]
     pub const OPUS_RESET_STATE: i32 = 4028 as i32;
-    #[c2rust::src_loc = "136:9"]
     pub const OPUS_SET_VBR_REQUEST: i32 = 4006 as i32;
-    #[c2rust::src_loc = "132:9"]
     pub const OPUS_SET_BITRATE_REQUEST: i32 = 4002 as i32;
-    #[c2rust::src_loc = "157:9"]
     pub const OPUS_GET_FINAL_RANGE_REQUEST: i32 = 4031 as i32;
-    #[c2rust::src_loc = "203:9"]
     pub const OPUS_BANDWIDTH_NARROWBAND: i32 = 1101 as i32;
-    #[c2rust::src_loc = "204:9"]
     pub const OPUS_BANDWIDTH_MEDIUMBAND: i32 = 1102 as i32;
-    #[c2rust::src_loc = "206:9"]
     pub const OPUS_BANDWIDTH_SUPERWIDEBAND: i32 = 1104 as i32;
-    #[c2rust::src_loc = "50:9"]
     pub const OPUS_BUFFER_TOO_SMALL: i32 = -(2 as i32);
-    #[c2rust::src_loc = "60:9"]
     pub const OPUS_ALLOC_FAIL: i32 = -(7 as i32);
-    #[c2rust::src_loc = "193:9"]
     pub const OPUS_APPLICATION_VOIP: i32 = 2048 as i32;
-    #[c2rust::src_loc = "196:9"]
     pub const OPUS_APPLICATION_AUDIO: i32 = 2049 as i32;
-    #[c2rust::src_loc = "199:9"]
     pub const OPUS_APPLICATION_RESTRICTED_LOWDELAY: i32 = 2051 as i32;
-    #[c2rust::src_loc = "48:9"]
     pub const OPUS_BAD_ARG: i32 = -(1 as i32);
-    #[c2rust::src_loc = "52:9"]
     pub const OPUS_INTERNAL_ERROR: i32 = -(3 as i32);
-    #[c2rust::src_loc = "140:9"]
     pub const OPUS_SET_COMPLEXITY_REQUEST: i32 = 4010 as i32;
-    #[c2rust::src_loc = "188:9"]
     pub const OPUS_AUTO: i32 = -(1000 as i32);
-    #[c2rust::src_loc = "209:9"]
     pub const OPUS_FRAMESIZE_ARG: i32 = 5000 as i32;
-    #[c2rust::src_loc = "207:9"]
     pub const OPUS_BANDWIDTH_FULLBAND: i32 = 1105 as i32;
-    #[c2rust::src_loc = "46:9"]
     pub const OPUS_OK: i32 = 0 as i32;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cpu_support.h:35"]
 pub mod cpu_support_h {
     #[inline]
-    #[c2rust::src_loc = "65:1"]
     pub unsafe fn opus_select_arch() -> i32 {
         return 0 as i32;
     }
@@ -261,7 +177,6 @@ use crate::{
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "66:8"]
 pub struct OpusEncoder {
     pub(crate) celt_enc_offset: i32,
     pub(crate) silk_enc_offset: i32,
@@ -311,7 +226,6 @@ pub struct OpusEncoder {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "60:9"]
 pub struct StereoWidthState {
     pub XX: opus_val32,
     pub XY: opus_val32,
@@ -319,9 +233,7 @@ pub struct StereoWidthState {
     pub smoothed_width: opus_val16,
     pub max_follower: opus_val16,
 }
-#[c2rust::src_loc = "57:9"]
 pub const PSEUDO_SNR_THRESHOLD: f32 = 316.23f32;
-#[c2rust::src_loc = "125:25"]
 static mut mono_voice_bandwidth_thresholds: [i32; 8] = [
     9000 as i32,
     700 as i32,
@@ -332,7 +244,6 @@ static mut mono_voice_bandwidth_thresholds: [i32; 8] = [
     14000 as i32,
     2000 as i32,
 ];
-#[c2rust::src_loc = "131:25"]
 static mut mono_music_bandwidth_thresholds: [i32; 8] = [
     9000 as i32,
     700 as i32,
@@ -343,7 +254,6 @@ static mut mono_music_bandwidth_thresholds: [i32; 8] = [
     12000 as i32,
     2000 as i32,
 ];
-#[c2rust::src_loc = "137:25"]
 static mut stereo_voice_bandwidth_thresholds: [i32; 8] = [
     9000 as i32,
     700 as i32,
@@ -354,7 +264,6 @@ static mut stereo_voice_bandwidth_thresholds: [i32; 8] = [
     14000 as i32,
     2000 as i32,
 ];
-#[c2rust::src_loc = "143:25"]
 static mut stereo_music_bandwidth_thresholds: [i32; 8] = [
     9000 as i32,
     700 as i32,
@@ -365,14 +274,10 @@ static mut stereo_music_bandwidth_thresholds: [i32; 8] = [
     12000 as i32,
     2000 as i32,
 ];
-#[c2rust::src_loc = "150:25"]
 static mut stereo_voice_threshold: i32 = 19000 as i32;
-#[c2rust::src_loc = "151:25"]
 static mut stereo_music_threshold: i32 = 17000 as i32;
-#[c2rust::src_loc = "154:25"]
 static mut mode_thresholds: [[i32; 2]; 2] =
     [[64000 as i32, 10000 as i32], [44000 as i32, 10000 as i32]];
-#[c2rust::src_loc = "160:25"]
 static mut fec_thresholds: [i32; 10] = [
     12000 as i32,
     1000 as i32,
@@ -385,7 +290,6 @@ static mut fec_thresholds: [i32; 10] = [
     22000 as i32,
     1000 as i32,
 ];
-#[c2rust::src_loc = "168:1"]
 pub unsafe fn opus_encoder_get_size(channels: i32) -> i32 {
     let mut silkEncSizeBytes: i32 = 0;
     let mut celtEncSizeBytes: i32 = 0;
@@ -403,7 +307,6 @@ pub unsafe fn opus_encoder_get_size(channels: i32) -> i32 {
         + silkEncSizeBytes
         + celtEncSizeBytes;
 }
-#[c2rust::src_loc = "182:1"]
 pub unsafe fn opus_encoder_init(
     mut st: *mut OpusEncoder,
     Fs: i32,
@@ -498,7 +401,6 @@ pub unsafe fn opus_encoder_init(
     (*st).analysis.application = (*st).application;
     return OPUS_OK;
 }
-#[c2rust::src_loc = "273:1"]
 unsafe fn gen_toc(mode: i32, mut framerate: i32, bandwidth: i32, channels: i32) -> u8 {
     let mut period: i32 = 0;
     let mut toc: u8 = 0;
@@ -526,7 +428,6 @@ unsafe fn gen_toc(mode: i32, mut framerate: i32, bandwidth: i32, channels: i32) 
     toc = (toc as i32 | ((channels == 2 as i32) as i32) << 2 as i32) as u8;
     return toc;
 }
-#[c2rust::src_loc = "306:1"]
 unsafe fn silk_biquad_float(
     in_0: *const opus_val16,
     B_Q28: *const i32,
@@ -563,7 +464,6 @@ unsafe fn silk_biquad_float(
         k += 1;
     }
 }
-#[c2rust::src_loc = "345:1"]
 unsafe fn hp_cutoff(
     in_0: *const opus_val16,
     cutoff_Hz: i32,
@@ -615,7 +515,6 @@ unsafe fn hp_cutoff(
         );
     }
 }
-#[c2rust::src_loc = "404:1"]
 unsafe fn dc_reject(
     in_0: *const opus_val16,
     cutoff_Hz: i32,
@@ -669,7 +568,6 @@ unsafe fn dc_reject(
         *hp_mem.offset(0 as i32 as isize) = m0_0;
     };
 }
-#[c2rust::src_loc = "445:1"]
 unsafe fn stereo_fade(
     in_0: *const opus_val16,
     out: *mut opus_val16,
@@ -716,7 +614,6 @@ unsafe fn stereo_fade(
         i += 1;
     }
 }
-#[c2rust::src_loc = "477:1"]
 unsafe fn gain_fade(
     in_0: *const opus_val16,
     out: *mut opus_val16,
@@ -771,7 +668,6 @@ unsafe fn gain_fade(
         }
     }
 }
-#[c2rust::src_loc = "516:1"]
 pub unsafe fn opus_encoder_create(
     Fs: i32,
     channels: i32,
@@ -812,7 +708,6 @@ pub unsafe fn opus_encoder_create(
     }
     return st;
 }
-#[c2rust::src_loc = "546:1"]
 unsafe fn user_bitrate_to_bitrate(
     st: *mut OpusEncoder,
     mut frame_size: i32,
@@ -829,7 +724,6 @@ unsafe fn user_bitrate_to_bitrate(
         return (*st).user_bitrate_bps;
     };
 }
-#[c2rust::src_loc = "564:1"]
 pub unsafe fn downmix_float(
     mut _x: *const core::ffi::c_void,
     y: *mut opus_val32,
@@ -868,7 +762,6 @@ pub unsafe fn downmix_float(
         }
     }
 }
-#[c2rust::src_loc = "588:1"]
 pub unsafe fn downmix_int(
     mut _x: *const core::ffi::c_void,
     y: *mut opus_val32,
@@ -907,7 +800,6 @@ pub unsafe fn downmix_int(
         }
     }
 }
-#[c2rust::src_loc = "611:1"]
 pub unsafe fn frame_size_select(frame_size: i32, variable_duration: i32, Fs: i32) -> i32 {
     let mut new_size: i32 = 0;
     if frame_size < Fs / 400 as i32 {
@@ -943,7 +835,6 @@ pub unsafe fn frame_size_select(frame_size: i32, variable_duration: i32, Fs: i32
     }
     return new_size;
 }
-#[c2rust::src_loc = "636:1"]
 pub unsafe fn compute_stereo_width(
     pcm: *const opus_val16,
     frame_size: i32,
@@ -1061,7 +952,6 @@ pub unsafe fn compute_stereo_width(
         20 as i32 as opus_val32 * (*mem).max_follower
     };
 }
-#[c2rust::src_loc = "718:1"]
 unsafe fn decide_fec(
     useInBandFEC: i32,
     PacketLoss_perc: i32,
@@ -1111,7 +1001,6 @@ unsafe fn decide_fec(
     *bandwidth = orig_bandwidth;
     return 0 as i32;
 }
-#[c2rust::src_loc = "751:1"]
 unsafe fn compute_silk_rate_for_hybrid(
     mut rate: i32,
     bandwidth: i32,
@@ -1206,7 +1095,6 @@ unsafe fn compute_silk_rate_for_hybrid(
     }
     return silk_rate;
 }
-#[c2rust::src_loc = "805:1"]
 unsafe fn compute_equiv_rate(
     bitrate: i32,
     channels: i32,
@@ -1239,7 +1127,6 @@ unsafe fn compute_equiv_rate(
     }
     return equiv;
 }
-#[c2rust::src_loc = "840:1"]
 pub unsafe fn is_digital_silence(
     pcm: *const opus_val16,
     frame_size: i32,
@@ -1252,7 +1139,6 @@ pub unsafe fn is_digital_silence(
     silence = (sample_max <= 1 as i32 as opus_val16 / ((1 as i32) << lsb_depth) as f32) as i32;
     return silence;
 }
-#[c2rust::src_loc = "887:1"]
 unsafe fn compute_frame_energy(
     pcm: *const opus_val16,
     frame_size: i32,
@@ -1262,7 +1148,6 @@ unsafe fn compute_frame_energy(
     let len: i32 = frame_size * channels;
     return celt_inner_prod_c(pcm, pcm, len) / len as f32;
 }
-#[c2rust::src_loc = "895:1"]
 unsafe fn decide_dtx_mode(
     activity_probability: f32,
     nb_no_activity_frames: *mut i32,
@@ -1294,7 +1179,6 @@ unsafe fn decide_dtx_mode(
     }
     return 0 as i32;
 }
-#[c2rust::src_loc = "939:1"]
 unsafe fn encode_multiframe_packet(
     mut st: *mut OpusEncoder,
     pcm: *const opus_val16,
@@ -1414,7 +1298,6 @@ unsafe fn encode_multiframe_packet(
     (*st).silk_mode.toMono = bak_to_mono;
     return ret;
 }
-#[c2rust::src_loc = "1038:1"]
 unsafe fn compute_redundancy_bytes(
     max_data_bytes: i32,
     bitrate_bps: i32,
@@ -1450,7 +1333,6 @@ unsafe fn compute_redundancy_bytes(
     }
     return redundancy_bytes;
 }
-#[c2rust::src_loc = "1066:1"]
 pub unsafe fn opus_encode_native(
     mut st: *mut OpusEncoder,
     pcm: *const opus_val16,
@@ -2897,7 +2779,6 @@ pub unsafe fn opus_encode_native(
     }
     return ret;
 }
-#[c2rust::src_loc = "2235:1"]
 pub unsafe fn opus_encode(
     st: *mut OpusEncoder,
     pcm: *const i16,
@@ -2948,7 +2829,6 @@ pub unsafe fn opus_encode(
     );
     return ret;
 }
-#[c2rust::src_loc = "2258:1"]
 pub unsafe fn opus_encode_float(
     st: *mut OpusEncoder,
     pcm: *const f32,
@@ -2985,7 +2865,6 @@ pub unsafe fn opus_encode_float(
         1 as i32,
     );
 }
-#[c2rust::src_loc = "2269:1"]
 pub unsafe fn opus_encoder_ctl_impl(mut st: *mut OpusEncoder, request: i32, args: VarArgs) -> i32 {
     let mut current_block: u64;
     let mut ret: i32 = 0;
@@ -3535,7 +3414,6 @@ macro_rules! opus_encoder_ctl {
         opus_encoder_ctl!($st, $request,)
     };
 }
-#[c2rust::src_loc = "2780:1"]
 pub unsafe fn opus_encoder_destroy(st: *mut OpusEncoder) {
     free(st as *mut core::ffi::c_void);
 }

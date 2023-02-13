@@ -1,16 +1,11 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:36"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = f32;
-    #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = f32;
-    #[c2rust::src_loc = "181:1"]
     pub type opus_val64 = f32;
 }
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "55:9"]
 pub struct AnalysisInfo {
     pub valid: i32,
     pub tonality: f32,
@@ -25,16 +20,13 @@ pub struct AnalysisInfo {
     pub max_pitch_ratio: f32,
     pub leak_boost: [u8; 19],
 }
-#[c2rust::src_loc = "53:9"]
 pub const LEAK_BANDS: i32 = 19 as i32;
 
-#[c2rust::src_loc = "135:1"]
 pub type downmix_func =
     Option<unsafe fn(*const core::ffi::c_void, *mut opus_val32, i32, i32, i32, i32, i32) -> ()>;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "47:9"]
 pub struct TonalityAnalysisState {
     pub arch: i32,
     pub application: i32,
@@ -69,35 +61,24 @@ pub struct TonalityAnalysisState {
     pub downmix_state: [opus_val32; 3],
     pub info: [AnalysisInfo; 100],
 }
-#[c2rust::src_loc = "37:9"]
 pub const ANALYSIS_BUF_SIZE: i32 = 720 as i32;
-#[c2rust::src_loc = "42:9"]
 pub const DETECT_SIZE: i32 = 100 as i32;
-#[c2rust::src_loc = "35:9"]
 pub const NB_FRAMES: i32 = 8 as i32;
-#[c2rust::src_loc = "36:9"]
 pub const NB_TBANDS: i32 = 18 as i32;
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/xmmintrin.h:45"]
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]
     pub use core::arch::x86::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
     #[cfg(target_arch = "x86_64")]
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:34"]
 pub mod stddef_h {
-    #[c2rust::src_loc = "89:11"]
     pub const NULL: i32 = 0 as i32;
 }
-#[c2rust::header_src = "/usr/include/math.h:36"]
 pub mod math_h {
-    #[c2rust::src_loc = "1151:10"]
     pub const M_PI: f64 = 3.14159265358979323846f64;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cpu_support.h:37"]
 pub mod cpu_support_h {
     #[inline]
-    #[c2rust::src_loc = "65:1"]
     pub unsafe fn opus_select_arch() -> i32 {
         return 0 as i32;
     }
@@ -117,7 +98,6 @@ use crate::src::mlp::{compute_dense, compute_gru};
 use crate::src::mlp_data::{layer0, layer1, layer2};
 use crate::src::opus_encoder::is_digital_silence;
 
-#[c2rust::src_loc = "55:20"]
 static mut dct_table: [f32; 128] = [
     0.250000f32,
     0.250000f32,
@@ -248,7 +228,6 @@ static mut dct_table: [f32; 128] = [
     0.166664f32,
     -0.273300f32,
 ];
-#[c2rust::src_loc = "74:20"]
 static mut analysis_window: [f32; 240] = [
     0.000043f32,
     0.000171f32,
@@ -491,15 +470,12 @@ static mut analysis_window: [f32; 240] = [
     0.999957f32,
     1.000000f32,
 ];
-#[c2rust::src_loc = "107:18"]
 static mut tbands: [i32; 19] = [
     4 as i32, 8 as i32, 12 as i32, 16 as i32, 20 as i32, 24 as i32, 28 as i32, 32 as i32,
     40 as i32, 48 as i32, 56 as i32, 64 as i32, 80 as i32, 96 as i32, 112 as i32, 136 as i32,
     160 as i32, 192 as i32, 240 as i32,
 ];
-#[c2rust::src_loc = "111:9"]
 pub const NB_TONAL_SKIP_BANDS: i32 = 9 as i32;
-#[c2rust::src_loc = "113:1"]
 unsafe fn silk_resampler_down2_hp(
     S: *mut opus_val32,
     out: *mut opus_val32,
@@ -539,7 +515,6 @@ unsafe fn silk_resampler_down2_hp(
     }
     return hp_ener;
 }
-#[c2rust::src_loc = "161:1"]
 unsafe fn downmix_and_resample(
     downmix: downmix_func,
     mut _x: *const core::ffi::c_void,
@@ -609,13 +584,11 @@ unsafe fn downmix_and_resample(
     }
     return ret;
 }
-#[c2rust::src_loc = "215:1"]
 pub unsafe fn tonality_analysis_init(mut tonal: *mut TonalityAnalysisState, Fs: i32) {
     (*tonal).arch = opus_select_arch();
     (*tonal).Fs = Fs;
     tonality_analysis_reset(tonal);
 }
-#[c2rust::src_loc = "224:1"]
 pub unsafe fn tonality_analysis_reset(tonal: *mut TonalityAnalysisState) {
     let start: *mut i8 = &mut (*tonal).angle as *mut [f32; 240] as *mut i8;
     memset(
@@ -626,7 +599,6 @@ pub unsafe fn tonality_analysis_reset(tonal: *mut TonalityAnalysisState) {
             .wrapping_mul(::core::mem::size_of::<i8>() as u64),
     );
 }
-#[c2rust::src_loc = "231:1"]
 pub unsafe fn tonality_get_info(
     mut tonal: *mut TonalityAnalysisState,
     mut info_out: *mut AnalysisInfo,
@@ -846,7 +818,6 @@ pub unsafe fn tonality_get_info(
     (*info_out).music_prob_min = prob_min;
     (*info_out).music_prob_max = prob_max;
 }
-#[c2rust::src_loc = "409:20"]
 static mut std_feature_bias: [f32; 9] = [
     5.684947f32,
     3.475288f32,
@@ -858,11 +829,8 @@ static mut std_feature_bias: [f32; 9] = [
     1.116868f32,
     1.918795f32,
 ];
-#[c2rust::src_loc = "414:9"]
 pub const LEAKAGE_OFFSET: f32 = 2.5f32;
-#[c2rust::src_loc = "415:9"]
 pub const LEAKAGE_SLOPE: f32 = 2.0f32;
-#[c2rust::src_loc = "444:1"]
 unsafe fn tonality_analysis(
     mut tonal: *mut TonalityAnalysisState,
     celt_mode: *const OpusCustomMode,
@@ -1602,7 +1570,6 @@ unsafe fn tonality_analysis(
     (*info).noisiness = frame_noisiness;
     (*info).valid = 1 as i32;
 }
-#[c2rust::src_loc = "953:1"]
 pub unsafe fn run_analysis(
     mut analysis: *mut TonalityAnalysisState,
     celt_mode: *const OpusCustomMode,

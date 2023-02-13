@@ -1,6 +1,5 @@
 use crate::celt::celt::celt_fatal;
 
-#[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_interpolate(
     xi: *mut i16,
     x0: *const i16,

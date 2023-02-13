@@ -1,8 +1,5 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "48:9"]
     pub const silk_uint8_MAX: i32 = 0xff as i32;
-    #[c2rust::src_loc = "42:9"]
     pub const silk_int32_MAX: i32 = 0x7fffffff as i32;
 }
 pub use self::typedef_h::{silk_int32_MAX, silk_uint8_MAX};
@@ -18,7 +15,6 @@ use crate::silk::structs::{silk_VAD_state, silk_encoder_state};
 use crate::silk::Inlines::silk_SQRT_APPROX;
 use crate::silk::SigProc_FIX::{silk_max_32, silk_max_int, silk_min_int};
 
-#[c2rust::src_loc = "46:1"]
 pub unsafe fn silk_VAD_Init(mut psSilk_VAD: *mut silk_VAD_state) -> i32 {
     let mut b: i32 = 0;
     let ret: i32 = 0 as i32;
@@ -47,9 +43,7 @@ pub unsafe fn silk_VAD_Init(mut psSilk_VAD: *mut silk_VAD_state) -> i32 {
     }
     return ret;
 }
-#[c2rust::src_loc = "77:25"]
 static mut tiltWeights: [i32; 4] = [30000 as i32, 6000 as i32, -(12000 as i32), -(12000 as i32)];
-#[c2rust::src_loc = "82:1"]
 pub unsafe fn silk_VAD_GetSA_Q8_c(mut psEncC: *mut silk_encoder_state, pIn: *const i16) -> i32 {
     let mut SA_Q15: i32 = 0;
     let mut pSNR_dB_Q7: i32 = 0;
@@ -283,7 +277,6 @@ pub unsafe fn silk_VAD_GetSA_Q8_c(mut psEncC: *mut silk_encoder_state, pIn: *con
     return ret;
 }
 #[inline]
-#[c2rust::src_loc = "301:1"]
 unsafe fn silk_VAD_GetNoiseLevels(pX: *const i32, mut psSilk_VAD: *mut silk_VAD_state) {
     let mut k: i32 = 0;
     let mut nl: i32 = 0;

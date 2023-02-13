@@ -4,7 +4,6 @@ use crate::silk::NLSF_unpack::silk_NLSF_unpack;
 use crate::silk::structs::silk_NLSF_CB_struct;
 
 #[inline]
-#[c2rust::src_loc = "35:1"]
 unsafe fn silk_NLSF_residual_dequant(
     x_Q10: *mut i16,
     indices: *const i8,
@@ -33,7 +32,6 @@ unsafe fn silk_NLSF_residual_dequant(
         i -= 1;
     }
 }
-#[c2rust::src_loc = "63:1"]
 pub unsafe fn silk_NLSF_decode(
     pNLSF_Q15: *mut i16,
     NLSFIndices: *mut i8,

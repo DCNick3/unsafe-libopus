@@ -1,17 +1,10 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:38"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = f32;
-    #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = f32;
-    #[c2rust::src_loc = "183:1"]
     pub type celt_sig = f32;
-    #[c2rust::src_loc = "203:9"]
     pub const Q15ONE: f32 = 1.0f32;
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:38"]
 pub mod stddef_h {
-    #[c2rust::src_loc = "89:11"]
     pub const NULL: i32 = 0 as i32;
 }
 pub use self::arch_h::{celt_sig, opus_val16, opus_val32, Q15ONE};
@@ -21,7 +14,6 @@ use crate::celt::celt_lpc::{_celt_autocorr, _celt_lpc};
 use crate::celt::entcode::celt_udiv;
 
 #[inline]
-#[c2rust::src_loc = "137:1"]
 pub unsafe fn dual_inner_prod_c(
     x: *const opus_val16,
     y01: *const opus_val16,
@@ -42,7 +34,6 @@ pub unsafe fn dual_inner_prod_c(
     *xy1 = xy01;
     *xy2 = xy02;
 }
-#[c2rust::src_loc = "189:10"]
 pub const celt_pitch_xcorr: unsafe fn(
     *const opus_val16,
     *const opus_val16,
@@ -52,7 +43,6 @@ pub const celt_pitch_xcorr: unsafe fn(
     i32,
 ) -> () = celt_pitch_xcorr_c;
 #[inline]
-#[c2rust::src_loc = "65:1"]
 pub unsafe fn xcorr_kernel_c(
     mut x: *const opus_val16,
     mut y: *const opus_val16,
@@ -168,7 +158,6 @@ pub unsafe fn xcorr_kernel_c(
     }
 }
 #[inline]
-#[c2rust::src_loc = "159:1"]
 pub unsafe fn celt_inner_prod_c(x: *const opus_val16, y: *const opus_val16, N: i32) -> opus_val32 {
     let mut i: i32 = 0;
     let mut xy: opus_val32 = 0 as i32 as opus_val32;
@@ -180,7 +169,6 @@ pub unsafe fn celt_inner_prod_c(x: *const opus_val16, y: *const opus_val16, N: i
     return xy;
 }
 
-#[c2rust::src_loc = "45:1"]
 unsafe fn find_best_pitch(
     xcorr: *mut opus_val32,
     y: *mut opus_val16,
@@ -237,7 +225,6 @@ unsafe fn find_best_pitch(
         i += 1;
     }
 }
-#[c2rust::src_loc = "105:1"]
 unsafe fn celt_fir5(x: *mut opus_val16, num: *const opus_val16, N: i32) {
     let mut i: i32 = 0;
     let mut num0: opus_val16 = 0.;
@@ -277,7 +264,6 @@ unsafe fn celt_fir5(x: *mut opus_val16, num: *const opus_val16, N: i32) {
         i += 1;
     }
 }
-#[c2rust::src_loc = "140:1"]
 pub unsafe fn pitch_downsample(
     x: *mut *mut celt_sig,
     x_lp: *mut opus_val16,
@@ -349,7 +335,6 @@ pub unsafe fn pitch_downsample(
     lpc2[4 as i32 as usize] = c1 * lpc[3 as i32 as usize];
     celt_fir5(x_lp, lpc2.as_mut_ptr(), len >> 1 as i32);
 }
-#[c2rust::src_loc = "214:1"]
 pub unsafe fn celt_pitch_xcorr_c(
     mut _x: *const opus_val16,
     mut _y: *const opus_val16,
@@ -388,7 +373,6 @@ pub unsafe fn celt_pitch_xcorr_c(
         i += 1;
     }
 }
-#[c2rust::src_loc = "284:1"]
 pub unsafe fn pitch_search(
     x_lp: *const opus_val16,
     y: *mut opus_val16,
@@ -498,16 +482,13 @@ pub unsafe fn pitch_search(
     }
     *pitch = 2 as i32 * best_pitch[0 as i32 as usize] - offset;
 }
-#[c2rust::src_loc = "424:1"]
 unsafe fn compute_pitch_gain(xy: opus_val32, xx: opus_val32, yy: opus_val32) -> opus_val16 {
     return xy / (1 as i32 as f32 + xx * yy).sqrt();
 }
-#[c2rust::src_loc = "430:18"]
 static mut second_check: [i32; 16] = [
     0 as i32, 0 as i32, 3 as i32, 2 as i32, 3 as i32, 2 as i32, 5 as i32, 2 as i32, 3 as i32,
     2 as i32, 3 as i32, 2 as i32, 5 as i32, 2 as i32, 3 as i32, 2 as i32,
 ];
-#[c2rust::src_loc = "431:1"]
 pub unsafe fn remove_doubling(
     mut x: *mut opus_val16,
     mut maxperiod: i32,

@@ -10,10 +10,8 @@ use crate::silk::resampler_rom::{
 };
 use crate::silk::resampler_structs::silk_resampler_state_struct;
 
-#[c2rust::src_loc = "40:9"]
 pub const RESAMPLER_MAX_BATCH_SIZE_MS: i32 = 10 as i32;
 
-#[c2rust::src_loc = "53:24"]
 static mut delay_matrix_enc: [[i8; 3]; 5] = [
     [6 as i32 as i8, 0 as i32 as i8, 3 as i32 as i8],
     [0 as i32 as i8, 7 as i32 as i8, 3 as i32 as i8],
@@ -21,7 +19,6 @@ static mut delay_matrix_enc: [[i8; 3]; 5] = [
     [0 as i32 as i8, 2 as i32 as i8, 6 as i32 as i8],
     [18 as i32 as i8, 10 as i32 as i8, 12 as i32 as i8],
 ];
-#[c2rust::src_loc = "62:24"]
 static mut delay_matrix_dec: [[i8; 5]; 3] = [
     [
         4 as i32 as i8,
@@ -45,15 +42,10 @@ static mut delay_matrix_dec: [[i8; 5]; 3] = [
         7 as i32 as i8,
     ],
 ];
-#[c2rust::src_loc = "72:9"]
 pub const USE_silk_resampler_copy: i32 = 0 as i32;
-#[c2rust::src_loc = "73:9"]
 pub const USE_silk_resampler_private_up2_HQ_wrapper: i32 = 1 as i32;
-#[c2rust::src_loc = "74:9"]
 pub const USE_silk_resampler_private_IIR_FIR: i32 = 2 as i32;
-#[c2rust::src_loc = "75:9"]
 pub const USE_silk_resampler_private_down_FIR: i32 = 3 as i32;
-#[c2rust::src_loc = "78:1"]
 pub unsafe fn silk_resampler_init(
     mut S: *mut silk_resampler_state_struct,
     Fs_Hz_in: i32,
@@ -174,7 +166,6 @@ pub unsafe fn silk_resampler_init(
     }
     return 0 as i32;
 }
-#[c2rust::src_loc = "174:1"]
 pub unsafe fn silk_resampler(
     S: *mut silk_resampler_state_struct,
     out: *mut i16,

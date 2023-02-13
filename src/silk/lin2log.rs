@@ -1,6 +1,5 @@
 use crate::silk::Inlines::silk_CLZ_FRAC;
 
-#[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_lin2log(inLin: i32) -> i32 {
     let mut lz: i32 = 0;
     let mut frac_Q7: i32 = 0;

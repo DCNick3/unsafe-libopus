@@ -6,7 +6,6 @@ use crate::silk::tables_pulses_per_block::{
 };
 
 #[inline]
-#[c2rust::src_loc = "36:1"]
 unsafe fn combine_pulses(out: *mut i32, in_0: *const i32, len: i32) {
     let mut k: i32 = 0;
     k = 0 as i32;
@@ -17,7 +16,6 @@ unsafe fn combine_pulses(out: *mut i32, in_0: *const i32, len: i32) {
     }
 }
 #[inline]
-#[c2rust::src_loc = "48:1"]
 unsafe fn encode_split(psRangeEnc: *mut ec_enc, p_child1: i32, p: i32, shell_table: *const u8) {
     if p > 0 as i32 {
         ec_enc_icdf(
@@ -30,7 +28,6 @@ unsafe fn encode_split(psRangeEnc: *mut ec_enc, p_child1: i32, p: i32, shell_tab
     }
 }
 #[inline]
-#[c2rust::src_loc = "60:1"]
 unsafe fn decode_split(
     p_child1: *mut i16,
     p_child2: *mut i16,
@@ -52,7 +49,6 @@ unsafe fn decode_split(
         *p_child2.offset(0 as i32 as isize) = 0 as i32 as i16;
     };
 }
-#[c2rust::src_loc = "78:1"]
 pub unsafe fn silk_shell_encoder(psRangeEnc: *mut ec_enc, pulses0: *const i32) {
     let mut pulses1: [i32; 8] = [0; 8];
     let mut pulses2: [i32; 4] = [0; 4];
@@ -153,7 +149,6 @@ pub unsafe fn silk_shell_encoder(psRangeEnc: *mut ec_enc, pulses0: *const i32) {
         silk_shell_code_table0.as_ptr(),
     );
 }
-#[c2rust::src_loc = "119:1"]
 pub unsafe fn silk_shell_decoder(pulses0: *mut i16, psRangeDec: *mut ec_dec, pulses4: i32) {
     let mut pulses3: [i16; 2] = [0; 2];
     let mut pulses2: [i16; 4] = [0; 4];

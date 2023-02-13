@@ -3,13 +3,10 @@ use crate::celt::bands::{
     spreading_decision, SPREAD_AGGRESSIVE, SPREAD_NONE, SPREAD_NORMAL,
 };
 
-#[c2rust::header_src = "internal:0"]
 pub mod internal {
-    #[c2rust::src_loc = "0:0"]
     pub type __builtin_va_list = [__va_list_tag; 1];
     #[derive(Copy, Clone)]
     #[repr(C)]
-    #[c2rust::src_loc = "0:0"]
     pub struct __va_list_tag {
         pub gp_offset: u32,
         pub fp_offset: u32,
@@ -17,77 +14,46 @@ pub mod internal {
         pub reg_save_area: *mut core::ffi::c_void,
     }
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stdarg.h:37"]
 pub mod stdarg_h {
-    #[c2rust::src_loc = "14:1"]
     pub type va_list = __builtin_va_list;
     use super::internal::__builtin_va_list;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:38"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = f32;
-    #[c2rust::src_loc = "180:1"]
     pub type opus_val32 = f32;
-    #[c2rust::src_loc = "183:1"]
     pub type celt_sig = f32;
-    #[c2rust::src_loc = "184:1"]
     pub type celt_norm = f32;
-    #[c2rust::src_loc = "185:1"]
     pub type celt_ener = f32;
-    #[c2rust::src_loc = "57:9"]
     pub const CELT_SIG_SCALE: f32 = 32768.0f32;
-    #[c2rust::src_loc = "207:9"]
     pub const EPSILON: f32 = 1e-15f32;
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "71:9"]
 pub struct SILKInfo {
     pub signalType: i32,
     pub offset: i32,
 }
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/include/opus_defines.h:36"]
 pub mod opus_defines_h {
-    #[c2rust::src_loc = "60:9"]
     pub const OPUS_ALLOC_FAIL: i32 = -(7 as i32);
-    #[c2rust::src_loc = "52:9"]
     pub const OPUS_INTERNAL_ERROR: i32 = -(3 as i32);
-    #[c2rust::src_loc = "140:9"]
     pub const OPUS_SET_COMPLEXITY_REQUEST: i32 = 4010;
-    #[c2rust::src_loc = "46:9"]
     pub const OPUS_OK: i32 = 0 as i32;
-    #[c2rust::src_loc = "48:9"]
     pub const OPUS_BAD_ARG: i32 = -(1 as i32);
-    #[c2rust::src_loc = "56:9"]
     pub const OPUS_UNIMPLEMENTED: i32 = -(5 as i32);
-    #[c2rust::src_loc = "157:9"]
     pub const OPUS_GET_FINAL_RANGE_REQUEST: i32 = 4031;
-    #[c2rust::src_loc = "662:9"]
     pub const OPUS_RESET_STATE: i32 = 4028;
-    #[c2rust::src_loc = "170:9"]
     pub const OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4047;
-    #[c2rust::src_loc = "169:9"]
     pub const OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4046;
-    #[c2rust::src_loc = "162:9"]
     pub const OPUS_GET_LSB_DEPTH_REQUEST: i32 = 4037;
-    #[c2rust::src_loc = "161:9"]
     pub const OPUS_SET_LSB_DEPTH_REQUEST: i32 = 4036;
-    #[c2rust::src_loc = "189:9"]
     pub const OPUS_BITRATE_MAX: i32 = -(1 as i32);
-    #[c2rust::src_loc = "132:9"]
     pub const OPUS_SET_BITRATE_REQUEST: i32 = 4002;
-    #[c2rust::src_loc = "136:9"]
     pub const OPUS_SET_VBR_REQUEST: i32 = 4006;
-    #[c2rust::src_loc = "148:9"]
     pub const OPUS_SET_VBR_CONSTRAINT_REQUEST: i32 = 4020;
-    #[c2rust::src_loc = "144:9"]
     pub const OPUS_SET_PACKET_LOSS_PERC_REQUEST: i32 = 4014;
 }
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:37"]
 pub mod stddef_h {
-    #[c2rust::src_loc = "89:11"]
     pub const NULL: i32 = 0 as i32;
 }
 pub use self::arch_h::{
@@ -135,7 +101,6 @@ use crate::varargs::VarArgs;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "58:8"]
 pub struct OpusCustomEncoder {
     pub mode: *const OpusCustomMode,
     pub channels: i32,
@@ -182,14 +147,12 @@ pub struct OpusCustomEncoder {
     pub spec_avg: opus_val16,
     pub in_mem: [celt_sig; 1],
 }
-#[c2rust::src_loc = "130:1"]
 pub unsafe fn celt_encoder_get_size(channels: i32) -> i32 {
     let mode: *mut OpusCustomMode =
         opus_custom_mode_create(48000 as i32, 960 as i32, NULL as *mut i32);
     return opus_custom_encoder_get_size(mode, channels);
 }
 #[inline]
-#[c2rust::src_loc = "136:1"]
 unsafe fn opus_custom_encoder_get_size(mode: *const OpusCustomMode, channels: i32) -> i32 {
     let size: i32 = (::core::mem::size_of::<OpusCustomEncoder>() as u64)
         .wrapping_add(
@@ -206,7 +169,6 @@ unsafe fn opus_custom_encoder_get_size(mode: *const OpusCustomMode, channels: i3
         ) as i32;
     return size;
 }
-#[c2rust::src_loc = "166:1"]
 unsafe fn opus_custom_encoder_init_arch(
     mut st: *mut OpusCustomEncoder,
     mode: *const OpusCustomMode,
@@ -243,7 +205,6 @@ unsafe fn opus_custom_encoder_init_arch(
     opus_custom_encoder_ctl!(st, OPUS_RESET_STATE);
     return OPUS_OK;
 }
-#[c2rust::src_loc = "207:1"]
 pub unsafe fn celt_encoder_init(
     mut st: *mut OpusCustomEncoder,
     sampling_rate: i32,
@@ -263,7 +224,6 @@ pub unsafe fn celt_encoder_init(
     (*st).upsample = resampling_factor(sampling_rate);
     return OPUS_OK;
 }
-#[c2rust::src_loc = "227:1"]
 unsafe fn transient_analysis(
     in_0: *const opus_val32,
     len: i32,
@@ -546,7 +506,6 @@ unsafe fn transient_analysis(
     .sqrt() as f32;
     return is_transient;
 }
-#[c2rust::src_loc = "412:1"]
 unsafe fn patch_transient_decision(
     newE: *mut opus_val16,
     oldE: *mut opus_val16,
@@ -638,7 +597,6 @@ unsafe fn patch_transient_decision(
         / (C * (end - 1 as i32 - (if 2 as i32 > start { 2 as i32 } else { start }))) as opus_val32;
     return (mean_diff > 1.0f32) as i32;
 }
-#[c2rust::src_loc = "450:1"]
 unsafe fn compute_mdcts(
     mode: *const OpusCustomMode,
     shortBlocks: i32,
@@ -719,7 +677,6 @@ unsafe fn compute_mdcts(
         }
     }
 }
-#[c2rust::src_loc = "496:1"]
 pub unsafe fn celt_preemphasis(
     pcmp: *const opus_val16,
     inp: *mut celt_sig,
@@ -789,7 +746,6 @@ pub unsafe fn celt_preemphasis(
     }
     *mem = m;
 }
-#[c2rust::src_loc = "571:1"]
 unsafe fn l1_metric(tmp: *const celt_norm, N: i32, LM: i32, bias: opus_val16) -> opus_val32 {
     let mut i: i32 = 0;
     let mut L1: opus_val32 = 0.;
@@ -802,7 +758,6 @@ unsafe fn l1_metric(tmp: *const celt_norm, N: i32, LM: i32, bias: opus_val16) ->
     L1 = L1 + LM as f32 * bias * L1;
     return L1;
 }
-#[c2rust::src_loc = "584:1"]
 unsafe fn tf_analysis(
     m: *const OpusCustomMode,
     len: i32,
@@ -1052,7 +1007,6 @@ unsafe fn tf_analysis(
     }
     return tf_select;
 }
-#[c2rust::src_loc = "745:1"]
 unsafe fn tf_encode(
     start: i32,
     end: i32,
@@ -1109,7 +1063,6 @@ unsafe fn tf_encode(
         i += 1;
     }
 }
-#[c2rust::src_loc = "786:1"]
 unsafe fn alloc_trim_analysis(
     m: *const OpusCustomMode,
     X: *const celt_norm,
@@ -1258,7 +1211,6 @@ unsafe fn alloc_trim_analysis(
     };
     return trim_index;
 }
-#[c2rust::src_loc = "878:1"]
 unsafe fn stereo_analysis(m: *const OpusCustomMode, X: *const celt_norm, LM: i32, N0: i32) -> i32 {
     let mut i: i32 = 0;
     let mut thetas: i32 = 0;
@@ -1293,7 +1245,6 @@ unsafe fn stereo_analysis(m: *const OpusCustomMode, X: *const celt_norm, LM: i32
         > ((*((*m).eBands).offset(13 as i32 as isize) as i32) << LM + 1 as i32) as f32 * sumLR)
         as i32;
 }
-#[c2rust::src_loc = "911:1"]
 unsafe fn median_of_5(x: *const opus_val16) -> opus_val16 {
     let mut t0: opus_val16 = 0.;
     let mut t1: opus_val16 = 0.;
@@ -1335,7 +1286,6 @@ unsafe fn median_of_5(x: *const opus_val16) -> opus_val16 {
         return if t2 < t4 { t2 } else { t4 };
     };
 }
-#[c2rust::src_loc = "950:1"]
 unsafe fn median_of_3(x: *const opus_val16) -> opus_val16 {
     let mut t0: opus_val16 = 0.;
     let mut t1: opus_val16 = 0.;
@@ -1356,7 +1306,6 @@ unsafe fn median_of_3(x: *const opus_val16) -> opus_val16 {
         return t0;
     };
 }
-#[c2rust::src_loc = "970:1"]
 unsafe fn dynalloc_analysis(
     bandLogE: *const opus_val16,
     bandLogE2: *const opus_val16,
@@ -1762,7 +1711,6 @@ unsafe fn dynalloc_analysis(
     *tot_boost_ = tot_boost;
     return maxDepth;
 }
-#[c2rust::src_loc = "1165:1"]
 unsafe fn run_prefilter(
     mut st: *mut OpusCustomEncoder,
     in_0: *mut celt_sig,
@@ -2052,7 +2000,6 @@ unsafe fn run_prefilter(
     *qgain = qg;
     return pf_on;
 }
-#[c2rust::src_loc = "1297:1"]
 unsafe fn compute_vbr(
     mode: *const OpusCustomMode,
     analysis: *mut AnalysisInfo,
@@ -2198,7 +2145,6 @@ unsafe fn compute_vbr(
     };
     return target;
 }
-#[c2rust::src_loc = "1408:1"]
 pub unsafe fn celt_encode_with_ec(
     mut st: *mut OpusCustomEncoder,
     pcm: *const opus_val16,
@@ -3623,7 +3569,6 @@ pub unsafe fn celt_encode_with_ec(
         return nbCompressedBytes;
     };
 }
-#[c2rust::src_loc = "2409:1"]
 pub unsafe fn opus_custom_encoder_ctl_impl(
     mut st: *mut OpusCustomEncoder,
     request: i32,

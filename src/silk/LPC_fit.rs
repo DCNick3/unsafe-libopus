@@ -1,16 +1,12 @@
 use crate::silk::bwexpander_32::silk_bwexpander_32;
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "45:9"]
     pub const silk_int16_MIN: i32 = 0x8000 as i32;
-    #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: i32 = 0x7fff as i32;
 }
 
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 
-#[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_LPC_fit(a_QOUT: *mut i16, a_QIN: *mut i32, QOUT: i32, QIN: i32, d: i32) {
     let mut i: i32 = 0;
     let mut k: i32 = 0;

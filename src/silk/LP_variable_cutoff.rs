@@ -5,7 +5,6 @@ use crate::silk::structs::silk_LP_state;
 use crate::silk::tables_other::{silk_Transition_LP_A_Q28, silk_Transition_LP_B_Q28};
 
 #[inline]
-#[c2rust::src_loc = "41:1"]
 unsafe fn silk_LP_interpolate_filter_taps(
     B_Q28: *mut i32,
     A_Q28: *mut i32,
@@ -90,7 +89,6 @@ unsafe fn silk_LP_interpolate_filter_taps(
         );
     };
 }
-#[c2rust::src_loc = "100:1"]
 pub unsafe fn silk_LP_variable_cutoff(
     mut psLP: *mut silk_LP_state,
     frame: *mut i16,

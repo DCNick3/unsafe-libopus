@@ -1,6 +1,5 @@
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "126:9"]
 pub struct silk_DecControlStruct {
     pub nChannelsAPI: i32,
     pub nChannelsInternal: i32,
@@ -9,19 +8,12 @@ pub struct silk_DecControlStruct {
     pub payloadSize_ms: i32,
     pub prevPitchLag: i32,
 }
-#[c2rust::src_loc = "39:9"]
 pub const FLAG_DECODE_NORMAL: i32 = 0 as i32;
-#[c2rust::src_loc = "41:9"]
 pub const FLAG_DECODE_LBRR: i32 = 2 as i32;
-#[c2rust::src_loc = "40:9"]
 pub const FLAG_PACKET_LOST: i32 = 1 as i32;
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/errors.h:31"]
 pub mod errors_h {
-    #[c2rust::src_loc = "83:9"]
     pub const SILK_DEC_INVALID_SAMPLING_FREQUENCY: i32 = -(200 as i32);
-    #[c2rust::src_loc = "39:9"]
     pub const SILK_NO_ERROR: i32 = 0 as i32;
-    #[c2rust::src_loc = "92:9"]
     pub const SILK_DEC_INVALID_FRAME_SIZE: i32 = -(203 as i32);
 }
 use self::errors_h::{
@@ -48,7 +40,6 @@ use crate::silk::tables_other::silk_LBRR_flags_iCDF_ptr;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "39:9"]
 pub struct silk_decoder {
     pub channel_state: [silk_decoder_state; 2],
     pub sStereo: stereo_dec_state,
@@ -56,13 +47,11 @@ pub struct silk_decoder {
     pub nChannelsInternal: i32,
     pub prev_decode_only_middle: i32,
 }
-#[c2rust::src_loc = "51:1"]
 pub unsafe fn silk_Get_Decoder_Size(decSizeBytes: *mut i32) -> i32 {
     let ret: i32 = SILK_NO_ERROR;
     *decSizeBytes = ::core::mem::size_of::<silk_decoder>() as u64 as i32;
     return ret;
 }
-#[c2rust::src_loc = "63:1"]
 pub unsafe fn silk_InitDecoder(decState: *mut core::ffi::c_void) -> i32 {
     let mut n: i32 = 0;
     let mut ret: i32 = SILK_NO_ERROR;
@@ -82,7 +71,6 @@ pub unsafe fn silk_InitDecoder(decState: *mut core::ffi::c_void) -> i32 {
     (*(decState as *mut silk_decoder)).prev_decode_only_middle = 0 as i32;
     return ret;
 }
-#[c2rust::src_loc = "81:1"]
 pub unsafe fn silk_Decode(
     decState: *mut core::ffi::c_void,
     mut decControl: *mut silk_DecControlStruct,

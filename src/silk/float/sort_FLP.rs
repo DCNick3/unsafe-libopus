@@ -1,5 +1,4 @@
 use crate::celt::celt::celt_fatal;
-#[c2rust::src_loc = "39:1"]
 pub unsafe fn silk_insertion_sort_decreasing_FLP(a: *mut f32, idx: *mut i32, L: i32, K: i32) {
     let mut value: f32 = 0.;
     let mut i: i32 = 0;

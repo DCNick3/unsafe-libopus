@@ -1,14 +1,11 @@
 use crate::celt::kiss_fft::{kiss_fft_cpx, kiss_fft_state, opus_fft_impl};
 
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:48"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
     pub type opus_val16 = f32;
 }
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "49:9"]
 pub struct mdct_lookup {
     pub n: i32,
     pub maxshift: i32,
@@ -17,7 +14,6 @@ pub struct mdct_lookup {
 }
 pub use self::arch_h::opus_val16;
 
-#[c2rust::src_loc = "119:1"]
 pub unsafe fn clt_mdct_forward_c(
     l: *const mdct_lookup,
     in_0: *mut f32,
@@ -148,7 +144,6 @@ pub unsafe fn clt_mdct_forward_c(
         i += 1;
     }
 }
-#[c2rust::src_loc = "242:1"]
 pub unsafe fn clt_mdct_backward_c(
     l: *const mdct_lookup,
     in_0: *mut f32,

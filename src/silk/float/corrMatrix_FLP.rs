@@ -1,7 +1,6 @@
 use crate::silk::float::energy_FLP::silk_energy_FLP;
 use crate::silk::float::inner_product_FLP::silk_inner_product_FLP;
 
-#[c2rust::src_loc = "39:1"]
 pub unsafe fn silk_corrVector_FLP(x: *const f32, t: *const f32, L: i32, Order: i32, Xt: *mut f32) {
     let mut lag: i32 = 0;
     let mut ptr1: *const f32 = 0 as *const f32;
@@ -13,7 +12,6 @@ pub unsafe fn silk_corrVector_FLP(x: *const f32, t: *const f32, L: i32, Order: i
         lag += 1;
     }
 }
-#[c2rust::src_loc = "59:1"]
 pub unsafe fn silk_corrMatrix_FLP(x: *const f32, L: i32, Order: i32, XX: *mut f32) {
     let mut j: i32 = 0;
     let mut lag: i32 = 0;

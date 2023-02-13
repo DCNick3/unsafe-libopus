@@ -1,4 +1,3 @@
-#[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_regularize_correlations_FLP(XX: *mut f32, xx: *mut f32, noise: f32, D: i32) {
     let mut i: i32 = 0;
     i = 0 as i32;

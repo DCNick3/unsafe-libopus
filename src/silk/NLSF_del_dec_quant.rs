@@ -1,6 +1,4 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "42:9"]
     pub const silk_int32_MAX: i32 = 0x7fffffff as i32;
 }
 use crate::silk::define::{
@@ -10,7 +8,6 @@ use crate::silk::define::{
 pub use self::typedef_h::silk_int32_MAX;
 
 use crate::externs::memcpy;
-#[c2rust::src_loc = "35:1"]
 pub unsafe fn silk_NLSF_del_dec_quant(
     indices: *mut i8,
     x_Q10: *const i16,

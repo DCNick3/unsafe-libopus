@@ -1,8 +1,6 @@
-#[c2rust::src_loc = "37:25"]
 static mut sigm_LUT_slope_Q10: [i32; 6] = [
     237 as i32, 153 as i32, 73 as i32, 30 as i32, 12 as i32, 7 as i32,
 ];
-#[c2rust::src_loc = "41:25"]
 static mut sigm_LUT_pos_Q15: [i32; 6] = [
     16384 as i32,
     23955 as i32,
@@ -11,7 +9,6 @@ static mut sigm_LUT_pos_Q15: [i32; 6] = [
     32178 as i32,
     32548 as i32,
 ];
-#[c2rust::src_loc = "45:25"]
 static mut sigm_LUT_neg_Q15: [i32; 6] = [
     16384 as i32,
     8812 as i32,
@@ -20,7 +17,6 @@ static mut sigm_LUT_neg_Q15: [i32; 6] = [
     589 as i32,
     219 as i32,
 ];
-#[c2rust::src_loc = "49:1"]
 pub unsafe fn silk_sigm_Q15(mut in_Q5: i32) -> i32 {
     let mut ind: i32 = 0;
     if in_Q5 < 0 as i32 {

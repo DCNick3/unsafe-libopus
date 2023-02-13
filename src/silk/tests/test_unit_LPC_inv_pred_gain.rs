@@ -1,42 +1,29 @@
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:32"]
 pub mod stddef_h {
-    #[c2rust::src_loc = "46:1"]
-    pub type size_t = u64;
+        pub type size_t = u64;
 }
-#[c2rust::header_src = "/usr/include/stdio.h:32"]
 pub mod stdio_h {
     use super::FILE_h::FILE;
     {
-        #[c2rust::src_loc = "145:14"]
-        pub static mut stderr: *mut FILE;
-        #[c2rust::src_loc = "350:12"]
-        pub fn fprintf(_: *mut FILE, _: *const i8, _: ...) -> i32;
-        #[c2rust::src_loc = "356:12"]
-        pub fn printf(_: *const i8, _: ...) -> i32;
+                pub static mut stderr: *mut FILE;
+                pub fn fprintf(_: *mut FILE, _: *const i8, _: ...) -> i32;
+                pub fn printf(_: *const i8, _: ...) -> i32;
     }
 }
-#[c2rust::header_src = "/usr/include/stdlib.h:33"]
 pub mod stdlib_h {
     {
-        #[c2rust::src_loc = "454:1"]
-        pub fn rand() -> i32;
-        #[c2rust::src_loc = "456:1"]
-        pub fn srand(__seed: u32);
+                pub fn rand() -> i32;
+                pub fn srand(__seed: u32);
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/cpu_support.h:35"]
 pub mod cpu_support_h {
     #[inline]
-    #[c2rust::src_loc = "65:1"]
-    pub unsafe fn opus_select_arch() -> i32 {
+        pub unsafe fn opus_select_arch() -> i32 {
         return 0 as i32;
     }
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:36"]
 pub mod mathcalls_h {
     {
-        #[c2rust::src_loc = "162:14"]
-        pub fn fabs(_: f64) -> f64;
+                pub fn fabs(_: f64) -> f64;
     }
 }
 use self::cpu_support_h::opus_select_arch;
@@ -47,7 +34,6 @@ use self::stdlib_h::{rand, srand};
 
 pub use self::FILE_h::FILE;
 use self::SigProc_FIX_h::silk_LPC_inverse_pred_gain_c;
-#[c2rust::src_loc = "42:1"]
 pub unsafe fn check_stability(A_Q12: *mut i16, order: i32) -> i32 {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -132,7 +118,6 @@ pub unsafe fn check_stability(A_Q12: *mut i16, order: i32) -> i32 {
     }
     return 1 as i32;
 }
-#[c2rust::src_loc = "90:1"]
 unsafe fn main_0() -> i32 {
     let _arch: i32 = opus_select_arch();
     let loop_num: i32 = 10000 as i32;

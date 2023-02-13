@@ -1,6 +1,5 @@
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "36:9"]
 pub struct DenseLayer {
     pub bias: *const i8,
     pub input_weights: *const i8,
@@ -10,7 +9,6 @@ pub struct DenseLayer {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-#[c2rust::src_loc = "44:9"]
 pub struct GRULayer {
     pub bias: *const i8,
     pub input_weights: *const i8,
@@ -18,10 +16,8 @@ pub struct GRULayer {
     pub nb_inputs: i32,
     pub nb_neurons: i32,
 }
-#[c2rust::src_loc = "32:9"]
 pub const WEIGHTS_SCALE: f32 = 1.0f32 / 128 as i32 as f32;
 
-#[c2rust::src_loc = "3:20"]
 const tansig_table: [f32; 201] = [
     0.000000f32,
     0.039979f32,
@@ -227,7 +223,6 @@ const tansig_table: [f32; 201] = [
 ];
 
 #[inline]
-#[c2rust::src_loc = "39:1"]
 unsafe fn tansig_approx(mut x: f32) -> f32 {
     let mut i: i32 = 0;
     let mut y: f32 = 0.;
@@ -254,11 +249,9 @@ unsafe fn tansig_approx(mut x: f32) -> f32 {
     return sign * y;
 }
 #[inline]
-#[c2rust::src_loc = "67:1"]
 unsafe fn sigmoid_approx(x: f32) -> f32 {
     return 0.5f32 + 0.5f32 * tansig_approx(0.5f32 * x);
 }
-#[c2rust::src_loc = "72:1"]
 unsafe fn gemm_accum(
     out: *mut f32,
     weights: *const i8,
@@ -280,7 +273,6 @@ unsafe fn gemm_accum(
         i += 1;
     }
 }
-#[c2rust::src_loc = "82:1"]
 pub unsafe fn compute_dense(layer: *const DenseLayer, output: *mut f32, input: *const f32) {
     let mut i: i32 = 0;
     let mut N: i32 = 0;
@@ -314,7 +306,6 @@ pub unsafe fn compute_dense(layer: *const DenseLayer, output: *mut f32, input: *
         }
     };
 }
-#[c2rust::src_loc = "104:1"]
 pub unsafe fn compute_gru(gru: *const GRULayer, state: *mut f32, input: *const f32) {
     let mut i: i32 = 0;
     let mut N: i32 = 0;

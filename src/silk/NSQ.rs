@@ -1,14 +1,9 @@
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/typedef.h:32"]
 pub mod typedef_h {
-    #[c2rust::src_loc = "44:9"]
     pub const silk_int16_MAX: i32 = 0x7fff as i32;
-    #[c2rust::src_loc = "45:9"]
     pub const silk_int16_MIN: i32 = 0x8000 as i32;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/silk/NSQ.h:34"]
 pub mod NSQ_h {
     #[inline]
-    #[c2rust::src_loc = "35:1"]
     pub unsafe fn silk_noise_shape_quantizer_short_prediction_c(
         buf32: *const i32,
         coef16: *const i16,
@@ -84,7 +79,6 @@ pub mod NSQ_h {
         return out;
     }
     #[inline]
-    #[c2rust::src_loc = "67:1"]
     pub unsafe fn silk_NSQ_noise_shape_feedback_loop_c(
         data0: *const i32,
         data1: *mut i32,
@@ -138,7 +132,6 @@ use crate::silk::tables_other::silk_Quantization_Offsets_Q10;
 use crate::silk::Inlines::{silk_DIV32_varQ, silk_INVERSE32_varQ};
 use crate::silk::LPC_analysis_filter::silk_LPC_analysis_filter;
 
-#[c2rust::src_loc = "76:1"]
 pub unsafe fn silk_NSQ_c(
     psEncC: *const silk_encoder_state,
     mut NSQ: *mut silk_nsq_state,
@@ -285,7 +278,6 @@ pub unsafe fn silk_NSQ_c(
     );
 }
 #[inline]
-#[c2rust::src_loc = "181:1"]
 unsafe fn silk_noise_shape_quantizer(
     mut NSQ: *mut silk_nsq_state,
     signalType: i32,
@@ -556,7 +548,6 @@ unsafe fn silk_noise_shape_quantizer(
     );
 }
 #[inline]
-#[c2rust::src_loc = "368:1"]
 unsafe fn silk_nsq_scale_states(
     psEncC: *const silk_encoder_state,
     mut NSQ: *mut silk_nsq_state,

@@ -1,47 +1,32 @@
-#[c2rust::header_src = "/usr/lib/clang/15.0.7/include/stddef.h:36"]
 pub mod stddef_h {
-    #[c2rust::src_loc = "46:1"]
-    pub type size_t = u64;
+        pub type size_t = u64;
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/arch.h:38"]
 pub mod arch_h {
-    #[c2rust::src_loc = "179:1"]
-    pub type opus_val16 = f32;
-    #[c2rust::src_loc = "184:1"]
-    pub type celt_norm = f32;
+        pub type opus_val16 = f32;
+        pub type celt_norm = f32;
 }
-#[c2rust::header_src = "/usr/include/stdio.h:36"]
 pub mod stdio_h {
     use super::FILE_h::FILE;
     {
-        #[c2rust::src_loc = "145:14"]
-        pub static mut stderr: *mut FILE;
-        #[c2rust::src_loc = "350:12"]
-        pub fn fprintf(_: *mut FILE, _: *const i8, _: ...) -> i32;
-        #[c2rust::src_loc = "356:12"]
-        pub fn printf(_: *const i8, _: ...) -> i32;
+                pub static mut stderr: *mut FILE;
+                pub fn fprintf(_: *mut FILE, _: *const i8, _: ...) -> i32;
+                pub fn printf(_: *const i8, _: ...) -> i32;
     }
 }
-#[c2rust::header_src = "/usr/include/stdlib.h:37"]
 pub mod stdlib_h {
     {
-        #[c2rust::src_loc = "454:1"]
-        pub fn rand() -> i32;
+                pub fn rand() -> i32;
     }
 }
-#[c2rust::header_src = "/usr/include/bits/mathcalls.h:38"]
 pub mod mathcalls_h {
     {
-        #[c2rust::src_loc = "107:17"]
-        pub fn log10(_: f64) -> f64;
+                pub fn log10(_: f64) -> f64;
     }
 }
-#[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/celt/vq.h:38"]
 pub mod vq_h {
     use super::arch_h::celt_norm;
     {
-        #[c2rust::src_loc = "44:1"]
-        pub fn exp_rotation(
+                pub fn exp_rotation(
             X: *mut celt_norm,
             len: i32,
             dir: i32,
@@ -60,9 +45,7 @@ pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data
 
 use self::vq_h::exp_rotation;
 pub use self::FILE_h::FILE;
-#[c2rust::src_loc = "46:5"]
 pub static mut ret: i32 = 0 as i32;
-#[c2rust::src_loc = "47:1"]
 pub unsafe fn test_rotation(mut N: i32, mut K: i32) {
     let mut i: i32 = 0;
     let mut err: f64 = 0 as i32 as f64;
@@ -124,7 +107,6 @@ pub unsafe fn test_rotation(mut N: i32, mut K: i32) {
         ret = 1 as i32;
     }
 }
-#[c2rust::src_loc = "78:1"]
 unsafe fn main_0() -> i32 {
     test_rotation(15 as i32, 3 as i32);
     test_rotation(23 as i32, 5 as i32);
