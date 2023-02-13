@@ -655,15 +655,7 @@ unsafe fn opus_decode_frame(
             NULL as *mut ec_dec,
             0 as i32,
         );
-        if !(opus_custom_decoder_ctl!(
-            celt_dec,
-            4031 as i32,
-            (&mut redundant_rng as *mut u32).offset(
-                (&mut redundant_rng as *mut u32).offset_from(&mut redundant_rng as *mut u32) as i64
-                    as isize,
-            ),
-        ) == 0 as i32)
-        {
+        if !(opus_custom_decoder_ctl!(celt_dec, 4031 as i32, &mut redundant_rng) == 0 as i32) {
             celt_fatal(
                 b"assertion failed: (opus_custom_decoder_ctl!(celt_dec, 4031, ((&redundant_rng) + ((&redundant_rng) - (u32*)(&redundant_rng))))) == OPUS_OK\0"
                     as *const u8 as *const i8,
@@ -745,16 +737,7 @@ unsafe fn opus_decode_frame(
         }
     }
     let mut celt_mode: *const OpusCustomMode = 0 as *const OpusCustomMode;
-    if !(opus_custom_decoder_ctl!(
-        celt_dec,
-        10015 as i32,
-        (&mut celt_mode as *mut *const OpusCustomMode).offset(
-            (&mut celt_mode as *mut *const OpusCustomMode)
-                .offset_from(&mut celt_mode as *mut *const OpusCustomMode) as i64
-                as isize,
-        ),
-    ) == 0 as i32)
-    {
+    if !(opus_custom_decoder_ctl!(celt_dec, 10015 as i32, &mut celt_mode) == 0 as i32) {
         celt_fatal(
             b"assertion failed: (opus_custom_decoder_ctl!(celt_dec, 10015, ((&celt_mode) + ((&celt_mode) - (const OpusCustomMode**)(&celt_mode))))) == OPUS_OK\0"
                 as *const u8 as *const i8,
@@ -789,15 +772,7 @@ unsafe fn opus_decode_frame(
             NULL as *mut ec_dec,
             0 as i32,
         );
-        if !(opus_custom_decoder_ctl!(
-            celt_dec,
-            4031 as i32,
-            (&mut redundant_rng as *mut u32).offset(
-                (&mut redundant_rng as *mut u32).offset_from(&mut redundant_rng as *mut u32) as i64
-                    as isize,
-            ),
-        ) == 0 as i32)
-        {
+        if !(opus_custom_decoder_ctl!(celt_dec, 4031 as i32, &mut redundant_rng) == 0 as i32) {
             celt_fatal(
                 b"assertion failed: (opus_custom_decoder_ctl!(celt_dec, 4031, ((&redundant_rng) + ((&redundant_rng) - (u32*)(&redundant_rng))))) == OPUS_OK\0"
                     as *const u8 as *const i8,
@@ -1180,22 +1155,14 @@ pub unsafe fn opus_decoder_ctl_impl(mut st: *mut OpusDecoder, request: i32, args
 
     match request {
         OPUS_GET_BANDWIDTH_REQUEST => {
-            let value: *mut i32 = ap.arg::<*mut i32>();
-            if value.is_null() {
-                OPUS_BAD_ARG
-            } else {
-                *value = (*st).bandwidth;
-                OPUS_OK
-            }
+            let value = ap.arg::<&mut i32>();
+            *value = (*st).bandwidth;
+            OPUS_OK
         }
         OPUS_GET_FINAL_RANGE_REQUEST => {
-            let value_0: *mut u32 = ap.arg::<*mut u32>();
-            if value_0.is_null() {
-                OPUS_BAD_ARG
-            } else {
-                *value_0 = (*st).rangeFinal;
-                OPUS_OK
-            }
+            let value_0 = ap.arg::<&mut u32>();
+            *value_0 = (*st).rangeFinal;
+            OPUS_OK
         }
         OPUS_RESET_STATE => {
             memset(
@@ -1215,39 +1182,23 @@ pub unsafe fn opus_decoder_ctl_impl(mut st: *mut OpusDecoder, request: i32, args
             OPUS_OK
         }
         OPUS_GET_SAMPLE_RATE_REQUEST => {
-            let value_1: *mut i32 = ap.arg::<*mut i32>();
-            if value_1.is_null() {
-                OPUS_BAD_ARG
-            } else {
-                *value_1 = (*st).Fs;
-                OPUS_OK
-            }
+            let value_1 = ap.arg::<&mut i32>();
+            *value_1 = (*st).Fs;
+            OPUS_OK
         }
         OPUS_GET_PITCH_REQUEST => {
-            let value_2: *mut i32 = ap.arg::<*mut i32>();
-            if value_2.is_null() {
-                OPUS_BAD_ARG
+            let value_2 = ap.arg::<&mut i32>();
+            if (*st).prev_mode == MODE_CELT_ONLY {
+                opus_custom_decoder_ctl!(celt_dec, OPUS_GET_PITCH_REQUEST, value_2,)
             } else {
-                if (*st).prev_mode == MODE_CELT_ONLY {
-                    opus_custom_decoder_ctl!(
-                        celt_dec,
-                        OPUS_GET_PITCH_REQUEST,
-                        value_2.offset(value_2.offset_from(value_2) as i64 as isize),
-                    )
-                } else {
-                    *value_2 = (*st).DecControl.prevPitchLag;
-                    OPUS_OK
-                }
+                *value_2 = (*st).DecControl.prevPitchLag;
+                OPUS_OK
             }
         }
         OPUS_GET_GAIN_REQUEST => {
-            let value_3: *mut i32 = ap.arg::<*mut i32>();
-            if value_3.is_null() {
-                OPUS_BAD_ARG
-            } else {
-                *value_3 = (*st).decode_gain;
-                OPUS_OK
-            }
+            let value_3 = ap.arg::<&mut i32>();
+            *value_3 = (*st).decode_gain;
+            OPUS_OK
         }
         OPUS_SET_GAIN_REQUEST => {
             let value_4: i32 = ap.arg::<i32>();
@@ -1259,13 +1210,9 @@ pub unsafe fn opus_decoder_ctl_impl(mut st: *mut OpusDecoder, request: i32, args
             }
         }
         OPUS_GET_LAST_PACKET_DURATION_REQUEST => {
-            let value_5: *mut i32 = ap.arg::<*mut i32>();
-            if value_5.is_null() {
-                OPUS_BAD_ARG
-            } else {
-                *value_5 = (*st).last_packet_duration;
-                OPUS_OK
-            }
+            let value_5 = ap.arg::<&mut i32>();
+            *value_5 = (*st).last_packet_duration;
+            OPUS_OK
         }
         OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST => {
             let value_6: i32 = ap.arg::<i32>();
@@ -1275,21 +1222,13 @@ pub unsafe fn opus_decoder_ctl_impl(mut st: *mut OpusDecoder, request: i32, args
                 opus_custom_decoder_ctl!(
                     celt_dec,
                     OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST,
-                    value_6,
+                    value_6
                 )
             }
         }
         OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST => {
-            let value_7: *mut i32 = ap.arg::<*mut i32>();
-            if value_7.is_null() {
-                OPUS_BAD_ARG
-            } else {
-                opus_custom_decoder_ctl!(
-                    celt_dec,
-                    OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST,
-                    value_7.offset(value_7.offset_from(value_7) as i64 as isize),
-                )
-            }
+            let value_7 = ap.arg::<&mut i32>();
+            opus_custom_decoder_ctl!(celt_dec, OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST, value_7)
         }
         _ => OPUS_UNIMPLEMENTED,
     }

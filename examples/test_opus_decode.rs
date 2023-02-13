@@ -239,14 +239,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
                     110 as i32,
                 );
             }
-            if opus_decoder_ctl!(
-                dec[t as usize],
-                4039 as i32,
-                (&mut dur as *mut i32).offset(
-                    (&mut dur as *mut i32).offset_from(&mut dur as *mut i32) as i64 as isize,
-                ),
-            ) != 0 as i32
-            {
+            if opus_decoder_ctl!(dec[t as usize], 4039 as i32, &mut dur) != 0 as i32 {
                 _test_failed(
                     b"tests/test_opus_decode.c\0" as *const u8 as *const i8,
                     111 as i32,
@@ -328,14 +321,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
                     126 as i32,
                 );
             }
-            if opus_decoder_ctl!(
-                dec[t as usize],
-                4039 as i32,
-                (&mut dur as *mut i32).offset(
-                    (&mut dur as *mut i32).offset_from(&mut dur as *mut i32) as i64 as isize,
-                ),
-            ) != 0 as i32
-            {
+            if opus_decoder_ctl!(dec[t as usize], 4039 as i32, &mut dur) != 0 as i32 {
                 _test_failed(
                     b"tests/test_opus_decode.c\0" as *const u8 as *const i8,
                     127 as i32,
@@ -505,15 +491,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
                         189 as i32,
                     );
                 }
-                if opus_decoder_ctl!(
-                    dec[t as usize],
-                    4039 as i32,
-                    (&mut dur_0 as *mut i32).offset(
-                        (&mut dur_0 as *mut i32).offset_from(&mut dur_0 as *mut i32) as i64
-                            as isize
-                    ),
-                ) != 0 as i32
-                {
+                if opus_decoder_ctl!(dec[t as usize], 4039 as i32, &mut dur_0) != 0 as i32 {
                     _test_failed(
                         b"tests/test_opus_decode.c\0" as *const u8 as *const i8,
                         190 as i32,
@@ -525,15 +503,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
                         191 as i32,
                     );
                 }
-                opus_decoder_ctl!(
-                    dec[t as usize],
-                    4031 as i32,
-                    (&mut dec_final_range1 as *mut u32).offset(
-                        (&mut dec_final_range1 as *mut u32)
-                            .offset_from(&mut dec_final_range1 as *mut u32)
-                            as i64 as isize,
-                    ),
-                );
+                opus_decoder_ctl!(dec[t as usize], 4031 as i32, &mut dec_final_range1);
                 if t == 0 as i32 {
                     dec_final_range2 = dec_final_range1;
                 } else if dec_final_range1 != dec_final_range2 {
@@ -565,15 +535,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
                         204 as i32,
                     );
                 }
-                if opus_decoder_ctl!(
-                    dec[t as usize],
-                    4039 as i32,
-                    (&mut dur_0 as *mut i32).offset(
-                        (&mut dur_0 as *mut i32).offset_from(&mut dur_0 as *mut i32) as i64
-                            as isize
-                    ),
-                ) != 0 as i32
-                {
+                if opus_decoder_ctl!(dec[t as usize], 4039 as i32, &mut dur_0) != 0 as i32 {
                     _test_failed(
                         b"tests/test_opus_decode.c\0" as *const u8 as *const i8,
                         205 as i32,
@@ -602,15 +564,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
                         213 as i32,
                     );
                 }
-                if opus_decoder_ctl!(
-                    dec[t as usize],
-                    4039 as i32,
-                    (&mut dur_0 as *mut i32).offset(
-                        (&mut dur_0 as *mut i32).offset_from(&mut dur_0 as *mut i32) as i64
-                            as isize
-                    ),
-                ) != 0 as i32
-                {
+                if opus_decoder_ctl!(dec[t as usize], 4039 as i32, &mut dur_0) != 0 as i32 {
                     _test_failed(
                         b"tests/test_opus_decode.c\0" as *const u8 as *const i8,
                         214 as i32,
@@ -717,14 +671,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
                 260 as i32,
             );
         }
-        opus_decoder_ctl!(
-            dec[t as usize],
-            4031 as i32,
-            (&mut dec_final_range1 as *mut u32).offset(
-                (&mut dec_final_range1 as *mut u32).offset_from(&mut dec_final_range1 as *mut u32)
-                    as i64 as isize,
-            ),
-        );
+        opus_decoder_ctl!(dec[t as usize], 4031 as i32, &mut dec_final_range1);
         dec_final_acc = (dec_final_acc as u32).wrapping_add(dec_final_range1) as u32 as u32;
         i += 1;
     }
@@ -764,14 +711,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
                 278 as i32,
             );
         }
-        opus_decoder_ctl!(
-            dec[t as usize],
-            4031 as i32,
-            (&mut dec_final_range1 as *mut u32).offset(
-                (&mut dec_final_range1 as *mut u32).offset_from(&mut dec_final_range1 as *mut u32)
-                    as i64 as isize,
-            ),
-        );
+        opus_decoder_ctl!(dec[t as usize], 4031 as i32, &mut dec_final_range1);
         dec_final_acc = (dec_final_acc as u32).wrapping_add(dec_final_range1) as u32 as u32;
         i += 1;
     }
@@ -823,15 +763,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
                         299 as i32,
                     );
                 }
-                opus_decoder_ctl!(
-                    dec[t as usize],
-                    4031 as i32,
-                    (&mut dec_final_range1 as *mut u32).offset(
-                        (&mut dec_final_range1 as *mut u32)
-                            .offset_from(&mut dec_final_range1 as *mut u32)
-                            as i64 as isize,
-                    ),
-                );
+                opus_decoder_ctl!(dec[t as usize], 4031 as i32, &mut dec_final_range1);
                 if t == 0 as i32 {
                     dec_final_range2 = dec_final_range1;
                 } else if dec_final_range1 != dec_final_range2 {
@@ -958,14 +890,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
                     328 as i32,
                 );
             }
-            if opus_decoder_ctl!(
-                dec[t as usize],
-                4039 as i32,
-                (&mut dur_1 as *mut i32).offset(
-                    (&mut dur_1 as *mut i32).offset_from(&mut dur_1 as *mut i32) as i64 as isize
-                ),
-            ) != 0 as i32
-            {
+            if opus_decoder_ctl!(dec[t as usize], 4039 as i32, &mut dur_1) != 0 as i32 {
                 _test_failed(
                     b"tests/test_opus_decode.c\0" as *const u8 as *const i8,
                     329 as i32,

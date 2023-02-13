@@ -3630,7 +3630,7 @@ pub unsafe fn opus_custom_encoder_ctl_impl(
             }
         }
         OPUS_GET_LSB_DEPTH_REQUEST => {
-            let value_9: *mut i32 = ap.arg::<*mut i32>();
+            let value_9: &mut i32 = ap.arg::<&mut i32>();
             *value_9 = (*st).lsb_depth;
             current_block = 10007731352114176167;
         }
@@ -3644,13 +3644,9 @@ pub unsafe fn opus_custom_encoder_ctl_impl(
             }
         }
         OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST => {
-            let value_11: *mut i32 = ap.arg::<*mut i32>();
-            if value_11.is_null() {
-                current_block = 2472048668343472511;
-            } else {
-                *value_11 = (*st).disable_inv;
-                current_block = 10007731352114176167;
-            }
+            let value_11: &mut i32 = ap.arg::<&mut i32>();
+            *value_11 = (*st).disable_inv;
+            current_block = 10007731352114176167;
         }
         OPUS_RESET_STATE => {
             let mut i: i32 = 0;
@@ -3692,56 +3688,44 @@ pub unsafe fn opus_custom_encoder_ctl_impl(
             current_block = 10007731352114176167;
         }
         CELT_SET_ANALYSIS_REQUEST => {
-            let info: *mut AnalysisInfo = ap.arg::<*mut AnalysisInfo>();
-            if !info.is_null() {
-                memcpy(
-                    &mut (*st).analysis as *mut AnalysisInfo as *mut core::ffi::c_void,
-                    info as *const core::ffi::c_void,
-                    (1 as i32 as u64)
-                        .wrapping_mul(::core::mem::size_of::<AnalysisInfo>() as u64)
-                        .wrapping_add(
-                            (0 as i32 as i64
-                                * (&mut (*st).analysis as *mut AnalysisInfo).offset_from(info)
-                                    as i64) as u64,
-                        ),
-                );
-            }
+            let info = ap.arg::<&mut AnalysisInfo>();
+            memcpy(
+                &mut (*st).analysis as *mut AnalysisInfo as *mut core::ffi::c_void,
+                info as *mut AnalysisInfo as *const core::ffi::c_void,
+                (1 as i32 as u64)
+                    .wrapping_mul(::core::mem::size_of::<AnalysisInfo>() as u64)
+                    .wrapping_add(
+                        (0 as i32 as i64
+                            * (&mut (*st).analysis as *mut AnalysisInfo).offset_from(info) as i64)
+                            as u64,
+                    ),
+            );
             current_block = 10007731352114176167;
         }
         CELT_SET_SILK_INFO_REQUEST => {
-            let info_0: *mut SILKInfo = ap.arg::<*mut SILKInfo>();
-            if !info_0.is_null() {
-                memcpy(
-                    &mut (*st).silk_info as *mut SILKInfo as *mut core::ffi::c_void,
-                    info_0 as *const core::ffi::c_void,
-                    (1 as i32 as u64)
-                        .wrapping_mul(::core::mem::size_of::<SILKInfo>() as u64)
-                        .wrapping_add(
-                            (0 as i32 as i64
-                                * (&mut (*st).silk_info as *mut SILKInfo).offset_from(info_0)
-                                    as i64) as u64,
-                        ),
-                );
-            }
+            let info_0 = ap.arg::<&mut SILKInfo>();
+            memcpy(
+                &mut (*st).silk_info as *mut SILKInfo as *mut core::ffi::c_void,
+                info_0 as *mut SILKInfo as *const core::ffi::c_void,
+                (1 as i32 as u64)
+                    .wrapping_mul(::core::mem::size_of::<SILKInfo>() as u64)
+                    .wrapping_add(
+                        (0 as i32 as i64
+                            * (&mut (*st).silk_info as *mut SILKInfo).offset_from(info_0) as i64)
+                            as u64,
+                    ),
+            );
             current_block = 10007731352114176167;
         }
         CELT_GET_MODE_REQUEST => {
-            let value_13: *mut *const OpusCustomMode = ap.arg::<*mut *const OpusCustomMode>();
-            if value_13.is_null() {
-                current_block = 2472048668343472511;
-            } else {
-                *value_13 = (*st).mode;
-                current_block = 10007731352114176167;
-            }
+            let value_13 = ap.arg::<&mut *const OpusCustomMode>();
+            *value_13 = (*st).mode;
+            current_block = 10007731352114176167;
         }
         OPUS_GET_FINAL_RANGE_REQUEST => {
-            let value_14: *mut u32 = ap.arg::<*mut u32>();
-            if value_14.is_null() {
-                current_block = 2472048668343472511;
-            } else {
-                *value_14 = (*st).rng;
-                current_block = 10007731352114176167;
-            }
+            let value_14 = ap.arg::<&mut u32>();
+            *value_14 = (*st).rng;
+            current_block = 10007731352114176167;
         }
         OPUS_SET_LFE_REQUEST => {
             let value_15: i32 = ap.arg::<i32>();

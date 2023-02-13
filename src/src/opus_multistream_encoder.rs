@@ -1145,8 +1145,7 @@ unsafe fn rate_allocation(st: *mut OpusMSEncoder, rate: *mut i32, frame_size: i3
     opus_encoder_ctl!(
         ptr as *mut OpusEncoder,
         OPUS_GET_SAMPLE_RATE_REQUEST,
-        (&mut Fs as *mut i32)
-            .offset((&mut Fs as *mut i32).offset_from(&mut Fs as *mut i32) as i64 as isize),
+        &mut Fs
     );
     if (*st).mapping_type as u32 == MAPPING_TYPE_AMBISONICS as i32 as u32 {
         ambisonics_rate_allocation(st, rate, frame_size, Fs);
@@ -1209,23 +1208,13 @@ pub unsafe fn opus_multistream_encode_native(
     opus_encoder_ctl!(
         ptr as *mut OpusEncoder,
         OPUS_GET_SAMPLE_RATE_REQUEST,
-        (&mut Fs as *mut i32)
-            .offset((&mut Fs as *mut i32).offset_from(&mut Fs as *mut i32) as i64 as isize),
+        &mut Fs
     );
-    opus_encoder_ctl!(
-        ptr as *mut OpusEncoder,
-        OPUS_GET_VBR_REQUEST,
-        (&mut vbr as *mut i32)
-            .offset((&mut vbr as *mut i32).offset_from(&mut vbr as *mut i32) as i64 as isize),
-    );
+    opus_encoder_ctl!(ptr as *mut OpusEncoder, OPUS_GET_VBR_REQUEST, &mut vbr);
     opus_encoder_ctl!(
         ptr as *mut OpusEncoder,
         CELT_GET_MODE_REQUEST,
-        (&mut celt_mode as *mut *const OpusCustomMode).offset(
-            (&mut celt_mode as *mut *const OpusCustomMode)
-                .offset_from(&mut celt_mode as *mut *const OpusCustomMode) as i64
-                as isize,
-        ),
+        &mut celt_mode
     );
     frame_size = frame_size_select(analysis_frame_size, (*st).variable_duration, Fs);
     if frame_size <= 0 as i32 {
@@ -1646,27 +1635,23 @@ pub unsafe fn opus_multistream_encoder_ctl_va_list(
         }
         OPUS_GET_BITRATE_REQUEST => {
             let mut s: i32 = 0;
-            let value_0: *mut i32 = ap.arg::<*mut i32>();
-            if value_0.is_null() {
-                current_block = 11382675479785311092;
-            } else {
-                *value_0 = 0 as i32;
-                s = 0 as i32;
-                while s < (*st).layout.nb_streams {
-                    let mut rate: i32 = 0;
-                    let mut enc: *mut OpusEncoder = 0 as *mut OpusEncoder;
-                    enc = ptr as *mut OpusEncoder;
-                    if s < (*st).layout.nb_coupled_streams {
-                        ptr = ptr.offset(align(coupled_size) as isize);
-                    } else {
-                        ptr = ptr.offset(align(mono_size) as isize);
-                    }
-                    opus_encoder_ctl!(enc, request, &mut rate as *mut i32);
-                    *value_0 += rate;
-                    s += 1;
+            let value_0 = ap.arg::<&mut i32>();
+            *value_0 = 0 as i32;
+            s = 0 as i32;
+            while s < (*st).layout.nb_streams {
+                let mut rate: i32 = 0;
+                let mut enc: *mut OpusEncoder = 0 as *mut OpusEncoder;
+                enc = ptr as *mut OpusEncoder;
+                if s < (*st).layout.nb_coupled_streams {
+                    ptr = ptr.offset(align(coupled_size) as isize);
+                } else {
+                    ptr = ptr.offset(align(mono_size) as isize);
                 }
-                current_block = 2616667235040759262;
+                opus_encoder_ctl!(enc, request, &mut rate);
+                *value_0 += rate;
+                s += 1;
             }
+            current_block = 2616667235040759262;
         }
         OPUS_GET_LSB_DEPTH_REQUEST
         | OPUS_GET_VBR_REQUEST
@@ -1685,37 +1670,33 @@ pub unsafe fn opus_multistream_encoder_ctl_va_list(
         | OPUS_GET_PREDICTION_DISABLED_REQUEST
         | OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST => {
             let mut enc_0: *mut OpusEncoder = 0 as *mut OpusEncoder;
-            let value_1: *mut i32 = ap.arg::<*mut i32>();
+            let value_1 = ap.arg::<&mut i32>();
             enc_0 = ptr as *mut OpusEncoder;
             ret = opus_encoder_ctl!(enc_0, request, value_1);
             current_block = 2616667235040759262;
         }
         OPUS_GET_FINAL_RANGE_REQUEST => {
             let mut s_0: i32 = 0;
-            let value_2: *mut u32 = ap.arg::<*mut u32>();
+            let value_2 = ap.arg::<&mut u32>();
             let mut tmp: u32 = 0;
-            if value_2.is_null() {
-                current_block = 11382675479785311092;
-            } else {
-                *value_2 = 0 as i32 as u32;
-                s_0 = 0 as i32;
-                while s_0 < (*st).layout.nb_streams {
-                    let mut enc_1: *mut OpusEncoder = 0 as *mut OpusEncoder;
-                    enc_1 = ptr as *mut OpusEncoder;
-                    if s_0 < (*st).layout.nb_coupled_streams {
-                        ptr = ptr.offset(align(coupled_size) as isize);
-                    } else {
-                        ptr = ptr.offset(align(mono_size) as isize);
-                    }
-                    ret = opus_encoder_ctl!(enc_1, request, &mut tmp as *mut u32);
-                    if ret != OPUS_OK {
-                        break;
-                    }
-                    *value_2 ^= tmp;
-                    s_0 += 1;
+            *value_2 = 0 as i32 as u32;
+            s_0 = 0 as i32;
+            while s_0 < (*st).layout.nb_streams {
+                let mut enc_1: *mut OpusEncoder = 0 as *mut OpusEncoder;
+                enc_1 = ptr as *mut OpusEncoder;
+                if s_0 < (*st).layout.nb_coupled_streams {
+                    ptr = ptr.offset(align(coupled_size) as isize);
+                } else {
+                    ptr = ptr.offset(align(mono_size) as isize);
                 }
-                current_block = 2616667235040759262;
+                ret = opus_encoder_ctl!(enc_1, request, &mut tmp);
+                if ret != OPUS_OK {
+                    break;
+                }
+                *value_2 ^= tmp;
+                s_0 += 1;
             }
+            current_block = 2616667235040759262;
         }
         OPUS_SET_LSB_DEPTH_REQUEST
         | OPUS_SET_COMPLEXITY_REQUEST
@@ -1759,22 +1740,18 @@ pub unsafe fn opus_multistream_encoder_ctl_va_list(
             if stream_id < 0 as i32 || stream_id >= (*st).layout.nb_streams {
                 current_block = 11382675479785311092;
             } else {
-                value_4 = ap.arg::<*mut *mut OpusEncoder>();
-                if value_4.is_null() {
-                    current_block = 11382675479785311092;
-                } else {
-                    s_2 = 0 as i32;
-                    while s_2 < stream_id {
-                        if s_2 < (*st).layout.nb_coupled_streams {
-                            ptr = ptr.offset(align(coupled_size) as isize);
-                        } else {
-                            ptr = ptr.offset(align(mono_size) as isize);
-                        }
-                        s_2 += 1;
+                value_4 = ap.arg::<&mut *mut OpusEncoder>();
+                s_2 = 0 as i32;
+                while s_2 < stream_id {
+                    if s_2 < (*st).layout.nb_coupled_streams {
+                        ptr = ptr.offset(align(coupled_size) as isize);
+                    } else {
+                        ptr = ptr.offset(align(mono_size) as isize);
                     }
-                    *value_4 = ptr as *mut OpusEncoder;
-                    current_block = 2616667235040759262;
+                    s_2 += 1;
                 }
+                *value_4 = ptr as *mut OpusEncoder;
+                current_block = 2616667235040759262;
             }
         }
         OPUS_SET_EXPERT_FRAME_DURATION_REQUEST => {
@@ -1783,13 +1760,9 @@ pub unsafe fn opus_multistream_encoder_ctl_va_list(
             current_block = 2616667235040759262;
         }
         OPUS_GET_EXPERT_FRAME_DURATION_REQUEST => {
-            let value_6: *mut i32 = ap.arg::<*mut i32>();
-            if value_6.is_null() {
-                current_block = 11382675479785311092;
-            } else {
-                *value_6 = (*st).variable_duration;
-                current_block = 2616667235040759262;
-            }
+            let value_6 = ap.arg::<&mut i32>();
+            *value_6 = (*st).variable_duration;
+            current_block = 2616667235040759262;
         }
         OPUS_RESET_STATE => {
             let mut s_3: i32 = 0;

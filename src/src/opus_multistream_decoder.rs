@@ -231,13 +231,7 @@ pub unsafe fn opus_multistream_decode_native(
     if frame_size <= 0 as i32 {
         return OPUS_BAD_ARG;
     }
-    if !(opus_multistream_decoder_ctl!(
-        st,
-        4029 as i32,
-        (&mut Fs as *mut i32)
-            .offset((&mut Fs as *mut i32).offset_from(&mut Fs as *mut i32) as i64 as isize),
-    ) == 0 as i32)
-    {
+    if !(opus_multistream_decoder_ctl!(st, 4029 as i32, &mut Fs) == 0 as i32) {
         celt_fatal(
             b"assertion failed: (opus_multistream_decoder_ctl(st, 4029, ((&Fs) + ((&Fs) - (i32*)(&Fs))))) == OPUS_OK\0"
                 as *const u8 as *const i8,
@@ -527,37 +521,33 @@ pub unsafe fn opus_multistream_decoder_ctl_va_list(
         | OPUS_GET_LAST_PACKET_DURATION_REQUEST
         | OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST => {
             let mut dec: *mut OpusDecoder = 0 as *mut OpusDecoder;
-            let value: *mut i32 = ap.arg::<*mut i32>();
+            let value: &mut i32 = ap.arg::<&mut i32>();
             dec = ptr as *mut OpusDecoder;
             ret = opus_decoder_ctl!(dec, request, value);
             current_block = 7343950298149844727;
         }
         OPUS_GET_FINAL_RANGE_REQUEST => {
             let mut s: i32 = 0;
-            let value_0: *mut u32 = ap.arg::<*mut u32>();
+            let value_0 = ap.arg::<&mut u32>();
             let mut tmp: u32 = 0;
-            if value_0.is_null() {
-                current_block = 15933654591644784431;
-            } else {
-                *value_0 = 0 as i32 as u32;
-                s = 0 as i32;
-                while s < (*st).layout.nb_streams {
-                    let mut dec_0: *mut OpusDecoder = 0 as *mut OpusDecoder;
-                    dec_0 = ptr as *mut OpusDecoder;
-                    if s < (*st).layout.nb_coupled_streams {
-                        ptr = ptr.offset(align(coupled_size) as isize);
-                    } else {
-                        ptr = ptr.offset(align(mono_size) as isize);
-                    }
-                    ret = opus_decoder_ctl!(dec_0, request, &mut tmp as *mut u32);
-                    if ret != OPUS_OK {
-                        break;
-                    }
-                    *value_0 ^= tmp;
-                    s += 1;
+            *value_0 = 0 as i32 as u32;
+            s = 0 as i32;
+            while s < (*st).layout.nb_streams {
+                let mut dec_0: *mut OpusDecoder = 0 as *mut OpusDecoder;
+                dec_0 = ptr as *mut OpusDecoder;
+                if s < (*st).layout.nb_coupled_streams {
+                    ptr = ptr.offset(align(coupled_size) as isize);
+                } else {
+                    ptr = ptr.offset(align(mono_size) as isize);
                 }
-                current_block = 7343950298149844727;
+                ret = opus_decoder_ctl!(dec_0, request, &mut tmp);
+                if ret != OPUS_OK {
+                    break;
+                }
+                *value_0 ^= tmp;
+                s += 1;
             }
+            current_block = 7343950298149844727;
         }
         OPUS_RESET_STATE => {
             let mut s_0: i32 = 0;
@@ -586,22 +576,18 @@ pub unsafe fn opus_multistream_decoder_ctl_va_list(
             if stream_id < 0 as i32 || stream_id >= (*st).layout.nb_streams {
                 current_block = 15933654591644784431;
             } else {
-                value_1 = ap.arg::<*mut *mut OpusDecoder>();
-                if value_1.is_null() {
-                    current_block = 15933654591644784431;
-                } else {
-                    s_1 = 0 as i32;
-                    while s_1 < stream_id {
-                        if s_1 < (*st).layout.nb_coupled_streams {
-                            ptr = ptr.offset(align(coupled_size) as isize);
-                        } else {
-                            ptr = ptr.offset(align(mono_size) as isize);
-                        }
-                        s_1 += 1;
+                value_1 = ap.arg::<&mut *mut OpusDecoder>();
+                s_1 = 0 as i32;
+                while s_1 < stream_id {
+                    if s_1 < (*st).layout.nb_coupled_streams {
+                        ptr = ptr.offset(align(coupled_size) as isize);
+                    } else {
+                        ptr = ptr.offset(align(mono_size) as isize);
                     }
-                    *value_1 = ptr as *mut OpusDecoder;
-                    current_block = 7343950298149844727;
+                    s_1 += 1;
                 }
+                *value_1 = ptr as *mut OpusDecoder;
+                current_block = 7343950298149844727;
             }
         }
         OPUS_SET_GAIN_REQUEST | OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST => {

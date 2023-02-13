@@ -1629,23 +1629,15 @@ pub unsafe fn opus_custom_decoder_ctl_impl(
             }
         }
         CELT_GET_AND_CLEAR_ERROR_REQUEST => {
-            let value_2: *mut i32 = ap.arg::<*mut i32>();
-            if value_2.is_null() {
-                current_block = 7990025728955927862;
-            } else {
-                *value_2 = (*st).error;
-                (*st).error = 0 as i32;
-                current_block = 3689906465960840878;
-            }
+            let value_2: &mut i32 = ap.arg::<&mut i32>();
+            *value_2 = (*st).error;
+            (*st).error = 0 as i32;
+            current_block = 3689906465960840878;
         }
         OPUS_GET_LOOKAHEAD_REQUEST => {
-            let value_3: *mut i32 = ap.arg::<*mut i32>();
-            if value_3.is_null() {
-                current_block = 7990025728955927862;
-            } else {
-                *value_3 = (*st).overlap / (*st).downsample;
-                current_block = 3689906465960840878;
-            }
+            let value_3 = ap.arg::<&mut i32>();
+            *value_3 = (*st).overlap / (*st).downsample;
+            current_block = 3689906465960840878;
         }
         OPUS_RESET_STATE => {
             let mut i: i32 = 0;
@@ -1679,22 +1671,14 @@ pub unsafe fn opus_custom_decoder_ctl_impl(
             current_block = 3689906465960840878;
         }
         OPUS_GET_PITCH_REQUEST => {
-            let value_4: *mut i32 = ap.arg::<*mut i32>();
-            if value_4.is_null() {
-                current_block = 7990025728955927862;
-            } else {
-                *value_4 = (*st).postfilter_period;
-                current_block = 3689906465960840878;
-            }
+            let value_4 = ap.arg::<&mut i32>();
+            *value_4 = (*st).postfilter_period;
+            current_block = 3689906465960840878;
         }
         CELT_GET_MODE_REQUEST => {
-            let value_5: *mut *const OpusCustomMode = ap.arg::<*mut *const OpusCustomMode>();
-            if value_5.is_null() {
-                current_block = 7990025728955927862;
-            } else {
-                *value_5 = (*st).mode;
-                current_block = 3689906465960840878;
-            }
+            let value_5 = ap.arg::<&mut *const OpusCustomMode>();
+            *value_5 = (*st).mode;
+            current_block = 3689906465960840878;
         }
         CELT_SET_SIGNALLING_REQUEST => {
             let value_6: i32 = ap.arg::<i32>();
@@ -1702,13 +1686,9 @@ pub unsafe fn opus_custom_decoder_ctl_impl(
             current_block = 3689906465960840878;
         }
         OPUS_GET_FINAL_RANGE_REQUEST => {
-            let value_7: *mut u32 = ap.arg::<*mut u32>();
-            if value_7.is_null() {
-                current_block = 7990025728955927862;
-            } else {
-                *value_7 = (*st).rng;
-                current_block = 3689906465960840878;
-            }
+            let value_7 = ap.arg::<&mut u32>();
+            *value_7 = (*st).rng;
+            current_block = 3689906465960840878;
         }
         OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST => {
             let value_8: i32 = ap.arg::<i32>();
@@ -1720,13 +1700,9 @@ pub unsafe fn opus_custom_decoder_ctl_impl(
             }
         }
         OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST => {
-            let value_9: *mut i32 = ap.arg::<*mut i32>();
-            if value_9.is_null() {
-                current_block = 7990025728955927862;
-            } else {
-                *value_9 = (*st).disable_inv;
-                current_block = 3689906465960840878;
-            }
+            let value_9 = ap.arg::<&mut i32>();
+            *value_9 = (*st).disable_inv;
+            current_block = 3689906465960840878;
         }
         _ => return OPUS_UNIMPLEMENTED,
     }

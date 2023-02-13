@@ -473,26 +473,17 @@ pub unsafe fn opus_projection_encoder_ctl_impl(
     let mut ap = args;
     match request {
         OPUS_PROJECTION_GET_DEMIXING_MATRIX_SIZE_REQUEST => {
-            let value: *mut i32 = ap.arg::<*mut i32>();
-            if value.is_null() {
-                current_block = 17184638872671510253;
-            } else {
-                *value = (((*ms_encoder).layout.nb_channels
-                    * ((*ms_encoder).layout.nb_streams + (*ms_encoder).layout.nb_coupled_streams))
-                    as u64)
-                    .wrapping_mul(::core::mem::size_of::<i16>() as u64)
-                    as i32;
-                current_block = 18153031941552419006;
-            }
+            let value = ap.arg::<&mut i32>();
+            *value = (((*ms_encoder).layout.nb_channels
+                * ((*ms_encoder).layout.nb_streams + (*ms_encoder).layout.nb_coupled_streams))
+                as u64)
+                .wrapping_mul(::core::mem::size_of::<i16>() as u64) as i32;
+            current_block = 18153031941552419006;
         }
         OPUS_PROJECTION_GET_DEMIXING_MATRIX_GAIN_REQUEST => {
-            let value_0: *mut i32 = ap.arg::<*mut i32>();
-            if value_0.is_null() {
-                current_block = 17184638872671510253;
-            } else {
-                *value_0 = (*demixing_matrix).gain;
-                current_block = 18153031941552419006;
-            }
+            let value_0 = ap.arg::<&mut i32>();
+            *value_0 = (*demixing_matrix).gain;
+            current_block = 18153031941552419006;
         }
         OPUS_PROJECTION_GET_DEMIXING_MATRIX_REQUEST => {
             let mut i: i32 = 0;

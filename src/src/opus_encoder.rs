@@ -1345,15 +1345,7 @@ pub unsafe fn opus_encode_native(
     } else {
         (*st).lsb_depth
     };
-    opus_custom_encoder_ctl!(
-        celt_enc,
-        CELT_GET_MODE_REQUEST,
-        (&mut celt_mode as *mut *const OpusCustomMode).offset(
-            (&mut celt_mode as *mut *const OpusCustomMode)
-                .offset_from(&mut celt_mode as *mut *const OpusCustomMode) as i64
-                as isize,
-        ),
-    );
+    opus_custom_encoder_ctl!(celt_enc, CELT_GET_MODE_REQUEST, &mut celt_mode);
     analysis_info.valid = 0 as i32;
     if (*st).silk_mode.complexity >= 7 as i32 && (*st).Fs >= 16000 as i32 {
         is_silence = is_digital_silence(pcm, frame_size, (*st).channels, lsb_depth);
@@ -2471,15 +2463,7 @@ pub unsafe fn opus_encode_native(
         ec_enc_shrink(&mut enc, nb_compr_bytes as u32);
     }
     if redundancy != 0 || (*st).mode != MODE_SILK_ONLY {
-        opus_custom_encoder_ctl!(
-            celt_enc,
-            CELT_SET_ANALYSIS_REQUEST,
-            (&mut analysis_info as *mut AnalysisInfo).offset(
-                (&mut analysis_info as *mut AnalysisInfo)
-                    .offset_from(&mut analysis_info as *mut AnalysisInfo as *const AnalysisInfo)
-                    as i64 as isize,
-            ),
-        );
+        opus_custom_encoder_ctl!(celt_enc, CELT_SET_ANALYSIS_REQUEST, &mut analysis_info);
     }
     if (*st).mode == MODE_HYBRID {
         let mut info: SILKInfo = SILKInfo {
@@ -2488,15 +2472,7 @@ pub unsafe fn opus_encode_native(
         };
         info.signalType = (*st).silk_mode.signalType;
         info.offset = (*st).silk_mode.offset;
-        opus_custom_encoder_ctl!(
-            celt_enc,
-            CELT_SET_SILK_INFO_REQUEST,
-            (&mut info as *mut SILKInfo).offset(
-                (&mut info as *mut SILKInfo)
-                    .offset_from(&mut info as *mut SILKInfo as *const SILKInfo)
-                    as i64 as isize,
-            ),
-        );
+        opus_custom_encoder_ctl!(celt_enc, CELT_SET_SILK_INFO_REQUEST, &mut info);
     }
     if redundancy != 0 && celt_to_silk != 0 {
         let mut err: i32 = 0;
@@ -2514,14 +2490,7 @@ pub unsafe fn opus_encode_native(
         if err < 0 as i32 {
             return OPUS_INTERNAL_ERROR;
         }
-        opus_custom_encoder_ctl!(
-            celt_enc,
-            OPUS_GET_FINAL_RANGE_REQUEST,
-            (&mut redundant_rng as *mut u32).offset(
-                (&mut redundant_rng as *mut u32).offset_from(&mut redundant_rng as *mut u32) as i64
-                    as isize,
-            ),
-        );
+        opus_custom_encoder_ctl!(celt_enc, OPUS_GET_FINAL_RANGE_REQUEST, &mut redundant_rng);
         opus_custom_encoder_ctl!(celt_enc, OPUS_RESET_STATE);
     }
     opus_custom_encoder_ctl!(celt_enc, CELT_SET_START_BAND_REQUEST, start_band);
@@ -2624,14 +2593,7 @@ pub unsafe fn opus_encode_native(
         if err_0 < 0 as i32 {
             return OPUS_INTERNAL_ERROR;
         }
-        opus_custom_encoder_ctl!(
-            celt_enc,
-            OPUS_GET_FINAL_RANGE_REQUEST,
-            (&mut redundant_rng as *mut u32).offset(
-                (&mut redundant_rng as *mut u32).offset_from(&mut redundant_rng as *mut u32) as i64
-                    as isize,
-            ),
-        );
+        opus_custom_encoder_ctl!(celt_enc, OPUS_GET_FINAL_RANGE_REQUEST, &mut redundant_rng);
     }
     data = data.offset(-1);
     *data.offset(0 as i32 as isize) = gen_toc(
@@ -2805,13 +2767,9 @@ pub unsafe fn opus_encoder_ctl_impl(mut st: *mut OpusEncoder, request: i32, args
             current_block = 16167632229894708628;
         }
         OPUS_GET_APPLICATION_REQUEST => {
-            let value_0: *mut i32 = ap.arg::<*mut i32>();
-            if value_0.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                *value_0 = (*st).application;
-                current_block = 16167632229894708628;
-            }
+            let value_0 = ap.arg::<&mut i32>();
+            *value_0 = (*st).application;
+            current_block = 16167632229894708628;
         }
         OPUS_SET_BITRATE_REQUEST => {
             let mut value_1: i32 = ap.arg::<i32>();
@@ -2838,13 +2796,9 @@ pub unsafe fn opus_encoder_ctl_impl(mut st: *mut OpusEncoder, request: i32, args
             }
         }
         OPUS_GET_BITRATE_REQUEST => {
-            let value_2: *mut i32 = ap.arg::<*mut i32>();
-            if value_2.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                *value_2 = user_bitrate_to_bitrate(st, (*st).prev_framesize, 1276 as i32);
-                current_block = 16167632229894708628;
-            }
+            let value_2 = ap.arg::<&mut i32>();
+            *value_2 = user_bitrate_to_bitrate(st, (*st).prev_framesize, 1276 as i32);
+            current_block = 16167632229894708628;
         }
         OPUS_SET_FORCE_CHANNELS_REQUEST => {
             let value_3: i32 = ap.arg::<i32>();
@@ -2856,13 +2810,9 @@ pub unsafe fn opus_encoder_ctl_impl(mut st: *mut OpusEncoder, request: i32, args
             }
         }
         OPUS_GET_FORCE_CHANNELS_REQUEST => {
-            let value_4: *mut i32 = ap.arg::<*mut i32>();
-            if value_4.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                *value_4 = (*st).force_channels;
-                current_block = 16167632229894708628;
-            }
+            let value_4 = ap.arg::<&mut i32>();
+            *value_4 = (*st).force_channels;
+            current_block = 16167632229894708628;
         }
         OPUS_SET_MAX_BANDWIDTH_REQUEST => {
             let value_5: i32 = ap.arg::<i32>();
@@ -2881,13 +2831,9 @@ pub unsafe fn opus_encoder_ctl_impl(mut st: *mut OpusEncoder, request: i32, args
             }
         }
         OPUS_GET_MAX_BANDWIDTH_REQUEST => {
-            let value_6: *mut i32 = ap.arg::<*mut i32>();
-            if value_6.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                *value_6 = (*st).max_bandwidth;
-                current_block = 16167632229894708628;
-            }
+            let value_6 = ap.arg::<&mut i32>();
+            *value_6 = (*st).max_bandwidth;
+            current_block = 16167632229894708628;
         }
         OPUS_SET_BANDWIDTH_REQUEST => {
             let value_7: i32 = ap.arg::<i32>();
@@ -2908,13 +2854,9 @@ pub unsafe fn opus_encoder_ctl_impl(mut st: *mut OpusEncoder, request: i32, args
             }
         }
         OPUS_GET_BANDWIDTH_REQUEST => {
-            let value_8: *mut i32 = ap.arg::<*mut i32>();
-            if value_8.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                *value_8 = (*st).bandwidth;
-                current_block = 16167632229894708628;
-            }
+            let value_8 = ap.arg::<&mut i32>();
+            *value_8 = (*st).bandwidth;
+            current_block = 16167632229894708628;
         }
         OPUS_SET_DTX_REQUEST => {
             let value_9: i32 = ap.arg::<i32>();
@@ -2926,13 +2868,9 @@ pub unsafe fn opus_encoder_ctl_impl(mut st: *mut OpusEncoder, request: i32, args
             }
         }
         OPUS_GET_DTX_REQUEST => {
-            let value_10: *mut i32 = ap.arg::<*mut i32>();
-            if value_10.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                *value_10 = (*st).use_dtx;
-                current_block = 16167632229894708628;
-            }
+            let value_10 = ap.arg::<&mut i32>();
+            *value_10 = (*st).use_dtx;
+            current_block = 16167632229894708628;
         }
         OPUS_SET_COMPLEXITY_REQUEST => {
             let value_11: i32 = ap.arg::<i32>();
@@ -2945,13 +2883,9 @@ pub unsafe fn opus_encoder_ctl_impl(mut st: *mut OpusEncoder, request: i32, args
             }
         }
         OPUS_GET_COMPLEXITY_REQUEST => {
-            let value_12: *mut i32 = ap.arg::<*mut i32>();
-            if value_12.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                *value_12 = (*st).silk_mode.complexity;
-                current_block = 16167632229894708628;
-            }
+            let value_12 = ap.arg::<&mut i32>();
+            *value_12 = (*st).silk_mode.complexity;
+            current_block = 16167632229894708628;
         }
         OPUS_SET_INBAND_FEC_REQUEST => {
             let value_13: i32 = ap.arg::<i32>();
@@ -2963,13 +2897,9 @@ pub unsafe fn opus_encoder_ctl_impl(mut st: *mut OpusEncoder, request: i32, args
             }
         }
         OPUS_GET_INBAND_FEC_REQUEST => {
-            let value_14: *mut i32 = ap.arg::<*mut i32>();
-            if value_14.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                *value_14 = (*st).silk_mode.useInBandFEC;
-                current_block = 16167632229894708628;
-            }
+            let value_14 = ap.arg::<&mut i32>();
+            *value_14 = (*st).silk_mode.useInBandFEC;
+            current_block = 16167632229894708628;
         }
         OPUS_SET_PACKET_LOSS_PERC_REQUEST => {
             let value_15: i32 = ap.arg::<i32>();
@@ -2982,13 +2912,9 @@ pub unsafe fn opus_encoder_ctl_impl(mut st: *mut OpusEncoder, request: i32, args
             }
         }
         OPUS_GET_PACKET_LOSS_PERC_REQUEST => {
-            let value_16: *mut i32 = ap.arg::<*mut i32>();
-            if value_16.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                *value_16 = (*st).silk_mode.packetLossPercentage;
-                current_block = 16167632229894708628;
-            }
+            let value_16 = ap.arg::<&mut i32>();
+            *value_16 = (*st).silk_mode.packetLossPercentage;
+            current_block = 16167632229894708628;
         }
         OPUS_SET_VBR_REQUEST => {
             let value_17: i32 = ap.arg::<i32>();
@@ -3001,13 +2927,9 @@ pub unsafe fn opus_encoder_ctl_impl(mut st: *mut OpusEncoder, request: i32, args
             }
         }
         OPUS_GET_VBR_REQUEST => {
-            let value_18: *mut i32 = ap.arg::<*mut i32>();
-            if value_18.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                *value_18 = (*st).use_vbr;
-                current_block = 16167632229894708628;
-            }
+            let value_18 = ap.arg::<&mut i32>();
+            *value_18 = (*st).use_vbr;
+            current_block = 16167632229894708628;
         }
         OPUS_SET_VOICE_RATIO_REQUEST => {
             let value_19: i32 = ap.arg::<i32>();
@@ -3019,13 +2941,9 @@ pub unsafe fn opus_encoder_ctl_impl(mut st: *mut OpusEncoder, request: i32, args
             }
         }
         OPUS_GET_VOICE_RATIO_REQUEST => {
-            let value_20: *mut i32 = ap.arg::<*mut i32>();
-            if value_20.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                *value_20 = (*st).voice_ratio;
-                current_block = 16167632229894708628;
-            }
+            let value_20 = ap.arg::<&mut i32>();
+            *value_20 = (*st).voice_ratio;
+            current_block = 16167632229894708628;
         }
         OPUS_SET_VBR_CONSTRAINT_REQUEST => {
             let value_21: i32 = ap.arg::<i32>();
@@ -3037,13 +2955,9 @@ pub unsafe fn opus_encoder_ctl_impl(mut st: *mut OpusEncoder, request: i32, args
             }
         }
         OPUS_GET_VBR_CONSTRAINT_REQUEST => {
-            let value_22: *mut i32 = ap.arg::<*mut i32>();
-            if value_22.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                *value_22 = (*st).vbr_constraint;
-                current_block = 16167632229894708628;
-            }
+            let value_22 = ap.arg::<&mut i32>();
+            *value_22 = (*st).vbr_constraint;
+            current_block = 16167632229894708628;
         }
         OPUS_SET_SIGNAL_REQUEST => {
             let value_23: i32 = ap.arg::<i32>();
@@ -3058,43 +2972,27 @@ pub unsafe fn opus_encoder_ctl_impl(mut st: *mut OpusEncoder, request: i32, args
             }
         }
         OPUS_GET_SIGNAL_REQUEST => {
-            let value_24: *mut i32 = ap.arg::<*mut i32>();
-            if value_24.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                *value_24 = (*st).signal_type;
-                current_block = 16167632229894708628;
-            }
+            let value_24 = ap.arg::<&mut i32>();
+            *value_24 = (*st).signal_type;
+            current_block = 16167632229894708628;
         }
         OPUS_GET_LOOKAHEAD_REQUEST => {
-            let value_25: *mut i32 = ap.arg::<*mut i32>();
-            if value_25.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                *value_25 = (*st).Fs / 400 as i32;
-                if (*st).application != OPUS_APPLICATION_RESTRICTED_LOWDELAY {
-                    *value_25 += (*st).delay_compensation;
-                }
-                current_block = 16167632229894708628;
+            let value_25 = ap.arg::<&mut i32>();
+            *value_25 = (*st).Fs / 400 as i32;
+            if (*st).application != OPUS_APPLICATION_RESTRICTED_LOWDELAY {
+                *value_25 += (*st).delay_compensation;
             }
+            current_block = 16167632229894708628;
         }
         OPUS_GET_SAMPLE_RATE_REQUEST => {
-            let value_26: *mut i32 = ap.arg::<*mut i32>();
-            if value_26.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                *value_26 = (*st).Fs;
-                current_block = 16167632229894708628;
-            }
+            let value_26 = ap.arg::<&mut i32>();
+            *value_26 = (*st).Fs;
+            current_block = 16167632229894708628;
         }
         OPUS_GET_FINAL_RANGE_REQUEST => {
-            let value_27: *mut u32 = ap.arg::<*mut u32>();
-            if value_27.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                *value_27 = (*st).rangeFinal;
-                current_block = 16167632229894708628;
-            }
+            let value_27 = ap.arg::<&mut u32>();
+            *value_27 = (*st).rangeFinal;
+            current_block = 16167632229894708628;
         }
         OPUS_SET_LSB_DEPTH_REQUEST => {
             let value_28: i32 = ap.arg::<i32>();
@@ -3106,13 +3004,9 @@ pub unsafe fn opus_encoder_ctl_impl(mut st: *mut OpusEncoder, request: i32, args
             }
         }
         OPUS_GET_LSB_DEPTH_REQUEST => {
-            let value_29: *mut i32 = ap.arg::<*mut i32>();
-            if value_29.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                *value_29 = (*st).lsb_depth;
-                current_block = 16167632229894708628;
-            }
+            let value_29 = ap.arg::<&mut i32>();
+            *value_29 = (*st).lsb_depth;
+            current_block = 16167632229894708628;
         }
         OPUS_SET_EXPERT_FRAME_DURATION_REQUEST => {
             let value_30: i32 = ap.arg::<i32>();
@@ -3134,13 +3028,9 @@ pub unsafe fn opus_encoder_ctl_impl(mut st: *mut OpusEncoder, request: i32, args
             }
         }
         OPUS_GET_EXPERT_FRAME_DURATION_REQUEST => {
-            let value_31: *mut i32 = ap.arg::<*mut i32>();
-            if value_31.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                *value_31 = (*st).variable_duration;
-                current_block = 16167632229894708628;
-            }
+            let value_31 = ap.arg::<&mut i32>();
+            *value_31 = (*st).variable_duration;
+            current_block = 16167632229894708628;
         }
         OPUS_SET_PREDICTION_DISABLED_REQUEST => {
             let value_32: i32 = ap.arg::<i32>();
@@ -3152,13 +3042,9 @@ pub unsafe fn opus_encoder_ctl_impl(mut st: *mut OpusEncoder, request: i32, args
             }
         }
         OPUS_GET_PREDICTION_DISABLED_REQUEST => {
-            let value_33: *mut i32 = ap.arg::<*mut i32>();
-            if value_33.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                *value_33 = (*st).silk_mode.reducedDependency;
-                current_block = 16167632229894708628;
-            }
+            let value_33 = ap.arg::<&mut i32>();
+            *value_33 = (*st).silk_mode.reducedDependency;
+            current_block = 16167632229894708628;
         }
         OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST => {
             let value_34: i32 = ap.arg::<i32>();
@@ -3174,17 +3060,13 @@ pub unsafe fn opus_encoder_ctl_impl(mut st: *mut OpusEncoder, request: i32, args
             }
         }
         OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST => {
-            let value_35: *mut i32 = ap.arg::<*mut i32>();
-            if value_35.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                opus_custom_encoder_ctl!(
-                    celt_enc,
-                    OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST,
-                    value_35.offset(value_35.offset_from(value_35) as i64 as isize),
-                );
-                current_block = 16167632229894708628;
-            }
+            let value_35 = ap.arg::<&mut i32>();
+            opus_custom_encoder_ctl!(
+                celt_enc,
+                OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST,
+                value_35
+            );
+            current_block = 16167632229894708628;
         }
         OPUS_RESET_STATE => {
             let mut silk_enc: *mut core::ffi::c_void = 0 as *mut core::ffi::c_void;
@@ -3264,48 +3146,35 @@ pub unsafe fn opus_encoder_ctl_impl(mut st: *mut OpusEncoder, request: i32, args
             current_block = 16167632229894708628;
         }
         OPUS_GET_IN_DTX_REQUEST => {
-            let value_39: *mut i32 = ap.arg::<*mut i32>();
-            if value_39.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                if (*st).silk_mode.useDTX != 0
-                    && ((*st).prev_mode == MODE_SILK_ONLY || (*st).prev_mode == MODE_HYBRID)
-                {
-                    let mut n: i32 = 0;
-                    let silk_enc_0: *mut core::ffi::c_void = (st as *mut i8)
-                        .offset((*st).silk_enc_offset as isize)
-                        as *mut core::ffi::c_void;
-                    *value_39 = 1 as i32;
-                    n = 0 as i32;
-                    while n < (*st).silk_mode.nChannelsInternal {
-                        *value_39 = (*value_39 != 0
-                            && (*(silk_enc_0 as *mut silk_encoder)).state_Fxx[n as usize]
-                                .sCmn
-                                .noSpeechCounter
-                                >= NB_SPEECH_FRAMES_BEFORE_DTX)
-                            as i32;
-                        n += 1;
-                    }
-                } else if (*st).use_dtx != 0 {
-                    *value_39 = ((*st).nb_no_activity_frames >= NB_SPEECH_FRAMES_BEFORE_DTX) as i32;
-                } else {
-                    *value_39 = 0 as i32;
+            let value_39: &mut i32 = ap.arg::<&mut i32>();
+            if (*st).silk_mode.useDTX != 0
+                && ((*st).prev_mode == MODE_SILK_ONLY || (*st).prev_mode == MODE_HYBRID)
+            {
+                let mut n: i32 = 0;
+                let silk_enc_0: *mut core::ffi::c_void = (st as *mut i8)
+                    .offset((*st).silk_enc_offset as isize)
+                    as *mut core::ffi::c_void;
+                *value_39 = 1 as i32;
+                n = 0 as i32;
+                while n < (*st).silk_mode.nChannelsInternal {
+                    *value_39 = (*value_39 != 0
+                        && (*(silk_enc_0 as *mut silk_encoder)).state_Fxx[n as usize]
+                            .sCmn
+                            .noSpeechCounter
+                            >= NB_SPEECH_FRAMES_BEFORE_DTX) as i32;
+                    n += 1;
                 }
-                current_block = 16167632229894708628;
+            } else if (*st).use_dtx != 0 {
+                *value_39 = ((*st).nb_no_activity_frames >= NB_SPEECH_FRAMES_BEFORE_DTX) as i32;
+            } else {
+                *value_39 = 0 as i32;
             }
+            current_block = 16167632229894708628;
         }
         CELT_GET_MODE_REQUEST => {
-            let value_40: *mut *const OpusCustomMode = ap.arg::<*mut *const OpusCustomMode>();
-            if value_40.is_null() {
-                current_block = 12343738388509029619;
-            } else {
-                ret = opus_custom_encoder_ctl!(
-                    celt_enc,
-                    CELT_GET_MODE_REQUEST,
-                    value_40.offset(value_40.offset_from(value_40) as i64 as isize),
-                );
-                current_block = 16167632229894708628;
-            }
+            let value_40: &mut *const OpusCustomMode = ap.arg::<&mut *const OpusCustomMode>();
+            ret = opus_custom_encoder_ctl!(celt_enc, CELT_GET_MODE_REQUEST, value_40);
+            current_block = 16167632229894708628;
         }
         _ => {
             ret = OPUS_UNIMPLEMENTED;

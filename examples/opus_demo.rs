@@ -1001,13 +1001,7 @@ unsafe fn main_0(mut argc: i32, mut argv: *mut *mut i8) -> i32 {
                                                         opus_encoder_ctl!(
                                                             enc,
                                                             4027 as i32,
-                                                            (&mut skip as *mut i32).offset(
-                                                                (&mut skip as *mut i32).offset_from(
-                                                                    &mut skip as *mut i32,
-                                                                )
-                                                                    as i64
-                                                                    as isize,
-                                                            ),
+                                                            &mut skip
                                                         );
                                                         opus_encoder_ctl!(
                                                             enc,
@@ -1553,16 +1547,11 @@ unsafe fn main_0(mut argc: i32, mut argv: *mut *mut i8) -> i32 {
                                                                         opus_encoder_ctl!(
                                                                             enc,
                                                                             4031 as i32,
-                                                                            (&mut *enc_final_range.as_mut_ptr().offset(toggle as isize)
-                                                                                as *mut u32)
+                                                                            &mut *enc_final_range
+                                                                                .as_mut_ptr()
                                                                                 .offset(
-                                                                                    (&mut *enc_final_range.as_mut_ptr().offset(toggle as isize)
-                                                                                        as *mut u32)
-                                                                                        .offset_from(
-                                                                                            &mut *enc_final_range.as_mut_ptr().offset(toggle as isize)
-                                                                                                as *mut u32,
-                                                                                        ) as i64 as isize,
-                                                                                ),
+                                                                                    toggle as isize
+                                                                                )
                                                                         );
                                                                         if len[toggle as usize]
                                                                             < 0 as i32
@@ -1652,12 +1641,7 @@ unsafe fn main_0(mut argc: i32, mut argv: *mut *mut i8) -> i32 {
                                                                             opus_decoder_ctl!(
                                                                                 dec,
                                                                                 4039 as i32,
-                                                                                (&mut output_samples as *mut i32)
-                                                                                    .offset(
-                                                                                        (&mut output_samples as *mut i32)
-                                                                                            .offset_from(&mut output_samples as *mut i32)
-                                                                                            as i64 as isize,
-                                                                                    ),
+                                                                                &mut output_samples
                                                                             );
                                                                         } else {
                                                                             output_samples =
@@ -1669,12 +1653,7 @@ unsafe fn main_0(mut argc: i32, mut argv: *mut *mut i8) -> i32 {
                                                                                     opus_decoder_ctl!(
                                                                                         dec,
                                                                                         4039 as i32,
-                                                                                        (&mut output_samples as *mut i32)
-                                                                                            .offset(
-                                                                                                (&mut output_samples as *mut i32)
-                                                                                                    .offset_from(&mut output_samples as *mut i32)
-                                                                                                    as i64 as isize,
-                                                                                            ),
+                                                                                        &mut output_samples
                                                                                     );
                                                                                     output_samples = opus_decode(
                                                                                         dec,
@@ -1788,12 +1767,7 @@ unsafe fn main_0(mut argc: i32, mut argv: *mut *mut i8) -> i32 {
                                                                         opus_decoder_ctl!(
                                                                             dec,
                                                                             4031 as i32,
-                                                                            (&mut dec_final_range as *mut u32)
-                                                                                .offset(
-                                                                                    (&mut dec_final_range as *mut u32)
-                                                                                        .offset_from(&mut dec_final_range as *mut u32)
-                                                                                        as i64 as isize,
-                                                                                ),
+                                                                            &mut dec_final_range
                                                                         );
                                                                     }
                                                                     if enc_final_range[(toggle

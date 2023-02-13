@@ -142,7 +142,7 @@ pub unsafe fn test_creation_arguments(channels: i32, mapping_family: i32) {
     if !st_enc.is_null() {
         let mut matrix_size: i32 = 0;
         let mut matrix: *mut u8 = std::ptr::null_mut::<u8>();
-        ret = opus_projection_encoder_ctl!(st_enc, 6003 as i32, &mut matrix_size as *mut i32);
+        ret = opus_projection_encoder_ctl!(st_enc, 6003 as i32, &mut matrix_size);
         if ret != 0 as i32 || matrix_size == 0 {
             _test_failed(
                 b"tests/test_opus_projection.c\0" as *const u8 as *const i8,
@@ -33096,7 +33096,7 @@ pub unsafe fn test_encode_decode(mut bitrate: i32, mut channels: i32, mapping_fa
         bitrate * 1000 as i32 * (streams + coupled),
     );
     if error == 0 as i32 {
-        error = opus_projection_encoder_ctl!(st_enc, 6003 as i32, &mut matrix_size as *mut i32);
+        error = opus_projection_encoder_ctl!(st_enc, 6003 as i32, &mut matrix_size);
         if !(error != 0 as i32 || matrix_size == 0) {
             matrix = malloc(matrix_size as _) as *mut u8;
             error = opus_projection_encoder_ctl!(st_enc, 6005 as i32, matrix, matrix_size);

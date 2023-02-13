@@ -204,21 +204,7 @@ pub unsafe fn test_dec_api() -> i32 {
         stdout(),
         b"    opus_decoder_init() .......................... OK.\n\0" as *const u8 as *const i8,
     );
-    err = opus_decoder_ctl!(dec, 4031 as i32, null_uint_ptr as *mut u32);
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            152 as i32,
-        );
-    }
-    err = opus_decoder_ctl!(
-        dec,
-        4031 as i32,
-        (&mut dec_final_range as *mut u32).offset(
-            (&mut dec_final_range as *mut u32).offset_from(&mut dec_final_range as *mut u32) as i64
-                as isize,
-        )
-    );
+    err = opus_decoder_ctl!(dec, 4031 as i32, &mut dec_final_range);
     if err != 0 as i32 {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -242,23 +228,7 @@ pub unsafe fn test_dec_api() -> i32 {
         b"    OPUS_UNIMPLEMENTED ........................... OK.\n\0" as *const u8 as *const i8,
     );
     cfgs += 1;
-    err = opus_decoder_ctl!(
-        dec,
-        4009 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize)
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            166 as i32,
-        );
-    }
-    err = opus_decoder_ctl!(
-        dec,
-        4009 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize)
-    );
+    err = opus_decoder_ctl!(dec, 4009 as i32, &mut i);
     if err != 0 as i32 || i != 0 as i32 {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -270,23 +240,7 @@ pub unsafe fn test_dec_api() -> i32 {
         b"    OPUS_GET_BANDWIDTH ........................... OK.\n\0" as *const u8 as *const i8,
     );
     cfgs += 1;
-    err = opus_decoder_ctl!(
-        dec,
-        4029 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize)
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            174 as i32,
-        );
-    }
-    err = opus_decoder_ctl!(
-        dec,
-        4029 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize)
-    );
+    err = opus_decoder_ctl!(dec, 4029 as i32, &mut i);
     if err != 0 as i32 || i != 48000 as i32 {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -298,24 +252,7 @@ pub unsafe fn test_dec_api() -> i32 {
         b"    OPUS_GET_SAMPLE_RATE ......................... OK.\n\0" as *const u8 as *const i8,
     );
     cfgs += 1;
-    err = opus_decoder_ctl!(
-        dec,
-        4033 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize)
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            183 as i32,
-        );
-    }
-    cfgs += 1;
-    err = opus_decoder_ctl!(
-        dec,
-        4033 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize)
-    );
+    err = opus_decoder_ctl!(dec, 4033 as i32, &mut i);
     if err != 0 as i32 || i > 0 as i32 || i < -(1 as i32) {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -341,12 +278,7 @@ pub unsafe fn test_dec_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_decoder_ctl!(
-        dec,
-        4033 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize)
-    );
+    err = opus_decoder_ctl!(dec, 4033 as i32, &mut i);
     if err != 0 as i32 || i > 0 as i32 || i < -(1 as i32) {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -370,12 +302,7 @@ pub unsafe fn test_dec_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_decoder_ctl!(
-        dec,
-        4033 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize)
-    );
+    err = opus_decoder_ctl!(dec, 4033 as i32, &mut i);
     if err != 0 as i32 || i > 0 as i32 || i < -(1 as i32) {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -387,23 +314,7 @@ pub unsafe fn test_dec_api() -> i32 {
         stdout(),
         b"    OPUS_GET_PITCH ............................... OK.\n\0" as *const u8 as *const i8,
     );
-    err = opus_decoder_ctl!(
-        dec,
-        4039 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize)
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            207 as i32,
-        );
-    }
-    err = opus_decoder_ctl!(
-        dec,
-        4039 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize)
-    );
+    err = opus_decoder_ctl!(dec, 4039 as i32, &mut i);
     if err != 0 as i32 || i != 960 as i32 {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -415,28 +326,11 @@ pub unsafe fn test_dec_api() -> i32 {
         stdout(),
         b"    OPUS_GET_LAST_PACKET_DURATION ................ OK.\n\0" as *const u8 as *const i8,
     );
-    err = opus_decoder_ctl!(
-        dec,
-        4045 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize)
-    );
+    err = opus_decoder_ctl!(dec, 4045 as i32, &mut i);
     if err != 0 as i32 || i != 0 as i32 {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
             217 as i32,
-        );
-    }
-    cfgs += 1;
-    err = opus_decoder_ctl!(
-        dec,
-        4045 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize)
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            220 as i32,
         );
     }
     cfgs += 1;
@@ -464,12 +358,7 @@ pub unsafe fn test_dec_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_decoder_ctl!(
-        dec,
-        4045 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize)
-    );
+    err = opus_decoder_ctl!(dec, 4045 as i32, &mut i);
     if err != 0 as i32 || i != -(15 as i32) {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -1275,14 +1164,7 @@ pub unsafe fn test_msdec_api() -> i32 {
         stdout(),
         b"    opus_multistream_decoder_init() .............. OK.\n\0" as *const u8 as *const i8,
     );
-    err = opus_multistream_decoder_ctl!(
-        dec,
-        4031 as i32,
-        (&mut dec_final_range as *mut u32).offset(
-            (&mut dec_final_range as *mut u32).offset_from(&mut dec_final_range as *mut u32) as i64
-                as isize,
-        ),
-    );
+    err = opus_multistream_decoder_ctl!(dec, 4031 as i32, &mut dec_final_range);
     if err != 0 as i32 {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -1295,15 +1177,7 @@ pub unsafe fn test_msdec_api() -> i32 {
     );
     cfgs += 1;
     streamdec = std::ptr::null_mut::<OpusDecoder>();
-    err = opus_multistream_decoder_ctl!(
-        dec,
-        5122 as i32,
-        -(1 as i32),
-        (&mut streamdec as *mut *mut OpusDecoder).offset(
-            (&mut streamdec as *mut *mut OpusDecoder)
-                .offset_from(&mut streamdec as *mut *mut OpusDecoder) as i64 as isize,
-        ),
-    );
+    err = opus_multistream_decoder_ctl!(dec, 5122 as i32, -(1 as i32), &mut streamdec);
     if err != -(1 as i32) {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -1311,15 +1185,7 @@ pub unsafe fn test_msdec_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_multistream_decoder_ctl!(
-        dec,
-        5122 as i32,
-        1 as i32,
-        (&mut streamdec as *mut *mut OpusDecoder).offset(
-            (&mut streamdec as *mut *mut OpusDecoder)
-                .offset_from(&mut streamdec as *mut *mut OpusDecoder) as i64 as isize,
-        ),
-    );
+    err = opus_multistream_decoder_ctl!(dec, 5122 as i32, 1 as i32, &mut streamdec);
     if err != 0 as i32 || streamdec.is_null() {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -1327,15 +1193,7 @@ pub unsafe fn test_msdec_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_multistream_decoder_ctl!(
-        dec,
-        5122 as i32,
-        2 as i32,
-        (&mut streamdec as *mut *mut OpusDecoder).offset(
-            (&mut streamdec as *mut *mut OpusDecoder)
-                .offset_from(&mut streamdec as *mut *mut OpusDecoder) as i64 as isize,
-        ),
-    );
+    err = opus_multistream_decoder_ctl!(dec, 5122 as i32, 2 as i32, &mut streamdec);
     if err != -(1 as i32) {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -1343,15 +1201,7 @@ pub unsafe fn test_msdec_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_multistream_decoder_ctl!(
-        dec,
-        5122 as i32,
-        0 as i32,
-        (&mut streamdec as *mut *mut OpusDecoder).offset(
-            (&mut streamdec as *mut *mut OpusDecoder)
-                .offset_from(&mut streamdec as *mut *mut OpusDecoder) as i64 as isize,
-        ),
-    );
+    err = opus_multistream_decoder_ctl!(dec, 5122 as i32, 0 as i32, &mut streamdec);
     if err != 0 as i32 || streamdec.is_null() {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -1366,27 +1216,14 @@ pub unsafe fn test_msdec_api() -> i32 {
     j = 0 as i32;
     while j < 2 as i32 {
         let mut od: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
-        err = opus_multistream_decoder_ctl!(
-            dec,
-            5122 as i32,
-            j,
-            (&mut od as *mut *mut OpusDecoder).offset(
-                (&mut od as *mut *mut OpusDecoder).offset_from(&mut od as *mut *mut OpusDecoder)
-                    as i64 as isize,
-            ),
-        );
+        err = opus_multistream_decoder_ctl!(dec, 5122 as i32, j, &mut od);
         if err != 0 as i32 {
             _test_failed(
                 b"tests/test_opus_api.c\0" as *const u8 as *const i8,
                 572 as i32,
             );
         }
-        err = opus_decoder_ctl!(
-            od,
-            4045 as i32,
-            (&mut i as *mut i32)
-                .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize)
-        );
+        err = opus_decoder_ctl!(od, 4045 as i32, &mut i);
         if err != 0 as i32 || i != 0 as i32 {
             _test_failed(
                 b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -1410,27 +1247,14 @@ pub unsafe fn test_msdec_api() -> i32 {
     j = 0 as i32;
     while j < 2 as i32 {
         let mut od_0: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
-        err = opus_multistream_decoder_ctl!(
-            dec,
-            5122 as i32,
-            j,
-            (&mut od_0 as *mut *mut OpusDecoder).offset(
-                (&mut od_0 as *mut *mut OpusDecoder).offset_from(&mut od_0 as *mut *mut OpusDecoder)
-                    as i64 as isize,
-            ),
-        );
+        err = opus_multistream_decoder_ctl!(dec, 5122 as i32, j, &mut od_0);
         if err != 0 as i32 {
             _test_failed(
                 b"tests/test_opus_api.c\0" as *const u8 as *const i8,
                 586 as i32,
             );
         }
-        err = opus_decoder_ctl!(
-            od_0,
-            4045 as i32,
-            (&mut i as *mut i32)
-                .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize)
-        );
+        err = opus_decoder_ctl!(od_0, 4045 as i32, &mut i);
         if err != 0 as i32 || i != 15 as i32 {
             _test_failed(
                 b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -1444,12 +1268,7 @@ pub unsafe fn test_msdec_api() -> i32 {
         stdout(),
         b"    OPUS_GET_GAIN ................................ OK.\n\0" as *const u8 as *const i8,
     );
-    err = opus_multistream_decoder_ctl!(
-        dec,
-        4009 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_multistream_decoder_ctl!(dec, 4009 as i32, &mut i);
     if err != 0 as i32 || i != 0 as i32 {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -2860,12 +2679,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_encoder_ctl!(
-        enc,
-        4027 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4027 as i32, &mut i);
     if err != 0 as i32 || i < 0 as i32 || i > 32766 as i32 {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -2882,12 +2696,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_encoder_ctl!(
-        enc,
-        4027 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4027 as i32, &mut i);
     if err != 0 as i32 || i < 0 as i32 || i > 32766 as i32 {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -2913,12 +2722,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    opus_encoder_init() .......................... OK.\n\0" as *const u8 as *const i8,
     );
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4027 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4027 as i32, &mut i);
     if err != 0 as i32 || i < 0 as i32 || i > 32766 as i32 {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -2926,44 +2730,15 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_encoder_ctl!(
-        enc,
-        4027 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize),
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            1168 as i32,
-        );
-    }
-    cfgs += 1;
     fprintf(
         stdout(),
         b"    OPUS_GET_LOOKAHEAD ........................... OK.\n\0" as *const u8 as *const i8,
     );
-    err = opus_encoder_ctl!(
-        enc,
-        4029 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4029 as i32, &mut i);
     if err != 0 as i32 || i != 48000 as i32 {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
             1173 as i32,
-        );
-    }
-    cfgs += 1;
-    err = opus_encoder_ctl!(
-        enc,
-        4029 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize),
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            1176 as i32,
         );
     }
     cfgs += 1;
@@ -2981,18 +2756,6 @@ pub unsafe fn test_enc_api() -> i32 {
         stdout(),
         b"    OPUS_UNIMPLEMENTED ........................... OK.\n\0" as *const u8 as *const i8,
     );
-    cfgs += 1;
-    err = opus_encoder_ctl!(
-        enc,
-        4001 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize),
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            1185 as i32,
-        );
-    }
     cfgs += 1;
     i = -(1 as i32);
     if opus_encoder_ctl!(enc, 4000 as i32, i) == 0 as i32 {
@@ -3017,12 +2780,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4001 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4001 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3042,12 +2800,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_SET_APPLICATION ......................... OK.\n\0" as *const u8 as *const i8,
     );
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4001 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4001 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3059,18 +2812,6 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_GET_APPLICATION ......................... OK.\n\0" as *const u8 as *const i8,
     );
     cfgs += 6 as i32;
-    err = opus_encoder_ctl!(
-        enc,
-        4003 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize),
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            1193 as i32,
-        );
-    }
-    cfgs += 1;
     if opus_encoder_ctl!(enc, 4002 as i32, 1073741832 as i32) != 0 as i32 {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3078,13 +2819,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    if opus_encoder_ctl!(
-        enc,
-        4003 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    ) != 0 as i32
-    {
+    if opus_encoder_ctl!(enc, 4003 as i32, &mut i) != 0 as i32 {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
             1198 as i32,
@@ -3120,12 +2855,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4003 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4003 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3145,12 +2875,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_SET_BITRATE ............................. OK.\n\0" as *const u8 as *const i8,
     );
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4003 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4003 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3162,18 +2887,6 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_GET_BITRATE ............................. OK.\n\0" as *const u8 as *const i8,
     );
     cfgs += 6 as i32;
-    err = opus_encoder_ctl!(
-        enc,
-        4023 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize),
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            1207 as i32,
-        );
-    }
-    cfgs += 1;
     i = -(1 as i32);
     if opus_encoder_ctl!(enc, 4022 as i32, i) == 0 as i32 {
         _test_failed(
@@ -3197,12 +2910,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4023 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4023 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3222,12 +2930,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_SET_FORCE_CHANNELS ...................... OK.\n\0" as *const u8 as *const i8,
     );
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4023 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4023 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3292,12 +2995,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_SET_BANDWIDTH ........................... OK.\n\0" as *const u8 as *const i8,
     );
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4009 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4009 as i32, &mut i);
     if err != 0 as i32
         || i != 1101 as i32
             && i != 1102 as i32
@@ -3315,18 +3013,6 @@ pub unsafe fn test_enc_api() -> i32 {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
             1242 as i32,
-        );
-    }
-    cfgs += 1;
-    err = opus_encoder_ctl!(
-        enc,
-        4009 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize),
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            1245 as i32,
         );
     }
     cfgs += 1;
@@ -3387,12 +3073,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_SET_MAX_BANDWIDTH ....................... OK.\n\0" as *const u8 as *const i8,
     );
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4005 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4005 as i32, &mut i);
     if err != 0 as i32
         || i != 1101 as i32 && i != 1102 as i32 && i != 1103 as i32 && i != 1105 as i32
     {
@@ -3402,34 +3083,10 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    err = opus_encoder_ctl!(
-        enc,
-        4005 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize),
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            1278 as i32,
-        );
-    }
-    cfgs += 1;
     fprintf(
         stdout(),
         b"    OPUS_GET_MAX_BANDWIDTH ....................... OK.\n\0" as *const u8 as *const i8,
     );
-    err = opus_encoder_ctl!(
-        enc,
-        4017 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize),
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            1283 as i32,
-        );
-    }
-    cfgs += 1;
     i = -(1 as i32);
     if opus_encoder_ctl!(enc, 4016 as i32, i) == 0 as i32 {
         _test_failed(
@@ -3453,12 +3110,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4017 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4017 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3478,12 +3130,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_SET_DTX ................................. OK.\n\0" as *const u8 as *const i8,
     );
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4017 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4017 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3495,18 +3142,6 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_GET_DTX ................................. OK.\n\0" as *const u8 as *const i8,
     );
     cfgs += 6 as i32;
-    err = opus_encoder_ctl!(
-        enc,
-        4011 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize),
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            1291 as i32,
-        );
-    }
-    cfgs += 1;
     i = -(1 as i32);
     if opus_encoder_ctl!(enc, 4010 as i32, i) == 0 as i32 {
         _test_failed(
@@ -3530,12 +3165,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4011 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4011 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3555,12 +3185,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_SET_COMPLEXITY .......................... OK.\n\0" as *const u8 as *const i8,
     );
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4011 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4011 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3572,18 +3197,6 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_GET_COMPLEXITY .......................... OK.\n\0" as *const u8 as *const i8,
     );
     cfgs += 6 as i32;
-    err = opus_encoder_ctl!(
-        enc,
-        4013 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize),
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            1299 as i32,
-        );
-    }
-    cfgs += 1;
     i = -(1 as i32);
     if opus_encoder_ctl!(enc, 4012 as i32, i) == 0 as i32 {
         _test_failed(
@@ -3607,12 +3220,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4013 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4013 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3632,12 +3240,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_SET_INBAND_FEC .......................... OK.\n\0" as *const u8 as *const i8,
     );
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4013 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4013 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3649,18 +3252,6 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_GET_INBAND_FEC .......................... OK.\n\0" as *const u8 as *const i8,
     );
     cfgs += 6 as i32;
-    err = opus_encoder_ctl!(
-        enc,
-        4015 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize),
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            1307 as i32,
-        );
-    }
-    cfgs += 1;
     i = -(1 as i32);
     if opus_encoder_ctl!(enc, 4014 as i32, i) == 0 as i32 {
         _test_failed(
@@ -3684,12 +3275,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4015 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4015 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3709,12 +3295,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_SET_PACKET_LOSS_PERC .................... OK.\n\0" as *const u8 as *const i8,
     );
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4015 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4015 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3726,18 +3307,6 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_GET_PACKET_LOSS_PERC .................... OK.\n\0" as *const u8 as *const i8,
     );
     cfgs += 6 as i32;
-    err = opus_encoder_ctl!(
-        enc,
-        4007 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize),
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            1315 as i32,
-        );
-    }
-    cfgs += 1;
     i = -(1 as i32);
     if opus_encoder_ctl!(enc, 4006 as i32, i) == 0 as i32 {
         _test_failed(
@@ -3761,12 +3330,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4007 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4007 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3786,12 +3350,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_SET_VBR ................................. OK.\n\0" as *const u8 as *const i8,
     );
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4007 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4007 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3803,18 +3362,6 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_GET_VBR ................................. OK.\n\0" as *const u8 as *const i8,
     );
     cfgs += 6 as i32;
-    err = opus_encoder_ctl!(
-        enc,
-        4021 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize),
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            1331 as i32,
-        );
-    }
-    cfgs += 1;
     i = -(1 as i32);
     if opus_encoder_ctl!(enc, 4020 as i32, i) == 0 as i32 {
         _test_failed(
@@ -3838,12 +3385,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4021 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4021 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3863,12 +3405,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_SET_VBR_CONSTRAINT ...................... OK.\n\0" as *const u8 as *const i8,
     );
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4021 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4021 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3880,18 +3417,6 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_GET_VBR_CONSTRAINT ...................... OK.\n\0" as *const u8 as *const i8,
     );
     cfgs += 6 as i32;
-    err = opus_encoder_ctl!(
-        enc,
-        4025 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize),
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            1339 as i32,
-        );
-    }
-    cfgs += 1;
     i = -(12345 as i32);
     if opus_encoder_ctl!(enc, 4024 as i32, i) == 0 as i32 {
         _test_failed(
@@ -3915,12 +3440,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4025 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4025 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3940,12 +3460,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_SET_SIGNAL .............................. OK.\n\0" as *const u8 as *const i8,
     );
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4025 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4025 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3957,18 +3472,6 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_GET_SIGNAL .............................. OK.\n\0" as *const u8 as *const i8,
     );
     cfgs += 6 as i32;
-    err = opus_encoder_ctl!(
-        enc,
-        4037 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize),
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            1347 as i32,
-        );
-    }
-    cfgs += 1;
     i = 7 as i32;
     if opus_encoder_ctl!(enc, 4036 as i32, i) == 0 as i32 {
         _test_failed(
@@ -3992,12 +3495,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4037 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4037 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -4017,12 +3515,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_SET_LSB_DEPTH ........................... OK.\n\0" as *const u8 as *const i8,
     );
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4037 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4037 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -4034,28 +3527,11 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_GET_LSB_DEPTH ........................... OK.\n\0" as *const u8 as *const i8,
     );
     cfgs += 6 as i32;
-    err = opus_encoder_ctl!(
-        enc,
-        4043 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4043 as i32, &mut i);
     if i != 0 as i32 {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
             1354 as i32,
-        );
-    }
-    cfgs += 1;
-    err = opus_encoder_ctl!(
-        enc,
-        4043 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize),
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            1357 as i32,
         );
     }
     cfgs += 1;
@@ -4082,12 +3558,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4043 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4043 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -4107,12 +3578,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_SET_PREDICTION_DISABLED ................. OK.\n\0" as *const u8 as *const i8,
     );
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4043 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4043 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -4124,18 +3590,6 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_GET_PREDICTION_DISABLED ................. OK.\n\0" as *const u8 as *const i8,
     );
     cfgs += 6 as i32;
-    err = opus_encoder_ctl!(
-        enc,
-        4041 as i32,
-        null_int_ptr.offset(null_int_ptr.offset_from(null_int_ptr) as i64 as isize),
-    );
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            1364 as i32,
-        );
-    }
-    cfgs += 1;
     err = opus_encoder_ctl!(enc, 4040 as i32, 5001 as i32);
     if err != 0 as i32 {
         _test_failed(
@@ -4231,12 +3685,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4041 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4041 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -4256,12 +3705,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_SET_EXPERT_FRAME_DURATION ............... OK.\n\0" as *const u8 as *const i8,
     );
     i = -(12345 as i32);
-    err = opus_encoder_ctl!(
-        enc,
-        4041 as i32,
-        (&mut i as *mut i32)
-            .offset((&mut i as *mut i32).offset_from(&mut i as *mut i32) as i64 as isize),
-    );
+    err = opus_encoder_ctl!(enc, 4041 as i32, &mut i);
     if err != 0 as i32 || i != j {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -4273,23 +3717,7 @@ pub unsafe fn test_enc_api() -> i32 {
         b"    OPUS_GET_EXPERT_FRAME_DURATION ............... OK.\n\0" as *const u8 as *const i8,
     );
     cfgs += 6 as i32;
-    err = opus_encoder_ctl!(enc, 4031 as i32, null_uint_ptr as *mut u32);
-    if err != -(1 as i32) {
-        _test_failed(
-            b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-            1401 as i32,
-        );
-    }
-    cfgs += 1;
-    if opus_encoder_ctl!(
-        enc,
-        4031 as i32,
-        (&mut enc_final_range as *mut u32).offset(
-            (&mut enc_final_range as *mut u32).offset_from(&mut enc_final_range as *mut u32) as i64
-                as isize,
-        ),
-    ) != 0 as i32
-    {
+    if opus_encoder_ctl!(enc, 4031 as i32, &mut enc_final_range) != 0 as i32 {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
             1403 as i32,
