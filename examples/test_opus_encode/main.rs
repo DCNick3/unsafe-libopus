@@ -8,7 +8,7 @@
 #![feature(register_tool)]
 #![register_tool(c2rust)]
 
-use libc::{atoi, fprintf, getenv, getpid, strtol, time, time_t};
+use libc::{atoi, fprintf, getenv, getpid, strtol, time};
 use libc_stdhandle::{stderr, stdout};
 
 #[c2rust::header_src = "/home/dcnick3/Downloads/opus-1.3.1/tests/test_opus_common.h:48"]
@@ -2156,7 +2156,7 @@ unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
         iseed = atoi(env_seed) as u32;
         env_used = 1 as i32;
     } else {
-        iseed = time(std::ptr::null_mut::<time_t>()) as u32
+        iseed = time(std::ptr::null_mut()) as u32
             ^ (getpid() as u32 & 65535 as i32 as u32) << 16 as i32;
     }
     Rz = iseed;

@@ -6,9 +6,6 @@ publish = false
 edition = "2021"
 autobins = false
 
-[lib]
-crate-type = ["staticlib", "rlib"]
-
 [profile.release]
 debug = 1
 

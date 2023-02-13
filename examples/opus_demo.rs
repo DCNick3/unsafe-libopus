@@ -917,7 +917,7 @@ unsafe fn main_0(mut argc: i32, mut argv: *mut *mut i8) -> i32 {
                                         } else {
                                             if !mode_list.is_null() {
                                                 let mut size: i32 = 0;
-                                                fseek(fin, 0 as i32 as i64, 2 as i32);
+                                                fseek(fin, 0, libc::SEEK_END);
                                                 size = ftell(fin) as i32;
                                                 fprintf(
                                                     stderr(),
@@ -925,7 +925,7 @@ unsafe fn main_0(mut argc: i32, mut argv: *mut *mut i8) -> i32 {
                                                         as *const i8,
                                                     size,
                                                 );
-                                                fseek(fin, 0 as i32 as i64, 0 as i32);
+                                                fseek(fin, 0, libc::SEEK_SET);
                                                 mode_switch_time = (size as u64)
                                                     .wrapping_div(::core::mem::size_of::<
                                                         libc::c_short,
