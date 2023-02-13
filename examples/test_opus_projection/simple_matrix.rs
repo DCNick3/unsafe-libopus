@@ -71,7 +71,7 @@ pub use self::mapping_matrix_h::{
     mapping_matrix_multiply_channel_out_short, MappingMatrix,
 };
 use crate::{_test_failed, assert_is_equal, assert_is_equal_short, opus_val16};
-use libopus_unsafe::externs::{free, malloc};
+use unsafe_libopus::externs::{free, malloc};
 
 #[c2rust::src_loc = "82:1"]
 pub unsafe fn test_simple_matrix() {

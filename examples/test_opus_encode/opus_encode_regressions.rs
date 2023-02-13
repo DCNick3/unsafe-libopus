@@ -1,12 +1,12 @@
 use ::libc;
 use libc::fprintf;
 use libc_stdhandle::stderr;
-use libopus_unsafe::{
+use unsafe_libopus::{
     opus_multistream_encode, opus_multistream_encoder_create, opus_multistream_encoder_ctl,
     opus_multistream_encoder_destroy, opus_multistream_surround_encoder_create, OpusMSEncoder,
 };
 
-use libopus_unsafe::{
+use unsafe_libopus::{
     opus_encode, opus_encoder_create, opus_encoder_ctl, opus_encoder_destroy, OpusEncoder,
 };
 

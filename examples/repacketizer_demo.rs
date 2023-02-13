@@ -12,8 +12,8 @@ use ::libc;
 use libc::{atoi, fclose, feof, fopen, fprintf, fread, fwrite, FILE};
 use libc_stdhandle::stderr;
 
-use libopus_unsafe::externs::strcmp;
-use libopus_unsafe::{
+use unsafe_libopus::externs::strcmp;
+use unsafe_libopus::{
     opus_repacketizer_cat, opus_repacketizer_create, opus_repacketizer_get_nb_frames,
     opus_repacketizer_init, opus_repacketizer_out, opus_repacketizer_out_range, opus_strerror,
     OpusRepacketizer,

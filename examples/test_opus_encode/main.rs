@@ -123,14 +123,14 @@ pub mod test_opus_common_h {
 
     use libc::{abort, fprintf};
     use libc_stdhandle::stderr;
-    use libopus_unsafe::externs::memset;
-    use libopus_unsafe::externs::{free, malloc};
-    use libopus_unsafe::opus_get_version_string;
+    use unsafe_libopus::externs::memset;
+    use unsafe_libopus::externs::{free, malloc};
+    use unsafe_libopus::opus_get_version_string;
 }
 pub use self::test_opus_common_h::{debruijn2, Rw, Rz, _test_failed, fast_rand, iseed};
-use libopus_unsafe::externs::{free, malloc};
-use libopus_unsafe::externs::{memcpy, memset, strcmp};
-use libopus_unsafe::{
+use unsafe_libopus::externs::{free, malloc};
+use unsafe_libopus::externs::{memcpy, memset, strcmp};
+use unsafe_libopus::{
     opus_decode, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy,
     opus_decoder_get_size, opus_encode, opus_encoder_create, opus_encoder_ctl,
     opus_encoder_destroy, opus_encoder_get_size, opus_get_version_string, opus_multistream_decode,

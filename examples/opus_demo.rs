@@ -15,9 +15,9 @@ use libc::{
 use libc_stdhandle::stderr;
 
 type size_t = libc::c_ulong;
-use libopus_unsafe::externs::strcmp;
-use libopus_unsafe::externs::{calloc, free, malloc};
-use libopus_unsafe::{
+use unsafe_libopus::externs::strcmp;
+use unsafe_libopus::externs::{calloc, free, malloc};
+use unsafe_libopus::{
     opus_decode, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy, opus_encode,
     opus_encoder_create, opus_encoder_ctl, opus_encoder_destroy, opus_get_version_string,
     opus_packet_get_nb_frames, opus_packet_get_samples_per_frame, opus_strerror, OpusDecoder,

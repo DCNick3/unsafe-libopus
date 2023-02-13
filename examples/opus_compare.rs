@@ -11,7 +11,7 @@
 use ::libc;
 use libc::{atoi, fclose, fopen, fprintf, fread, FILE};
 use libc_stdhandle::stderr;
-use libopus_unsafe::externs::{free, malloc, realloc, strcmp};
+use unsafe_libopus::externs::{free, malloc, realloc, strcmp};
 
 type size_t = libc::c_ulong;
 

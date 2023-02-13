@@ -85,13 +85,13 @@ pub mod test_opus_common_h {
 
     use libc::{abort, fprintf};
     use libc_stdhandle::stderr;
-    use libopus_unsafe::opus_get_version_string;
+    use unsafe_libopus::opus_get_version_string;
 }
 pub use self::arch_h::opus_val16;
 pub use self::test_opus_common_h::{_test_failed, fast_rand};
-use libopus_unsafe::externs::memset;
-use libopus_unsafe::externs::{free, malloc};
-use libopus_unsafe::{
+use unsafe_libopus::externs::memset;
+use unsafe_libopus::externs::{free, malloc};
+use unsafe_libopus::{
     opus_projection_ambisonics_encoder_create, opus_projection_decode,
     opus_projection_decoder_create, opus_projection_decoder_destroy, opus_projection_encode,
     opus_projection_encoder_ctl, opus_projection_encoder_destroy, OpusProjectionDecoder,
