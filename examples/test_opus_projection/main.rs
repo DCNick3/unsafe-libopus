@@ -1,4 +1,3 @@
-#![allow(dead_code)]
 #![allow(mutable_transmutes)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
@@ -18,6 +17,7 @@ pub mod xmmintrin_h {
     #[cfg(target_arch = "x86_64")]
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
+#[allow(unused)] // it's not currently used, as it wants to link to opus internals...
 mod simple_matrix;
 pub mod test_opus_common_h {
     pub static mut Rz: u32 = 0;

@@ -1,5 +1,4 @@
 pub mod arch_h {
-    pub type opus_val16 = f32;
     pub type opus_val32 = f32;
     pub type opus_val64 = f32;
 }
@@ -71,9 +70,6 @@ pub mod xmmintrin_h {
     #[cfg(target_arch = "x86_64")]
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
-pub mod stddef_h {
-    pub const NULL: i32 = 0 as i32;
-}
 pub mod math_h {
     pub const M_PI: f64 = 3.14159265358979323846f64;
 }
@@ -83,10 +79,9 @@ pub mod cpu_support_h {
         return 0 as i32;
     }
 }
-pub use self::arch_h::{opus_val16, opus_val32, opus_val64};
+pub use self::arch_h::{opus_val32, opus_val64};
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::math_h::M_PI;
-pub use self::stddef_h::NULL;
 use crate::celt::celt::celt_fatal;
 use crate::celt::float_cast::float2int;
 use crate::celt::kiss_fft::{kiss_fft_cpx, kiss_fft_state, opus_fft_c};

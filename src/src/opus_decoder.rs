@@ -1,25 +1,8 @@
 use crate::externs::{free, malloc};
 
-pub mod internal {
-    pub type __builtin_va_list = [__va_list_tag; 1];
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    pub struct __va_list_tag {
-        pub gp_offset: u32,
-        pub fp_offset: u32,
-        pub overflow_arg_area: *mut core::ffi::c_void,
-        pub reg_save_area: *mut core::ffi::c_void,
-    }
-}
-pub mod stdarg_h {
-    pub type va_list = __builtin_va_list;
-    use super::internal::__builtin_va_list;
-}
-
 pub mod arch_h {
     pub type opus_val16 = f32;
     pub type opus_val32 = f32;
-    pub const CELT_SIG_SCALE: f32 = 32768.0f32;
 }
 pub mod stddef_h {
     pub type size_t = u64;
@@ -44,11 +27,9 @@ pub mod stack_alloc_h {
         return 0 as i32;
     }
 }
-pub use self::arch_h::{opus_val16, opus_val32, CELT_SIG_SCALE};
+pub use self::arch_h::{opus_val16, opus_val32};
 pub use self::cpu_support_h::opus_select_arch;
-pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::stack_alloc_h::{_opus_false, ALLOC_NONE};
-pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 use crate::celt::celt::celt_fatal;
 use crate::celt::celt::CELT_SET_SIGNALLING_REQUEST;

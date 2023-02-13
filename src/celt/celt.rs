@@ -1,8 +1,5 @@
 use crate::celt::modes::OpusCustomMode;
 
-pub mod stddef_h {
-    pub type size_t = u64;
-}
 pub mod arch_h {
     pub type opus_val16 = f32;
     pub type opus_val32 = f32;
@@ -19,8 +16,6 @@ pub mod arch_h {
 }
 
 pub use self::arch_h::{celt_fatal, opus_val16, opus_val32};
-pub use self::stddef_h::size_t;
-
 use crate::externs::memmove;
 
 pub static trim_icdf: [u8; 11] = [126, 124, 119, 109, 87, 41, 19, 9, 4, 2, 0];

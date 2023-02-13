@@ -1,6 +1,3 @@
-pub mod arch_h {
-    pub type opus_val16 = f32;
-}
 pub const FINE_OFFSET: i32 = 21 as i32;
 pub const MAX_FINE_BITS: i32 = 8 as i32;
 #[inline]
@@ -62,7 +59,6 @@ pub unsafe fn pulses2bits(m: *const OpusCustomMode, band: i32, mut LM: i32, puls
 pub const QTHETA_OFFSET_TWOPHASE: i32 = 16 as i32;
 pub const QTHETA_OFFSET: i32 = 4 as i32;
 
-pub use self::arch_h::opus_val16;
 use crate::celt::celt::celt_fatal;
 use crate::celt::entcode::{celt_udiv, ec_ctx, BITRES};
 use crate::celt::entdec::{ec_dec_bit_logp, ec_dec_uint};

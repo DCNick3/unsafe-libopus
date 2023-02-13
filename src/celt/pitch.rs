@@ -34,14 +34,6 @@ pub unsafe fn dual_inner_prod_c(
     *xy1 = xy01;
     *xy2 = xy02;
 }
-pub const celt_pitch_xcorr: unsafe fn(
-    *const opus_val16,
-    *const opus_val16,
-    *mut opus_val32,
-    i32,
-    i32,
-    i32,
-) -> () = celt_pitch_xcorr_c;
 #[inline]
 pub unsafe fn xcorr_kernel_c(
     mut x: *const opus_val16,

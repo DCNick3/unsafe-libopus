@@ -6,17 +6,6 @@ use crate::src::opus_multistream_encoder::{
 use crate::src::opus_private::align;
 use crate::{opus_multistream_encoder_get_size, opus_multistream_encoder_init, OpusMSEncoder};
 
-pub mod internal {
-    pub type __builtin_va_list = [__va_list_tag; 1];
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    pub struct __va_list_tag {
-        pub gp_offset: u32,
-        pub fp_offset: u32,
-        pub overflow_arg_area: *mut core::ffi::c_void,
-        pub reg_save_area: *mut core::ffi::c_void,
-    }
-}
 pub mod arch_h {
     pub type opus_val16 = f32;
     pub type opus_val32 = f32;
@@ -25,22 +14,16 @@ pub mod stddef_h {
     pub type size_t = u64;
     pub const NULL: i32 = 0 as i32;
 }
-pub mod stdarg_h {
-    pub type va_list = __builtin_va_list;
-    use super::internal::__builtin_va_list;
-}
 pub mod opus_projection_h {
     pub const OPUS_PROJECTION_GET_DEMIXING_MATRIX_GAIN_REQUEST: i32 = 6001;
     pub const OPUS_PROJECTION_GET_DEMIXING_MATRIX_SIZE_REQUEST: i32 = 6003;
     pub const OPUS_PROJECTION_GET_DEMIXING_MATRIX_REQUEST: i32 = 6005;
 }
 pub use self::arch_h::{opus_val16, opus_val32};
-pub use self::internal::{__builtin_va_list, __va_list_tag};
 pub use self::opus_projection_h::{
     OPUS_PROJECTION_GET_DEMIXING_MATRIX_GAIN_REQUEST, OPUS_PROJECTION_GET_DEMIXING_MATRIX_REQUEST,
     OPUS_PROJECTION_GET_DEMIXING_MATRIX_SIZE_REQUEST,
 };
-pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 use crate::celt::mathops::isqrt32;
 use crate::src::mapping_matrix::{

@@ -1,4 +1,3 @@
-#![allow(dead_code)]
 #![allow(mutable_transmutes)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
@@ -212,7 +211,7 @@ pub use crate::src::repacketizer::{
 // opus_errorcodes
 pub use crate::src::opus_defines::{
     OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_BUFFER_TOO_SMALL, OPUS_INTERNAL_ERROR, OPUS_INVALID_PACKET,
-    OPUS_OK, OPUS_UNIMPLEMENTED,
+    OPUS_INVALID_STATE, OPUS_OK, OPUS_UNIMPLEMENTED,
 };
 pub use crate::src::opus_defines::{
     OPUS_GET_APPLICATION_REQUEST, OPUS_GET_BANDWIDTH_REQUEST, OPUS_GET_BITRATE_REQUEST,

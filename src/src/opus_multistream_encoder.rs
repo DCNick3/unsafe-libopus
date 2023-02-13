@@ -1,16 +1,5 @@
 use crate::externs::{free, malloc};
 
-pub mod internal {
-    pub type __builtin_va_list = [__va_list_tag; 1];
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    pub struct __va_list_tag {
-        pub gp_offset: u32,
-        pub fp_offset: u32,
-        pub overflow_arg_area: *mut core::ffi::c_void,
-        pub reg_save_area: *mut core::ffi::c_void,
-    }
-}
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct OpusMSEncoder {
@@ -40,28 +29,20 @@ pub type opus_copy_channel_in_func = Option<
 pub mod arch_h {
     pub type opus_val32 = f32;
     pub type opus_val16 = f32;
-    pub type celt_ener = f32;
-    pub type celt_sig = f32;
 }
 pub mod stddef_h {
     pub type size_t = u64;
     pub const NULL: i32 = 0 as i32;
 }
 
-pub mod stdarg_h {
-    pub type va_list = __builtin_va_list;
-    use super::internal::__builtin_va_list;
-}
 pub mod cpu_support_h {
     #[inline]
     pub unsafe fn opus_select_arch() -> i32 {
         return 0 as i32;
     }
 }
-pub use self::arch_h::{celt_ener, celt_sig, opus_val16, opus_val32};
+pub use self::arch_h::{opus_val16, opus_val32};
 pub use self::cpu_support_h::opus_select_arch;
-pub use self::internal::{__builtin_va_list, __va_list_tag};
-pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 use crate::celt::bands::compute_band_energies;
 use crate::celt::celt::{celt_fatal, resampling_factor};

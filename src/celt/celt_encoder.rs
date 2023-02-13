@@ -3,21 +3,6 @@ use crate::celt::bands::{
     spreading_decision, SPREAD_AGGRESSIVE, SPREAD_NONE, SPREAD_NORMAL,
 };
 
-pub mod internal {
-    pub type __builtin_va_list = [__va_list_tag; 1];
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    pub struct __va_list_tag {
-        pub gp_offset: u32,
-        pub fp_offset: u32,
-        pub overflow_arg_area: *mut core::ffi::c_void,
-        pub reg_save_area: *mut core::ffi::c_void,
-    }
-}
-pub mod stdarg_h {
-    pub type va_list = __builtin_va_list;
-    use super::internal::__builtin_va_list;
-}
 pub mod arch_h {
     pub type opus_val16 = f32;
     pub type opus_val32 = f32;
@@ -40,8 +25,6 @@ pub mod stddef_h {
 pub use self::arch_h::{
     celt_ener, celt_norm, celt_sig, opus_val16, opus_val32, CELT_SIG_SCALE, EPSILON,
 };
-pub use self::internal::{__builtin_va_list, __va_list_tag};
-pub use self::stdarg_h::va_list;
 pub use self::stddef_h::NULL;
 use crate::celt::celt::{
     celt_fatal, comb_filter, init_caps, resampling_factor, spread_icdf, tapset_icdf,
