@@ -29,12 +29,6 @@ pub mod stdarg_h {
     pub type va_list = __builtin_va_list;
     use super::internal::__builtin_va_list;
 }
-pub mod opus_defines_h {
-    pub const OPUS_ALLOC_FAIL: i32 = -(7 as i32);
-    pub const OPUS_UNIMPLEMENTED: i32 = -(5 as i32);
-    pub const OPUS_BAD_ARG: i32 = -(1 as i32);
-    pub const OPUS_OK: i32 = 0 as i32;
-}
 pub mod opus_projection_h {
     pub const OPUS_PROJECTION_GET_DEMIXING_MATRIX_GAIN_REQUEST: i32 = 6001;
     pub const OPUS_PROJECTION_GET_DEMIXING_MATRIX_SIZE_REQUEST: i32 = 6003;
@@ -42,7 +36,6 @@ pub mod opus_projection_h {
 }
 pub use self::arch_h::{opus_val16, opus_val32};
 pub use self::internal::{__builtin_va_list, __va_list_tag};
-pub use self::opus_defines_h::{OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_OK, OPUS_UNIMPLEMENTED};
 pub use self::opus_projection_h::{
     OPUS_PROJECTION_GET_DEMIXING_MATRIX_GAIN_REQUEST, OPUS_PROJECTION_GET_DEMIXING_MATRIX_REQUEST,
     OPUS_PROJECTION_GET_DEMIXING_MATRIX_SIZE_REQUEST,
@@ -59,6 +52,7 @@ use crate::src::mapping_matrix::{
     mapping_matrix_toa_demixing, mapping_matrix_toa_demixing_data, mapping_matrix_toa_mixing,
     mapping_matrix_toa_mixing_data, MappingMatrix,
 };
+use crate::src::opus_defines::{OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_OK, OPUS_UNIMPLEMENTED};
 use crate::varargs::VarArgs;
 
 #[derive(Copy, Clone)]

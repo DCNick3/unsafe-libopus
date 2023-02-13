@@ -52,52 +52,6 @@ pub mod stdarg_h {
     pub type va_list = __builtin_va_list;
     use super::internal::__builtin_va_list;
 }
-pub mod opus_defines_h {
-    pub const OPUS_GET_BITRATE_REQUEST: i32 = 4003;
-    pub const OPUS_GET_LSB_DEPTH_REQUEST: i32 = 4037;
-    pub const OPUS_GET_APPLICATION_REQUEST: i32 = 4001;
-    pub const OPUS_GET_BANDWIDTH_REQUEST: i32 = 4009;
-    pub const OPUS_GET_COMPLEXITY_REQUEST: i32 = 4011;
-    pub const OPUS_GET_PACKET_LOSS_PERC_REQUEST: i32 = 4015;
-    pub const OPUS_GET_DTX_REQUEST: i32 = 4017;
-    pub const OPUS_GET_VBR_CONSTRAINT_REQUEST: i32 = 4021;
-    pub const OPUS_GET_SIGNAL_REQUEST: i32 = 4025;
-    pub const OPUS_GET_LOOKAHEAD_REQUEST: i32 = 4027;
-    pub const OPUS_GET_INBAND_FEC_REQUEST: i32 = 4013;
-    pub const OPUS_GET_FORCE_CHANNELS_REQUEST: i32 = 4023;
-    pub const OPUS_GET_PREDICTION_DISABLED_REQUEST: i32 = 4043;
-    pub const OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4047;
-    pub const OPUS_GET_FINAL_RANGE_REQUEST: i32 = 4031;
-    pub const OPUS_SET_LSB_DEPTH_REQUEST: i32 = 4036;
-    pub const OPUS_SET_COMPLEXITY_REQUEST: i32 = 4010;
-    pub const OPUS_SET_VBR_REQUEST: i32 = 4006;
-    pub const OPUS_SET_VBR_CONSTRAINT_REQUEST: i32 = 4020;
-    pub const OPUS_SET_MAX_BANDWIDTH_REQUEST: i32 = 4004;
-    pub const OPUS_SET_SIGNAL_REQUEST: i32 = 4024;
-    pub const OPUS_SET_APPLICATION_REQUEST: i32 = 4000;
-    pub const OPUS_OK: i32 = 0 as i32;
-    pub const OPUS_SET_INBAND_FEC_REQUEST: i32 = 4012;
-    pub const OPUS_SET_PACKET_LOSS_PERC_REQUEST: i32 = 4014;
-    pub const OPUS_SET_DTX_REQUEST: i32 = 4016;
-    pub const OPUS_BAD_ARG: i32 = -(1 as i32);
-    pub const OPUS_SET_PREDICTION_DISABLED_REQUEST: i32 = 4042;
-    pub const OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4046;
-    pub const OPUS_SET_EXPERT_FRAME_DURATION_REQUEST: i32 = 4040;
-    pub const OPUS_GET_EXPERT_FRAME_DURATION_REQUEST: i32 = 4041;
-    pub const OPUS_FRAMESIZE_ARG: i32 = 5000 as i32;
-    pub const OPUS_AUTO: i32 = -(1000 as i32);
-    pub const OPUS_ALLOC_FAIL: i32 = -(7 as i32);
-    pub const OPUS_RESET_STATE: i32 = 4028 as i32;
-    pub const OPUS_GET_VBR_REQUEST: i32 = 4007;
-    pub const OPUS_BUFFER_TOO_SMALL: i32 = -(2 as i32);
-    pub const OPUS_GET_SAMPLE_RATE_REQUEST: i32 = 4029;
-    pub const OPUS_UNIMPLEMENTED: i32 = -(5 as i32);
-    pub const OPUS_BITRATE_MAX: i32 = -(1 as i32);
-    pub const OPUS_SET_BANDWIDTH_REQUEST: i32 = 4008 as i32;
-    pub const OPUS_SET_FORCE_CHANNELS_REQUEST: i32 = 4022;
-    pub const OPUS_SET_BITRATE_REQUEST: i32 = 4002 as i32;
-    pub const OPUS_INTERNAL_ERROR: i32 = -(3 as i32);
-}
 pub mod cpu_support_h {
     #[inline]
     pub unsafe fn opus_select_arch() -> i32 {
@@ -107,7 +61,22 @@ pub mod cpu_support_h {
 pub use self::arch_h::{celt_ener, celt_sig, opus_val16, opus_val32};
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::internal::{__builtin_va_list, __va_list_tag};
-pub use self::opus_defines_h::{
+pub use self::stdarg_h::va_list;
+pub use self::stddef_h::{size_t, NULL};
+use crate::celt::bands::compute_band_energies;
+use crate::celt::celt::{celt_fatal, resampling_factor};
+use crate::celt::celt::{
+    CELT_GET_MODE_REQUEST, OPUS_SET_ENERGY_MASK_REQUEST, OPUS_SET_LFE_REQUEST,
+};
+use crate::celt::celt_encoder::celt_preemphasis;
+use crate::celt::mathops::isqrt32;
+use crate::celt::mdct::clt_mdct_forward_c;
+use crate::celt::modes::OpusCustomMode;
+use crate::celt::pitch::celt_inner_prod_c;
+use crate::celt::quant_bands::amp2Log2;
+use crate::externs::{memcpy, memset};
+use crate::src::analysis::downmix_func;
+use crate::src::opus_defines::{
     OPUS_ALLOC_FAIL, OPUS_AUTO, OPUS_BAD_ARG, OPUS_BITRATE_MAX, OPUS_BUFFER_TOO_SMALL,
     OPUS_FRAMESIZE_ARG, OPUS_GET_APPLICATION_REQUEST, OPUS_GET_BANDWIDTH_REQUEST,
     OPUS_GET_BITRATE_REQUEST, OPUS_GET_COMPLEXITY_REQUEST, OPUS_GET_DTX_REQUEST,
@@ -125,21 +94,6 @@ pub use self::opus_defines_h::{
     OPUS_SET_SIGNAL_REQUEST, OPUS_SET_VBR_CONSTRAINT_REQUEST, OPUS_SET_VBR_REQUEST,
     OPUS_UNIMPLEMENTED,
 };
-pub use self::stdarg_h::va_list;
-pub use self::stddef_h::{size_t, NULL};
-use crate::celt::bands::compute_band_energies;
-use crate::celt::celt::{celt_fatal, resampling_factor};
-use crate::celt::celt::{
-    CELT_GET_MODE_REQUEST, OPUS_SET_ENERGY_MASK_REQUEST, OPUS_SET_LFE_REQUEST,
-};
-use crate::celt::celt_encoder::celt_preemphasis;
-use crate::celt::mathops::isqrt32;
-use crate::celt::mdct::clt_mdct_forward_c;
-use crate::celt::modes::OpusCustomMode;
-use crate::celt::pitch::celt_inner_prod_c;
-use crate::celt::quant_bands::amp2Log2;
-use crate::externs::{memcpy, memset};
-use crate::src::analysis::downmix_func;
 use crate::src::opus_encoder::{downmix_float, downmix_int, frame_size_select, opus_encode_native};
 use crate::src::opus_multistream::{
     get_left_channel, get_mono_channel, get_right_channel, validate_layout, ChannelLayout,

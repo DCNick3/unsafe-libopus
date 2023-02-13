@@ -30,10 +30,6 @@ pub const MAX_PERIOD: i32 = 1024;
 pub mod arch_h {
     pub type opus_val16 = f32;
 }
-pub mod opus_defines_h {
-    pub const OPUS_OK: i32 = 0 as i32;
-    pub const OPUS_BAD_ARG: i32 = -(1 as i32);
-}
 pub mod stddef_h {
     pub const NULL: i32 = 0 as i32;
 }
@@ -7105,7 +7101,6 @@ pub mod static_modes_float_h {
     use crate::celt::modes::{OpusCustomMode, PulseCache};
 }
 pub use self::arch_h::opus_val16;
-pub use self::opus_defines_h::{OPUS_BAD_ARG, OPUS_OK};
 pub use self::static_modes_float_h::{
     cache_bits50, cache_caps50, cache_index50, fft_bitrev120, fft_bitrev240, fft_bitrev480,
     fft_bitrev60, fft_state48000_960_0, fft_state48000_960_1, fft_state48000_960_2,
@@ -7114,6 +7109,7 @@ pub use self::static_modes_float_h::{
 };
 pub use self::stddef_h::NULL;
 use crate::celt::mdct::mdct_lookup;
+use crate::src::opus_defines::{OPUS_BAD_ARG, OPUS_OK};
 
 static mut eband5ms: [i16; 22] = [
     0 as i32 as i16,

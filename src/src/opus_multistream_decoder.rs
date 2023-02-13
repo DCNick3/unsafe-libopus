@@ -49,39 +49,21 @@ pub mod stdarg_h {
     pub type va_list = __builtin_va_list;
     use super::internal::__builtin_va_list;
 }
-pub mod opus_defines_h {
-    pub const OPUS_GET_BANDWIDTH_REQUEST: i32 = 4009;
-    pub const OPUS_GET_SAMPLE_RATE_REQUEST: i32 = 4029;
-    pub const OPUS_GET_GAIN_REQUEST: i32 = 4045;
-    pub const OPUS_GET_LAST_PACKET_DURATION_REQUEST: i32 = 4039;
-    pub const OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4047;
-    pub const OPUS_GET_FINAL_RANGE_REQUEST: i32 = 4031;
-    pub const OPUS_RESET_STATE: i32 = 4028 as i32;
-    pub const OPUS_SET_GAIN_REQUEST: i32 = 4034;
-    pub const OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4046;
-    pub const OPUS_UNIMPLEMENTED: i32 = -(5 as i32);
-    pub const OPUS_INVALID_PACKET: i32 = -(4 as i32);
-    pub const OPUS_OK: i32 = 0 as i32;
-    pub const OPUS_BUFFER_TOO_SMALL: i32 = -(2 as i32);
-    pub const OPUS_BAD_ARG: i32 = -(1 as i32);
-    pub const OPUS_INTERNAL_ERROR: i32 = -(3 as i32);
-    pub const OPUS_ALLOC_FAIL: i32 = -(7 as i32);
-}
 use self::arch_h::opus_val16;
 pub use self::internal::{__builtin_va_list, __va_list_tag};
-pub use self::opus_defines_h::{
-    OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_BUFFER_TOO_SMALL, OPUS_GET_BANDWIDTH_REQUEST,
-    OPUS_GET_FINAL_RANGE_REQUEST, OPUS_GET_GAIN_REQUEST, OPUS_GET_LAST_PACKET_DURATION_REQUEST,
-    OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_GET_SAMPLE_RATE_REQUEST, OPUS_INTERNAL_ERROR,
-    OPUS_INVALID_PACKET, OPUS_OK, OPUS_RESET_STATE, OPUS_SET_GAIN_REQUEST,
-    OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_UNIMPLEMENTED,
-};
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
 use crate::celt::celt::celt_fatal;
 use crate::celt::float_cast::FLOAT2INT16;
 use crate::src::opus::opus_packet_parse_impl;
 use crate::src::opus_decoder::opus_decode_native;
+use crate::src::opus_defines::{
+    OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_BUFFER_TOO_SMALL, OPUS_GET_BANDWIDTH_REQUEST,
+    OPUS_GET_FINAL_RANGE_REQUEST, OPUS_GET_GAIN_REQUEST, OPUS_GET_LAST_PACKET_DURATION_REQUEST,
+    OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_GET_SAMPLE_RATE_REQUEST, OPUS_INTERNAL_ERROR,
+    OPUS_INVALID_PACKET, OPUS_OK, OPUS_RESET_STATE, OPUS_SET_GAIN_REQUEST,
+    OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_UNIMPLEMENTED,
+};
 use crate::src::opus_multistream::{
     get_left_channel, get_mono_channel, get_right_channel, validate_layout, ChannelLayout,
 };

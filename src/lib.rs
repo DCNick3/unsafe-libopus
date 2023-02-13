@@ -172,6 +172,7 @@ mod src {
     pub mod opus_projection_encoder;
     pub mod repacketizer;
     // stuff for structs that do not have a clear home, named after the header files
+    pub mod opus_defines;
     pub mod opus_private;
 } // mod src
 

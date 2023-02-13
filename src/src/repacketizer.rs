@@ -13,15 +13,9 @@ pub mod stddef_h {
     pub type size_t = u64;
     pub const NULL: i32 = 0 as i32;
 }
-pub mod opus_defines_h {
-    pub const OPUS_BAD_ARG: i32 = -(1 as i32);
-    pub const OPUS_BUFFER_TOO_SMALL: i32 = -(2 as i32);
-    pub const OPUS_INVALID_PACKET: i32 = -(4 as i32);
-    pub const OPUS_OK: i32 = 0 as i32;
-}
-pub use self::opus_defines_h::{OPUS_BAD_ARG, OPUS_BUFFER_TOO_SMALL, OPUS_INVALID_PACKET, OPUS_OK};
 pub use self::stddef_h::{size_t, NULL};
 use crate::celt::celt::celt_fatal;
+use crate::src::opus_defines::{OPUS_BAD_ARG, OPUS_BUFFER_TOO_SMALL, OPUS_INVALID_PACKET, OPUS_OK};
 
 use crate::externs::memmove;
 use crate::src::opus::{encode_size, opus_packet_parse_impl};

@@ -31,30 +31,6 @@ pub mod xmmintrin_h {
     #[cfg(target_arch = "x86_64")]
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
-pub mod opus_defines_h {
-    pub const OPUS_GET_BANDWIDTH_REQUEST: i32 = 4009;
-    pub const OPUS_GET_FINAL_RANGE_REQUEST: i32 = 4031;
-    pub const OPUS_RESET_STATE: i32 = 4028;
-    pub const OPUS_GET_SAMPLE_RATE_REQUEST: i32 = 4029;
-    pub const OPUS_GET_PITCH_REQUEST: i32 = 4033;
-    pub const OPUS_GET_GAIN_REQUEST: i32 = 4045;
-    pub const OPUS_SET_GAIN_REQUEST: i32 = 4034;
-    pub const OPUS_GET_LAST_PACKET_DURATION_REQUEST: i32 = 4039;
-    pub const OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4046 as i32;
-    pub const OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4047;
-    pub const OPUS_UNIMPLEMENTED: i32 = -(5 as i32);
-    pub const OPUS_INVALID_PACKET: i32 = -(4 as i32);
-    pub const OPUS_BUFFER_TOO_SMALL: i32 = -(2 as i32);
-    pub const OPUS_BANDWIDTH_NARROWBAND: i32 = 1101 as i32;
-    pub const OPUS_BANDWIDTH_MEDIUMBAND: i32 = 1102 as i32;
-    pub const OPUS_BANDWIDTH_WIDEBAND: i32 = 1103;
-    pub const OPUS_BANDWIDTH_SUPERWIDEBAND: i32 = 1104 as i32;
-    pub const OPUS_BANDWIDTH_FULLBAND: i32 = 1105 as i32;
-    pub const OPUS_ALLOC_FAIL: i32 = -(7 as i32);
-    pub const OPUS_BAD_ARG: i32 = -(1 as i32);
-    pub const OPUS_INTERNAL_ERROR: i32 = -(3 as i32);
-    pub const OPUS_OK: i32 = 0 as i32;
-}
 pub mod cpu_support_h {
     #[inline]
     pub unsafe fn opus_select_arch() -> i32 {
@@ -71,16 +47,6 @@ pub mod stack_alloc_h {
 pub use self::arch_h::{opus_val16, opus_val32, CELT_SIG_SCALE};
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::internal::{__builtin_va_list, __va_list_tag};
-pub use self::opus_defines_h::{
-    OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_BANDWIDTH_FULLBAND, OPUS_BANDWIDTH_MEDIUMBAND,
-    OPUS_BANDWIDTH_NARROWBAND, OPUS_BANDWIDTH_SUPERWIDEBAND, OPUS_BANDWIDTH_WIDEBAND,
-    OPUS_BUFFER_TOO_SMALL, OPUS_GET_BANDWIDTH_REQUEST, OPUS_GET_FINAL_RANGE_REQUEST,
-    OPUS_GET_GAIN_REQUEST, OPUS_GET_LAST_PACKET_DURATION_REQUEST,
-    OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_GET_PITCH_REQUEST,
-    OPUS_GET_SAMPLE_RATE_REQUEST, OPUS_INTERNAL_ERROR, OPUS_INVALID_PACKET, OPUS_OK,
-    OPUS_RESET_STATE, OPUS_SET_GAIN_REQUEST, OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST,
-    OPUS_UNIMPLEMENTED,
-};
 pub use self::stack_alloc_h::{_opus_false, ALLOC_NONE};
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::{size_t, NULL};
@@ -98,6 +64,16 @@ use crate::externs::memset;
 use crate::silk::dec_API::silk_DecControlStruct;
 use crate::silk::dec_API::{silk_Decode, silk_Get_Decoder_Size, silk_InitDecoder};
 use crate::src::opus::opus_packet_parse_impl;
+use crate::src::opus_defines::{
+    OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_BANDWIDTH_FULLBAND, OPUS_BANDWIDTH_MEDIUMBAND,
+    OPUS_BANDWIDTH_NARROWBAND, OPUS_BANDWIDTH_SUPERWIDEBAND, OPUS_BANDWIDTH_WIDEBAND,
+    OPUS_BUFFER_TOO_SMALL, OPUS_GET_BANDWIDTH_REQUEST, OPUS_GET_FINAL_RANGE_REQUEST,
+    OPUS_GET_GAIN_REQUEST, OPUS_GET_LAST_PACKET_DURATION_REQUEST,
+    OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_GET_PITCH_REQUEST,
+    OPUS_GET_SAMPLE_RATE_REQUEST, OPUS_INTERNAL_ERROR, OPUS_INVALID_PACKET, OPUS_OK,
+    OPUS_RESET_STATE, OPUS_SET_GAIN_REQUEST, OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST,
+    OPUS_UNIMPLEMENTED,
+};
 use crate::src::opus_private::{align, MODE_CELT_ONLY, MODE_HYBRID, MODE_SILK_ONLY};
 use crate::varargs::VarArgs;
 use crate::{opus_custom_decoder_ctl, opus_packet_get_samples_per_frame, opus_pcm_soft_clip};

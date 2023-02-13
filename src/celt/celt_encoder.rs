@@ -34,25 +34,6 @@ pub struct SILKInfo {
     pub offset: i32,
 }
 
-pub mod opus_defines_h {
-    pub const OPUS_ALLOC_FAIL: i32 = -(7 as i32);
-    pub const OPUS_INTERNAL_ERROR: i32 = -(3 as i32);
-    pub const OPUS_SET_COMPLEXITY_REQUEST: i32 = 4010;
-    pub const OPUS_OK: i32 = 0 as i32;
-    pub const OPUS_BAD_ARG: i32 = -(1 as i32);
-    pub const OPUS_UNIMPLEMENTED: i32 = -(5 as i32);
-    pub const OPUS_GET_FINAL_RANGE_REQUEST: i32 = 4031;
-    pub const OPUS_RESET_STATE: i32 = 4028;
-    pub const OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4047;
-    pub const OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST: i32 = 4046;
-    pub const OPUS_GET_LSB_DEPTH_REQUEST: i32 = 4037;
-    pub const OPUS_SET_LSB_DEPTH_REQUEST: i32 = 4036;
-    pub const OPUS_BITRATE_MAX: i32 = -(1 as i32);
-    pub const OPUS_SET_BITRATE_REQUEST: i32 = 4002;
-    pub const OPUS_SET_VBR_REQUEST: i32 = 4006;
-    pub const OPUS_SET_VBR_CONSTRAINT_REQUEST: i32 = 4020;
-    pub const OPUS_SET_PACKET_LOSS_PERC_REQUEST: i32 = 4014;
-}
 pub mod stddef_h {
     pub const NULL: i32 = 0 as i32;
 }
@@ -60,14 +41,6 @@ pub use self::arch_h::{
     celt_ener, celt_norm, celt_sig, opus_val16, opus_val32, CELT_SIG_SCALE, EPSILON,
 };
 pub use self::internal::{__builtin_va_list, __va_list_tag};
-pub use self::opus_defines_h::{
-    OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_BITRATE_MAX, OPUS_GET_FINAL_RANGE_REQUEST,
-    OPUS_GET_LSB_DEPTH_REQUEST, OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_INTERNAL_ERROR,
-    OPUS_OK, OPUS_RESET_STATE, OPUS_SET_BITRATE_REQUEST, OPUS_SET_COMPLEXITY_REQUEST,
-    OPUS_SET_LSB_DEPTH_REQUEST, OPUS_SET_PACKET_LOSS_PERC_REQUEST,
-    OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_SET_VBR_CONSTRAINT_REQUEST,
-    OPUS_SET_VBR_REQUEST, OPUS_UNIMPLEMENTED,
-};
 pub use self::stdarg_h::va_list;
 pub use self::stddef_h::NULL;
 use crate::celt::celt::{
@@ -97,6 +70,14 @@ use crate::externs::{memcpy, memmove, memset};
 use crate::opus_custom_encoder_ctl;
 use crate::silk::macros::EC_CLZ0;
 use crate::src::analysis::AnalysisInfo;
+use crate::src::opus_defines::{
+    OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_BITRATE_MAX, OPUS_GET_FINAL_RANGE_REQUEST,
+    OPUS_GET_LSB_DEPTH_REQUEST, OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_INTERNAL_ERROR,
+    OPUS_OK, OPUS_RESET_STATE, OPUS_SET_BITRATE_REQUEST, OPUS_SET_COMPLEXITY_REQUEST,
+    OPUS_SET_LSB_DEPTH_REQUEST, OPUS_SET_PACKET_LOSS_PERC_REQUEST,
+    OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_SET_VBR_CONSTRAINT_REQUEST,
+    OPUS_SET_VBR_REQUEST, OPUS_UNIMPLEMENTED,
+};
 use crate::varargs::VarArgs;
 
 #[derive(Copy, Clone)]

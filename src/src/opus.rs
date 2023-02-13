@@ -1,12 +1,8 @@
-pub mod opus_defines_h {
-    pub const OPUS_INVALID_PACKET: i32 = -(4 as i32);
-    pub const OPUS_BAD_ARG: i32 = -(1 as i32);
-}
 pub mod stddef_h {
     pub const NULL: i32 = 0 as i32;
 }
-pub use self::opus_defines_h::{OPUS_BAD_ARG, OPUS_INVALID_PACKET};
 pub use self::stddef_h::NULL;
+use crate::src::opus_defines::{OPUS_BAD_ARG, OPUS_INVALID_PACKET};
 
 pub unsafe fn opus_pcm_soft_clip(mut _x: *mut f32, N: i32, C: i32, declip_mem: *mut f32) {
     let mut c: i32 = 0;
