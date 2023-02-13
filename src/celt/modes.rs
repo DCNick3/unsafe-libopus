@@ -4,21 +4,21 @@ use ::libc;
 #[repr(C)]
 #[c2rust::src_loc = "52:8"]
 pub struct OpusCustomMode {
-    pub Fs: i32,
-    pub overlap: libc::c_int,
-    pub nbEBands: libc::c_int,
-    pub effEBands: libc::c_int,
-    pub preemph: [opus_val16; 4],
-    pub eBands: *const i16,
-    pub maxLM: libc::c_int,
-    pub nbShortMdcts: libc::c_int,
-    pub shortMdctSize: libc::c_int,
-    pub nbAllocVectors: libc::c_int,
-    pub allocVectors: *const libc::c_uchar,
-    pub logN: *const i16,
-    pub window: *const opus_val16,
-    pub mdct: mdct_lookup,
-    pub cache: PulseCache,
+    pub(crate) Fs: i32,
+    pub(crate) overlap: libc::c_int,
+    pub(crate) nbEBands: libc::c_int,
+    pub(crate) effEBands: libc::c_int,
+    pub(crate) preemph: [opus_val16; 4],
+    pub(crate) eBands: *const i16,
+    pub(crate) maxLM: libc::c_int,
+    pub(crate) nbShortMdcts: libc::c_int,
+    pub(crate) shortMdctSize: libc::c_int,
+    pub(crate) nbAllocVectors: libc::c_int,
+    pub(crate) allocVectors: *const libc::c_uchar,
+    pub(crate) logN: *const i16,
+    pub(crate) window: *const opus_val16,
+    pub(crate) mdct: mdct_lookup,
+    pub(crate) cache: PulseCache,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]

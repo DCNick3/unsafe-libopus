@@ -245,3 +245,11 @@ pub use crate::src::opus_projection_encoder::{
     opus_projection_ambisonics_encoder_init, opus_projection_encode, opus_projection_encode_float,
     opus_projection_encoder_ctl, opus_projection_encoder_destroy, OpusProjectionEncoder,
 };
+
+// =====
+// opus_custom.h
+// =====
+pub use crate::celt::celt_decoder::OpusCustomDecoder;
+pub use crate::celt::celt_encoder::OpusCustomEncoder;
+// NOTE: we don't support opus custom modes, so no opus_custom_destroy here
+pub use crate::celt::modes::{opus_custom_mode_create, OpusCustomMode};
