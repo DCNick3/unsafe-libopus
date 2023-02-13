@@ -1,10 +1,13 @@
 [package]
 name = "unsafe-libopus"
-authors = ["C2Rust"]
-version = "0.0.0"
-publish = false
+authors = ["DCNick3"]
+version = "0.1.0"
 edition = "2021"
-autobins = false
+
+repository = "https://github.com/DCNick3/unsafe-libopus"
+description = "libopus transpiled to rust by c2rust"
+
+license = "BSD-3-Clause"
 
 [profile.release]
 debug = 1
