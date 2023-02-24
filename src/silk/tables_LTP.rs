@@ -87,7 +87,16 @@ static silk_LTP_gain_vq_2: [[i8; 5]; 32] = [
     [81, 5, 11, 3, 7],
     [2, 0, 9, 10, 88],
 ];
-pub static mut silk_LTP_vq_ptrs_Q7: [*const i8; 3] = [0 as *const i8; 3];
+pub static mut silk_LTP_vq_ptrs_Q7: [*const i8; 3] = unsafe {
+    [
+        &*(*silk_LTP_gain_vq_0.as_ptr().offset(0)).as_ptr().offset(0) as *const i8 as *mut i8
+            as *const i8,
+        &*(*silk_LTP_gain_vq_1.as_ptr().offset(0)).as_ptr().offset(0) as *const i8 as *mut i8
+            as *const i8,
+        &*(*silk_LTP_gain_vq_2.as_ptr().offset(0)).as_ptr().offset(0) as *const i8 as *mut i8
+            as *const i8,
+    ]
+};
 static silk_LTP_gain_vq_0_gain: [u8; 8] = [46, 2, 90, 87, 93, 91, 82, 98];
 static silk_LTP_gain_vq_1_gain: [u8; 16] = [
     109, 120, 118, 12, 113, 115, 117, 119, 99, 59, 87, 111, 63, 111, 112, 80,
@@ -96,30 +105,11 @@ static silk_LTP_gain_vq_2_gain: [u8; 32] = [
     126, 124, 125, 124, 129, 121, 126, 23, 132, 127, 127, 127, 126, 127, 122, 133, 130, 134, 101,
     118, 119, 145, 126, 86, 124, 120, 123, 119, 170, 173, 107, 109,
 ];
-pub static mut silk_LTP_vq_gain_ptrs_Q7: [*const u8; 3] = [0 as *const u8; 3];
+pub static mut silk_LTP_vq_gain_ptrs_Q7: [*const u8; 3] = unsafe {
+    [
+        &*silk_LTP_gain_vq_0_gain.as_ptr().offset(0) as *const u8,
+        &*silk_LTP_gain_vq_1_gain.as_ptr().offset(0) as *const u8,
+        &*silk_LTP_gain_vq_2_gain.as_ptr().offset(0) as *const u8,
+    ]
+};
 pub static silk_LTP_vq_sizes: [i8; 3] = [8, 16, 32];
-
-// some array shenanigans going on here...
-unsafe fn run_static_initializers() {
-    silk_LTP_vq_ptrs_Q7 = [
-        &*(*silk_LTP_gain_vq_0.as_ptr().offset(0 as i32 as isize))
-            .as_ptr()
-            .offset(0 as i32 as isize) as *const i8 as *mut i8 as *const i8,
-        &*(*silk_LTP_gain_vq_1.as_ptr().offset(0 as i32 as isize))
-            .as_ptr()
-            .offset(0 as i32 as isize) as *const i8 as *mut i8 as *const i8,
-        &*(*silk_LTP_gain_vq_2.as_ptr().offset(0 as i32 as isize))
-            .as_ptr()
-            .offset(0 as i32 as isize) as *const i8 as *mut i8 as *const i8,
-    ];
-    silk_LTP_vq_gain_ptrs_Q7 = [
-        &*silk_LTP_gain_vq_0_gain.as_ptr().offset(0 as i32 as isize) as *const u8,
-        &*silk_LTP_gain_vq_1_gain.as_ptr().offset(0 as i32 as isize) as *const u8,
-        &*silk_LTP_gain_vq_2_gain.as_ptr().offset(0 as i32 as isize) as *const u8,
-    ];
-}
-#[used]
-#[cfg_attr(target_os = "linux", link_section = ".init_array")]
-#[cfg_attr(target_os = "windows", link_section = ".CRT$XIB")]
-#[cfg_attr(target_os = "macos", link_section = "__DATA,__mod_init_func")]
-static INIT_ARRAY: [unsafe fn(); 1] = [run_static_initializers];
