@@ -1,7 +1,7 @@
 pub mod typedef_h {
-    pub const silk_int32_MAX: i32 = 0x7fffffff as i32;
-    pub const silk_int16_MIN: i32 = 0x8000 as i32;
-    pub const silk_int16_MAX: i32 = 0x7fff as i32;
+    pub const silk_int32_MAX: i32 = i32::MAX;
+    pub const silk_int16_MIN: i32 = i16::MIN as i32;
+    pub const silk_int16_MAX: i32 = i16::MAX as i32;
 }
 pub mod NSQ_h {
     #[inline]

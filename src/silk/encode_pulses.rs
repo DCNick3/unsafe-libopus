@@ -1,5 +1,5 @@
 pub mod typedef_h {
-    pub const silk_int32_MAX: i32 = 0x7fffffff as i32;
+    pub const silk_int32_MAX: i32 = i32::MAX;
 }
 pub use self::typedef_h::silk_int32_MAX;
 use crate::celt::celt::celt_fatal;

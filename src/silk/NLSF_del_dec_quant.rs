@@ -1,5 +1,5 @@
 pub mod typedef_h {
-    pub const silk_int32_MAX: i32 = 0x7fffffff as i32;
+    pub const silk_int32_MAX: i32 = i32::MAX;
 }
 use crate::silk::define::{
     NLSF_QUANT_DEL_DEC_STATES, NLSF_QUANT_MAX_AMPLITUDE, NLSF_QUANT_MAX_AMPLITUDE_EXT,

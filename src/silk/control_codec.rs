@@ -37,8 +37,8 @@ pub mod SigProc_FLP_h {
     use crate::celt::float_cast::float2int;
 }
 pub mod typedef_h {
-    pub const silk_int16_MIN: i32 = 0x8000 as i32;
-    pub const silk_int16_MAX: i32 = 0x7fff as i32;
+    pub const silk_int16_MIN: i32 = i16::MIN as i32;
+    pub const silk_int16_MAX: i32 = i16::MAX as i32;
 }
 use self::errors_h::{SILK_ENC_PACKET_SIZE_NOT_SUPPORTED, SILK_NO_ERROR};
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};

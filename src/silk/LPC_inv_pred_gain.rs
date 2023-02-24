@@ -1,6 +1,6 @@
 pub mod typedef_h {
-    pub const silk_int32_MIN: u32 = 0x80000000 as u32;
-    pub const silk_int32_MAX: i32 = 0x7fffffff as i32;
+    pub const silk_int32_MIN: i32 = i32::MIN;
+    pub const silk_int32_MAX: i32 = i32::MAX;
 }
 pub use self::typedef_h::{silk_int32_MAX, silk_int32_MIN};
 use crate::silk::macros::silk_CLZ32;

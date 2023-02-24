@@ -1,8 +1,8 @@
 pub mod typedef_h {
-    pub const silk_int16_MIN: i32 = 0x8000 as i32;
-    pub const silk_int16_MAX: i32 = 0x7fff as i32;
-    pub const silk_int32_MAX: i32 = 0x7fffffff as i32;
-    pub const silk_int32_MIN: u32 = 0x80000000 as u32;
+    pub const silk_int16_MIN: i32 = i16::MIN as i32;
+    pub const silk_int16_MAX: i32 = i16::MAX as i32;
+    pub const silk_int32_MAX: i32 = i32::MAX;
+    pub const silk_int32_MIN: i32 = i32::MIN;
 }
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN, silk_int32_MAX, silk_int32_MIN};
 use crate::celt::celt::celt_fatal;
