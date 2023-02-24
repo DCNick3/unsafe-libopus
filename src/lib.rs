@@ -231,10 +231,10 @@ pub use crate::src::opus_defines::{
 pub use crate::src::opus_defines::{
     OPUS_APPLICATION_AUDIO, OPUS_APPLICATION_RESTRICTED_LOWDELAY, OPUS_APPLICATION_VOIP, OPUS_AUTO,
     OPUS_BANDWIDTH_FULLBAND, OPUS_BANDWIDTH_MEDIUMBAND, OPUS_BANDWIDTH_NARROWBAND,
-    OPUS_BANDWIDTH_SUPERWIDEBAND, OPUS_BITRATE_MAX, OPUS_FRAMESIZE_100_MS, OPUS_FRAMESIZE_10_MS,
-    OPUS_FRAMESIZE_120_MS, OPUS_FRAMESIZE_20_MS, OPUS_FRAMESIZE_2_5_MS, OPUS_FRAMESIZE_40_MS,
-    OPUS_FRAMESIZE_5_MS, OPUS_FRAMESIZE_60_MS, OPUS_FRAMESIZE_80_MS, OPUS_FRAMESIZE_ARG,
-    OPUS_SIGNAL_MUSIC, OPUS_SIGNAL_VOICE,
+    OPUS_BANDWIDTH_SUPERWIDEBAND, OPUS_BANDWIDTH_WIDEBAND, OPUS_BITRATE_MAX, OPUS_FRAMESIZE_100_MS,
+    OPUS_FRAMESIZE_10_MS, OPUS_FRAMESIZE_120_MS, OPUS_FRAMESIZE_20_MS, OPUS_FRAMESIZE_2_5_MS,
+    OPUS_FRAMESIZE_40_MS, OPUS_FRAMESIZE_5_MS, OPUS_FRAMESIZE_60_MS, OPUS_FRAMESIZE_80_MS,
+    OPUS_FRAMESIZE_ARG, OPUS_SIGNAL_MUSIC, OPUS_SIGNAL_VOICE,
 };
 // opus_libinfo
 pub use crate::celt::celt::{opus_get_version_string, opus_strerror};
@@ -276,3 +276,6 @@ pub use crate::celt::celt_decoder::{opus_custom_decoder_ctl_impl, OpusCustomDeco
 pub use crate::celt::celt_encoder::{opus_custom_encoder_ctl_impl, OpusCustomEncoder};
 // NOTE: we don't support opus custom modes, so no opus_custom_destroy here
 pub use crate::celt::modes::{opus_custom_mode_create, OpusCustomMode};
+
+// expose opus_private
+pub use crate::src::opus_private;

@@ -4,15 +4,15 @@
 #![allow(unused_assignments)]
 #![allow(unused_mut)]
 
-use libc::{atoi, fclose, fopen, fprintf, fread, FILE};
-use libc_stdhandle::stderr;
-use unsafe_libopus::externs::{free, malloc, realloc, strcmp};
+use std::fs::File;
+use std::io::Read;
+use unsafe_libopus::externs::{free, malloc, realloc};
 
 type size_t = u64;
 
 unsafe fn read_pcm16(
     mut _samples: *mut *mut f32,
-    mut _fin: *mut FILE,
+    mut _fin: &mut File,
     mut _nchannels: i32,
 ) -> size_t {
     let mut buf: [u8; 1024] = [0; 1024];
@@ -25,12 +25,8 @@ unsafe fn read_pcm16(
     csamples = 0 as i32 as size_t;
     nsamples = csamples;
     loop {
-        nread = fread(
-            buf.as_mut_ptr() as *mut core::ffi::c_void,
-            (2 as i32 * _nchannels) as _,
-            (1024 as i32 / (2 as i32 * _nchannels)) as _,
-            _fin,
-        ) as _;
+        nread = _fin.read(&mut buf).expect("reading pcm16") as u64 / (2 * _nchannels) as u64;
+
         if nread <= 0 as i32 as u64 {
             break;
         }
@@ -216,9 +212,8 @@ static mut BANDS: [i32; 22] = [
     20 as i32, 24 as i32, 28 as i32, 32 as i32, 40 as i32, 48 as i32, 56 as i32, 68 as i32,
     80 as i32, 96 as i32, 120 as i32, 156 as i32, 200 as i32,
 ];
-unsafe fn main_0(mut _argc: i32, mut _argv: *mut *const i8) -> i32 {
-    let mut fin1: *mut FILE = 0 as *mut FILE;
-    let mut fin2: *mut FILE = 0 as *mut FILE;
+
+unsafe fn main_0() -> i32 {
     let mut x: *mut f32 = 0 as *mut f32;
     let mut y: *mut f32 = 0 as *mut f32;
     let mut xb: *mut f32 = 0 as *mut f32;
@@ -239,91 +234,49 @@ unsafe fn main_0(mut _argc: i32, mut _argv: *mut *const i8) -> i32 {
     let mut ybands: i32 = 0;
     let mut yfreqs: i32 = 0;
     let mut max_compare: i32 = 0;
-    if _argc < 3 as i32 || _argc > 6 as i32 {
-        fprintf(
-            stderr(),
-            b"Usage: %s [-s] [-r rate2] <file1.sw> <file2.sw>\n\0" as *const u8 as *const i8,
-            *_argv.offset(0 as i32 as isize),
-        );
-        return 1 as i32;
+
+    let mut args = std::env::args();
+    let argc = args.len();
+    let argv0 = args.next().unwrap();
+
+    if argc < 3 || argc > 6 {
+        eprintln!("Usage: {} [-s] [-r rate2] <file1.sw> <file2.sw>", argv0);
+        return 1;
     }
-    nchannels = 1 as i32;
-    if strcmp(
-        *_argv.offset(1 as i32 as isize),
-        b"-s\0" as *const u8 as *const i8,
-    ) == 0 as i32
-    {
-        nchannels = 2 as i32;
-        _argv = _argv.offset(1);
+
+    nchannels = 1;
+    if args.next().unwrap() == "-s" {
+        nchannels = 2;
     }
-    rate = 48000 as i32 as u32;
-    ybands = 21 as i32;
-    yfreqs = 240 as i32;
-    downsample = 1 as i32;
-    if strcmp(
-        *_argv.offset(1 as i32 as isize),
-        b"-r\0" as *const u8 as *const i8,
-    ) == 0 as i32
-    {
-        rate = atoi(*_argv.offset(2 as i32 as isize)) as u32;
+
+    rate = 48000;
+    ybands = 21;
+    yfreqs = 240;
+    downsample = 1;
+    if args.next().unwrap() == "-r" {
+        rate = args.next().unwrap().parse().expect("Could not parse rate");
         if rate != 8000 as i32 as u32
             && rate != 12000 as i32 as u32
             && rate != 16000 as i32 as u32
             && rate != 24000 as i32 as u32
             && rate != 48000 as i32 as u32
         {
-            fprintf(
-                stderr(),
-                b"Sampling rate must be 8000, 12000, 16000, 24000, or 48000\n\0" as *const u8
-                    as *const i8,
-            );
-            return 1 as i32;
+            eprintln!("Sampling rate must be 8000, 12000, 16000, 24000, or 48000");
+            return 1;
         }
-        downsample = (48000 as i32 as u32).wrapping_div(rate) as i32;
-        match rate {
-            8000 => {
-                ybands = 13 as i32;
-            }
-            12000 => {
-                ybands = 15 as i32;
-            }
-            16000 => {
-                ybands = 17 as i32;
-            }
-            24000 => {
-                ybands = 19 as i32;
-            }
-            _ => {}
-        }
+        downsample = 48000 / rate as i32;
+        ybands = match rate {
+            8000 => 13,
+            12000 => 15,
+            16000 => 17,
+            24000 => 19,
+            _ => 21,
+        };
         yfreqs = 240 as i32 / downsample;
-        _argv = _argv.offset(2 as i32 as isize);
     }
-    fin1 = fopen(
-        *_argv.offset(1 as i32 as isize),
-        b"rb\0" as *const u8 as *const i8,
-    );
-    if fin1.is_null() {
-        fprintf(
-            stderr(),
-            b"Error opening '%s'.\n\0" as *const u8 as *const i8,
-            *_argv.offset(1 as i32 as isize),
-        );
-        return 1 as i32;
-    }
-    fin2 = fopen(
-        *_argv.offset(2 as i32 as isize),
-        b"rb\0" as *const u8 as *const i8,
-    );
-    if fin2.is_null() {
-        fprintf(
-            stderr(),
-            b"Error opening '%s'.\n\0" as *const u8 as *const i8,
-            *_argv.offset(2 as i32 as isize),
-        );
-        fclose(fin1);
-        return 1 as i32;
-    }
-    xlength = read_pcm16(&mut x, fin1, 2 as i32);
+    let mut fin1 = File::open(args.next().unwrap()).expect("Could not open file1");
+    let mut fin2 = File::open(args.next().unwrap()).expect("Could not open file2");
+    xlength = read_pcm16(&mut x, &mut fin1, 2);
     if nchannels == 1 as i32 {
         xi = 0 as i32 as size_t;
         while xi < xlength {
@@ -337,26 +290,22 @@ unsafe fn main_0(mut _argc: i32, mut _argv: *mut *const i8) -> i32 {
             xi = xi.wrapping_add(1);
         }
     }
-    fclose(fin1);
-    ylength = read_pcm16(&mut y, fin2, nchannels);
-    fclose(fin2);
+    drop(fin1);
+
+    ylength = read_pcm16(&mut y, &mut fin2, nchannels);
+    drop(fin2);
+
     if xlength != ylength.wrapping_mul(downsample as u64) {
-        fprintf(
-            stderr(),
-            b"Sample counts do not match (%lu!=%lu).\n\0" as *const u8 as *const i8,
+        eprintln!(
+            "Sample counts do not match ({}!={}).",
             xlength,
-            ylength.wrapping_mul(downsample as u64),
+            ylength * downsample as u64
         );
-        return 1 as i32;
+        return 1;
     }
     if xlength < 480 as i32 as u64 {
-        fprintf(
-            stderr(),
-            b"Insufficient sample data (%lu<%i).\n\0" as *const u8 as *const i8,
-            xlength,
-            480 as i32,
-        );
-        return 1 as i32;
+        eprintln!("Insufficient sample data ({}<{}).", xlength, 480);
+        return 1;
     }
     nframes = xlength
         .wrapping_sub(480 as i32 as u64)
@@ -655,41 +604,19 @@ unsafe fn main_0(mut _argc: i32, mut _argv: *mut *const i8) -> i32 {
     err = (err / nframes as f64).powf(1.0 / 16.0);
     Q = (100.0 * (1.0 - 0.5 * (1.0 + err).ln() / 1.13f64.ln())) as f32;
     if Q < 0 as i32 as f32 {
-        fprintf(stderr(), b"Test vector FAILS\n\0" as *const u8 as *const i8);
-        fprintf(
-            stderr(),
-            b"Internal weighted error is %f\n\0" as *const u8 as *const i8,
-            err,
-        );
-        return 1 as i32;
+        eprintln!("Test vector FAILS");
+        eprintln!("Internal weighted error is {}", err);
+        return 1;
     } else {
-        fprintf(
-            stderr(),
-            b"Test vector PASSES\n\0" as *const u8 as *const i8,
-        );
-        fprintf(
-            stderr(),
-            b"Opus quality metric: %.1f %% (internal weighted error is %f)\n\0" as *const u8
-                as *const i8,
-            Q as f64,
-            err,
+        eprintln!("Test vector PASSES");
+        eprintln!(
+            "Opus quality metric: {} % (internal weighted error is {})",
+            Q, err
         );
         return 0 as i32;
     };
 }
+
 pub fn main() {
-    let mut args: Vec<*mut i8> = Vec::new();
-    for arg in ::std::env::args() {
-        args.push(
-            (::std::ffi::CString::new(arg))
-                .expect("Failed to convert argument into CString.")
-                .into_raw(),
-        );
-    }
-    args.push(::core::ptr::null_mut());
-    unsafe {
-        ::std::process::exit(
-            main_0((args.len() - 1) as i32, args.as_mut_ptr() as *mut *const i8) as i32,
-        )
-    }
+    unsafe { ::std::process::exit(main_0()) }
 }
