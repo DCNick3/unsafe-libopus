@@ -1736,7 +1736,8 @@ pub fn print_usage(argv0: &str) {
 // make dummy arguments
 // rust's test harness has its own arguments and will handle them itself
 // not sure of the best way to pass arguments except modifying the code rn...
-const DUMMY_ARGS: &[&str] = &["test_opus_encode"];
+// provide a fixed seed 42
+const DUMMY_ARGS: &[&str] = &["test_opus_encode", "42"];
 
 unsafe fn main_0() -> i32 {
     let mut args = DUMMY_ARGS.into_iter().map(|v| v.to_string()); // std::env::args();
@@ -1747,7 +1748,7 @@ unsafe fn main_0() -> i32 {
         .map(|v| v.parse().expect("Failed to parse seed from command line"))
     {
         Some(v) => {
-            eprintln!("Using seed from arguments: {}", v);
+            eprintln!("Using seed from (dummy) arguments: {}", v);
             v
         }
         None => match std::env::var("SEED")
