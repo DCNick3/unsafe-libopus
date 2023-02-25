@@ -4,17 +4,8 @@
 #![allow(unused_assignments)]
 #![allow(unused_mut)]
 
-use libc::fprintf;
-use libc_stdhandle::stderr;
-
 pub mod arch_h {
     pub type opus_val16 = f32;
-}
-pub mod xmmintrin_h {
-    #[cfg(target_arch = "x86")]
-    pub use core::arch::x86::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
-    #[cfg(target_arch = "x86_64")]
-    pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
 #[allow(unused)] // it's not currently used, as it wants to link to opus internals...
 mod simple_matrix;
@@ -51,8 +42,6 @@ pub mod test_opus_common_h {
         panic!("test failed");
     }
 
-    use libc::{abort, fprintf};
-    use libc_stdhandle::stderr;
     use unsafe_libopus::opus_get_version_string;
 }
 pub use self::arch_h::opus_val16;
@@ -158,23 +147,14 @@ pub unsafe fn test_creation_arguments(channels: i32, mapping_family: i32) {
         as i32;
     is_projection_valid = (enc_error == 0 as i32 && dec_error == 0 as i32) as i32;
     if is_channels_valid ^ is_projection_valid != 0 {
-        fprintf(
-            stderr(),
-            b"Channels: %d, Family: %d\n\0" as *const u8 as *const i8,
-            channels,
-            mapping_family,
+        eprintln!("Channels: {}, Family: {}", channels, mapping_family);
+        eprintln!(
+            "Order+1: {}, Non-diegetic Channels: {}",
+            order_plus_one, nondiegetic_channels
         );
-        fprintf(
-            stderr(),
-            b"Order+1: %d, Non-diegetic Channels: %d\n\0" as *const u8 as *const i8,
-            order_plus_one,
-            nondiegetic_channels,
-        );
-        fprintf(
-            stderr(),
-            b"Streams: %d, Coupled Streams: %d\n\0" as *const u8 as *const i8,
-            streams,
-            coupled_streams,
+        eprintln!(
+            "Valid: {}, Projection Valid: {}",
+            is_channels_valid, is_projection_valid
         );
         _test_failed(
             b"tests/test_opus_projection.c\0" as *const u8 as *const i8,
@@ -33062,12 +33042,9 @@ pub unsafe fn test_encode_decode(mut bitrate: i32, mut channels: i32, mapping_fa
         &mut error,
     );
     if error != 0 as i32 {
-        fprintf(
-            stderr(),
-            b"Couldn't create encoder with %d channels and mapping family %d.\n\0" as *const u8
-                as *const i8,
-            channels,
-            mapping_family,
+        eprintln!(
+            "Couldn't create encoder with {} channels and mapping family {}.",
+            channels, mapping_family
         );
         free(buffer_in as *mut core::ffi::c_void);
         free(buffer_out as *mut core::ffi::c_void);
@@ -33097,13 +33074,9 @@ pub unsafe fn test_encode_decode(mut bitrate: i32, mut channels: i32, mapping_fa
             );
             free(matrix as *mut core::ffi::c_void);
             if error != 0 as i32 {
-                fprintf(
-                    stderr(),
-                    b"Couldn't create decoder with %d channels, %d streams and %d coupled streams.\n\0"
-                        as *const u8 as *const i8,
-                    channels,
-                    streams,
-                    coupled,
+                eprintln!(
+                    "Couldn't create decoder with {} channels, {} streams and {} coupled streams.",
+                    channels, streams, coupled
                 );
             } else {
                 generate_music(buffer_in, 960 as i32, channels);
@@ -33115,11 +33088,7 @@ pub unsafe fn test_encode_decode(mut bitrate: i32, mut channels: i32, mapping_fa
                     32768 as i32,
                 );
                 if len < 0 as i32 || len > 32768 as i32 {
-                    fprintf(
-                        stderr(),
-                        b"opus_encode() returned %d\n\0" as *const u8 as *const i8,
-                        len,
-                    );
+                    eprintln!("opus_encode() returned {}", len);
                 } else {
                     out_samples = opus_projection_decode(
                         st_dec,
@@ -33130,11 +33099,7 @@ pub unsafe fn test_encode_decode(mut bitrate: i32, mut channels: i32, mapping_fa
                         0 as i32,
                     );
                     if out_samples != 960 as i32 {
-                        fprintf(
-                            stderr(),
-                            b"opus_decode() returned %d\n\0" as *const u8 as *const i8,
-                            out_samples,
-                        );
+                        eprintln!("opus_decode() returned {}", out_samples);
                     } else {
                         opus_projection_decoder_destroy(st_dec);
                         opus_projection_encoder_destroy(st_enc);
@@ -33153,7 +33118,7 @@ pub unsafe fn test_encode_decode(mut bitrate: i32, mut channels: i32, mapping_fa
         371 as i32,
     );
 }
-unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
+unsafe fn main_0() -> i32 {
     let mut i: u32 = 0;
     // not longer tested, because it wants to link to internal opus functions, which is a no-no
     //crate::simple_matrix::test_simple_matrix();
@@ -33163,25 +33128,11 @@ unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
         i = i.wrapping_add(1);
     }
     test_encode_decode(64 as i32 * 18 as i32, 18 as i32, 3 as i32);
-    fprintf(
-        stderr(),
-        b"All projection tests passed.\n\0" as *const u8 as *const i8,
-    );
+    eprintln!("All projection tests passed.");
     0 as i32
 }
-pub fn main() {
-    let mut args: Vec<*mut i8> = Vec::new();
-    for arg in ::std::env::args() {
-        args.push(
-            (::std::ffi::CString::new(arg))
-                .expect("Failed to convert argument into CString.")
-                .into_raw(),
-        );
-    }
-    args.push(::core::ptr::null_mut());
-    unsafe {
-        ::std::process::exit(
-            main_0((args.len() - 1) as i32, args.as_mut_ptr() as *mut *mut i8) as i32,
-        )
-    }
+
+#[test]
+fn test_opus_projection() {
+    assert_eq!(unsafe { main_0() }, 0, "Test returned a non-zero exit code");
 }
