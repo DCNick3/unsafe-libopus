@@ -4,8 +4,7 @@
 #![allow(unused_assignments)]
 #![allow(unused_mut)]
 
-use libc::{atoi, fprintf, getenv, getpid, printf, rand, time};
-use libc_stdhandle::{stderr, stdout};
+use libc::{getpid, rand, time};
 
 pub mod test_opus_common_h {
     #[inline]
@@ -70,41 +69,25 @@ pub mod test_opus_common_h {
         (Rz << 16 as i32).wrapping_add(Rw)
     }
     pub static mut iseed: u32 = 0;
-    #[inline]
     pub unsafe fn _test_failed(mut file: *const i8, mut line: i32) -> ! {
-        fprintf(
-            stderr(),
-            b"\n ***************************************************\n\0" as *const u8 as *const i8,
-        );
-        fprintf(
-            stderr(),
-            b" ***         A fatal error was detected.         ***\n\0" as *const u8 as *const i8,
-        );
-        fprintf(
-            stderr(),
-            b" ***************************************************\n\0" as *const u8 as *const i8,
-        );
-        fprintf(
-            stderr(),
-            b"Please report this failure and include\n\0" as *const u8 as *const i8,
-        );
-        fprintf(
-            stderr(),
-            b"'make check SEED=%u fails %s at line %d for %s'\n\0" as *const u8 as *const i8,
+        eprintln!();
+        eprintln!(" ***************************************************");
+        eprintln!(" ***         A fatal error was detected.         ***");
+        eprintln!(" ***************************************************");
+        eprintln!("Please report this failure and include");
+        eprintln!(
+            "'make check SEED={} fails {} at line {} for {}'",
             iseed,
-            file,
+            std::ffi::CStr::from_ptr(file).to_str().unwrap(),
             line,
-            opus_get_version_string(),
+            std::ffi::CStr::from_ptr(opus_get_version_string())
+                .to_str()
+                .unwrap()
         );
-        fprintf(
-            stderr(),
-            b"and any relevant details about your system.\n\n\0" as *const u8 as *const i8,
-        );
-        abort();
+        eprintln!("and any relevant details about your system.");
+        panic!("test failed");
     }
 
-    use libc::{abort, fprintf};
-    use libc_stdhandle::stderr;
     use unsafe_libopus::externs::memset;
     use unsafe_libopus::externs::{free, malloc};
     use unsafe_libopus::opus_get_version_string;
@@ -119,7 +102,7 @@ use unsafe_libopus::{
     opus_packet_get_nb_channels, opus_pcm_soft_clip, OpusDecoder,
 };
 
-pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
+pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
     static mut fsv: [i32; 5] = [
         48000 as i32,
         24000 as i32,
@@ -165,11 +148,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
         i += 1;
     }
     outbuf = &mut *outbuf_int.offset((8 as i32 * 2 as i32) as isize) as *mut libc::c_short;
-    fprintf(
-        stdout(),
-        b"  Starting %d decoders...\n\0" as *const u8 as *const i8,
-        5 as i32 * 2 as i32,
-    );
+    println!("  Starting {} decoders...", 5 * 2);
     t = 0 as i32;
     while t < 5 as i32 * 2 as i32 {
         let mut fs: i32 = fsv[(t >> 1 as i32) as usize];
@@ -182,12 +161,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
                 83 as i32,
             );
         }
-        fprintf(
-            stdout(),
-            b"    opus_decoder_create(%5d,%d) OK. Copy \0" as *const u8 as *const i8,
-            fs,
-            c,
-        );
+        print!("    opus_decoder_create({:5},{}): OK. Copy ", fs, c);
         let mut dec2: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
         dec2 = malloc(opus_decoder_get_size(c) as u64) as *mut OpusDecoder;
         if dec2.is_null() {
@@ -207,7 +181,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
             opus_decoder_get_size(c) as u64,
         );
         opus_decoder_destroy(dec[t as usize]);
-        printf(b"OK.\n\0" as *const u8 as *const i8);
+        println!("OK.");
         dec[t as usize] = dec2;
         t += 1;
     }
@@ -441,10 +415,7 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
         }
         t += 1;
     }
-    fprintf(
-        stdout(),
-        b"  dec[all] initial frame PLC OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("  dec[all] initial frame PLC OK.");
     i = 0 as i32;
     while i < 64 as i32 {
         let mut dur_0: i32 = 0;
@@ -595,24 +566,16 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
         }
         i += 1;
     }
-    fprintf(
-        stdout(),
-        b"  dec[all] all 2-byte prefix for length 3 and PLC, all modes (64) OK.\n\0" as *const u8
-            as *const i8,
-    );
-    if no_fuzz != 0 {
-        fprintf(
-            stdout(),
-            b"  Skipping many tests which fuzz the decoder as requested.\n\0" as *const u8
-                as *const i8,
-        );
+    println!("  dec[all] all 2-byte prefix for length 2 and PLC, all modes (64) OK.",);
+    if no_fuzz {
+        println!("  Skipping many tests which fuzz the decoder as requested.");
         free(decbak as *mut core::ffi::c_void);
         t = 0 as i32;
         while t < 5 as i32 * 2 as i32 {
             opus_decoder_destroy(dec[t as usize]);
             t += 1;
         }
-        printf(b"  Decoders stopped.\n\0" as *const u8 as *const i8);
+        println!("  Decoders stopped.");
         err = 0 as i32;
         i = 0 as i32;
         while i < 8 as i32 * 2 as i32 {
@@ -681,11 +644,9 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
             264 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"  dec[%3d] all 3-byte prefix for length 4, mode %2d OK.\n\0" as *const u8 as *const i8,
-        t,
-        cmodes[mode as usize],
+    println!(
+        "  dec[{:3}] all 3-byte prefix for length 4, mode {:2} OK.",
+        t, cmodes[mode as usize]
     );
     mode = (fast_rand()).wrapping_rem(3 as i32 as u32) as i32;
     *packet.offset(0 as i32 as isize) = (lmodes[mode as usize] << 3 as i32) as u8;
@@ -721,11 +682,9 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
             282 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"  dec[%3d] all 3-byte prefix for length 4, mode %2d OK.\n\0" as *const u8 as *const i8,
-        t,
-        lmodes[mode as usize],
+    println!(
+        "  dec[{:3}] all 3-byte prefix for length 4, mode {:2} OK.",
+        t, lmodes[mode as usize]
     );
     skip = (fast_rand()).wrapping_rem(7 as i32 as u32) as i32;
     i = 0 as i32;
@@ -778,11 +737,9 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
         }
         i += 1;
     }
-    fprintf(
-        stdout(),
-        b"  dec[all] random packets, all modes (64), every 8th size from from %d bytes to maximum OK.\n\0"
-            as *const u8 as *const i8,
-        2 as i32 + skip,
+    println!(
+        "  dec[all] random packets, all modes (64), every 4th size from from {} bytes to maximum OK.",
+        2 + skip,
     );
     debruijn2(64 as i32, modes.as_mut_ptr());
     plen = (fast_rand())
@@ -906,11 +863,9 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
         }
         i += 1;
     }
-    fprintf(
-        stdout(),
-        b"  dec[all] random packets, all mode pairs (4096), %d bytes/frame OK.\n\0" as *const u8
-            as *const i8,
-        plen + 1 as i32,
+    println!(
+        "  dec[all] random packets, all mode pairs (4096), {} bytes/frame OK.",
+        plen + 1
     );
     plen = (fast_rand())
         .wrapping_rem(18 as i32 as u32)
@@ -952,12 +907,10 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
         }
         i += 1;
     }
-    fprintf(
-        stdout(),
-        b"  dec[%3d] random packets, all mode pairs (4096)*10, %d bytes/frame OK.\n\0" as *const u8
-            as *const i8,
+    println!(
+        "  dec[{}] random packets, all mode pairs (4096)*10, {} bytes/frame OK.",
         t,
-        plen + 1 as i32,
+        plen + 1
     );
     let mut tmodes: [i32; 1] = [(25 as i32) << 2 as i32];
     let mut tseeds: [u32; 1] = [140441 as i32 as u32];
@@ -991,18 +944,14 @@ pub unsafe fn test_decoder_code0(mut no_fuzz: i32) -> i32 {
         }
         i += 1;
     }
-    fprintf(
-        stdout(),
-        b"  dec[%3d] pre-selected random packets OK.\n\0" as *const u8 as *const i8,
-        t,
-    );
+    println!("  dec[{:3}] pre-selected random packets OK.", t);
     free(decbak as *mut core::ffi::c_void);
     t = 0 as i32;
     while t < 5 as i32 * 2 as i32 {
         opus_decoder_destroy(dec[t as usize]);
         t += 1;
     }
-    printf(b"  Decoders stopped.\n\0" as *const u8 as *const i8);
+    println!("  Decoders stopped.");
     err = 0 as i32;
     i = 0 as i32;
     while i < 8 as i32 * 2 as i32 {
@@ -1038,10 +987,7 @@ pub unsafe fn test_soft_clip() {
         0 as i32 as f32,
         0 as i32 as f32,
     ];
-    fprintf(
-        stdout(),
-        b"  Testing opus_pcm_soft_clip... \0" as *const u8 as *const i8,
-    );
+    println!("  Testing opus_pcm_soft_clip... ");
     i = 0 as i32;
     while i < 1024 as i32 {
         j = 0 as i32;
@@ -1115,74 +1061,66 @@ pub unsafe fn test_soft_clip() {
         1 as i32,
         s.as_mut_ptr(),
     );
-    printf(b"OK.\n\0" as *const u8 as *const i8);
+    println!("OK.");
 }
-unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
-    let mut oversion: *const i8 = std::ptr::null::<i8>();
-    let mut env_seed: *const i8 = std::ptr::null::<i8>();
-    let mut env_used: i32 = 0;
-    if _argc > 2 as i32 {
-        fprintf(
-            stderr(),
-            b"Usage: %s [<seed>]\n\0" as *const u8 as *const i8,
-            *_argv.offset(0 as i32 as isize),
-        );
-        return 1 as i32;
-    }
-    env_used = 0 as i32;
-    env_seed = getenv(b"SEED\0" as *const u8 as *const i8);
-    if _argc > 1 as i32 {
-        iseed = atoi(*_argv.offset(1 as i32 as isize)) as u32;
-    } else if !env_seed.is_null() {
-        iseed = atoi(env_seed) as u32;
-        env_used = 1 as i32;
-    } else {
-        iseed = time(std::ptr::null_mut()) as u32
-            ^ (getpid() as u32 & 65535 as i32 as u32) << 16 as i32;
-    }
+
+// make dummy arguments
+// rust's test harness has its own arguments and will handle them itself
+// not sure of the best way to pass arguments except modifying the code rn...
+const DUMMY_ARGS: &[&str] = &["test_opus_decode"];
+
+unsafe fn main_0() -> i32 {
+    let mut args = DUMMY_ARGS.into_iter().map(|v| v.to_string()); // std::env::args();
+    let _argv0 = args.next().unwrap();
+
+    iseed = match args
+        .next()
+        .map(|v| v.parse().expect("Failed to parse seed from command line"))
+    {
+        Some(v) => {
+            eprintln!("Using seed from arguments: {}", v);
+            v
+        }
+        None => match std::env::var("SEED")
+            .ok()
+            .as_ref()
+            .map(|v| v.parse().expect("Failed to parse seed from environment"))
+        {
+            Some(v) => {
+                eprintln!("Using seed from environment: {}", v);
+                v
+            }
+            None => {
+                let v = time(std::ptr::null_mut()) as u32
+                    ^ (getpid() as u32 & 65535 as i32 as u32) << 16 as i32;
+                eprintln!("Using time-based seed: {}", v);
+                v
+            }
+        },
+    };
+
     Rz = iseed;
     Rw = Rz;
-    oversion = opus_get_version_string();
+
+    let oversion = opus_get_version_string();
     if oversion.is_null() {
         _test_failed(
             b"tests/test_opus_decode.c\0" as *const u8 as *const i8,
             450 as i32,
         );
     }
-    fprintf(
-        stderr(),
-        b"Testing %s decoder. Random seed: %u (%.4X)\n\0" as *const u8 as *const i8,
-        oversion,
+    eprintln!(
+        "Testing {} decoder. Random seed: {} ({:4X})",
+        std::ffi::CStr::from_ptr(oversion).to_str().unwrap(),
         iseed,
-        (fast_rand()).wrapping_rem(65535 as i32 as u32),
+        (fast_rand() % 65535)
     );
-    if env_used != 0 {
-        fprintf(
-            stderr(),
-            b"  Random seed set from the environment (SEED=%s).\n\0" as *const u8 as *const i8,
-            env_seed,
-        );
-    }
-    test_decoder_code0(
-        (getenv(b"TEST_OPUS_NOFUZZ\0" as *const u8 as *const i8)
-            != std::ptr::null_mut::<core::ffi::c_void>() as *mut i8) as i32,
-    );
+    test_decoder_code0(std::env::var("TEST_OPUS_NOFUZZ").is_ok());
     test_soft_clip();
     0 as i32
 }
-pub fn main() {
-    let mut args: Vec<*mut i8> = Vec::new();
-    for arg in ::std::env::args() {
-        args.push(
-            (::std::ffi::CString::new(arg))
-                .expect("Failed to convert argument into CString.")
-                .into_raw(),
-        );
-    }
-    args.push(::core::ptr::null_mut());
-    unsafe {
-        ::std::process::exit(
-            main_0((args.len() - 1) as i32, args.as_mut_ptr() as *mut *mut i8) as i32,
-        )
-    }
+
+#[test]
+fn test_opus_decode() {
+    assert_eq!(unsafe { main_0() }, 0, "Test returned a non-zero exit code");
 }

@@ -9,37 +9,23 @@ use libc_stdhandle::stderr;
 
 pub mod test_opus_common_h {
     pub static mut iseed: u32 = 0;
-    #[inline]
     pub unsafe fn _test_failed(mut file: *const i8, mut line: i32) -> ! {
-        fprintf(
-            stderr(),
-            b"\n ***************************************************\n\0" as *const u8 as *const i8,
-        );
-        fprintf(
-            stderr(),
-            b" ***         A fatal error was detected.         ***\n\0" as *const u8 as *const i8,
-        );
-        fprintf(
-            stderr(),
-            b" ***************************************************\n\0" as *const u8 as *const i8,
-        );
-        fprintf(
-            stderr(),
-            b"Please report this failure and include\n\0" as *const u8 as *const i8,
-        );
-        fprintf(
-            stderr(),
-            b"'make check SEED=%u fails %s at line %d for %s'\n\0" as *const u8 as *const i8,
+        eprintln!();
+        eprintln!(" ***************************************************");
+        eprintln!(" ***         A fatal error was detected.         ***");
+        eprintln!(" ***************************************************");
+        eprintln!("Please report this failure and include");
+        eprintln!(
+            "'make check SEED={} fails {} at line {} for {}'",
             iseed,
-            file,
+            std::ffi::CStr::from_ptr(file).to_str().unwrap(),
             line,
-            opus_get_version_string(),
+            std::ffi::CStr::from_ptr(opus_get_version_string())
+                .to_str()
+                .unwrap()
         );
-        fprintf(
-            stderr(),
-            b"and any relevant details about your system.\n\n\0" as *const u8 as *const i8,
-        );
-        abort();
+        eprintln!("and any relevant details about your system.");
+        panic!("test failed");
     }
 
     use libc::{abort, fprintf};

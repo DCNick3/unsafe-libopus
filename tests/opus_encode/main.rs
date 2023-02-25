@@ -69,7 +69,6 @@ pub mod test_opus_common_h {
         (Rz << 16 as i32).wrapping_add(Rw)
     }
     pub static mut iseed: u32 = 0;
-    #[inline]
     pub unsafe fn _test_failed(mut file: *const i8, mut line: i32) -> ! {
         eprintln!();
         eprintln!(" ***************************************************");
@@ -1743,8 +1742,6 @@ unsafe fn main_0() -> i32 {
     let mut args = DUMMY_ARGS.into_iter().map(|v| v.to_string()); // std::env::args();
     let argv0 = args.next().unwrap();
 
-    let env_seed = std::env::var("SEED").ok();
-
     iseed = match args
         .next()
         .map(|v| v.parse().expect("Failed to parse seed from command line"))
@@ -1753,7 +1750,8 @@ unsafe fn main_0() -> i32 {
             eprintln!("Using seed from arguments: {}", v);
             v
         }
-        None => match env_seed
+        None => match std::env::var("SEED")
+            .ok()
             .as_ref()
             .map(|v| v.parse().expect("Failed to parse seed from environment"))
         {
@@ -1809,7 +1807,7 @@ unsafe fn main_0() -> i32 {
         "Testing {} encoder. Random seed: {} ({:4X})",
         std::ffi::CStr::from_ptr(oversion).to_str().unwrap(),
         iseed,
-        (fast_rand()).wrapping_rem(65535 as i32 as u32)
+        fast_rand() % 65535
     );
     regression_test();
     run_test1(std::env::var("TEST_OPUS_NOFUZZ").is_ok());
