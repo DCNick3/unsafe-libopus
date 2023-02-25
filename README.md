@@ -10,7 +10,14 @@ It also may potentially be a starting point for a more idiomatic rust implementa
 
 ## Usage
 
-To use this library use the fork of opus crate or smth [TODO].
+You can leverate this library by using a fork of `opus` crate from [this PR](https://github.com/SpaceManiac/opus-rs/pull/20):
+
+```toml
+[dependencies]
+opus = { git = "https://github.com/DCNick3/opus-rs.git", branch = "unsafe-libopus", default-features = false, features = ["unsafe-libopus-backend"] }
+```
+
+Maybe, this library will have the safe APIs in the future, but for now, it is a (mostly) drop-in replacement for the `audiopus_sys` crate. 
 
 ## Translation technique
 
@@ -36,3 +43,15 @@ Some other refactorings include:
 ## Performance
 
 The library was translated without the use of inline assembly, processor intrinsics and runtime CPU detection, so it is not as fast as the original code right now. The C version with those features is about 20% faster than the rust version on my machine.
+
+## Correctness & Safety
+
+This library is tested using (most of) the original tests from the C codebase. They are present in form of rust integration tests in the `tests` directory.
+
+The opus [test vectors](https://opus-codec.org/testvectors/) are also used to test the library decoder in CI (see the `src/bin/run_vectors.rs`). This pretty much ensures that the decoder is correct. This actually helped uncover a [subtle bug in c2rust](https://github.com/immunant/c2rust/issues/853).
+
+The correctness of the encoder is a bit more of an open question, as there are no test vectors for it, AFAIK. There is some testing going on in `tests/opus_encode`, but it's quite limited.
+
+As for the safety, no guarantees are made. The code is a result of a pretty direct transpilation of the C code, so it is almost entirely consists of unsafe code (in rust terms).
+
+It also seems to have UB according to [miri](https://github.com/rust-lang/miri), but those are probably false positives. A good refactoring goal might be to make the library pass miri checks. 
