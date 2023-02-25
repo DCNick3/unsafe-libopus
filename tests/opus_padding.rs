@@ -4,9 +4,6 @@
 #![allow(unused_assignments)]
 #![allow(unused_mut)]
 
-use libc::fprintf;
-use libc_stdhandle::stderr;
-
 pub mod test_opus_common_h {
     pub static mut iseed: u32 = 0;
     pub unsafe fn _test_failed(mut file: *const i8, mut line: i32) -> ! {
@@ -28,8 +25,6 @@ pub mod test_opus_common_h {
         panic!("test failed");
     }
 
-    use libc::{abort, fprintf};
-    use libc_stdhandle::stderr;
     use unsafe_libopus::opus_get_version_string;
 }
 pub use self::test_opus_common_h::{_test_failed, iseed};
@@ -47,17 +42,7 @@ pub unsafe fn test_overflow() -> i32 {
     let mut out: *mut i16 = malloc(
         ((5760 as i32 * 2 as i32) as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
     ) as *mut i16;
-    fprintf(
-        stderr(),
-        b"  Checking for padding overflow... \0" as *const u8 as *const i8,
-    );
-    if in_0.is_null() || out.is_null() {
-        fprintf(
-            stderr(),
-            b"FAIL (out of memory)\n\0" as *const u8 as *const i8,
-        );
-        return -(1 as i32);
-    }
+    eprintln!("  Checking for padding overflow... ");
     *in_0.offset(0 as i32 as isize) = 0xff as i32 as u8;
     *in_0.offset(1 as i32 as isize) = 0x41 as i32 as u8;
     memset(
@@ -72,13 +57,13 @@ pub unsafe fn test_overflow() -> i32 {
     free(in_0 as *mut core::ffi::c_void);
     free(out as *mut core::ffi::c_void);
     if result != -(4 as i32) {
-        fprintf(stderr(), b"FAIL!\n\0" as *const u8 as *const i8);
+        eprintln!("FAIL!");
         _test_failed(
             b"tests/test_opus_padding.c\0" as *const u8 as *const i8,
             70 as i32,
         );
     }
-    fprintf(stderr(), b"OK.\n\0" as *const u8 as *const i8);
+    eprintln!("OK.");
     1 as i32
 }
 unsafe fn main_0() -> i32 {
@@ -92,18 +77,16 @@ unsafe fn main_0() -> i32 {
             85 as i32,
         );
     }
-    fprintf(
-        stderr(),
-        b"Testing %s padding.\n\0" as *const u8 as *const i8,
-        oversion,
+    eprintln!(
+        "Testing {} padding.",
+        std::ffi::CStr::from_ptr(oversion).to_str().unwrap()
     );
     _tests += test_overflow();
-    fprintf(
-        stderr(),
-        b"All padding tests passed.\n\0" as *const u8 as *const i8,
-    );
+    eprintln!("All padding tests passed.");
     0 as i32
 }
-pub fn main() {
-    unsafe { ::std::process::exit(main_0() as i32) }
+
+#[test]
+fn test_opus_padding() {
+    assert_eq!(unsafe { main_0() }, 0, "Test returned a non-zero exit code");
 }
