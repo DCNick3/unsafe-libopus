@@ -1,5 +1,3 @@
-use libc::fprintf;
-use libc_stdhandle::stderr;
 use unsafe_libopus::{
     opus_multistream_encode, opus_multistream_encoder_create, opus_multistream_encoder_ctl,
     opus_multistream_encoder_destroy, opus_multistream_surround_encoder_create, OpusMSEncoder,
@@ -1573,12 +1571,9 @@ unsafe fn silk_gain_assert() -> i32 {
     opus_encoder_destroy(enc);
     0 as i32
 }
+
 pub unsafe fn regression_test() {
-    fprintf(
-        stderr(),
-        b"Running simple tests for bugs that have been fixed previously\n\0" as *const u8
-            as *const i8,
-    );
+    eprintln!("Running regression tests for bugs that have been fixed previously");
     celt_ec_internal_error();
     mscbr_encode_fail10();
     mscbr_encode_fail();

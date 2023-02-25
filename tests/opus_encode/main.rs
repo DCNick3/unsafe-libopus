@@ -4,8 +4,7 @@
 #![allow(unused_assignments)]
 #![allow(unused_mut)]
 
-use libc::{atoi, fprintf, getenv, getpid, strtol, time};
-use libc_stdhandle::{stderr, stdout};
+use libc::{getpid, time};
 
 pub mod test_opus_common_h {
     #[inline]
@@ -72,46 +71,31 @@ pub mod test_opus_common_h {
     pub static mut iseed: u32 = 0;
     #[inline]
     pub unsafe fn _test_failed(mut file: *const i8, mut line: i32) -> ! {
-        fprintf(
-            stderr(),
-            b"\n ***************************************************\n\0" as *const u8 as *const i8,
-        );
-        fprintf(
-            stderr(),
-            b" ***         A fatal error was detected.         ***\n\0" as *const u8 as *const i8,
-        );
-        fprintf(
-            stderr(),
-            b" ***************************************************\n\0" as *const u8 as *const i8,
-        );
-        fprintf(
-            stderr(),
-            b"Please report this failure and include\n\0" as *const u8 as *const i8,
-        );
-        fprintf(
-            stderr(),
-            b"'make check SEED=%u fails %s at line %d for %s'\n\0" as *const u8 as *const i8,
+        eprintln!();
+        eprintln!(" ***************************************************");
+        eprintln!(" ***         A fatal error was detected.         ***");
+        eprintln!(" ***************************************************");
+        eprintln!("Please report this failure and include");
+        eprintln!(
+            "'make check SEED={} fails {} at line {} for {}'",
             iseed,
-            file,
+            std::ffi::CStr::from_ptr(file).to_str().unwrap(),
             line,
-            opus_get_version_string(),
+            std::ffi::CStr::from_ptr(opus_get_version_string())
+                .to_str()
+                .unwrap()
         );
-        fprintf(
-            stderr(),
-            b"and any relevant details about your system.\n\n\0" as *const u8 as *const i8,
-        );
-        abort();
+        eprintln!("and any relevant details about your system.");
+        panic!("test failed");
     }
 
-    use libc::{abort, fprintf};
-    use libc_stdhandle::stderr;
     use unsafe_libopus::externs::memset;
     use unsafe_libopus::externs::{free, malloc};
     use unsafe_libopus::opus_get_version_string;
 }
 pub use self::test_opus_common_h::{debruijn2, Rw, Rz, _test_failed, fast_rand, iseed};
 use unsafe_libopus::externs::{free, malloc};
-use unsafe_libopus::externs::{memcpy, memset, strcmp};
+use unsafe_libopus::externs::{memcpy, memset};
 use unsafe_libopus::{
     opus_decode, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy,
     opus_decoder_get_size, opus_encode, opus_encoder_create, opus_encoder_ctl,
@@ -260,21 +244,13 @@ pub unsafe fn test_encode(
             1500 as i32,
         );
         if len < 0 as i32 || len > 1500 as i32 {
-            fprintf(
-                stderr(),
-                b"opus_encode() returned %d\n\0" as *const u8 as *const i8,
-                len,
-            );
+            eprintln!("opus_encode() returned {}", len);
             ret = -(1 as i32);
             break;
         } else {
             out_samples = opus_decode(dec, packet.as_mut_ptr(), len, outbuf, 5760 as i32, 0 as i32);
             if out_samples != frame_size {
-                fprintf(
-                    stderr(),
-                    b"opus_decode() returned %d\n\0" as *const u8 as *const i8,
-                    out_samples,
-                );
+                eprintln!("opus_decode() returned {}", out_samples);
                 ret = -(1 as i32);
                 break;
             } else {
@@ -510,10 +486,7 @@ pub unsafe fn fuzz_encoder_settings(num_encoders: i32, num_setting_changes: i32)
                 );
             }
             if test_encode(enc, num_channels, frame_size, dec) != 0 {
-                fprintf(
-                    stderr(),
-                    b"fuzz_encoder_settings: %d kHz, %d ch, application: %d, %d bps, force ch: %d, vbr: %d, vbr constraint: %d, complexity: %d, max bw: %d, signal: %d, inband fec: %d, pkt loss: %d%%, lsb depth: %d, pred disabled: %d, dtx: %d, (%d/2) ms\n\0"
-                        as *const u8 as *const i8,
+                eprintln!("fuzz_encoder_settings: {} kHz, {} ch, application: {}, {} bps, force ch: {}, vbr: {}, vbr constraint: {}, complexity: {}, max bw: {}, signal: {}, inband fec: {}, pkt loss: {}%, lsb depth: {}, pred disabled: {}, dtx: {}, ({}/2) ms", 
                     sampling_rate / 1000 as i32,
                     num_channels,
                     application,
@@ -543,7 +516,7 @@ pub unsafe fn fuzz_encoder_settings(num_encoders: i32, num_setting_changes: i32)
         i += 1;
     }
 }
-pub unsafe fn run_test1(mut no_fuzz: i32) -> i32 {
+pub unsafe fn run_test1(no_fuzz: bool) -> i32 {
     static mut fsizes: [i32; 6] = [
         960 as i32 * 3 as i32,
         960 as i32 * 2 as i32,
@@ -552,268 +525,17 @@ pub unsafe fn run_test1(mut no_fuzz: i32) -> i32 {
         480 as i32,
         960 as i32,
     ];
-    static mut mstrings: [*const i8; 3] = [
-        b"    LP\0" as *const u8 as *const i8,
-        b"Hybrid\0" as *const u8 as *const i8,
-        b"  MDCT\0" as *const u8 as *const i8,
-    ];
+    static mut mstrings: [&str; 3] = ["    LP", "Hybrid", "  MDCT"];
     let mut mapping: [u8; 256] = [
-        0 as i32 as u8,
-        1 as i32 as u8,
-        255 as i32 as u8,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
+        0, 1, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ];
     let mut db62: [u8; 36] = [0; 36];
     let mut i: i32 = 0;
@@ -836,10 +558,7 @@ pub unsafe fn run_test1(mut no_fuzz: i32) -> i32 {
     let mut fswitch: i32 = 0;
     let mut fsize: i32 = 0;
     let mut count: i32 = 0;
-    fprintf(
-        stdout(),
-        b"  Encode+Decode tests.\n\0" as *const u8 as *const i8,
-    );
+    println!("  Encode+Decode tests.");
     enc = opus_encoder_create(48000 as i32, 2 as i32, 2048 as i32, &mut err);
     if err != 0 as i32 || enc.is_null() {
         _test_failed(
@@ -1435,16 +1154,15 @@ pub unsafe fn run_test1(mut no_fuzz: i32) -> i32 {
                     break;
                 }
             }
-            fprintf(
-                stdout(),
-                b"    Mode %s FB encode %s, %6d bps OK.\n\0" as *const u8 as *const i8,
+            println!(
+                "    Mode {} FB encode {}, {:6} bps OK.",
                 mstrings[modes[j as usize] as usize],
                 if rc == 0 as i32 {
-                    b" VBR\0" as *const u8 as *const i8
+                    " VBR"
                 } else if rc == 1 as i32 {
-                    b"CVBR\0" as *const u8 as *const i8
+                    "CVBR"
                 } else {
-                    b" CBR\0" as *const u8 as *const i8
+                    " CBR"
                 },
                 rate,
             );
@@ -1782,16 +1500,15 @@ pub unsafe fn run_test1(mut no_fuzz: i32) -> i32 {
                     break;
                 }
             }
-            fprintf(
-                stdout(),
-                b"    Mode %s NB dual-mono MS encode %s, %6d bps OK.\n\0" as *const u8 as *const i8,
+            println!(
+                "    Mode {} NB dual-mono MS encode {}, {:6} bps OK.",
                 mstrings[modes_0[j as usize] as usize],
                 if rc == 0 as i32 {
-                    b" VBR\0" as *const u8 as *const i8
+                    " VBR"
                 } else if rc == 1 as i32 {
-                    b"CVBR\0" as *const u8 as *const i8
+                    "CVBR"
                 } else {
-                    b" CBR\0" as *const u8 as *const i8
+                    " CBR"
                 },
                 rate_0,
             );
@@ -1876,8 +1593,7 @@ pub unsafe fn run_test1(mut no_fuzz: i32) -> i32 {
             jj = 0 as i32;
             while jj < 8 as i32 {
                 packet[j as usize] = (packet[j as usize] as i32
-                    ^ ((no_fuzz == 0 && fast_rand() & 1023 as i32 as u32 == 0 as i32 as u32)
-                        as i32)
+                    ^ ((!no_fuzz && fast_rand() & 1023 as i32 as u32 == 0 as i32 as u32) as i32)
                         << jj) as u8;
                 jj += 1;
             }
@@ -1967,10 +1683,9 @@ pub unsafe fn run_test1(mut no_fuzz: i32) -> i32 {
             break;
         }
     }
-    fprintf(
-        stdout(),
-        b"    All framesize pairs switching encode, %d frames OK.\n\0" as *const u8 as *const i8,
-        count,
+    println!(
+        "    All framesize pairs switching encode, {} frames OK.",
+        count
     );
     if opus_encoder_ctl!(enc, 4028 as i32) != 0 as i32 {
         _test_failed(
@@ -2011,128 +1726,105 @@ pub unsafe fn run_test1(mut no_fuzz: i32) -> i32 {
     free(out2buf as *mut core::ffi::c_void);
     0 as i32
 }
-pub unsafe fn print_usage(mut _argv: *mut *mut i8) {
-    fprintf(
-        stderr(),
-        b"Usage: %s [<seed>] [-fuzz <num_encoders> <num_settings_per_encoder>]\n\0" as *const u8
-            as *const i8,
-        *_argv.offset(0 as i32 as isize),
+
+pub fn print_usage(argv0: &str) {
+    eprintln!(
+        "Usage: {} [<seed>] [-fuzz <num_encoders> <num_settings_per_encoder>]",
+        argv0,
     );
 }
-unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
-    let mut args: i32 = 1 as i32;
-    let mut strtol_str: *mut i8 = std::ptr::null_mut::<i8>();
-    let mut oversion: *const i8 = std::ptr::null::<i8>();
-    let mut env_seed: *const i8 = std::ptr::null::<i8>();
-    let mut env_used: i32 = 0;
-    let mut num_encoders_to_fuzz: i32 = 5 as i32;
-    let mut num_setting_changes: i32 = 40 as i32;
-    env_used = 0 as i32;
-    env_seed = getenv(b"SEED\0" as *const u8 as *const i8);
-    if _argc > 1 as i32 {
-        iseed = strtol(*_argv.offset(1 as i32 as isize), &mut strtol_str, 10 as i32) as u32;
-    }
-    if !strtol_str.is_null() && *strtol_str.offset(0 as i32 as isize) as i32 == '\0' as i32 {
-        args += 1;
-    } else if !env_seed.is_null() {
-        iseed = atoi(env_seed) as u32;
-        env_used = 1 as i32;
-    } else {
-        iseed = time(std::ptr::null_mut()) as u32
-            ^ (getpid() as u32 & 65535 as i32 as u32) << 16 as i32;
-    }
+
+// make dummy arguments
+// rust's test harness has its own arguments and will handle them itself
+// not sure of the best way to pass arguments except modifying the code rn...
+const DUMMY_ARGS: &[&str] = &["test_opus_encode"];
+
+unsafe fn main_0() -> i32 {
+    let mut args = DUMMY_ARGS.into_iter().map(|v| v.to_string()); // std::env::args();
+    let argv0 = args.next().unwrap();
+
+    let env_seed = std::env::var("SEED").ok();
+
+    iseed = match args
+        .next()
+        .map(|v| v.parse().expect("Failed to parse seed from command line"))
+    {
+        Some(v) => {
+            eprintln!("Using seed from arguments: {}", v);
+            v
+        }
+        None => match env_seed
+            .as_ref()
+            .map(|v| v.parse().expect("Failed to parse seed from environment"))
+        {
+            Some(v) => {
+                eprintln!("Using seed from environment: {}", v);
+                v
+            }
+            None => {
+                let v = time(std::ptr::null_mut()) as u32
+                    ^ (getpid() as u32 & 65535 as i32 as u32) << 16 as i32;
+                eprintln!("Using time-based seed: {}", v);
+                v
+            }
+        },
+    };
+
     Rz = iseed;
     Rw = Rz;
-    while args < _argc {
-        if strcmp(
-            *_argv.offset(args as isize),
-            b"-fuzz\0" as *const u8 as *const i8,
-        ) == 0 as i32
-            && _argc == args + 3 as i32
-        {
-            num_encoders_to_fuzz = strtol(
-                *_argv.offset((args + 1 as i32) as isize),
-                &mut strtol_str,
-                10 as i32,
-            ) as i32;
-            if *strtol_str.offset(0 as i32 as isize) as i32 != '\0' as i32
-                || num_encoders_to_fuzz <= 0 as i32
-            {
-                print_usage(_argv);
-                return 1 as i32;
-            }
-            num_setting_changes = strtol(
-                *_argv.offset((args + 2 as i32) as isize),
-                &mut strtol_str,
-                10 as i32,
-            ) as i32;
-            if *strtol_str.offset(0 as i32 as isize) as i32 != '\0' as i32
-                || num_setting_changes <= 0 as i32
-            {
-                print_usage(_argv);
-                return 1 as i32;
-            }
-            args += 3 as i32;
+
+    let mut num_encoders_to_fuzz: i32 = 5 as i32;
+    let mut num_setting_changes: i32 = 40 as i32;
+
+    while let Some(arg) = args.next() {
+        if arg == "-fuzz" {
+            num_encoders_to_fuzz = match args.next().and_then(|v| v.parse().ok()) {
+                Some(v) => v,
+                None => {
+                    print_usage(&argv0);
+                    return 1;
+                }
+            };
+            num_setting_changes = match args.next().and_then(|v| v.parse().ok()) {
+                Some(v) => v,
+                None => {
+                    print_usage(&argv0);
+                    return 1;
+                }
+            };
         } else {
-            print_usage(_argv);
+            print_usage(&argv0);
             return 1 as i32;
         }
     }
-    oversion = opus_get_version_string();
+
+    let oversion = opus_get_version_string();
     if oversion.is_null() {
         _test_failed(
             b"tests/test_opus_encode.c\0" as *const u8 as *const i8,
             682 as i32,
         );
     }
-    fprintf(
-        stderr(),
-        b"Testing %s encoder. Random seed: %u (%.4X)\n\0" as *const u8 as *const i8,
-        oversion,
+    eprintln!(
+        "Testing {} encoder. Random seed: {} ({:4X})",
+        std::ffi::CStr::from_ptr(oversion).to_str().unwrap(),
         iseed,
-        (fast_rand()).wrapping_rem(65535 as i32 as u32),
+        (fast_rand()).wrapping_rem(65535 as i32 as u32)
     );
-    if env_used != 0 {
-        fprintf(
-            stderr(),
-            b"  Random seed set from the environment (SEED=%s).\n\0" as *const u8 as *const i8,
-            env_seed,
-        );
-    }
     regression_test();
-    run_test1(
-        (getenv(b"TEST_OPUS_NOFUZZ\0" as *const u8 as *const i8)
-            != std::ptr::null_mut::<core::ffi::c_void>() as *mut i8) as i32,
-    );
-    if (getenv(b"TEST_OPUS_NOFUZZ\0" as *const u8 as *const i8)).is_null() {
-        fprintf(
-            stderr(),
-            b"Running fuzz_encoder_settings with %d encoder(s) and %d setting change(s) each.\n\0"
-                as *const u8 as *const i8,
-            num_encoders_to_fuzz,
-            num_setting_changes,
+    run_test1(std::env::var("TEST_OPUS_NOFUZZ").is_ok());
+    if std::env::var("TEST_OPUS_NOFUZZ").is_err() {
+        eprintln!(
+            "Running fuzz_encoder_settings with {} encoder(s) and {} setting change(s) each.",
+            num_encoders_to_fuzz, num_setting_changes,
         );
         fuzz_encoder_settings(num_encoders_to_fuzz, num_setting_changes);
     }
-    fprintf(
-        stderr(),
-        b"Tests completed successfully.\n\0" as *const u8 as *const i8,
-    );
+    eprintln!("Tests completed successfully.");
     0 as i32
 }
-pub fn main() {
-    let mut args: Vec<*mut i8> = Vec::new();
-    for arg in ::std::env::args() {
-        args.push(
-            (::std::ffi::CString::new(arg))
-                .expect("Failed to convert argument into CString.")
-                .into_raw(),
-        );
-    }
-    args.push(::core::ptr::null_mut());
-    unsafe {
-        ::std::process::exit(
-            main_0((args.len() - 1) as i32, args.as_mut_ptr() as *mut *mut i8) as i32,
-        )
-    }
+
+#[test]
+fn test_opus_encode() {
+    assert_eq!(unsafe { main_0() }, 0, "Test returned a non-zero exit code");
 }
