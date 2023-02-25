@@ -1,9 +1,35 @@
 on: [push, pull_request]
 
-name: Run rust tests
+name: Run opus tests
 
 jobs:
-  test:
+  test-basic:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        # TODO: test 32-bit targets
+        os:
+          - ubuntu-latest
+          - macOS-latest
+          - windows-latest
+        profile: [release, dev]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          profile: minimal
+
+      - name: Execute tests
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --all --profile=${{ matrix.profile }} -- --nocapture
+  test-vectors:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -22,8 +48,27 @@ jobs:
           override: true
           profile: minimal
 
-      - name: Execute tests
+      - name: Build (release)
         uses: actions-rs/cargo@v1
         with:
-          command: test
-          args: --all -- --nocapture
+          command: build
+          args: --release
+
+      - name: Download test vectors from IETF site
+        run: |
+          curl https://www.ietf.org/proceedings/98/slides/materials-98-codec-opus-newvectors-00.tar.gz -o materials-98-codec-opus-newvectors-00.tar.gz
+          tar -xzf materials-98-codec-opus-newvectors-00.tar.gz
+          # the vectors are now extracted to opus_newvectors
+
+      - name: Run test vectors
+        uses: actions-rs/cargo@v1
+        with:
+          command: run
+          args: --bin run_vectors -- target/release opus_newvectors 48000
+
+      - name: Upload logs
+        if: always() # always upload logs, even if the test fails
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-logs
+          path: logs_*.txt

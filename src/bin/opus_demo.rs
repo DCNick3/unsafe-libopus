@@ -619,7 +619,6 @@ unsafe fn main_0() -> i32 {
         }
         if decode_only != 0 {
             let mut ch: [u8; 4] = [0; 4];
-            eprintln!("Position: {}", fin.stream_position().unwrap());
             match fin.read_exact(&mut ch) {
                 Ok(_) => {}
                 Err(e) if e.kind() == std::io::ErrorKind::UnexpectedEof => {
