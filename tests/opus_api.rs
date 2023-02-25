@@ -5,7 +5,6 @@
 #![allow(unused_mut)]
 
 pub mod test_opus_common_h {
-    pub static mut iseed: u32 = 0;
     pub unsafe fn _test_failed(mut file: *const i8, mut line: i32) -> ! {
         eprintln!();
         eprintln!(" ***************************************************");
@@ -13,8 +12,7 @@ pub mod test_opus_common_h {
         eprintln!(" ***************************************************");
         eprintln!("Please report this failure and include");
         eprintln!(
-            "'make check SEED={} fails {} at line {} for {}'",
-            iseed,
+            "'make check fails {} at line {} for {}'",
             std::ffi::CStr::from_ptr(file).to_str().unwrap(),
             line,
             std::ffi::CStr::from_ptr(opus_get_version_string())
@@ -28,7 +26,7 @@ pub mod test_opus_common_h {
     use unsafe_libopus::opus_get_version_string;
 }
 
-pub use self::test_opus_common_h::{_test_failed, iseed};
+pub use self::test_opus_common_h::_test_failed;
 
 use unsafe_libopus::externs::{free, malloc};
 use unsafe_libopus::externs::{memcmp, memcpy, memset, strlen};
@@ -4299,7 +4297,6 @@ pub unsafe fn test_malloc_fail() -> i32 {
 unsafe fn main_0() -> i32 {
     let mut total: i32 = 0;
     let mut oversion: *const i8 = std::ptr::null::<i8>();
-    iseed = 0 as i32 as u32;
     oversion = opus_get_version_string();
     if oversion.is_null() {
         _test_failed(
