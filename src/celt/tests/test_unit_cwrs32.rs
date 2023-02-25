@@ -2193,7 +2193,43 @@ pub mod cwrs_c {
         2653649025 as u32,
         1409933619 as i32 as u32,
     ];
-        pub static mut CELT_PVQ_U_ROW: [*const u32; 15] = [0 as *const u32; 15];
+        pub static mut CELT_PVQ_U_ROW: [*const u32; 15] = unsafe { [
+            CELT_PVQ_U_DATA.as_ptr().offset(0 as i32 as isize),
+            CELT_PVQ_U_DATA.as_ptr().offset(208 as i32 as isize),
+            CELT_PVQ_U_DATA.as_ptr().offset(415 as i32 as isize),
+            CELT_PVQ_U_DATA.as_ptr().offset(621 as i32 as isize),
+            CELT_PVQ_U_DATA.as_ptr().offset(826 as i32 as isize),
+            CELT_PVQ_U_DATA
+                .as_ptr()
+                .offset(1030 as i32 as isize),
+            CELT_PVQ_U_DATA
+                .as_ptr()
+                .offset(1233 as i32 as isize),
+            CELT_PVQ_U_DATA
+                .as_ptr()
+                .offset(1336 as i32 as isize),
+            CELT_PVQ_U_DATA
+                .as_ptr()
+                .offset(1389 as i32 as isize),
+            CELT_PVQ_U_DATA
+                .as_ptr()
+                .offset(1421 as i32 as isize),
+            CELT_PVQ_U_DATA
+                .as_ptr()
+                .offset(1441 as i32 as isize),
+            CELT_PVQ_U_DATA
+                .as_ptr()
+                .offset(1455 as i32 as isize),
+            CELT_PVQ_U_DATA
+                .as_ptr()
+                .offset(1464 as i32 as isize),
+            CELT_PVQ_U_DATA
+                .as_ptr()
+                .offset(1470 as i32 as isize),
+            CELT_PVQ_U_DATA
+                .as_ptr()
+                .offset(1473 as i32 as isize),
+        ] };
         pub unsafe fn get_required_bits(
         mut _bits: *mut i16,
         mut _n: i32,
@@ -2646,47 +2682,3 @@ unsafe fn main_0() -> i32 {
 pub fn main() {
     unsafe { ::std::process::exit(main_0() as i32) }
 }
-unsafe fn run_static_initializers() {
-    CELT_PVQ_U_ROW = [
-        CELT_PVQ_U_DATA.as_ptr().offset(0 as i32 as isize),
-        CELT_PVQ_U_DATA.as_ptr().offset(208 as i32 as isize),
-        CELT_PVQ_U_DATA.as_ptr().offset(415 as i32 as isize),
-        CELT_PVQ_U_DATA.as_ptr().offset(621 as i32 as isize),
-        CELT_PVQ_U_DATA.as_ptr().offset(826 as i32 as isize),
-        CELT_PVQ_U_DATA
-            .as_ptr()
-            .offset(1030 as i32 as isize),
-        CELT_PVQ_U_DATA
-            .as_ptr()
-            .offset(1233 as i32 as isize),
-        CELT_PVQ_U_DATA
-            .as_ptr()
-            .offset(1336 as i32 as isize),
-        CELT_PVQ_U_DATA
-            .as_ptr()
-            .offset(1389 as i32 as isize),
-        CELT_PVQ_U_DATA
-            .as_ptr()
-            .offset(1421 as i32 as isize),
-        CELT_PVQ_U_DATA
-            .as_ptr()
-            .offset(1441 as i32 as isize),
-        CELT_PVQ_U_DATA
-            .as_ptr()
-            .offset(1455 as i32 as isize),
-        CELT_PVQ_U_DATA
-            .as_ptr()
-            .offset(1464 as i32 as isize),
-        CELT_PVQ_U_DATA
-            .as_ptr()
-            .offset(1470 as i32 as isize),
-        CELT_PVQ_U_DATA
-            .as_ptr()
-            .offset(1473 as i32 as isize),
-    ];
-}
-#[used]
-#[cfg_attr(target_os = "linux", link_section = ".init_array")]
-#[cfg_attr(target_os = "windows", link_section = ".CRT$XIB")]
-#[cfg_attr(target_os = "macos", link_section = "__DATA,__mod_init_func")]
-static INIT_ARRAY: [unsafe fn(); 1] = [run_static_initializers];
