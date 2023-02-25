@@ -1,0 +1,29 @@
+on: [push, pull_request]
+
+name: Run rust tests
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macOS-latest
+          - windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          profile: minimal
+
+      - name: Execute tests
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --all -- --nocapture
