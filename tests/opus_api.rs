@@ -4,9 +4,6 @@
 #![allow(unused_assignments)]
 #![allow(unused_mut)]
 
-use libc::{fprintf, printf};
-use libc_stdhandle::{stderr, stdout};
-
 pub mod test_opus_common_h {
     pub static mut iseed: u32 = 0;
     pub unsafe fn _test_failed(mut file: *const i8, mut line: i32) -> ! {
@@ -75,14 +72,8 @@ pub unsafe fn test_dec_api() -> i32 {
     let mut c: i32 = 0;
     let mut err: i32 = 0;
     cfgs = 0 as i32;
-    fprintf(
-        stdout(),
-        b"\n  Decoder basic API tests\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"  ---------------------------------------------------\n\0" as *const u8 as *const i8,
-    );
+    println!("\n  Decoder basic API tests");
+    println!("  ---------------------------------------------------");
     c = 0 as i32;
     while c < 4 as i32 {
         i = opus_decoder_get_size(c);
@@ -94,16 +85,11 @@ pub unsafe fn test_dec_api() -> i32 {
                 106 as i32,
             );
         }
-        fprintf(
-            stdout(),
-            b"    opus_decoder_get_size(%d)=%d ...............%s OK.\n\0" as *const u8 as *const i8,
+        println!(
+            "    opus_decoder_get_size({})={} ...............{} OK.",
             c,
             i,
-            if i > 0 as i32 {
-                b"\0" as *const u8 as *const i8
-            } else {
-                b"....\0" as *const u8 as *const i8
-            },
+            if i > 0 { "" } else { "...." }
         );
         cfgs += 1;
         c += 1;
@@ -180,14 +166,8 @@ pub unsafe fn test_dec_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    opus_decoder_create() ........................ OK.\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"    opus_decoder_init() .......................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    opus_decoder_create() ........................ OK.");
+    println!("    opus_decoder_init() .......................... OK.");
     err = opus_decoder_ctl!(dec, 4031 as i32, &mut dec_final_range);
     if err != 0 as i32 {
         _test_failed(
@@ -195,10 +175,7 @@ pub unsafe fn test_dec_api() -> i32 {
             155 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_FINAL_RANGE ......................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_FINAL_RANGE ......................... OK.");
     cfgs += 1;
     err = opus_decoder_ctl!(dec, -(5 as i32));
     if err != -(5 as i32) {
@@ -207,10 +184,7 @@ pub unsafe fn test_dec_api() -> i32 {
             161 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_UNIMPLEMENTED ........................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_UNIMPLEMENTED ........................... OK.");
     cfgs += 1;
     err = opus_decoder_ctl!(dec, 4009 as i32, &mut i);
     if err != 0 as i32 || i != 0 as i32 {
@@ -219,10 +193,7 @@ pub unsafe fn test_dec_api() -> i32 {
             169 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_BANDWIDTH ........................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_BANDWIDTH ........................... OK.");
     cfgs += 1;
     err = opus_decoder_ctl!(dec, 4029 as i32, &mut i);
     if err != 0 as i32 || i != 48000 as i32 {
@@ -231,10 +202,7 @@ pub unsafe fn test_dec_api() -> i32 {
             177 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_SAMPLE_RATE ......................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_SAMPLE_RATE ......................... OK.");
     cfgs += 1;
     err = opus_decoder_ctl!(dec, 4033 as i32, &mut i);
     if err != 0 as i32 || i > 0 as i32 || i < -(1 as i32) {
@@ -294,10 +262,7 @@ pub unsafe fn test_dec_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_PITCH ............................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_PITCH ............................... OK.");
     err = opus_decoder_ctl!(dec, 4039 as i32, &mut i);
     if err != 0 as i32 || i != 960 as i32 {
         _test_failed(
@@ -306,10 +271,7 @@ pub unsafe fn test_dec_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_LAST_PACKET_DURATION ................ OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_LAST_PACKET_DURATION ................ OK.");
     err = opus_decoder_ctl!(dec, 4045 as i32, &mut i);
     if err != 0 as i32 || i != 0 as i32 {
         _test_failed(
@@ -350,14 +312,8 @@ pub unsafe fn test_dec_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    OPUS_SET_GAIN ................................ OK.\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_GAIN ................................ OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_SET_GAIN ................................ OK.");
+    println!("    OPUS_GET_GAIN ................................ OK.");
     dec2 = malloc(opus_decoder_get_size(2 as i32) as u64) as *mut OpusDecoder;
     memcpy(
         dec2 as *mut core::ffi::c_void,
@@ -382,10 +338,7 @@ pub unsafe fn test_dec_api() -> i32 {
         );
     }
     free(dec2 as *mut core::ffi::c_void);
-    fprintf(
-        stdout(),
-        b"    OPUS_RESET_STATE ............................. OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_RESET_STATE ............................. OK.");
     cfgs += 1;
     packet[0 as i32 as usize] = 0 as i32 as u8;
     if opus_decoder_get_nb_samples(dec, packet.as_mut_ptr() as *const u8, 1 as i32) != 480 as i32 {
@@ -459,10 +412,7 @@ pub unsafe fn test_dec_api() -> i32 {
             261 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    opus_{packet,decoder}_get_nb_samples() ....... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    opus_{{packet,decoder}}_get_nb_samples() ....... OK.");
     cfgs += 9 as i32;
     if -(1 as i32) != opus_packet_get_nb_frames(packet.as_mut_ptr() as *const u8, 0 as i32) {
         _test_failed(
@@ -502,10 +452,7 @@ pub unsafe fn test_dec_api() -> i32 {
         }
         i += 1;
     }
-    fprintf(
-        stdout(),
-        b"    opus_packet_get_nb_frames() .................. OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    opus_packet_get_nb_frames() .................. OK.");
     i = 0 as i32;
     while i < 256 as i32 {
         let mut bw: i32 = 0;
@@ -525,10 +472,7 @@ pub unsafe fn test_dec_api() -> i32 {
         cfgs += 1;
         i += 1;
     }
-    fprintf(
-        stdout(),
-        b"    opus_packet_get_bandwidth() .................. OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    opus_packet_get_bandwidth() .................. OK.");
     i = 0 as i32;
     while i < 256 as i32 {
         let mut fp3s: i32 = 0;
@@ -555,10 +499,7 @@ pub unsafe fn test_dec_api() -> i32 {
         }
         i += 1;
     }
-    fprintf(
-        stdout(),
-        b"    opus_packet_get_samples_per_frame() .......... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    opus_packet_get_samples_per_frame() .......... OK.");
     packet[0 as i32 as usize] = (((63 as i32) << 2 as i32) + 3 as i32) as u8;
     packet[1 as i32 as usize] = 49 as i32 as u8;
     j = 2 as i32;
@@ -644,10 +585,7 @@ pub unsafe fn test_dec_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    opus_decode() ................................ OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    opus_decode() ................................ OK.");
     if opus_decode_float(
         dec,
         packet.as_mut_ptr(),
@@ -663,21 +601,11 @@ pub unsafe fn test_dec_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    opus_decode_float() .......................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    opus_decode_float() .......................... OK.");
     opus_decoder_destroy(dec);
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"                   All decoder interface tests passed\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"                             (%6d API invocations)\n\0" as *const u8 as *const i8,
-        cfgs,
-    );
+    println!("                   All decoder interface tests passed");
+    println!("                   ({:6} API invocations)", cfgs);
     cfgs
 }
 pub unsafe fn test_msdec_api() -> i32 {
@@ -702,14 +630,8 @@ pub unsafe fn test_msdec_api() -> i32 {
         i += 1;
     }
     cfgs = 0 as i32;
-    fprintf(
-        stdout(),
-        b"\n  Multistream decoder basic API tests\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"  ---------------------------------------------------\n\0" as *const u8 as *const i8,
-    );
+    println!("\n  Multistream decoder basic API tests");
+    println!("  ---------------------------------------------------");
     a = -(1 as i32);
     while a < 4 as i32 {
         b = -(1 as i32);
@@ -726,18 +648,12 @@ pub unsafe fn test_msdec_api() -> i32 {
                     370 as i32,
                 );
             }
-            fprintf(
-                stdout(),
-                b"    opus_multistream_decoder_get_size(%2d,%2d)=%d %sOK.\n\0" as *const u8
-                    as *const i8,
+            println!(
+                "    opus_multistream_decoder_get_size({:2},{:2})={:4} {}OK.",
                 a,
                 b,
                 i,
-                if i > 0 as i32 {
-                    b"\0" as *const u8 as *const i8
-                } else {
-                    b"... \0" as *const u8 as *const i8
-                },
+                if i > 0 { "" } else { "... " }
             );
             cfgs += 1;
             b += 1;
@@ -1140,14 +1056,8 @@ pub unsafe fn test_msdec_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    opus_multistream_decoder_create() ............ OK.\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"    opus_multistream_decoder_init() .............. OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    opus_multistream_decoder_create() ............ OK.");
+    println!("    opus_multistream_decoder_init() .............. OK.");
     err = opus_multistream_decoder_ctl!(dec, 4031 as i32, &mut dec_final_range);
     if err != 0 as i32 {
         _test_failed(
@@ -1155,10 +1065,7 @@ pub unsafe fn test_msdec_api() -> i32 {
             545 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_FINAL_RANGE ......................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_FINAL_RANGE ......................... OK.");
     cfgs += 1;
     streamdec = std::ptr::null_mut::<OpusDecoder>();
     err = opus_multistream_decoder_ctl!(dec, 5122 as i32, -(1 as i32), &mut streamdec);
@@ -1192,10 +1099,7 @@ pub unsafe fn test_msdec_api() -> i32 {
             563 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_MULTISTREAM_GET_DECODER_STATE ........... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_MULTISTREAM_GET_DECODER_STATE ........... OK.");
     cfgs += 1;
     j = 0 as i32;
     while j < 2 as i32 {
@@ -1224,10 +1128,7 @@ pub unsafe fn test_msdec_api() -> i32 {
             580 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_SET_GAIN ................................ OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_SET_GAIN ................................ OK.");
     j = 0 as i32;
     while j < 2 as i32 {
         let mut od_0: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
@@ -1248,10 +1149,7 @@ pub unsafe fn test_msdec_api() -> i32 {
         cfgs += 1;
         j += 1;
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_GAIN ................................ OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_GAIN ................................ OK.");
     err = opus_multistream_decoder_ctl!(dec, 4009 as i32, &mut i);
     if err != 0 as i32 || i != 0 as i32 {
         _test_failed(
@@ -1259,10 +1157,7 @@ pub unsafe fn test_msdec_api() -> i32 {
             597 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_BANDWIDTH ........................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_BANDWIDTH ........................... OK.");
     cfgs += 1;
     err = opus_multistream_decoder_ctl!(dec, -(5 as i32));
     if err != -(5 as i32) {
@@ -1271,10 +1166,7 @@ pub unsafe fn test_msdec_api() -> i32 {
             602 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_UNIMPLEMENTED ........................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_UNIMPLEMENTED ........................... OK.");
     cfgs += 1;
     if opus_multistream_decoder_ctl!(dec, 4028 as i32) != 0 as i32 {
         _test_failed(
@@ -1282,10 +1174,7 @@ pub unsafe fn test_msdec_api() -> i32 {
             635 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_RESET_STATE ............................. OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_RESET_STATE ............................. OK.");
     cfgs += 1;
     opus_multistream_decoder_destroy(dec);
     cfgs += 1;
@@ -1338,8 +1227,8 @@ pub unsafe fn test_msdec_api() -> i32 {
         0 as i32,
     ) != -(1 as i32)
     {
-        printf(
-            b"%d\n\0" as *const u8 as *const i8,
+        println!(
+            "{}",
             opus_multistream_decode(
                 dec,
                 packet.as_mut_ptr(),
@@ -1347,7 +1236,7 @@ pub unsafe fn test_msdec_api() -> i32 {
                 sbuf.as_mut_ptr(),
                 960 as i32,
                 0 as i32,
-            ),
+            )
         );
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -1415,10 +1304,7 @@ pub unsafe fn test_msdec_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    opus_multistream_decode() .................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    opus_multistream_decode() .................... OK.");
     if opus_multistream_decode_float(
         dec,
         packet.as_mut_ptr(),
@@ -1434,21 +1320,11 @@ pub unsafe fn test_msdec_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    opus_multistream_decode_float() .............. OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    opus_multistream_decode_float() .............. OK.");
     opus_multistream_decoder_destroy(dec);
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"       All multistream decoder interface tests passed\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"                             (%6d API invocations)\n\0" as *const u8 as *const i8,
-        cfgs,
-    );
+    println!("       All multistream decoder interface tests passed");
+    println!("                             ({:6} API invocations)", cfgs);
     cfgs
 }
 pub unsafe fn test_parse() -> i32 {
@@ -1464,14 +1340,8 @@ pub unsafe fn test_parse() -> i32 {
     let mut size: [libc::c_short; 48] = [0; 48];
     let mut payload_offset: i32 = 0;
     let mut ret: i32 = 0;
-    fprintf(
-        stdout(),
-        b"\n  Packet header parsing tests\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"  ---------------------------------------------------\n\0" as *const u8 as *const i8,
-    );
+    println!("\n  Packet header parsing tests");
+    println!("  ---------------------------------------------------");
     memset(
         packet.as_mut_ptr() as *mut core::ffi::c_void,
         0 as i32,
@@ -1530,10 +1400,9 @@ pub unsafe fn test_parse() -> i32 {
         }
         i += 1;
     }
-    fprintf(
-        stdout(),
-        b"    code 0 (%2d cases) ............................ OK.\n\0" as *const u8 as *const i8,
-        cfgs,
+    println!(
+        "    code 0 ({:2} cases) ............................ OK.",
+        cfgs
     );
     cfgs_total += cfgs;
     cfgs = 0 as i32;
@@ -1602,11 +1471,7 @@ pub unsafe fn test_parse() -> i32 {
         }
         i += 1;
     }
-    fprintf(
-        stdout(),
-        b"    code 1 (%6d cases) ........................ OK.\n\0" as *const u8 as *const i8,
-        cfgs,
-    );
+    println!("    code 1 ({:6} cases) ........................ OK.", cfgs);
     cfgs_total += cfgs;
     cfgs = 0 as i32;
     i = 0 as i32;
@@ -1784,10 +1649,9 @@ pub unsafe fn test_parse() -> i32 {
         }
         i += 1;
     }
-    fprintf(
-        stdout(),
-        b"    code 2 (%6d cases) ........................ OK.\n\0" as *const u8 as *const i8,
-        cfgs,
+    println!(
+        "    code 2 ({:6} cases) ........................ OK.",
+        cfgs_total
     );
     cfgs_total += cfgs;
     cfgs = 0 as i32;
@@ -1815,10 +1679,9 @@ pub unsafe fn test_parse() -> i32 {
         }
         i += 1;
     }
-    fprintf(
-        stdout(),
-        b"    code 3 m-truncation (%2d cases) ............... OK.\n\0" as *const u8 as *const i8,
-        cfgs,
+    println!(
+        "    code 3 m-truncation ({:2} cases) ............... OK.",
+        cfgs
     );
     cfgs_total += cfgs;
     cfgs = 0 as i32;
@@ -1911,10 +1774,9 @@ pub unsafe fn test_parse() -> i32 {
         }
         i += 1;
     }
-    fprintf(
-        stdout(),
-        b"    code 3 m=0,49-64 (%2d cases) ................ OK.\n\0" as *const u8 as *const i8,
-        cfgs,
+    println!(
+        "    code 3 m=0,49-64 ({:2} cases) ................ OK.",
+        cfgs
     );
     cfgs_total += cfgs;
     cfgs = 0 as i32;
@@ -1978,10 +1840,9 @@ pub unsafe fn test_parse() -> i32 {
         }
         i += 1;
     }
-    fprintf(
-        stdout(),
-        b"    code 3 m=1 CBR (%2d cases) ................. OK.\n\0" as *const u8 as *const i8,
-        cfgs,
+    println!(
+        "    code 3 m=1 CBR ({:2} cases) ................. OK.",
+        cfgs
     );
     cfgs_total += cfgs;
     cfgs = 0 as i32;
@@ -2079,11 +1940,7 @@ pub unsafe fn test_parse() -> i32 {
         }
         i += 1;
     }
-    fprintf(
-        stdout(),
-        b"    code 3 m=1-48 CBR (%2d cases) .......... OK.\n\0" as *const u8 as *const i8,
-        cfgs,
-    );
+    println!("    code 3 m=1-48 CBR ({:2} cases) .......... OK.", cfgs);
     cfgs_total += cfgs;
     cfgs = 0 as i32;
     i = 0 as i32;
@@ -2376,11 +2233,7 @@ pub unsafe fn test_parse() -> i32 {
         }
         i += 1;
     }
-    fprintf(
-        stdout(),
-        b"    code 3 m=1-48 VBR (%2d cases) ............. OK.\n\0" as *const u8 as *const i8,
-        cfgs,
-    );
+    println!("    code 3 m=1-48 VBR ({:2} cases) ............. OK.", cfgs);
     cfgs_total += cfgs;
     cfgs = 0 as i32;
     i = 0 as i32;
@@ -2489,25 +2342,11 @@ pub unsafe fn test_parse() -> i32 {
         }
         i += 1;
     }
-    fprintf(
-        stdout(),
-        b"    code 3 padding (%2d cases) ............... OK.\n\0" as *const u8 as *const i8,
-        cfgs,
-    );
+    println!("    code 3 padding ({:2} cases) ............... OK.", cfgs);
     cfgs_total += cfgs;
-    fprintf(
-        stdout(),
-        b"    opus_packet_parse ............................ OK.\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"                      All packet parsing tests passed\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"                          (%d API invocations)\n\0" as *const u8 as *const i8,
-        cfgs_total,
-    );
+    println!("    opus_packet_parse ............................ OK.");
+    println!("                      All packet parsing tests passed");
+    println!("                   ({} API invocations)", cfgs_total);
     cfgs_total
 }
 pub unsafe fn test_enc_api() -> i32 {
@@ -2522,14 +2361,8 @@ pub unsafe fn test_enc_api() -> i32 {
     let mut err: i32 = 0;
     let mut cfgs: i32 = 0;
     cfgs = 0 as i32;
-    fprintf(
-        stdout(),
-        b"\n  Encoder basic API tests\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"  ---------------------------------------------------\n\0" as *const u8 as *const i8,
-    );
+    println!("\n  Encoder basic API tests");
+    println!("  ---------------------------------------------------");
     c = 0 as i32;
     while c < 4 as i32 {
         i = opus_encoder_get_size(c);
@@ -2541,16 +2374,11 @@ pub unsafe fn test_enc_api() -> i32 {
                 1084 as i32,
             );
         }
-        fprintf(
-            stdout(),
-            b"    opus_encoder_get_size(%d)=%d ...............%s OK.\n\0" as *const u8 as *const i8,
+        println!(
+            "    opus_encoder_get_size({})={} ...............{} OK.",
             c,
             i,
-            if i > 0 as i32 {
-                b"\0" as *const u8 as *const i8
-            } else {
-                b"....\0" as *const u8 as *const i8
-            },
+            if i > 0 { "" } else { "...." }
         );
         cfgs += 1;
         c += 1;
@@ -2697,14 +2525,8 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    opus_encoder_create() ........................ OK.\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"    opus_encoder_init() .......................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    opus_encoder_create() ........................ OK.");
+    println!("    opus_encoder_init() .......................... OK.");
     i = -(12345 as i32);
     err = opus_encoder_ctl!(enc, 4027 as i32, &mut i);
     if err != 0 as i32 || i < 0 as i32 || i > 32766 as i32 {
@@ -2714,10 +2536,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_LOOKAHEAD ........................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_LOOKAHEAD ........................... OK.");
     err = opus_encoder_ctl!(enc, 4029 as i32, &mut i);
     if err != 0 as i32 || i != 48000 as i32 {
         _test_failed(
@@ -2726,20 +2545,14 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_SAMPLE_RATE ......................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_SAMPLE_RATE ......................... OK.");
     if opus_encoder_ctl!(enc, -(5 as i32)) != -(5 as i32) {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
             1180 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_UNIMPLEMENTED ........................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_UNIMPLEMENTED ........................... OK.");
     cfgs += 1;
     i = -(1 as i32);
     if opus_encoder_ctl!(enc, 4000 as i32, i) == 0 as i32 {
@@ -2779,10 +2592,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1190 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_SET_APPLICATION ......................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_SET_APPLICATION ......................... OK.");
     i = -(12345 as i32);
     err = opus_encoder_ctl!(enc, 4001 as i32, &mut i);
     if err != 0 as i32 || i != j {
@@ -2791,10 +2601,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1190 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_APPLICATION ......................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_APPLICATION ......................... OK.");
     cfgs += 6 as i32;
     if opus_encoder_ctl!(enc, 4002 as i32, 1073741832 as i32) != 0 as i32 {
         _test_failed(
@@ -2854,10 +2661,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1204 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_SET_BITRATE ............................. OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_SET_BITRATE ............................. OK.");
     i = -(12345 as i32);
     err = opus_encoder_ctl!(enc, 4003 as i32, &mut i);
     if err != 0 as i32 || i != j {
@@ -2866,10 +2670,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1204 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_BITRATE ............................. OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_BITRATE ............................. OK.");
     cfgs += 6 as i32;
     i = -(1 as i32);
     if opus_encoder_ctl!(enc, 4022 as i32, i) == 0 as i32 {
@@ -2909,10 +2710,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1212 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_SET_FORCE_CHANNELS ...................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_SET_FORCE_CHANNELS ...................... OK.");
     i = -(12345 as i32);
     err = opus_encoder_ctl!(enc, 4023 as i32, &mut i);
     if err != 0 as i32 || i != j {
@@ -2921,10 +2719,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1212 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_FORCE_CHANNELS ...................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_FORCE_CHANNELS ...................... OK.");
     cfgs += 6 as i32;
     i = -(2 as i32);
     if opus_encoder_ctl!(enc, 4008 as i32, i) == 0 as i32 {
@@ -2974,10 +2769,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    OPUS_SET_BANDWIDTH ........................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_SET_BANDWIDTH ........................... OK.");
     i = -(12345 as i32);
     err = opus_encoder_ctl!(enc, 4009 as i32, &mut i);
     if err != 0 as i32
@@ -3000,10 +2792,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_BANDWIDTH ........................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_BANDWIDTH ........................... OK.");
     i = -(2 as i32);
     if opus_encoder_ctl!(enc, 4004 as i32, i) == 0 as i32 {
         _test_failed(
@@ -3052,10 +2841,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    OPUS_SET_MAX_BANDWIDTH ....................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_SET_MAX_BANDWIDTH ....................... OK.");
     i = -(12345 as i32);
     err = opus_encoder_ctl!(enc, 4005 as i32, &mut i);
     if err != 0 as i32
@@ -3067,10 +2853,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_MAX_BANDWIDTH ....................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_MAX_BANDWIDTH ....................... OK.");
     i = -(1 as i32);
     if opus_encoder_ctl!(enc, 4016 as i32, i) == 0 as i32 {
         _test_failed(
@@ -3109,10 +2892,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1288 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_SET_DTX ................................. OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_SET_DTX ................................. OK.");
     i = -(12345 as i32);
     err = opus_encoder_ctl!(enc, 4017 as i32, &mut i);
     if err != 0 as i32 || i != j {
@@ -3121,10 +2901,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1288 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_DTX ................................. OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_DTX ................................. OK.");
     cfgs += 6 as i32;
     i = -(1 as i32);
     if opus_encoder_ctl!(enc, 4010 as i32, i) == 0 as i32 {
@@ -3164,10 +2941,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1296 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_SET_COMPLEXITY .......................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_SET_COMPLEXITY .......................... OK.");
     i = -(12345 as i32);
     err = opus_encoder_ctl!(enc, 4011 as i32, &mut i);
     if err != 0 as i32 || i != j {
@@ -3176,10 +2950,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1296 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_COMPLEXITY .......................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_COMPLEXITY .......................... OK.");
     cfgs += 6 as i32;
     i = -(1 as i32);
     if opus_encoder_ctl!(enc, 4012 as i32, i) == 0 as i32 {
@@ -3219,10 +2990,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1304 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_SET_INBAND_FEC .......................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_SET_INBAND_FEC .......................... OK.");
     i = -(12345 as i32);
     err = opus_encoder_ctl!(enc, 4013 as i32, &mut i);
     if err != 0 as i32 || i != j {
@@ -3231,10 +2999,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1304 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_INBAND_FEC .......................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_INBAND_FEC .......................... OK.");
     cfgs += 6 as i32;
     i = -(1 as i32);
     if opus_encoder_ctl!(enc, 4014 as i32, i) == 0 as i32 {
@@ -3274,10 +3039,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1312 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_SET_PACKET_LOSS_PERC .................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_SET_PACKET_LOSS_PERC .................... OK.");
     i = -(12345 as i32);
     err = opus_encoder_ctl!(enc, 4015 as i32, &mut i);
     if err != 0 as i32 || i != j {
@@ -3286,10 +3048,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1312 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_PACKET_LOSS_PERC .................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_PACKET_LOSS_PERC .................... OK.");
     cfgs += 6 as i32;
     i = -(1 as i32);
     if opus_encoder_ctl!(enc, 4006 as i32, i) == 0 as i32 {
@@ -3329,10 +3088,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1320 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_SET_VBR ................................. OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_SET_VBR ................................. OK.");
     i = -(12345 as i32);
     err = opus_encoder_ctl!(enc, 4007 as i32, &mut i);
     if err != 0 as i32 || i != j {
@@ -3341,10 +3097,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1320 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_VBR ................................. OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_VBR ................................. OK.");
     cfgs += 6 as i32;
     i = -(1 as i32);
     if opus_encoder_ctl!(enc, 4020 as i32, i) == 0 as i32 {
@@ -3384,10 +3137,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1336 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_SET_VBR_CONSTRAINT ...................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_SET_VBR_CONSTRAINT ...................... OK.");
     i = -(12345 as i32);
     err = opus_encoder_ctl!(enc, 4021 as i32, &mut i);
     if err != 0 as i32 || i != j {
@@ -3396,10 +3146,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1336 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_VBR_CONSTRAINT ...................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_VBR_CONSTRAINT ...................... OK.");
     cfgs += 6 as i32;
     i = -(12345 as i32);
     if opus_encoder_ctl!(enc, 4024 as i32, i) == 0 as i32 {
@@ -3439,10 +3186,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1344 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_SET_SIGNAL .............................. OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_SET_SIGNAL .............................. OK.");
     i = -(12345 as i32);
     err = opus_encoder_ctl!(enc, 4025 as i32, &mut i);
     if err != 0 as i32 || i != j {
@@ -3451,10 +3195,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1344 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_SIGNAL .............................. OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_SIGNAL .............................. OK.");
     cfgs += 6 as i32;
     i = 7 as i32;
     if opus_encoder_ctl!(enc, 4036 as i32, i) == 0 as i32 {
@@ -3494,10 +3235,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1351 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_SET_LSB_DEPTH ........................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_SET_LSB_DEPTH ........................... OK.");
     i = -(12345 as i32);
     err = opus_encoder_ctl!(enc, 4037 as i32, &mut i);
     if err != 0 as i32 || i != j {
@@ -3506,10 +3244,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1351 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_LSB_DEPTH ........................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_LSB_DEPTH ........................... OK.");
     cfgs += 6 as i32;
     err = opus_encoder_ctl!(enc, 4043 as i32, &mut i);
     if i != 0 as i32 {
@@ -3557,10 +3292,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1361 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_SET_PREDICTION_DISABLED ................. OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_SET_PREDICTION_DISABLED ................. OK.");
     i = -(12345 as i32);
     err = opus_encoder_ctl!(enc, 4043 as i32, &mut i);
     if err != 0 as i32 || i != j {
@@ -3569,10 +3301,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1361 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_PREDICTION_DISABLED ................. OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_PREDICTION_DISABLED ................. OK.");
     cfgs += 6 as i32;
     err = opus_encoder_ctl!(enc, 4040 as i32, 5001 as i32);
     if err != 0 as i32 {
@@ -3684,10 +3413,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1396 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_SET_EXPERT_FRAME_DURATION ............... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_SET_EXPERT_FRAME_DURATION ............... OK.");
     i = -(12345 as i32);
     err = opus_encoder_ctl!(enc, 4041 as i32, &mut i);
     if err != 0 as i32 || i != j {
@@ -3696,10 +3422,7 @@ pub unsafe fn test_enc_api() -> i32 {
             1396 as i32,
         );
     }
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_EXPERT_FRAME_DURATION ............... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_EXPERT_FRAME_DURATION ............... OK.");
     cfgs += 6 as i32;
     if opus_encoder_ctl!(enc, 4031 as i32, &mut enc_final_range) != 0 as i32 {
         _test_failed(
@@ -3708,10 +3431,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    OPUS_GET_FINAL_RANGE ......................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_GET_FINAL_RANGE ......................... OK.");
     if opus_encoder_ctl!(enc, 4028 as i32) != 0 as i32 {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3719,10 +3439,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    OPUS_RESET_STATE ............................. OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    OPUS_RESET_STATE ............................. OK.");
     memset(
         sbuf.as_mut_ptr() as *mut core::ffi::c_void,
         0 as i32,
@@ -3744,10 +3461,7 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    opus_encode() ................................ OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    opus_encode() ................................ OK.");
     memset(
         fbuf.as_mut_ptr() as *mut core::ffi::c_void,
         0 as i32,
@@ -3769,21 +3483,12 @@ pub unsafe fn test_enc_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    opus_encode_float() .......................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    opus_encode_float() .......................... OK.");
     opus_encoder_destroy(enc);
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"                   All encoder interface tests passed\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"                             (%d API invocations)\n\0" as *const u8 as *const i8,
-        cfgs,
-    );
+    println!("                   All encoder interface tests passed");
+
+    println!("                   ({} API invocations)", cfgs);
     cfgs
 }
 pub unsafe fn test_repacketizer_api() -> i32 {
@@ -3796,14 +3501,8 @@ pub unsafe fn test_repacketizer_api() -> i32 {
     let mut packet: *mut u8 = std::ptr::null_mut::<u8>();
     let mut po: *mut u8 = std::ptr::null_mut::<u8>();
     cfgs = 0 as i32;
-    fprintf(
-        stdout(),
-        b"\n  Repacketizer tests\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"  ---------------------------------------------------\n\0" as *const u8 as *const i8,
-    );
+    println!("\n  Repacketizer tests");
+    println!("  ---------------------------------------------------");
     packet = malloc((1276 as i32 * 48 as i32 + 48 as i32 * 2 as i32 + 2 as i32) as u64) as *mut u8;
     if packet.is_null() {
         _test_failed(
@@ -3832,11 +3531,7 @@ pub unsafe fn test_repacketizer_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    opus_repacketizer_get_size()=%d ............. OK.\n\0" as *const u8 as *const i8,
-        i,
-    );
+    println!("    opus_repacketizer_get_size()={} ............. OK.", i);
     rp = malloc(i as u64) as *mut OpusRepacketizer;
     rp = opus_repacketizer_init(rp);
     if rp.is_null() {
@@ -3847,10 +3542,7 @@ pub unsafe fn test_repacketizer_api() -> i32 {
     }
     cfgs += 1;
     free(rp as *mut core::ffi::c_void);
-    fprintf(
-        stdout(),
-        b"    opus_repacketizer_init ....................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    opus_repacketizer_init ....................... OK.");
     rp = opus_repacketizer_create();
     if rp.is_null() {
         _test_failed(
@@ -3859,10 +3551,7 @@ pub unsafe fn test_repacketizer_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    opus_repacketizer_create ..................... OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    opus_repacketizer_create ..................... OK.");
     if opus_repacketizer_get_nb_frames(rp) != 0 as i32 {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -3870,10 +3559,7 @@ pub unsafe fn test_repacketizer_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    opus_repacketizer_get_nb_frames .............. OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    opus_repacketizer_get_nb_frames .............. OK.");
     if opus_repacketizer_cat(rp, packet, 0 as i32) != -(4 as i32) {
         _test_failed(
             b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -4583,95 +4269,36 @@ pub unsafe fn test_repacketizer_api() -> i32 {
         );
     }
     cfgs += 1;
-    fprintf(
-        stdout(),
-        b"    opus_repacketizer_cat ........................ OK.\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"    opus_repacketizer_out ........................ OK.\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"    opus_repacketizer_out_range .................. OK.\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"    opus_packet_pad .............................. OK.\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"    opus_packet_unpad ............................ OK.\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"    opus_multistream_packet_pad .................. OK.\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"    opus_multistream_packet_unpad ................ OK.\n\0" as *const u8 as *const i8,
-    );
+    println!("    opus_repacketizer_cat ........................ OK.");
+    println!("    opus_repacketizer_out ........................ OK.");
+    println!("    opus_repacketizer_out_range .................. OK.");
+    println!("    opus_packet_pad .............................. OK.");
+    println!("    opus_packet_unpad ............................ OK.");
+    println!("    opus_multistream_packet_pad .................. OK.");
+    println!("    opus_multistream_packet_unpad ................ OK.");
     opus_repacketizer_destroy(rp);
     cfgs += 1;
     free(packet as *mut core::ffi::c_void);
     free(po as *mut core::ffi::c_void);
-    fprintf(
-        stdout(),
-        b"                        All repacketizer tests passed\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"                            (%7d API invocations)\n\0" as *const u8 as *const i8,
-        cfgs,
-    );
+    println!("                        All repacketizer tests passed");
+    println!("                   ({:7} API invocations)", cfgs);
     cfgs
 }
 pub unsafe fn test_malloc_fail() -> i32 {
-    fprintf(
-        stdout(),
-        b"\n  malloc() failure tests\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"  ---------------------------------------------------\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"    opus_decoder_create() ................... SKIPPED.\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"    opus_encoder_create() ................... SKIPPED.\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"    opus_repacketizer_create() .............. SKIPPED.\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"    opus_multistream_decoder_create() ....... SKIPPED.\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"    opus_multistream_encoder_create() ....... SKIPPED.\n\0" as *const u8 as *const i8,
-    );
-    fprintf(
-        stdout(),
-        b"(Test only supported with GLIBC and without valgrind)\n\0" as *const u8 as *const i8,
-    );
+    println!("\n  malloc() failure tests");
+    println!("  ---------------------------------------------------");
+    println!("    opus_decoder_create() ................... SKIPPED.");
+    println!("    opus_encoder_create() ................... SKIPPED.");
+    println!("    opus_repacketizer_create() .............. SKIPPED.");
+    println!("    opus_multistream_decoder_create() ....... SKIPPED.");
+    println!("    opus_multistream_encoder_create() ....... SKIPPED.");
+    println!("(Test only supported with GLIBC and without valgrind)");
     0 as i32
 }
-unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
+
+unsafe fn main_0() -> i32 {
     let mut total: i32 = 0;
     let mut oversion: *const i8 = std::ptr::null::<i8>();
-    if _argc > 1 as i32 {
-        fprintf(
-            stderr(),
-            b"Usage: %s\n\0" as *const u8 as *const i8,
-            *_argv.offset(0 as i32 as isize),
-        );
-        return 1 as i32;
-    }
     iseed = 0 as i32 as u32;
     oversion = opus_get_version_string();
     if oversion.is_null() {
@@ -4680,10 +4307,9 @@ unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
             1887 as i32,
         );
     }
-    fprintf(
-        stderr(),
-        b"Testing the %s API deterministically\n\0" as *const u8 as *const i8,
-        oversion,
+    eprintln!(
+        "Testing the {} API deterministically",
+        std::ffi::CStr::from_ptr(oversion).to_str().unwrap()
     );
     if (opus_strerror(-(32768 as i32))).is_null() {
         _test_failed(
@@ -4710,27 +4336,14 @@ unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
     total += test_enc_api();
     total += test_repacketizer_api();
     total += test_malloc_fail();
-    fprintf(
-        stderr(),
-        b"\nAll API tests passed.\nThe libopus API was invoked %d times.\n\0" as *const u8
-            as *const i8,
-        total,
+    eprintln!(
+        "\nAll API tests passed.\nThe libopus API was invoked {} times.",
+        total
     );
     0 as i32
 }
-pub fn main() {
-    let mut args: Vec<*mut i8> = Vec::new();
-    for arg in ::std::env::args() {
-        args.push(
-            (::std::ffi::CString::new(arg))
-                .expect("Failed to convert argument into CString.")
-                .into_raw(),
-        );
-    }
-    args.push(::core::ptr::null_mut());
-    unsafe {
-        ::std::process::exit(
-            main_0((args.len() - 1) as i32, args.as_mut_ptr() as *mut *mut i8) as i32,
-        )
-    }
+
+#[test]
+fn test_opus_encode() {
+    assert_eq!(unsafe { main_0() }, 0, "Test returned a non-zero exit code");
 }
