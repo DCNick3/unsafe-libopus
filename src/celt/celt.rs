@@ -252,5 +252,5 @@ pub unsafe fn opus_strerror(error: i32) -> *const i8 {
     };
 }
 pub unsafe fn opus_get_version_string() -> *const i8 {
-    return b"libopus 1.3.1\0" as *const u8 as *const i8;
+    return b"unsafe-libopus (rust port) 1.3.1\0" as *const u8 as *const i8;
 }
