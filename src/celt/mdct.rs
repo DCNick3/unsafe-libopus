@@ -7,10 +7,10 @@ pub mod arch_h {
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-pub struct mdct_lookup {
+pub struct mdct_lookup<'a> {
     pub n: i32,
     pub maxshift: i32,
-    pub kfft: [*const kiss_fft_state<'static>; 4],
+    pub kfft: [&'a kiss_fft_state<'a>; 4],
     pub trig: *const f32,
 }
 pub use self::arch_h::opus_val16;
@@ -29,7 +29,7 @@ pub unsafe fn clt_mdct_forward_c(
     let mut N: i32 = 0;
     let mut N2: i32 = 0;
     let mut N4: i32 = 0;
-    let st: &kiss_fft_state = &*(*l).kfft[shift as usize];
+    let st: &kiss_fft_state = (*l).kfft[shift as usize];
     let mut trig: *const f32 = 0 as *const f32;
     let mut scale: opus_val16 = 0.;
     scale = st.scale;
@@ -122,8 +122,7 @@ pub unsafe fn clt_mdct_forward_c(
         yc.im = yi;
         yc.re = scale * yc.re;
         yc.im = scale * yc.im;
-        *f2.as_mut_ptr()
-            .offset(*(st.bitrev).offset(i as isize) as isize) = yc;
+        *f2.as_mut_ptr().offset(st.bitrev[i as usize] as isize) = yc;
         i += 1;
     }
     opus_fft_impl(st, &mut f2);
@@ -174,7 +173,7 @@ pub unsafe fn clt_mdct_backward_c(
     let mut xp2: *const f32 = in_0.offset((stride * (N2 - 1 as i32)) as isize);
     let yp: *mut f32 = out.offset((overlap >> 1 as i32) as isize);
     let t: *const f32 = &*trig.offset(0 as i32 as isize) as *const f32;
-    let mut bitrev: *const i16 = (*(*l).kfft[shift as usize]).bitrev;
+    let mut bitrev: *const i16 = (*l).kfft[shift as usize].bitrev.as_ptr();
     i = 0 as i32;
     while i < N4 {
         let mut rev: i32 = 0;
@@ -192,10 +191,10 @@ pub unsafe fn clt_mdct_backward_c(
         i += 1;
     }
     opus_fft_impl(
-        &*(*l).kfft[shift as usize],
+        (*l).kfft[shift as usize],
         std::slice::from_raw_parts_mut(
             out.offset((overlap >> 1) as isize) as *mut kiss_fft_cpx,
-            (*(*l).kfft[shift as usize]).nfft as usize,
+            (*l).kfft[shift as usize].nfft,
         ),
     );
     let mut yp0: *mut f32 = out.offset((overlap >> 1 as i32) as isize);

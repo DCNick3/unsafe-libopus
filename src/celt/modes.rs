@@ -14,7 +14,7 @@ pub struct OpusCustomMode {
     pub(crate) allocVectors: *const u8,
     pub(crate) logN: *const i16,
     pub(crate) window: *const opus_val16,
-    pub(crate) mdct: mdct_lookup,
+    pub(crate) mdct: mdct_lookup<'static>,
     pub(crate) cache: PulseCache,
 }
 #[derive(Copy, Clone)]

@@ -3,13 +3,12 @@ pub type kiss_fft_cpx = num_complex::Complex32;
 pub type kiss_twiddle_cpx = num_complex::Complex32;
 
 #[derive(Copy, Clone)]
-#[repr(C)]
 pub struct kiss_fft_state<'a> {
-    pub nfft: i32,
+    pub nfft: usize,
     pub scale: f32,
     pub shift: i32,
-    pub factors: [i16; 16],
-    pub bitrev: *const i16,
+    pub factors: [(i32, i32); 8],
+    pub bitrev: &'a [i16],
     pub twiddles: &'a [kiss_twiddle_cpx; 480],
 }
 
@@ -139,8 +138,8 @@ fn kf_bfly3(
             chunk[m2].re = chunk[m].re + scratch[0].im;
             chunk[m2].im = chunk[m].im - scratch[0].re;
 
-            chunk[m].re = chunk[m].re - scratch[0].im;
-            chunk[m].im = chunk[m].im + scratch[0].re;
+            chunk[m].re -= scratch[0].im;
+            chunk[m].im += scratch[0].re;
 
             chunk = &mut chunk[1..];
         }
@@ -180,7 +179,7 @@ fn kf_bfly5(
             scratch[8] = scratch[2] + scratch[3];
             scratch[9] = scratch[2] - scratch[3];
 
-            chunk0[0] = chunk0[0] + (scratch[7] + scratch[8]);
+            chunk0[0] += scratch[7] + scratch[8];
 
             scratch[5].re = scratch[0].re + (scratch[7].re * ya.re + scratch[8].re * yb.re);
             scratch[5].im = scratch[0].im + (scratch[7].im * ya.re + scratch[8].im * yb.re);
@@ -216,9 +215,7 @@ pub fn opus_fft_impl(st: &kiss_fft_state, fout: &mut [kiss_fft_cpx]) {
 
     let mut L = 0_usize;
     loop {
-        // TODO: convert `factors` to array of pairs (or even structs)
-        let p = st.factors[2 * L] as i32;
-        let m = st.factors[2 * L + 1] as i32;
+        let (p, m) = st.factors[L];
         fstride[L + 1] = fstride[L] * p;
         L += 1;
         if m == 1 {
@@ -226,14 +223,10 @@ pub fn opus_fft_impl(st: &kiss_fft_state, fout: &mut [kiss_fft_cpx]) {
         }
     }
 
-    let mut m = st.factors[2 * L - 1] as i32;
+    let mut m = st.factors[L - 1].1;
     for i in (0..L).rev() {
-        let m2 = if i != 0 {
-            st.factors[2 * i - 1] as i32
-        } else {
-            1
-        };
-        match st.factors[2 * i] as i32 {
+        let m2 = if i > 0 { st.factors[i - 1].1 } else { 1 };
+        match st.factors[i].0 {
             2 => {
                 kf_bfly2(fout, m, fstride[i]);
             }
@@ -252,15 +245,13 @@ pub fn opus_fft_impl(st: &kiss_fft_state, fout: &mut [kiss_fft_cpx]) {
     }
 }
 
-pub unsafe fn opus_fft_c(st: &kiss_fft_state, fin: &[kiss_fft_cpx], fout: &mut [kiss_fft_cpx]) {
+pub fn opus_fft_c(st: &kiss_fft_state, fin: &[kiss_fft_cpx], fout: &mut [kiss_fft_cpx]) {
     let mut scale: f32 = 0.;
     scale = st.scale;
-    assert_eq!(fin.len(), st.nfft as usize);
-    assert_eq!(fout.len(), st.nfft as usize);
-    for i in 0..st.nfft as usize {
-        let x: kiss_fft_cpx = fin[i];
-        let bitrev = *(st.bitrev).offset(i as isize) as usize;
-        fout[bitrev] = scale * x;
+    assert_eq!(fin.len(), st.nfft);
+    assert_eq!(fout.len(), st.nfft);
+    for (&x, &i) in fin.iter().zip(st.bitrev) {
+        fout[i as usize] = scale * x;
     }
     opus_fft_impl(st, fout);
 }

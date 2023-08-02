@@ -405,40 +405,76 @@ pub static fft_bitrev60: [i16; 60] = [
     2, 14, 26, 38, 50, 6, 18, 30, 42, 54, 10, 22, 34, 46, 58,
     3, 15, 27, 39, 51, 7, 19, 31, 43, 55, 11, 23, 35, 47, 59,
 ];
-pub static mut fft_state48000_960_0: kiss_fft_state = kiss_fft_state {
+pub static fft_state48000_960_0: kiss_fft_state = kiss_fft_state {
     nfft: 480,
-    scale: 0.002083333f32,
+    scale: 0.002083333,
     shift: -1,
-    factors: [5, 96, 3, 32, 4, 8, 2, 4, 4, 1, 0, 0, 0, 0, 0, 0],
-    bitrev: fft_bitrev480.as_ptr(),
+    factors: [
+        (5, 96),
+        (3, 32),
+        (4, 8),
+        (2, 4),
+        (4, 1),
+        (0, 0),
+        (0, 0),
+        (0, 0),
+    ],
+    bitrev: &fft_bitrev480,
     twiddles: &fft_twiddles48000_960,
 };
-pub static mut fft_state48000_960_1: kiss_fft_state = kiss_fft_state {
+pub static fft_state48000_960_1: kiss_fft_state = kiss_fft_state {
     nfft: 240,
-    scale: 0.004166667f32,
+    scale: 0.004166667,
     shift: 1,
-    factors: [5, 48, 3, 16, 4, 4, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-    bitrev: fft_bitrev240.as_ptr(),
+    factors: [
+        (5, 48),
+        (3, 16),
+        (4, 4),
+        (4, 1),
+        (0, 0),
+        (0, 0),
+        (0, 0),
+        (0, 0),
+    ],
+    bitrev: &fft_bitrev240,
     twiddles: &fft_twiddles48000_960,
 };
-pub static mut fft_state48000_960_2: kiss_fft_state = kiss_fft_state {
+pub static fft_state48000_960_2: kiss_fft_state = kiss_fft_state {
     nfft: 120,
-    scale: 0.008333333f32,
+    scale: 0.008333333,
     shift: 2,
-    factors: [5, 24, 3, 8, 2, 4, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-    bitrev: fft_bitrev120.as_ptr(),
+    factors: [
+        (5, 24),
+        (3, 8),
+        (2, 4),
+        (4, 1),
+        (0, 0),
+        (0, 0),
+        (0, 0),
+        (0, 0),
+    ],
+    bitrev: &fft_bitrev120,
     twiddles: &fft_twiddles48000_960,
 };
-pub static mut fft_state48000_960_3: kiss_fft_state = kiss_fft_state {
+pub static fft_state48000_960_3: kiss_fft_state = kiss_fft_state {
     nfft: 60,
-    scale: 0.016666667f32,
+    scale: 0.016666667,
     shift: 3,
-    factors: [5, 12, 3, 4, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    bitrev: fft_bitrev60.as_ptr(),
+    factors: [
+        (5, 12),
+        (3, 4),
+        (4, 1),
+        (0, 0),
+        (0, 0),
+        (0, 0),
+        (0, 0),
+        (0, 0),
+    ],
+    bitrev: &fft_bitrev60,
     twiddles: &fft_twiddles48000_960,
 };
 #[rustfmt::skip]
-pub static mut mdct_twiddles960: [opus_val16; 1800] = [
+pub static mdct_twiddles960: [opus_val16; 1800] = [
     0.99999994, 0.99999321, 0.99997580, 0.99994773, 0.99990886,
     0.99985933, 0.99979913, 0.99972820, 0.99964654, 0.99955416,
     0.99945110, 0.99933738, 0.99921292, 0.99907774, 0.99893188,
@@ -815,19 +851,16 @@ pub static mut mode48000_960_120: OpusCustomMode = unsafe {
         allocVectors: band_allocation.as_ptr(),
         logN: logN400.as_ptr(),
         window: window120.as_ptr(),
-        mdct: {
-            let init = mdct_lookup {
-                n: 1920,
-                maxshift: 3,
-                kfft: [
-                    &fft_state48000_960_0 as *const kiss_fft_state,
-                    &fft_state48000_960_1 as *const kiss_fft_state,
-                    &fft_state48000_960_2 as *const kiss_fft_state,
-                    &fft_state48000_960_3 as *const kiss_fft_state,
-                ],
-                trig: mdct_twiddles960.as_ptr(),
-            };
-            init
+        mdct: mdct_lookup {
+            n: 1920,
+            maxshift: 3,
+            kfft: [
+                &fft_state48000_960_0,
+                &fft_state48000_960_1,
+                &fft_state48000_960_2,
+                &fft_state48000_960_3,
+            ],
+            trig: mdct_twiddles960.as_ptr(),
         },
         cache: PulseCache {
             size: 392,

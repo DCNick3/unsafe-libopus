@@ -913,7 +913,7 @@ unsafe fn tonality_analysis(
         len = 3 as i32 * len / 2 as i32;
         offset = 3 as i32 * offset / 2 as i32;
     }
-    let kfft = &*(*celt_mode).mdct.kfft[0 as i32 as usize];
+    let kfft = (*celt_mode).mdct.kfft[0];
     (*tonal).hp_ener_accum += downmix_and_resample(
         downmix,
         x,
