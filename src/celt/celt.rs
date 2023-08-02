@@ -4,8 +4,8 @@ pub mod arch_h {
     pub type opus_val16 = f32;
     pub type opus_val32 = f32;
     pub unsafe fn celt_fatal(str: *const i8, file: *const i8, line: i32) -> ! {
-        let str = std::ffi::CStr::from_ptr(str);
-        let file = std::ffi::CStr::from_ptr(file);
+        let str = std::ffi::CStr::from_ptr(str as _);
+        let file = std::ffi::CStr::from_ptr(file as _);
         panic!(
             "Fatal (internal) error in {}, line {}: {}",
             file.to_str().unwrap(),

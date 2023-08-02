@@ -78,9 +78,9 @@ pub mod test_opus_common_h {
         eprintln!(
             "'make check SEED={} fails {} at line {} for {}'",
             iseed,
-            std::ffi::CStr::from_ptr(file).to_str().unwrap(),
+            std::ffi::CStr::from_ptr(file as _).to_str().unwrap(),
             line,
-            std::ffi::CStr::from_ptr(opus_get_version_string())
+            std::ffi::CStr::from_ptr(opus_get_version_string() as _)
                 .to_str()
                 .unwrap()
         );
@@ -1112,7 +1112,7 @@ unsafe fn main_0() -> i32 {
     }
     eprintln!(
         "Testing {} decoder. Random seed: {} ({:4X})",
-        std::ffi::CStr::from_ptr(oversion).to_str().unwrap(),
+        std::ffi::CStr::from_ptr(oversion as _).to_str().unwrap(),
         iseed,
         (fast_rand() % 65535)
     );

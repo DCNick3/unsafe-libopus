@@ -13,9 +13,9 @@ pub mod test_opus_common_h {
         eprintln!("Please report this failure and include");
         eprintln!(
             "'make check fails {} at line {} for {}'",
-            std::ffi::CStr::from_ptr(file).to_str().unwrap(),
+            std::ffi::CStr::from_ptr(file as _).to_str().unwrap(),
             line,
-            std::ffi::CStr::from_ptr(opus_get_version_string())
+            std::ffi::CStr::from_ptr(opus_get_version_string() as _)
                 .to_str()
                 .unwrap()
         );
@@ -4306,7 +4306,7 @@ unsafe fn main_0() -> i32 {
     }
     eprintln!(
         "Testing the {} API deterministically",
-        std::ffi::CStr::from_ptr(oversion).to_str().unwrap()
+        std::ffi::CStr::from_ptr(oversion as _).to_str().unwrap()
     );
     if (opus_strerror(-(32768 as i32))).is_null() {
         _test_failed(

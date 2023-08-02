@@ -105,7 +105,7 @@ unsafe fn main_0() -> i32 {
                         len[i as usize],
                     );
                     if err != 0 as i32 {
-                        let err = CStr::from_ptr(opus_strerror(err));
+                        let err = CStr::from_ptr(opus_strerror(err) as _);
                         let err = err.to_str().unwrap();
                         eprintln!("opus_repacketizer_cat() failed: {}", err);
                         break;
@@ -130,7 +130,7 @@ unsafe fn main_0() -> i32 {
 
                 fout.write_all(&output_packet[..err as usize]).unwrap();
             } else {
-                let err = CStr::from_ptr(opus_strerror(err));
+                let err = CStr::from_ptr(opus_strerror(err) as _);
                 let err = err.to_str().unwrap();
                 eprintln!("opus_repacketizer_out() failed: {}", err);
             }
@@ -157,7 +157,7 @@ unsafe fn main_0() -> i32 {
 
                     fout.write_all(&output_packet[..err as usize]).unwrap();
                 } else {
-                    let err = CStr::from_ptr(opus_strerror(err));
+                    let err = CStr::from_ptr(opus_strerror(err) as _);
                     let err = err.to_str().unwrap();
                     eprintln!("opus_repacketizer_out_range() failed: {}", err);
                 }

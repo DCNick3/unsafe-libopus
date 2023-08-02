@@ -203,7 +203,7 @@ unsafe fn main_0() -> i32 {
     tot_in = tot_out;
     eprintln!(
         "{}",
-        std::ffi::CStr::from_ptr(opus_get_version_string())
+        std::ffi::CStr::from_ptr(opus_get_version_string() as _)
             .to_str()
             .unwrap()
     );
@@ -493,7 +493,7 @@ unsafe fn main_0() -> i32 {
     if decode_only == 0 {
         enc = opus_encoder_create(sampling_rate, channels, application, &mut err);
         if err != 0 as i32 {
-            let err = std::ffi::CStr::from_ptr(opus_strerror(err))
+            let err = std::ffi::CStr::from_ptr(opus_strerror(err) as _)
                 .to_str()
                 .unwrap();
             eprintln!("Cannot create encoder: {}", err);
@@ -517,7 +517,7 @@ unsafe fn main_0() -> i32 {
     if encode_only == 0 {
         dec = opus_decoder_create(sampling_rate, channels, &mut err);
         if err != 0 as i32 {
-            let err = std::ffi::CStr::from_ptr(opus_strerror(err))
+            let err = std::ffi::CStr::from_ptr(opus_strerror(err) as _)
                 .to_str()
                 .unwrap();
             eprintln!("Cannot create decoder: {}", err);
@@ -832,7 +832,7 @@ unsafe fn main_0() -> i32 {
                         skip = 0 as i32;
                     }
                 } else {
-                    let err = std::ffi::CStr::from_ptr(opus_strerror(output_samples))
+                    let err = std::ffi::CStr::from_ptr(opus_strerror(output_samples) as _)
                         .to_str()
                         .unwrap();
                     eprintln!("opus_decode() returned {}", err);
