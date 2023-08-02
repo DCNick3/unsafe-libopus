@@ -1,3 +1,5 @@
+use num_traits::Zero;
+
 pub mod arch_h {
     pub type opus_val32 = f32;
     pub type opus_val64 = f32;
@@ -948,17 +950,17 @@ unsafe fn tonality_analysis(
         1 as i32,
         lsb_depth,
     );
-    let mut in_0: [kiss_fft_cpx; 480] = [kiss_fft_cpx { r: 0., i: 0. }; 480];
-    let mut out: [kiss_fft_cpx; 480] = [kiss_fft_cpx { r: 0., i: 0. }; 480];
+    let mut in_0: [kiss_fft_cpx; 480] = [kiss_fft_cpx::zero(); 480];
+    let mut out: [kiss_fft_cpx; 480] = [kiss_fft_cpx::zero(); 480];
     let mut tonality: [f32; 240] = [0.; 240];
     let mut noisiness: [f32; 240] = [0.; 240];
     i = 0 as i32;
     while i < N2 {
         let w: f32 = analysis_window[i as usize];
-        in_0[i as usize].r = w * (*tonal).inmem[i as usize];
-        in_0[i as usize].i = w * (*tonal).inmem[(N2 + i) as usize];
-        in_0[(N - i - 1 as i32) as usize].r = w * (*tonal).inmem[(N - i - 1 as i32) as usize];
-        in_0[(N - i - 1 as i32) as usize].i = w * (*tonal).inmem[(N + N2 - i - 1 as i32) as usize];
+        in_0[i as usize].re = w * (*tonal).inmem[i as usize];
+        in_0[i as usize].im = w * (*tonal).inmem[(N2 + i) as usize];
+        in_0[(N - i - 1 as i32) as usize].re = w * (*tonal).inmem[(N - i - 1 as i32) as usize];
+        in_0[(N - i - 1 as i32) as usize].im = w * (*tonal).inmem[(N + N2 - i - 1 as i32) as usize];
         i += 1;
     }
     memmove(
@@ -1014,8 +1016,8 @@ unsafe fn tonality_analysis(
         return;
     }
     opus_fft_c(kfft, in_0.as_mut_ptr(), out.as_mut_ptr());
-    if out[0 as i32 as usize].r != out[0 as i32 as usize].r {
-        (*info).valid = 0 as i32;
+    if out[0 as i32 as usize].re != out[0 as i32 as usize].re {
+        (*info).valid = 0;
         return;
     }
     i = 1 as i32;
@@ -1033,10 +1035,10 @@ unsafe fn tonality_analysis(
         let mut mod1: f32 = 0.;
         let mut mod2: f32 = 0.;
         let mut avg_mod: f32 = 0.;
-        X1r = out[i as usize].r + out[(N - i) as usize].r;
-        X1i = out[i as usize].i - out[(N - i) as usize].i;
-        X2r = out[i as usize].i + out[(N - i) as usize].i;
-        X2i = out[(N - i) as usize].r - out[i as usize].r;
+        X1r = out[i as usize].re + out[(N - i) as usize].re;
+        X1i = out[i as usize].im - out[(N - i) as usize].im;
+        X2r = out[i as usize].im + out[(N - i) as usize].im;
+        X2i = out[(N - i) as usize].re - out[i as usize].re;
         angle = (0.5f32 as f64 / M_PI) as f32 * fast_atan2f(X1i, X1r);
         d_angle = angle - *A.offset(i as isize);
         d2_angle = d_angle - *dA.offset(i as isize);
@@ -1099,15 +1101,15 @@ unsafe fn tonality_analysis(
     let mut E: f32 = 0 as i32 as f32;
     let mut X1r_0: f32 = 0.;
     let mut X2r_0: f32 = 0.;
-    X1r_0 = 2 as i32 as f32 * out[0 as i32 as usize].r;
-    X2r_0 = 2 as i32 as f32 * out[0 as i32 as usize].i;
+    X1r_0 = 2 as i32 as f32 * out[0 as i32 as usize].re;
+    X2r_0 = 2 as i32 as f32 * out[0 as i32 as usize].im;
     E = X1r_0 * X1r_0 + X2r_0 * X2r_0;
     i = 1 as i32;
     while i < 4 as i32 {
-        let binE: f32 = out[i as usize].r * out[i as usize].r
-            + out[(N - i) as usize].r * out[(N - i) as usize].r
-            + out[i as usize].i * out[i as usize].i
-            + out[(N - i) as usize].i * out[(N - i) as usize].i;
+        let binE: f32 = out[i as usize].re * out[i as usize].re
+            + out[(N - i) as usize].re * out[(N - i) as usize].re
+            + out[i as usize].im * out[i as usize].im
+            + out[(N - i) as usize].im * out[(N - i) as usize].im;
         E += binE;
         i += 1;
     }
@@ -1123,10 +1125,10 @@ unsafe fn tonality_analysis(
         let mut stationarity: f32 = 0.;
         i = tbands[b as usize];
         while i < tbands[(b + 1 as i32) as usize] {
-            let mut binE_0: f32 = out[i as usize].r * out[i as usize].r
-                + out[(N - i) as usize].r * out[(N - i) as usize].r
-                + out[i as usize].i * out[i as usize].i
-                + out[(N - i) as usize].i * out[(N - i) as usize].i;
+            let mut binE_0: f32 = out[i as usize].re * out[i as usize].re
+                + out[(N - i) as usize].re * out[(N - i) as usize].re
+                + out[i as usize].im * out[i as usize].im
+                + out[(N - i) as usize].im * out[(N - i) as usize].im;
             binE_0 = binE_0;
             E_0 += binE_0;
             tE += binE_0
@@ -1334,10 +1336,10 @@ unsafe fn tonality_analysis(
         band_end = tbands[(b + 1 as i32) as usize];
         i = band_start;
         while i < band_end {
-            let binE_1: f32 = out[i as usize].r * out[i as usize].r
-                + out[(N - i) as usize].r * out[(N - i) as usize].r
-                + out[i as usize].i * out[i as usize].i
-                + out[(N - i) as usize].i * out[(N - i) as usize].i;
+            let binE_1: f32 = out[i as usize].re * out[i as usize].re
+                + out[(N - i) as usize].re * out[(N - i) as usize].re
+                + out[i as usize].im * out[i as usize].im
+                + out[(N - i) as usize].im * out[(N - i) as usize].im;
             E_1 += binE_1;
             i += 1;
         }

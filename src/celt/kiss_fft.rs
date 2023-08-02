@@ -4,24 +4,11 @@ pub mod stddef_h {
 pub mod arch_h {
     pub type opus_val16 = f32;
 }
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct kiss_fft_cpx {
-    pub r: f32,
-    pub i: f32,
-}
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct kiss_twiddle_cpx {
-    pub r: f32,
-    pub i: f32,
-}
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct arch_fft_state {
-    pub is_supported: i32,
-    pub priv_0: *mut core::ffi::c_void,
-}
+
+use num_traits::Zero;
+pub type kiss_fft_cpx = num_complex::Complex32;
+pub type kiss_twiddle_cpx = num_complex::Complex32;
+
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct kiss_fft_state {
@@ -31,53 +18,41 @@ pub struct kiss_fft_state {
     pub factors: [i16; 16],
     pub bitrev: *const i16,
     pub twiddles: *const kiss_twiddle_cpx,
-    pub arch_fft: *mut arch_fft_state,
 }
+
 pub use self::arch_h::opus_val16;
 pub use self::stddef_h::size_t;
 use crate::celt::celt::celt_fatal;
 
 unsafe fn kf_bfly2(mut Fout: *mut kiss_fft_cpx, m: i32, N: i32) {
-    let mut Fout2: *mut kiss_fft_cpx = 0 as *mut kiss_fft_cpx;
-    let mut i: i32 = 0;
-    let mut tw: opus_val16 = 0.;
-    tw = 0.7071067812f32;
-    if !(m == 4 as i32) {
-        celt_fatal(
-            b"assertion failed: m==4\0" as *const u8 as *const i8,
-            b"celt/kiss_fft.c\0" as *const u8 as *const i8,
-            76 as i32,
+    let tw: opus_val16 = std::f32::consts::FRAC_1_SQRT_2;
+    /* We know that m==4 here because the radix-2 is just after a radix-4 */
+    assert_eq!(m, 4);
+    for _ in 0..N {
+        let Fout2 = Fout.offset(4);
+        let t = *Fout2.offset(0);
+        (*Fout2.offset(0)) = (*Fout.offset(0)) - t;
+        (*Fout.offset(0)) += t;
+
+        let t = kiss_fft_cpx::new(
+            ((*Fout2.offset(1)).re + (*Fout2.offset(1)).im) * tw,
+            ((*Fout2.offset(1)).im - (*Fout2.offset(1)).re) * tw,
         );
-    }
-    i = 0 as i32;
-    while i < N {
-        let mut t: kiss_fft_cpx = kiss_fft_cpx { r: 0., i: 0. };
-        Fout2 = Fout.offset(4 as i32 as isize);
-        t = *Fout2.offset(0 as i32 as isize);
-        (*Fout2.offset(0 as i32 as isize)).r = (*Fout.offset(0 as i32 as isize)).r - t.r;
-        (*Fout2.offset(0 as i32 as isize)).i = (*Fout.offset(0 as i32 as isize)).i - t.i;
-        (*Fout.offset(0 as i32 as isize)).r += t.r;
-        (*Fout.offset(0 as i32 as isize)).i += t.i;
-        t.r = ((*Fout2.offset(1 as i32 as isize)).r + (*Fout2.offset(1 as i32 as isize)).i) * tw;
-        t.i = ((*Fout2.offset(1 as i32 as isize)).i - (*Fout2.offset(1 as i32 as isize)).r) * tw;
-        (*Fout2.offset(1 as i32 as isize)).r = (*Fout.offset(1 as i32 as isize)).r - t.r;
-        (*Fout2.offset(1 as i32 as isize)).i = (*Fout.offset(1 as i32 as isize)).i - t.i;
-        (*Fout.offset(1 as i32 as isize)).r += t.r;
-        (*Fout.offset(1 as i32 as isize)).i += t.i;
-        t.r = (*Fout2.offset(2 as i32 as isize)).i;
-        t.i = -(*Fout2.offset(2 as i32 as isize)).r;
-        (*Fout2.offset(2 as i32 as isize)).r = (*Fout.offset(2 as i32 as isize)).r - t.r;
-        (*Fout2.offset(2 as i32 as isize)).i = (*Fout.offset(2 as i32 as isize)).i - t.i;
-        (*Fout.offset(2 as i32 as isize)).r += t.r;
-        (*Fout.offset(2 as i32 as isize)).i += t.i;
-        t.r = ((*Fout2.offset(3 as i32 as isize)).i - (*Fout2.offset(3 as i32 as isize)).r) * tw;
-        t.i = -((*Fout2.offset(3 as i32 as isize)).i + (*Fout2.offset(3 as i32 as isize)).r) * tw;
-        (*Fout2.offset(3 as i32 as isize)).r = (*Fout.offset(3 as i32 as isize)).r - t.r;
-        (*Fout2.offset(3 as i32 as isize)).i = (*Fout.offset(3 as i32 as isize)).i - t.i;
-        (*Fout.offset(3 as i32 as isize)).r += t.r;
-        (*Fout.offset(3 as i32 as isize)).i += t.i;
-        Fout = Fout.offset(8 as i32 as isize);
-        i += 1;
+        (*Fout2.offset(1)) = (*Fout.offset(1)) - t;
+        (*Fout.offset(1)) += t;
+
+        let t = kiss_fft_cpx::new((*Fout2.offset(2)).im, -(*Fout2.offset(2)).re);
+        (*Fout2.offset(2)) = (*Fout.offset(2)) - t;
+        (*Fout.offset(2)) += t;
+
+        let t = kiss_fft_cpx::new(
+            ((*Fout2.offset(3)).im - (*Fout2.offset(3)).re) * tw,
+            -((*Fout2.offset(3)).im + (*Fout2.offset(3)).re) * tw,
+        );
+        (*Fout2.offset(3)) = (*Fout.offset(3)) - t;
+        (*Fout.offset(3)) += t;
+
+        Fout = Fout.offset(8);
     }
 }
 unsafe fn kf_bfly4(
@@ -88,91 +63,61 @@ unsafe fn kf_bfly4(
     N: i32,
     mm: i32,
 ) {
-    let mut i: i32 = 0;
-    if m == 1 as i32 {
-        i = 0 as i32;
-        while i < N {
-            let mut scratch0: kiss_fft_cpx = kiss_fft_cpx { r: 0., i: 0. };
-            let mut scratch1: kiss_fft_cpx = kiss_fft_cpx { r: 0., i: 0. };
-            scratch0.r = (*Fout).r - (*Fout.offset(2 as i32 as isize)).r;
-            scratch0.i = (*Fout).i - (*Fout.offset(2 as i32 as isize)).i;
-            (*Fout).r += (*Fout.offset(2 as i32 as isize)).r;
-            (*Fout).i += (*Fout.offset(2 as i32 as isize)).i;
-            scratch1.r = (*Fout.offset(1 as i32 as isize)).r + (*Fout.offset(3 as i32 as isize)).r;
-            scratch1.i = (*Fout.offset(1 as i32 as isize)).i + (*Fout.offset(3 as i32 as isize)).i;
-            (*Fout.offset(2 as i32 as isize)).r = (*Fout).r - scratch1.r;
-            (*Fout.offset(2 as i32 as isize)).i = (*Fout).i - scratch1.i;
-            (*Fout).r += scratch1.r;
-            (*Fout).i += scratch1.i;
-            scratch1.r = (*Fout.offset(1 as i32 as isize)).r - (*Fout.offset(3 as i32 as isize)).r;
-            scratch1.i = (*Fout.offset(1 as i32 as isize)).i - (*Fout.offset(3 as i32 as isize)).i;
-            (*Fout.offset(1 as i32 as isize)).r = scratch0.r + scratch1.i;
-            (*Fout.offset(1 as i32 as isize)).i = scratch0.i - scratch1.r;
-            (*Fout.offset(3 as i32 as isize)).r = scratch0.r - scratch1.i;
-            (*Fout.offset(3 as i32 as isize)).i = scratch0.i + scratch1.r;
-            Fout = Fout.offset(4 as i32 as isize);
-            i += 1;
+    if m == 1 {
+        /* Degenerate case where all the twiddles are 1. */
+        for _ in 0..N {
+            let mut scratch0: kiss_fft_cpx = kiss_fft_cpx::zero();
+            let mut scratch1: kiss_fft_cpx = kiss_fft_cpx::zero();
+
+            scratch0 = (*Fout) - (*Fout.offset(2));
+            (*Fout) += *Fout.offset(2);
+            scratch1 = (*Fout.offset(1)) + (*Fout.offset(3));
+            (*Fout.offset(2)) = (*Fout) - scratch1;
+            (*Fout) += scratch1;
+            scratch1 = (*Fout.offset(1)) - (*Fout.offset(3));
+
+            (*Fout.offset(1)).re = scratch0.re + scratch1.im;
+            (*Fout.offset(1)).im = scratch0.im - scratch1.re;
+            (*Fout.offset(3)).re = scratch0.re - scratch1.im;
+            (*Fout.offset(3)).im = scratch0.im + scratch1.re;
+            Fout = Fout.offset(4);
         }
     } else {
-        let mut j: i32 = 0;
-        let mut scratch: [kiss_fft_cpx; 6] = [kiss_fft_cpx { r: 0., i: 0. }; 6];
+        let mut scratch: [kiss_fft_cpx; 6] = [kiss_fft_cpx::zero(); 6];
         let mut tw1: *const kiss_twiddle_cpx = 0 as *const kiss_twiddle_cpx;
         let mut tw2: *const kiss_twiddle_cpx = 0 as *const kiss_twiddle_cpx;
         let mut tw3: *const kiss_twiddle_cpx = 0 as *const kiss_twiddle_cpx;
         let m2: i32 = 2 as i32 * m;
         let m3: i32 = 3 as i32 * m;
         let Fout_beg: *mut kiss_fft_cpx = Fout;
-        i = 0 as i32;
-        while i < N {
+
+        for i in 0..N {
             Fout = Fout_beg.offset((i * mm) as isize);
             tw1 = (*st).twiddles;
             tw2 = tw1;
             tw3 = tw2;
-            j = 0 as i32;
-            while j < m {
-                scratch[0 as i32 as usize].r = (*Fout.offset(m as isize)).r * (*tw1).r
-                    - (*Fout.offset(m as isize)).i * (*tw1).i;
-                scratch[0 as i32 as usize].i = (*Fout.offset(m as isize)).r * (*tw1).i
-                    + (*Fout.offset(m as isize)).i * (*tw1).r;
-                scratch[1 as i32 as usize].r = (*Fout.offset(m2 as isize)).r * (*tw2).r
-                    - (*Fout.offset(m2 as isize)).i * (*tw2).i;
-                scratch[1 as i32 as usize].i = (*Fout.offset(m2 as isize)).r * (*tw2).i
-                    + (*Fout.offset(m2 as isize)).i * (*tw2).r;
-                scratch[2 as i32 as usize].r = (*Fout.offset(m3 as isize)).r * (*tw3).r
-                    - (*Fout.offset(m3 as isize)).i * (*tw3).i;
-                scratch[2 as i32 as usize].i = (*Fout.offset(m3 as isize)).r * (*tw3).i
-                    + (*Fout.offset(m3 as isize)).i * (*tw3).r;
-                scratch[5 as i32 as usize].r = (*Fout).r - scratch[1 as i32 as usize].r;
-                scratch[5 as i32 as usize].i = (*Fout).i - scratch[1 as i32 as usize].i;
-                (*Fout).r += scratch[1 as i32 as usize].r;
-                (*Fout).i += scratch[1 as i32 as usize].i;
-                scratch[3 as i32 as usize].r =
-                    scratch[0 as i32 as usize].r + scratch[2 as i32 as usize].r;
-                scratch[3 as i32 as usize].i =
-                    scratch[0 as i32 as usize].i + scratch[2 as i32 as usize].i;
-                scratch[4 as i32 as usize].r =
-                    scratch[0 as i32 as usize].r - scratch[2 as i32 as usize].r;
-                scratch[4 as i32 as usize].i =
-                    scratch[0 as i32 as usize].i - scratch[2 as i32 as usize].i;
-                (*Fout.offset(m2 as isize)).r = (*Fout).r - scratch[3 as i32 as usize].r;
-                (*Fout.offset(m2 as isize)).i = (*Fout).i - scratch[3 as i32 as usize].i;
+            /* m is guaranteed to be a multiple of 4. */
+            for _ in 0..m {
+                scratch[0] = *Fout.offset(m as isize) * (*tw1);
+                scratch[1] = *Fout.offset(m2 as isize) * (*tw2);
+                scratch[2] = *Fout.offset(m3 as isize) * (*tw3);
+
+                scratch[5] = (*Fout) - scratch[1];
+                (*Fout) += scratch[1];
+                scratch[3] = scratch[0] + scratch[2];
+                scratch[4] = scratch[0] - scratch[2];
+                (*Fout.offset(m2 as isize)) = (*Fout) - scratch[3];
                 tw1 = tw1.offset(fstride as isize);
-                tw2 = tw2.offset(fstride.wrapping_mul(2 as i32 as u64) as isize);
-                tw3 = tw3.offset(fstride.wrapping_mul(3 as i32 as u64) as isize);
-                (*Fout).r += scratch[3 as i32 as usize].r;
-                (*Fout).i += scratch[3 as i32 as usize].i;
-                (*Fout.offset(m as isize)).r =
-                    scratch[5 as i32 as usize].r + scratch[4 as i32 as usize].i;
-                (*Fout.offset(m as isize)).i =
-                    scratch[5 as i32 as usize].i - scratch[4 as i32 as usize].r;
-                (*Fout.offset(m3 as isize)).r =
-                    scratch[5 as i32 as usize].r - scratch[4 as i32 as usize].i;
-                (*Fout.offset(m3 as isize)).i =
-                    scratch[5 as i32 as usize].i + scratch[4 as i32 as usize].r;
+                tw2 = tw2.offset(fstride.wrapping_mul(2) as isize);
+                tw3 = tw3.offset(fstride.wrapping_mul(3) as isize);
+                (*Fout) += scratch[3];
+
+                (*Fout.offset(m as isize)).re = scratch[5].re + scratch[4].im;
+                (*Fout.offset(m as isize)).im = scratch[5].im - scratch[4].re;
+                (*Fout.offset(m3 as isize)).re = scratch[5].re - scratch[4].im;
+                (*Fout.offset(m3 as isize)).im = scratch[5].im + scratch[4].re;
                 Fout = Fout.offset(1);
-                j += 1;
             }
-            i += 1;
         }
     };
 }
@@ -184,61 +129,47 @@ unsafe fn kf_bfly3(
     N: i32,
     mm: i32,
 ) {
-    let mut i: i32 = 0;
-    let mut k: size_t = 0;
-    let m2: size_t = (2 as i32 * m) as size_t;
+    let mut k: usize = 0;
+    let m2: usize = 2 * m as usize;
     let mut tw1: *const kiss_twiddle_cpx = 0 as *const kiss_twiddle_cpx;
     let mut tw2: *const kiss_twiddle_cpx = 0 as *const kiss_twiddle_cpx;
-    let mut scratch: [kiss_fft_cpx; 5] = [kiss_fft_cpx { r: 0., i: 0. }; 5];
-    let mut epi3: kiss_twiddle_cpx = kiss_twiddle_cpx { r: 0., i: 0. };
+    let mut scratch: [kiss_fft_cpx; 5] = [kiss_fft_cpx::zero(); 5];
     let Fout_beg: *mut kiss_fft_cpx = Fout;
-    epi3 = *((*st).twiddles).offset(fstride.wrapping_mul(m as u64) as isize);
-    i = 0 as i32;
-    while i < N {
+    let epi3 = *((*st).twiddles).offset(fstride.wrapping_mul(m as u64) as isize);
+    for i in 0..N {
         Fout = Fout_beg.offset((i * mm) as isize);
         tw2 = (*st).twiddles;
         tw1 = tw2;
-        k = m as size_t;
+        /* For non-custom modes, m is guaranteed to be a multiple of 4. */
+        k = m as usize;
         loop {
-            scratch[1 as i32 as usize].r =
-                (*Fout.offset(m as isize)).r * (*tw1).r - (*Fout.offset(m as isize)).i * (*tw1).i;
-            scratch[1 as i32 as usize].i =
-                (*Fout.offset(m as isize)).r * (*tw1).i + (*Fout.offset(m as isize)).i * (*tw1).r;
-            scratch[2 as i32 as usize].r =
-                (*Fout.offset(m2 as isize)).r * (*tw2).r - (*Fout.offset(m2 as isize)).i * (*tw2).i;
-            scratch[2 as i32 as usize].i =
-                (*Fout.offset(m2 as isize)).r * (*tw2).i + (*Fout.offset(m2 as isize)).i * (*tw2).r;
-            scratch[3 as i32 as usize].r =
-                scratch[1 as i32 as usize].r + scratch[2 as i32 as usize].r;
-            scratch[3 as i32 as usize].i =
-                scratch[1 as i32 as usize].i + scratch[2 as i32 as usize].i;
-            scratch[0 as i32 as usize].r =
-                scratch[1 as i32 as usize].r - scratch[2 as i32 as usize].r;
-            scratch[0 as i32 as usize].i =
-                scratch[1 as i32 as usize].i - scratch[2 as i32 as usize].i;
+            scratch[1] = *Fout.offset(m as isize) * (*tw1);
+            scratch[2] = *Fout.offset(m2 as isize) * (*tw2);
+
+            scratch[3] = scratch[1] + scratch[2];
+            scratch[0] = scratch[1] - scratch[2];
             tw1 = tw1.offset(fstride as isize);
-            tw2 = tw2.offset(fstride.wrapping_mul(2 as i32 as u64) as isize);
-            (*Fout.offset(m as isize)).r = (*Fout).r - scratch[3 as i32 as usize].r * 0.5f32;
-            (*Fout.offset(m as isize)).i = (*Fout).i - scratch[3 as i32 as usize].i * 0.5f32;
-            scratch[0 as i32 as usize].r *= epi3.i;
-            scratch[0 as i32 as usize].i *= epi3.i;
-            (*Fout).r += scratch[3 as i32 as usize].r;
-            (*Fout).i += scratch[3 as i32 as usize].i;
-            (*Fout.offset(m2 as isize)).r =
-                (*Fout.offset(m as isize)).r + scratch[0 as i32 as usize].i;
-            (*Fout.offset(m2 as isize)).i =
-                (*Fout.offset(m as isize)).i - scratch[0 as i32 as usize].r;
-            (*Fout.offset(m as isize)).r =
-                (*Fout.offset(m as isize)).r - scratch[0 as i32 as usize].i;
-            (*Fout.offset(m as isize)).i =
-                (*Fout.offset(m as isize)).i + scratch[0 as i32 as usize].r;
+            tw2 = tw2.offset(fstride.wrapping_mul(2) as isize);
+
+            (*Fout.offset(m as isize)) = (*Fout) - scratch[3] * 0.5f32;
+
+            scratch[0] *= epi3.im;
+
+            (*Fout) += scratch[3];
+
+            (*Fout.offset(m2 as isize)).re = (*Fout.offset(m as isize)).re + scratch[0].im;
+            (*Fout.offset(m2 as isize)).im = (*Fout.offset(m as isize)).im - scratch[0].re;
+
+            (*Fout.offset(m as isize)).re = (*Fout.offset(m as isize)).re - scratch[0].im;
+            (*Fout.offset(m as isize)).im = (*Fout.offset(m as isize)).im + scratch[0].re;
+
             Fout = Fout.offset(1);
-            k = k.wrapping_sub(1);
-            if !(k != 0) {
+
+            k -= 1;
+            if k == 0 {
                 break;
             }
         }
-        i += 1;
     }
 }
 unsafe fn kf_bfly5(
@@ -254,108 +185,60 @@ unsafe fn kf_bfly5(
     let mut Fout2: *mut kiss_fft_cpx = 0 as *mut kiss_fft_cpx;
     let mut Fout3: *mut kiss_fft_cpx = 0 as *mut kiss_fft_cpx;
     let mut Fout4: *mut kiss_fft_cpx = 0 as *mut kiss_fft_cpx;
-    let mut i: i32 = 0;
-    let mut u: i32 = 0;
-    let mut scratch: [kiss_fft_cpx; 13] = [kiss_fft_cpx { r: 0., i: 0. }; 13];
+    let mut scratch: [kiss_fft_cpx; 13] = [kiss_fft_cpx::zero(); 13];
     let mut tw: *const kiss_twiddle_cpx = 0 as *const kiss_twiddle_cpx;
-    let mut ya: kiss_twiddle_cpx = kiss_twiddle_cpx { r: 0., i: 0. };
-    let mut yb: kiss_twiddle_cpx = kiss_twiddle_cpx { r: 0., i: 0. };
     let Fout_beg: *mut kiss_fft_cpx = Fout;
-    ya = *((*st).twiddles).offset(fstride.wrapping_mul(m as u64) as isize);
-    yb = *((*st).twiddles)
+    let ya = *((*st).twiddles).offset(fstride.wrapping_mul(m as u64) as isize);
+    let yb = *((*st).twiddles)
         .offset(fstride.wrapping_mul(2 as i32 as u64).wrapping_mul(m as u64) as isize);
     tw = (*st).twiddles;
-    i = 0 as i32;
-    while i < N {
+    for i in 0..N {
         Fout = Fout_beg.offset((i * mm) as isize);
         Fout0 = Fout;
         Fout1 = Fout0.offset(m as isize);
-        Fout2 = Fout0.offset((2 as i32 * m) as isize);
-        Fout3 = Fout0.offset((3 as i32 * m) as isize);
-        Fout4 = Fout0.offset((4 as i32 * m) as isize);
-        u = 0 as i32;
-        while u < m {
-            scratch[0 as i32 as usize] = *Fout0;
-            scratch[1 as i32 as usize].r = (*Fout1).r
-                * (*tw.offset((u as u64).wrapping_mul(fstride) as isize)).r
-                - (*Fout1).i * (*tw.offset((u as u64).wrapping_mul(fstride) as isize)).i;
-            scratch[1 as i32 as usize].i = (*Fout1).r
-                * (*tw.offset((u as u64).wrapping_mul(fstride) as isize)).i
-                + (*Fout1).i * (*tw.offset((u as u64).wrapping_mul(fstride) as isize)).r;
-            scratch[2 as i32 as usize].r = (*Fout2).r
-                * (*tw.offset(((2 as i32 * u) as u64).wrapping_mul(fstride) as isize)).r
-                - (*Fout2).i
-                    * (*tw.offset(((2 as i32 * u) as u64).wrapping_mul(fstride) as isize)).i;
-            scratch[2 as i32 as usize].i = (*Fout2).r
-                * (*tw.offset(((2 as i32 * u) as u64).wrapping_mul(fstride) as isize)).i
-                + (*Fout2).i
-                    * (*tw.offset(((2 as i32 * u) as u64).wrapping_mul(fstride) as isize)).r;
-            scratch[3 as i32 as usize].r = (*Fout3).r
-                * (*tw.offset(((3 as i32 * u) as u64).wrapping_mul(fstride) as isize)).r
-                - (*Fout3).i
-                    * (*tw.offset(((3 as i32 * u) as u64).wrapping_mul(fstride) as isize)).i;
-            scratch[3 as i32 as usize].i = (*Fout3).r
-                * (*tw.offset(((3 as i32 * u) as u64).wrapping_mul(fstride) as isize)).i
-                + (*Fout3).i
-                    * (*tw.offset(((3 as i32 * u) as u64).wrapping_mul(fstride) as isize)).r;
-            scratch[4 as i32 as usize].r = (*Fout4).r
-                * (*tw.offset(((4 as i32 * u) as u64).wrapping_mul(fstride) as isize)).r
-                - (*Fout4).i
-                    * (*tw.offset(((4 as i32 * u) as u64).wrapping_mul(fstride) as isize)).i;
-            scratch[4 as i32 as usize].i = (*Fout4).r
-                * (*tw.offset(((4 as i32 * u) as u64).wrapping_mul(fstride) as isize)).i
-                + (*Fout4).i
-                    * (*tw.offset(((4 as i32 * u) as u64).wrapping_mul(fstride) as isize)).r;
-            scratch[7 as i32 as usize].r =
-                scratch[1 as i32 as usize].r + scratch[4 as i32 as usize].r;
-            scratch[7 as i32 as usize].i =
-                scratch[1 as i32 as usize].i + scratch[4 as i32 as usize].i;
-            scratch[10 as i32 as usize].r =
-                scratch[1 as i32 as usize].r - scratch[4 as i32 as usize].r;
-            scratch[10 as i32 as usize].i =
-                scratch[1 as i32 as usize].i - scratch[4 as i32 as usize].i;
-            scratch[8 as i32 as usize].r =
-                scratch[2 as i32 as usize].r + scratch[3 as i32 as usize].r;
-            scratch[8 as i32 as usize].i =
-                scratch[2 as i32 as usize].i + scratch[3 as i32 as usize].i;
-            scratch[9 as i32 as usize].r =
-                scratch[2 as i32 as usize].r - scratch[3 as i32 as usize].r;
-            scratch[9 as i32 as usize].i =
-                scratch[2 as i32 as usize].i - scratch[3 as i32 as usize].i;
-            (*Fout0).r = (*Fout0).r + (scratch[7 as i32 as usize].r + scratch[8 as i32 as usize].r);
-            (*Fout0).i = (*Fout0).i + (scratch[7 as i32 as usize].i + scratch[8 as i32 as usize].i);
-            scratch[5 as i32 as usize].r = scratch[0 as i32 as usize].r
-                + (scratch[7 as i32 as usize].r * ya.r + scratch[8 as i32 as usize].r * yb.r);
-            scratch[5 as i32 as usize].i = scratch[0 as i32 as usize].i
-                + (scratch[7 as i32 as usize].i * ya.r + scratch[8 as i32 as usize].i * yb.r);
-            scratch[6 as i32 as usize].r =
-                scratch[10 as i32 as usize].i * ya.i + scratch[9 as i32 as usize].i * yb.i;
-            scratch[6 as i32 as usize].i =
-                -(scratch[10 as i32 as usize].r * ya.i + scratch[9 as i32 as usize].r * yb.i);
-            (*Fout1).r = scratch[5 as i32 as usize].r - scratch[6 as i32 as usize].r;
-            (*Fout1).i = scratch[5 as i32 as usize].i - scratch[6 as i32 as usize].i;
-            (*Fout4).r = scratch[5 as i32 as usize].r + scratch[6 as i32 as usize].r;
-            (*Fout4).i = scratch[5 as i32 as usize].i + scratch[6 as i32 as usize].i;
-            scratch[11 as i32 as usize].r = scratch[0 as i32 as usize].r
-                + (scratch[7 as i32 as usize].r * yb.r + scratch[8 as i32 as usize].r * ya.r);
-            scratch[11 as i32 as usize].i = scratch[0 as i32 as usize].i
-                + (scratch[7 as i32 as usize].i * yb.r + scratch[8 as i32 as usize].i * ya.r);
-            scratch[12 as i32 as usize].r =
-                scratch[9 as i32 as usize].i * ya.i - scratch[10 as i32 as usize].i * yb.i;
-            scratch[12 as i32 as usize].i =
-                scratch[10 as i32 as usize].r * yb.i - scratch[9 as i32 as usize].r * ya.i;
-            (*Fout2).r = scratch[11 as i32 as usize].r + scratch[12 as i32 as usize].r;
-            (*Fout2).i = scratch[11 as i32 as usize].i + scratch[12 as i32 as usize].i;
-            (*Fout3).r = scratch[11 as i32 as usize].r - scratch[12 as i32 as usize].r;
-            (*Fout3).i = scratch[11 as i32 as usize].i - scratch[12 as i32 as usize].i;
+        Fout2 = Fout0.offset(2 * m as isize);
+        Fout3 = Fout0.offset(3 * m as isize);
+        Fout4 = Fout0.offset(4 * m as isize);
+
+        /* For non-custom modes, m is guaranteed to be a multiple of 4. */
+        for u in 0..m as u64 {
+            scratch[0] = *Fout0;
+
+            scratch[1] = *Fout1 * (*tw.offset((u).wrapping_mul(fstride) as isize));
+            scratch[2] = *Fout2 * (*tw.offset((2 * u).wrapping_mul(fstride) as isize));
+            scratch[3] = *Fout3 * (*tw.offset((3 * u).wrapping_mul(fstride) as isize));
+            scratch[4] = *Fout4 * (*tw.offset((4 * u).wrapping_mul(fstride) as isize));
+
+            scratch[7] = scratch[1] + scratch[4];
+            scratch[10] = scratch[1] - scratch[4];
+            scratch[8] = scratch[2] + scratch[3];
+            scratch[9] = scratch[2] - scratch[3];
+
+            (*Fout0) = (*Fout0) + (scratch[7] + scratch[8]);
+
+            scratch[5].re = scratch[0].re + (scratch[7].re * ya.re + scratch[8].re * yb.re);
+            scratch[5].im = scratch[0].im + (scratch[7].im * ya.re + scratch[8].im * yb.re);
+
+            scratch[6].re = scratch[10].im * ya.im + scratch[9].im * yb.im;
+            scratch[6].im = -(scratch[10].re * ya.im + scratch[9].re * yb.im);
+
+            (*Fout1) = scratch[5] - scratch[6];
+            (*Fout4) = scratch[5] + scratch[6];
+
+            scratch[11].re = scratch[0].re + (scratch[7].re * yb.re + scratch[8].re * ya.re);
+            scratch[11].im = scratch[0].im + (scratch[7].im * yb.re + scratch[8].im * ya.re);
+            scratch[12].re = scratch[9].im * ya.im - scratch[10].im * yb.im;
+            scratch[12].im = scratch[10].re * yb.im - scratch[9].re * ya.im;
+
+            (*Fout2) = scratch[11] + scratch[12];
+            (*Fout3) = scratch[11] - scratch[12];
+
             Fout0 = Fout0.offset(1);
             Fout1 = Fout1.offset(1);
             Fout2 = Fout2.offset(1);
             Fout3 = Fout3.offset(1);
             Fout4 = Fout4.offset(1);
-            u += 1;
         }
-        i += 1;
     }
 }
 pub unsafe fn opus_fft_impl(st: *const kiss_fft_state, fout: *mut kiss_fft_cpx) {
@@ -371,7 +254,7 @@ pub unsafe fn opus_fft_impl(st: *const kiss_fft_state, fout: *mut kiss_fft_cpx) 
     } else {
         0 as i32
     };
-    fstride[0 as i32 as usize] = 1 as i32;
+    fstride[0] = 1 as i32;
     L = 0 as i32;
     loop {
         p = (*st).factors[(2 as i32 * L) as usize] as i32;
@@ -449,8 +332,7 @@ pub unsafe fn opus_fft_c(
     i = 0 as i32;
     while i < (*st).nfft {
         let x: kiss_fft_cpx = *fin.offset(i as isize);
-        (*fout.offset(*((*st).bitrev).offset(i as isize) as isize)).r = scale * x.r;
-        (*fout.offset(*((*st).bitrev).offset(i as isize) as isize)).i = scale * x.i;
+        (*fout.offset(*((*st).bitrev).offset(i as isize) as isize)) = scale * x;
         i += 1;
     }
     opus_fft_impl(st, fout);

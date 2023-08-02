@@ -13,6 +13,9 @@ license = "BSD-3-Clause"
 debug = 1
 
 [dependencies]
+# for complex numbers impl
+num-traits = "0.2.16"
+num-complex = "0.4.1"
 
 [dev-dependencies]
 libc = "0.2"

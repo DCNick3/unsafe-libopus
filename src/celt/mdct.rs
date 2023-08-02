@@ -1,4 +1,5 @@
 use crate::celt::kiss_fft::{kiss_fft_cpx, kiss_fft_state, opus_fft_impl};
+use num_traits::Zero;
 
 pub mod arch_h {
     pub type opus_val16 = f32;
@@ -45,7 +46,7 @@ pub unsafe fn clt_mdct_forward_c(
     let vla = N2 as usize;
     let mut f: Vec<f32> = ::std::vec::from_elem(0., vla);
     let vla_0 = N4 as usize;
-    let mut f2: Vec<kiss_fft_cpx> = ::std::vec::from_elem(kiss_fft_cpx { r: 0., i: 0. }, vla_0);
+    let mut f2: Vec<kiss_fft_cpx> = ::std::vec::from_elem(kiss_fft_cpx::zero(), vla_0);
     let mut xp1: *const f32 = in_0.offset((overlap >> 1 as i32) as isize);
     let mut xp2: *const f32 = in_0
         .offset(N2 as isize)
@@ -100,7 +101,7 @@ pub unsafe fn clt_mdct_forward_c(
     let t: *const f32 = &*trig.offset(0 as i32 as isize) as *const f32;
     i = 0 as i32;
     while i < N4 {
-        let mut yc: kiss_fft_cpx = kiss_fft_cpx { r: 0., i: 0. };
+        let mut yc: kiss_fft_cpx = kiss_fft_cpx::zero();
         let mut t0: f32 = 0.;
         let mut t1: f32 = 0.;
         let mut re: f32 = 0.;
@@ -117,10 +118,10 @@ pub unsafe fn clt_mdct_forward_c(
         im = *fresh7;
         yr = re * t0 - im * t1;
         yi = im * t0 + re * t1;
-        yc.r = yr;
-        yc.i = yi;
-        yc.r = scale * yc.r;
-        yc.i = scale * yc.i;
+        yc.re = yr;
+        yc.im = yi;
+        yc.re = scale * yc.re;
+        yc.im = scale * yc.im;
         *f2.as_mut_ptr()
             .offset(*((*st).bitrev).offset(i as isize) as isize) = yc;
         i += 1;
@@ -134,8 +135,8 @@ pub unsafe fn clt_mdct_forward_c(
     while i < N4 {
         let mut yr_0: f32 = 0.;
         let mut yi_0: f32 = 0.;
-        yr_0 = (*fp).i * *t_0.offset((N4 + i) as isize) - (*fp).r * *t_0.offset(i as isize);
-        yi_0 = (*fp).r * *t_0.offset((N4 + i) as isize) + (*fp).i * *t_0.offset(i as isize);
+        yr_0 = (*fp).im * *t_0.offset((N4 + i) as isize) - (*fp).re * *t_0.offset(i as isize);
+        yi_0 = (*fp).re * *t_0.offset((N4 + i) as isize) + (*fp).im * *t_0.offset(i as isize);
         *yp1 = yr_0;
         *yp2 = yi_0;
         fp = fp.offset(1);
