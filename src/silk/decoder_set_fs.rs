@@ -12,7 +12,7 @@ use crate::silk::tables_pitch_lag::{
 };
 
 pub unsafe fn silk_decoder_set_fs(
-    mut psDec: *mut silk_decoder_state,
+    psDec: *mut silk_decoder_state,
     fs_kHz: i32,
     fs_API_Hz: i32,
 ) -> i32 {

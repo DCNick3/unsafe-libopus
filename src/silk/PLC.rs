@@ -27,7 +27,7 @@ pub const NB_ATT: i32 = 2 as i32;
 static mut HARM_ATT_Q15: [i16; 2] = [32440 as i32 as i16, 31130 as i32 as i16];
 static mut PLC_RAND_ATTENUATE_V_Q15: [i16; 2] = [31130 as i32 as i16, 26214 as i32 as i16];
 static mut PLC_RAND_ATTENUATE_UV_Q15: [i16; 2] = [32440 as i32 as i16, 29491 as i32 as i16];
-pub unsafe fn silk_PLC_Reset(mut psDec: *mut silk_decoder_state) {
+pub unsafe fn silk_PLC_Reset(psDec: *mut silk_decoder_state) {
     (*psDec).sPLC.pitchL_Q8 = (((*psDec).frame_length as u32) << 8 as i32 - 1 as i32) as i32;
     (*psDec).sPLC.prevGain_Q16[0 as i32 as usize] =
         ((1 as i32 as i64 * ((1 as i32 as i64) << 16 as i32)) as f64 + 0.5f64) as i32;
@@ -37,7 +37,7 @@ pub unsafe fn silk_PLC_Reset(mut psDec: *mut silk_decoder_state) {
     (*psDec).sPLC.nb_subfr = 2 as i32;
 }
 pub unsafe fn silk_PLC(
-    mut psDec: *mut silk_decoder_state,
+    psDec: *mut silk_decoder_state,
     psDecCtrl: *mut silk_decoder_control,
     frame: *mut i16,
     lost: i32,
@@ -56,7 +56,7 @@ pub unsafe fn silk_PLC(
 }
 #[inline]
 unsafe fn silk_PLC_update(
-    mut psDec: *mut silk_decoder_state,
+    psDec: *mut silk_decoder_state,
     psDecCtrl: *mut silk_decoder_control,
 ) {
     let mut LTP_Gain_Q14: i32 = 0;
@@ -226,7 +226,7 @@ unsafe fn silk_PLC_energy(
 #[inline]
 unsafe fn silk_PLC_conceal(
     psDec: *mut silk_decoder_state,
-    mut psDecCtrl: *mut silk_decoder_control,
+    psDecCtrl: *mut silk_decoder_control,
     frame: *mut i16,
     arch: i32,
 ) {
@@ -252,7 +252,7 @@ unsafe fn silk_PLC_conceal(
     let mut B_Q14: *mut i16 = 0 as *mut i16;
     let mut sLPC_Q14_ptr: *mut i32 = 0 as *mut i32;
     let mut A_Q12: [i16; 16] = [0; 16];
-    let mut psPLC: *mut silk_PLC_struct = &mut (*psDec).sPLC;
+    let psPLC: *mut silk_PLC_struct = &mut (*psDec).sPLC;
     let mut prevGain_Q10: [i32; 2] = [0; 2];
     let vla = ((*psDec).ltp_mem_length + (*psDec).frame_length) as usize;
     let mut sLTP_Q14: Vec<i32> = ::std::vec::from_elem(0, vla);

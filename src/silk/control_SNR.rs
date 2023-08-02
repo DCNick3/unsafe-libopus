@@ -464,7 +464,7 @@ static mut silk_TargetRate_WB_21: [u8; 191] = [
     255 as i32 as u8,
 ];
 pub unsafe fn silk_control_SNR(
-    mut psEncC: *mut silk_encoder_state,
+    psEncC: *mut silk_encoder_state,
     mut TargetRate_bps: i32,
 ) -> i32 {
     let mut id: i32 = 0;

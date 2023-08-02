@@ -134,7 +134,7 @@ unsafe fn opus_custom_encoder_get_size(mode: *const OpusCustomMode, channels: i3
     return size;
 }
 unsafe fn opus_custom_encoder_init_arch(
-    mut st: *mut OpusCustomEncoder,
+    st: *mut OpusCustomEncoder,
     mode: *const OpusCustomMode,
     channels: i32,
     arch: i32,
@@ -170,7 +170,7 @@ unsafe fn opus_custom_encoder_init_arch(
     return OPUS_OK;
 }
 pub unsafe fn celt_encoder_init(
-    mut st: *mut OpusCustomEncoder,
+    st: *mut OpusCustomEncoder,
     sampling_rate: i32,
     channels: i32,
     arch: i32,
@@ -1676,7 +1676,7 @@ unsafe fn dynalloc_analysis(
     return maxDepth;
 }
 unsafe fn run_prefilter(
-    mut st: *mut OpusCustomEncoder,
+    st: *mut OpusCustomEncoder,
     in_0: *mut celt_sig,
     prefilter_mem: *mut celt_sig,
     CC: i32,
@@ -2110,7 +2110,7 @@ unsafe fn compute_vbr(
     return target;
 }
 pub unsafe fn celt_encode_with_ec(
-    mut st: *mut OpusCustomEncoder,
+    st: *mut OpusCustomEncoder,
     pcm: *const opus_val16,
     mut frame_size: i32,
     compressed: *mut u8,
@@ -3534,7 +3534,7 @@ pub unsafe fn celt_encode_with_ec(
     };
 }
 pub unsafe fn opus_custom_encoder_ctl_impl(
-    mut st: *mut OpusCustomEncoder,
+    st: *mut OpusCustomEncoder,
     request: i32,
     args: VarArgs,
 ) -> i32 {

@@ -3,8 +3,8 @@ use crate::silk::float::structs_FLP::{silk_encoder_control_FLP, silk_encoder_sta
 use crate::silk::tables_other::silk_LTPScales_table_Q14;
 
 pub unsafe fn silk_LTP_scale_ctrl_FLP(
-    mut psEnc: *mut silk_encoder_state_FLP,
-    mut psEncCtrl: *mut silk_encoder_control_FLP,
+    psEnc: *mut silk_encoder_state_FLP,
+    psEncCtrl: *mut silk_encoder_control_FLP,
     condCoding: i32,
 ) {
     let mut round_loss: i32 = 0;

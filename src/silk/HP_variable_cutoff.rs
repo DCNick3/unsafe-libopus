@@ -9,7 +9,7 @@ pub unsafe fn silk_HP_variable_cutoff(state_Fxx: *mut silk_encoder_state_FLP) {
     let mut pitch_freq_Hz_Q16: i32 = 0;
     let mut pitch_freq_log_Q7: i32 = 0;
     let mut delta_freq_Q7: i32 = 0;
-    let mut psEncC1: *mut silk_encoder_state = &mut (*state_Fxx.offset(0 as i32 as isize)).sCmn;
+    let psEncC1: *mut silk_encoder_state = &mut (*state_Fxx.offset(0 as i32 as isize)).sCmn;
     if (*psEncC1).prevSignalType as i32 == TYPE_VOICED {
         pitch_freq_Hz_Q16 =
             ((((*psEncC1).fs_kHz * 1000 as i32) as u32) << 16 as i32) as i32 / (*psEncC1).prevLag;

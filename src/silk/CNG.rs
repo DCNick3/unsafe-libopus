@@ -33,7 +33,7 @@ unsafe fn silk_CNG_exc(exc_Q14: *mut i32, exc_buf_Q14: *mut i32, length: i32, ra
     }
     *rand_seed = seed;
 }
-pub unsafe fn silk_CNG_Reset(mut psDec: *mut silk_decoder_state) {
+pub unsafe fn silk_CNG_Reset(psDec: *mut silk_decoder_state) {
     let mut i: i32 = 0;
     let mut NLSF_step_Q15: i32 = 0;
     let mut NLSF_acc_Q15: i32 = 0;
@@ -61,7 +61,7 @@ pub unsafe fn silk_CNG(
     let mut gain_Q16: i32 = 0;
     let mut gain_Q10: i32 = 0;
     let mut A_Q12: [i16; 16] = [0; 16];
-    let mut psCNG: *mut silk_CNG_struct = &mut (*psDec).sCNG;
+    let psCNG: *mut silk_CNG_struct = &mut (*psDec).sCNG;
     if (*psDec).fs_kHz != (*psCNG).fs_kHz {
         silk_CNG_Reset(psDec);
         (*psCNG).fs_kHz = (*psDec).fs_kHz;

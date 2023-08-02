@@ -3,8 +3,8 @@ use crate::silk::define::TRANSITION_FRAMES;
 use crate::silk::enc_API::silk_EncControlStruct;
 use crate::silk::structs::silk_encoder_state;
 pub unsafe fn silk_control_audio_bandwidth(
-    mut psEncC: *mut silk_encoder_state,
-    mut encControl: *mut silk_EncControlStruct,
+    psEncC: *mut silk_encoder_state,
+    encControl: *mut silk_EncControlStruct,
 ) -> i32 {
     let mut fs_kHz: i32 = 0;
     let mut orig_kHz: i32 = 0;

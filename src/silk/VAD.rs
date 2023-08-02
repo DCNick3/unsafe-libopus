@@ -15,7 +15,7 @@ use crate::silk::structs::{silk_VAD_state, silk_encoder_state};
 use crate::silk::Inlines::silk_SQRT_APPROX;
 use crate::silk::SigProc_FIX::{silk_max_32, silk_max_int, silk_min_int};
 
-pub unsafe fn silk_VAD_Init(mut psSilk_VAD: *mut silk_VAD_state) -> i32 {
+pub unsafe fn silk_VAD_Init(psSilk_VAD: *mut silk_VAD_state) -> i32 {
     let mut b: i32 = 0;
     let ret: i32 = 0 as i32;
     memset(
@@ -44,7 +44,7 @@ pub unsafe fn silk_VAD_Init(mut psSilk_VAD: *mut silk_VAD_state) -> i32 {
     return ret;
 }
 static mut tiltWeights: [i32; 4] = [30000 as i32, 6000 as i32, -(12000 as i32), -(12000 as i32)];
-pub unsafe fn silk_VAD_GetSA_Q8_c(mut psEncC: *mut silk_encoder_state, pIn: *const i16) -> i32 {
+pub unsafe fn silk_VAD_GetSA_Q8_c(psEncC: *mut silk_encoder_state, pIn: *const i16) -> i32 {
     let mut SA_Q15: i32 = 0;
     let mut pSNR_dB_Q7: i32 = 0;
     let mut input_tilt: i32 = 0;
@@ -66,7 +66,7 @@ pub unsafe fn silk_VAD_GetSA_Q8_c(mut psEncC: *mut silk_encoder_state, pIn: *con
     let mut x_tmp: i32 = 0;
     let mut X_offset: [i32; 4] = [0; 4];
     let ret: i32 = 0 as i32;
-    let mut psSilk_VAD: *mut silk_VAD_state = &mut (*psEncC).sVAD;
+    let psSilk_VAD: *mut silk_VAD_state = &mut (*psEncC).sVAD;
     if !(5 as i32 * 4 as i32 * 16 as i32 >= (*psEncC).frame_length) {
         celt_fatal(
             b"assertion failed: MAX_FRAME_LENGTH >= psEncC->frame_length\0" as *const u8
@@ -277,7 +277,7 @@ pub unsafe fn silk_VAD_GetSA_Q8_c(mut psEncC: *mut silk_encoder_state, pIn: *con
     return ret;
 }
 #[inline]
-unsafe fn silk_VAD_GetNoiseLevels(pX: *const i32, mut psSilk_VAD: *mut silk_VAD_state) {
+unsafe fn silk_VAD_GetNoiseLevels(pX: *const i32, psSilk_VAD: *mut silk_VAD_state) {
     let mut k: i32 = 0;
     let mut nl: i32 = 0;
     let mut nrg: i32 = 0;

@@ -12,7 +12,7 @@ use crate::silk::Inlines::silk_DIV32_varQ;
 use crate::silk::SigProc_FIX::silk_max_int;
 
 pub unsafe fn silk_stereo_LR_to_MS(
-    mut state: *mut stereo_enc_state,
+    state: *mut stereo_enc_state,
     x1: *mut i16,
     x2: *mut i16,
     ix: *mut [i8; 3],

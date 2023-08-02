@@ -200,7 +200,7 @@ pub unsafe fn opus_projection_ambisonics_encoder_get_size(
         + encoder_size;
 }
 pub unsafe fn opus_projection_ambisonics_encoder_init(
-    mut st: *mut OpusProjectionEncoder,
+    st: *mut OpusProjectionEncoder,
     Fs: i32,
     channels: i32,
     mapping_family: i32,

@@ -68,7 +68,7 @@ use crate::silk::tables_pitch_lag::{
 use crate::silk::SigProc_FIX::{silk_max_int, silk_min_int};
 
 pub unsafe fn silk_control_encoder(
-    mut psEnc: *mut silk_encoder_state_FLP,
+    psEnc: *mut silk_encoder_state_FLP,
     encControl: *mut silk_EncControlStruct,
     allow_bw_switch: i32,
     channelNb: i32,
@@ -109,7 +109,7 @@ pub unsafe fn silk_control_encoder(
     (*psEnc).sCmn.controlled_since_last_payload = 1 as i32;
     return ret;
 }
-unsafe fn silk_setup_resamplers(mut psEnc: *mut silk_encoder_state_FLP, fs_kHz: i32) -> i32 {
+unsafe fn silk_setup_resamplers(psEnc: *mut silk_encoder_state_FLP, fs_kHz: i32) -> i32 {
     let mut ret: i32 = SILK_NO_ERROR;
     if (*psEnc).sCmn.fs_kHz != fs_kHz || (*psEnc).sCmn.prev_API_fs_Hz != (*psEnc).sCmn.API_fs_Hz {
         if (*psEnc).sCmn.fs_kHz == 0 as i32 {
@@ -192,7 +192,7 @@ unsafe fn silk_setup_resamplers(mut psEnc: *mut silk_encoder_state_FLP, fs_kHz: 
     return ret;
 }
 unsafe fn silk_setup_fs(
-    mut psEnc: *mut silk_encoder_state_FLP,
+    psEnc: *mut silk_encoder_state_FLP,
     fs_kHz: i32,
     PacketSize_ms: i32,
 ) -> i32 {
@@ -331,7 +331,7 @@ unsafe fn silk_setup_fs(
     }
     return ret;
 }
-unsafe fn silk_setup_complexity(mut psEncC: *mut silk_encoder_state, Complexity: i32) -> i32 {
+unsafe fn silk_setup_complexity(psEncC: *mut silk_encoder_state, Complexity: i32) -> i32 {
     let ret: i32 = 0 as i32;
     if !(Complexity >= 0 as i32 && Complexity <= 10 as i32) {
         celt_fatal(
@@ -476,7 +476,7 @@ unsafe fn silk_setup_complexity(mut psEncC: *mut silk_encoder_state, Complexity:
 }
 #[inline]
 unsafe fn silk_setup_LBRR(
-    mut psEncC: *mut silk_encoder_state,
+    psEncC: *mut silk_encoder_state,
     encControl: *const silk_EncControlStruct,
 ) -> i32 {
     let mut LBRR_in_previous_packet: i32 = 0;

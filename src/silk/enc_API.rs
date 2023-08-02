@@ -108,7 +108,7 @@ pub unsafe fn silk_InitEncoder(
 }
 unsafe fn silk_QueryEncoder(
     encState: *const core::ffi::c_void,
-    mut encStatus: *mut silk_EncControlStruct,
+    encStatus: *mut silk_EncControlStruct,
 ) -> i32 {
     let ret: i32 = SILK_NO_ERROR;
     let mut state_Fxx: *mut silk_encoder_state_FLP = 0 as *mut silk_encoder_state_FLP;
@@ -146,7 +146,7 @@ unsafe fn silk_QueryEncoder(
 }
 pub unsafe fn silk_Encode(
     encState: *mut core::ffi::c_void,
-    mut encControl: *mut silk_EncControlStruct,
+    encControl: *mut silk_EncControlStruct,
     mut samplesIn: *const i16,
     mut nSamplesIn: i32,
     psRangeEnc: *mut ec_enc,
@@ -172,7 +172,7 @@ pub unsafe fn silk_Encode(
     let mut channelRate_bps: i32 = 0;
     let mut LBRR_symbol: i32 = 0;
     let mut sum: i32 = 0;
-    let mut psEnc: *mut silk_encoder = encState as *mut silk_encoder;
+    let psEnc: *mut silk_encoder = encState as *mut silk_encoder;
     let mut transition: i32 = 0;
     let mut curr_block: i32 = 0;
     let mut tot_blocks: i32 = 0;

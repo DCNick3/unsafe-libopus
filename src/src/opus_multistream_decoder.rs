@@ -72,7 +72,7 @@ pub unsafe fn opus_multistream_decoder_get_size(nb_streams: i32, nb_coupled_stre
         + (nb_streams - nb_coupled_streams) * align(mono_size);
 }
 pub unsafe fn opus_multistream_decoder_init(
-    mut st: *mut OpusMSDecoder,
+    st: *mut OpusMSDecoder,
     Fs: i32,
     channels: i32,
     streams: i32,

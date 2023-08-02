@@ -47,7 +47,7 @@ pub const USE_silk_resampler_private_up2_HQ_wrapper: i32 = 1 as i32;
 pub const USE_silk_resampler_private_IIR_FIR: i32 = 2 as i32;
 pub const USE_silk_resampler_private_down_FIR: i32 = 3 as i32;
 pub unsafe fn silk_resampler_init(
-    mut S: *mut silk_resampler_state_struct,
+    S: *mut silk_resampler_state_struct,
     Fs_Hz_in: i32,
     Fs_Hz_out: i32,
     forEnc: i32,

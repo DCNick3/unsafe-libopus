@@ -11,7 +11,7 @@ use crate::silk::structs::silk_decoder_state;
 use crate::silk::CNG::silk_CNG_Reset;
 use crate::silk::PLC::silk_PLC_Reset;
 
-pub unsafe fn silk_init_decoder(mut psDec: *mut silk_decoder_state) -> i32 {
+pub unsafe fn silk_init_decoder(psDec: *mut silk_decoder_state) -> i32 {
     memset(
         psDec as *mut core::ffi::c_void,
         0 as i32,

@@ -10,8 +10,8 @@ use crate::silk::NLSF_decode::silk_NLSF_decode;
 use crate::silk::NLSF2A::silk_NLSF2A;
 
 pub unsafe fn silk_decode_parameters(
-    mut psDec: *mut silk_decoder_state,
-    mut psDecCtrl: *mut silk_decoder_control,
+    psDec: *mut silk_decoder_state,
+    psDecCtrl: *mut silk_decoder_control,
     condCoding: i32,
 ) {
     let mut i: i32 = 0;

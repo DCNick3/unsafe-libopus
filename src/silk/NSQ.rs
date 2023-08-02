@@ -134,7 +134,7 @@ use crate::silk::LPC_analysis_filter::silk_LPC_analysis_filter;
 
 pub unsafe fn silk_NSQ_c(
     psEncC: *const silk_encoder_state,
-    mut NSQ: *mut silk_nsq_state,
+    NSQ: *mut silk_nsq_state,
     psIndices: *mut SideInfoIndices,
     mut x16: *const i16,
     mut pulses: *mut i8,
@@ -279,7 +279,7 @@ pub unsafe fn silk_NSQ_c(
 }
 #[inline]
 unsafe fn silk_noise_shape_quantizer(
-    mut NSQ: *mut silk_nsq_state,
+    NSQ: *mut silk_nsq_state,
     signalType: i32,
     x_sc_Q10: *const i32,
     pulses: *mut i8,
@@ -550,7 +550,7 @@ unsafe fn silk_noise_shape_quantizer(
 #[inline]
 unsafe fn silk_nsq_scale_states(
     psEncC: *const silk_encoder_state,
-    mut NSQ: *mut silk_nsq_state,
+    NSQ: *mut silk_nsq_state,
     x16: *const i16,
     x_sc_Q10: *mut i32,
     sLTP: *const i16,

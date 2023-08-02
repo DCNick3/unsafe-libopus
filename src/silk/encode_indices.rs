@@ -15,7 +15,7 @@ use crate::silk::tables_pitch_lag::{silk_pitch_delta_iCDF, silk_pitch_lag_iCDF};
 use crate::silk::NLSF_unpack::silk_NLSF_unpack;
 
 pub unsafe fn silk_encode_indices(
-    mut psEncC: *mut silk_encoder_state,
+    psEncC: *mut silk_encoder_state,
     psRangeEnc: *mut ec_enc,
     FrameIndex: i32,
     encode_LBRR: i32,

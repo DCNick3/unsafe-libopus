@@ -24,7 +24,7 @@ use crate::{opus_packet_get_nb_frames, opus_packet_get_samples_per_frame};
 pub unsafe fn opus_repacketizer_get_size() -> i32 {
     return ::core::mem::size_of::<OpusRepacketizer>() as u64 as i32;
 }
-pub unsafe fn opus_repacketizer_init(mut rp: *mut OpusRepacketizer) -> *mut OpusRepacketizer {
+pub unsafe fn opus_repacketizer_init(rp: *mut OpusRepacketizer) -> *mut OpusRepacketizer {
     (*rp).nb_frames = 0 as i32;
     return rp;
 }
@@ -40,7 +40,7 @@ pub unsafe fn opus_repacketizer_destroy(rp: *mut OpusRepacketizer) {
     free(rp as *mut core::ffi::c_void);
 }
 unsafe fn opus_repacketizer_cat_impl(
-    mut rp: *mut OpusRepacketizer,
+    rp: *mut OpusRepacketizer,
     data: *const u8,
     len: i32,
     self_delimited: i32,

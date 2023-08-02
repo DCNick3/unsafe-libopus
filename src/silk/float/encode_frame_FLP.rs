@@ -33,7 +33,7 @@ use crate::silk::LP_variable_cutoff::silk_LP_variable_cutoff;
 use crate::silk::SigProc_FIX::silk_min_int;
 use crate::silk::VAD::silk_VAD_GetSA_Q8_c;
 
-pub unsafe fn silk_encode_do_VAD_FLP(mut psEnc: *mut silk_encoder_state_FLP, activity: i32) {
+pub unsafe fn silk_encode_do_VAD_FLP(psEnc: *mut silk_encoder_state_FLP, activity: i32) {
     let activity_threshold: i32 =
         ((0.05f32 * ((1 as i32 as i64) << 8 as i32) as f32) as f64 + 0.5f64) as i32;
     silk_VAD_GetSA_Q8_c(
@@ -64,7 +64,7 @@ pub unsafe fn silk_encode_do_VAD_FLP(mut psEnc: *mut silk_encoder_state_FLP, act
     };
 }
 pub unsafe fn silk_encode_frame_FLP(
-    mut psEnc: *mut silk_encoder_state_FLP,
+    psEnc: *mut silk_encoder_state_FLP,
     pnBytesOut: *mut i32,
     psRangeEnc: *mut ec_enc,
     condCoding: i32,
@@ -573,15 +573,15 @@ pub unsafe fn silk_encode_frame_FLP(
 }
 #[inline]
 unsafe fn silk_LBRR_encode_FLP(
-    mut psEnc: *mut silk_encoder_state_FLP,
-    mut psEncCtrl: *mut silk_encoder_control_FLP,
+    psEnc: *mut silk_encoder_state_FLP,
+    psEncCtrl: *mut silk_encoder_control_FLP,
     xfw: *const f32,
     condCoding: i32,
 ) {
     let mut k: i32 = 0;
     let mut Gains_Q16: [i32; 4] = [0; 4];
     let mut TempGains: [f32; 4] = [0.; 4];
-    let mut psIndices_LBRR: *mut SideInfoIndices = &mut *((*psEnc).sCmn.indices_LBRR)
+    let psIndices_LBRR: *mut SideInfoIndices = &mut *((*psEnc).sCmn.indices_LBRR)
         .as_mut_ptr()
         .offset((*psEnc).sCmn.nFramesEncoded as isize)
         as *mut SideInfoIndices;

@@ -261,7 +261,7 @@ unsafe fn opus_custom_decoder_get_size(mode: *const OpusCustomMode, channels: i3
     return size;
 }
 pub unsafe fn celt_decoder_init(
-    mut st: *mut OpusCustomDecoder,
+    st: *mut OpusCustomDecoder,
     sampling_rate: i32,
     channels: i32,
 ) -> i32 {
@@ -283,7 +283,7 @@ pub unsafe fn celt_decoder_init(
 }
 #[inline]
 unsafe fn opus_custom_decoder_init(
-    mut st: *mut OpusCustomDecoder,
+    st: *mut OpusCustomDecoder,
     mode: *const OpusCustomMode,
     channels: i32,
 ) -> i32 {
@@ -674,7 +674,7 @@ unsafe fn celt_plc_pitch_search(decode_mem: *mut *mut celt_sig, C: i32, arch: i3
     pitch_index = PLC_PITCH_LAG_MAX - pitch_index;
     return pitch_index;
 }
-unsafe fn celt_decode_lost(mut st: *mut OpusCustomDecoder, N: i32, LM: i32) {
+unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
     let mut c: i32 = 0;
     let mut i: i32 = 0;
     let C: i32 = (*st).channels;
@@ -1035,7 +1035,7 @@ unsafe fn celt_decode_lost(mut st: *mut OpusCustomDecoder, N: i32, LM: i32) {
     (*st).loss_count = loss_count + 1 as i32;
 }
 pub unsafe fn celt_decode_with_ec(
-    mut st: *mut OpusCustomDecoder,
+    st: *mut OpusCustomDecoder,
     data: *const u8,
     len: i32,
     pcm: *mut opus_val16,
@@ -1594,7 +1594,7 @@ pub unsafe fn celt_decode_with_ec(
     return frame_size / (*st).downsample;
 }
 pub unsafe fn opus_custom_decoder_ctl_impl(
-    mut st: *mut OpusCustomDecoder,
+    st: *mut OpusCustomDecoder,
     request: i32,
     args: VarArgs,
 ) -> i32 {

@@ -152,12 +152,12 @@ unsafe fn limit_coefs(coefs: *mut f32, limit: f32, order: i32) {
     }
 }
 pub unsafe fn silk_noise_shape_analysis_FLP(
-    mut psEnc: *mut silk_encoder_state_FLP,
-    mut psEncCtrl: *mut silk_encoder_control_FLP,
+    psEnc: *mut silk_encoder_state_FLP,
+    psEncCtrl: *mut silk_encoder_control_FLP,
     pitch_res: *const f32,
     x: *const f32,
 ) {
-    let mut psShapeSt: *mut silk_shape_state_FLP = &mut (*psEnc).sShape;
+    let psShapeSt: *mut silk_shape_state_FLP = &mut (*psEnc).sShape;
     let mut k: i32 = 0;
     let mut nSamples: i32 = 0;
     let mut nSegs: i32 = 0;

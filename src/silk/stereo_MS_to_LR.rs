@@ -9,7 +9,7 @@ use crate::silk::structs::stereo_dec_state;
 
 use crate::externs::memcpy;
 pub unsafe fn silk_stereo_MS_to_LR(
-    mut state: *mut stereo_dec_state,
+    state: *mut stereo_dec_state,
     x1: *mut i16,
     x2: *mut i16,
     pred_Q13: *const i32,

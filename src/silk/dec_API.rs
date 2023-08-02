@@ -73,7 +73,7 @@ pub unsafe fn silk_InitDecoder(decState: *mut core::ffi::c_void) -> i32 {
 }
 pub unsafe fn silk_Decode(
     decState: *mut core::ffi::c_void,
-    mut decControl: *mut silk_DecControlStruct,
+    decControl: *mut silk_DecControlStruct,
     lostFlag: i32,
     newPacketFlag: i32,
     psRangeDec: *mut ec_dec,
@@ -90,7 +90,7 @@ pub unsafe fn silk_Decode(
     let mut samplesOut1_tmp: [*mut i16; 2] = [0 as *mut i16; 2];
     let mut MS_pred_Q13: [i32; 2] = [0 as i32, 0];
     let mut resample_out_ptr: *mut i16 = 0 as *mut i16;
-    let mut psDec: *mut silk_decoder = decState as *mut silk_decoder;
+    let psDec: *mut silk_decoder = decState as *mut silk_decoder;
     let channel_state: *mut silk_decoder_state = ((*psDec).channel_state).as_mut_ptr();
     let mut has_side: i32 = 0;
     let mut stereo_to_mono: i32 = 0;

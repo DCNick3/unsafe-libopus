@@ -124,8 +124,8 @@ pub struct NSQ_sample_struct {
 pub type NSQ_sample_pair = [NSQ_sample_struct; 2];
 pub unsafe fn silk_NSQ_del_dec_c(
     psEncC: *const silk_encoder_state,
-    mut NSQ: *mut silk_nsq_state,
-    mut psIndices: *mut SideInfoIndices,
+    NSQ: *mut silk_nsq_state,
+    psIndices: *mut SideInfoIndices,
     mut x16: *const i16,
     mut pulses: *mut i8,
     PredCoef_Q12: *const i16,
@@ -536,7 +536,7 @@ pub unsafe fn silk_NSQ_del_dec_c(
 }
 #[inline]
 unsafe fn silk_noise_shape_quantizer_del_dec(
-    mut NSQ: *mut silk_nsq_state,
+    NSQ: *mut silk_nsq_state,
     psDelDec: *mut NSQ_del_dec_struct,
     signalType: i32,
     x_Q10: *const i32,
@@ -1037,7 +1037,7 @@ unsafe fn silk_noise_shape_quantizer_del_dec(
 #[inline]
 unsafe fn silk_nsq_del_dec_scale_states(
     psEncC: *const silk_encoder_state,
-    mut NSQ: *mut silk_nsq_state,
+    NSQ: *mut silk_nsq_state,
     psDelDec: *mut NSQ_del_dec_struct,
     x16: *const i16,
     x_sc_Q10: *mut i32,

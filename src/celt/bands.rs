@@ -771,7 +771,7 @@ unsafe fn compute_qn(N: i32, b: i32, offset: i32, pulse_cap: i32, stereo: i32) -
 }
 unsafe fn compute_theta(
     ctx: *mut band_ctx,
-    mut sctx: *mut split_ctx,
+    sctx: *mut split_ctx,
     X: *mut celt_norm,
     Y: *mut celt_norm,
     N: i32,
@@ -1028,7 +1028,7 @@ unsafe fn compute_theta(
     (*sctx).qalloc = qalloc;
 }
 unsafe fn quant_band_n1(
-    mut ctx: *mut band_ctx,
+    ctx: *mut band_ctx,
     X: *mut celt_norm,
     Y: *mut celt_norm,
     mut _b: i32,
@@ -1074,7 +1074,7 @@ unsafe fn quant_band_n1(
     return 1 as i32 as u32;
 }
 unsafe fn quant_partition(
-    mut ctx: *mut band_ctx,
+    ctx: *mut band_ctx,
     X: *mut celt_norm,
     mut N: i32,
     mut b: i32,
@@ -1427,7 +1427,7 @@ unsafe fn quant_band(
     return cm;
 }
 unsafe fn quant_band_stereo(
-    mut ctx: *mut band_ctx,
+    ctx: *mut band_ctx,
     X: *mut celt_norm,
     Y: *mut celt_norm,
     N: i32,

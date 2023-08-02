@@ -223,7 +223,7 @@ pub unsafe fn opus_encoder_get_size(channels: i32) -> i32 {
         + celtEncSizeBytes;
 }
 pub unsafe fn opus_encoder_init(
-    mut st: *mut OpusEncoder,
+    st: *mut OpusEncoder,
     Fs: i32,
     channels: i32,
     application: i32,
@@ -754,7 +754,7 @@ pub unsafe fn compute_stereo_width(
     pcm: *const opus_val16,
     frame_size: i32,
     Fs: i32,
-    mut mem: *mut StereoWidthState,
+    mem: *mut StereoWidthState,
 ) -> opus_val16 {
     let mut xx: opus_val32 = 0.;
     let mut xy: opus_val32 = 0.;
@@ -1095,7 +1095,7 @@ unsafe fn decide_dtx_mode(
     return 0 as i32;
 }
 unsafe fn encode_multiframe_packet(
-    mut st: *mut OpusEncoder,
+    st: *mut OpusEncoder,
     pcm: *const opus_val16,
     nb_frames: i32,
     frame_size: i32,
@@ -1249,7 +1249,7 @@ unsafe fn compute_redundancy_bytes(
     return redundancy_bytes;
 }
 pub unsafe fn opus_encode_native(
-    mut st: *mut OpusEncoder,
+    st: *mut OpusEncoder,
     pcm: *const opus_val16,
     frame_size: i32,
     mut data: *mut u8,
@@ -2742,7 +2742,7 @@ pub unsafe fn opus_encode_float(
         1 as i32,
     );
 }
-pub unsafe fn opus_encoder_ctl_impl(mut st: *mut OpusEncoder, request: i32, args: VarArgs) -> i32 {
+pub unsafe fn opus_encoder_ctl_impl(st: *mut OpusEncoder, request: i32, args: VarArgs) -> i32 {
     let mut current_block: u64;
     let mut ret: i32 = 0;
     let mut celt_enc: *mut OpusCustomEncoder = 0 as *mut OpusCustomEncoder;

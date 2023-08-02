@@ -90,7 +90,7 @@ unsafe fn silk_LP_interpolate_filter_taps(
     };
 }
 pub unsafe fn silk_LP_variable_cutoff(
-    mut psLP: *mut silk_LP_state,
+    psLP: *mut silk_LP_state,
     frame: *mut i16,
     frame_length: i32,
 ) {

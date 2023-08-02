@@ -579,7 +579,7 @@ unsafe fn downmix_and_resample(
     }
     return ret;
 }
-pub unsafe fn tonality_analysis_init(mut tonal: *mut TonalityAnalysisState, Fs: i32) {
+pub unsafe fn tonality_analysis_init(tonal: *mut TonalityAnalysisState, Fs: i32) {
     (*tonal).arch = opus_select_arch();
     (*tonal).Fs = Fs;
     tonality_analysis_reset(tonal);
@@ -595,8 +595,8 @@ pub unsafe fn tonality_analysis_reset(tonal: *mut TonalityAnalysisState) {
     );
 }
 pub unsafe fn tonality_get_info(
-    mut tonal: *mut TonalityAnalysisState,
-    mut info_out: *mut AnalysisInfo,
+    tonal: *mut TonalityAnalysisState,
+    info_out: *mut AnalysisInfo,
     len: i32,
 ) {
     let mut pos: i32 = 0;
@@ -827,7 +827,7 @@ static mut std_feature_bias: [f32; 9] = [
 pub const LEAKAGE_OFFSET: f32 = 2.5f32;
 pub const LEAKAGE_SLOPE: f32 = 2.0f32;
 unsafe fn tonality_analysis(
-    mut tonal: *mut TonalityAnalysisState,
+    tonal: *mut TonalityAnalysisState,
     celt_mode: *const OpusCustomMode,
     x: *const core::ffi::c_void,
     mut len: i32,
@@ -1566,7 +1566,7 @@ unsafe fn tonality_analysis(
     (*info).valid = 1 as i32;
 }
 pub unsafe fn run_analysis(
-    mut analysis: *mut TonalityAnalysisState,
+    analysis: *mut TonalityAnalysisState,
     celt_mode: *const OpusCustomMode,
     analysis_pcm: *const core::ffi::c_void,
     mut analysis_frame_size: i32,

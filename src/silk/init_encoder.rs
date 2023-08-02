@@ -3,7 +3,7 @@ use crate::silk::float::structs_FLP::silk_encoder_state_FLP;
 use crate::silk::lin2log::silk_lin2log;
 use crate::silk::VAD::silk_VAD_Init;
 
-pub unsafe fn silk_init_encoder(mut psEnc: *mut silk_encoder_state_FLP, arch: i32) -> i32 {
+pub unsafe fn silk_init_encoder(psEnc: *mut silk_encoder_state_FLP, arch: i32) -> i32 {
     let mut ret: i32 = 0 as i32;
     memset(
         psEnc as *mut core::ffi::c_void,

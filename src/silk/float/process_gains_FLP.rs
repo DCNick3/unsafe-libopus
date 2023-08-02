@@ -27,8 +27,8 @@ use crate::silk::gain_quant::silk_gains_quant;
 use crate::silk::tables_other::silk_Quantization_Offsets_Q10;
 
 pub unsafe fn silk_process_gains_FLP(
-    mut psEnc: *mut silk_encoder_state_FLP,
-    mut psEncCtrl: *mut silk_encoder_control_FLP,
+    psEnc: *mut silk_encoder_state_FLP,
+    psEncCtrl: *mut silk_encoder_control_FLP,
     condCoding: i32,
 ) {
     let psShapeSt: *mut silk_shape_state_FLP = &mut (*psEnc).sShape;

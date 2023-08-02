@@ -16,8 +16,8 @@ use crate::silk::Inlines::{silk_DIV32_varQ, silk_INVERSE32_varQ};
 use crate::silk::LPC_analysis_filter::silk_LPC_analysis_filter;
 
 pub unsafe fn silk_decode_core(
-    mut psDec: *mut silk_decoder_state,
-    mut psDecCtrl: *mut silk_decoder_control,
+    psDec: *mut silk_decoder_state,
+    psDecCtrl: *mut silk_decoder_control,
     xq: *mut i16,
     pulses: *const i16,
     arch: i32,

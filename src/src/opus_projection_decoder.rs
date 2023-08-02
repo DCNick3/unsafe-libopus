@@ -123,7 +123,7 @@ pub unsafe fn opus_projection_decoder_get_size(
         + decoder_size;
 }
 pub unsafe fn opus_projection_decoder_init(
-    mut st: *mut OpusProjectionDecoder,
+    st: *mut OpusProjectionDecoder,
     Fs: i32,
     channels: i32,
     streams: i32,

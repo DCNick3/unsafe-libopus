@@ -712,7 +712,7 @@ pub unsafe fn opus_multistream_surround_encoder_get_size(
     return size;
 }
 unsafe fn opus_multistream_encoder_init_impl(
-    mut st: *mut OpusMSEncoder,
+    st: *mut OpusMSEncoder,
     Fs: i32,
     channels: i32,
     streams: i32,
@@ -827,7 +827,7 @@ pub unsafe fn opus_multistream_encoder_init(
     );
 }
 pub unsafe fn opus_multistream_surround_encoder_init(
-    mut st: *mut OpusMSEncoder,
+    st: *mut OpusMSEncoder,
     Fs: i32,
     channels: i32,
     mapping_family: i32,
@@ -1588,7 +1588,7 @@ pub unsafe fn opus_multistream_encode(
     );
 }
 pub unsafe fn opus_multistream_encoder_ctl_va_list(
-    mut st: *mut OpusMSEncoder,
+    st: *mut OpusMSEncoder,
     request: i32,
     mut ap: VarArgs,
 ) -> i32 {

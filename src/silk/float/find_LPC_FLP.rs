@@ -22,7 +22,7 @@ use crate::silk::interpolate::silk_interpolate;
 use crate::silk::structs::silk_encoder_state;
 
 pub unsafe fn silk_find_LPC_FLP(
-    mut psEncC: *mut silk_encoder_state,
+    psEncC: *mut silk_encoder_state,
     NLSF_Q15: *mut i16,
     x: *const f32,
     minInvGain: f32,

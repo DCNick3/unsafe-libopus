@@ -18,8 +18,8 @@ use crate::silk::float::structs_FLP::{silk_encoder_control_FLP, silk_encoder_sta
 use crate::silk::float::LPC_analysis_filter_FLP::silk_LPC_analysis_filter_FLP;
 
 pub unsafe fn silk_find_pitch_lags_FLP(
-    mut psEnc: *mut silk_encoder_state_FLP,
-    mut psEncCtrl: *mut silk_encoder_control_FLP,
+    psEnc: *mut silk_encoder_state_FLP,
+    psEncCtrl: *mut silk_encoder_control_FLP,
     res: *mut f32,
     x: *const f32,
     arch: i32,
