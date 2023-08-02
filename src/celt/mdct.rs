@@ -126,7 +126,7 @@ pub unsafe fn clt_mdct_forward_c(
             .offset(*((*st).bitrev).offset(i as isize) as isize) = yc;
         i += 1;
     }
-    opus_fft_impl(st, f2.as_mut_ptr());
+    opus_fft_impl(st, &mut f2);
     let mut fp: *const kiss_fft_cpx = f2.as_mut_ptr();
     let mut yp1: *mut f32 = out;
     let mut yp2: *mut f32 = out.offset((stride * (N2 - 1 as i32)) as isize);
@@ -193,7 +193,10 @@ pub unsafe fn clt_mdct_backward_c(
     }
     opus_fft_impl(
         (*l).kfft[shift as usize],
-        out.offset((overlap >> 1 as i32) as isize) as *mut kiss_fft_cpx,
+        std::slice::from_raw_parts_mut(
+            out.offset((overlap >> 1) as isize) as *mut kiss_fft_cpx,
+            (*(*l).kfft[shift as usize]).nfft as usize,
+        ),
     );
     let mut yp0: *mut f32 = out.offset((overlap >> 1 as i32) as isize);
     let mut yp1: *mut f32 = out
