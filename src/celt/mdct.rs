@@ -11,12 +11,12 @@ pub struct mdct_lookup<'a> {
     pub n: i32,
     pub maxshift: i32,
     pub kfft: [&'a kiss_fft_state<'a>; 4],
-    pub trig: *const f32,
+    pub trig: &'a [&'a [f32]; 4],
 }
 pub use self::arch_h::opus_val16;
 
 pub unsafe fn clt_mdct_forward_c(
-    l: *const mdct_lookup,
+    l: &mdct_lookup,
     in_0: *mut f32,
     out: *mut f32,
     window: *const opus_val16,
@@ -29,18 +29,11 @@ pub unsafe fn clt_mdct_forward_c(
     let mut N: i32 = 0;
     let mut N2: i32 = 0;
     let mut N4: i32 = 0;
-    let st: &kiss_fft_state = (*l).kfft[shift as usize];
-    let mut trig: *const f32 = 0 as *const f32;
+    let st: &kiss_fft_state = l.kfft[shift as usize];
     let mut scale: opus_val16 = 0.;
     scale = st.scale;
-    N = (*l).n;
-    trig = (*l).trig;
-    i = 0 as i32;
-    while i < shift {
-        N >>= 1 as i32;
-        trig = trig.offset(N as isize);
-        i += 1;
-    }
+    let trig = l.trig[shift as usize];
+    N = l.n >> shift;
     N2 = N >> 1 as i32;
     N4 = N >> 2 as i32;
     let vla = N2 as usize;
@@ -98,7 +91,7 @@ pub unsafe fn clt_mdct_forward_c(
         i += 1;
     }
     let mut yp_0: *mut f32 = f.as_mut_ptr();
-    let t: *const f32 = &*trig.offset(0 as i32 as isize) as *const f32;
+    let t = trig;
     i = 0 as i32;
     while i < N4 {
         let mut yc: kiss_fft_cpx = kiss_fft_cpx::zero();
@@ -108,8 +101,8 @@ pub unsafe fn clt_mdct_forward_c(
         let mut im: f32 = 0.;
         let mut yr: f32 = 0.;
         let mut yi: f32 = 0.;
-        t0 = *t.offset(i as isize);
-        t1 = *t.offset((N4 + i) as isize);
+        t0 = t[i as usize];
+        t1 = t[(N4 + i) as usize];
         let fresh6 = yp_0;
         yp_0 = yp_0.offset(1);
         re = *fresh6;
@@ -129,13 +122,13 @@ pub unsafe fn clt_mdct_forward_c(
     let mut fp: *const kiss_fft_cpx = f2.as_mut_ptr();
     let mut yp1: *mut f32 = out;
     let mut yp2: *mut f32 = out.offset((stride * (N2 - 1 as i32)) as isize);
-    let t_0: *const f32 = &*trig.offset(0 as i32 as isize) as *const f32;
+    let t = trig;
     i = 0 as i32;
     while i < N4 {
         let mut yr_0: f32 = 0.;
         let mut yi_0: f32 = 0.;
-        yr_0 = (*fp).im * *t_0.offset((N4 + i) as isize) - (*fp).re * *t_0.offset(i as isize);
-        yi_0 = (*fp).re * *t_0.offset((N4 + i) as isize) + (*fp).im * *t_0.offset(i as isize);
+        yr_0 = (*fp).im * t[(N4 + i) as usize] - (*fp).re * t[i as usize];
+        yi_0 = (*fp).re * t[(N4 + i) as usize] + (*fp).im * t[i as usize];
         *yp1 = yr_0;
         *yp2 = yi_0;
         fp = fp.offset(1);
@@ -145,7 +138,7 @@ pub unsafe fn clt_mdct_forward_c(
     }
 }
 pub unsafe fn clt_mdct_backward_c(
-    l: *const mdct_lookup,
+    l: &mdct_lookup,
     in_0: *mut f32,
     out: *mut f32,
     window: *const opus_val16,
@@ -158,22 +151,15 @@ pub unsafe fn clt_mdct_backward_c(
     let mut N: i32 = 0;
     let mut N2: i32 = 0;
     let mut N4: i32 = 0;
-    let mut trig: *const f32 = 0 as *const f32;
-    N = (*l).n;
-    trig = (*l).trig;
-    i = 0 as i32;
-    while i < shift {
-        N >>= 1 as i32;
-        trig = trig.offset(N as isize);
-        i += 1;
-    }
+    let trig = l.trig[shift as usize];
+    N = l.n >> shift;
     N2 = N >> 1 as i32;
     N4 = N >> 2 as i32;
     let mut xp1: *const f32 = in_0;
     let mut xp2: *const f32 = in_0.offset((stride * (N2 - 1 as i32)) as isize);
     let yp: *mut f32 = out.offset((overlap >> 1 as i32) as isize);
-    let t: *const f32 = &*trig.offset(0 as i32 as isize) as *const f32;
-    let mut bitrev: *const i16 = (*l).kfft[shift as usize].bitrev.as_ptr();
+    let t = trig;
+    let mut bitrev: *const i16 = l.kfft[shift as usize].bitrev.as_ptr();
     i = 0 as i32;
     while i < N4 {
         let mut rev: i32 = 0;
@@ -182,8 +168,8 @@ pub unsafe fn clt_mdct_backward_c(
         let fresh8 = bitrev;
         bitrev = bitrev.offset(1);
         rev = *fresh8 as i32;
-        yr = *xp2 * *t.offset(i as isize) + *xp1 * *t.offset((N4 + i) as isize);
-        yi = *xp1 * *t.offset(i as isize) - *xp2 * *t.offset((N4 + i) as isize);
+        yr = *xp2 * t[i as usize] + *xp1 * t[(N4 + i) as usize];
+        yi = *xp1 * t[i as usize] - *xp2 * t[(N4 + i) as usize];
         *yp.offset((2 as i32 * rev + 1 as i32) as isize) = yr;
         *yp.offset((2 as i32 * rev) as isize) = yi;
         xp1 = xp1.offset((2 as i32 * stride) as isize);
@@ -191,10 +177,10 @@ pub unsafe fn clt_mdct_backward_c(
         i += 1;
     }
     opus_fft_impl(
-        (*l).kfft[shift as usize],
+        l.kfft[shift as usize],
         std::slice::from_raw_parts_mut(
             out.offset((overlap >> 1) as isize) as *mut kiss_fft_cpx,
-            (*l).kfft[shift as usize].nfft,
+            l.kfft[shift as usize].nfft,
         ),
     );
     let mut yp0: *mut f32 = out.offset((overlap >> 1 as i32) as isize);
@@ -202,7 +188,7 @@ pub unsafe fn clt_mdct_backward_c(
         .offset((overlap >> 1 as i32) as isize)
         .offset(N2 as isize)
         .offset(-(2 as i32 as isize));
-    let t_0: *const f32 = &*trig.offset(0 as i32 as isize) as *const f32;
+    let t = trig;
     i = 0 as i32;
     while i < N4 + 1 as i32 >> 1 as i32 {
         let mut re: f32 = 0.;
@@ -213,16 +199,16 @@ pub unsafe fn clt_mdct_backward_c(
         let mut t1: f32 = 0.;
         re = *yp0.offset(1 as i32 as isize);
         im = *yp0.offset(0 as i32 as isize);
-        t0 = *t_0.offset(i as isize);
-        t1 = *t_0.offset((N4 + i) as isize);
+        t0 = t[i as usize];
+        t1 = t[(N4 + i) as usize];
         yr_0 = re * t0 + im * t1;
         yi_0 = re * t1 - im * t0;
         re = *yp1.offset(1 as i32 as isize);
         im = *yp1.offset(0 as i32 as isize);
         *yp0.offset(0 as i32 as isize) = yr_0;
         *yp1.offset(1 as i32 as isize) = yi_0;
-        t0 = *t_0.offset((N4 - i - 1 as i32) as isize);
-        t1 = *t_0.offset((N2 - i - 1 as i32) as isize);
+        t0 = t[(N4 - i - 1) as usize];
+        t1 = t[(N2 - i - 1) as usize];
         yr_0 = re * t0 + im * t1;
         yi_0 = re * t1 - im * t0;
         *yp1.offset(0 as i32 as isize) = yr_0;
