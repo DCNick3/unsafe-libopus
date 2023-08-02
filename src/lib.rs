@@ -3,6 +3,8 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_assignments)]
 
+extern crate core;
+
 pub mod externs;
 pub mod varargs;
 

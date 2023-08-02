@@ -10,7 +10,7 @@ pub mod arch_h {
 pub struct mdct_lookup {
     pub n: i32,
     pub maxshift: i32,
-    pub kfft: [*const kiss_fft_state; 4],
+    pub kfft: [*const kiss_fft_state<'static>; 4],
     pub trig: *const f32,
 }
 pub use self::arch_h::opus_val16;
@@ -29,10 +29,10 @@ pub unsafe fn clt_mdct_forward_c(
     let mut N: i32 = 0;
     let mut N2: i32 = 0;
     let mut N4: i32 = 0;
-    let st: *const kiss_fft_state = (*l).kfft[shift as usize];
+    let st: &kiss_fft_state = &*(*l).kfft[shift as usize];
     let mut trig: *const f32 = 0 as *const f32;
     let mut scale: opus_val16 = 0.;
-    scale = (*st).scale;
+    scale = st.scale;
     N = (*l).n;
     trig = (*l).trig;
     i = 0 as i32;
@@ -123,7 +123,7 @@ pub unsafe fn clt_mdct_forward_c(
         yc.re = scale * yc.re;
         yc.im = scale * yc.im;
         *f2.as_mut_ptr()
-            .offset(*((*st).bitrev).offset(i as isize) as isize) = yc;
+            .offset(*(st.bitrev).offset(i as isize) as isize) = yc;
         i += 1;
     }
     opus_fft_impl(st, &mut f2);
@@ -192,7 +192,7 @@ pub unsafe fn clt_mdct_backward_c(
         i += 1;
     }
     opus_fft_impl(
-        (*l).kfft[shift as usize],
+        &*(*l).kfft[shift as usize],
         std::slice::from_raw_parts_mut(
             out.offset((overlap >> 1) as isize) as *mut kiss_fft_cpx,
             (*(*l).kfft[shift as usize]).nfft as usize,

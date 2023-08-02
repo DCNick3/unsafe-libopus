@@ -411,7 +411,7 @@ pub static mut fft_state48000_960_0: kiss_fft_state = kiss_fft_state {
     shift: -1,
     factors: [5, 96, 3, 32, 4, 8, 2, 4, 4, 1, 0, 0, 0, 0, 0, 0],
     bitrev: fft_bitrev480.as_ptr(),
-    twiddles: fft_twiddles48000_960.as_ptr(),
+    twiddles: &fft_twiddles48000_960,
 };
 pub static mut fft_state48000_960_1: kiss_fft_state = kiss_fft_state {
     nfft: 240,
@@ -419,7 +419,7 @@ pub static mut fft_state48000_960_1: kiss_fft_state = kiss_fft_state {
     shift: 1,
     factors: [5, 48, 3, 16, 4, 4, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0],
     bitrev: fft_bitrev240.as_ptr(),
-    twiddles: fft_twiddles48000_960.as_ptr(),
+    twiddles: &fft_twiddles48000_960,
 };
 pub static mut fft_state48000_960_2: kiss_fft_state = kiss_fft_state {
     nfft: 120,
@@ -427,7 +427,7 @@ pub static mut fft_state48000_960_2: kiss_fft_state = kiss_fft_state {
     shift: 2,
     factors: [5, 24, 3, 8, 2, 4, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0],
     bitrev: fft_bitrev120.as_ptr(),
-    twiddles: fft_twiddles48000_960.as_ptr(),
+    twiddles: &fft_twiddles48000_960,
 };
 pub static mut fft_state48000_960_3: kiss_fft_state = kiss_fft_state {
     nfft: 60,
@@ -435,7 +435,7 @@ pub static mut fft_state48000_960_3: kiss_fft_state = kiss_fft_state {
     shift: 3,
     factors: [5, 12, 3, 4, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     bitrev: fft_bitrev60.as_ptr(),
-    twiddles: fft_twiddles48000_960.as_ptr(),
+    twiddles: &fft_twiddles48000_960,
 };
 #[rustfmt::skip]
 pub static mut mdct_twiddles960: [opus_val16; 1800] = [

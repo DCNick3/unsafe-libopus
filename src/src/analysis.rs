@@ -86,7 +86,7 @@ pub use self::cpu_support_h::opus_select_arch;
 pub use self::math_h::M_PI;
 use crate::celt::celt::celt_fatal;
 use crate::celt::float_cast::float2int;
-use crate::celt::kiss_fft::{kiss_fft_cpx, kiss_fft_state, opus_fft_c};
+use crate::celt::kiss_fft::{kiss_fft_cpx, opus_fft_c};
 use crate::celt::mathops::fast_atan2f;
 use crate::celt::modes::OpusCustomMode;
 
@@ -842,7 +842,6 @@ unsafe fn tonality_analysis(
 ) {
     let mut i: i32 = 0;
     let mut b: i32 = 0;
-    let mut kfft: *const kiss_fft_state = 0 as *const kiss_fft_state;
     let N: i32 = 480 as i32;
     let N2: i32 = 240 as i32;
     let A: *mut f32 = ((*tonal).angle).as_mut_ptr();
@@ -914,7 +913,7 @@ unsafe fn tonality_analysis(
         len = 3 as i32 * len / 2 as i32;
         offset = 3 as i32 * offset / 2 as i32;
     }
-    kfft = (*celt_mode).mdct.kfft[0 as i32 as usize];
+    let kfft = &*(*celt_mode).mdct.kfft[0 as i32 as usize];
     (*tonal).hp_ener_accum += downmix_and_resample(
         downmix,
         x,
@@ -1015,8 +1014,8 @@ unsafe fn tonality_analysis(
         );
         return;
     }
-    opus_fft_c(kfft, in_0.as_mut_ptr(), out.as_mut_ptr());
-    if out[0 as i32 as usize].re != out[0 as i32 as usize].re {
+    opus_fft_c(kfft, &in_0, &mut out);
+    if out[0].re != out[0].re {
         (*info).valid = 0;
         return;
     }

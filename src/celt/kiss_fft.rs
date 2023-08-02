@@ -1,31 +1,20 @@
-pub mod stddef_h {
-    pub type size_t = u64;
-}
-pub mod arch_h {
-    pub type opus_val16 = f32;
-}
-
 use num_traits::Zero;
 pub type kiss_fft_cpx = num_complex::Complex32;
 pub type kiss_twiddle_cpx = num_complex::Complex32;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-pub struct kiss_fft_state {
+pub struct kiss_fft_state<'a> {
     pub nfft: i32,
-    pub scale: opus_val16,
+    pub scale: f32,
     pub shift: i32,
     pub factors: [i16; 16],
     pub bitrev: *const i16,
-    pub twiddles: *const kiss_twiddle_cpx,
+    pub twiddles: &'a [kiss_twiddle_cpx; 480],
 }
 
-pub use self::arch_h::opus_val16;
-pub use self::stddef_h::size_t;
-use crate::celt::celt::celt_fatal;
-
 fn kf_bfly2(Fout: &mut [kiss_fft_cpx], m: i32, N: i32) {
-    let tw: opus_val16 = std::f32::consts::FRAC_1_SQRT_2;
+    let tw: f32 = std::f32::consts::FRAC_1_SQRT_2;
     /* We know that m==4 here because the radix-2 is just after a radix-4 */
     assert_eq!(m, 4);
     assert_eq!(Fout.len(), N as usize * 8);
@@ -55,10 +44,10 @@ fn kf_bfly2(Fout: &mut [kiss_fft_cpx], m: i32, N: i32) {
         Fout[3] += t;
     }
 }
-unsafe fn kf_bfly4(
+fn kf_bfly4(
     Fout: &mut [kiss_fft_cpx],
-    fstride: size_t,
-    st: *const kiss_fft_state,
+    fstride: usize,
+    st: &kiss_fft_state,
     m: i32,
     N: i32,
     mm: i32,
@@ -81,32 +70,29 @@ unsafe fn kf_bfly4(
         }
     } else {
         let mut scratch: [kiss_fft_cpx; 6] = [kiss_fft_cpx::zero(); 6];
-        let mut tw1: *const kiss_twiddle_cpx = 0 as *const kiss_twiddle_cpx;
-        let mut tw2: *const kiss_twiddle_cpx = 0 as *const kiss_twiddle_cpx;
-        let mut tw3: *const kiss_twiddle_cpx = 0 as *const kiss_twiddle_cpx;
         let m = m as usize;
         let m2 = 2 * m;
         let m3 = 3 * m;
 
         for i in 0..N {
             let mut chunk = &mut Fout[(i * mm) as usize..][..4 * m];
-            tw1 = (*st).twiddles;
-            tw2 = tw1;
-            tw3 = tw2;
+            let mut tw1 = st.twiddles.as_slice();
+            let mut tw2 = tw1;
+            let mut tw3 = tw2;
             /* m is guaranteed to be a multiple of 4. */
             for _ in 0..m {
-                scratch[0] = chunk[m] * (*tw1);
-                scratch[1] = chunk[m2] * (*tw2);
-                scratch[2] = chunk[m3] * (*tw3);
+                scratch[0] = chunk[m] * tw1[0];
+                scratch[1] = chunk[m2] * tw2[0];
+                scratch[2] = chunk[m3] * tw3[0];
 
                 scratch[5] = chunk[0] - scratch[1];
                 chunk[0] += scratch[1];
                 scratch[3] = scratch[0] + scratch[2];
                 scratch[4] = scratch[0] - scratch[2];
                 chunk[m2] = chunk[0] - scratch[3];
-                tw1 = tw1.offset(fstride as isize);
-                tw2 = tw2.offset(fstride.wrapping_mul(2) as isize);
-                tw3 = tw3.offset(fstride.wrapping_mul(3) as isize);
+                tw1 = &tw1[fstride..];
+                tw2 = &tw2[fstride * 2..];
+                tw3 = &tw3[fstride * 3..];
                 chunk[0] += scratch[3];
 
                 chunk[m].re = scratch[5].re + scratch[4].im;
@@ -118,33 +104,31 @@ unsafe fn kf_bfly4(
         }
     };
 }
-unsafe fn kf_bfly3(
+fn kf_bfly3(
     Fout: &mut [kiss_fft_cpx],
-    fstride: size_t,
-    st: *const kiss_fft_state,
+    fstride: usize,
+    st: &kiss_fft_state,
     m: i32,
     N: i32,
     mm: i32,
 ) {
     let m = m as usize;
     let m2 = 2 * m;
-    let mut tw1: *const kiss_twiddle_cpx = 0 as *const kiss_twiddle_cpx;
-    let mut tw2: *const kiss_twiddle_cpx = 0 as *const kiss_twiddle_cpx;
     let mut scratch: [kiss_fft_cpx; 5] = [kiss_fft_cpx::zero(); 5];
-    let epi3 = *((*st).twiddles).offset(fstride.wrapping_mul(m as u64) as isize);
+    let epi3 = st.twiddles[fstride * m];
     for i in 0..N {
         let mut chunk = &mut Fout[(i * mm) as usize..][..3 * m];
-        tw2 = (*st).twiddles;
-        tw1 = tw2;
+        let mut tw2 = st.twiddles.as_slice();
+        let mut tw1 = tw2;
         /* For non-custom modes, m is guaranteed to be a multiple of 4. */
         for _ in 0..m {
-            scratch[1] = chunk[m] * (*tw1);
-            scratch[2] = chunk[m2] * (*tw2);
+            scratch[1] = chunk[m] * tw1[0];
+            scratch[2] = chunk[m2] * tw2[0];
 
             scratch[3] = scratch[1] + scratch[2];
             scratch[0] = scratch[1] - scratch[2];
-            tw1 = tw1.offset(fstride as isize);
-            tw2 = tw2.offset(fstride.wrapping_mul(2) as isize);
+            tw1 = &tw1[fstride..];
+            tw2 = &tw2[fstride * 2..];
 
             chunk[m] = chunk[0] - scratch[3] * 0.5f32;
 
@@ -162,20 +146,18 @@ unsafe fn kf_bfly3(
         }
     }
 }
-unsafe fn kf_bfly5(
+fn kf_bfly5(
     Fout: &mut [kiss_fft_cpx],
-    fstride: size_t,
-    st: *const kiss_fft_state,
+    fstride: usize,
+    st: &kiss_fft_state,
     m: i32,
     N: i32,
     mm: i32,
 ) {
     let mut scratch: [kiss_fft_cpx; 13] = [kiss_fft_cpx::zero(); 13];
-    let mut tw: *const kiss_twiddle_cpx = 0 as *const kiss_twiddle_cpx;
-    let ya = *((*st).twiddles).offset(fstride.wrapping_mul(m as u64) as isize);
-    let yb = *((*st).twiddles)
-        .offset(fstride.wrapping_mul(2 as i32 as u64).wrapping_mul(m as u64) as isize);
-    tw = (*st).twiddles;
+    let ya = st.twiddles[fstride * m as usize];
+    let yb = st.twiddles[fstride * m as usize * 2];
+    let tw = st.twiddles.as_slice();
     let m = m as usize;
     for i in 0..N {
         let chunk = &mut Fout[(i * mm) as usize..][..5 * m];
@@ -185,13 +167,13 @@ unsafe fn kf_bfly5(
         let (mut chunk3, mut chunk4) = chunk.split_at_mut(m);
 
         /* For non-custom modes, m is guaranteed to be a multiple of 4. */
-        for u in 0..m as u64 {
+        for u in 0..m {
             scratch[0] = chunk0[0];
 
-            scratch[1] = chunk1[0] * (*tw.offset((u).wrapping_mul(fstride) as isize));
-            scratch[2] = chunk2[0] * (*tw.offset((2 * u).wrapping_mul(fstride) as isize));
-            scratch[3] = chunk3[0] * (*tw.offset((3 * u).wrapping_mul(fstride) as isize));
-            scratch[4] = chunk4[0] * (*tw.offset((4 * u).wrapping_mul(fstride) as isize));
+            scratch[1] = chunk1[0] * tw[1 * u * fstride];
+            scratch[2] = chunk2[0] * tw[2 * u * fstride];
+            scratch[3] = chunk3[0] * tw[3 * u * fstride];
+            scratch[4] = chunk4[0] * tw[4 * u * fstride];
 
             scratch[7] = scratch[1] + scratch[4];
             scratch[10] = scratch[1] - scratch[4];
@@ -225,8 +207,9 @@ unsafe fn kf_bfly5(
         }
     }
 }
-pub unsafe fn opus_fft_impl(st: *const kiss_fft_state, fout: &mut [kiss_fft_cpx]) {
-    let shift = (*st).shift.max(0);
+
+pub fn opus_fft_impl(st: &kiss_fft_state, fout: &mut [kiss_fft_cpx]) {
+    let shift = st.shift.max(0);
 
     let mut fstride: [i32; 8] = [0; 8];
     fstride[0] = 1;
@@ -234,8 +217,8 @@ pub unsafe fn opus_fft_impl(st: *const kiss_fft_state, fout: &mut [kiss_fft_cpx]
     let mut L = 0_usize;
     loop {
         // TODO: convert `factors` to array of pairs (or even structs)
-        let p = (*st).factors[2 * L] as i32;
-        let m = (*st).factors[2 * L + 1] as i32;
+        let p = st.factors[2 * L] as i32;
+        let m = st.factors[2 * L + 1] as i32;
         fstride[L + 1] = fstride[L] * p;
         L += 1;
         if m == 1 {
@@ -243,52 +226,41 @@ pub unsafe fn opus_fft_impl(st: *const kiss_fft_state, fout: &mut [kiss_fft_cpx]
         }
     }
 
-    let mut m = (*st).factors[2 * L - 1] as i32;
+    let mut m = st.factors[2 * L - 1] as i32;
     for i in (0..L).rev() {
         let m2 = if i != 0 {
-            (*st).factors[2 * i - 1] as i32
+            st.factors[2 * i - 1] as i32
         } else {
             1
         };
-        match (*st).factors[2 * i] as i32 {
+        match st.factors[2 * i] as i32 {
             2 => {
                 kf_bfly2(fout, m, fstride[i]);
             }
             4 => {
-                kf_bfly4(fout, (fstride[i] << shift) as size_t, st, m, fstride[i], m2);
+                kf_bfly4(fout, (fstride[i] << shift) as usize, st, m, fstride[i], m2);
             }
             3 => {
-                kf_bfly3(fout, (fstride[i] << shift) as size_t, st, m, fstride[i], m2);
+                kf_bfly3(fout, (fstride[i] << shift) as usize, st, m, fstride[i], m2);
             }
             5 => {
-                kf_bfly5(fout, (fstride[i] << shift) as size_t, st, m, fstride[i], m2);
+                kf_bfly5(fout, (fstride[i] << shift) as usize, st, m, fstride[i], m2);
             }
             _ => {}
         }
         m = m2;
     }
 }
-pub unsafe fn opus_fft_c(
-    st: *const kiss_fft_state,
-    fin: *const kiss_fft_cpx,
-    fout: *mut kiss_fft_cpx,
-) {
-    let mut scale: opus_val16 = 0.;
-    scale = (*st).scale;
-    if !(fin != fout as *const kiss_fft_cpx) {
-        celt_fatal(
-            b"assertion failed: fin != fout\nIn-place FFT not supported\0" as *const u8
-                as *const i8,
-            b"celt/kiss_fft.c\0" as *const u8 as *const i8,
-            580 as i32,
-        );
+
+pub unsafe fn opus_fft_c(st: &kiss_fft_state, fin: &[kiss_fft_cpx], fout: &mut [kiss_fft_cpx]) {
+    let mut scale: f32 = 0.;
+    scale = st.scale;
+    assert_eq!(fin.len(), st.nfft as usize);
+    assert_eq!(fout.len(), st.nfft as usize);
+    for i in 0..st.nfft as usize {
+        let x: kiss_fft_cpx = fin[i];
+        let bitrev = *(st.bitrev).offset(i as isize) as usize;
+        fout[bitrev] = scale * x;
     }
-    for i in 0..(*st).nfft as usize {
-        let x: kiss_fft_cpx = *fin.offset(i as isize);
-        (*fout.offset(*((*st).bitrev).offset(i as isize) as isize)) = scale * x;
-    }
-    opus_fft_impl(
-        st,
-        std::slice::from_raw_parts_mut(fout, (*st).nfft as usize),
-    );
+    opus_fft_impl(st, fout);
 }
