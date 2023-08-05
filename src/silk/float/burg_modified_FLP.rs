@@ -2,7 +2,6 @@ pub mod tuning_parameters_h {
     pub const FIND_LPC_COND_FAC: f32 = 1e-5f32;
 }
 pub use self::tuning_parameters_h::FIND_LPC_COND_FAC;
-use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memset};
 use crate::silk::float::energy_FLP::silk_energy_FLP;
 use crate::silk::float::inner_product_FLP::silk_inner_product_FLP;
@@ -34,14 +33,7 @@ pub unsafe fn silk_burg_modified_FLP(
     let mut CAf: [f64; 25] = [0.; 25];
     let mut CAb: [f64; 25] = [0.; 25];
     let mut Af: [f64; 24] = [0.; 24];
-    if !(subfr_length * nb_subfr <= 384 as i32) {
-        celt_fatal(
-            b"assertion failed: subfr_length * nb_subfr <= MAX_FRAME_SIZE\0" as *const u8
-                as *const i8,
-            b"silk/float/burg_modified_FLP.c\0" as *const u8 as *const i8,
-            55 as i32,
-        );
-    }
+    assert!(subfr_length * nb_subfr <= 384 as i32);
     C0 = silk_energy_FLP(x, nb_subfr * subfr_length);
     memset(
         C_first_row.as_mut_ptr() as *mut core::ffi::c_void,

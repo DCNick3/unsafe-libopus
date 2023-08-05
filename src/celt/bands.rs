@@ -19,7 +19,6 @@ pub use self::arch_h::{
 };
 pub use self::stack_alloc_h::ALLOC_NONE;
 pub use self::stddef_h::NULL;
-use crate::celt::celt::celt_fatal;
 use crate::celt::entcode::{celt_sudiv, celt_udiv, ec_ctx, ec_tell_frac, BITRES};
 use crate::celt::entdec::{ec_dec_bit_logp, ec_dec_bits, ec_dec_uint, ec_dec_update, ec_decode};
 use crate::celt::entenc::{ec_enc_bit_logp, ec_enc_bits, ec_enc_uint, ec_encode};
@@ -269,13 +268,7 @@ pub unsafe fn denormalise_bands(
         }
         i += 1;
     }
-    if !(start <= end) {
-        celt_fatal(
-            b"assertion failed: start <= end\0" as *const u8 as *const i8,
-            b"celt/bands.c\0" as *const u8 as *const i8,
-            263 as i32,
-        );
-    }
+    assert!(start <= end);
     memset(
         &mut *freq.offset(bound as isize) as *mut celt_sig as *mut core::ffi::c_void,
         0 as i32,
@@ -495,13 +488,7 @@ pub unsafe fn spreading_decision(
     let eBands: *const i16 = (*m).eBands;
     let mut decision: i32 = 0;
     let mut hf_sum: i32 = 0 as i32;
-    if !(end > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: end>0\0" as *const u8 as *const i8,
-            b"celt/bands.c\0" as *const u8 as *const i8,
-            489 as i32,
-        );
-    }
+    assert!(end > 0 as i32);
     N0 = M * (*m).shortMdctSize;
     if M * (*eBands.offset(end as isize) as i32 - *eBands.offset((end - 1 as i32) as isize) as i32)
         <= 8 as i32
@@ -577,20 +564,8 @@ pub unsafe fn spreading_decision(
             *tapset_decision = 0 as i32;
         }
     }
-    if !(nbBands > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: nbBands>0\0" as *const u8 as *const i8,
-            b"celt/bands.c\0" as *const u8 as *const i8,
-            545 as i32,
-        );
-    }
-    if !(sum >= 0 as i32) {
-        celt_fatal(
-            b"assertion failed: sum>=0\0" as *const u8 as *const i8,
-            b"celt/bands.c\0" as *const u8 as *const i8,
-            546 as i32,
-        );
-    }
+    assert!(nbBands > 0 as i32);
+    assert!(sum >= 0 as i32);
     sum = celt_udiv((sum << 8 as i32) as u32, nbBands as u32) as i32;
     sum = sum + *average >> 1 as i32;
     *average = sum;
@@ -620,13 +595,7 @@ unsafe fn deinterleave_hadamard(X: *mut celt_norm, N0: i32, stride: i32, hadamar
     N = N0 * stride;
     let vla = N as usize;
     let mut tmp: Vec<celt_norm> = ::std::vec::from_elem(0., vla);
-    if !(stride > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: stride>0\0" as *const u8 as *const i8,
-            b"celt/bands.c\0" as *const u8 as *const i8,
-            591 as i32,
-        );
-    }
+    assert!(stride > 0 as i32);
     if hadamard != 0 {
         let ordery: *const i32 = ordery_table
             .as_ptr()
@@ -760,13 +729,7 @@ unsafe fn compute_qn(N: i32, b: i32, offset: i32, pulse_cap: i32, stereo: i32) -
         qn = exp2_table8[(qb & 0x7 as i32) as usize] as i32 >> 14 as i32 - (qb >> BITRES);
         qn = (qn + 1 as i32 >> 1 as i32) << 1 as i32;
     }
-    if !(qn <= 256 as i32) {
-        celt_fatal(
-            b"assertion failed: qn <= 256\0" as *const u8 as *const i8,
-            b"celt/bands.c\0" as *const u8 as *const i8,
-            669 as i32,
-        );
-    }
+    assert!(qn <= 256 as i32);
     return qn;
 }
 unsafe fn compute_theta(
@@ -958,13 +921,7 @@ unsafe fn compute_theta(
                 ec_dec_update(ec, fl_0 as u32, (fl_0 + fs_0) as u32, ft_0 as u32);
             }
         }
-        if !(itheta >= 0 as i32) {
-            celt_fatal(
-                b"assertion failed: itheta>=0\0" as *const u8 as *const i8,
-                b"celt/bands.c\0" as *const u8 as *const i8,
-                838 as i32,
-            );
-        }
+        assert!(itheta >= 0 as i32);
         itheta = celt_udiv((itheta * 16384 as i32) as u32, qn as u32) as i32;
         if encode != 0 && stereo != 0 {
             if itheta == 0 as i32 {
@@ -1803,13 +1760,7 @@ pub unsafe fn quant_all_bands(
         }
         N = M * *eBands.offset((i + 1 as i32) as isize) as i32
             - M * *eBands.offset(i as isize) as i32;
-        if !(N > 0 as i32) {
-            celt_fatal(
-                b"assertion failed: N > 0\0" as *const u8 as *const i8,
-                b"celt/bands.c\0" as *const u8 as *const i8,
-                1495 as i32,
-            );
-        }
+        assert!(N > 0 as i32);
         tell = ec_tell_frac(ec) as i32;
         if i != start {
             balance -= tell;

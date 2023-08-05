@@ -27,7 +27,6 @@ pub mod cpu_support_h {
 use self::arch_h::{opus_val16, opus_val32, CELT_SIG_SCALE, EPSILON, Q15ONE, VERY_SMALL};
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::stddef_h::{size_t, NULL};
-use crate::celt::celt::celt_fatal;
 use crate::celt::celt::{
     CELT_GET_MODE_REQUEST, CELT_SET_ANALYSIS_REQUEST, CELT_SET_CHANNELS_REQUEST,
     CELT_SET_END_BAND_REQUEST, CELT_SET_PREDICTION_REQUEST, CELT_SET_SIGNALLING_REQUEST,
@@ -2058,14 +2057,7 @@ pub unsafe fn opus_encode_native(
         } else if curr_bandwidth == OPUS_BANDWIDTH_MEDIUMBAND {
             (*st).silk_mode.desiredInternalSampleRate = 12000 as i32;
         } else {
-            if !((*st).mode == 1001 as i32 || curr_bandwidth == 1103 as i32) {
-                celt_fatal(
-                    b"assertion failed: st->mode == MODE_HYBRID || curr_bandwidth == OPUS_BANDWIDTH_WIDEBAND\0"
-                        as *const u8 as *const i8,
-                    b"src/opus_encoder.c\0" as *const u8 as *const i8,
-                    1755 as i32,
-                );
-            }
+            assert!((*st).mode == 1001 as i32 || curr_bandwidth == 1103 as i32);
             (*st).silk_mode.desiredInternalSampleRate = 16000 as i32;
         }
         if (*st).mode == MODE_HYBRID {
@@ -2199,14 +2191,9 @@ pub unsafe fn opus_encode_native(
             } else if (*st).silk_mode.internalSampleRate == 16000 as i32 {
                 curr_bandwidth = OPUS_BANDWIDTH_WIDEBAND;
             }
-        } else if !((*st).silk_mode.internalSampleRate == 16000 as i32) {
-            celt_fatal(
-                b"assertion failed: st->silk_mode.internalSampleRate == 16000\0" as *const u8
-                    as *const i8,
-                b"src/opus_encoder.c\0" as *const u8 as *const i8,
-                1863 as i32,
-            );
-        }
+        } else {
+            assert!((*st).silk_mode.internalSampleRate == 16000 as i32)
+        };
         (*st).silk_mode.opusCanSwitch =
             ((*st).silk_mode.switchReady != 0 && (*st).nonfinal_frame == 0) as i32;
         if nBytes == 0 as i32 {

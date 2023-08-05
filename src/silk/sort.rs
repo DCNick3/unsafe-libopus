@@ -1,30 +1,10 @@
-use crate::celt::celt::celt_fatal;
-
 pub unsafe fn silk_insertion_sort_increasing(a: *mut i32, idx: *mut i32, L: i32, K: i32) {
     let mut value: i32 = 0;
     let mut i: i32 = 0;
     let mut j: i32 = 0;
-    if !(K > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: K > 0\0" as *const u8 as *const i8,
-            b"silk/sort.c\0" as *const u8 as *const i8,
-            51 as i32,
-        );
-    }
-    if !(L > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: L > 0\0" as *const u8 as *const i8,
-            b"silk/sort.c\0" as *const u8 as *const i8,
-            52 as i32,
-        );
-    }
-    if !(L >= K) {
-        celt_fatal(
-            b"assertion failed: L >= K\0" as *const u8 as *const i8,
-            b"silk/sort.c\0" as *const u8 as *const i8,
-            53 as i32,
-        );
-    }
+    assert!(K > 0 as i32);
+    assert!(L > 0 as i32);
+    assert!(L >= K);
     i = 0 as i32;
     while i < K {
         *idx.offset(i as isize) = i;
@@ -63,13 +43,7 @@ pub unsafe fn silk_insertion_sort_increasing_all_values_int16(a: *mut i16, L: i3
     let mut value: i32 = 0;
     let mut i: i32 = 0;
     let mut j: i32 = 0;
-    if !(L > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: L > 0\0" as *const u8 as *const i8,
-            b"silk/sort.c\0" as *const u8 as *const i8,
-            144 as i32,
-        );
-    }
+    assert!(L > 0 as i32);
     i = 1 as i32;
     while i < L {
         value = *a.offset(i as isize) as i32;

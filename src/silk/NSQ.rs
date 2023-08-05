@@ -121,7 +121,6 @@ pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 pub use self::NSQ_h::{
     silk_NSQ_noise_shape_feedback_loop_c, silk_noise_shape_quantizer_short_prediction_c,
 };
-use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memmove};
 use crate::silk::define::{
     HARM_SHAPE_FIR_TAPS, LTP_ORDER, MAX_LPC_ORDER, MAX_SHAPE_LPC_ORDER, NSQ_LPC_BUF_LENGTH,
@@ -198,13 +197,7 @@ pub unsafe fn silk_NSQ_c(
                     - lag
                     - (*psEncC).predictLPCOrder
                     - LTP_ORDER / 2 as i32;
-                if !(start_idx > 0 as i32) {
-                    celt_fatal(
-                        b"assertion failed: start_idx > 0\0" as *const u8 as *const i8,
-                        b"silk/NSQ.c\0" as *const u8 as *const i8,
-                        146 as i32,
-                    );
-                }
+                assert!(start_idx > 0 as i32);
                 silk_LPC_analysis_filter(
                     &mut *sLTP.as_mut_ptr().offset(start_idx as isize),
                     &mut *((*NSQ).xq)
@@ -367,13 +360,7 @@ unsafe fn silk_noise_shape_quantizer(
         } else {
             LTP_pred_Q13 = 0 as i32;
         }
-        if !(shapingLPCOrder & 1 as i32 == 0 as i32) {
-            celt_fatal(
-                b"assertion failed: ( shapingLPCOrder & 1 ) == 0\0" as *const u8 as *const i8,
-                b"silk/NSQ.c\0" as *const u8 as *const i8,
-                250 as i32,
-            );
-        }
+        assert!(shapingLPCOrder & 1 as i32 == 0 as i32);
         n_AR_Q12 = silk_NSQ_noise_shape_feedback_loop_c(
             &mut (*NSQ).sDiff_shp_Q14,
             ((*NSQ).sAR2_Q14).as_mut_ptr(),
@@ -389,14 +376,7 @@ unsafe fn silk_noise_shape_quantizer(
         n_LF_Q12 = (n_LF_Q12 as i64
             + ((*NSQ).sLF_AR_shp_Q14 as i64 * (LF_shp_Q14 as i64 >> 16 as i32) >> 16 as i32))
             as i32;
-        if !(lag > 0 as i32 || signalType != 2 as i32) {
-            celt_fatal(
-                b"assertion failed: lag > 0 || signalType != TYPE_VOICED\0" as *const u8
-                    as *const i8,
-                b"silk/NSQ.c\0" as *const u8 as *const i8,
-                258 as i32,
-            );
-        }
+        assert!(lag > 0 as i32 || signalType != 2 as i32);
         tmp1 = ((LPC_pred_Q10 as u32) << 2 as i32) as i32 - n_AR_Q12;
         tmp1 = tmp1 - n_LF_Q12;
         if lag > 0 as i32 {

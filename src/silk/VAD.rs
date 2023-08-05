@@ -3,7 +3,6 @@ pub mod typedef_h {
     pub const silk_int32_MAX: i32 = i32::MAX;
 }
 pub use self::typedef_h::{silk_int32_MAX, silk_uint8_MAX};
-use crate::celt::celt::celt_fatal;
 use crate::externs::memset;
 use crate::silk::ana_filt_bank_1::silk_ana_filt_bank_1;
 use crate::silk::define::{
@@ -67,29 +66,9 @@ pub unsafe fn silk_VAD_GetSA_Q8_c(psEncC: *mut silk_encoder_state, pIn: *const i
     let mut X_offset: [i32; 4] = [0; 4];
     let ret: i32 = 0 as i32;
     let psSilk_VAD: *mut silk_VAD_state = &mut (*psEncC).sVAD;
-    if !(5 as i32 * 4 as i32 * 16 as i32 >= (*psEncC).frame_length) {
-        celt_fatal(
-            b"assertion failed: MAX_FRAME_LENGTH >= psEncC->frame_length\0" as *const u8
-                as *const i8,
-            b"silk/VAD.c\0" as *const u8 as *const i8,
-            104 as i32,
-        );
-    }
-    if !((*psEncC).frame_length <= 512 as i32) {
-        celt_fatal(
-            b"assertion failed: psEncC->frame_length <= 512\0" as *const u8 as *const i8,
-            b"silk/VAD.c\0" as *const u8 as *const i8,
-            105 as i32,
-        );
-    }
-    if !((*psEncC).frame_length == 8 as i32 * ((*psEncC).frame_length >> 3 as i32)) {
-        celt_fatal(
-            b"assertion failed: psEncC->frame_length == 8 * silk_RSHIFT( psEncC->frame_length, 3 )\0"
-                as *const u8 as *const i8,
-            b"silk/VAD.c\0" as *const u8 as *const i8,
-            106 as i32,
-        );
-    }
+    assert!(5 as i32 * 4 as i32 * 16 as i32 >= (*psEncC).frame_length);
+    assert!((*psEncC).frame_length <= 512 as i32);
+    assert!((*psEncC).frame_length == 8 as i32 * ((*psEncC).frame_length >> 3 as i32));
     decimated_framelength1 = (*psEncC).frame_length >> 1 as i32;
     decimated_framelength2 = (*psEncC).frame_length >> 2 as i32;
     decimated_framelength = (*psEncC).frame_length >> 3 as i32;

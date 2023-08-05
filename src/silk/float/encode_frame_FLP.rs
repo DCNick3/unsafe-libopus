@@ -10,7 +10,6 @@ pub mod SigProc_FLP_h {
     }
 }
 pub use self::SigProc_FLP_h::silk_short2float_array;
-use crate::celt::celt::celt_fatal;
 use crate::celt::entcode::ec_tell;
 use crate::celt::entenc::ec_enc;
 use crate::externs::{memcpy, memmove};
@@ -354,14 +353,7 @@ pub unsafe fn silk_encode_frame_FLP(
                         &mut sRangeEnc_copy2 as *mut ec_enc as *const core::ffi::c_void,
                         ::core::mem::size_of::<ec_enc>() as u64,
                     );
-                    if !(sRangeEnc_copy2.offs <= 1275 as i32 as u32) {
-                        celt_fatal(
-                            b"assertion failed: sRangeEnc_copy2.offs <= 1275\0" as *const u8
-                                as *const i8,
-                            b"silk/float/encode_frame_FLP.c\0" as *const u8 as *const i8,
-                            251 as i32,
-                        );
-                    }
+                    assert!(sRangeEnc_copy2.offs <= 1275 as i32 as u32);
                     memcpy(
                         (*psRangeEnc).buf as *mut core::ffi::c_void,
                         ec_buf_copy.as_mut_ptr() as *const core::ffi::c_void,
@@ -406,14 +398,7 @@ pub unsafe fn silk_encode_frame_FLP(
                             psRangeEnc as *const core::ffi::c_void,
                             ::core::mem::size_of::<ec_enc>() as u64,
                         );
-                        if !((*psRangeEnc).offs <= 1275 as i32 as u32) {
-                            celt_fatal(
-                                b"assertion failed: psRangeEnc->offs <= 1275\0" as *const u8
-                                    as *const i8,
-                                b"silk/float/encode_frame_FLP.c\0" as *const u8 as *const i8,
-                                281 as i32,
-                            );
-                        }
+                        assert!((*psRangeEnc).offs <= 1275 as i32 as u32);
                         memcpy(
                             ec_buf_copy.as_mut_ptr() as *mut core::ffi::c_void,
                             (*psRangeEnc).buf as *const core::ffi::c_void,

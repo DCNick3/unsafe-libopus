@@ -1,4 +1,3 @@
-use crate::celt::celt::celt_fatal;
 use crate::silk::pitch_est_tables::{
     silk_CB_lags_stage2, silk_CB_lags_stage2_10_ms, silk_CB_lags_stage3, silk_CB_lags_stage3_10_ms,
     PE_MAX_NB_SUBFR, PE_NB_CBKS_STAGE2_10MS, PE_NB_CBKS_STAGE2_EXT, PE_NB_CBKS_STAGE3_10MS,
@@ -25,14 +24,7 @@ pub unsafe fn silk_decode_pitch(
                 .offset(0 as i32 as isize) as *const i8;
             cbk_size = PE_NB_CBKS_STAGE2_EXT;
         } else {
-            if !(nb_subfr == 4 as i32 >> 1 as i32) {
-                celt_fatal(
-                    b"assertion failed: nb_subfr == PE_MAX_NB_SUBFR >> 1\0" as *const u8
-                        as *const i8,
-                    b"silk/decode_pitch.c\0" as *const u8 as *const i8,
-                    54 as i32,
-                );
-            }
+            assert!(nb_subfr == 4 as i32 >> 1 as i32);
             Lag_CB_ptr = &*(*silk_CB_lags_stage2_10_ms.as_ptr().offset(0 as i32 as isize))
                 .as_ptr()
                 .offset(0 as i32 as isize) as *const i8;
@@ -44,13 +36,7 @@ pub unsafe fn silk_decode_pitch(
             .offset(0 as i32 as isize) as *const i8;
         cbk_size = PE_NB_CBKS_STAGE3_MAX;
     } else {
-        if !(nb_subfr == 4 as i32 >> 1 as i32) {
-            celt_fatal(
-                b"assertion failed: nb_subfr == PE_MAX_NB_SUBFR >> 1\0" as *const u8 as *const i8,
-                b"silk/decode_pitch.c\0" as *const u8 as *const i8,
-                63 as i32,
-            );
-        }
+        assert!(nb_subfr == 4 as i32 >> 1 as i32);
         Lag_CB_ptr = &*(*silk_CB_lags_stage3_10_ms.as_ptr().offset(0 as i32 as isize))
             .as_ptr()
             .offset(0 as i32 as isize) as *const i8;

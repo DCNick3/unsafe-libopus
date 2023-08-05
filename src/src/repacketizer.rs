@@ -14,7 +14,6 @@ pub mod stddef_h {
     pub const NULL: i32 = 0 as i32;
 }
 pub use self::stddef_h::{size_t, NULL};
-use crate::celt::celt::celt_fatal;
 use crate::src::opus_defines::{OPUS_BAD_ARG, OPUS_BUFFER_TOO_SMALL, OPUS_INVALID_PACKET, OPUS_OK};
 
 use crate::externs::memmove;
@@ -356,13 +355,7 @@ pub unsafe fn opus_packet_unpad(data: *mut u8, len: i32) -> i32 {
         0 as i32,
         0 as i32,
     );
-    if !(ret > 0 as i32 && ret <= len) {
-        celt_fatal(
-            b"assertion failed: ret > 0 && ret <= len\0" as *const u8 as *const i8,
-            b"src/repacketizer.c\0" as *const u8 as *const i8,
-            274 as i32,
-        );
-    }
+    assert!(ret > 0 as i32 && ret <= len);
     return ret;
 }
 pub unsafe fn opus_multistream_packet_pad(

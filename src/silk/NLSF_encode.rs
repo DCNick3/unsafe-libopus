@@ -1,4 +1,3 @@
-use crate::celt::celt::celt_fatal;
 use crate::externs::memcpy;
 use crate::silk::define::MAX_LPC_ORDER;
 use crate::silk::lin2log::silk_lin2log;
@@ -36,13 +35,7 @@ pub unsafe fn silk_NLSF_encode(
     let mut pCB_element: *const u8 = 0 as *const u8;
     let mut iCDF_ptr: *const u8 = 0 as *const u8;
     let mut pCB_Wght_Q9: *const i16 = 0 as *const i16;
-    if !(signalType >= 0 as i32 && signalType <= 2 as i32) {
-        celt_fatal(
-            b"assertion failed: signalType >= 0 && signalType <= 2\0" as *const u8 as *const i8,
-            b"silk/NLSF_encode.c\0" as *const u8 as *const i8,
-            63 as i32,
-        );
-    }
+    assert!(signalType >= 0 as i32 && signalType <= 2 as i32);
     silk_NLSF_stabilize(
         pNLSF_Q15,
         (*psNLSF_CB).deltaMin_Q15,

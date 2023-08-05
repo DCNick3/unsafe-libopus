@@ -1,4 +1,3 @@
-use crate::celt::celt::celt_fatal;
 use crate::celt::entcode::{celt_udiv, ec_ctx, ec_window, EC_UINT_BITS, EC_WINDOW_SIZE};
 use crate::silk::macros::EC_CLZ0;
 
@@ -126,13 +125,7 @@ pub unsafe fn ec_dec_uint(mut _this: *mut ec_dec, mut _ft: u32) -> u32 {
     let mut ft: u32 = 0;
     let mut s: u32 = 0;
     let mut ftb: i32 = 0;
-    if !(_ft > 1 as i32 as u32) {
-        celt_fatal(
-            b"assertion failed: _ft>1\0" as *const u8 as *const i8,
-            b"celt/entdec.c\0" as *const u8 as *const i8,
-            203 as i32,
-        );
-    }
+    assert!(_ft > 1 as i32 as u32);
     _ft = _ft.wrapping_sub(1);
     ftb = EC_CLZ0 - _ft.leading_zeros() as i32;
     if ftb > EC_UINT_BITS {

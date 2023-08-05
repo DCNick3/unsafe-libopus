@@ -5,7 +5,6 @@ pub mod typedef_h {
     pub const silk_int32_MIN: i32 = i32::MIN;
 }
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN, silk_int32_MAX, silk_int32_MIN};
-use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memmove, memset};
 use crate::silk::define::{CNG_BUF_MASK_MAX, MAX_LPC_ORDER, TYPE_NO_VOICE_ACTIVITY};
 use crate::silk::structs::{silk_CNG_struct, silk_decoder_control, silk_decoder_state};
@@ -152,14 +151,7 @@ pub unsafe fn silk_CNG(
             ((*psCNG).CNG_synth_state).as_mut_ptr() as *const core::ffi::c_void,
             (16 as i32 as u64).wrapping_mul(::core::mem::size_of::<i32>() as u64),
         );
-        if !((*psDec).LPC_order == 10 as i32 || (*psDec).LPC_order == 16 as i32) {
-            celt_fatal(
-                b"assertion failed: psDec->LPC_order == 10 || psDec->LPC_order == 16\0" as *const u8
-                    as *const i8,
-                b"silk/CNG.c\0" as *const u8 as *const i8,
-                149 as i32,
-            );
-        }
+        assert!((*psDec).LPC_order == 10 as i32 || (*psDec).LPC_order == 16 as i32);
         i = 0 as i32;
         while i < length {
             LPC_pred_Q10 = (*psDec).LPC_order >> 1 as i32;

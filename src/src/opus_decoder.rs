@@ -31,7 +31,6 @@ pub use self::arch_h::{opus_val16, opus_val32};
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::stack_alloc_h::{_opus_false, ALLOC_NONE};
 pub use self::stddef_h::{size_t, NULL};
-use crate::celt::celt::celt_fatal;
 use crate::celt::celt::CELT_SET_SIGNALLING_REQUEST;
 use crate::celt::celt_decoder::{
     celt_decode_with_ec, celt_decoder_get_size, celt_decoder_init, OpusCustomDecoder,
@@ -80,100 +79,37 @@ pub struct OpusDecoder {
     pub(crate) rangeFinal: u32,
 }
 unsafe fn validate_opus_decoder(st: *mut OpusDecoder) {
-    if !((*st).channels == 1 as i32 || (*st).channels == 2 as i32) {
-        celt_fatal(
-            b"assertion failed: st->channels == 1 || st->channels == 2\0" as *const u8 as *const i8,
-            b"src/opus_decoder.c\0" as *const u8 as *const i8,
-            84 as i32,
-        );
-    }
-    if !((*st).Fs == 48000 as i32
-        || (*st).Fs == 24000 as i32
-        || (*st).Fs == 16000 as i32
-        || (*st).Fs == 12000 as i32
-        || (*st).Fs == 8000 as i32)
-    {
-        celt_fatal(
-            b"assertion failed: st->Fs == 48000 || st->Fs == 24000 || st->Fs == 16000 || st->Fs == 12000 || st->Fs == 8000\0"
-                as *const u8 as *const i8,
-            b"src/opus_decoder.c\0" as *const u8 as *const i8,
-            85 as i32,
-        );
-    }
-    if !((*st).DecControl.API_sampleRate == (*st).Fs) {
-        celt_fatal(
-            b"assertion failed: st->DecControl.API_sampleRate == st->Fs\0" as *const u8
-                as *const i8,
-            b"src/opus_decoder.c\0" as *const u8 as *const i8,
-            86 as i32,
-        );
-    }
-    if !((*st).DecControl.internalSampleRate == 0 as i32
-        || (*st).DecControl.internalSampleRate == 16000 as i32
-        || (*st).DecControl.internalSampleRate == 12000 as i32
-        || (*st).DecControl.internalSampleRate == 8000 as i32)
-    {
-        celt_fatal(
-            b"assertion failed: st->DecControl.internalSampleRate == 0 || st->DecControl.internalSampleRate == 16000 || st->DecControl.internalSampleRate == 12000 || st->DecControl.internalSampleRate == 8000\0"
-                as *const u8 as *const i8,
-            b"src/opus_decoder.c\0" as *const u8 as *const i8,
-            87 as i32,
-        );
-    }
-    if !((*st).DecControl.nChannelsAPI == (*st).channels) {
-        celt_fatal(
-            b"assertion failed: st->DecControl.nChannelsAPI == st->channels\0" as *const u8
-                as *const i8,
-            b"src/opus_decoder.c\0" as *const u8 as *const i8,
-            88 as i32,
-        );
-    }
-    if !((*st).DecControl.nChannelsInternal == 0 as i32
-        || (*st).DecControl.nChannelsInternal == 1 as i32
-        || (*st).DecControl.nChannelsInternal == 2 as i32)
-    {
-        celt_fatal(
-            b"assertion failed: st->DecControl.nChannelsInternal == 0 || st->DecControl.nChannelsInternal == 1 || st->DecControl.nChannelsInternal == 2\0"
-                as *const u8 as *const i8,
-            b"src/opus_decoder.c\0" as *const u8 as *const i8,
-            89 as i32,
-        );
-    }
-    if !((*st).DecControl.payloadSize_ms == 0 as i32
-        || (*st).DecControl.payloadSize_ms == 10 as i32
-        || (*st).DecControl.payloadSize_ms == 20 as i32
-        || (*st).DecControl.payloadSize_ms == 40 as i32
-        || (*st).DecControl.payloadSize_ms == 60 as i32)
-    {
-        celt_fatal(
-            b"assertion failed: st->DecControl.payloadSize_ms == 0 || st->DecControl.payloadSize_ms == 10 || st->DecControl.payloadSize_ms == 20 || st->DecControl.payloadSize_ms == 40 || st->DecControl.payloadSize_ms == 60\0"
-                as *const u8 as *const i8,
-            b"src/opus_decoder.c\0" as *const u8 as *const i8,
-            90 as i32,
-        );
-    }
-    if !((*st).arch >= 0 as i32) {
-        celt_fatal(
-            b"assertion failed: st->arch >= 0\0" as *const u8 as *const i8,
-            b"src/opus_decoder.c\0" as *const u8 as *const i8,
-            92 as i32,
-        );
-    }
-    if !((*st).arch <= 0 as i32) {
-        celt_fatal(
-            b"assertion failed: st->arch <= OPUS_ARCHMASK\0" as *const u8 as *const i8,
-            b"src/opus_decoder.c\0" as *const u8 as *const i8,
-            93 as i32,
-        );
-    }
-    if !((*st).stream_channels == 1 as i32 || (*st).stream_channels == 2 as i32) {
-        celt_fatal(
-            b"assertion failed: st->stream_channels == 1 || st->stream_channels == 2\0" as *const u8
-                as *const i8,
-            b"src/opus_decoder.c\0" as *const u8 as *const i8,
-            95 as i32,
-        );
-    }
+    assert!((*st).channels == 1 as i32 || (*st).channels == 2 as i32);
+    assert!(
+        (*st).Fs == 48000 as i32
+            || (*st).Fs == 24000 as i32
+            || (*st).Fs == 16000 as i32
+            || (*st).Fs == 12000 as i32
+            || (*st).Fs == 8000 as i32
+    );
+    assert!((*st).DecControl.API_sampleRate == (*st).Fs);
+    assert!(
+        (*st).DecControl.internalSampleRate == 0 as i32
+            || (*st).DecControl.internalSampleRate == 16000 as i32
+            || (*st).DecControl.internalSampleRate == 12000 as i32
+            || (*st).DecControl.internalSampleRate == 8000 as i32
+    );
+    assert!((*st).DecControl.nChannelsAPI == (*st).channels);
+    assert!(
+        (*st).DecControl.nChannelsInternal == 0 as i32
+            || (*st).DecControl.nChannelsInternal == 1 as i32
+            || (*st).DecControl.nChannelsInternal == 2 as i32
+    );
+    assert!(
+        (*st).DecControl.payloadSize_ms == 0 as i32
+            || (*st).DecControl.payloadSize_ms == 10 as i32
+            || (*st).DecControl.payloadSize_ms == 20 as i32
+            || (*st).DecControl.payloadSize_ms == 40 as i32
+            || (*st).DecControl.payloadSize_ms == 60 as i32
+    );
+    assert!((*st).arch >= 0 as i32);
+    assert!((*st).arch <= 0 as i32);
+    assert!((*st).stream_channels == 1 as i32 || (*st).stream_channels == 2 as i32);
 }
 pub unsafe fn opus_decoder_get_size(channels: i32) -> i32 {
     let mut silkDecSizeBytes: i32 = 0;
@@ -491,13 +427,7 @@ unsafe fn opus_decode_frame(
                     (*st).DecControl.internalSampleRate = 16000 as i32;
                 } else {
                     (*st).DecControl.internalSampleRate = 16000 as i32;
-                    if 0 as i32 == 0 {
-                        celt_fatal(
-                            b"assertion failed: 0\0" as *const u8 as *const i8,
-                            b"src/opus_decoder.c\0" as *const u8 as *const i8,
-                            389 as i32,
-                        );
-                    }
+                    panic!("libopus: assert(0) called");
                 }
             } else {
                 (*st).DecControl.internalSampleRate = 16000 as i32;
@@ -604,32 +534,12 @@ unsafe fn opus_decode_frame(
                 endband = 21 as i32;
             }
             _ => {
-                if 0 as i32 == 0 {
-                    celt_fatal(
-                        b"assertion failed: 0\0" as *const u8 as *const i8,
-                        b"src/opus_decoder.c\0" as *const u8 as *const i8,
-                        488 as i32,
-                    );
-                }
+                panic!("libopus: assert(0) called");
             }
         }
-        if !(opus_custom_decoder_ctl!(celt_dec, 10012 as i32, endband) == 0 as i32) {
-            celt_fatal(
-                b"assertion failed: (opus_custom_decoder_ctl!(celt_dec, 10012, (((void)((endband) == (i32)0)), (i32)(endband)))) == OPUS_OK\0"
-                    as *const u8 as *const i8,
-                b"src/opus_decoder.c\0" as *const u8 as *const i8,
-                491 as i32,
-            );
-        }
+        assert!(opus_custom_decoder_ctl!(celt_dec, 10012 as i32, endband) == 0 as i32);
     }
-    if !(opus_custom_decoder_ctl!(celt_dec, 10008 as i32, (*st).stream_channels) == 0 as i32) {
-        celt_fatal(
-            b"assertion failed: (opus_custom_decoder_ctl!(celt_dec, 10008, (((void)((st->stream_channels) == (i32)0)), (i32)(st->stream_channels)))) == OPUS_OK\0"
-                as *const u8 as *const i8,
-            b"src/opus_decoder.c\0" as *const u8 as *const i8,
-            493 as i32,
-        );
-    }
+    assert!(opus_custom_decoder_ctl!(celt_dec, 10008 as i32, (*st).stream_channels) == 0 as i32);
     redundant_audio_size = if redundancy != 0 {
         F5 * (*st).channels
     } else {
@@ -638,14 +548,7 @@ unsafe fn opus_decode_frame(
     let vla_2 = redundant_audio_size as usize;
     let mut redundant_audio: Vec<opus_val16> = ::std::vec::from_elem(0., vla_2);
     if redundancy != 0 && celt_to_silk != 0 {
-        if !(opus_custom_decoder_ctl!(celt_dec, 10010 as i32, 0 as i32) == 0 as i32) {
-            celt_fatal(
-                b"assertion failed: (opus_custom_decoder_ctl!(celt_dec, 10010, (((void)((0) == (i32)0)), (i32)(0)))) == OPUS_OK\0"
-                    as *const u8 as *const i8,
-                b"src/opus_decoder.c\0" as *const u8 as *const i8,
-                502 as i32,
-            );
-        }
+        assert!(opus_custom_decoder_ctl!(celt_dec, 10010 as i32, 0 as i32) == 0 as i32);
         celt_decode_with_ec(
             celt_dec,
             data.offset(len as isize),
@@ -655,34 +558,13 @@ unsafe fn opus_decode_frame(
             NULL as *mut ec_dec,
             0 as i32,
         );
-        if !(opus_custom_decoder_ctl!(celt_dec, 4031 as i32, &mut redundant_rng) == 0 as i32) {
-            celt_fatal(
-                b"assertion failed: (opus_custom_decoder_ctl!(celt_dec, 4031, ((&redundant_rng) + ((&redundant_rng) - (u32*)(&redundant_rng))))) == OPUS_OK\0"
-                    as *const u8 as *const i8,
-                b"src/opus_decoder.c\0" as *const u8 as *const i8,
-                505 as i32,
-            );
-        }
+        assert!(opus_custom_decoder_ctl!(celt_dec, 4031 as i32, &mut redundant_rng) == 0 as i32);
     }
-    if !(opus_custom_decoder_ctl!(celt_dec, 10010 as i32, start_band) == 0 as i32) {
-        celt_fatal(
-            b"assertion failed: (opus_custom_decoder_ctl!(celt_dec, 10010, (((void)((start_band) == (i32)0)), (i32)(start_band)))) == OPUS_OK\0"
-                as *const u8 as *const i8,
-            b"src/opus_decoder.c\0" as *const u8 as *const i8,
-            509 as i32,
-        );
-    }
+    assert!(opus_custom_decoder_ctl!(celt_dec, 10010 as i32, start_band) == 0 as i32);
     if mode != MODE_SILK_ONLY {
         let celt_frame_size: i32 = if F20 < frame_size { F20 } else { frame_size };
         if mode != (*st).prev_mode && (*st).prev_mode > 0 as i32 && (*st).prev_redundancy == 0 {
-            if !(opus_custom_decoder_ctl!(celt_dec, 4028 as i32) == 0 as i32) {
-                celt_fatal(
-                    b"assertion failed: (opus_custom_decoder_ctl!(celt_dec, 4028)) == OPUS_OK\0"
-                        as *const u8 as *const i8,
-                    b"src/opus_decoder.c\0" as *const u8 as *const i8,
-                    516 as i32,
-                );
-            }
+            assert!(opus_custom_decoder_ctl!(celt_dec, 4028 as i32) == 0 as i32);
         }
         celt_ret = celt_decode_with_ec(
             celt_dec,
@@ -709,14 +591,7 @@ unsafe fn opus_decode_frame(
         if (*st).prev_mode == MODE_HYBRID
             && !(redundancy != 0 && celt_to_silk != 0 && (*st).prev_redundancy != 0)
         {
-            if !(opus_custom_decoder_ctl!(celt_dec, 10010 as i32, 0 as i32) == 0 as i32) {
-                celt_fatal(
-                    b"assertion failed: (opus_custom_decoder_ctl!(celt_dec, 10010, (((void)((0) == (i32)0)), (i32)(0)))) == OPUS_OK\0"
-                        as *const u8 as *const i8,
-                    b"src/opus_decoder.c\0" as *const u8 as *const i8,
-                    531 as i32,
-                );
-            }
+            assert!(opus_custom_decoder_ctl!(celt_dec, 10010 as i32, 0 as i32) == 0 as i32);
             celt_decode_with_ec(
                 celt_dec,
                 silence.as_mut_ptr(),
@@ -737,32 +612,11 @@ unsafe fn opus_decode_frame(
         }
     }
     let mut celt_mode: *const OpusCustomMode = 0 as *const OpusCustomMode;
-    if !(opus_custom_decoder_ctl!(celt_dec, 10015 as i32, &mut celt_mode) == 0 as i32) {
-        celt_fatal(
-            b"assertion failed: (opus_custom_decoder_ctl!(celt_dec, 10015, ((&celt_mode) + ((&celt_mode) - (const OpusCustomMode**)(&celt_mode))))) == OPUS_OK\0"
-                as *const u8 as *const i8,
-            b"src/opus_decoder.c\0" as *const u8 as *const i8,
-            549 as i32,
-        );
-    }
+    assert!(opus_custom_decoder_ctl!(celt_dec, 10015 as i32, &mut celt_mode) == 0 as i32);
     window = (*celt_mode).window;
     if redundancy != 0 && celt_to_silk == 0 {
-        if !(opus_custom_decoder_ctl!(celt_dec, 4028 as i32) == 0 as i32) {
-            celt_fatal(
-                b"assertion failed: (opus_custom_decoder_ctl!(celt_dec, 4028)) == OPUS_OK\0"
-                    as *const u8 as *const i8,
-                b"src/opus_decoder.c\0" as *const u8 as *const i8,
-                556 as i32,
-            );
-        }
-        if !(opus_custom_decoder_ctl!(celt_dec, 10010 as i32, 0 as i32) == 0 as i32) {
-            celt_fatal(
-                b"assertion failed: (opus_custom_decoder_ctl!(celt_dec, 10010, (((void)((0) == (i32)0)), (i32)(0)))) == OPUS_OK\0"
-                    as *const u8 as *const i8,
-                b"src/opus_decoder.c\0" as *const u8 as *const i8,
-                557 as i32,
-            );
-        }
+        assert!(opus_custom_decoder_ctl!(celt_dec, 4028 as i32) == 0 as i32);
+        assert!(opus_custom_decoder_ctl!(celt_dec, 10010 as i32, 0 as i32) == 0 as i32);
         celt_decode_with_ec(
             celt_dec,
             data.offset(len as isize),
@@ -772,14 +626,7 @@ unsafe fn opus_decode_frame(
             NULL as *mut ec_dec,
             0 as i32,
         );
-        if !(opus_custom_decoder_ctl!(celt_dec, 4031 as i32, &mut redundant_rng) == 0 as i32) {
-            celt_fatal(
-                b"assertion failed: (opus_custom_decoder_ctl!(celt_dec, 4031, ((&redundant_rng) + ((&redundant_rng) - (u32*)(&redundant_rng))))) == OPUS_OK\0"
-                    as *const u8 as *const i8,
-                b"src/opus_decoder.c\0" as *const u8 as *const i8,
-                560 as i32,
-            );
-        }
+        assert!(opus_custom_decoder_ctl!(celt_dec, 4031 as i32, &mut redundant_rng) == 0 as i32);
         smooth_fade(
             pcm.offset(((*st).channels * (frame_size - F2_5)) as isize),
             redundant_audio
@@ -921,13 +768,7 @@ pub unsafe fn opus_decode_native(
                 break;
             }
         }
-        if !(pcm_count == frame_size) {
-            celt_fatal(
-                b"assertion failed: pcm_count == frame_size\0" as *const u8 as *const i8,
-                b"src/opus_decoder.c\0" as *const u8 as *const i8,
-                652 as i32,
-            );
-        }
+        assert!(pcm_count == frame_size);
         let _ = _opus_false() != 0;
         (*st).last_packet_duration = pcm_count;
         return pcm_count;
@@ -990,14 +831,7 @@ pub unsafe fn opus_decode_native(
                 (*st).last_packet_duration = duration_copy;
                 return ret_0;
             }
-            if !(ret_0 == frame_size - packet_frame_size) {
-                celt_fatal(
-                    b"assertion failed: ret==frame_size-packet_frame_size\0" as *const u8
-                        as *const i8,
-                    b"src/opus_decoder.c\0" as *const u8 as *const i8,
-                    689 as i32,
-                );
-            }
+            assert!(ret_0 == frame_size - packet_frame_size);
         }
         (*st).mode = packet_mode;
         (*st).bandwidth = packet_bandwidth;
@@ -1041,13 +875,7 @@ pub unsafe fn opus_decode_native(
         if ret_1 < 0 as i32 {
             return ret_1;
         }
-        if !(ret_1 == packet_frame_size) {
-            celt_fatal(
-                b"assertion failed: ret==packet_frame_size\0" as *const u8 as *const i8,
-                b"src/opus_decoder.c\0" as *const u8 as *const i8,
-                724 as i32,
-            );
-        }
+        assert!(ret_1 == packet_frame_size);
         data = data.offset(size[i as usize] as i32 as isize);
         nb_samples += ret_1;
         i += 1;
@@ -1093,13 +921,7 @@ pub unsafe fn opus_decode(
             return OPUS_INVALID_PACKET;
         }
     }
-    if !((*st).channels == 1 as i32 || (*st).channels == 2 as i32) {
-        celt_fatal(
-            b"assertion failed: st->channels == 1 || st->channels == 2\0" as *const u8 as *const i8,
-            b"src/opus_decoder.c\0" as *const u8 as *const i8,
-            810 as i32,
-        );
-    }
+    assert!((*st).channels == 1 as i32 || (*st).channels == 2 as i32);
     let vla = (frame_size * (*st).channels) as usize;
     let mut out: Vec<f32> = ::std::vec::from_elem(0., vla);
     ret = opus_decode_native(

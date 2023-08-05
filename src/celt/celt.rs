@@ -3,19 +3,9 @@ use crate::celt::modes::OpusCustomMode;
 pub mod arch_h {
     pub type opus_val16 = f32;
     pub type opus_val32 = f32;
-    pub unsafe fn celt_fatal(str: *const i8, file: *const i8, line: i32) -> ! {
-        let str = std::ffi::CStr::from_ptr(str as _);
-        let file = std::ffi::CStr::from_ptr(file as _);
-        panic!(
-            "Fatal (internal) error in {}, line {}: {}",
-            file.to_str().unwrap(),
-            line,
-            str.to_str().unwrap()
-        );
-    }
 }
 
-pub use self::arch_h::{celt_fatal, opus_val16, opus_val32};
+pub use self::arch_h::{opus_val16, opus_val32};
 use crate::externs::memmove;
 
 pub static trim_icdf: [u8; 11] = [126, 124, 119, 109, 87, 41, 19, 9, 4, 2, 0];
@@ -61,16 +51,7 @@ pub unsafe fn resampling_factor(rate: i32) -> i32 {
         8000 => {
             ret = 6 as i32;
         }
-        _ => {
-            if 0 as i32 == 0 {
-                celt_fatal(
-                    b"assertion failed: 0\0" as *const u8 as *const i8,
-                    b"celt/celt.c\0" as *const u8 as *const i8,
-                    84 as i32,
-                );
-            }
-            ret = 0 as i32;
-        }
+        _ => panic!("libopus: assert(0) called"),
     }
     return ret;
 }

@@ -9,7 +9,6 @@ pub mod xmmintrin_h {
     pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
 }
 pub use self::arch_h::{opus_val16, opus_val32};
-use crate::celt::celt::celt_fatal;
 use crate::celt::float_cast::FLOAT2INT16;
 use crate::src::opus_private::align;
 
@@ -47,16 +46,13 @@ pub unsafe fn mapping_matrix_init(
 ) {
     let mut i: i32 = 0;
     let mut ptr: *mut i16 = 0 as *mut i16;
-    if !(align(data_size)
-        == align(((rows * cols) as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64) as i32))
-    {
-        celt_fatal(
-            b"assertion failed: align(data_size) == align(rows * cols * sizeof(i16))\0" as *const u8
-                as *const i8,
-            b"src/mapping_matrix.c\0" as *const u8 as *const i8,
-            72 as i32,
-        );
-    }
+    assert!(
+        align(data_size)
+            == align(
+                ((rows * cols) as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64) as i32
+            )
+    );
+
     (*matrix).rows = rows;
     (*matrix).cols = cols;
     (*matrix).gain = gain;
@@ -79,14 +75,7 @@ pub unsafe fn mapping_matrix_multiply_channel_in_float(
     let mut matrix_data: *mut i16 = 0 as *mut i16;
     let mut i: i32 = 0;
     let mut col: i32 = 0;
-    if !(input_rows <= (*matrix).cols && output_rows <= (*matrix).rows) {
-        celt_fatal(
-            b"assertion failed: input_rows <= matrix->cols && output_rows <= matrix->rows\0"
-                as *const u8 as *const i8,
-            b"src/mapping_matrix.c\0" as *const u8 as *const i8,
-            98 as i32,
-        );
-    }
+    assert!(input_rows <= (*matrix).cols && output_rows <= (*matrix).rows);
     matrix_data = mapping_matrix_get_data(matrix);
     i = 0 as i32;
     while i < frame_size {
@@ -114,14 +103,7 @@ pub unsafe fn mapping_matrix_multiply_channel_out_float(
     let mut i: i32 = 0;
     let mut row: i32 = 0;
     let mut input_sample: f32 = 0.;
-    if !(input_rows <= (*matrix).cols && output_rows <= (*matrix).rows) {
-        celt_fatal(
-            b"assertion failed: input_rows <= matrix->cols && output_rows <= matrix->rows\0"
-                as *const u8 as *const i8,
-            b"src/mapping_matrix.c\0" as *const u8 as *const i8,
-            134 as i32,
-        );
-    }
+    assert!(input_rows <= (*matrix).cols && output_rows <= (*matrix).rows);
     matrix_data = mapping_matrix_get_data(matrix);
     i = 0 as i32;
     while i < frame_size {
@@ -149,14 +131,7 @@ pub unsafe fn mapping_matrix_multiply_channel_in_short(
     let mut matrix_data: *mut i16 = 0 as *mut i16;
     let mut i: i32 = 0;
     let mut col: i32 = 0;
-    if !(input_rows <= (*matrix).cols && output_rows <= (*matrix).rows) {
-        celt_fatal(
-            b"assertion failed: input_rows <= matrix->cols && output_rows <= matrix->rows\0"
-                as *const u8 as *const i8,
-            b"src/mapping_matrix.c\0" as *const u8 as *const i8,
-            169 as i32,
-        );
-    }
+    assert!(input_rows <= (*matrix).cols && output_rows <= (*matrix).rows);
     matrix_data = mapping_matrix_get_data(matrix);
     i = 0 as i32;
     while i < frame_size {
@@ -185,14 +160,7 @@ pub unsafe fn mapping_matrix_multiply_channel_out_short(
     let mut i: i32 = 0;
     let mut row: i32 = 0;
     let mut input_sample: i32 = 0;
-    if !(input_rows <= (*matrix).cols && output_rows <= (*matrix).rows) {
-        celt_fatal(
-            b"assertion failed: input_rows <= matrix->cols && output_rows <= matrix->rows\0"
-                as *const u8 as *const i8,
-            b"src/mapping_matrix.c\0" as *const u8 as *const i8,
-            210 as i32,
-        );
-    }
+    assert!(input_rows <= (*matrix).cols && output_rows <= (*matrix).rows);
     matrix_data = mapping_matrix_get_data(matrix);
     i = 0 as i32;
     while i < frame_size {

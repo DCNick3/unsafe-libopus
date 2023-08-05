@@ -59,7 +59,6 @@ pub unsafe fn pulses2bits(m: *const OpusCustomMode, band: i32, mut LM: i32, puls
 pub const QTHETA_OFFSET_TWOPHASE: i32 = 16 as i32;
 pub const QTHETA_OFFSET: i32 = 4 as i32;
 
-use crate::celt::celt::celt_fatal;
 use crate::celt::entcode::{celt_udiv, ec_ctx, BITRES};
 use crate::celt::entdec::{ec_dec_bit_logp, ec_dec_uint};
 use crate::celt::entenc::{ec_enc_bit_logp, ec_enc_uint};
@@ -272,13 +271,7 @@ unsafe fn interp_bits2pulses(
             codedBands -= 1;
         }
     }
-    if !(codedBands > start) {
-        celt_fatal(
-            b"assertion failed: codedBands > start\0" as *const u8 as *const i8,
-            b"celt/rate.c\0" as *const u8 as *const i8,
-            391 as i32,
-        );
-    }
+    assert!(codedBands > start);
     if intensity_rsv > 0 as i32 {
         if encode != 0 {
             *intensity = if *intensity < codedBands {
@@ -353,13 +346,7 @@ unsafe fn interp_bits2pulses(
         let mut NClogN: i32 = 0;
         let mut excess: i32 = 0;
         let mut bit: i32 = 0;
-        if !(*bits.offset(j as isize) >= 0 as i32) {
-            celt_fatal(
-                b"assertion failed: bits[j] >= 0\0" as *const u8 as *const i8,
-                b"celt/rate.c\0" as *const u8 as *const i8,
-                442 as i32,
-            );
-        }
+        assert!(*bits.offset(j as isize) >= 0 as i32);
         N0 = *((*m).eBands).offset((j + 1 as i32) as isize) as i32
             - *((*m).eBands).offset(j as isize) as i32;
         N = N0 << LM;
@@ -431,32 +418,14 @@ unsafe fn interp_bits2pulses(
             excess -= extra_bits;
         }
         balance = excess;
-        if !(*bits.offset(j as isize) >= 0 as i32) {
-            celt_fatal(
-                b"assertion failed: bits[j] >= 0\0" as *const u8 as *const i8,
-                b"celt/rate.c\0" as *const u8 as *const i8,
-                513 as i32,
-            );
-        }
-        if !(*ebits.offset(j as isize) >= 0 as i32) {
-            celt_fatal(
-                b"assertion failed: ebits[j] >= 0\0" as *const u8 as *const i8,
-                b"celt/rate.c\0" as *const u8 as *const i8,
-                514 as i32,
-            );
-        }
+        assert!(*bits.offset(j as isize) >= 0 as i32);
+        assert!(*ebits.offset(j as isize) >= 0 as i32);
         j += 1;
     }
     *_balance = balance;
     while j < end {
         *ebits.offset(j as isize) = *bits.offset(j as isize) >> stereo >> BITRES;
-        if !(C * *ebits.offset(j as isize) << 3 as i32 == *bits.offset(j as isize)) {
-            celt_fatal(
-                b"assertion failed: C*ebits[j]<<BITRES == bits[j]\0" as *const u8 as *const i8,
-                b"celt/rate.c\0" as *const u8 as *const i8,
-                524 as i32,
-            );
-        }
+        assert!(C * *ebits.offset(j as isize) << 3 as i32 == *bits.offset(j as isize));
         *bits.offset(j as isize) = 0 as i32;
         *fine_priority.offset(j as isize) = (*ebits.offset(j as isize) < 1 as i32) as i32;
         j += 1;

@@ -1,5 +1,3 @@
-use crate::celt::celt::celt_fatal;
-
 pub unsafe fn silk_interpolate(
     xi: *mut i16,
     x0: *const i16,
@@ -8,20 +6,8 @@ pub unsafe fn silk_interpolate(
     d: i32,
 ) {
     let mut i: i32 = 0;
-    if !(ifact_Q2 >= 0 as i32) {
-        celt_fatal(
-            b"assertion failed: ifact_Q2 >= 0\0" as *const u8 as *const i8,
-            b"silk/interpolate.c\0" as *const u8 as *const i8,
-            45 as i32,
-        );
-    }
-    if !(ifact_Q2 <= 4 as i32) {
-        celt_fatal(
-            b"assertion failed: ifact_Q2 <= 4\0" as *const u8 as *const i8,
-            b"silk/interpolate.c\0" as *const u8 as *const i8,
-            46 as i32,
-        );
-    }
+    assert!(ifact_Q2 >= 0 as i32);
+    assert!(ifact_Q2 <= 4 as i32);
     i = 0 as i32;
     while i < d {
         *xi.offset(i as isize) = (*x0.offset(i as isize) as i32

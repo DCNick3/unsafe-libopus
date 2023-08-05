@@ -1,4 +1,3 @@
-use crate::celt::celt::celt_fatal;
 use crate::silk::bwexpander_32::silk_bwexpander_32;
 use crate::silk::define::MAX_LPC_STABILIZE_ITERATIONS;
 use crate::silk::table_LSF_cos::silk_LSFCosTab_FIX_Q12;
@@ -92,13 +91,7 @@ pub unsafe fn silk_NLSF2A(a_Q12: *mut i16, NLSF: *const i16, d: i32, _arch: i32)
     let mut cos_val: i32 = 0;
     let mut delta: i32 = 0;
     let mut a32_QA1: [i32; 24] = [0; 24];
-    if !(d == 10 as i32 || d == 16 as i32) {
-        celt_fatal(
-            b"assertion failed: d==10 || d==16\0" as *const u8 as *const i8,
-            b"silk/NLSF2A.c\0" as *const u8 as *const i8,
-            89 as i32,
-        );
-    }
+    assert!(d == 10 as i32 || d == 16 as i32);
     ordering = if d == 16 as i32 {
         ordering16.as_ptr()
     } else {

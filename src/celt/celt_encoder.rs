@@ -27,8 +27,7 @@ pub use self::arch_h::{
 };
 pub use self::stddef_h::NULL;
 use crate::celt::celt::{
-    celt_fatal, comb_filter, init_caps, resampling_factor, spread_icdf, tapset_icdf,
-    tf_select_table, trim_icdf,
+    comb_filter, init_caps, resampling_factor, spread_icdf, tapset_icdf, tf_select_table, trim_icdf,
 };
 use crate::celt::celt::{
     CELT_GET_MODE_REQUEST, CELT_SET_ANALYSIS_REQUEST, CELT_SET_CHANNELS_REQUEST,
@@ -393,22 +392,8 @@ unsafe fn transient_analysis(
         mean = ((mean * maxE) * 0.5f32 * len2 as f32).sqrt();
         norm = len2 as f32 / (1e-15f32 + mean);
         unmask = 0 as i32;
-        if *tmp.as_mut_ptr().offset(0 as i32 as isize)
-            != *tmp.as_mut_ptr().offset(0 as i32 as isize)
-        {
-            celt_fatal(
-                b"assertion failed: !celt_isnan(tmp[0])\0" as *const u8 as *const i8,
-                b"celt/celt_encoder.c\0" as *const u8 as *const i8,
-                369 as i32,
-            );
-        }
-        if norm != norm {
-            celt_fatal(
-                b"assertion failed: !celt_isnan(norm)\0" as *const u8 as *const i8,
-                b"celt/celt_encoder.c\0" as *const u8 as *const i8,
-                370 as i32,
-            );
-        }
+        assert!(!(*tmp.as_mut_ptr().offset(0)).is_nan());
+        assert!(!norm.is_nan());
         i = 12 as i32;
         while i < len2 - 5 as i32 {
             let mut id: i32 = 0;
@@ -2230,13 +2215,7 @@ pub unsafe fn celt_encode_with_ec(
         tell = ec_tell(enc);
         nbFilledBytes = tell + 4 as i32 >> 3 as i32;
     }
-    if !((*st).signalling == 0 as i32) {
-        celt_fatal(
-            b"assertion failed: st->signalling==0\0" as *const u8 as *const i8,
-            b"celt/celt_encoder.c\0" as *const u8 as *const i8,
-            1547 as i32,
-        );
-    }
+    assert!((*st).signalling == 0 as i32);
     nbCompressedBytes = if nbCompressedBytes < 1275 as i32 {
         nbCompressedBytes
     } else {
@@ -2523,18 +2502,13 @@ pub unsafe fn celt_encode_with_ec(
         (*st).upsample,
         (*st).arch,
     );
-    if !(!(*freq.as_mut_ptr().offset(0 as i32 as isize)
-        != *freq.as_mut_ptr().offset(0 as i32 as isize))
-        && (C == 1 as i32
-            || !(*freq.as_mut_ptr().offset(N as isize) != *freq.as_mut_ptr().offset(N as isize))))
-    {
-        celt_fatal(
-            b"assertion failed: !celt_isnan(freq[0]) && (C==1 || !celt_isnan(freq[N]))\0"
-                as *const u8 as *const i8,
-            b"celt/celt_encoder.c\0" as *const u8 as *const i8,
-            1729 as i32,
-        );
-    }
+    assert!(
+        !(*freq.as_mut_ptr().offset(0 as i32 as isize)
+            != *freq.as_mut_ptr().offset(0 as i32 as isize))
+            && (C == 1 as i32
+                || !(*freq.as_mut_ptr().offset(N as isize)
+                    != *freq.as_mut_ptr().offset(N as isize)))
+    );
     if CC == 2 as i32 && C == 1 as i32 {
         tf_chan = 0 as i32;
     }
@@ -2625,13 +2599,7 @@ pub unsafe fn celt_encode_with_ec(
             }
             c += 1;
         }
-        if !(count > 0 as i32) {
-            celt_fatal(
-                b"assertion failed: count>0\0" as *const u8 as *const i8,
-                b"celt/celt_encoder.c\0" as *const u8 as *const i8,
-                1770 as i32,
-            );
-        }
+        assert!(count > 0 as i32);
         mask_avg = mask_avg / count as opus_val16;
         mask_avg += 0.2f32;
         diff = diff * 6 as i32 as f32

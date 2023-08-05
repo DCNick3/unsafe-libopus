@@ -5,7 +5,6 @@ pub mod typedef_h {
     pub const silk_int32_MIN: i32 = i32::MIN;
 }
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN, silk_int32_MAX, silk_int32_MIN};
-use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memset};
 use crate::silk::define::{
     LTP_ORDER, MAX_LPC_ORDER, MAX_NB_SUBFR, QUANT_LEVEL_ADJUST_Q10, TYPE_VOICED,
@@ -139,13 +138,7 @@ pub unsafe fn silk_decode_core(
             if k == 0 as i32 || k == 2 as i32 && NLSF_interpolation_flag != 0 {
                 start_idx =
                     (*psDec).ltp_mem_length - lag - (*psDec).LPC_order - LTP_ORDER / 2 as i32;
-                if !(start_idx > 0 as i32) {
-                    celt_fatal(
-                        b"assertion failed: start_idx > 0\0" as *const u8 as *const i8,
-                        b"silk/decode_core.c\0" as *const u8 as *const i8,
-                        144 as i32,
-                    );
-                }
+                assert!(start_idx > 0 as i32);
                 if k == 2 as i32 {
                     memcpy(
                         &mut *((*psDec).outBuf)
@@ -243,14 +236,7 @@ pub unsafe fn silk_decode_core(
         }
         i = 0 as i32;
         while i < (*psDec).subfr_length {
-            if !((*psDec).LPC_order == 10 as i32 || (*psDec).LPC_order == 16 as i32) {
-                celt_fatal(
-                    b"assertion failed: psDec->LPC_order == 10 || psDec->LPC_order == 16\0"
-                        as *const u8 as *const i8,
-                    b"silk/decode_core.c\0" as *const u8 as *const i8,
-                    199 as i32,
-                );
-            }
+            assert!((*psDec).LPC_order == 10 as i32 || (*psDec).LPC_order == 16 as i32);
             LPC_pred_Q10 = (*psDec).LPC_order >> 1 as i32;
             LPC_pred_Q10 = (LPC_pred_Q10 as i64
                 + (*sLPC_Q14

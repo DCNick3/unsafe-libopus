@@ -14,12 +14,10 @@ pub const FLAG_PACKET_LOST: i32 = 1 as i32;
 pub mod errors_h {
     pub const SILK_DEC_INVALID_SAMPLING_FREQUENCY: i32 = -(200 as i32);
     pub const SILK_NO_ERROR: i32 = 0 as i32;
+    #[allow(unused)]
     pub const SILK_DEC_INVALID_FRAME_SIZE: i32 = -(203 as i32);
 }
-use self::errors_h::{
-    SILK_DEC_INVALID_FRAME_SIZE, SILK_DEC_INVALID_SAMPLING_FREQUENCY, SILK_NO_ERROR,
-};
-use crate::celt::celt::celt_fatal;
+use self::errors_h::{SILK_DEC_INVALID_SAMPLING_FREQUENCY, SILK_NO_ERROR};
 use crate::celt::entdec::{ec_dec, ec_dec_bit_logp, ec_dec_icdf};
 use crate::externs::{memcpy, memset};
 use crate::silk::decode_frame::silk_decode_frame;
@@ -95,15 +93,9 @@ pub unsafe fn silk_Decode(
     let mut has_side: i32 = 0;
     let mut stereo_to_mono: i32 = 0;
     let mut delay_stack_alloc: i32 = 0;
-    if !((*decControl).nChannelsInternal == 1 as i32 || (*decControl).nChannelsInternal == 2 as i32)
-    {
-        celt_fatal(
-            b"assertion failed: decControl->nChannelsInternal == 1 || decControl->nChannelsInternal == 2\0"
-                as *const u8 as *const i8,
-            b"silk/dec_API.c\0" as *const u8 as *const i8,
-            107 as i32,
-        );
-    }
+    assert!(
+        (*decControl).nChannelsInternal == 1 as i32 || (*decControl).nChannelsInternal == 2 as i32
+    );
     if newPacketFlag != 0 {
         n = 0 as i32;
         while n < (*decControl).nChannelsInternal {
@@ -139,25 +131,14 @@ pub unsafe fn silk_Decode(
                 (*channel_state.offset(n as isize)).nFramesPerPacket = 3 as i32;
                 (*channel_state.offset(n as isize)).nb_subfr = 4 as i32;
             } else {
-                if 0 as i32 == 0 {
-                    celt_fatal(
-                        b"assertion failed: 0\0" as *const u8 as *const i8,
-                        b"silk/dec_API.c\0" as *const u8 as *const i8,
-                        146 as i32,
-                    );
-                }
-                return SILK_DEC_INVALID_FRAME_SIZE;
+                // see comments in `[unsafe_libopus::silk::check_control_input]`
+                panic!("libopus: assert(0) called");
+                // return SILK_DEC_INVALID_FRAME_SIZE;
             }
             fs_kHz_dec = ((*decControl).internalSampleRate >> 10 as i32) + 1 as i32;
             if fs_kHz_dec != 8 as i32 && fs_kHz_dec != 12 as i32 && fs_kHz_dec != 16 as i32 {
-                if 0 as i32 == 0 {
-                    celt_fatal(
-                        b"assertion failed: 0\0" as *const u8 as *const i8,
-                        b"silk/dec_API.c\0" as *const u8 as *const i8,
-                        152 as i32,
-                    );
-                }
-                return SILK_DEC_INVALID_SAMPLING_FREQUENCY;
+                panic!("libopus: assert(0) called");
+                // return SILK_DEC_INVALID_SAMPLING_FREQUENCY;
             }
             ret += silk_decoder_set_fs(
                 &mut *channel_state.offset(n as isize),

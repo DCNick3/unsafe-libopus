@@ -46,7 +46,6 @@ pub mod typedef_h {
 use self::arch_h::opus_val32;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 pub use self::SigProc_FLP_h::{silk_float2short_array, silk_log2, silk_short2float_array};
-use crate::celt::celt::celt_fatal;
 use crate::celt::pitch::celt_pitch_xcorr_c;
 use crate::externs::memset;
 use crate::silk::float::energy_FLP::silk_energy_FLP;
@@ -134,28 +133,9 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
     let mut max_lag_4kHz: i32 = 0;
     let mut nb_cbk_search: i32 = 0;
     let mut Lag_CB_ptr: *const i8 = 0 as *const i8;
-    if !(Fs_kHz == 8 as i32 || Fs_kHz == 12 as i32 || Fs_kHz == 16 as i32) {
-        celt_fatal(
-            b"assertion failed: Fs_kHz == 8 || Fs_kHz == 12 || Fs_kHz == 16\0" as *const u8
-                as *const i8,
-            b"silk/float/pitch_analysis_core_FLP.c\0" as *const u8 as *const i8,
-            112 as i32,
-        );
-    }
-    if !(complexity >= 0 as i32) {
-        celt_fatal(
-            b"assertion failed: complexity >= SILK_PE_MIN_COMPLEX\0" as *const u8 as *const i8,
-            b"silk/float/pitch_analysis_core_FLP.c\0" as *const u8 as *const i8,
-            115 as i32,
-        );
-    }
-    if !(complexity <= 2 as i32) {
-        celt_fatal(
-            b"assertion failed: complexity <= SILK_PE_MAX_COMPLEX\0" as *const u8 as *const i8,
-            b"silk/float/pitch_analysis_core_FLP.c\0" as *const u8 as *const i8,
-            116 as i32,
-        );
-    }
+    assert!(Fs_kHz == 8 as i32 || Fs_kHz == 12 as i32 || Fs_kHz == 16 as i32);
+    assert!(complexity >= 0 as i32);
+    assert!(complexity <= 2 as i32);
     frame_length = (PE_LTP_MEM_LENGTH_MS + nb_subfr * PE_SUBFR_LENGTH_MS) * Fs_kHz;
     frame_length_4kHz = (PE_LTP_MEM_LENGTH_MS + nb_subfr * PE_SUBFR_LENGTH_MS) * 4 as i32;
     frame_length_8kHz = (PE_LTP_MEM_LENGTH_MS + nb_subfr * PE_SUBFR_LENGTH_MS) * 8 as i32;
@@ -207,13 +187,7 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
             frame_length_8kHz,
         );
     } else {
-        if !(Fs_kHz == 8 as i32) {
-            celt_fatal(
-                b"assertion failed: Fs_kHz == 8\0" as *const u8 as *const i8,
-                b"silk/float/pitch_analysis_core_FLP.c\0" as *const u8 as *const i8,
-                151 as i32,
-            );
-        }
+        assert!(Fs_kHz == 8 as i32);
         silk_float2short_array(frame_8_FIX.as_mut_ptr(), frame, frame_length_8kHz);
     }
     memset(
@@ -260,41 +234,17 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
         .offset(((sf_length_4kHz as u32) << 2 as i32) as i32 as isize) as *mut f32;
     k = 0 as i32;
     while k < nb_subfr >> 1 as i32 {
-        if !(target_ptr >= frame_4kHz.as_mut_ptr() as *const f32) {
-            celt_fatal(
-                b"assertion failed: target_ptr >= frame_4kHz\0" as *const u8 as *const i8,
-                b"silk/float/pitch_analysis_core_FLP.c\0" as *const u8 as *const i8,
-                172 as i32,
-            );
-        }
-        if !(target_ptr.offset(sf_length_8kHz as isize)
-            <= frame_4kHz.as_mut_ptr().offset(frame_length_4kHz as isize) as *const f32)
-        {
-            celt_fatal(
-                b"assertion failed: target_ptr + sf_length_8kHz <= frame_4kHz + frame_length_4kHz\0"
-                    as *const u8 as *const i8,
-                b"silk/float/pitch_analysis_core_FLP.c\0" as *const u8 as *const i8,
-                173 as i32,
-            );
-        }
+        assert!(target_ptr >= frame_4kHz.as_mut_ptr() as *const f32);
+        assert!(
+            target_ptr.offset(sf_length_8kHz as isize)
+                <= frame_4kHz.as_mut_ptr().offset(frame_length_4kHz as isize) as *const f32
+        );
         basis_ptr = target_ptr.offset(-(min_lag_4kHz as isize));
-        if !(basis_ptr >= frame_4kHz.as_mut_ptr() as *const f32) {
-            celt_fatal(
-                b"assertion failed: basis_ptr >= frame_4kHz\0" as *const u8 as *const i8,
-                b"silk/float/pitch_analysis_core_FLP.c\0" as *const u8 as *const i8,
-                178 as i32,
-            );
-        }
-        if !(basis_ptr.offset(sf_length_8kHz as isize)
-            <= frame_4kHz.as_mut_ptr().offset(frame_length_4kHz as isize) as *const f32)
-        {
-            celt_fatal(
-                b"assertion failed: basis_ptr + sf_length_8kHz <= frame_4kHz + frame_length_4kHz\0"
-                    as *const u8 as *const i8,
-                b"silk/float/pitch_analysis_core_FLP.c\0" as *const u8 as *const i8,
-                179 as i32,
-            );
-        }
+        assert!(basis_ptr >= frame_4kHz.as_mut_ptr() as *const f32);
+        assert!(
+            basis_ptr.offset(sf_length_8kHz as isize)
+                <= frame_4kHz.as_mut_ptr().offset(frame_length_4kHz as isize) as *const f32
+        );
         celt_pitch_xcorr_c(
             target_ptr,
             target_ptr.offset(-(max_lag_4kHz as isize)),
@@ -329,13 +279,7 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
         i -= 1;
     }
     length_d_srch = 4 as i32 + 2 as i32 * complexity;
-    if !(3 as i32 * length_d_srch <= 24 as i32) {
-        celt_fatal(
-            b"assertion failed: 3 * length_d_srch <= PE_D_SRCH_LENGTH\0" as *const u8 as *const i8,
-            b"silk/float/pitch_analysis_core_FLP.c\0" as *const u8 as *const i8,
-            218 as i32,
-        );
-    }
+    assert!(3 as i32 * length_d_srch <= 24 as i32);
     silk_insertion_sort_decreasing_FLP(
         &mut *(*C.as_mut_ptr().offset(0 as i32 as isize))
             .as_mut_ptr()
@@ -367,13 +311,7 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
             break;
         }
     }
-    if !(length_d_srch > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: length_d_srch > 0\0" as *const u8 as *const i8,
-            b"silk/float/pitch_analysis_core_FLP.c\0" as *const u8 as *const i8,
-            241 as i32,
-        );
-    }
+    assert!(length_d_srch > 0 as i32);
     i = min_lag_8kHz - 5 as i32;
     while i < max_lag_8kHz + 5 as i32 {
         d_comp[i as usize] = 0 as i32 as i16;
@@ -678,13 +616,7 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
         *lagIndex = (lag - min_lag_8kHz) as i16;
         *contourIndex = CBimax as i8;
     }
-    if !(*lagIndex as i32 >= 0 as i32) {
-        celt_fatal(
-            b"assertion failed: *lagIndex >= 0\0" as *const u8 as *const i8,
-            b"silk/float/pitch_analysis_core_FLP.c\0" as *const u8 as *const i8,
-            474 as i32,
-        );
-    }
+    assert!(*lagIndex as i32 >= 0 as i32);
     return 0 as i32;
 }
 unsafe fn silk_P_Ana_calc_corr_st3(
@@ -711,20 +643,8 @@ unsafe fn silk_P_Ana_calc_corr_st3(
     let mut xcorr: [opus_val32; 22] = [0.; 22];
     let mut Lag_range_ptr: *const i8 = 0 as *const i8;
     let mut Lag_CB_ptr: *const i8 = 0 as *const i8;
-    if !(complexity >= 0 as i32) {
-        celt_fatal(
-            b"assertion failed: complexity >= SILK_PE_MIN_COMPLEX\0" as *const u8 as *const i8,
-            b"silk/float/pitch_analysis_core_FLP.c\0" as *const u8 as *const i8,
-            509 as i32,
-        );
-    }
-    if !(complexity <= 2 as i32) {
-        celt_fatal(
-            b"assertion failed: complexity <= SILK_PE_MAX_COMPLEX\0" as *const u8 as *const i8,
-            b"silk/float/pitch_analysis_core_FLP.c\0" as *const u8 as *const i8,
-            510 as i32,
-        );
-    }
+    assert!(complexity >= 0 as i32);
+    assert!(complexity <= 2 as i32);
     if nb_subfr == PE_MAX_NB_SUBFR {
         Lag_range_ptr = &*(*(*silk_Lag_range_stage3.as_ptr().offset(complexity as isize))
             .as_ptr()
@@ -737,13 +657,7 @@ unsafe fn silk_P_Ana_calc_corr_st3(
         nb_cbk_search = silk_nb_cbk_searchs_stage3[complexity as usize] as i32;
         cbk_size = PE_NB_CBKS_STAGE3_MAX;
     } else {
-        if !(nb_subfr == 4 as i32 >> 1 as i32) {
-            celt_fatal(
-                b"assertion failed: nb_subfr == PE_MAX_NB_SUBFR >> 1\0" as *const u8 as *const i8,
-                b"silk/float/pitch_analysis_core_FLP.c\0" as *const u8 as *const i8,
-                518 as i32,
-            );
-        }
+        assert!(nb_subfr == 4 as i32 >> 1 as i32);
         Lag_range_ptr = &*(*silk_Lag_range_stage3_10_ms
             .as_ptr()
             .offset(0 as i32 as isize))
@@ -816,20 +730,8 @@ unsafe fn silk_P_Ana_calc_energy_st3(
     let mut scratch_mem: [f32; 22] = [0.; 22];
     let mut Lag_range_ptr: *const i8 = 0 as *const i8;
     let mut Lag_CB_ptr: *const i8 = 0 as *const i8;
-    if !(complexity >= 0 as i32) {
-        celt_fatal(
-            b"assertion failed: complexity >= SILK_PE_MIN_COMPLEX\0" as *const u8 as *const i8,
-            b"silk/float/pitch_analysis_core_FLP.c\0" as *const u8 as *const i8,
-            575 as i32,
-        );
-    }
-    if !(complexity <= 2 as i32) {
-        celt_fatal(
-            b"assertion failed: complexity <= SILK_PE_MAX_COMPLEX\0" as *const u8 as *const i8,
-            b"silk/float/pitch_analysis_core_FLP.c\0" as *const u8 as *const i8,
-            576 as i32,
-        );
-    }
+    assert!(complexity >= 0 as i32);
+    assert!(complexity <= 2 as i32);
     if nb_subfr == PE_MAX_NB_SUBFR {
         Lag_range_ptr = &*(*(*silk_Lag_range_stage3.as_ptr().offset(complexity as isize))
             .as_ptr()
@@ -842,13 +744,7 @@ unsafe fn silk_P_Ana_calc_energy_st3(
         nb_cbk_search = silk_nb_cbk_searchs_stage3[complexity as usize] as i32;
         cbk_size = PE_NB_CBKS_STAGE3_MAX;
     } else {
-        if !(nb_subfr == 4 as i32 >> 1 as i32) {
-            celt_fatal(
-                b"assertion failed: nb_subfr == PE_MAX_NB_SUBFR >> 1\0" as *const u8 as *const i8,
-                b"silk/float/pitch_analysis_core_FLP.c\0" as *const u8 as *const i8,
-                584 as i32,
-            );
-        }
+        assert!(nb_subfr == 4 as i32 >> 1 as i32);
         Lag_range_ptr = &*(*silk_Lag_range_stage3_10_ms
             .as_ptr()
             .offset(0 as i32 as isize))

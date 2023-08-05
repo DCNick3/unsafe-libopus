@@ -1,29 +1,10 @@
-use crate::celt::celt::celt_fatal;
 pub unsafe fn silk_insertion_sort_decreasing_FLP(a: *mut f32, idx: *mut i32, L: i32, K: i32) {
     let mut value: f32 = 0.;
     let mut i: i32 = 0;
     let mut j: i32 = 0;
-    if !(K > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: K > 0\0" as *const u8 as *const i8,
-            b"silk/float/sort_FLP.c\0" as *const u8 as *const i8,
-            50 as i32,
-        );
-    }
-    if !(L > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: L > 0\0" as *const u8 as *const i8,
-            b"silk/float/sort_FLP.c\0" as *const u8 as *const i8,
-            51 as i32,
-        );
-    }
-    if !(L >= K) {
-        celt_fatal(
-            b"assertion failed: L >= K\0" as *const u8 as *const i8,
-            b"silk/float/sort_FLP.c\0" as *const u8 as *const i8,
-            52 as i32,
-        );
-    }
+    assert!(K > 0 as i32);
+    assert!(L > 0 as i32);
+    assert!(L >= K);
     i = 0 as i32;
     while i < K {
         *idx.offset(i as isize) = i;

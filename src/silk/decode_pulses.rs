@@ -1,4 +1,3 @@
-use crate::celt::celt::celt_fatal;
 use crate::celt::entdec::{ec_dec, ec_dec_icdf};
 use crate::externs::memset;
 use crate::silk::code_signs::silk_decode_signs;
@@ -32,13 +31,7 @@ pub unsafe fn silk_decode_pulses(
     );
     iter = frame_length >> 4 as i32;
     if iter * SHELL_CODEC_FRAME_LENGTH < frame_length {
-        if !(frame_length == 12 as i32 * 10 as i32) {
-            celt_fatal(
-                b"assertion failed: frame_length == 12 * 10\0" as *const u8 as *const i8,
-                b"silk/decode_pulses.c\0" as *const u8 as *const i8,
-                59 as i32,
-            );
-        }
+        assert!(frame_length == 12 as i32 * 10 as i32);
         iter += 1;
     }
     cdf_ptr = (silk_pulses_per_block_iCDF[RateLevelIndex as usize]).as_ptr();

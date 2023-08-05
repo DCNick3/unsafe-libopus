@@ -28,11 +28,11 @@ pub struct silk_EncControlStruct {
     pub offset: i32,
 }
 pub mod errors_h {
+    #[allow(unused)]
     pub const SILK_ENC_INPUT_INVALID_NO_OF_SAMPLES: i32 = -(101 as i32);
     pub const SILK_NO_ERROR: i32 = 0 as i32;
 }
-use self::errors_h::{SILK_ENC_INPUT_INVALID_NO_OF_SAMPLES, SILK_NO_ERROR};
-use crate::celt::celt::celt_fatal;
+use self::errors_h::SILK_NO_ERROR;
 use crate::celt::entcode::ec_tell;
 use crate::celt::entenc::{ec_enc, ec_enc_icdf, ec_enc_patch_initial_bits};
 use crate::externs::{memcpy, memset};
@@ -82,13 +82,7 @@ pub unsafe fn silk_InitEncoder(
             arch,
         );
         if ret != 0 {
-            if 0 as i32 == 0 {
-                celt_fatal(
-                    b"assertion failed: 0\0" as *const u8 as *const i8,
-                    b"silk/enc_API.c\0" as *const u8 as *const i8,
-                    85 as i32,
-                );
-            }
+            panic!("libopus: assert(0) called");
         }
         n += 1;
     }
@@ -96,13 +90,7 @@ pub unsafe fn silk_InitEncoder(
     (*psEnc).nChannelsInternal = 1 as i32;
     ret += silk_QueryEncoder(encState, encStatus);
     if ret != 0 {
-        if 0 as i32 == 0 {
-            celt_fatal(
-                b"assertion failed: 0\0" as *const u8 as *const i8,
-                b"silk/enc_API.c\0" as *const u8 as *const i8,
-                94 as i32,
-            );
-        }
+        panic!("libopus: assert(0) called");
     }
     return ret;
 }
@@ -189,14 +177,9 @@ pub unsafe fn silk_Encode(
         (*psEnc).state_Fxx[1 as i32 as usize].sCmn.nFramesEncoded;
     ret = check_control_input(encControl);
     if ret != 0 as i32 {
-        if 0 as i32 == 0 {
-            celt_fatal(
-                b"assertion failed: 0\0" as *const u8 as *const i8,
-                b"silk/enc_API.c\0" as *const u8 as *const i8,
-                170 as i32,
-            );
-        }
-        return ret;
+        // see comments in `[unsafe_libopus::silk::check_control_input]`
+        panic!("libopus: assert(0) called");
+        // return ret;
     }
     (*encControl).switchReady = 0 as i32;
     if (*encControl).nChannelsInternal > (*psEnc).nChannelsInternal {
@@ -264,14 +247,9 @@ pub unsafe fn silk_Encode(
             saved_fs_kHz: 0,
         };
         if nBlocksOf10ms != 1 as i32 {
-            if 0 as i32 == 0 {
-                celt_fatal(
-                    b"assertion failed: 0\0" as *const u8 as *const i8,
-                    b"silk/enc_API.c\0" as *const u8 as *const i8,
-                    206 as i32,
-                );
-            }
-            return SILK_ENC_INPUT_INVALID_NO_OF_SAMPLES;
+            // see comments in `[unsafe_libopus::silk::check_control_input]`
+            panic!("libopus: assert(0) called");
+            // return SILK_ENC_INPUT_INVALID_NO_OF_SAMPLES;
         }
         if prefillFlag == 2 as i32 {
             save_LP = (*psEnc).state_Fxx[0 as i32 as usize].sCmn.sLP;
@@ -286,13 +264,7 @@ pub unsafe fn silk_Encode(
             if prefillFlag == 2 as i32 {
                 (*psEnc).state_Fxx[n as usize].sCmn.sLP = save_LP;
             }
-            if ret != 0 {
-                celt_fatal(
-                    b"assertion failed: !ret\0" as *const u8 as *const i8,
-                    b"silk/enc_API.c\0" as *const u8 as *const i8,
-                    222 as i32,
-                );
-            }
+            assert!(ret == 0);
             n += 1;
         }
         tmp_payloadSize_ms = (*encControl).payloadSize_ms;
@@ -311,24 +283,13 @@ pub unsafe fn silk_Encode(
         if nBlocksOf10ms * (*encControl).API_sampleRate != 100 as i32 * nSamplesIn
             || nSamplesIn < 0 as i32
         {
-            if 0 as i32 == 0 {
-                celt_fatal(
-                    b"assertion failed: 0\0" as *const u8 as *const i8,
-                    b"silk/enc_API.c\0" as *const u8 as *const i8,
-                    235 as i32,
-                );
-            }
-            return SILK_ENC_INPUT_INVALID_NO_OF_SAMPLES;
+            // see comments in `[unsafe_libopus::silk::check_control_input]`
+            panic!("libopus: assert(0) called");
+            // return SILK_ENC_INPUT_INVALID_NO_OF_SAMPLES;
         }
         if 1000 as i32 * nSamplesIn > (*encControl).payloadSize_ms * (*encControl).API_sampleRate {
-            if 0 as i32 == 0 {
-                celt_fatal(
-                    b"assertion failed: 0\0" as *const u8 as *const i8,
-                    b"silk/enc_API.c\0" as *const u8 as *const i8,
-                    241 as i32,
-                );
-            }
-            return SILK_ENC_INPUT_INVALID_NO_OF_SAMPLES;
+            panic!("libopus: assert(0) called");
+            // return SILK_ENC_INPUT_INVALID_NO_OF_SAMPLES;
         }
     }
     n = 0 as i32;
@@ -358,17 +319,11 @@ pub unsafe fn silk_Encode(
         (*psEnc).state_Fxx[n as usize].sCmn.inDTX = (*psEnc).state_Fxx[n as usize].sCmn.useDTX;
         n += 1;
     }
-    if !((*encControl).nChannelsInternal == 1 as i32
-        || (*psEnc).state_Fxx[0 as i32 as usize].sCmn.fs_kHz
-            == (*psEnc).state_Fxx[1 as i32 as usize].sCmn.fs_kHz)
-    {
-        celt_fatal(
-            b"assertion failed: encControl->nChannelsInternal == 1 || psEnc->state_Fxx[ 0 ].sCmn.fs_kHz == psEnc->state_Fxx[ 1 ].sCmn.fs_kHz\0"
-                as *const u8 as *const i8,
-            b"silk/enc_API.c\0" as *const u8 as *const i8,
-            262 as i32,
-        );
-    }
+    assert!(
+        (*encControl).nChannelsInternal == 1 as i32
+            || (*psEnc).state_Fxx[0 as i32 as usize].sCmn.fs_kHz
+                == (*psEnc).state_Fxx[1 as i32 as usize].sCmn.fs_kHz
+    );
     nSamplesToBufferMax =
         10 as i32 * nBlocksOf10ms * (*psEnc).state_Fxx[0 as i32 as usize].sCmn.fs_kHz;
     nSamplesFromInputMax = nSamplesToBufferMax
@@ -536,16 +491,10 @@ pub unsafe fn silk_Encode(
             }
             (*psEnc).state_Fxx[0 as i32 as usize].sCmn.inputBufIx += nSamplesToBuffer;
         } else {
-            if !((*encControl).nChannelsAPI == 1 as i32
-                && (*encControl).nChannelsInternal == 1 as i32)
-            {
-                celt_fatal(
-                    b"assertion failed: encControl->nChannelsAPI == 1 && encControl->nChannelsInternal == 1\0"
-                        as *const u8 as *const i8,
-                    b"silk/enc_API.c\0" as *const u8 as *const i8,
-                    320 as i32,
-                );
-            }
+            assert!(
+                (*encControl).nChannelsAPI == 1 as i32
+                    && (*encControl).nChannelsInternal == 1 as i32
+            );
             memcpy(
                 buf.as_mut_ptr() as *mut core::ffi::c_void,
                 samplesIn as *const core::ffi::c_void,
@@ -578,27 +527,15 @@ pub unsafe fn silk_Encode(
         {
             break;
         }
-        if !((*psEnc).state_Fxx[0 as i32 as usize].sCmn.inputBufIx
-            == (*psEnc).state_Fxx[0 as i32 as usize].sCmn.frame_length)
-        {
-            celt_fatal(
-                b"assertion failed: psEnc->state_Fxx[ 0 ].sCmn.inputBufIx == psEnc->state_Fxx[ 0 ].sCmn.frame_length\0"
-                    as *const u8 as *const i8,
-                b"silk/enc_API.c\0" as *const u8 as *const i8,
-                336 as i32,
-            );
-        }
-        if !((*encControl).nChannelsInternal == 1 as i32
-            || (*psEnc).state_Fxx[1 as i32 as usize].sCmn.inputBufIx
-                == (*psEnc).state_Fxx[1 as i32 as usize].sCmn.frame_length)
-        {
-            celt_fatal(
-                b"assertion failed: encControl->nChannelsInternal == 1 || psEnc->state_Fxx[ 1 ].sCmn.inputBufIx == psEnc->state_Fxx[ 1 ].sCmn.frame_length\0"
-                    as *const u8 as *const i8,
-                b"silk/enc_API.c\0" as *const u8 as *const i8,
-                337 as i32,
-            );
-        }
+        assert!(
+            (*psEnc).state_Fxx[0 as i32 as usize].sCmn.inputBufIx
+                == (*psEnc).state_Fxx[0 as i32 as usize].sCmn.frame_length
+        );
+        assert!(
+            (*encControl).nChannelsInternal == 1 as i32
+                || (*psEnc).state_Fxx[1 as i32 as usize].sCmn.inputBufIx
+                    == (*psEnc).state_Fxx[1 as i32 as usize].sCmn.frame_length
+        );
         if (*psEnc).state_Fxx[0 as i32 as usize].sCmn.nFramesEncoded == 0 as i32 && prefillFlag == 0
         {
             let mut iCDF: [u8; 2] = [0 as i32 as u8, 0 as i32 as u8];

@@ -1,4 +1,3 @@
-use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memset};
 use crate::silk::define::{
     MAX_PREDICTION_POWER_GAIN, MAX_PREDICTION_POWER_GAIN_AFTER_RESET, TYPE_VOICED,
@@ -34,17 +33,10 @@ pub unsafe fn silk_find_pred_coefs_FLP(
         i += 1;
     }
     if (*psEnc).sCmn.indices.signalType as i32 == TYPE_VOICED {
-        if !((*psEnc).sCmn.ltp_mem_length - (*psEnc).sCmn.predictLPCOrder
-            >= (*psEncCtrl).pitchL[0 as i32 as usize] + 5 as i32 / 2 as i32)
-        {
-            celt_fatal(
-                b"assertion failed: psEnc->sCmn.ltp_mem_length - psEnc->sCmn.predictLPCOrder >= psEncCtrl->pitchL[ 0 ] + LTP_ORDER / 2\0"
-                    as *const u8 as *const i8,
-                b"silk/float/find_pred_coefs_FLP.c\0" as *const u8
-                    as *const i8,
-                62 as i32,
-            );
-        }
+        assert!(
+            (*psEnc).sCmn.ltp_mem_length - (*psEnc).sCmn.predictLPCOrder
+                >= (*psEncCtrl).pitchL[0 as i32 as usize] + 5 as i32 / 2 as i32
+        );
         silk_find_LTP_FLP(
             XXLTP.as_mut_ptr(),
             xXLTP.as_mut_ptr(),

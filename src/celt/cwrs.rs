@@ -2,7 +2,6 @@ pub mod arch_h {
     pub type opus_val32 = f32;
 }
 pub use self::arch_h::opus_val32;
-use crate::celt::celt::celt_fatal;
 use crate::celt::entdec::{ec_dec, ec_dec_uint};
 use crate::celt::entenc::{ec_enc, ec_enc_uint};
 
@@ -1303,13 +1302,7 @@ unsafe fn icwrs(mut _n: i32, mut _y: *const i32) -> u32 {
     let mut i: u32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
-    if !(_n >= 2 as i32) {
-        celt_fatal(
-            b"assertion failed: _n>=2\0" as *const u8 as *const i8,
-            b"celt/cwrs.c\0" as *const u8 as *const i8,
-            444 as i32,
-        );
-    }
+    assert!(_n >= 2 as i32);
     j = _n - 1 as i32;
     i = (*_y.offset(j as isize) < 0 as i32) as i32 as u32;
     k = (*_y.offset(j as isize)).abs();
@@ -1343,13 +1336,7 @@ unsafe fn icwrs(mut _n: i32, mut _y: *const i32) -> u32 {
     return i;
 }
 pub unsafe fn encode_pulses(mut _y: *const i32, mut _n: i32, mut _k: i32, mut _enc: *mut ec_enc) {
-    if !(_k > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: _k>0\0" as *const u8 as *const i8,
-            b"celt/cwrs.c\0" as *const u8 as *const i8,
-            459 as i32,
-        );
-    }
+    assert!(_k > 0 as i32);
     ec_enc_uint(
         _enc,
         icwrs(_n, _y),
@@ -1377,20 +1364,8 @@ unsafe fn cwrsi(mut _n: i32, mut _k: i32, mut _i: u32, mut _y: *mut i32) -> opus
     let mut k0: i32 = 0;
     let mut val: i16 = 0;
     let mut yy: opus_val32 = 0 as i32 as opus_val32;
-    if !(_k > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: _k>0\0" as *const u8 as *const i8,
-            b"celt/cwrs.c\0" as *const u8 as *const i8,
-            469 as i32,
-        );
-    }
-    if !(_n > 1 as i32) {
-        celt_fatal(
-            b"assertion failed: _n>1\0" as *const u8 as *const i8,
-            b"celt/cwrs.c\0" as *const u8 as *const i8,
-            470 as i32,
-        );
-    }
+    assert!(_k > 0 as i32);
+    assert!(_n > 1 as i32);
     while _n > 2 as i32 {
         let mut q: u32 = 0;
         if _k >= _n {

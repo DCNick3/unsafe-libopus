@@ -43,7 +43,6 @@ pub mod typedef_h {
 use self::errors_h::{SILK_ENC_PACKET_SIZE_NOT_SUPPORTED, SILK_NO_ERROR};
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 pub use self::SigProc_FLP_h::{silk_float2short_array, silk_short2float_array};
-use crate::celt::celt::celt_fatal;
 use crate::externs::memset;
 use crate::silk::control_audio_bandwidth::silk_control_audio_bandwidth;
 use crate::silk::define::{
@@ -235,22 +234,8 @@ unsafe fn silk_setup_fs(
         (*psEnc).sCmn.PacketSize_ms = PacketSize_ms;
         (*psEnc).sCmn.TargetRate_bps = 0 as i32;
     }
-    if !(fs_kHz == 8 as i32 || fs_kHz == 12 as i32 || fs_kHz == 16 as i32) {
-        celt_fatal(
-            b"assertion failed: fs_kHz == 8 || fs_kHz == 12 || fs_kHz == 16\0" as *const u8
-                as *const i8,
-            b"silk/control_codec.c\0" as *const u8 as *const i8,
-            241 as i32,
-        );
-    }
-    if !((*psEnc).sCmn.nb_subfr == 2 as i32 || (*psEnc).sCmn.nb_subfr == 4 as i32) {
-        celt_fatal(
-            b"assertion failed: psEnc->sCmn.nb_subfr == 2 || psEnc->sCmn.nb_subfr == 4\0"
-                as *const u8 as *const i8,
-            b"silk/control_codec.c\0" as *const u8 as *const i8,
-            242 as i32,
-        );
-    }
+    assert!(fs_kHz == 8 as i32 || fs_kHz == 12 as i32 || fs_kHz == 16 as i32);
+    assert!((*psEnc).sCmn.nb_subfr == 2 as i32 || (*psEnc).sCmn.nb_subfr == 4 as i32);
     if (*psEnc).sCmn.fs_kHz != fs_kHz {
         memset(
             &mut (*psEnc).sShape as *mut silk_shape_state_FLP as *mut core::ffi::c_void,
@@ -321,25 +306,12 @@ unsafe fn silk_setup_fs(
             (*psEnc).sCmn.pitch_lag_low_bits_iCDF = silk_uniform4_iCDF.as_ptr();
         }
     }
-    if !((*psEnc).sCmn.subfr_length * (*psEnc).sCmn.nb_subfr == (*psEnc).sCmn.frame_length) {
-        celt_fatal(
-            b"assertion failed: ( psEnc->sCmn.subfr_length * psEnc->sCmn.nb_subfr ) == psEnc->sCmn.frame_length\0"
-                as *const u8 as *const i8,
-            b"silk/control_codec.c\0" as *const u8 as *const i8,
-            302 as i32,
-        );
-    }
+    assert!((*psEnc).sCmn.subfr_length * (*psEnc).sCmn.nb_subfr == (*psEnc).sCmn.frame_length);
     return ret;
 }
 unsafe fn silk_setup_complexity(psEncC: *mut silk_encoder_state, Complexity: i32) -> i32 {
     let ret: i32 = 0 as i32;
-    if !(Complexity >= 0 as i32 && Complexity <= 10 as i32) {
-        celt_fatal(
-            b"assertion failed: Complexity >= 0 && Complexity <= 10\0" as *const u8 as *const i8,
-            b"silk/control_codec.c\0" as *const u8 as *const i8,
-            315 as i32,
-        );
-    }
+    assert!(Complexity >= 0 as i32 && Complexity <= 10 as i32);
     if Complexity < 1 as i32 {
         (*psEncC).pitchEstimationComplexity = SILK_PE_MIN_COMPLEX;
         (*psEncC).pitchEstimationThreshold_Q16 =
@@ -426,52 +398,12 @@ unsafe fn silk_setup_complexity(psEncC: *mut silk_encoder_state, Complexity: i32
     (*psEncC).shapeWinLength =
         SUB_FRAME_LENGTH_MS * (*psEncC).fs_kHz + 2 as i32 * (*psEncC).la_shape;
     (*psEncC).Complexity = Complexity;
-    if !((*psEncC).pitchEstimationLPCOrder <= 16 as i32) {
-        celt_fatal(
-            b"assertion failed: psEncC->pitchEstimationLPCOrder <= MAX_FIND_PITCH_LPC_ORDER\0"
-                as *const u8 as *const i8,
-            b"silk/control_codec.c\0" as *const u8 as *const i8,
-            393 as i32,
-        );
-    }
-    if !((*psEncC).shapingLPCOrder <= 24 as i32) {
-        celt_fatal(
-            b"assertion failed: psEncC->shapingLPCOrder <= MAX_SHAPE_LPC_ORDER\0" as *const u8
-                as *const i8,
-            b"silk/control_codec.c\0" as *const u8 as *const i8,
-            394 as i32,
-        );
-    }
-    if !((*psEncC).nStatesDelayedDecision <= 4 as i32) {
-        celt_fatal(
-            b"assertion failed: psEncC->nStatesDelayedDecision <= MAX_DEL_DEC_STATES\0" as *const u8
-                as *const i8,
-            b"silk/control_codec.c\0" as *const u8 as *const i8,
-            395 as i32,
-        );
-    }
-    if !((*psEncC).warping_Q16 <= 32767 as i32) {
-        celt_fatal(
-            b"assertion failed: psEncC->warping_Q16 <= 32767\0" as *const u8 as *const i8,
-            b"silk/control_codec.c\0" as *const u8 as *const i8,
-            396 as i32,
-        );
-    }
-    if !((*psEncC).la_shape <= 5 as i32 * 16 as i32) {
-        celt_fatal(
-            b"assertion failed: psEncC->la_shape <= LA_SHAPE_MAX\0" as *const u8 as *const i8,
-            b"silk/control_codec.c\0" as *const u8 as *const i8,
-            397 as i32,
-        );
-    }
-    if !((*psEncC).shapeWinLength <= 15 as i32 * 16 as i32) {
-        celt_fatal(
-            b"assertion failed: psEncC->shapeWinLength <= SHAPE_LPC_WIN_MAX\0" as *const u8
-                as *const i8,
-            b"silk/control_codec.c\0" as *const u8 as *const i8,
-            398 as i32,
-        );
-    }
+    assert!((*psEncC).pitchEstimationLPCOrder <= 16 as i32);
+    assert!((*psEncC).shapingLPCOrder <= 24 as i32);
+    assert!((*psEncC).nStatesDelayedDecision <= 4 as i32);
+    assert!((*psEncC).warping_Q16 <= 32767 as i32);
+    assert!((*psEncC).la_shape <= 5 as i32 * 16 as i32);
+    assert!((*psEncC).shapeWinLength <= 15 as i32 * 16 as i32);
     return ret;
 }
 #[inline]

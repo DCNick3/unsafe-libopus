@@ -5,7 +5,6 @@ pub mod tuning_parameters_h {
 pub use self::tuning_parameters_h::{
     FIND_PITCH_BANDWIDTH_EXPANSION, FIND_PITCH_WHITE_NOISE_FRACTION,
 };
-use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memset};
 use crate::silk::define::{TYPE_NO_VOICE_ACTIVITY, TYPE_UNVOICED, TYPE_VOICED};
 use crate::silk::float::apply_sine_window_FLP::silk_apply_sine_window_FLP;
@@ -35,14 +34,7 @@ pub unsafe fn silk_find_pitch_lags_FLP(
     let mut Wsig: [f32; 384] = [0.; 384];
     let mut Wsig_ptr: *mut f32 = 0 as *mut f32;
     buf_len = (*psEnc).sCmn.la_pitch + (*psEnc).sCmn.frame_length + (*psEnc).sCmn.ltp_mem_length;
-    if !(buf_len >= (*psEnc).sCmn.pitch_LPC_win_length) {
-        celt_fatal(
-            b"assertion failed: buf_len >= psEnc->sCmn.pitch_LPC_win_length\0" as *const u8
-                as *const i8,
-            b"silk/float/find_pitch_lags_FLP.c\0" as *const u8 as *const i8,
-            59 as i32,
-        );
-    }
+    assert!(buf_len >= (*psEnc).sCmn.pitch_LPC_win_length);
     x_buf = x.offset(-((*psEnc).sCmn.ltp_mem_length as isize));
     x_buf_ptr = x_buf
         .offset(buf_len as isize)

@@ -1,4 +1,3 @@
-use crate::celt::celt::celt_fatal;
 pub unsafe fn silk_warped_autocorrelation_FLP(
     corr: *mut f32,
     input: *const f32,
@@ -64,13 +63,7 @@ pub unsafe fn silk_warped_autocorrelation_FLP(
         0.,
         0.,
     ];
-    if !(order & 1 as i32 == 0 as i32) {
-        celt_fatal(
-            b"assertion failed: ( order & 1 ) == 0\0" as *const u8 as *const i8,
-            b"silk/float/warped_autocorrelation_FLP.c\0" as *const u8 as *const i8,
-            49 as i32,
-        );
-    }
+    assert!(order & 1 as i32 == 0 as i32);
     n = 0 as i32;
     while n < length {
         tmp1 = *input.offset(n as isize) as f64;

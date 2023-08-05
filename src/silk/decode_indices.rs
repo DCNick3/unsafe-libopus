@@ -1,4 +1,3 @@
-use crate::celt::celt::celt_fatal;
 use crate::celt::entdec::{ec_dec, ec_dec_icdf};
 use crate::silk::define::{
     CODE_CONDITIONALLY, CODE_INDEPENDENTLY, MAX_NB_SUBFR, NLSF_QUANT_MAX_AMPLITUDE, TYPE_VOICED,
@@ -78,14 +77,7 @@ pub unsafe fn silk_decode_indices(
         (*psDec).psNLSF_CB,
         (*psDec).indices.NLSFIndices[0 as i32 as usize] as i32,
     );
-    if !((*(*psDec).psNLSF_CB).order as i32 == (*psDec).LPC_order) {
-        celt_fatal(
-            b"assertion failed: psDec->psNLSF_CB->order == psDec->LPC_order\0" as *const u8
-                as *const i8,
-            b"silk/decode_indices.c\0" as *const u8 as *const i8,
-            82 as i32,
-        );
-    }
+    assert!((*(*psDec).psNLSF_CB).order as i32 == (*psDec).LPC_order);
     i = 0 as i32;
     while i < (*(*psDec).psNLSF_CB).order as i32 {
         Ix = ec_dec_icdf(

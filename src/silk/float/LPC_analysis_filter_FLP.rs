@@ -1,4 +1,3 @@
-use crate::celt::celt::celt_fatal;
 use crate::externs::memset;
 #[inline]
 unsafe fn silk_LPC_analysis_filter16_FLP(
@@ -144,13 +143,7 @@ pub unsafe fn silk_LPC_analysis_filter_FLP(
     length: i32,
     Order: i32,
 ) {
-    if !(Order <= length) {
-        celt_fatal(
-            b"assertion failed: Order <= length\0" as *const u8 as *const i8,
-            b"silk/float/LPC_analysis_filter_FLP.c\0" as *const u8 as *const i8,
-            218 as i32,
-        );
-    }
+    assert!(Order <= length);
     match Order {
         6 => {
             silk_LPC_analysis_filter6_FLP(r_LPC, PredCoef, s, length);
@@ -168,13 +161,7 @@ pub unsafe fn silk_LPC_analysis_filter_FLP(
             silk_LPC_analysis_filter16_FLP(r_LPC, PredCoef, s, length);
         }
         _ => {
-            if 0 as i32 == 0 {
-                celt_fatal(
-                    b"assertion failed: 0\0" as *const u8 as *const i8,
-                    b"silk/float/LPC_analysis_filter_FLP.c\0" as *const u8 as *const i8,
-                    242 as i32,
-                );
-            }
+            panic!("libopus: assert(0) called");
         }
     }
     memset(

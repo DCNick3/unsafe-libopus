@@ -1,4 +1,3 @@
-use crate::celt::celt::celt_fatal;
 use crate::celt::entenc::{ec_enc, ec_enc_icdf};
 use crate::silk::define::{
     CODE_CONDITIONALLY, CODE_INDEPENDENTLY, MAX_NB_SUBFR, NLSF_QUANT_MAX_AMPLITUDE, TYPE_VOICED,
@@ -37,20 +36,8 @@ pub unsafe fn silk_encode_indices(
         psIndices = &mut (*psEncC).indices;
     }
     typeOffset = 2 as i32 * (*psIndices).signalType as i32 + (*psIndices).quantOffsetType as i32;
-    if !(typeOffset >= 0 as i32 && typeOffset < 6 as i32) {
-        celt_fatal(
-            b"assertion failed: typeOffset >= 0 && typeOffset < 6\0" as *const u8 as *const i8,
-            b"silk/encode_indices.c\0" as *const u8 as *const i8,
-            59 as i32,
-        );
-    }
-    if !(encode_LBRR == 0 as i32 || typeOffset >= 2 as i32) {
-        celt_fatal(
-            b"assertion failed: encode_LBRR == 0 || typeOffset >= 2\0" as *const u8 as *const i8,
-            b"silk/encode_indices.c\0" as *const u8 as *const i8,
-            60 as i32,
-        );
-    }
+    assert!(typeOffset >= 0 as i32 && typeOffset < 6 as i32);
+    assert!(encode_LBRR == 0 as i32 || typeOffset >= 2 as i32);
     if encode_LBRR != 0 || typeOffset >= 2 as i32 {
         ec_enc_icdf(
             psRangeEnc,
@@ -112,14 +99,7 @@ pub unsafe fn silk_encode_indices(
         (*psEncC).psNLSF_CB,
         (*psIndices).NLSFIndices[0 as i32 as usize] as i32,
     );
-    if !((*(*psEncC).psNLSF_CB).order as i32 == (*psEncC).predictLPCOrder) {
-        celt_fatal(
-            b"assertion failed: psEncC->psNLSF_CB->order == psEncC->predictLPCOrder\0" as *const u8
-                as *const i8,
-            b"silk/encode_indices.c\0" as *const u8 as *const i8,
-            93 as i32,
-        );
-    }
+    assert!((*(*psEncC).psNLSF_CB).order as i32 == (*psEncC).predictLPCOrder);
     i = 0 as i32;
     while i < (*(*psEncC).psNLSF_CB).order as i32 {
         if (*psIndices).NLSFIndices[(i + 1 as i32) as usize] as i32 >= NLSF_QUANT_MAX_AMPLITUDE {

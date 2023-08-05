@@ -2,7 +2,6 @@ pub mod typedef_h {
     pub const silk_int32_MAX: i32 = i32::MAX;
 }
 pub use self::typedef_h::silk_int32_MAX;
-use crate::celt::celt::celt_fatal;
 use crate::celt::entenc::{ec_enc, ec_enc_icdf};
 use crate::externs::memset;
 use crate::silk::code_signs::silk_encode_signs;
@@ -65,13 +64,7 @@ pub unsafe fn silk_encode_pulses(
     );
     iter = frame_length >> 4 as i32;
     if iter * SHELL_CODEC_FRAME_LENGTH < frame_length {
-        if !(frame_length == 12 as i32 * 10 as i32) {
-            celt_fatal(
-                b"assertion failed: frame_length == 12 * 10\0" as *const u8 as *const i8,
-                b"silk/encode_pulses.c\0" as *const u8 as *const i8,
-                89 as i32,
-            );
-        }
+        assert!(frame_length == 12 as i32 * 10 as i32);
         iter += 1;
         memset(
             &mut *pulses.offset(frame_length as isize) as *mut i8 as *mut core::ffi::c_void,

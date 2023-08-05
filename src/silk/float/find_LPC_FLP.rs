@@ -12,7 +12,6 @@ pub mod internal {
 pub use self::float_h::FLT_MAX;
 pub use self::internal::__FLT_MAX__;
 pub use self::typedef_h::silk_float_MAX;
-use crate::celt::celt::celt_fatal;
 use crate::silk::define::MAX_NB_SUBFR;
 use crate::silk::float::burg_modified_FLP::silk_burg_modified_FLP;
 use crate::silk::float::energy_FLP::silk_energy_FLP;
@@ -107,16 +106,10 @@ pub unsafe fn silk_find_LPC_FLP(
     if (*psEncC).indices.NLSFInterpCoef_Q2 as i32 == 4 as i32 {
         silk_A2NLSF_FLP(NLSF_Q15, a.as_mut_ptr(), (*psEncC).predictLPCOrder);
     }
-    if !((*psEncC).indices.NLSFInterpCoef_Q2 as i32 == 4 as i32
-        || (*psEncC).useInterpolatedNLSFs != 0
-            && (*psEncC).first_frame_after_reset == 0
-            && (*psEncC).nb_subfr == 4 as i32)
-    {
-        celt_fatal(
-            b"assertion failed: psEncC->indices.NLSFInterpCoef_Q2 == 4 || ( psEncC->useInterpolatedNLSFs && !psEncC->first_frame_after_reset && psEncC->nb_subfr == MAX_NB_SUBFR )\0"
-                as *const u8 as *const i8,
-            b"silk/float/find_LPC_FLP.c\0" as *const u8 as *const i8,
-            103 as i32,
-        );
-    }
+    assert!(
+        (*psEncC).indices.NLSFInterpCoef_Q2 as i32 == 4 as i32
+            || (*psEncC).useInterpolatedNLSFs != 0
+                && (*psEncC).first_frame_after_reset == 0
+                && (*psEncC).nb_subfr == 4 as i32
+    );
 }

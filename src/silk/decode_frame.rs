@@ -1,4 +1,3 @@
-use crate::celt::celt::celt_fatal;
 use crate::celt::entdec::ec_dec;
 use crate::externs::{memcpy, memmove};
 use crate::silk::dec_API::{FLAG_DECODE_LBRR, FLAG_DECODE_NORMAL};
@@ -31,13 +30,7 @@ pub unsafe fn silk_decode_frame(
         LTP_scale_Q14: 0,
     }; 1];
     (*psDecCtrl.as_mut_ptr()).LTP_scale_Q14 = 0 as i32;
-    if !(L > 0 as i32 && L <= 5 as i32 * 4 as i32 * 16 as i32) {
-        celt_fatal(
-            b"assertion failed: L > 0 && L <= MAX_FRAME_LENGTH\0" as *const u8 as *const i8,
-            b"silk/decode_frame.c\0" as *const u8 as *const i8,
-            58 as i32,
-        );
-    }
+    assert!(L > 0 as i32 && L <= 5 as i32 * 4 as i32 * 16 as i32);
     if lostFlag == FLAG_DECODE_NORMAL
         || lostFlag == FLAG_DECODE_LBRR
             && (*psDec).LBRR_flags[(*psDec).nFramesDecoded as usize] == 1 as i32
@@ -69,27 +62,13 @@ pub unsafe fn silk_decode_frame(
         silk_PLC(psDec, psDecCtrl.as_mut_ptr(), pOut, 0 as i32, arch);
         (*psDec).lossCnt = 0 as i32;
         (*psDec).prevSignalType = (*psDec).indices.signalType as i32;
-        if !((*psDec).prevSignalType >= 0 as i32 && (*psDec).prevSignalType <= 2 as i32) {
-            celt_fatal(
-                b"assertion failed: psDec->prevSignalType >= 0 && psDec->prevSignalType <= 2\0"
-                    as *const u8 as *const i8,
-                b"silk/decode_frame.c\0" as *const u8 as *const i8,
-                94 as i32,
-            );
-        }
+        assert!((*psDec).prevSignalType >= 0 as i32 && (*psDec).prevSignalType <= 2 as i32);
         (*psDec).first_frame_after_reset = 0 as i32;
     } else {
         (*psDec).indices.signalType = (*psDec).prevSignalType as i8;
         silk_PLC(psDec, psDecCtrl.as_mut_ptr(), pOut, 1 as i32, arch);
     }
-    if !((*psDec).ltp_mem_length >= (*psDec).frame_length) {
-        celt_fatal(
-            b"assertion failed: psDec->ltp_mem_length >= psDec->frame_length\0" as *const u8
-                as *const i8,
-            b"silk/decode_frame.c\0" as *const u8 as *const i8,
-            107 as i32,
-        );
-    }
+    assert!((*psDec).ltp_mem_length >= (*psDec).frame_length);
     mv_len = (*psDec).ltp_mem_length - (*psDec).frame_length;
     memmove(
         ((*psDec).outBuf).as_mut_ptr() as *mut core::ffi::c_void,

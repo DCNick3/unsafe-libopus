@@ -84,7 +84,6 @@ pub mod cpu_support_h {
 pub use self::arch_h::{opus_val32, opus_val64};
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::math_h::M_PI;
-use crate::celt::celt::celt_fatal;
 use crate::celt::float_cast::float2int;
 use crate::celt::kiss_fft::{kiss_fft_cpx, opus_fft_c};
 use crate::celt::mathops::fast_atan2f;
@@ -1258,13 +1257,7 @@ unsafe fn tonality_analysis(
             };
         b -= 1;
     }
-    if !(18 as i32 + 1 as i32 <= 19 as i32) {
-        celt_fatal(
-            b"assertion failed: NB_TBANDS+1 <= LEAK_BANDS\0" as *const u8 as *const i8,
-            b"src/analysis.c\0" as *const u8 as *const i8,
-            740 as i32,
-        );
-    }
+    assert!(18 as i32 + 1 as i32 <= 19 as i32);
     b = 0 as i32;
     while b < NB_TBANDS + 1 as i32 {
         let boost: f32 =

@@ -1,5 +1,3 @@
-use crate::celt::celt::celt_fatal;
-
 pub unsafe fn silk_NLSF_VQ(
     err_Q24: *mut i32,
     in_Q15: *const i16,
@@ -16,13 +14,7 @@ pub unsafe fn silk_NLSF_VQ(
     let mut pred_Q24: i32 = 0;
     let mut w_Q9_ptr: *const i16 = 0 as *const i16;
     let mut cb_Q8_ptr: *const u8 = 0 as *const u8;
-    if !(LPC_order & 1 as i32 == 0 as i32) {
-        celt_fatal(
-            b"assertion failed: ( LPC_order & 1 ) == 0\0" as *const u8 as *const i8,
-            b"silk/NLSF_VQ.c\0" as *const u8 as *const i8,
-            49 as i32,
-        );
-    }
+    assert!(LPC_order & 1 as i32 == 0 as i32);
     cb_Q8_ptr = pCB_Q8;
     w_Q9_ptr = pWght_Q9;
     i = 0 as i32;

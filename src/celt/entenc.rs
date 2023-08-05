@@ -1,4 +1,3 @@
-use crate::celt::celt::celt_fatal;
 use crate::celt::entcode::{celt_udiv, ec_ctx, ec_window, EC_UINT_BITS, EC_WINDOW_SIZE};
 
 pub type ec_enc = ec_ctx;
@@ -145,13 +144,7 @@ pub unsafe fn ec_enc_uint(mut _this: *mut ec_enc, mut _fl: u32, mut _ft: u32) {
     let mut ft: u32 = 0;
     let mut fl: u32 = 0;
     let mut ftb: i32 = 0;
-    if !(_ft > 1 as i32 as u32) {
-        celt_fatal(
-            b"assertion failed: _ft>1\0" as *const u8 as *const i8,
-            b"celt/entenc.c\0" as *const u8 as *const i8,
-            180 as i32,
-        );
-    }
+    assert!(_ft > 1 as i32 as u32);
     _ft = _ft.wrapping_sub(1);
     ftb = EC_CLZ0 - _ft.leading_zeros() as i32;
     if ftb > EC_UINT_BITS {
@@ -178,13 +171,7 @@ pub unsafe fn ec_enc_bits(mut _this: *mut ec_enc, mut _fl: u32, mut _bits: u32) 
     let mut used: i32 = 0;
     window = (*_this).end_window;
     used = (*_this).nend_bits;
-    if !(_bits > 0 as i32 as u32) {
-        celt_fatal(
-            b"assertion failed: _bits>0\0" as *const u8 as *const i8,
-            b"celt/entenc.c\0" as *const u8 as *const i8,
-            198 as i32,
-        );
-    }
+    assert!(_bits > 0 as i32 as u32);
     if (used as u32).wrapping_add(_bits) > EC_WINDOW_SIZE as u32 {
         loop {
             (*_this).error |= ec_write_byte_at_end(_this, window & EC_SYM_MAX);
@@ -204,13 +191,7 @@ pub unsafe fn ec_enc_bits(mut _this: *mut ec_enc, mut _fl: u32, mut _bits: u32) 
 pub unsafe fn ec_enc_patch_initial_bits(mut _this: *mut ec_enc, mut _val: u32, mut _nbits: u32) {
     let mut shift: i32 = 0;
     let mut mask: u32 = 0;
-    if !(_nbits <= 8 as i32 as u32) {
-        celt_fatal(
-            b"assertion failed: _nbits<=EC_SYM_BITS\0" as *const u8 as *const i8,
-            b"celt/entenc.c\0" as *const u8 as *const i8,
-            217 as i32,
-        );
-    }
+    assert!(_nbits <= 8 as i32 as u32);
     shift = (EC_SYM_BITS as u32).wrapping_sub(_nbits) as i32;
     mask = ((((1 as i32) << _nbits) - 1 as i32) << shift) as u32;
     if (*_this).offs > 0 as i32 as u32 {
@@ -225,13 +206,7 @@ pub unsafe fn ec_enc_patch_initial_bits(mut _this: *mut ec_enc, mut _val: u32, m
     };
 }
 pub unsafe fn ec_enc_shrink(mut _this: *mut ec_enc, mut _size: u32) {
-    if !(((*_this).offs).wrapping_add((*_this).end_offs) <= _size) {
-        celt_fatal(
-            b"assertion failed: _this->offs+_this->end_offs<=_size\0" as *const u8 as *const i8,
-            b"celt/entenc.c\0" as *const u8 as *const i8,
-            238 as i32,
-        );
-    }
+    assert!(((*_this).offs).wrapping_add((*_this).end_offs) <= _size);
     memmove(
         ((*_this).buf)
             .offset(_size as isize)

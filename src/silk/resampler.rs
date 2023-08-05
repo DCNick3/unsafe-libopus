@@ -1,4 +1,3 @@
-use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memset};
 use crate::silk::resampler_private_IIR_FIR::silk_resampler_private_IIR_FIR;
 use crate::silk::resampler_private_down_FIR::silk_resampler_private_down_FIR;
@@ -66,14 +65,9 @@ pub unsafe fn silk_resampler_init(
             && Fs_Hz_in != 48000 as i32
             || Fs_Hz_out != 8000 as i32 && Fs_Hz_out != 12000 as i32 && Fs_Hz_out != 16000 as i32
         {
-            if 0 as i32 == 0 {
-                celt_fatal(
-                    b"assertion failed: 0\0" as *const u8 as *const i8,
-                    b"silk/resampler.c\0" as *const u8 as *const i8,
-                    94 as i32,
-                );
-            }
-            return -(1 as i32);
+            // see comments in `[unsafe_libopus::silk::check_control_input]`
+            panic!("libopus: assert(0) called");
+            // return -(1 as i32);
         }
         (*S).inputDelay = delay_matrix_enc[(((Fs_Hz_in >> 12 as i32)
             - (Fs_Hz_in > 16000 as i32) as i32
@@ -90,14 +84,9 @@ pub unsafe fn silk_resampler_init(
                 && Fs_Hz_out != 24000 as i32
                 && Fs_Hz_out != 48000 as i32
         {
-            if 0 as i32 == 0 {
-                celt_fatal(
-                    b"assertion failed: 0\0" as *const u8 as *const i8,
-                    b"silk/resampler.c\0" as *const u8 as *const i8,
-                    101 as i32,
-                );
-            }
-            return -(1 as i32);
+            // see comments in `[unsafe_libopus::silk::check_control_input]`
+            panic!("libopus: assert(0) called");
+            // return -(1 as i32);
         }
         (*S).inputDelay = delay_matrix_dec[(((Fs_Hz_in >> 12 as i32)
             - (Fs_Hz_in > 16000 as i32) as i32
@@ -145,14 +134,9 @@ pub unsafe fn silk_resampler_init(
             (*S).FIR_Order = RESAMPLER_DOWN_ORDER_FIR2;
             (*S).Coefs = silk_Resampler_1_6_COEFS.as_ptr();
         } else {
-            if 0 as i32 == 0 {
-                celt_fatal(
-                    b"assertion failed: 0\0" as *const u8 as *const i8,
-                    b"silk/resampler.c\0" as *const u8 as *const i8,
-                    154 as i32,
-                );
-            }
-            return -(1 as i32);
+            // see comments in `[unsafe_libopus::silk::check_control_input]`
+            panic!("libopus: assert(0) called");
+            // return -(1 as i32);
         }
     } else {
         (*S).resampler_function = USE_silk_resampler_copy;
@@ -173,20 +157,8 @@ pub unsafe fn silk_resampler(
     inLen: i32,
 ) -> i32 {
     let mut nSamples: i32 = 0;
-    if !(inLen >= (*S).Fs_in_kHz) {
-        celt_fatal(
-            b"assertion failed: inLen >= S->Fs_in_kHz\0" as *const u8 as *const i8,
-            b"silk/resampler.c\0" as *const u8 as *const i8,
-            184 as i32,
-        );
-    }
-    if !((*S).inputDelay <= (*S).Fs_in_kHz) {
-        celt_fatal(
-            b"assertion failed: S->inputDelay <= S->Fs_in_kHz\0" as *const u8 as *const i8,
-            b"silk/resampler.c\0" as *const u8 as *const i8,
-            186 as i32,
-        );
-    }
+    assert!(inLen >= (*S).Fs_in_kHz);
+    assert!((*S).inputDelay <= (*S).Fs_in_kHz);
     nSamples = (*S).Fs_in_kHz - (*S).inputDelay;
     memcpy(
         &mut *((*S).delayBuf)

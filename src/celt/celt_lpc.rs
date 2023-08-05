@@ -3,7 +3,6 @@ pub mod arch_h {
     pub type opus_val32 = f32;
 }
 pub use self::arch_h::{opus_val16, opus_val32};
-use crate::celt::celt::celt_fatal;
 use crate::celt::pitch::{celt_pitch_xcorr_c, xcorr_kernel_c};
 use crate::externs::memset;
 
@@ -60,13 +59,7 @@ pub unsafe fn celt_fir_c(
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
-    if !(x != y as *const opus_val16) {
-        celt_fatal(
-            b"assertion failed: x != y\0" as *const u8 as *const i8,
-            b"celt/celt_lpc.c\0" as *const u8 as *const i8,
-            102 as i32,
-        );
-    }
+    assert!(x != y as *const opus_val16);
     let vla = ord as usize;
     let mut rnum: Vec<opus_val16> = ::std::vec::from_elem(0., vla);
     i = 0 as i32;
@@ -116,13 +109,7 @@ pub unsafe fn celt_iir(
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
-    if !(ord & 3 as i32 == 0 as i32) {
-        celt_fatal(
-            b"assertion failed: (ord&3)==0\0" as *const u8 as *const i8,
-            b"celt/celt_lpc.c\0" as *const u8 as *const i8,
-            160 as i32,
-        );
-    }
+    assert!(ord & 3 as i32 == 0 as i32);
     let vla = ord as usize;
     let mut rden: Vec<opus_val16> = ::std::vec::from_elem(0., vla);
     let vla_0 = (N + ord) as usize;
@@ -214,20 +201,8 @@ pub unsafe fn _celt_autocorr(
     let mut xptr: *const opus_val16 = 0 as *const opus_val16;
     let vla = n as usize;
     let mut xx: Vec<opus_val16> = ::std::vec::from_elem(0., vla);
-    if !(n > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: n>0\0" as *const u8 as *const i8,
-            b"celt/celt_lpc.c\0" as *const u8 as *const i8,
-            228 as i32,
-        );
-    }
-    if !(overlap >= 0 as i32) {
-        celt_fatal(
-            b"assertion failed: overlap>=0\0" as *const u8 as *const i8,
-            b"celt/celt_lpc.c\0" as *const u8 as *const i8,
-            229 as i32,
-        );
-    }
+    assert!(n > 0 as i32);
+    assert!(overlap >= 0 as i32);
     if overlap == 0 as i32 {
         xptr = x;
     } else {

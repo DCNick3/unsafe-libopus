@@ -2,7 +2,6 @@ pub mod typedef_h {
     pub const silk_int16_MIN: i32 = i16::MIN as i32;
     pub const silk_int16_MAX: i32 = i16::MAX as i32;
 }
-use crate::celt::celt::celt_fatal;
 
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 
@@ -20,27 +19,9 @@ pub unsafe fn silk_LPC_analysis_filter(
     let mut out32_Q12: i32 = 0;
     let mut out32: i32 = 0;
     let mut in_ptr: *const i16 = 0 as *const i16;
-    if !(d >= 6 as i32) {
-        celt_fatal(
-            b"assertion failed: d >= 6\0" as *const u8 as *const i8,
-            b"silk/LPC_analysis_filter.c\0" as *const u8 as *const i8,
-            67 as i32,
-        );
-    }
-    if !(d & 1 as i32 == 0 as i32) {
-        celt_fatal(
-            b"assertion failed: (d & 1) == 0\0" as *const u8 as *const i8,
-            b"silk/LPC_analysis_filter.c\0" as *const u8 as *const i8,
-            68 as i32,
-        );
-    }
-    if !(d <= len) {
-        celt_fatal(
-            b"assertion failed: d <= len\0" as *const u8 as *const i8,
-            b"silk/LPC_analysis_filter.c\0" as *const u8 as *const i8,
-            69 as i32,
-        );
-    }
+    assert!(d >= 6 as i32);
+    assert!(d & 1 as i32 == 0 as i32);
+    assert!(d <= len);
     ix = d;
     while ix < len {
         in_ptr = &*in_0.offset((ix - 1 as i32) as isize) as *const i16;

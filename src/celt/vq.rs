@@ -8,7 +8,6 @@ pub mod arch_h {
     pub const EPSILON: f32 = 1e-15f32;
 }
 use self::arch_h::{celt_norm, opus_val16, opus_val32, EPSILON};
-use crate::celt::celt::celt_fatal;
 use crate::celt::cwrs::{decode_pulses, encode_pulses};
 use crate::celt::entcode::celt_udiv;
 use crate::celt::entdec::ec_dec;
@@ -283,22 +282,8 @@ pub unsafe fn alg_quant(
 ) -> u32 {
     let mut yy: opus_val16 = 0.;
     let mut collapse_mask: u32 = 0;
-    if !(K > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: K>0\nalg_quant() needs at least one pulse\0" as *const u8
-                as *const i8,
-            b"celt/vq.c\0" as *const u8 as *const i8,
-            338 as i32,
-        );
-    }
-    if !(N > 1 as i32) {
-        celt_fatal(
-            b"assertion failed: N>1\nalg_quant() needs at least two dimensions\0" as *const u8
-                as *const i8,
-            b"celt/vq.c\0" as *const u8 as *const i8,
-            339 as i32,
-        );
-    }
+    assert!(K > 0 as i32);
+    assert!(N > 1 as i32);
     let vla = (N + 3 as i32) as usize;
     let mut iy: Vec<i32> = ::std::vec::from_elem(0, vla);
     exp_rotation(X, N, 1 as i32, B, K, spread);
@@ -322,22 +307,8 @@ pub unsafe fn alg_unquant(
 ) -> u32 {
     let mut Ryy: opus_val32 = 0.;
     let mut collapse_mask: u32 = 0;
-    if !(K > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: K>0\nalg_unquant() needs at least one pulse\0" as *const u8
-                as *const i8,
-            b"celt/vq.c\0" as *const u8 as *const i8,
-            371 as i32,
-        );
-    }
-    if !(N > 1 as i32) {
-        celt_fatal(
-            b"assertion failed: N>1\nalg_unquant() needs at least two dimensions\0" as *const u8
-                as *const i8,
-            b"celt/vq.c\0" as *const u8 as *const i8,
-            372 as i32,
-        );
-    }
+    assert!(K > 0 as i32);
+    assert!(N > 1 as i32);
     let vla = N as usize;
     let mut iy: Vec<i32> = ::std::vec::from_elem(0, vla);
     Ryy = decode_pulses(iy.as_mut_ptr(), N, K, dec);

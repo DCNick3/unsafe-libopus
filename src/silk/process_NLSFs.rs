@@ -1,4 +1,3 @@
-use crate::celt::celt::celt_fatal;
 use crate::externs::memcpy;
 use crate::silk::interpolate::silk_interpolate;
 use crate::silk::structs::silk_encoder_state;
@@ -19,16 +18,10 @@ pub unsafe fn silk_process_NLSFs(
     let mut pNLSF0_temp_Q15: [i16; 16] = [0; 16];
     let mut pNLSFW_QW: [i16; 16] = [0; 16];
     let mut pNLSFW0_temp_QW: [i16; 16] = [0; 16];
-    if !((*psEncC).useInterpolatedNLSFs == 1 as i32
-        || (*psEncC).indices.NLSFInterpCoef_Q2 as i32 == (1 as i32) << 2 as i32)
-    {
-        celt_fatal(
-            b"assertion failed: psEncC->useInterpolatedNLSFs == 1 || psEncC->indices.NLSFInterpCoef_Q2 == ( 1 << 2 )\0"
-                as *const u8 as *const i8,
-            b"silk/process_NLSFs.c\0" as *const u8 as *const i8,
-            51 as i32,
-        );
-    }
+    assert!(
+        (*psEncC).useInterpolatedNLSFs == 1 as i32
+            || (*psEncC).indices.NLSFInterpCoef_Q2 as i32 == (1 as i32) << 2 as i32
+    );
     NLSF_mu_Q20 = ((0.003f64 * ((1 as i32 as i64) << 20 as i32) as f64 + 0.5f64) as i32 as i64
         + ((-0.001f64 * ((1 as i32 as i64) << 28 as i32) as f64 + 0.5f64) as i32 as i64
             * (*psEncC).speech_activity_Q8 as i16 as i64
@@ -36,13 +29,7 @@ pub unsafe fn silk_process_NLSFs(
     if (*psEncC).nb_subfr == 2 as i32 {
         NLSF_mu_Q20 = NLSF_mu_Q20 + (NLSF_mu_Q20 >> 1 as i32);
     }
-    if !(NLSF_mu_Q20 > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: NLSF_mu_Q20 > 0\0" as *const u8 as *const i8,
-            b"silk/process_NLSFs.c\0" as *const u8 as *const i8,
-            63 as i32,
-        );
-    }
+    assert!(NLSF_mu_Q20 > 0 as i32);
     silk_NLSF_VQ_weights_laroia(
         pNLSFW_QW.as_mut_ptr(),
         pNLSF_Q15 as *const i16,
@@ -104,14 +91,7 @@ pub unsafe fn silk_process_NLSFs(
             (*psEncC).arch,
         );
     } else {
-        if !((*psEncC).predictLPCOrder <= 16 as i32) {
-            celt_fatal(
-                b"assertion failed: psEncC->predictLPCOrder <= MAX_LPC_ORDER\0" as *const u8
-                    as *const i8,
-                b"silk/process_NLSFs.c\0" as *const u8 as *const i8,
-                104 as i32,
-            );
-        }
+        assert!((*psEncC).predictLPCOrder <= 16 as i32);
         memcpy(
             (*PredCoef_Q12.offset(0 as i32 as isize)).as_mut_ptr() as *mut core::ffi::c_void,
             (*PredCoef_Q12.offset(1 as i32 as isize)).as_mut_ptr() as *const core::ffi::c_void,

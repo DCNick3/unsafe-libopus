@@ -9,7 +9,6 @@ pub mod stddef_h {
 }
 pub use self::arch_h::{celt_sig, opus_val16, opus_val32, Q15ONE};
 pub use self::stddef_h::NULL;
-use crate::celt::celt::celt_fatal;
 use crate::celt::celt_lpc::{_celt_autocorr, _celt_lpc};
 use crate::celt::entcode::celt_udiv;
 
@@ -46,13 +45,7 @@ pub unsafe fn xcorr_kernel_c(
     let mut y_1: opus_val16 = 0.;
     let mut y_2: opus_val16 = 0.;
     let mut y_3: opus_val16 = 0.;
-    if !(len >= 3 as i32) {
-        celt_fatal(
-            b"assertion failed: len>=3\0" as *const u8 as *const i8,
-            b"./celt/pitch.h\0" as *const u8 as *const i8,
-            69 as i32,
-        );
-    }
+    assert!(len >= 3 as i32);
     y_3 = 0 as i32 as opus_val16;
     let fresh0 = y;
     y = y.offset(1);
@@ -336,13 +329,7 @@ pub unsafe fn celt_pitch_xcorr_c(
     _arch: i32,
 ) {
     let mut i: i32 = 0;
-    if !(max_pitch > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: max_pitch>0\0" as *const u8 as *const i8,
-            b"celt/pitch.c\0" as *const u8 as *const i8,
-            251 as i32,
-        );
-    }
+    assert!(max_pitch > 0 as i32);
     i = 0 as i32;
     while i < max_pitch - 3 as i32 {
         let mut sum: [opus_val32; 4] = [
@@ -378,20 +365,8 @@ pub unsafe fn pitch_search(
     let mut lag: i32 = 0;
     let mut best_pitch: [i32; 2] = [0 as i32, 0 as i32];
     let mut offset: i32 = 0;
-    if !(len > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: len>0\0" as *const u8 as *const i8,
-            b"celt/pitch.c\0" as *const u8 as *const i8,
-            302 as i32,
-        );
-    }
-    if !(max_pitch > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: max_pitch>0\0" as *const u8 as *const i8,
-            b"celt/pitch.c\0" as *const u8 as *const i8,
-            303 as i32,
-        );
-    }
+    assert!(len > 0 as i32);
+    assert!(max_pitch > 0 as i32);
     lag = len + max_pitch;
     let vla = (len >> 2 as i32) as usize;
     let mut x_lp4: Vec<opus_val16> = ::std::vec::from_elem(0., vla);

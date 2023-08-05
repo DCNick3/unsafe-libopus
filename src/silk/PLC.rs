@@ -9,7 +9,6 @@ pub mod typedef_h {
     pub const silk_int16_MIN: i32 = i16::MIN as i32;
 }
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN, silk_int32_MAX, silk_int32_MIN};
-use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memset};
 use crate::silk::bwexpander::silk_bwexpander;
 use crate::silk::define::{
@@ -346,13 +345,7 @@ unsafe fn silk_PLC_conceal(
     };
     sLTP_buf_idx = (*psDec).ltp_mem_length;
     idx = (*psDec).ltp_mem_length - lag - (*psDec).LPC_order - LTP_ORDER / 2 as i32;
-    if !(idx > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: idx > 0\0" as *const u8 as *const i8,
-            b"silk/PLC.c\0" as *const u8 as *const i8,
-            294 as i32,
-        );
-    }
+    assert!(idx > 0 as i32);
     silk_LPC_analysis_filter(
         &mut *sLTP.as_mut_ptr().offset(idx as isize),
         &mut *((*psDec).outBuf).as_mut_ptr().offset(idx as isize),
@@ -449,13 +442,7 @@ unsafe fn silk_PLC_conceal(
         ((*psDec).sLPC_Q14_buf).as_mut_ptr() as *const core::ffi::c_void,
         (16 as i32 as u64).wrapping_mul(::core::mem::size_of::<i32>() as u64),
     );
-    if !((*psDec).LPC_order >= 10 as i32) {
-        celt_fatal(
-            b"assertion failed: psDec->LPC_order >= 10\0" as *const u8 as *const i8,
-            b"silk/PLC.c\0" as *const u8 as *const i8,
-            350 as i32,
-        );
-    }
+    assert!((*psDec).LPC_order >= 10 as i32);
     i = 0 as i32;
     while i < (*psDec).frame_length {
         LPC_pred_Q10 = (*psDec).LPC_order >> 1 as i32;

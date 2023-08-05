@@ -3,7 +3,6 @@ pub mod typedef_h {
     pub const silk_int16_MAX: i32 = i16::MAX as i32;
 }
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
-use crate::celt::celt::celt_fatal;
 use crate::silk::resampler_rom::{silk_resampler_down2_0, silk_resampler_down2_1};
 
 pub unsafe fn silk_resampler_down2(S: *mut i32, out: *mut i16, in_0: *const i16, inLen: i32) {
@@ -13,20 +12,8 @@ pub unsafe fn silk_resampler_down2(S: *mut i32, out: *mut i16, in_0: *const i16,
     let mut out32: i32 = 0;
     let mut Y: i32 = 0;
     let mut X: i32 = 0;
-    if !(silk_resampler_down2_0 as i32 > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: silk_resampler_down2_0 > 0\0" as *const u8 as *const i8,
-            b"silk/resampler_down2.c\0" as *const u8 as *const i8,
-            46 as i32,
-        );
-    }
-    if !((silk_resampler_down2_1 as i32) < 0 as i32) {
-        celt_fatal(
-            b"assertion failed: silk_resampler_down2_1 < 0\0" as *const u8 as *const i8,
-            b"silk/resampler_down2.c\0" as *const u8 as *const i8,
-            47 as i32,
-        );
-    }
+    assert!(silk_resampler_down2_0 as i32 > 0 as i32);
+    assert!((silk_resampler_down2_1 as i32) < 0 as i32);
     k = 0 as i32;
     while k < len2 {
         in32 = ((*in_0.offset((2 as i32 * k) as isize) as i32 as u32) << 10 as i32) as i32;

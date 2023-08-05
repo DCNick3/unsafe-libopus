@@ -1,4 +1,3 @@
-use crate::celt::celt::celt_fatal;
 pub unsafe fn silk_schur_FLP(refl_coef: *mut f32, auto_corr: *const f32, order: i32) -> f32 {
     let mut k: i32 = 0;
     let mut n: i32 = 0;
@@ -6,14 +5,7 @@ pub unsafe fn silk_schur_FLP(refl_coef: *mut f32, auto_corr: *const f32, order: 
     let mut Ctmp1: f64 = 0.;
     let mut Ctmp2: f64 = 0.;
     let mut rc_tmp: f64 = 0.;
-    if !(order >= 0 as i32 && order <= 24 as i32) {
-        celt_fatal(
-            b"assertion failed: order >= 0 && order <= SILK_MAX_ORDER_LPC\0" as *const u8
-                as *const i8,
-            b"silk/float/schur_FLP.c\0" as *const u8 as *const i8,
-            44 as i32,
-        );
-    }
+    assert!(order >= 0 as i32 && order <= 24 as i32);
     k = 0 as i32;
     loop {
         C[k as usize][1 as i32 as usize] = *auto_corr.offset(k as isize) as f64;

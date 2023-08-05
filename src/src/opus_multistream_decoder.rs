@@ -33,7 +33,6 @@ pub mod xmmintrin_h {
 }
 use self::arch_h::opus_val16;
 pub use self::stddef_h::{size_t, NULL};
-use crate::celt::celt::celt_fatal;
 use crate::celt::float_cast::FLOAT2INT16;
 use crate::src::opus::opus_packet_parse_impl;
 use crate::src::opus_decoder::opus_decode_native;
@@ -231,14 +230,7 @@ pub unsafe fn opus_multistream_decode_native(
     if frame_size <= 0 as i32 {
         return OPUS_BAD_ARG;
     }
-    if !(opus_multistream_decoder_ctl!(st, 4029 as i32, &mut Fs) == 0 as i32) {
-        celt_fatal(
-            b"assertion failed: (opus_multistream_decoder_ctl(st, 4029, ((&Fs) + ((&Fs) - (i32*)(&Fs))))) == OPUS_OK\0"
-                as *const u8 as *const i8,
-            b"src/opus_multistream_decoder.c\0" as *const u8 as *const i8,
-            206 as i32,
-        );
-    }
+    assert!(opus_multistream_decoder_ctl!(st, 4029 as i32, &mut Fs) == 0 as i32);
     frame_size = if frame_size < Fs / 25 as i32 * 3 as i32 {
         frame_size
     } else {

@@ -1,5 +1,3 @@
-use crate::celt::celt::celt_fatal;
-
 use crate::celt::entdec::{ec_dec, ec_dec_update, ec_decode_bin};
 use crate::celt::entenc::{ec_enc, ec_encode_bin};
 
@@ -54,20 +52,8 @@ pub unsafe fn ec_laplace_encode(enc: *mut ec_enc, value: *mut i32, mut fs: u32, 
             fs = fs.wrapping_add(LAPLACE_MINP as u32);
             fl = fl.wrapping_add(fs & !s as u32);
         }
-        if !(fl.wrapping_add(fs) <= 32768 as i32 as u32) {
-            celt_fatal(
-                b"assertion failed: fl+fs<=32768\0" as *const u8 as *const i8,
-                b"celt/laplace.c\0" as *const u8 as *const i8,
-                88 as i32,
-            );
-        }
-        if !(fs > 0 as i32 as u32) {
-            celt_fatal(
-                b"assertion failed: fs>0\0" as *const u8 as *const i8,
-                b"celt/laplace.c\0" as *const u8 as *const i8,
-                89 as i32,
-            );
-        }
+        assert!(fl.wrapping_add(fs) <= 32768 as i32 as u32);
+        assert!(fs > 0 as i32 as u32);
     }
     ec_encode_bin(enc, fl, fl.wrapping_add(fs), 15 as i32 as u32);
 }
@@ -104,40 +90,10 @@ pub unsafe fn ec_laplace_decode(dec: *mut ec_dec, mut fs: u32, decay: i32) -> i3
             fl = fl.wrapping_add(fs);
         }
     }
-    if !(fl < 32768 as i32 as u32) {
-        celt_fatal(
-            b"assertion failed: fl<32768\0" as *const u8 as *const i8,
-            b"celt/laplace.c\0" as *const u8 as *const i8,
-            128 as i32,
-        );
-    }
-    if !(fs > 0 as i32 as u32) {
-        celt_fatal(
-            b"assertion failed: fs>0\0" as *const u8 as *const i8,
-            b"celt/laplace.c\0" as *const u8 as *const i8,
-            129 as i32,
-        );
-    }
-    if !(fl <= fm) {
-        celt_fatal(
-            b"assertion failed: fl<=fm\0" as *const u8 as *const i8,
-            b"celt/laplace.c\0" as *const u8 as *const i8,
-            130 as i32,
-        );
-    }
-    if !(fm
-        < (if fl.wrapping_add(fs) < 32768 as i32 as u32 {
-            fl.wrapping_add(fs)
-        } else {
-            32768 as i32 as u32
-        }))
-    {
-        celt_fatal(
-            b"assertion failed: fm<IMIN(fl+fs,32768)\0" as *const u8 as *const i8,
-            b"celt/laplace.c\0" as *const u8 as *const i8,
-            131 as i32,
-        );
-    }
+    assert!(fl < 32768 as i32 as u32);
+    assert!(fs > 0 as i32 as u32);
+    assert!(fl <= fm);
+    assert!(fm < fl.wrapping_add(fs).min(32768));
     ec_dec_update(
         dec,
         fl,

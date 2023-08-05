@@ -1,4 +1,3 @@
-use crate::celt::celt::celt_fatal;
 use crate::externs::memset;
 use crate::silk::define::{MAX_LPC_ORDER, MAX_NB_SUBFR, MIN_LPC_ORDER, TYPE_NO_VOICE_ACTIVITY};
 use crate::silk::resampler::silk_resampler_init;
@@ -18,22 +17,8 @@ pub unsafe fn silk_decoder_set_fs(
 ) -> i32 {
     let mut frame_length: i32 = 0;
     let mut ret: i32 = 0 as i32;
-    if !(fs_kHz == 8 as i32 || fs_kHz == 12 as i32 || fs_kHz == 16 as i32) {
-        celt_fatal(
-            b"assertion failed: fs_kHz == 8 || fs_kHz == 12 || fs_kHz == 16\0" as *const u8
-                as *const i8,
-            b"silk/decoder_set_fs.c\0" as *const u8 as *const i8,
-            43 as i32,
-        );
-    }
-    if !((*psDec).nb_subfr == 4 as i32 || (*psDec).nb_subfr == 4 as i32 / 2 as i32) {
-        celt_fatal(
-            b"assertion failed: psDec->nb_subfr == MAX_NB_SUBFR || psDec->nb_subfr == MAX_NB_SUBFR/2\0"
-                as *const u8 as *const i8,
-            b"silk/decoder_set_fs.c\0" as *const u8 as *const i8,
-            44 as i32,
-        );
-    }
+    assert!(fs_kHz == 8 as i32 || fs_kHz == 12 as i32 || fs_kHz == 16 as i32);
+    assert!((*psDec).nb_subfr == 4 as i32 || (*psDec).nb_subfr == 4 as i32 / 2 as i32);
     (*psDec).subfr_length = 5 as i32 as i16 as i32 * fs_kHz as i16 as i32;
     frame_length = (*psDec).nb_subfr as i16 as i32 * (*psDec).subfr_length as i16 as i32;
     if (*psDec).fs_kHz != fs_kHz || (*psDec).fs_API_hz != fs_API_Hz {
@@ -72,12 +57,8 @@ pub unsafe fn silk_decoder_set_fs(
                 (*psDec).pitch_lag_low_bits_iCDF = silk_uniform6_iCDF.as_ptr();
             } else if fs_kHz == 8 as i32 {
                 (*psDec).pitch_lag_low_bits_iCDF = silk_uniform4_iCDF.as_ptr();
-            } else if 0 as i32 == 0 {
-                celt_fatal(
-                    b"assertion failed: 0\0" as *const u8 as *const i8,
-                    b"silk/decoder_set_fs.c\0" as *const u8 as *const i8,
-                    89 as i32,
-                );
+            } else {
+                panic!("libopus: assert(0) called");
             }
             (*psDec).first_frame_after_reset = 1 as i32;
             (*psDec).lagPrev = 100 as i32;
@@ -97,15 +78,9 @@ pub unsafe fn silk_decoder_set_fs(
         (*psDec).fs_kHz = fs_kHz;
         (*psDec).frame_length = frame_length;
     }
-    if !((*psDec).frame_length > 0 as i32
-        && (*psDec).frame_length <= 5 as i32 * 4 as i32 * 16 as i32)
-    {
-        celt_fatal(
-            b"assertion failed: psDec->frame_length > 0 && psDec->frame_length <= MAX_FRAME_LENGTH\0"
-                as *const u8 as *const i8,
-            b"silk/decoder_set_fs.c\0" as *const u8 as *const i8,
-            104 as i32,
-        );
-    }
+    assert!(
+        (*psDec).frame_length > 0 as i32
+            && (*psDec).frame_length <= 5 as i32 * 4 as i32 * 16 as i32
+    );
     return ret;
 }

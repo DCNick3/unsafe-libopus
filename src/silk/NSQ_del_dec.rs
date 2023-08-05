@@ -82,7 +82,6 @@ pub mod NSQ_h {
 }
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN, silk_int32_MAX};
 pub use self::NSQ_h::silk_noise_shape_quantizer_short_prediction_c;
-use crate::celt::celt::celt_fatal;
 use crate::externs::{memcpy, memmove, memset};
 use crate::silk::define::{
     DECISION_DELAY, HARM_SHAPE_FIR_TAPS, LTP_ORDER, MAX_LPC_ORDER, MAX_SHAPE_LPC_ORDER,
@@ -358,13 +357,7 @@ pub unsafe fn silk_NSQ_del_dec_c(
                     - lag
                     - (*psEncC).predictLPCOrder
                     - LTP_ORDER / 2 as i32;
-                if !(start_idx > 0 as i32) {
-                    celt_fatal(
-                        b"assertion failed: start_idx > 0\0" as *const u8 as *const i8,
-                        b"silk/NSQ_del_dec.c\0" as *const u8 as *const i8,
-                        253 as i32,
-                    );
-                }
+                assert!(start_idx > 0 as i32);
                 silk_LPC_analysis_filter(
                     &mut *sLTP.as_mut_ptr().offset(start_idx as isize),
                     &mut *((*NSQ).xq)
@@ -598,13 +591,7 @@ unsafe fn silk_noise_shape_quantizer_del_dec(
     let mut psLPC_Q14: *mut i32 = 0 as *mut i32;
     let mut psDD: *mut NSQ_del_dec_struct = 0 as *mut NSQ_del_dec_struct;
     let mut psSS: *mut NSQ_sample_struct = 0 as *mut NSQ_sample_struct;
-    if !(nStatesDelayedDecision > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: nStatesDelayedDecision > 0\0" as *const u8 as *const i8,
-            b"silk/NSQ_del_dec.c\0" as *const u8 as *const i8,
-            364 as i32,
-        );
-    }
+    assert!(nStatesDelayedDecision > 0 as i32);
     let vla = nStatesDelayedDecision as usize;
     let mut psSampleState: Vec<NSQ_sample_pair> = ::std::vec::from_elem(
         [NSQ_sample_struct {
@@ -683,13 +670,7 @@ unsafe fn silk_noise_shape_quantizer_del_dec(
             LPC_pred_Q14 =
                 silk_noise_shape_quantizer_short_prediction_c(psLPC_Q14, a_Q12, predictLPCOrder);
             LPC_pred_Q14 = ((LPC_pred_Q14 as u32) << 4 as i32) as i32;
-            if !(shapingLPCOrder & 1 as i32 == 0 as i32) {
-                celt_fatal(
-                    b"assertion failed: ( shapingLPCOrder & 1 ) == 0\0" as *const u8 as *const i8,
-                    b"silk/NSQ_del_dec.c\0" as *const u8 as *const i8,
-                    422 as i32,
-                );
-            }
+            assert!(shapingLPCOrder & 1 as i32 == 0 as i32);
             tmp2 = ((*psDD).Diff_Q14 as i64
                 + ((*psDD).sAR2_Q14[0 as i32 as usize] as i64 * warping_Q16 as i16 as i64
                     >> 16 as i32)) as i32;

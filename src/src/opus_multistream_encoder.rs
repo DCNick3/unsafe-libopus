@@ -45,7 +45,7 @@ pub use self::arch_h::{opus_val16, opus_val32};
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::stddef_h::{size_t, NULL};
 use crate::celt::bands::compute_band_energies;
-use crate::celt::celt::{celt_fatal, resampling_factor};
+use crate::celt::celt::resampling_factor;
 use crate::celt::celt::{
     CELT_GET_MODE_REQUEST, OPUS_SET_ENERGY_MASK_REQUEST, OPUS_SET_LFE_REQUEST,
 };
@@ -431,13 +431,7 @@ pub unsafe fn surround_analysis(
     while c < channels {
         let mut frame: i32 = 0;
         let nb_frames: i32 = frame_size / freq_size;
-        if !(nb_frames * freq_size == frame_size) {
-            celt_fatal(
-                b"assertion failed: nb_frames*freq_size == frame_size\0" as *const u8 as *const i8,
-                b"src/opus_multistream_encoder.c\0" as *const u8 as *const i8,
-                266 as i32,
-            );
-        }
+        assert!(nb_frames * freq_size == frame_size);
         memcpy(
             in_0.as_mut_ptr() as *mut core::ffi::c_void,
             mem.offset((c * overlap) as isize) as *const core::ffi::c_void,

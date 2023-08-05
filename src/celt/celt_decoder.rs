@@ -29,8 +29,7 @@ pub use self::arch_h::{
 pub use self::cpu_support_h::opus_select_arch;
 pub use self::stddef_h::NULL;
 use crate::celt::celt::{
-    celt_fatal, comb_filter, init_caps, resampling_factor, spread_icdf, tapset_icdf,
-    tf_select_table, trim_icdf,
+    comb_filter, init_caps, resampling_factor, spread_icdf, tapset_icdf, tf_select_table, trim_icdf,
 };
 use crate::celt::celt::{
     CELT_GET_AND_CLEAR_ERROR_REQUEST, CELT_GET_MODE_REQUEST, CELT_SET_CHANNELS_REQUEST,
@@ -88,155 +87,30 @@ pub const PLC_PITCH_LAG_MAX: i32 = 720 as i32;
 pub const PLC_PITCH_LAG_MIN: i32 = 100 as i32;
 pub const DECODE_BUFFER_SIZE: i32 = 2048 as i32;
 pub unsafe fn validate_celt_decoder(st: *mut OpusCustomDecoder) {
-    if !((*st).mode
-        == opus_custom_mode_create(48000 as i32, 960 as i32, 0 as *mut i32)
-            as *const OpusCustomMode)
-    {
-        celt_fatal(
-            b"assertion failed: st->mode == opus_custom_mode_create(48000, 960, NULL)\0"
-                as *const u8 as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            118 as i32,
-        );
-    }
-    if !((*st).overlap == 120 as i32) {
-        celt_fatal(
-            b"assertion failed: st->overlap == 120\0" as *const u8 as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            119 as i32,
-        );
-    }
-    if !((*st).channels == 1 as i32 || (*st).channels == 2 as i32) {
-        celt_fatal(
-            b"assertion failed: st->channels == 1 || st->channels == 2\0" as *const u8 as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            121 as i32,
-        );
-    }
-    if !((*st).stream_channels == 1 as i32 || (*st).stream_channels == 2 as i32) {
-        celt_fatal(
-            b"assertion failed: st->stream_channels == 1 || st->stream_channels == 2\0" as *const u8
-                as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            122 as i32,
-        );
-    }
-    if !((*st).downsample > 0 as i32) {
-        celt_fatal(
-            b"assertion failed: st->downsample > 0\0" as *const u8 as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            123 as i32,
-        );
-    }
-    if !((*st).start == 0 as i32 || (*st).start == 17 as i32) {
-        celt_fatal(
-            b"assertion failed: st->start == 0 || st->start == 17\0" as *const u8 as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            124 as i32,
-        );
-    }
-    if !((*st).start < (*st).end) {
-        celt_fatal(
-            b"assertion failed: st->start < st->end\0" as *const u8 as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            125 as i32,
-        );
-    }
-    if !((*st).end <= 21 as i32) {
-        celt_fatal(
-            b"assertion failed: st->end <= 21\0" as *const u8 as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            126 as i32,
-        );
-    }
-    if !((*st).arch >= 0 as i32) {
-        celt_fatal(
-            b"assertion failed: st->arch >= 0\0" as *const u8 as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            128 as i32,
-        );
-    }
-    if !((*st).arch <= 0 as i32) {
-        celt_fatal(
-            b"assertion failed: st->arch <= OPUS_ARCHMASK\0" as *const u8 as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            129 as i32,
-        );
-    }
-    if !((*st).last_pitch_index <= 720 as i32) {
-        celt_fatal(
-            b"assertion failed: st->last_pitch_index <= PLC_PITCH_LAG_MAX\0" as *const u8
-                as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            131 as i32,
-        );
-    }
-    if !((*st).last_pitch_index >= 100 as i32 || (*st).last_pitch_index == 0 as i32) {
-        celt_fatal(
-            b"assertion failed: st->last_pitch_index >= PLC_PITCH_LAG_MIN || st->last_pitch_index == 0\0"
-                as *const u8 as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            132 as i32,
-        );
-    }
-    if !((*st).postfilter_period < 1024 as i32) {
-        celt_fatal(
-            b"assertion failed: st->postfilter_period < MAX_PERIOD\0" as *const u8 as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            133 as i32,
-        );
-    }
-    if !((*st).postfilter_period >= 15 as i32 || (*st).postfilter_period == 0 as i32) {
-        celt_fatal(
-            b"assertion failed: st->postfilter_period >= COMBFILTER_MINPERIOD || st->postfilter_period == 0\0"
-                as *const u8 as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            134 as i32,
-        );
-    }
-    if !((*st).postfilter_period_old < 1024 as i32) {
-        celt_fatal(
-            b"assertion failed: st->postfilter_period_old < MAX_PERIOD\0" as *const u8 as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            135 as i32,
-        );
-    }
-    if !((*st).postfilter_period_old >= 15 as i32 || (*st).postfilter_period_old == 0 as i32) {
-        celt_fatal(
-            b"assertion failed: st->postfilter_period_old >= COMBFILTER_MINPERIOD || st->postfilter_period_old == 0\0"
-                as *const u8 as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            136 as i32,
-        );
-    }
-    if !((*st).postfilter_tapset <= 2 as i32) {
-        celt_fatal(
-            b"assertion failed: st->postfilter_tapset <= 2\0" as *const u8 as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            137 as i32,
-        );
-    }
-    if !((*st).postfilter_tapset >= 0 as i32) {
-        celt_fatal(
-            b"assertion failed: st->postfilter_tapset >= 0\0" as *const u8 as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            138 as i32,
-        );
-    }
-    if !((*st).postfilter_tapset_old <= 2 as i32) {
-        celt_fatal(
-            b"assertion failed: st->postfilter_tapset_old <= 2\0" as *const u8 as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            139 as i32,
-        );
-    }
-    if !((*st).postfilter_tapset_old >= 0 as i32) {
-        celt_fatal(
-            b"assertion failed: st->postfilter_tapset_old >= 0\0" as *const u8 as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            140 as i32,
-        );
-    }
+    assert!(
+        (*st).mode
+            == opus_custom_mode_create(48000 as i32, 960 as i32, 0 as *mut i32)
+                as *const OpusCustomMode
+    );
+    assert!((*st).overlap == 120 as i32);
+    assert!((*st).channels == 1 as i32 || (*st).channels == 2 as i32);
+    assert!((*st).stream_channels == 1 as i32 || (*st).stream_channels == 2 as i32);
+    assert!((*st).downsample > 0 as i32);
+    assert!((*st).start == 0 as i32 || (*st).start == 17 as i32);
+    assert!((*st).start < (*st).end);
+    assert!((*st).end <= 21 as i32);
+    assert!((*st).arch >= 0 as i32);
+    assert!((*st).arch <= 0 as i32);
+    assert!((*st).last_pitch_index <= 720 as i32);
+    assert!((*st).last_pitch_index >= 100 as i32 || (*st).last_pitch_index == 0 as i32);
+    assert!((*st).postfilter_period < 1024 as i32);
+    assert!((*st).postfilter_period >= 15 as i32 || (*st).postfilter_period == 0 as i32);
+    assert!((*st).postfilter_period_old < 1024 as i32);
+    assert!((*st).postfilter_period_old >= 15 as i32 || (*st).postfilter_period_old == 0 as i32);
+    assert!((*st).postfilter_tapset <= 2 as i32);
+    assert!((*st).postfilter_tapset >= 0 as i32);
+    assert!((*st).postfilter_tapset_old <= 2 as i32);
+    assert!((*st).postfilter_tapset_old >= 0 as i32);
 }
 pub unsafe fn celt_decoder_get_size(channels: i32) -> i32 {
     let mode: *const OpusCustomMode =
@@ -361,13 +235,7 @@ unsafe fn deemphasis(
         deemphasis_stereo_simple(in_0, pcm, N, *coef.offset(0 as i32 as isize), mem);
         return;
     }
-    if !(accum == 0 as i32) {
-        celt_fatal(
-            b"assertion failed: accum==0\0" as *const u8 as *const i8,
-            b"celt/celt_decoder.c\0" as *const u8 as *const i8,
-            279 as i32,
-        );
-    }
+    assert!(accum == 0 as i32);
     let vla = N as usize;
     let mut scratch: Vec<celt_sig> = ::std::vec::from_elem(0., vla);
     coef0 = *coef.offset(0 as i32 as isize);

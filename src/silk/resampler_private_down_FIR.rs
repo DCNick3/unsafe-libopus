@@ -3,7 +3,6 @@ pub mod typedef_h {
     pub const silk_int16_MIN: i32 = i16::MIN as i32;
 }
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
-use crate::celt::celt::celt_fatal;
 use crate::externs::memcpy;
 use crate::silk::resampler_private_AR2::silk_resampler_private_AR2;
 use crate::silk::resampler_rom::{
@@ -340,13 +339,7 @@ unsafe fn silk_resampler_private_down_FIR_INTERPOL(
             }
         }
         _ => {
-            if 0 as i32 == 0 {
-                celt_fatal(
-                    b"assertion failed: 0\0" as *const u8 as *const i8,
-                    b"silk/resampler_private_down_FIR.c\0" as *const u8 as *const i8,
-                    139 as i32,
-                );
-            }
+            panic!("libopus: assert(0) called");
         }
     }
     return out;
