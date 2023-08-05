@@ -19,22 +19,22 @@ pub unsafe fn silk_LTP_analysis_filter_FLP(
     let mut j: i32 = 0;
     x_ptr = x;
     LTP_res_ptr = LTP_res;
-    k = 0 as i32;
+    k = 0;
     while k < nb_subfr {
         x_lag_ptr = x_ptr.offset(-(*pitchL.offset(k as isize) as isize));
         inv_gain = *invGains.offset(k as isize);
-        i = 0 as i32;
+        i = 0;
         while i < LTP_ORDER {
             Btmp[i as usize] = *B.offset((k * LTP_ORDER + i) as isize);
             i += 1;
         }
-        i = 0 as i32;
+        i = 0;
         while i < subfr_length + pre_length {
             *LTP_res_ptr.offset(i as isize) = *x_ptr.offset(i as isize);
-            j = 0 as i32;
+            j = 0;
             while j < LTP_ORDER {
                 *LTP_res_ptr.offset(i as isize) -=
-                    Btmp[j as usize] * *x_lag_ptr.offset((LTP_ORDER / 2 as i32 - j) as isize);
+                    Btmp[j as usize] * *x_lag_ptr.offset((LTP_ORDER / 2 - j) as isize);
                 j += 1;
             }
             *LTP_res_ptr.offset(i as isize) *= inv_gain;

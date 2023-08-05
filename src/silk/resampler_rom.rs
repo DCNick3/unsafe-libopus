@@ -1,21 +1,13 @@
-pub const RESAMPLER_DOWN_ORDER_FIR2: i32 = 36 as i32;
-pub const RESAMPLER_DOWN_ORDER_FIR1: i32 = 24 as i32;
-pub const RESAMPLER_DOWN_ORDER_FIR0: i32 = 18 as i32;
-pub const RESAMPLER_ORDER_FIR_12: i32 = 8 as i32;
+pub const RESAMPLER_DOWN_ORDER_FIR2: i32 = 36;
+pub const RESAMPLER_DOWN_ORDER_FIR1: i32 = 24;
+pub const RESAMPLER_DOWN_ORDER_FIR0: i32 = 18;
+pub const RESAMPLER_ORDER_FIR_12: i32 = 8;
 
-pub const silk_resampler_down2_0: i16 = 9872 as i32 as i16;
-pub const silk_resampler_down2_1: i16 = (39809 as i32 - 65536 as i32) as i16;
+pub const silk_resampler_down2_0: i16 = 9872;
+pub const silk_resampler_down2_1: i16 = (39809 - 65536) as i16;
 
-pub const silk_resampler_up2_hq_0: [i16; 3] = [
-    1746 as i32 as i16,
-    14986 as i32 as i16,
-    (39083 as i32 - 65536 as i32) as i16,
-];
-pub const silk_resampler_up2_hq_1: [i16; 3] = [
-    6854 as i32 as i16,
-    25769 as i32 as i16,
-    (55542 as i32 - 65536 as i32) as i16,
-];
+pub const silk_resampler_up2_hq_0: [i16; 3] = [1746, 14986, (39083 - 65536) as i16];
+pub const silk_resampler_up2_hq_1: [i16; 3] = [6854, 25769, (55542 - 65536) as i16];
 
 pub static silk_Resampler_3_4_COEFS: [i16; 29] = [
     -20694, -13867, -49, 64, 17, -157, 353, -496, 163, 11047, 22205, -39, 6, 91, -170, 186, 23,

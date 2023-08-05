@@ -22,17 +22,16 @@ unsafe fn combine_and_check(
 ) -> i32 {
     let mut k: i32 = 0;
     let mut sum: i32 = 0;
-    k = 0 as i32;
+    k = 0;
     while k < len {
-        sum = *pulses_in.offset((2 as i32 * k) as isize)
-            + *pulses_in.offset((2 as i32 * k + 1 as i32) as isize);
+        sum = *pulses_in.offset((2 * k) as isize) + *pulses_in.offset((2 * k + 1) as isize);
         if sum > max_pulses {
-            return 1 as i32;
+            return 1;
         }
         *pulses_comb.offset(k as isize) = sum;
         k += 1;
     }
-    return 0 as i32;
+    return 0;
 }
 pub unsafe fn silk_encode_pulses(
     psRangeEnc: *mut ec_enc,
@@ -48,7 +47,7 @@ pub unsafe fn silk_encode_pulses(
     let mut bit: i32 = 0;
     let mut nLS: i32 = 0;
     let mut scale_down: i32 = 0;
-    let mut RateLevelIndex: i32 = 0 as i32;
+    let mut RateLevelIndex: i32 = 0;
     let mut abs_q: i32 = 0;
     let mut minSumBits_Q5: i32 = 0;
     let mut sumBits_Q5: i32 = 0;
@@ -59,90 +58,90 @@ pub unsafe fn silk_encode_pulses(
     let mut nBits_ptr: *const u8 = 0 as *const u8;
     memset(
         pulses_comb.as_mut_ptr() as *mut core::ffi::c_void,
-        0 as i32,
-        (8 as i32 as u64).wrapping_mul(::core::mem::size_of::<i32>() as u64),
+        0,
+        8_u64.wrapping_mul(::core::mem::size_of::<i32>() as u64),
     );
-    iter = frame_length >> 4 as i32;
+    iter = frame_length >> 4;
     if iter * SHELL_CODEC_FRAME_LENGTH < frame_length {
-        assert!(frame_length == 12 as i32 * 10 as i32);
+        assert!(frame_length == 12 * 10);
         iter += 1;
         memset(
             &mut *pulses.offset(frame_length as isize) as *mut i8 as *mut core::ffi::c_void,
-            0 as i32,
-            (16 as i32 as u64).wrapping_mul(::core::mem::size_of::<i8>() as u64),
+            0,
+            16_u64.wrapping_mul(::core::mem::size_of::<i8>() as u64),
         );
     }
-    let vla = (iter * 16 as i32) as usize;
+    let vla = (iter * 16) as usize;
     let mut abs_pulses: Vec<i32> = ::std::vec::from_elem(0, vla);
-    i = 0 as i32;
+    i = 0;
     while i < iter * SHELL_CODEC_FRAME_LENGTH {
-        *abs_pulses.as_mut_ptr().offset((i + 0 as i32) as isize) =
-            if *pulses.offset((i + 0 as i32) as isize) as i32 > 0 as i32 {
-                *pulses.offset((i + 0 as i32) as isize) as i32
+        *abs_pulses.as_mut_ptr().offset((i + 0) as isize) =
+            if *pulses.offset((i + 0) as isize) as i32 > 0 {
+                *pulses.offset((i + 0) as isize) as i32
             } else {
-                -(*pulses.offset((i + 0 as i32) as isize) as i32)
+                -(*pulses.offset((i + 0) as isize) as i32)
             };
-        *abs_pulses.as_mut_ptr().offset((i + 1 as i32) as isize) =
-            if *pulses.offset((i + 1 as i32) as isize) as i32 > 0 as i32 {
-                *pulses.offset((i + 1 as i32) as isize) as i32
+        *abs_pulses.as_mut_ptr().offset((i + 1) as isize) =
+            if *pulses.offset((i + 1) as isize) as i32 > 0 {
+                *pulses.offset((i + 1) as isize) as i32
             } else {
-                -(*pulses.offset((i + 1 as i32) as isize) as i32)
+                -(*pulses.offset((i + 1) as isize) as i32)
             };
-        *abs_pulses.as_mut_ptr().offset((i + 2 as i32) as isize) =
-            if *pulses.offset((i + 2 as i32) as isize) as i32 > 0 as i32 {
-                *pulses.offset((i + 2 as i32) as isize) as i32
+        *abs_pulses.as_mut_ptr().offset((i + 2) as isize) =
+            if *pulses.offset((i + 2) as isize) as i32 > 0 {
+                *pulses.offset((i + 2) as isize) as i32
             } else {
-                -(*pulses.offset((i + 2 as i32) as isize) as i32)
+                -(*pulses.offset((i + 2) as isize) as i32)
             };
-        *abs_pulses.as_mut_ptr().offset((i + 3 as i32) as isize) =
-            if *pulses.offset((i + 3 as i32) as isize) as i32 > 0 as i32 {
-                *pulses.offset((i + 3 as i32) as isize) as i32
+        *abs_pulses.as_mut_ptr().offset((i + 3) as isize) =
+            if *pulses.offset((i + 3) as isize) as i32 > 0 {
+                *pulses.offset((i + 3) as isize) as i32
             } else {
-                -(*pulses.offset((i + 3 as i32) as isize) as i32)
+                -(*pulses.offset((i + 3) as isize) as i32)
             };
-        i += 4 as i32;
+        i += 4;
     }
     let vla_0 = iter as usize;
     let mut sum_pulses: Vec<i32> = ::std::vec::from_elem(0, vla_0);
     let vla_1 = iter as usize;
     let mut nRshifts: Vec<i32> = ::std::vec::from_elem(0, vla_1);
     abs_pulses_ptr = abs_pulses.as_mut_ptr();
-    i = 0 as i32;
+    i = 0;
     while i < iter {
-        *nRshifts.as_mut_ptr().offset(i as isize) = 0 as i32;
+        *nRshifts.as_mut_ptr().offset(i as isize) = 0;
         loop {
             scale_down = combine_and_check(
                 pulses_comb.as_mut_ptr(),
                 abs_pulses_ptr,
-                silk_max_pulses_table[0 as i32 as usize] as i32,
-                8 as i32,
+                silk_max_pulses_table[0 as usize] as i32,
+                8,
             );
             scale_down += combine_and_check(
                 pulses_comb.as_mut_ptr(),
                 pulses_comb.as_mut_ptr(),
-                silk_max_pulses_table[1 as i32 as usize] as i32,
-                4 as i32,
+                silk_max_pulses_table[1 as usize] as i32,
+                4,
             );
             scale_down += combine_and_check(
                 pulses_comb.as_mut_ptr(),
                 pulses_comb.as_mut_ptr(),
-                silk_max_pulses_table[2 as i32 as usize] as i32,
-                2 as i32,
+                silk_max_pulses_table[2 as usize] as i32,
+                2,
             );
             scale_down += combine_and_check(
                 &mut *sum_pulses.as_mut_ptr().offset(i as isize),
                 pulses_comb.as_mut_ptr(),
-                silk_max_pulses_table[3 as i32 as usize] as i32,
-                1 as i32,
+                silk_max_pulses_table[3 as usize] as i32,
+                1,
             );
             if !(scale_down != 0) {
                 break;
             }
             let ref mut fresh0 = *nRshifts.as_mut_ptr().offset(i as isize);
             *fresh0 += 1;
-            k = 0 as i32;
+            k = 0;
             while k < SHELL_CODEC_FRAME_LENGTH {
-                *abs_pulses_ptr.offset(k as isize) = *abs_pulses_ptr.offset(k as isize) >> 1 as i32;
+                *abs_pulses_ptr.offset(k as isize) = *abs_pulses_ptr.offset(k as isize) >> 1;
                 k += 1;
             }
         }
@@ -150,14 +149,14 @@ pub unsafe fn silk_encode_pulses(
         i += 1;
     }
     minSumBits_Q5 = silk_int32_MAX;
-    k = 0 as i32;
-    while k < N_RATE_LEVELS - 1 as i32 {
+    k = 0;
+    while k < N_RATE_LEVELS - 1 {
         nBits_ptr = (silk_pulses_per_block_BITS_Q5[k as usize]).as_ptr();
-        sumBits_Q5 = silk_rate_levels_BITS_Q5[(signalType >> 1 as i32) as usize][k as usize] as i32;
-        i = 0 as i32;
+        sumBits_Q5 = silk_rate_levels_BITS_Q5[(signalType >> 1) as usize][k as usize] as i32;
+        i = 0;
         while i < iter {
-            if *nRshifts.as_mut_ptr().offset(i as isize) > 0 as i32 {
-                sumBits_Q5 += *nBits_ptr.offset((SILK_MAX_PULSES + 1 as i32) as isize) as i32;
+            if *nRshifts.as_mut_ptr().offset(i as isize) > 0 {
+                sumBits_Q5 += *nBits_ptr.offset((SILK_MAX_PULSES + 1) as isize) as i32;
             } else {
                 sumBits_Q5 +=
                     *nBits_ptr.offset(*sum_pulses.as_mut_ptr().offset(i as isize) as isize) as i32;
@@ -173,48 +172,43 @@ pub unsafe fn silk_encode_pulses(
     ec_enc_icdf(
         psRangeEnc,
         RateLevelIndex,
-        (silk_rate_levels_iCDF[(signalType >> 1 as i32) as usize]).as_ptr(),
-        8 as i32 as u32,
+        (silk_rate_levels_iCDF[(signalType >> 1) as usize]).as_ptr(),
+        8,
     );
     cdf_ptr = (silk_pulses_per_block_iCDF[RateLevelIndex as usize]).as_ptr();
-    i = 0 as i32;
+    i = 0;
     while i < iter {
-        if *nRshifts.as_mut_ptr().offset(i as isize) == 0 as i32 {
+        if *nRshifts.as_mut_ptr().offset(i as isize) == 0 {
             ec_enc_icdf(
                 psRangeEnc,
                 *sum_pulses.as_mut_ptr().offset(i as isize),
                 cdf_ptr,
-                8 as i32 as u32,
+                8,
             );
         } else {
-            ec_enc_icdf(
-                psRangeEnc,
-                SILK_MAX_PULSES + 1 as i32,
-                cdf_ptr,
-                8 as i32 as u32,
-            );
-            k = 0 as i32;
-            while k < *nRshifts.as_mut_ptr().offset(i as isize) - 1 as i32 {
+            ec_enc_icdf(psRangeEnc, SILK_MAX_PULSES + 1, cdf_ptr, 8);
+            k = 0;
+            while k < *nRshifts.as_mut_ptr().offset(i as isize) - 1 {
                 ec_enc_icdf(
                     psRangeEnc,
-                    SILK_MAX_PULSES + 1 as i32,
-                    (silk_pulses_per_block_iCDF[(N_RATE_LEVELS - 1 as i32) as usize]).as_ptr(),
-                    8 as i32 as u32,
+                    SILK_MAX_PULSES + 1,
+                    (silk_pulses_per_block_iCDF[(N_RATE_LEVELS - 1) as usize]).as_ptr(),
+                    8,
                 );
                 k += 1;
             }
             ec_enc_icdf(
                 psRangeEnc,
                 *sum_pulses.as_mut_ptr().offset(i as isize),
-                (silk_pulses_per_block_iCDF[(N_RATE_LEVELS - 1 as i32) as usize]).as_ptr(),
-                8 as i32 as u32,
+                (silk_pulses_per_block_iCDF[(N_RATE_LEVELS - 1) as usize]).as_ptr(),
+                8,
             );
         }
         i += 1;
     }
-    i = 0 as i32;
+    i = 0;
     while i < iter {
-        if *sum_pulses.as_mut_ptr().offset(i as isize) > 0 as i32 {
+        if *sum_pulses.as_mut_ptr().offset(i as isize) > 0 {
             silk_shell_encoder(
                 psRangeEnc,
                 &mut *abs_pulses
@@ -224,26 +218,26 @@ pub unsafe fn silk_encode_pulses(
         }
         i += 1;
     }
-    i = 0 as i32;
+    i = 0;
     while i < iter {
-        if *nRshifts.as_mut_ptr().offset(i as isize) > 0 as i32 {
+        if *nRshifts.as_mut_ptr().offset(i as isize) > 0 {
             pulses_ptr = &mut *pulses.offset((i * SHELL_CODEC_FRAME_LENGTH) as isize) as *mut i8;
-            nLS = *nRshifts.as_mut_ptr().offset(i as isize) - 1 as i32;
-            k = 0 as i32;
+            nLS = *nRshifts.as_mut_ptr().offset(i as isize) - 1;
+            k = 0;
             while k < SHELL_CODEC_FRAME_LENGTH {
-                abs_q = (if *pulses_ptr.offset(k as isize) as i32 > 0 as i32 {
+                abs_q = (if *pulses_ptr.offset(k as isize) as i32 > 0 {
                     *pulses_ptr.offset(k as isize) as i32
                 } else {
                     -(*pulses_ptr.offset(k as isize) as i32)
                 }) as i8 as i32;
                 j = nLS;
-                while j > 0 as i32 {
-                    bit = abs_q >> j & 1 as i32;
-                    ec_enc_icdf(psRangeEnc, bit, silk_lsb_iCDF.as_ptr(), 8 as i32 as u32);
+                while j > 0 {
+                    bit = abs_q >> j & 1;
+                    ec_enc_icdf(psRangeEnc, bit, silk_lsb_iCDF.as_ptr(), 8);
                     j -= 1;
                 }
-                bit = abs_q & 1 as i32;
-                ec_enc_icdf(psRangeEnc, bit, silk_lsb_iCDF.as_ptr(), 8 as i32 as u32);
+                bit = abs_q & 1;
+                ec_enc_icdf(psRangeEnc, bit, silk_lsb_iCDF.as_ptr(), 8);
                 k += 1;
             }
         }

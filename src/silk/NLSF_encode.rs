@@ -35,7 +35,7 @@ pub unsafe fn silk_NLSF_encode(
     let mut pCB_element: *const u8 = 0 as *const u8;
     let mut iCDF_ptr: *const u8 = 0 as *const u8;
     let mut pCB_Wght_Q9: *const i16 = 0 as *const i16;
-    assert!(signalType >= 0 as i32 && signalType <= 2 as i32);
+    assert!(signalType >= 0 && signalType <= 2);
     silk_NLSF_stabilize(
         pNLSF_Q15,
         (*psNLSF_CB).deltaMin_Q15,
@@ -61,9 +61,9 @@ pub unsafe fn silk_NLSF_encode(
     );
     let vla_1 = nSurvivors as usize;
     let mut RD_Q25: Vec<i32> = ::std::vec::from_elem(0, vla_1);
-    let vla_2 = (nSurvivors * 16 as i32) as usize;
+    let vla_2 = (nSurvivors * 16) as usize;
     let mut tempIndices2: Vec<i8> = ::std::vec::from_elem(0, vla_2);
-    s = 0 as i32;
+    s = 0;
     while s < nSurvivors {
         ind1 = *tempIndices1.as_mut_ptr().offset(s as isize);
         pCB_element = &*((*psNLSF_CB).CB1_NLSF_Q8)
@@ -71,19 +71,19 @@ pub unsafe fn silk_NLSF_encode(
         pCB_Wght_Q9 = &*((*psNLSF_CB).CB1_Wght_Q9)
             .offset((ind1 * (*psNLSF_CB).order as i32) as isize)
             as *const i16;
-        i = 0 as i32;
+        i = 0;
         while i < (*psNLSF_CB).order as i32 {
             NLSF_tmp_Q15[i as usize] =
-                ((*pCB_element.offset(i as isize) as i16 as u16 as i32) << 7 as i32) as i16;
+                ((*pCB_element.offset(i as isize) as i16 as u16 as i32) << 7) as i16;
             W_tmp_Q9 = *pCB_Wght_Q9.offset(i as isize) as i32;
             res_Q10[i as usize] = ((*pNLSF_Q15.offset(i as isize) as i32
                 - NLSF_tmp_Q15[i as usize] as i32) as i16 as i32
                 * W_tmp_Q9 as i16 as i32
-                >> 14 as i32) as i16;
+                >> 14) as i16;
             W_adj_Q5[i as usize] = silk_DIV32_varQ(
                 *pW_Q2.offset(i as isize) as i32,
                 W_tmp_Q9 as i16 as i32 * W_tmp_Q9 as i16 as i32,
-                21 as i32,
+                21,
             ) as i16;
             i += 1;
         }
@@ -103,31 +103,28 @@ pub unsafe fn silk_NLSF_encode(
             (*psNLSF_CB).order,
         );
         iCDF_ptr = &*((*psNLSF_CB).CB1_iCDF)
-            .offset(((signalType >> 1 as i32) * (*psNLSF_CB).nVectors as i32) as isize)
+            .offset(((signalType >> 1) * (*psNLSF_CB).nVectors as i32) as isize)
             as *const u8;
-        if ind1 == 0 as i32 {
-            prob_Q8 = 256 as i32 - *iCDF_ptr.offset(ind1 as isize) as i32;
+        if ind1 == 0 {
+            prob_Q8 = 256 - *iCDF_ptr.offset(ind1 as isize) as i32;
         } else {
-            prob_Q8 = *iCDF_ptr.offset((ind1 - 1 as i32) as isize) as i32
+            prob_Q8 = *iCDF_ptr.offset((ind1 - 1) as isize) as i32
                 - *iCDF_ptr.offset(ind1 as isize) as i32;
         }
-        bits_q7 = ((8 as i32) << 7 as i32) - silk_lin2log(prob_Q8);
+        bits_q7 = ((8) << 7) - silk_lin2log(prob_Q8);
         *RD_Q25.as_mut_ptr().offset(s as isize) = *RD_Q25.as_mut_ptr().offset(s as isize)
-            + bits_q7 as i16 as i32 * (NLSF_mu_Q20 >> 2 as i32) as i16 as i32;
+            + bits_q7 as i16 as i32 * (NLSF_mu_Q20 >> 2) as i16 as i32;
         s += 1;
     }
-    silk_insertion_sort_increasing(RD_Q25.as_mut_ptr(), &mut bestIndex, nSurvivors, 1 as i32);
-    *NLSFIndices.offset(0 as i32 as isize) =
-        *tempIndices1.as_mut_ptr().offset(bestIndex as isize) as i8;
+    silk_insertion_sort_increasing(RD_Q25.as_mut_ptr(), &mut bestIndex, nSurvivors, 1);
+    *NLSFIndices.offset(0 as isize) = *tempIndices1.as_mut_ptr().offset(bestIndex as isize) as i8;
     memcpy(
-        &mut *NLSFIndices.offset(1 as i32 as isize) as *mut i8 as *mut core::ffi::c_void,
-        &mut *tempIndices2
-            .as_mut_ptr()
-            .offset((bestIndex * 16 as i32) as isize) as *mut i8
+        &mut *NLSFIndices.offset(1 as isize) as *mut i8 as *mut core::ffi::c_void,
+        &mut *tempIndices2.as_mut_ptr().offset((bestIndex * 16) as isize) as *mut i8
             as *const core::ffi::c_void,
         ((*psNLSF_CB).order as u64).wrapping_mul(::core::mem::size_of::<i8>() as u64),
     );
     silk_NLSF_decode(pNLSF_Q15, NLSFIndices, psNLSF_CB);
-    ret = *RD_Q25.as_mut_ptr().offset(0 as i32 as isize);
+    ret = *RD_Q25.as_mut_ptr().offset(0 as isize);
     return ret;
 }

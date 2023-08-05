@@ -45,55 +45,55 @@ pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data
 
 use self::vq_h::exp_rotation;
 pub use self::FILE_h::FILE;
-pub static mut ret: i32 = 0 as i32;
+pub static mut ret: i32 = 0;
 pub unsafe fn test_rotation(mut N: i32, mut K: i32) {
     let mut i: i32 = 0;
-    let mut err: f64 = 0 as i32 as f64;
-    let mut ener: f64 = 0 as i32 as f64;
+    let mut err: f64 = 0 as f64;
+    let mut ener: f64 = 0 as f64;
     let mut snr: f64 = 0.;
     let mut snr0: f64 = 0.;
     let mut x0: [opus_val16; 100] = [0.; 100];
     let mut x1: [opus_val16; 100] = [0.; 100];
-    i = 0 as i32;
+    i = 0;
     while i < N {
-        x0[i as usize] = (rand() % 32767 as i32 - 16384 as i32) as opus_val16;
+        x0[i as usize] = (rand() % 32767 - 16384) as opus_val16;
         x1[i as usize] = x0[i as usize];
         i += 1;
     }
     exp_rotation(
         x1.as_mut_ptr(),
         N,
-        1 as i32,
-        1 as i32,
+        1,
+        1,
         K,
-        2 as i32,
+        2,
     );
-    i = 0 as i32;
+    i = 0;
     while i < N {
         err += (x0[i as usize] as f64 - x1[i as usize] as f64)
             * (x0[i as usize] as f64 - x1[i as usize] as f64);
         ener += x0[i as usize] as f64 * x0[i as usize] as f64;
         i += 1;
     }
-    snr0 = 20 as i32 as f64 * log10(ener / err);
-    ener = 0 as i32 as f64;
+    snr0 = 20 as f64 * log10(ener / err);
+    ener = 0 as f64;
     err = ener;
     exp_rotation(
         x1.as_mut_ptr(),
         N,
-        -(1 as i32),
-        1 as i32,
+        -1,
+        1,
         K,
-        2 as i32,
+        2,
     );
-    i = 0 as i32;
+    i = 0;
     while i < N {
         err += (x0[i as usize] as f64 - x1[i as usize] as f64)
             * (x0[i as usize] as f64 - x1[i as usize] as f64);
         ener += x0[i as usize] as f64 * x0[i as usize] as f64;
         i += 1;
     }
-    snr = 20 as i32 as f64 * log10(ener / err);
+    snr = 20 as f64 * log10(ener / err);
     printf(
         b"SNR for size %d (%d pulses) is %f (was %f without inverse)\n\0" as *const u8
             as *const i8,
@@ -102,16 +102,16 @@ pub unsafe fn test_rotation(mut N: i32, mut K: i32) {
         snr,
         snr0,
     );
-    if snr < 60 as i32 as f64 || snr0 > 20 as i32 as f64 {
+    if snr < 60 as f64 || snr0 > 20 as f64 {
         fprintf(stderr(), b"FAIL!\n\0" as *const u8 as *const i8);
-        ret = 1 as i32;
+        ret = 1;
     }
 }
 unsafe fn main_0() -> i32 {
-    test_rotation(15 as i32, 3 as i32);
-    test_rotation(23 as i32, 5 as i32);
-    test_rotation(50 as i32, 3 as i32);
-    test_rotation(80 as i32, 1 as i32);
+    test_rotation(15, 3);
+    test_rotation(23, 5);
+    test_rotation(50, 3);
+    test_rotation(80, 1);
     return ret;
 }
 pub fn main() {

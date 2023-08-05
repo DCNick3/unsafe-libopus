@@ -26,7 +26,7 @@ pub unsafe fn silk_LTP_scale_ctrl_FLP(
             round_loss as f32 * (*psEncCtrl).LTPredCodGain * 0.1f32
         }) as i8;
     } else {
-        (*psEnc).sCmn.indices.LTP_scaleIndex = 0 as i32 as i8;
+        (*psEnc).sCmn.indices.LTP_scaleIndex = 0;
     }
     (*psEncCtrl).LTP_scale =
         silk_LTPScales_table_Q14[(*psEnc).sCmn.indices.LTP_scaleIndex as usize] as f32 / 16384.0f32;

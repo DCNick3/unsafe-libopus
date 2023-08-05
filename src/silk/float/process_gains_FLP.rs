@@ -40,7 +40,7 @@ pub unsafe fn silk_process_gains_FLP(
     let mut quant_offset: f32 = 0.;
     if (*psEnc).sCmn.indices.signalType as i32 == TYPE_VOICED {
         s = 1.0f32 - 0.5f32 * silk_sigmoid(0.25f32 * ((*psEncCtrl).LTPredCodGain - 12.0f32));
-        k = 0 as i32;
+        k = 0;
         while k < (*psEnc).sCmn.nb_subfr {
             (*psEncCtrl).Gains[k as usize] *= s;
             k += 1;
@@ -49,14 +49,14 @@ pub unsafe fn silk_process_gains_FLP(
     InvMaxSqrVal = 2.0f32
         .powf(0.33f32 * (21.0f32 - (*psEnc).sCmn.SNR_dB_Q7 as f32 * (1.0 / 128.0)))
         / (*psEnc).sCmn.subfr_length as f32;
-    k = 0 as i32;
+    k = 0;
     while k < (*psEnc).sCmn.nb_subfr {
         gain = (*psEncCtrl).Gains[k as usize];
         gain = (gain * gain + (*psEncCtrl).ResNrg[k as usize] * InvMaxSqrVal).sqrt();
         (*psEncCtrl).Gains[k as usize] = if gain < 32767.0f32 { gain } else { 32767.0f32 };
         k += 1;
     }
-    k = 0 as i32;
+    k = 0;
     while k < (*psEnc).sCmn.nb_subfr {
         pGains_Q16[k as usize] = ((*psEncCtrl).Gains[k as usize] * 65536.0f32) as i32;
         k += 1;
@@ -74,7 +74,7 @@ pub unsafe fn silk_process_gains_FLP(
         (condCoding == CODE_CONDITIONALLY) as i32,
         (*psEnc).sCmn.nb_subfr,
     );
-    k = 0 as i32;
+    k = 0;
     while k < (*psEnc).sCmn.nb_subfr {
         (*psEncCtrl).Gains[k as usize] = pGains_Q16[k as usize] as f32 / 65536.0f32;
         k += 1;
@@ -83,13 +83,13 @@ pub unsafe fn silk_process_gains_FLP(
         if (*psEncCtrl).LTPredCodGain + (*psEnc).sCmn.input_tilt_Q15 as f32 * (1.0f32 / 32768.0f32)
             > 1.0f32
         {
-            (*psEnc).sCmn.indices.quantOffsetType = 0 as i32 as i8;
+            (*psEnc).sCmn.indices.quantOffsetType = 0;
         } else {
-            (*psEnc).sCmn.indices.quantOffsetType = 1 as i32 as i8;
+            (*psEnc).sCmn.indices.quantOffsetType = 1;
         }
     }
     quant_offset = silk_Quantization_Offsets_Q10
-        [((*psEnc).sCmn.indices.signalType as i32 >> 1 as i32) as usize]
+        [((*psEnc).sCmn.indices.signalType as i32 >> 1) as usize]
         [(*psEnc).sCmn.indices.quantOffsetType as usize] as i32 as f32
         / 1024.0f32;
     (*psEncCtrl).Lambda = LAMBDA_OFFSET

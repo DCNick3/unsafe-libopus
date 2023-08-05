@@ -10,7 +10,7 @@ pub unsafe fn silk_autocorrelation_FLP(
     if correlationCount > inputDataSize {
         correlationCount = inputDataSize;
     }
-    i = 0 as i32;
+    i = 0;
     while i < correlationCount {
         *results.offset(i as isize) =
             silk_inner_product_FLP(inputData, inputData.offset(i as isize), inputDataSize - i)

@@ -16,7 +16,7 @@ pub struct GRULayer {
     pub nb_inputs: i32,
     pub nb_neurons: i32,
 }
-pub const WEIGHTS_SCALE: f32 = 1.0f32 / 128 as i32 as f32;
+pub const WEIGHTS_SCALE: f32 = 1.0f32 / 128 as f32;
 
 const tansig_table: [f32; 201] = [
     0.000000f32,
@@ -227,25 +227,25 @@ unsafe fn tansig_approx(mut x: f32) -> f32 {
     let mut i: i32 = 0;
     let mut y: f32 = 0.;
     let mut dy: f32 = 0.;
-    let mut sign: f32 = 1 as i32 as f32;
-    if !(x < 8 as i32 as f32) {
-        return 1 as i32 as f32;
+    let mut sign: f32 = 1 as f32;
+    if !(x < 8 as f32) {
+        return 1 as f32;
     }
-    if !(x > -(8 as i32) as f32) {
-        return -(1 as i32) as f32;
+    if !(x > -(8) as f32) {
+        return -1 as f32;
     }
     if x != x {
-        return 0 as i32 as f32;
+        return 0 as f32;
     }
-    if x < 0 as i32 as f32 {
+    if x < 0 as f32 {
         x = -x;
-        sign = -(1 as i32) as f32;
+        sign = -1 as f32;
     }
     i = (0.5f32 + 25.0 * x).floor() as i32;
     x -= 0.04f32 * i as f32;
     y = tansig_table[i as usize];
-    dy = 1 as i32 as f32 - y * y;
-    y = y + x * dy * (1 as i32 as f32 - y * x);
+    dy = 1 as f32 - y * y;
+    y = y + x * dy * (1 as f32 - y * x);
     return sign * y;
 }
 #[inline]
@@ -262,9 +262,9 @@ unsafe fn gemm_accum(
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
-    i = 0 as i32;
+    i = 0;
     while i < rows {
-        j = 0 as i32;
+        j = 0;
         while j < cols {
             *out.offset(i as isize) += *weights.offset((j * col_stride + i) as isize) as i32 as f32
                 * *x.offset(j as isize);
@@ -281,25 +281,25 @@ pub unsafe fn compute_dense(layer: *const DenseLayer, output: *mut f32, input: *
     M = (*layer).nb_inputs;
     N = (*layer).nb_neurons;
     stride = N;
-    i = 0 as i32;
+    i = 0;
     while i < N {
         *output.offset(i as isize) = *((*layer).bias).offset(i as isize) as f32;
         i += 1;
     }
     gemm_accum(output, (*layer).input_weights, N, M, stride, input);
-    i = 0 as i32;
+    i = 0;
     while i < N {
         *output.offset(i as isize) *= WEIGHTS_SCALE;
         i += 1;
     }
     if (*layer).sigmoid != 0 {
-        i = 0 as i32;
+        i = 0;
         while i < N {
             *output.offset(i as isize) = sigmoid_approx(*output.offset(i as isize));
             i += 1;
         }
     } else {
-        i = 0 as i32;
+        i = 0;
         while i < N {
             *output.offset(i as isize) = tansig_approx(*output.offset(i as isize));
             i += 1;
@@ -317,8 +317,8 @@ pub unsafe fn compute_gru(gru: *const GRULayer, state: *mut f32, input: *const f
     let mut h: [f32; 32] = [0.; 32];
     M = (*gru).nb_inputs;
     N = (*gru).nb_neurons;
-    stride = 3 as i32 * N;
-    i = 0 as i32;
+    stride = 3 * N;
+    i = 0;
     while i < N {
         z[i as usize] = *((*gru).bias).offset(i as isize) as f32;
         i += 1;
@@ -332,12 +332,12 @@ pub unsafe fn compute_gru(gru: *const GRULayer, state: *mut f32, input: *const f
         stride,
         state,
     );
-    i = 0 as i32;
+    i = 0;
     while i < N {
         z[i as usize] = sigmoid_approx(WEIGHTS_SCALE * z[i as usize]);
         i += 1;
     }
-    i = 0 as i32;
+    i = 0;
     while i < N {
         r[i as usize] = *((*gru).bias).offset((N + i) as isize) as f32;
         i += 1;
@@ -358,24 +358,24 @@ pub unsafe fn compute_gru(gru: *const GRULayer, state: *mut f32, input: *const f
         stride,
         state,
     );
-    i = 0 as i32;
+    i = 0;
     while i < N {
         r[i as usize] = sigmoid_approx(WEIGHTS_SCALE * r[i as usize]);
         i += 1;
     }
-    i = 0 as i32;
+    i = 0;
     while i < N {
-        h[i as usize] = *((*gru).bias).offset((2 as i32 * N + i) as isize) as f32;
+        h[i as usize] = *((*gru).bias).offset((2 * N + i) as isize) as f32;
         i += 1;
     }
-    i = 0 as i32;
+    i = 0;
     while i < N {
         tmp[i as usize] = *state.offset(i as isize) * r[i as usize];
         i += 1;
     }
     gemm_accum(
         h.as_mut_ptr(),
-        &*((*gru).input_weights).offset((2 as i32 * N) as isize),
+        &*((*gru).input_weights).offset((2 * N) as isize),
         N,
         M,
         stride,
@@ -383,19 +383,19 @@ pub unsafe fn compute_gru(gru: *const GRULayer, state: *mut f32, input: *const f
     );
     gemm_accum(
         h.as_mut_ptr(),
-        &*((*gru).recurrent_weights).offset((2 as i32 * N) as isize),
+        &*((*gru).recurrent_weights).offset((2 * N) as isize),
         N,
         N,
         stride,
         tmp.as_mut_ptr(),
     );
-    i = 0 as i32;
+    i = 0;
     while i < N {
         h[i as usize] = z[i as usize] * *state.offset(i as isize)
-            + (1 as i32 as f32 - z[i as usize]) * tansig_approx(WEIGHTS_SCALE * h[i as usize]);
+            + (1 as f32 - z[i as usize]) * tansig_approx(WEIGHTS_SCALE * h[i as usize]);
         i += 1;
     }
-    i = 0 as i32;
+    i = 0;
     while i < N {
         *state.offset(i as isize) = h[i as usize];
         i += 1;

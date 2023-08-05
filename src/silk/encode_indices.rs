@@ -35,111 +35,108 @@ pub unsafe fn silk_encode_indices(
     } else {
         psIndices = &mut (*psEncC).indices;
     }
-    typeOffset = 2 as i32 * (*psIndices).signalType as i32 + (*psIndices).quantOffsetType as i32;
-    assert!(typeOffset >= 0 as i32 && typeOffset < 6 as i32);
-    assert!(encode_LBRR == 0 as i32 || typeOffset >= 2 as i32);
-    if encode_LBRR != 0 || typeOffset >= 2 as i32 {
+    typeOffset = 2 * (*psIndices).signalType as i32 + (*psIndices).quantOffsetType as i32;
+    assert!(typeOffset >= 0 && typeOffset < 6);
+    assert!(encode_LBRR == 0 || typeOffset >= 2);
+    if encode_LBRR != 0 || typeOffset >= 2 {
         ec_enc_icdf(
             psRangeEnc,
-            typeOffset - 2 as i32,
+            typeOffset - 2,
             silk_type_offset_VAD_iCDF.as_ptr(),
-            8 as i32 as u32,
+            8,
         );
     } else {
         ec_enc_icdf(
             psRangeEnc,
             typeOffset,
             silk_type_offset_no_VAD_iCDF.as_ptr(),
-            8 as i32 as u32,
+            8,
         );
     }
     if condCoding == CODE_CONDITIONALLY {
         ec_enc_icdf(
             psRangeEnc,
-            (*psIndices).GainsIndices[0 as i32 as usize] as i32,
+            (*psIndices).GainsIndices[0 as usize] as i32,
             silk_delta_gain_iCDF.as_ptr(),
-            8 as i32 as u32,
+            8,
         );
     } else {
         ec_enc_icdf(
             psRangeEnc,
-            (*psIndices).GainsIndices[0 as i32 as usize] as i32 >> 3 as i32,
+            (*psIndices).GainsIndices[0 as usize] as i32 >> 3,
             (silk_gain_iCDF[(*psIndices).signalType as usize]).as_ptr(),
-            8 as i32 as u32,
+            8,
         );
         ec_enc_icdf(
             psRangeEnc,
-            (*psIndices).GainsIndices[0 as i32 as usize] as i32 & 7 as i32,
+            (*psIndices).GainsIndices[0 as usize] as i32 & 7,
             silk_uniform8_iCDF.as_ptr(),
-            8 as i32 as u32,
+            8,
         );
     }
-    i = 1 as i32;
+    i = 1;
     while i < (*psEncC).nb_subfr {
         ec_enc_icdf(
             psRangeEnc,
             (*psIndices).GainsIndices[i as usize] as i32,
             silk_delta_gain_iCDF.as_ptr(),
-            8 as i32 as u32,
+            8,
         );
         i += 1;
     }
     ec_enc_icdf(
         psRangeEnc,
-        (*psIndices).NLSFIndices[0 as i32 as usize] as i32,
+        (*psIndices).NLSFIndices[0 as usize] as i32,
         &*((*(*psEncC).psNLSF_CB).CB1_iCDF).offset(
-            (((*psIndices).signalType as i32 >> 1 as i32) * (*(*psEncC).psNLSF_CB).nVectors as i32)
+            (((*psIndices).signalType as i32 >> 1) * (*(*psEncC).psNLSF_CB).nVectors as i32)
                 as isize,
         ),
-        8 as i32 as u32,
+        8,
     );
     silk_NLSF_unpack(
         ec_ix.as_mut_ptr(),
         pred_Q8.as_mut_ptr(),
         (*psEncC).psNLSF_CB,
-        (*psIndices).NLSFIndices[0 as i32 as usize] as i32,
+        (*psIndices).NLSFIndices[0 as usize] as i32,
     );
     assert!((*(*psEncC).psNLSF_CB).order as i32 == (*psEncC).predictLPCOrder);
-    i = 0 as i32;
+    i = 0;
     while i < (*(*psEncC).psNLSF_CB).order as i32 {
-        if (*psIndices).NLSFIndices[(i + 1 as i32) as usize] as i32 >= NLSF_QUANT_MAX_AMPLITUDE {
+        if (*psIndices).NLSFIndices[(i + 1) as usize] as i32 >= NLSF_QUANT_MAX_AMPLITUDE {
             ec_enc_icdf(
                 psRangeEnc,
-                2 as i32 * NLSF_QUANT_MAX_AMPLITUDE,
+                2 * NLSF_QUANT_MAX_AMPLITUDE,
                 &*((*(*psEncC).psNLSF_CB).ec_iCDF)
                     .offset(*ec_ix.as_mut_ptr().offset(i as isize) as isize),
-                8 as i32 as u32,
+                8,
             );
             ec_enc_icdf(
                 psRangeEnc,
-                (*psIndices).NLSFIndices[(i + 1 as i32) as usize] as i32 - NLSF_QUANT_MAX_AMPLITUDE,
+                (*psIndices).NLSFIndices[(i + 1) as usize] as i32 - NLSF_QUANT_MAX_AMPLITUDE,
                 silk_NLSF_EXT_iCDF.as_ptr(),
-                8 as i32 as u32,
+                8,
             );
-        } else if (*psIndices).NLSFIndices[(i + 1 as i32) as usize] as i32
-            <= -NLSF_QUANT_MAX_AMPLITUDE
-        {
+        } else if (*psIndices).NLSFIndices[(i + 1) as usize] as i32 <= -NLSF_QUANT_MAX_AMPLITUDE {
             ec_enc_icdf(
                 psRangeEnc,
-                0 as i32,
+                0,
                 &*((*(*psEncC).psNLSF_CB).ec_iCDF)
                     .offset(*ec_ix.as_mut_ptr().offset(i as isize) as isize),
-                8 as i32 as u32,
+                8,
             );
             ec_enc_icdf(
                 psRangeEnc,
-                -((*psIndices).NLSFIndices[(i + 1 as i32) as usize] as i32)
-                    - NLSF_QUANT_MAX_AMPLITUDE,
+                -((*psIndices).NLSFIndices[(i + 1) as usize] as i32) - NLSF_QUANT_MAX_AMPLITUDE,
                 silk_NLSF_EXT_iCDF.as_ptr(),
-                8 as i32 as u32,
+                8,
             );
         } else {
             ec_enc_icdf(
                 psRangeEnc,
-                (*psIndices).NLSFIndices[(i + 1 as i32) as usize] as i32 + NLSF_QUANT_MAX_AMPLITUDE,
+                (*psIndices).NLSFIndices[(i + 1) as usize] as i32 + NLSF_QUANT_MAX_AMPLITUDE,
                 &*((*(*psEncC).psNLSF_CB).ec_iCDF)
                     .offset(*ec_ix.as_mut_ptr().offset(i as isize) as isize),
-                8 as i32 as u32,
+                8,
             );
         }
         i += 1;
@@ -149,43 +146,38 @@ pub unsafe fn silk_encode_indices(
             psRangeEnc,
             (*psIndices).NLSFInterpCoef_Q2 as i32,
             silk_NLSF_interpolation_factor_iCDF.as_ptr(),
-            8 as i32 as u32,
+            8,
         );
     }
     if (*psIndices).signalType as i32 == TYPE_VOICED {
-        encode_absolute_lagIndex = 1 as i32;
+        encode_absolute_lagIndex = 1;
         if condCoding == CODE_CONDITIONALLY && (*psEncC).ec_prevSignalType == TYPE_VOICED {
             delta_lagIndex = (*psIndices).lagIndex as i32 - (*psEncC).ec_prevLagIndex as i32;
-            if delta_lagIndex < -(8 as i32) || delta_lagIndex > 11 as i32 {
-                delta_lagIndex = 0 as i32;
+            if delta_lagIndex < -(8) || delta_lagIndex > 11 {
+                delta_lagIndex = 0;
             } else {
-                delta_lagIndex = delta_lagIndex + 9 as i32;
-                encode_absolute_lagIndex = 0 as i32;
+                delta_lagIndex = delta_lagIndex + 9;
+                encode_absolute_lagIndex = 0;
             }
             ec_enc_icdf(
                 psRangeEnc,
                 delta_lagIndex,
                 silk_pitch_delta_iCDF.as_ptr(),
-                8 as i32 as u32,
+                8,
             );
         }
         if encode_absolute_lagIndex != 0 {
             let mut pitch_high_bits: i32 = 0;
             let mut pitch_low_bits: i32 = 0;
-            pitch_high_bits = (*psIndices).lagIndex as i32 / ((*psEncC).fs_kHz >> 1 as i32);
+            pitch_high_bits = (*psIndices).lagIndex as i32 / ((*psEncC).fs_kHz >> 1);
             pitch_low_bits = (*psIndices).lagIndex as i32
-                - pitch_high_bits as i16 as i32 * ((*psEncC).fs_kHz >> 1 as i32) as i16 as i32;
-            ec_enc_icdf(
-                psRangeEnc,
-                pitch_high_bits,
-                silk_pitch_lag_iCDF.as_ptr(),
-                8 as i32 as u32,
-            );
+                - pitch_high_bits as i16 as i32 * ((*psEncC).fs_kHz >> 1) as i16 as i32;
+            ec_enc_icdf(psRangeEnc, pitch_high_bits, silk_pitch_lag_iCDF.as_ptr(), 8);
             ec_enc_icdf(
                 psRangeEnc,
                 pitch_low_bits,
                 (*psEncC).pitch_lag_low_bits_iCDF,
-                8 as i32 as u32,
+                8,
             );
         }
         (*psEncC).ec_prevLagIndex = (*psIndices).lagIndex;
@@ -193,21 +185,21 @@ pub unsafe fn silk_encode_indices(
             psRangeEnc,
             (*psIndices).contourIndex as i32,
             (*psEncC).pitch_contour_iCDF,
-            8 as i32 as u32,
+            8,
         );
         ec_enc_icdf(
             psRangeEnc,
             (*psIndices).PERIndex as i32,
             silk_LTP_per_index_iCDF.as_ptr(),
-            8 as i32 as u32,
+            8,
         );
-        k = 0 as i32;
+        k = 0;
         while k < (*psEncC).nb_subfr {
             ec_enc_icdf(
                 psRangeEnc,
                 (*psIndices).LTPIndex[k as usize] as i32,
                 silk_LTP_gain_iCDF_ptrs[(*psIndices).PERIndex as usize],
-                8 as i32 as u32,
+                8,
             );
             k += 1;
         }
@@ -216,7 +208,7 @@ pub unsafe fn silk_encode_indices(
                 psRangeEnc,
                 (*psIndices).LTP_scaleIndex as i32,
                 silk_LTPscale_iCDF.as_ptr(),
-                8 as i32 as u32,
+                8,
             );
         }
     }
@@ -225,6 +217,6 @@ pub unsafe fn silk_encode_indices(
         psRangeEnc,
         (*psIndices).Seed as i32,
         silk_uniform4_iCDF.as_ptr(),
-        8 as i32 as u32,
+        8,
     );
 }

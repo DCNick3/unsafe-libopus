@@ -1,12 +1,12 @@
 use crate::silk::macros::EC_CLZ0;
 
-pub const EC_SYM_BITS: i32 = 8 as i32;
-pub const EC_CODE_BITS: i32 = 32 as i32;
-pub const EC_SYM_MAX: u32 = ((1 as u32) << EC_SYM_BITS).wrapping_sub(1 as i32 as u32);
-pub const EC_CODE_SHIFT: i32 = EC_CODE_BITS - EC_SYM_BITS - 1 as i32;
-pub const EC_CODE_TOP: u32 = (1 as u32) << EC_CODE_BITS - 1 as i32;
+pub const EC_SYM_BITS: i32 = 8;
+pub const EC_CODE_BITS: i32 = 32;
+pub const EC_SYM_MAX: u32 = ((1 as u32) << EC_SYM_BITS).wrapping_sub(1);
+pub const EC_CODE_SHIFT: i32 = EC_CODE_BITS - EC_SYM_BITS - 1;
+pub const EC_CODE_TOP: u32 = (1 as u32) << EC_CODE_BITS - 1;
 pub const EC_CODE_BOT: u32 = EC_CODE_TOP >> EC_SYM_BITS;
-pub const EC_CODE_EXTRA: i32 = (EC_CODE_BITS - 2 as i32) % EC_SYM_BITS + 1 as i32;
+pub const EC_CODE_EXTRA: i32 = (EC_CODE_BITS - 2) % EC_SYM_BITS + 1;
 
 pub type ec_window = u32;
 #[derive(Copy, Clone)]
@@ -26,9 +26,9 @@ pub struct ec_ctx {
     pub error: i32,
 }
 
-pub const EC_UINT_BITS: i32 = 8 as i32;
+pub const EC_UINT_BITS: i32 = 8;
 pub const EC_WINDOW_SIZE: i32 = ::core::mem::size_of::<ec_window>() as i32 * 8;
-pub const BITRES: i32 = 3 as i32;
+pub const BITRES: i32 = 3;
 
 #[inline]
 pub unsafe fn ec_get_error(mut _this: *mut ec_ctx) -> i32 {
@@ -58,25 +58,16 @@ pub unsafe fn celt_sudiv(n: i32, d: i32) -> i32 {
 }
 
 pub unsafe fn ec_tell_frac(mut _this: *mut ec_ctx) -> u32 {
-    static mut correction: [u32; 8] = [
-        35733 as i32 as u32,
-        38967 as i32 as u32,
-        42495 as i32 as u32,
-        46340 as i32 as u32,
-        50535 as i32 as u32,
-        55109 as i32 as u32,
-        60097 as i32 as u32,
-        65535 as i32 as u32,
-    ];
+    static mut correction: [u32; 8] = [35733, 38967, 42495, 46340, 50535, 55109, 60097, 65535];
     let mut nbits: u32 = 0;
     let mut r: u32 = 0;
     let mut l: i32 = 0;
     let mut b: u32 = 0;
     nbits = ((*_this).nbits_total << BITRES) as u32;
     l = EC_CLZ0 - ((*_this).rng).leading_zeros() as i32;
-    r = (*_this).rng >> l - 16 as i32;
-    b = (r >> 12 as i32).wrapping_sub(8 as i32 as u32);
+    r = (*_this).rng >> l - 16;
+    b = (r >> 12).wrapping_sub(8);
     b = b.wrapping_add((r > correction[b as usize]) as i32 as u32);
-    l = ((l << 3 as i32) as u32).wrapping_add(b) as i32;
+    l = ((l << 3) as u32).wrapping_add(b) as i32;
     return nbits.wrapping_sub(l as u32);
 }

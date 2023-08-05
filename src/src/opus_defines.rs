@@ -1,4 +1,4 @@
-pub const OPUS_OK: i32 = 0 as i32;
+pub const OPUS_OK: i32 = 0;
 pub const OPUS_BAD_ARG: i32 = -1;
 pub const OPUS_BUFFER_TOO_SMALL: i32 = -2;
 pub const OPUS_INTERNAL_ERROR: i32 = -3;

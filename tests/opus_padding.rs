@@ -38,44 +38,37 @@ pub unsafe fn test_overflow() -> i32 {
     let mut decoder: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
     let mut result: i32 = 0;
     let mut error: i32 = 0;
-    let mut in_0: *mut u8 = malloc(16909318 as i32 as u64) as *mut u8;
-    let mut out: *mut i16 = malloc(
-        ((5760 as i32 * 2 as i32) as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
-    ) as *mut i16;
+    let mut in_0: *mut u8 = malloc(16909318) as *mut u8;
+    let mut out: *mut i16 =
+        malloc(((5760 * 2) as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64)) as *mut i16;
     eprintln!("  Checking for padding overflow... ");
-    *in_0.offset(0 as i32 as isize) = 0xff as i32 as u8;
-    *in_0.offset(1 as i32 as isize) = 0x41 as i32 as u8;
+    *in_0.offset(0 as isize) = 0xff;
+    *in_0.offset(1 as isize) = 0x41;
     memset(
-        in_0.offset(2 as i32 as isize) as *mut core::ffi::c_void,
-        0xff as i32,
-        (16909318 as i32 - 3 as i32) as u64,
+        in_0.offset(2 as isize) as *mut core::ffi::c_void,
+        0xff,
+        (16909318 - 3) as u64,
     );
-    *in_0.offset((16909318 as i32 - 1 as i32) as isize) = 0xb as i32 as u8;
-    decoder = opus_decoder_create(48000 as i32, 2 as i32, &mut error);
-    result = opus_decode(decoder, in_0, 16909318 as i32, out, 5760 as i32, 0 as i32);
+    *in_0.offset((16909318 - 1) as isize) = 0xb;
+    decoder = opus_decoder_create(48000, 2, &mut error);
+    result = opus_decode(decoder, in_0, 16909318, out, 5760, 0);
     opus_decoder_destroy(decoder);
     free(in_0 as *mut core::ffi::c_void);
     free(out as *mut core::ffi::c_void);
-    if result != -(4 as i32) {
+    if result != -(4) {
         eprintln!("FAIL!");
-        _test_failed(
-            b"tests/test_opus_padding.c\0" as *const u8 as *const i8,
-            70 as i32,
-        );
+        _test_failed(b"tests/test_opus_padding.c\0" as *const u8 as *const i8, 70);
     }
     eprintln!("OK.");
-    1 as i32
+    1
 }
 unsafe fn main_0() -> i32 {
     let mut oversion: *const i8 = std::ptr::null::<i8>();
-    let mut _tests: i32 = 0 as i32;
-    iseed = 0 as i32 as u32;
+    let mut _tests: i32 = 0;
+    iseed = 0;
     oversion = opus_get_version_string();
     if oversion.is_null() {
-        _test_failed(
-            b"tests/test_opus_padding.c\0" as *const u8 as *const i8,
-            85 as i32,
-        );
+        _test_failed(b"tests/test_opus_padding.c\0" as *const u8 as *const i8, 85);
     }
     eprintln!(
         "Testing {} padding.",
@@ -83,7 +76,7 @@ unsafe fn main_0() -> i32 {
     );
     _tests += test_overflow();
     eprintln!("All padding tests passed.");
-    0 as i32
+    0
 }
 
 #[test]

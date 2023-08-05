@@ -22,17 +22,17 @@ unsafe fn read_pcm16(
     let mut xi: size_t = 0;
     let mut nread: size_t = 0;
     samples = 0 as *mut f32;
-    csamples = 0 as i32 as size_t;
+    csamples = 0 as size_t;
     nsamples = csamples;
     loop {
         nread = _fin.read(&mut buf).expect("reading pcm16") as u64 / (2 * _nchannels) as u64;
 
-        if nread <= 0 as i32 as u64 {
+        if nread <= 0 {
             break;
         }
         if nsamples.wrapping_add(nread) > csamples {
             loop {
-                csamples = csamples << 1 as i32 | 1 as i32 as u64;
+                csamples = csamples << 1 | 1;
                 if !(nsamples.wrapping_add(nread) > csamples) {
                     break;
                 }
@@ -44,20 +44,20 @@ unsafe fn read_pcm16(
                     .wrapping_mul(::core::mem::size_of::<f32>() as u64),
             ) as *mut f32;
         }
-        xi = 0 as i32 as size_t;
+        xi = 0 as size_t;
         while xi < nread {
             let mut ci: i32 = 0;
-            ci = 0 as i32;
+            ci = 0;
             while ci < _nchannels {
                 let mut s: i32 = 0;
-                s = (buf[(2 as i32 as u64)
+                s = (buf[2_u64
                     .wrapping_mul(xi.wrapping_mul(_nchannels as u64).wrapping_add(ci as u64))
-                    .wrapping_add(1 as i32 as u64) as usize] as i32)
-                    << 8 as i32
-                    | buf[(2 as i32 as u64)
+                    .wrapping_add(1) as usize] as i32)
+                    << 8
+                    | buf[2_u64
                         .wrapping_mul(xi.wrapping_mul(_nchannels as u64).wrapping_add(ci as u64))
                         as usize] as i32;
-                s = (s & 0xffff as i32 ^ 0x8000 as i32) - 0x8000 as i32;
+                s = (s & 0xffff ^ 0x8000) - 0x8000;
                 *samples.offset(
                     nsamples
                         .wrapping_add(xi)
@@ -98,37 +98,36 @@ unsafe fn band_energy(
     let mut xj: i32 = 0;
     let mut ps_sz: i32 = 0;
     window = malloc(
-        (((3 as i32 + _nchannels) * _window_sz) as u64)
-            .wrapping_mul(::core::mem::size_of::<f32>() as u64),
+        (((3 + _nchannels) * _window_sz) as u64).wrapping_mul(::core::mem::size_of::<f32>() as u64),
     ) as *mut f32;
     c = window.offset(_window_sz as isize);
     s = c.offset(_window_sz as isize);
     x = s.offset(_window_sz as isize);
-    ps_sz = _window_sz / 2 as i32;
-    xj = 0 as i32;
+    ps_sz = _window_sz / 2;
+    xj = 0;
     while xj < _window_sz {
         *window.offset(xj as isize) = 0.5f32
             - 0.5f32 * (2.0 * std::f32::consts::PI / (_window_sz - 1) as f32 * xj as f32).cos();
         xj += 1;
     }
-    xj = 0 as i32;
+    xj = 0;
     while xj < _window_sz {
         *c.offset(xj as isize) = (2.0 * std::f32::consts::PI / _window_sz as f32 * xj as f32).cos();
         xj += 1;
     }
-    xj = 0 as i32;
+    xj = 0;
     while xj < _window_sz {
         *s.offset(xj as isize) = (2.0 * std::f32::consts::PI / _window_sz as f32 * xj as f32).sin();
         xj += 1;
     }
-    xi = 0 as i32 as size_t;
+    xi = 0 as size_t;
     while xi < _nframes {
         let mut ci: i32 = 0;
         let mut xk: i32 = 0;
         let mut bi: i32 = 0;
-        ci = 0 as i32;
+        ci = 0;
         while ci < _nchannels {
-            xk = 0 as i32;
+            xk = 0;
             while xk < _window_sz {
                 *x.offset((ci * _window_sz + xk) as isize) = *window.offset(xk as isize)
                     * *_in.offset(
@@ -141,20 +140,20 @@ unsafe fn band_energy(
             }
             ci += 1;
         }
-        xj = 0 as i32;
+        xj = 0;
         bi = xj;
         while bi < _nbands {
-            let mut p: [f32; 2] = [0 as i32 as f32, 0.];
-            while xj < *_bands.offset((bi + 1 as i32) as isize) {
-                ci = 0 as i32;
+            let mut p: [f32; 2] = [0 as f32, 0.];
+            while xj < *_bands.offset((bi + 1) as isize) {
+                ci = 0;
                 while ci < _nchannels {
                     let mut re: f32 = 0.;
                     let mut im: f32 = 0.;
                     let mut ti: i32 = 0;
-                    ti = 0 as i32;
-                    im = 0 as i32 as f32;
+                    ti = 0;
+                    im = 0 as f32;
                     re = im;
-                    xk = 0 as i32;
+                    xk = 0;
                     while xk < _window_sz {
                         re += *c.offset(ti as isize) * *x.offset((ci * _window_sz + xk) as isize);
                         im -= *s.offset(ti as isize) * *x.offset((ci * _window_sz + xk) as isize);
@@ -171,7 +170,7 @@ unsafe fn band_energy(
                             .wrapping_add(xj as u64)
                             .wrapping_mul(_nchannels as u64)
                             .wrapping_add(ci as u64) as isize,
-                    ) = re * re + im * im + 100000 as i32 as f32;
+                    ) = re * re + im * im + 100000 as f32;
                     p[ci as usize] += *_ps.offset(
                         xi.wrapping_mul(ps_sz as u64)
                             .wrapping_add(xj as u64)
@@ -187,18 +186,16 @@ unsafe fn band_energy(
                     xi.wrapping_mul(_nbands as u64)
                         .wrapping_add(bi as u64)
                         .wrapping_mul(_nchannels as u64) as isize,
-                ) = p[0 as i32 as usize]
-                    / (*_bands.offset((bi + 1 as i32) as isize) - *_bands.offset(bi as isize))
-                        as f32;
-                if _nchannels == 2 as i32 {
+                ) = p[0 as usize]
+                    / (*_bands.offset((bi + 1) as isize) - *_bands.offset(bi as isize)) as f32;
+                if _nchannels == 2 {
                     *_out.offset(
                         xi.wrapping_mul(_nbands as u64)
                             .wrapping_add(bi as u64)
                             .wrapping_mul(_nchannels as u64)
-                            .wrapping_add(1 as i32 as u64) as isize,
-                    ) = p[1 as i32 as usize]
-                        / (*_bands.offset((bi + 1 as i32) as isize) - *_bands.offset(bi as isize))
-                            as f32;
+                            .wrapping_add(1) as isize,
+                    ) = p[1 as usize]
+                        / (*_bands.offset((bi + 1) as isize) - *_bands.offset(bi as isize)) as f32;
                 }
             }
             bi += 1;
@@ -208,9 +205,7 @@ unsafe fn band_energy(
     free(window as *mut core::ffi::c_void);
 }
 static mut BANDS: [i32; 22] = [
-    0 as i32, 2 as i32, 4 as i32, 6 as i32, 8 as i32, 10 as i32, 12 as i32, 14 as i32, 16 as i32,
-    20 as i32, 24 as i32, 28 as i32, 32 as i32, 40 as i32, 48 as i32, 56 as i32, 68 as i32,
-    80 as i32, 96 as i32, 120 as i32, 156 as i32, 200 as i32,
+    0, 2, 4, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 40, 48, 56, 68, 80, 96, 120, 156, 200,
 ];
 
 unsafe fn main_0() -> i32 {
@@ -255,12 +250,7 @@ unsafe fn main_0() -> i32 {
     downsample = 1;
     if args.next().unwrap() == "-r" {
         rate = args.next().unwrap().parse().expect("Could not parse rate");
-        if rate != 8000 as i32 as u32
-            && rate != 12000 as i32 as u32
-            && rate != 16000 as i32 as u32
-            && rate != 24000 as i32 as u32
-            && rate != 48000 as i32 as u32
-        {
+        if rate != 8000 && rate != 12000 && rate != 16000 && rate != 24000 && rate != 48000 {
             eprintln!("Sampling rate must be 8000, 12000, 16000, 24000, or 48000");
             return 1;
         }
@@ -272,21 +262,18 @@ unsafe fn main_0() -> i32 {
             24000 => 19,
             _ => 21,
         };
-        yfreqs = 240 as i32 / downsample;
+        yfreqs = 240 / downsample;
     }
     let mut fin1 = File::open(args.next().unwrap()).expect("Could not open file1");
     let mut fin2 = File::open(args.next().unwrap()).expect("Could not open file2");
     xlength = read_pcm16(&mut x, &mut fin1, 2);
-    if nchannels == 1 as i32 {
-        xi = 0 as i32 as size_t;
+    if nchannels == 1 {
+        xi = 0 as size_t;
         while xi < xlength {
             *x.offset(xi as isize) = (0.5f64
-                * (*x.offset((2 as i32 as u64).wrapping_mul(xi) as isize)
-                    + *x.offset(
-                        (2 as i32 as u64)
-                            .wrapping_mul(xi)
-                            .wrapping_add(1 as i32 as u64) as isize,
-                    )) as f64) as f32;
+                * (*x.offset(2_u64.wrapping_mul(xi) as isize)
+                    + *x.offset(2_u64.wrapping_mul(xi).wrapping_add(1) as isize))
+                    as f64) as f32;
             xi = xi.wrapping_add(1);
         }
     }
@@ -303,23 +290,23 @@ unsafe fn main_0() -> i32 {
         );
         return 1;
     }
-    if xlength < 480 as i32 as u64 {
+    if xlength < 480 {
         eprintln!("Insufficient sample data ({}<{}).", xlength, 480);
         return 1;
     }
     nframes = xlength
-        .wrapping_sub(480 as i32 as u64)
-        .wrapping_add(120 as i32 as u64)
-        .wrapping_div(120 as i32 as u64);
+        .wrapping_sub(480)
+        .wrapping_add(120)
+        .wrapping_div(120);
     xb = malloc(
         nframes
-            .wrapping_mul(21 as i32 as u64)
+            .wrapping_mul(21)
             .wrapping_mul(nchannels as u64)
             .wrapping_mul(::core::mem::size_of::<f32>() as u64),
     ) as *mut f32;
     X = malloc(
         nframes
-            .wrapping_mul(240 as i32 as u64)
+            .wrapping_mul(240)
             .wrapping_mul(nchannels as u64)
             .wrapping_mul(::core::mem::size_of::<f32>() as u64),
     ) as *mut f32;
@@ -333,13 +320,13 @@ unsafe fn main_0() -> i32 {
         xb,
         X,
         BANDS.as_ptr(),
-        21 as i32,
+        21,
         x,
         nchannels,
         nframes,
-        480 as i32,
-        120 as i32,
-        1 as i32,
+        480,
+        120,
+        1,
     );
     free(x as *mut core::ffi::c_void);
     band_energy(
@@ -350,27 +337,27 @@ unsafe fn main_0() -> i32 {
         y,
         nchannels,
         nframes,
-        480 as i32 / downsample,
-        120 as i32 / downsample,
+        480 / downsample,
+        120 / downsample,
         downsample,
     );
     free(y as *mut core::ffi::c_void);
-    xi = 0 as i32 as size_t;
+    xi = 0 as size_t;
     while xi < nframes {
-        bi = 1 as i32;
-        while bi < 21 as i32 {
-            ci = 0 as i32;
+        bi = 1;
+        while bi < 21 {
+            ci = 0;
             while ci < nchannels {
                 *xb.offset(
-                    xi.wrapping_mul(21 as i32 as u64)
+                    xi.wrapping_mul(21)
                         .wrapping_add(bi as u64)
                         .wrapping_mul(nchannels as u64)
                         .wrapping_add(ci as u64) as isize,
                 ) += 0.1f32
                     * *xb.offset(
-                        xi.wrapping_mul(21 as i32 as u64)
+                        xi.wrapping_mul(21)
                             .wrapping_add(bi as u64)
-                            .wrapping_sub(1 as i32 as u64)
+                            .wrapping_sub(1)
                             .wrapping_mul(nchannels as u64)
                             .wrapping_add(ci as u64) as isize,
                     );
@@ -378,45 +365,45 @@ unsafe fn main_0() -> i32 {
             }
             bi += 1;
         }
-        bi = 21 as i32 - 1 as i32;
+        bi = 21 - 1;
         loop {
             let fresh0 = bi;
             bi = bi - 1;
-            if !(fresh0 > 0 as i32) {
+            if !(fresh0 > 0) {
                 break;
             }
-            ci = 0 as i32;
+            ci = 0;
             while ci < nchannels {
                 *xb.offset(
-                    xi.wrapping_mul(21 as i32 as u64)
+                    xi.wrapping_mul(21)
                         .wrapping_add(bi as u64)
                         .wrapping_mul(nchannels as u64)
                         .wrapping_add(ci as u64) as isize,
                 ) += 0.03f32
                     * *xb.offset(
-                        xi.wrapping_mul(21 as i32 as u64)
+                        xi.wrapping_mul(21)
                             .wrapping_add(bi as u64)
-                            .wrapping_add(1 as i32 as u64)
+                            .wrapping_add(1)
                             .wrapping_mul(nchannels as u64)
                             .wrapping_add(ci as u64) as isize,
                     );
                 ci += 1;
             }
         }
-        if xi > 0 as i32 as u64 {
-            bi = 0 as i32;
-            while bi < 21 as i32 {
-                ci = 0 as i32;
+        if xi > 0 {
+            bi = 0;
+            while bi < 21 {
+                ci = 0;
                 while ci < nchannels {
                     *xb.offset(
-                        xi.wrapping_mul(21 as i32 as u64)
+                        xi.wrapping_mul(21)
                             .wrapping_add(bi as u64)
                             .wrapping_mul(nchannels as u64)
                             .wrapping_add(ci as u64) as isize,
                     ) += 0.5f32
                         * *xb.offset(
-                            xi.wrapping_sub(1 as i32 as u64)
-                                .wrapping_mul(21 as i32 as u64)
+                            xi.wrapping_sub(1)
+                                .wrapping_mul(21)
                                 .wrapping_add(bi as u64)
                                 .wrapping_mul(nchannels as u64)
                                 .wrapping_add(ci as u64) as isize,
@@ -426,52 +413,52 @@ unsafe fn main_0() -> i32 {
                 bi += 1;
             }
         }
-        if nchannels == 2 as i32 {
-            bi = 0 as i32;
-            while bi < 21 as i32 {
+        if nchannels == 2 {
+            bi = 0;
+            while bi < 21 {
                 let mut l: f32 = 0.;
                 let mut r: f32 = 0.;
                 l = *xb.offset(
-                    xi.wrapping_mul(21 as i32 as u64)
+                    xi.wrapping_mul(21)
                         .wrapping_add(bi as u64)
                         .wrapping_mul(nchannels as u64)
-                        .wrapping_add(0 as i32 as u64) as isize,
+                        .wrapping_add(0) as isize,
                 );
                 r = *xb.offset(
-                    xi.wrapping_mul(21 as i32 as u64)
+                    xi.wrapping_mul(21)
                         .wrapping_add(bi as u64)
                         .wrapping_mul(nchannels as u64)
-                        .wrapping_add(1 as i32 as u64) as isize,
+                        .wrapping_add(1) as isize,
                 );
                 *xb.offset(
-                    xi.wrapping_mul(21 as i32 as u64)
+                    xi.wrapping_mul(21)
                         .wrapping_add(bi as u64)
                         .wrapping_mul(nchannels as u64)
-                        .wrapping_add(0 as i32 as u64) as isize,
+                        .wrapping_add(0) as isize,
                 ) += 0.01f32 * r;
                 *xb.offset(
-                    xi.wrapping_mul(21 as i32 as u64)
+                    xi.wrapping_mul(21)
                         .wrapping_add(bi as u64)
                         .wrapping_mul(nchannels as u64)
-                        .wrapping_add(1 as i32 as u64) as isize,
+                        .wrapping_add(1) as isize,
                 ) += 0.01f32 * l;
                 bi += 1;
             }
         }
-        bi = 0 as i32;
+        bi = 0;
         while bi < ybands {
             xj = BANDS[bi as usize];
-            while xj < BANDS[(bi + 1 as i32) as usize] {
-                ci = 0 as i32;
+            while xj < BANDS[(bi + 1) as usize] {
+                ci = 0;
                 while ci < nchannels {
                     *X.offset(
-                        xi.wrapping_mul(240 as i32 as u64)
+                        xi.wrapping_mul(240)
                             .wrapping_add(xj as u64)
                             .wrapping_mul(nchannels as u64)
                             .wrapping_add(ci as u64) as isize,
                     ) += 0.1f32
                         * *xb.offset(
-                            xi.wrapping_mul(21 as i32 as u64)
+                            xi.wrapping_mul(21)
                                 .wrapping_add(bi as u64)
                                 .wrapping_mul(nchannels as u64)
                                 .wrapping_add(ci as u64) as isize,
@@ -483,7 +470,7 @@ unsafe fn main_0() -> i32 {
                             .wrapping_add(ci as u64) as isize,
                     ) += 0.1f32
                         * *xb.offset(
-                            xi.wrapping_mul(21 as i32 as u64)
+                            xi.wrapping_mul(21)
                                 .wrapping_add(bi as u64)
                                 .wrapping_mul(nchannels as u64)
                                 .wrapping_add(ci as u64) as isize,
@@ -496,22 +483,22 @@ unsafe fn main_0() -> i32 {
         }
         xi = xi.wrapping_add(1);
     }
-    bi = 0 as i32;
+    bi = 0;
     while bi < ybands {
         xj = BANDS[bi as usize];
-        while xj < BANDS[(bi + 1 as i32) as usize] {
-            ci = 0 as i32;
+        while xj < BANDS[(bi + 1) as usize] {
+            ci = 0;
             while ci < nchannels {
                 let mut xtmp: f32 = 0.;
                 let mut ytmp: f32 = 0.;
                 xtmp = *X.offset((xj * nchannels + ci) as isize);
                 ytmp = *Y.offset((xj * nchannels + ci) as isize);
-                xi = 1 as i32 as size_t;
+                xi = 1 as size_t;
                 while xi < nframes {
                     let mut xtmp2: f32 = 0.;
                     let mut ytmp2: f32 = 0.;
                     xtmp2 = *X.offset(
-                        xi.wrapping_mul(240 as i32 as u64)
+                        xi.wrapping_mul(240)
                             .wrapping_add(xj as u64)
                             .wrapping_mul(nchannels as u64)
                             .wrapping_add(ci as u64) as isize,
@@ -523,7 +510,7 @@ unsafe fn main_0() -> i32 {
                             .wrapping_add(ci as u64) as isize,
                     );
                     *X.offset(
-                        xi.wrapping_mul(240 as i32 as u64)
+                        xi.wrapping_mul(240)
                             .wrapping_add(xj as u64)
                             .wrapping_mul(nchannels as u64)
                             .wrapping_add(ci as u64) as isize,
@@ -544,25 +531,25 @@ unsafe fn main_0() -> i32 {
         }
         bi += 1;
     }
-    if rate == 48000 as i32 as u32 {
-        max_compare = BANDS[21 as i32 as usize];
-    } else if rate == 12000 as i32 as u32 {
+    if rate == 48000 {
+        max_compare = BANDS[21 as usize];
+    } else if rate == 12000 {
         max_compare = BANDS[ybands as usize];
     } else {
-        max_compare = BANDS[ybands as usize] - 3 as i32;
+        max_compare = BANDS[ybands as usize] - 3;
     }
-    err = 0 as i32 as f64;
-    xi = 0 as i32 as size_t;
+    err = 0 as f64;
+    xi = 0 as size_t;
     while xi < nframes {
         let mut Ef: f64 = 0.;
-        Ef = 0 as i32 as f64;
-        bi = 0 as i32;
+        Ef = 0 as f64;
+        bi = 0;
         while bi < ybands {
             let mut Eb: f64 = 0.;
-            Eb = 0 as i32 as f64;
+            Eb = 0 as f64;
             xj = BANDS[bi as usize];
-            while xj < BANDS[(bi + 1 as i32) as usize] && xj < max_compare {
-                ci = 0 as i32;
+            while xj < BANDS[(bi + 1) as usize] && xj < max_compare {
+                ci = 0;
                 while ci < nchannels {
                     let mut re: f32 = 0.;
                     let mut im: f32 = 0.;
@@ -572,16 +559,16 @@ unsafe fn main_0() -> i32 {
                             .wrapping_mul(nchannels as u64)
                             .wrapping_add(ci as u64) as isize,
                     ) / *X.offset(
-                        xi.wrapping_mul(240 as i32 as u64)
+                        xi.wrapping_mul(240)
                             .wrapping_add(xj as u64)
                             .wrapping_mul(nchannels as u64)
                             .wrapping_add(ci as u64) as isize,
                     );
                     im = re - re.ln() - 1.0;
-                    if xj >= 79 as i32 && xj <= 81 as i32 {
+                    if xj >= 79 && xj <= 81 {
                         im *= 0.1f32;
                     }
-                    if xj == 80 as i32 {
+                    if xj == 80 {
                         im *= 0.1f32;
                     }
                     Eb += im as f64;
@@ -589,11 +576,11 @@ unsafe fn main_0() -> i32 {
                 }
                 xj += 1;
             }
-            Eb /= ((BANDS[(bi + 1 as i32) as usize] - BANDS[bi as usize]) * nchannels) as f64;
+            Eb /= ((BANDS[(bi + 1) as usize] - BANDS[bi as usize]) * nchannels) as f64;
             Ef += Eb * Eb;
             bi += 1;
         }
-        Ef /= 21 as i32 as f64;
+        Ef /= 21 as f64;
         Ef *= Ef;
         err += Ef * Ef;
         xi = xi.wrapping_add(1);
@@ -603,7 +590,7 @@ unsafe fn main_0() -> i32 {
     free(Y as *mut core::ffi::c_void);
     err = (err / nframes as f64).powf(1.0 / 16.0);
     Q = (100.0 * (1.0 - 0.5 * (1.0 + err).ln() / 1.13f64.ln())) as f32;
-    if Q < 0 as i32 as f32 {
+    if Q < 0 as f32 {
         eprintln!("Test vector FAILS");
         eprintln!("Internal weighted error is {}", err);
         return 1;
@@ -613,7 +600,7 @@ unsafe fn main_0() -> i32 {
             "Opus quality metric: {} % (internal weighted error is {})",
             Q, err
         );
-        return 0 as i32;
+        return 0;
     };
 }
 

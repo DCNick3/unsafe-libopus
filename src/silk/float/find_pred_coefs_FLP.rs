@@ -27,7 +27,7 @@ pub unsafe fn silk_find_pred_coefs_FLP(
     let mut x_pre_ptr: *mut f32 = 0 as *mut f32;
     let mut LPC_in_pre: [f32; 384] = [0.; 384];
     let mut minInvGain: f32 = 0.;
-    i = 0 as i32;
+    i = 0;
     while i < (*psEnc).sCmn.nb_subfr {
         invGains[i as usize] = 1.0f32 / (*psEncCtrl).Gains[i as usize];
         i += 1;
@@ -35,7 +35,7 @@ pub unsafe fn silk_find_pred_coefs_FLP(
     if (*psEnc).sCmn.indices.signalType as i32 == TYPE_VOICED {
         assert!(
             (*psEnc).sCmn.ltp_mem_length - (*psEnc).sCmn.predictLPCOrder
-                >= (*psEncCtrl).pitchL[0 as i32 as usize] + 5 as i32 / 2 as i32
+                >= (*psEncCtrl).pitchL[0 as usize] + 5 / 2
         );
         silk_find_LTP_FLP(
             XXLTP.as_mut_ptr(),
@@ -71,7 +71,7 @@ pub unsafe fn silk_find_pred_coefs_FLP(
     } else {
         x_ptr = x.offset(-((*psEnc).sCmn.predictLPCOrder as isize));
         x_pre_ptr = LPC_in_pre.as_mut_ptr();
-        i = 0 as i32;
+        i = 0;
         while i < (*psEnc).sCmn.nb_subfr {
             silk_scale_copy_vector_FLP(
                 x_pre_ptr,
@@ -86,12 +86,12 @@ pub unsafe fn silk_find_pred_coefs_FLP(
         }
         memset(
             ((*psEncCtrl).LTPCoef).as_mut_ptr() as *mut core::ffi::c_void,
-            0 as i32,
-            (((*psEnc).sCmn.nb_subfr * 5 as i32) as u64)
+            0,
+            (((*psEnc).sCmn.nb_subfr * 5) as u64)
                 .wrapping_mul(::core::mem::size_of::<f32>() as u64),
         );
         (*psEncCtrl).LTPredCodGain = 0.0f32;
-        (*psEnc).sCmn.sum_log_gain_Q7 = 0 as i32;
+        (*psEnc).sCmn.sum_log_gain_Q7 = 0;
     }
     if (*psEnc).sCmn.first_frame_after_reset != 0 {
         minInvGain = 1.0f32 / MAX_PREDICTION_POWER_GAIN_AFTER_RESET;

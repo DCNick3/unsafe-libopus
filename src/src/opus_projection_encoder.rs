@@ -12,7 +12,7 @@ pub mod arch_h {
 }
 pub mod stddef_h {
     pub type size_t = u64;
-    pub const NULL: i32 = 0 as i32;
+    pub const NULL: i32 = 0;
 }
 pub mod opus_projection_h {
     pub const OPUS_PROJECTION_GET_DEMIXING_MATRIX_GAIN_REQUEST: i32 = 6001;
@@ -86,13 +86,13 @@ unsafe fn get_order_plus_one_from_channels(channels: i32, order_plus_one: *mut i
     let mut order_plus_one_: i32 = 0;
     let mut acn_channels: i32 = 0;
     let mut nondiegetic_channels: i32 = 0;
-    if channels < 1 as i32 || channels > 227 as i32 {
+    if channels < 1 || channels > 227 {
         return OPUS_BAD_ARG;
     }
     order_plus_one_ = isqrt32(channels as u32) as i32;
     acn_channels = order_plus_one_ * order_plus_one_;
     nondiegetic_channels = channels - acn_channels;
-    if nondiegetic_channels != 0 as i32 && nondiegetic_channels != 2 as i32 {
+    if nondiegetic_channels != 0 && nondiegetic_channels != 2 {
         return OPUS_BAD_ARG;
     }
     if !order_plus_one.is_null() {
@@ -107,15 +107,15 @@ unsafe fn get_streams_from_channels(
     coupled_streams: *mut i32,
     order_plus_one: *mut i32,
 ) -> i32 {
-    if mapping_family == 3 as i32 {
+    if mapping_family == 3 {
         if get_order_plus_one_from_channels(channels, order_plus_one) != OPUS_OK {
             return OPUS_BAD_ARG;
         }
         if !streams.is_null() {
-            *streams = (channels + 1 as i32) / 2 as i32;
+            *streams = (channels + 1) / 2;
         }
         if !coupled_streams.is_null() {
-            *coupled_streams = channels / 2 as i32;
+            *coupled_streams = channels / 2;
         }
         return OPUS_OK;
     }
@@ -162,37 +162,37 @@ pub unsafe fn opus_projection_ambisonics_encoder_get_size(
         &mut order_plus_one,
     );
     if ret != OPUS_OK {
-        return 0 as i32;
+        return 0;
     }
-    if order_plus_one == 2 as i32 {
+    if order_plus_one == 2 {
         mixing_matrix_rows = mapping_matrix_foa_mixing.rows;
         mixing_matrix_cols = mapping_matrix_foa_mixing.cols;
         demixing_matrix_rows = mapping_matrix_foa_demixing.rows;
         demixing_matrix_cols = mapping_matrix_foa_demixing.cols;
-    } else if order_plus_one == 3 as i32 {
+    } else if order_plus_one == 3 {
         mixing_matrix_rows = mapping_matrix_soa_mixing.rows;
         mixing_matrix_cols = mapping_matrix_soa_mixing.cols;
         demixing_matrix_rows = mapping_matrix_soa_demixing.rows;
         demixing_matrix_cols = mapping_matrix_soa_demixing.cols;
-    } else if order_plus_one == 4 as i32 {
+    } else if order_plus_one == 4 {
         mixing_matrix_rows = mapping_matrix_toa_mixing.rows;
         mixing_matrix_cols = mapping_matrix_toa_mixing.cols;
         demixing_matrix_rows = mapping_matrix_toa_demixing.rows;
         demixing_matrix_cols = mapping_matrix_toa_demixing.cols;
     } else {
-        return 0 as i32;
+        return 0;
     }
     mixing_matrix_size = mapping_matrix_get_size(mixing_matrix_rows, mixing_matrix_cols);
     if mixing_matrix_size == 0 {
-        return 0 as i32;
+        return 0;
     }
     demixing_matrix_size = mapping_matrix_get_size(demixing_matrix_rows, demixing_matrix_cols);
     if demixing_matrix_size == 0 {
-        return 0 as i32;
+        return 0;
     }
     encoder_size = opus_multistream_encoder_get_size(nb_streams, nb_coupled_streams);
     if encoder_size == 0 {
-        return 0 as i32;
+        return 0;
     }
     return align(::core::mem::size_of::<OpusProjectionEncoder>() as u64 as i32)
         + mixing_matrix_size
@@ -228,9 +228,9 @@ pub unsafe fn opus_projection_ambisonics_encoder_init(
     {
         return OPUS_BAD_ARG;
     }
-    if mapping_family == 3 as i32 {
+    if mapping_family == 3 {
         mixing_matrix = get_mixing_matrix(st);
-        if order_plus_one == 2 as i32 {
+        if order_plus_one == 2 {
             mapping_matrix_init(
                 mixing_matrix,
                 mapping_matrix_foa_mixing.rows,
@@ -239,7 +239,7 @@ pub unsafe fn opus_projection_ambisonics_encoder_init(
                 mapping_matrix_foa_mixing_data.as_ptr(),
                 ::core::mem::size_of::<[i16; 36]>() as u64 as i32,
             );
-        } else if order_plus_one == 3 as i32 {
+        } else if order_plus_one == 3 {
             mapping_matrix_init(
                 mixing_matrix,
                 mapping_matrix_soa_mixing.rows,
@@ -248,7 +248,7 @@ pub unsafe fn opus_projection_ambisonics_encoder_init(
                 mapping_matrix_soa_mixing_data.as_ptr(),
                 ::core::mem::size_of::<[i16; 121]>() as u64 as i32,
             );
-        } else if order_plus_one == 4 as i32 {
+        } else if order_plus_one == 4 {
             mapping_matrix_init(
                 mixing_matrix,
                 mapping_matrix_toa_mixing.rows,
@@ -266,7 +266,7 @@ pub unsafe fn opus_projection_ambisonics_encoder_init(
             return OPUS_BAD_ARG;
         }
         demixing_matrix = get_enc_demixing_matrix(st);
-        if order_plus_one == 2 as i32 {
+        if order_plus_one == 2 {
             mapping_matrix_init(
                 demixing_matrix,
                 mapping_matrix_foa_demixing.rows,
@@ -275,7 +275,7 @@ pub unsafe fn opus_projection_ambisonics_encoder_init(
                 mapping_matrix_foa_demixing_data.as_ptr(),
                 ::core::mem::size_of::<[i16; 36]>() as u64 as i32,
             );
-        } else if order_plus_one == 3 as i32 {
+        } else if order_plus_one == 3 {
             mapping_matrix_init(
                 demixing_matrix,
                 mapping_matrix_soa_demixing.rows,
@@ -284,7 +284,7 @@ pub unsafe fn opus_projection_ambisonics_encoder_init(
                 mapping_matrix_soa_demixing_data.as_ptr(),
                 ::core::mem::size_of::<[i16; 121]>() as u64 as i32,
             );
-        } else if order_plus_one == 4 as i32 {
+        } else if order_plus_one == 4 {
             mapping_matrix_init(
                 demixing_matrix,
                 mapping_matrix_toa_demixing.rows,
@@ -311,7 +311,7 @@ pub unsafe fn opus_projection_ambisonics_encoder_init(
     {
         return OPUS_BAD_ARG;
     }
-    i = 0 as i32;
+    i = 0;
     while i < channels {
         mapping[i as usize] = i as u8;
         i += 1;
@@ -397,7 +397,7 @@ pub unsafe fn opus_projection_encode(
         frame_size,
         data,
         max_data_bytes,
-        16 as i32,
+        16,
         Some(
             downmix_int
                 as unsafe fn(
@@ -410,7 +410,7 @@ pub unsafe fn opus_projection_encode(
                     i32,
                 ) -> (),
         ),
-        0 as i32,
+        0,
         get_mixing_matrix(st) as *mut core::ffi::c_void,
     );
 }
@@ -439,7 +439,7 @@ pub unsafe fn opus_projection_encode_float(
         frame_size,
         data,
         max_data_bytes,
-        24 as i32,
+        24,
         Some(
             downmix_float
                 as unsafe fn(
@@ -452,7 +452,7 @@ pub unsafe fn opus_projection_encode_float(
                     i32,
                 ) -> (),
         ),
-        1 as i32,
+        1,
         get_mixing_matrix(st) as *mut core::ffi::c_void,
     );
 }
@@ -511,16 +511,16 @@ pub unsafe fn opus_projection_encoder_ctl_impl(
                 if external_size != internal_size {
                     current_block = 17184638872671510253;
                 } else {
-                    l = 0 as i32;
-                    i = 0 as i32;
+                    l = 0;
+                    i = 0;
                     while i < nb_input_streams {
-                        j = 0 as i32;
+                        j = 0;
                         while j < nb_output_streams {
                             k = (*demixing_matrix).rows * i + j;
-                            *external_char.offset((2 as i32 * l) as isize) =
+                            *external_char.offset((2 * l) as isize) =
                                 *internal_short.offset(k as isize) as u8;
-                            *external_char.offset((2 as i32 * l + 1 as i32) as isize) =
-                                (*internal_short.offset(k as isize) as i32 >> 8 as i32) as u8;
+                            *external_char.offset((2 * l + 1) as isize) =
+                                (*internal_short.offset(k as isize) as i32 >> 8) as u8;
                             l += 1;
                             j += 1;
                         }

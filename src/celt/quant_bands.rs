@@ -12,7 +12,7 @@ pub mod arch_h {
 }
 
 pub mod stack_alloc_h {
-    pub const ALLOC_NONE: i32 = 1 as i32;
+    pub const ALLOC_NONE: i32 = 1;
 }
 pub use self::arch_h::{celt_ener, opus_val16, opus_val32};
 pub use self::stack_alloc_h::ALLOC_NONE;
@@ -46,381 +46,69 @@ pub static eMeans: [opus_val16; 25] = [
     3.750000f32,
 ];
 static mut pred_coef: [opus_val16; 4] = [
-    (29440 as i32 as f64 / 32768.0f64) as opus_val16,
-    (26112 as i32 as f64 / 32768.0f64) as opus_val16,
-    (21248 as i32 as f64 / 32768.0f64) as opus_val16,
-    (16384 as i32 as f64 / 32768.0f64) as opus_val16,
+    (29440 as f64 / 32768.0f64) as opus_val16,
+    (26112 as f64 / 32768.0f64) as opus_val16,
+    (21248 as f64 / 32768.0f64) as opus_val16,
+    (16384 as f64 / 32768.0f64) as opus_val16,
 ];
 static mut beta_coef: [opus_val16; 4] = [
-    (30147 as i32 as f64 / 32768.0f64) as opus_val16,
-    (22282 as i32 as f64 / 32768.0f64) as opus_val16,
-    (12124 as i32 as f64 / 32768.0f64) as opus_val16,
-    (6554 as i32 as f64 / 32768.0f64) as opus_val16,
+    (30147 as f64 / 32768.0f64) as opus_val16,
+    (22282 as f64 / 32768.0f64) as opus_val16,
+    (12124 as f64 / 32768.0f64) as opus_val16,
+    (6554 as f64 / 32768.0f64) as opus_val16,
 ];
-static mut beta_intra: opus_val16 = (4915 as i32 as f64 / 32768.0f64) as opus_val16;
+static mut beta_intra: opus_val16 = (4915 as f64 / 32768.0f64) as opus_val16;
 static mut e_prob_model: [[[u8; 42]; 2]; 4] = [
     [
         [
-            72 as i32 as u8,
-            127 as i32 as u8,
-            65 as i32 as u8,
-            129 as i32 as u8,
-            66 as i32 as u8,
-            128 as i32 as u8,
-            65 as i32 as u8,
-            128 as i32 as u8,
-            64 as i32 as u8,
-            128 as i32 as u8,
-            62 as i32 as u8,
-            128 as i32 as u8,
-            64 as i32 as u8,
-            128 as i32 as u8,
-            64 as i32 as u8,
-            128 as i32 as u8,
-            92 as i32 as u8,
-            78 as i32 as u8,
-            92 as i32 as u8,
-            79 as i32 as u8,
-            92 as i32 as u8,
-            78 as i32 as u8,
-            90 as i32 as u8,
-            79 as i32 as u8,
-            116 as i32 as u8,
-            41 as i32 as u8,
-            115 as i32 as u8,
-            40 as i32 as u8,
-            114 as i32 as u8,
-            40 as i32 as u8,
-            132 as i32 as u8,
-            26 as i32 as u8,
-            132 as i32 as u8,
-            26 as i32 as u8,
-            145 as i32 as u8,
-            17 as i32 as u8,
-            161 as i32 as u8,
-            12 as i32 as u8,
-            176 as i32 as u8,
-            10 as i32 as u8,
-            177 as i32 as u8,
-            11 as i32 as u8,
+            72, 127, 65, 129, 66, 128, 65, 128, 64, 128, 62, 128, 64, 128, 64, 128, 92, 78, 92, 79,
+            92, 78, 90, 79, 116, 41, 115, 40, 114, 40, 132, 26, 132, 26, 145, 17, 161, 12, 176, 10,
+            177, 11,
         ],
         [
-            24 as i32 as u8,
-            179 as i32 as u8,
-            48 as i32 as u8,
-            138 as i32 as u8,
-            54 as i32 as u8,
-            135 as i32 as u8,
-            54 as i32 as u8,
-            132 as i32 as u8,
-            53 as i32 as u8,
-            134 as i32 as u8,
-            56 as i32 as u8,
-            133 as i32 as u8,
-            55 as i32 as u8,
-            132 as i32 as u8,
-            55 as i32 as u8,
-            132 as i32 as u8,
-            61 as i32 as u8,
-            114 as i32 as u8,
-            70 as i32 as u8,
-            96 as i32 as u8,
-            74 as i32 as u8,
-            88 as i32 as u8,
-            75 as i32 as u8,
-            88 as i32 as u8,
-            87 as i32 as u8,
-            74 as i32 as u8,
-            89 as i32 as u8,
-            66 as i32 as u8,
-            91 as i32 as u8,
-            67 as i32 as u8,
-            100 as i32 as u8,
-            59 as i32 as u8,
-            108 as i32 as u8,
-            50 as i32 as u8,
-            120 as i32 as u8,
-            40 as i32 as u8,
-            122 as i32 as u8,
-            37 as i32 as u8,
-            97 as i32 as u8,
-            43 as i32 as u8,
-            78 as i32 as u8,
-            50 as i32 as u8,
+            24, 179, 48, 138, 54, 135, 54, 132, 53, 134, 56, 133, 55, 132, 55, 132, 61, 114, 70,
+            96, 74, 88, 75, 88, 87, 74, 89, 66, 91, 67, 100, 59, 108, 50, 120, 40, 122, 37, 97, 43,
+            78, 50,
         ],
     ],
     [
         [
-            83 as i32 as u8,
-            78 as i32 as u8,
-            84 as i32 as u8,
-            81 as i32 as u8,
-            88 as i32 as u8,
-            75 as i32 as u8,
-            86 as i32 as u8,
-            74 as i32 as u8,
-            87 as i32 as u8,
-            71 as i32 as u8,
-            90 as i32 as u8,
-            73 as i32 as u8,
-            93 as i32 as u8,
-            74 as i32 as u8,
-            93 as i32 as u8,
-            74 as i32 as u8,
-            109 as i32 as u8,
-            40 as i32 as u8,
-            114 as i32 as u8,
-            36 as i32 as u8,
-            117 as i32 as u8,
-            34 as i32 as u8,
-            117 as i32 as u8,
-            34 as i32 as u8,
-            143 as i32 as u8,
-            17 as i32 as u8,
-            145 as i32 as u8,
-            18 as i32 as u8,
-            146 as i32 as u8,
-            19 as i32 as u8,
-            162 as i32 as u8,
-            12 as i32 as u8,
-            165 as i32 as u8,
-            10 as i32 as u8,
-            178 as i32 as u8,
-            7 as i32 as u8,
-            189 as i32 as u8,
-            6 as i32 as u8,
-            190 as i32 as u8,
-            8 as i32 as u8,
-            177 as i32 as u8,
-            9 as i32 as u8,
+            83, 78, 84, 81, 88, 75, 86, 74, 87, 71, 90, 73, 93, 74, 93, 74, 109, 40, 114, 36, 117,
+            34, 117, 34, 143, 17, 145, 18, 146, 19, 162, 12, 165, 10, 178, 7, 189, 6, 190, 8, 177,
+            9,
         ],
         [
-            23 as i32 as u8,
-            178 as i32 as u8,
-            54 as i32 as u8,
-            115 as i32 as u8,
-            63 as i32 as u8,
-            102 as i32 as u8,
-            66 as i32 as u8,
-            98 as i32 as u8,
-            69 as i32 as u8,
-            99 as i32 as u8,
-            74 as i32 as u8,
-            89 as i32 as u8,
-            71 as i32 as u8,
-            91 as i32 as u8,
-            73 as i32 as u8,
-            91 as i32 as u8,
-            78 as i32 as u8,
-            89 as i32 as u8,
-            86 as i32 as u8,
-            80 as i32 as u8,
-            92 as i32 as u8,
-            66 as i32 as u8,
-            93 as i32 as u8,
-            64 as i32 as u8,
-            102 as i32 as u8,
-            59 as i32 as u8,
-            103 as i32 as u8,
-            60 as i32 as u8,
-            104 as i32 as u8,
-            60 as i32 as u8,
-            117 as i32 as u8,
-            52 as i32 as u8,
-            123 as i32 as u8,
-            44 as i32 as u8,
-            138 as i32 as u8,
-            35 as i32 as u8,
-            133 as i32 as u8,
-            31 as i32 as u8,
-            97 as i32 as u8,
-            38 as i32 as u8,
-            77 as i32 as u8,
-            45 as i32 as u8,
+            23, 178, 54, 115, 63, 102, 66, 98, 69, 99, 74, 89, 71, 91, 73, 91, 78, 89, 86, 80, 92,
+            66, 93, 64, 102, 59, 103, 60, 104, 60, 117, 52, 123, 44, 138, 35, 133, 31, 97, 38, 77,
+            45,
         ],
     ],
     [
         [
-            61 as i32 as u8,
-            90 as i32 as u8,
-            93 as i32 as u8,
-            60 as i32 as u8,
-            105 as i32 as u8,
-            42 as i32 as u8,
-            107 as i32 as u8,
-            41 as i32 as u8,
-            110 as i32 as u8,
-            45 as i32 as u8,
-            116 as i32 as u8,
-            38 as i32 as u8,
-            113 as i32 as u8,
-            38 as i32 as u8,
-            112 as i32 as u8,
-            38 as i32 as u8,
-            124 as i32 as u8,
-            26 as i32 as u8,
-            132 as i32 as u8,
-            27 as i32 as u8,
-            136 as i32 as u8,
-            19 as i32 as u8,
-            140 as i32 as u8,
-            20 as i32 as u8,
-            155 as i32 as u8,
-            14 as i32 as u8,
-            159 as i32 as u8,
-            16 as i32 as u8,
-            158 as i32 as u8,
-            18 as i32 as u8,
-            170 as i32 as u8,
-            13 as i32 as u8,
-            177 as i32 as u8,
-            10 as i32 as u8,
-            187 as i32 as u8,
-            8 as i32 as u8,
-            192 as i32 as u8,
-            6 as i32 as u8,
-            175 as i32 as u8,
-            9 as i32 as u8,
-            159 as i32 as u8,
-            10 as i32 as u8,
+            61, 90, 93, 60, 105, 42, 107, 41, 110, 45, 116, 38, 113, 38, 112, 38, 124, 26, 132, 27,
+            136, 19, 140, 20, 155, 14, 159, 16, 158, 18, 170, 13, 177, 10, 187, 8, 192, 6, 175, 9,
+            159, 10,
         ],
         [
-            21 as i32 as u8,
-            178 as i32 as u8,
-            59 as i32 as u8,
-            110 as i32 as u8,
-            71 as i32 as u8,
-            86 as i32 as u8,
-            75 as i32 as u8,
-            85 as i32 as u8,
-            84 as i32 as u8,
-            83 as i32 as u8,
-            91 as i32 as u8,
-            66 as i32 as u8,
-            88 as i32 as u8,
-            73 as i32 as u8,
-            87 as i32 as u8,
-            72 as i32 as u8,
-            92 as i32 as u8,
-            75 as i32 as u8,
-            98 as i32 as u8,
-            72 as i32 as u8,
-            105 as i32 as u8,
-            58 as i32 as u8,
-            107 as i32 as u8,
-            54 as i32 as u8,
-            115 as i32 as u8,
-            52 as i32 as u8,
-            114 as i32 as u8,
-            55 as i32 as u8,
-            112 as i32 as u8,
-            56 as i32 as u8,
-            129 as i32 as u8,
-            51 as i32 as u8,
-            132 as i32 as u8,
-            40 as i32 as u8,
-            150 as i32 as u8,
-            33 as i32 as u8,
-            140 as i32 as u8,
-            29 as i32 as u8,
-            98 as i32 as u8,
-            35 as i32 as u8,
-            77 as i32 as u8,
-            42 as i32 as u8,
+            21, 178, 59, 110, 71, 86, 75, 85, 84, 83, 91, 66, 88, 73, 87, 72, 92, 75, 98, 72, 105,
+            58, 107, 54, 115, 52, 114, 55, 112, 56, 129, 51, 132, 40, 150, 33, 140, 29, 98, 35, 77,
+            42,
         ],
     ],
     [
         [
-            42 as i32 as u8,
-            121 as i32 as u8,
-            96 as i32 as u8,
-            66 as i32 as u8,
-            108 as i32 as u8,
-            43 as i32 as u8,
-            111 as i32 as u8,
-            40 as i32 as u8,
-            117 as i32 as u8,
-            44 as i32 as u8,
-            123 as i32 as u8,
-            32 as i32 as u8,
-            120 as i32 as u8,
-            36 as i32 as u8,
-            119 as i32 as u8,
-            33 as i32 as u8,
-            127 as i32 as u8,
-            33 as i32 as u8,
-            134 as i32 as u8,
-            34 as i32 as u8,
-            139 as i32 as u8,
-            21 as i32 as u8,
-            147 as i32 as u8,
-            23 as i32 as u8,
-            152 as i32 as u8,
-            20 as i32 as u8,
-            158 as i32 as u8,
-            25 as i32 as u8,
-            154 as i32 as u8,
-            26 as i32 as u8,
-            166 as i32 as u8,
-            21 as i32 as u8,
-            173 as i32 as u8,
-            16 as i32 as u8,
-            184 as i32 as u8,
-            13 as i32 as u8,
-            184 as i32 as u8,
-            10 as i32 as u8,
-            150 as i32 as u8,
-            13 as i32 as u8,
-            139 as i32 as u8,
-            15 as i32 as u8,
+            42, 121, 96, 66, 108, 43, 111, 40, 117, 44, 123, 32, 120, 36, 119, 33, 127, 33, 134,
+            34, 139, 21, 147, 23, 152, 20, 158, 25, 154, 26, 166, 21, 173, 16, 184, 13, 184, 10,
+            150, 13, 139, 15,
         ],
         [
-            22 as i32 as u8,
-            178 as i32 as u8,
-            63 as i32 as u8,
-            114 as i32 as u8,
-            74 as i32 as u8,
-            82 as i32 as u8,
-            84 as i32 as u8,
-            83 as i32 as u8,
-            92 as i32 as u8,
-            82 as i32 as u8,
-            103 as i32 as u8,
-            62 as i32 as u8,
-            96 as i32 as u8,
-            72 as i32 as u8,
-            96 as i32 as u8,
-            67 as i32 as u8,
-            101 as i32 as u8,
-            73 as i32 as u8,
-            107 as i32 as u8,
-            72 as i32 as u8,
-            113 as i32 as u8,
-            55 as i32 as u8,
-            118 as i32 as u8,
-            52 as i32 as u8,
-            125 as i32 as u8,
-            52 as i32 as u8,
-            118 as i32 as u8,
-            52 as i32 as u8,
-            117 as i32 as u8,
-            55 as i32 as u8,
-            135 as i32 as u8,
-            49 as i32 as u8,
-            137 as i32 as u8,
-            39 as i32 as u8,
-            157 as i32 as u8,
-            32 as i32 as u8,
-            145 as i32 as u8,
-            29 as i32 as u8,
-            97 as i32 as u8,
-            33 as i32 as u8,
-            77 as i32 as u8,
-            40 as i32 as u8,
+            22, 178, 63, 114, 74, 82, 84, 83, 92, 82, 103, 62, 96, 72, 96, 67, 101, 73, 107, 72,
+            113, 55, 118, 52, 125, 52, 118, 52, 117, 55, 135, 49, 137, 39, 157, 32, 145, 29, 97,
+            33, 77, 40,
         ],
     ],
 ];
-static mut small_energy_icdf: [u8; 3] = [2 as i32 as u8, 1 as i32 as u8, 0 as i32 as u8];
+static mut small_energy_icdf: [u8; 3] = [2, 1, 0];
 unsafe fn loss_distortion(
     eBands: *const opus_val16,
     oldEBands: *mut opus_val16,
@@ -431,8 +119,8 @@ unsafe fn loss_distortion(
 ) -> opus_val32 {
     let mut c: i32 = 0;
     let mut i: i32 = 0;
-    let mut dist: opus_val32 = 0 as i32 as opus_val32;
-    c = 0 as i32;
+    let mut dist: opus_val32 = 0 as opus_val32;
+    c = 0;
     loop {
         i = start;
         while i < end {
@@ -446,8 +134,8 @@ unsafe fn loss_distortion(
             break;
         }
     }
-    return if (200 as i32 as f32) < dist {
-        200 as i32 as f32
+    return if (200 as f32) < dist {
+        200 as f32
     } else {
         dist
     };
@@ -471,15 +159,15 @@ unsafe fn quant_coarse_energy_impl(
 ) -> i32 {
     let mut i: i32 = 0;
     let mut c: i32 = 0;
-    let mut badness: i32 = 0 as i32;
-    let mut prev: [opus_val32; 2] = [0 as i32 as opus_val32, 0 as i32 as opus_val32];
+    let mut badness: i32 = 0;
+    let mut prev: [opus_val32; 2] = [0 as opus_val32, 0 as opus_val32];
     let mut coef: opus_val16 = 0.;
     let mut beta: opus_val16 = 0.;
-    if tell + 3 as i32 <= budget {
-        ec_enc_bit_logp(enc, intra, 3 as i32 as u32);
+    if tell + 3 <= budget {
+        ec_enc_bit_logp(enc, intra, 3);
     }
     if intra != 0 {
-        coef = 0 as i32 as opus_val16;
+        coef = 0 as opus_val16;
         beta = beta_intra;
     } else {
         beta = beta_coef[LM as usize];
@@ -487,7 +175,7 @@ unsafe fn quant_coarse_energy_impl(
     }
     i = start;
     while i < end {
-        c = 0 as i32;
+        c = 0;
         loop {
             let mut bits_left: i32 = 0;
             let mut qi: i32 = 0;
@@ -511,54 +199,54 @@ unsafe fn quant_coarse_energy_impl(
             } else {
                 *oldEBands.offset((i + c * (*m).nbEBands) as isize)
             }) - max_decay;
-            if qi < 0 as i32 && x < decay_bound {
+            if qi < 0 && x < decay_bound {
                 qi += (decay_bound - x) as i32;
-                if qi > 0 as i32 {
-                    qi = 0 as i32;
+                if qi > 0 {
+                    qi = 0;
                 }
             }
             qi0 = qi;
             tell = ec_tell(enc);
-            bits_left = budget - tell - 3 as i32 * C * (end - i);
-            if i != start && bits_left < 30 as i32 {
-                if bits_left < 24 as i32 {
-                    qi = if (1 as i32) < qi { 1 as i32 } else { qi };
+            bits_left = budget - tell - 3 * C * (end - i);
+            if i != start && bits_left < 30 {
+                if bits_left < 24 {
+                    qi = if (1) < qi { 1 } else { qi };
                 }
-                if bits_left < 16 as i32 {
-                    qi = if -(1 as i32) > qi { -(1 as i32) } else { qi };
+                if bits_left < 16 {
+                    qi = if -1 > qi { -1 } else { qi };
                 }
             }
-            if lfe != 0 && i >= 2 as i32 {
-                qi = if qi < 0 as i32 { qi } else { 0 as i32 };
+            if lfe != 0 && i >= 2 {
+                qi = if qi < 0 { qi } else { 0 };
             }
-            if budget - tell >= 15 as i32 {
+            if budget - tell >= 15 {
                 let mut pi: i32 = 0;
-                pi = 2 as i32 * (if i < 20 as i32 { i } else { 20 as i32 });
+                pi = 2 * (if i < 20 { i } else { 20 });
                 ec_laplace_encode(
                     enc,
                     &mut qi,
-                    ((*prob_model.offset(pi as isize) as i32) << 7 as i32) as u32,
-                    (*prob_model.offset((pi + 1 as i32) as isize) as i32) << 6 as i32,
+                    ((*prob_model.offset(pi as isize) as i32) << 7) as u32,
+                    (*prob_model.offset((pi + 1) as isize) as i32) << 6,
                 );
-            } else if budget - tell >= 2 as i32 {
-                qi = if -(1 as i32) > (if qi < 1 as i32 { qi } else { 1 as i32 }) {
-                    -(1 as i32)
-                } else if qi < 1 as i32 {
+            } else if budget - tell >= 2 {
+                qi = if -1 > (if qi < 1 { qi } else { 1 }) {
+                    -1
+                } else if qi < 1 {
                     qi
                 } else {
-                    1 as i32
+                    1
                 };
                 ec_enc_icdf(
                     enc,
-                    2 as i32 * qi ^ -((qi < 0 as i32) as i32),
+                    2 * qi ^ -((qi < 0) as i32),
                     small_energy_icdf.as_ptr(),
-                    2 as i32 as u32,
+                    2,
                 );
-            } else if budget - tell >= 1 as i32 {
-                qi = if (0 as i32) < qi { 0 as i32 } else { qi };
-                ec_enc_bit_logp(enc, -qi, 1 as i32 as u32);
+            } else if budget - tell >= 1 {
+                qi = if (0) < qi { 0 } else { qi };
+                ec_enc_bit_logp(enc, -qi, 1);
             } else {
-                qi = -(1 as i32);
+                qi = -1;
             }
             *error.offset((i + c * (*m).nbEBands) as isize) = f - qi as f32;
             badness += (qi0 - qi).abs();
@@ -573,7 +261,7 @@ unsafe fn quant_coarse_energy_impl(
         }
         i += 1;
     }
-    return if lfe != 0 { 0 as i32 } else { badness };
+    return if lfe != 0 { 0 } else { badness };
 }
 pub unsafe fn quant_coarse_energy(
     m: *const OpusCustomMode,
@@ -611,23 +299,22 @@ pub unsafe fn quant_coarse_energy(
         error: 0,
     };
     let mut tell: u32 = 0;
-    let mut badness1: i32 = 0 as i32;
+    let mut badness1: i32 = 0;
     let mut intra_bias: i32 = 0;
     let mut new_distortion: opus_val32 = 0.;
     intra = (force_intra != 0
         || two_pass == 0
-            && *delayedIntra > (2 as i32 * C * (end - start)) as f32
+            && *delayedIntra > (2 * C * (end - start)) as f32
             && nbAvailableBytes > (end - start) * C) as i32;
-    intra_bias =
-        (budget as f32 * *delayedIntra * loss_rate as f32 / (C * 512 as i32) as f32) as i32;
+    intra_bias = (budget as f32 * *delayedIntra * loss_rate as f32 / (C * 512) as f32) as i32;
     new_distortion = loss_distortion(eBands, oldEBands, start, effEnd, (*m).nbEBands, C);
     tell = ec_tell(enc) as u32;
-    if tell.wrapping_add(3 as i32 as u32) > budget {
-        intra = 0 as i32;
+    if tell.wrapping_add(3) > budget {
+        intra = 0;
         two_pass = intra;
     }
     max_decay = 16.0f32;
-    if end - start > 10 as i32 {
+    if end - start > 10 {
         max_decay = if max_decay < 0.125f32 * nbAvailableBytes as f32 {
             max_decay
         } else {
@@ -647,10 +334,7 @@ pub unsafe fn quant_coarse_energy(
         oldEBands as *const core::ffi::c_void,
         ((C * (*m).nbEBands) as u64)
             .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64)
-            .wrapping_add(
-                (0 as i32 as i64 * oldEBands_intra.as_mut_ptr().offset_from(oldEBands) as i64)
-                    as u64,
-            ),
+            .wrapping_add((0 * oldEBands_intra.as_mut_ptr().offset_from(oldEBands) as i64) as u64),
     );
     if two_pass != 0 || intra != 0 {
         badness1 = quant_coarse_energy_impl(
@@ -661,12 +345,12 @@ pub unsafe fn quant_coarse_energy(
             oldEBands_intra.as_mut_ptr(),
             budget as i32,
             tell as i32,
-            (e_prob_model[LM as usize][1 as i32 as usize]).as_ptr(),
+            (e_prob_model[LM as usize][1 as usize]).as_ptr(),
             error_intra.as_mut_ptr(),
             enc,
             C,
             LM,
-            1 as i32,
+            1,
             max_decay,
             lfe,
         );
@@ -698,7 +382,7 @@ pub unsafe fn quant_coarse_energy(
         nintra_bytes = ec_range_bytes(&mut enc_intra_state);
         intra_buf = (ec_get_buffer(&mut enc_intra_state)).offset(nstart_bytes as isize);
         save_bytes = nintra_bytes.wrapping_sub(nstart_bytes);
-        if save_bytes == 0 as i32 as u32 {
+        if save_bytes == 0 {
             save_bytes = ALLOC_NONE as u32;
         }
         let vla_1 = save_bytes as usize;
@@ -708,10 +392,7 @@ pub unsafe fn quant_coarse_energy(
             intra_buf as *const core::ffi::c_void,
             (nintra_bytes.wrapping_sub(nstart_bytes) as u64)
                 .wrapping_mul(::core::mem::size_of::<u8>() as u64)
-                .wrapping_add(
-                    (0 as i32 as i64 * intra_bits.as_mut_ptr().offset_from(intra_buf) as i64)
-                        as u64,
-                ),
+                .wrapping_add((0 * intra_bits.as_mut_ptr().offset_from(intra_buf) as i64) as u64),
         );
         *enc = enc_start_state;
         badness2 = quant_coarse_energy_impl(
@@ -727,7 +408,7 @@ pub unsafe fn quant_coarse_energy(
             enc,
             C,
             LM,
-            0 as i32,
+            0,
             max_decay,
             lfe,
         );
@@ -742,8 +423,7 @@ pub unsafe fn quant_coarse_energy(
                 (nintra_bytes.wrapping_sub(nstart_bytes) as u64)
                     .wrapping_mul(::core::mem::size_of::<u8>() as u64)
                     .wrapping_add(
-                        (0 as i32 as i64 * intra_buf.offset_from(intra_bits.as_mut_ptr()) as i64)
-                            as u64,
+                        (0 * intra_buf.offset_from(intra_bits.as_mut_ptr()) as i64) as u64,
                     ),
             );
             memcpy(
@@ -752,9 +432,7 @@ pub unsafe fn quant_coarse_energy(
                 ((C * (*m).nbEBands) as u64)
                     .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64)
                     .wrapping_add(
-                        (0 as i32 as i64
-                            * oldEBands.offset_from(oldEBands_intra.as_mut_ptr()) as i64)
-                            as u64,
+                        (0 * oldEBands.offset_from(oldEBands_intra.as_mut_ptr()) as i64) as u64,
                     ),
             );
             memcpy(
@@ -762,12 +440,9 @@ pub unsafe fn quant_coarse_energy(
                 error_intra.as_mut_ptr() as *const core::ffi::c_void,
                 ((C * (*m).nbEBands) as u64)
                     .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64)
-                    .wrapping_add(
-                        (0 as i32 as i64 * error.offset_from(error_intra.as_mut_ptr()) as i64)
-                            as u64,
-                    ),
+                    .wrapping_add((0 * error.offset_from(error_intra.as_mut_ptr()) as i64) as u64),
             );
-            intra = 1 as i32;
+            intra = 1;
         }
     } else {
         memcpy(
@@ -776,8 +451,7 @@ pub unsafe fn quant_coarse_energy(
             ((C * (*m).nbEBands) as u64)
                 .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64)
                 .wrapping_add(
-                    (0 as i32 as i64 * oldEBands.offset_from(oldEBands_intra.as_mut_ptr()) as i64)
-                        as u64,
+                    (0 * oldEBands.offset_from(oldEBands_intra.as_mut_ptr()) as i64) as u64,
                 ),
         );
         memcpy(
@@ -785,9 +459,7 @@ pub unsafe fn quant_coarse_energy(
             error_intra.as_mut_ptr() as *const core::ffi::c_void,
             ((C * (*m).nbEBands) as u64)
                 .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64)
-                .wrapping_add(
-                    (0 as i32 as i64 * error.offset_from(error_intra.as_mut_ptr()) as i64) as u64,
-                ),
+                .wrapping_add((0 * error.offset_from(error_intra.as_mut_ptr()) as i64) as u64),
         );
     }
     if intra != 0 {
@@ -811,25 +483,25 @@ pub unsafe fn quant_fine_energy(
     let mut c: i32 = 0;
     i = start;
     while i < end {
-        let frac: i16 = ((1 as i32) << *fine_quant.offset(i as isize)) as i16;
-        if !(*fine_quant.offset(i as isize) <= 0 as i32) {
-            c = 0 as i32;
+        let frac: i16 = ((1) << *fine_quant.offset(i as isize)) as i16;
+        if !(*fine_quant.offset(i as isize) <= 0) {
+            c = 0;
             loop {
                 let mut q2: i32 = 0;
                 let mut offset: opus_val16 = 0.;
                 q2 = ((*error.offset((i + c * (*m).nbEBands) as isize) + 0.5f32)
                     * frac as i32 as f32)
                     .floor() as i32;
-                if q2 > frac as i32 - 1 as i32 {
-                    q2 = frac as i32 - 1 as i32;
+                if q2 > frac as i32 - 1 {
+                    q2 = frac as i32 - 1;
                 }
-                if q2 < 0 as i32 {
-                    q2 = 0 as i32;
+                if q2 < 0 {
+                    q2 = 0;
                 }
                 ec_enc_bits(enc, q2 as u32, *fine_quant.offset(i as isize) as u32);
                 offset = (q2 as f32 + 0.5f32)
-                    * ((1 as i32) << 14 as i32 - *fine_quant.offset(i as isize)) as f32
-                    * (1.0f32 / 16384 as i32 as f32)
+                    * ((1) << 14 - *fine_quant.offset(i as isize)) as f32
+                    * (1.0f32 / 16384 as f32)
                     - 0.5f32;
                 let ref mut fresh0 = *oldEBands.offset((i + c * (*m).nbEBands) as isize);
                 *fresh0 += offset;
@@ -859,27 +531,26 @@ pub unsafe fn quant_energy_finalise(
     let mut i: i32 = 0;
     let mut prio: i32 = 0;
     let mut c: i32 = 0;
-    prio = 0 as i32;
-    while prio < 2 as i32 {
+    prio = 0;
+    while prio < 2 {
         i = start;
         while i < end && bits_left >= C {
             if !(*fine_quant.offset(i as isize) >= MAX_FINE_BITS
                 || *fine_priority.offset(i as isize) != prio)
             {
-                c = 0 as i32;
+                c = 0;
                 loop {
                     let mut q2: i32 = 0;
                     let mut offset: opus_val16 = 0.;
-                    q2 = if *error.offset((i + c * (*m).nbEBands) as isize) < 0 as i32 as f32 {
-                        0 as i32
+                    q2 = if *error.offset((i + c * (*m).nbEBands) as isize) < 0 as f32 {
+                        0
                     } else {
-                        1 as i32
+                        1
                     };
-                    ec_enc_bits(enc, q2 as u32, 1 as i32 as u32);
+                    ec_enc_bits(enc, q2 as u32, 1);
                     offset = (q2 as f32 - 0.5f32)
-                        * ((1 as i32) << 14 as i32 - *fine_quant.offset(i as isize) - 1 as i32)
-                            as f32
-                        * (1.0f32 / 16384 as i32 as f32);
+                        * ((1) << 14 - *fine_quant.offset(i as isize) - 1) as f32
+                        * (1.0f32 / 16384 as f32);
                     let ref mut fresh2 = *oldEBands.offset((i + c * (*m).nbEBands) as isize);
                     *fresh2 += offset;
                     let ref mut fresh3 = *error.offset((i + c * (*m).nbEBands) as isize);
@@ -909,42 +580,42 @@ pub unsafe fn unquant_coarse_energy(
     let prob_model: *const u8 = (e_prob_model[LM as usize][intra as usize]).as_ptr();
     let mut i: i32 = 0;
     let mut c: i32 = 0;
-    let mut prev: [opus_val32; 2] = [0 as i32 as opus_val32, 0 as i32 as opus_val32];
+    let mut prev: [opus_val32; 2] = [0 as opus_val32, 0 as opus_val32];
     let mut coef: opus_val16 = 0.;
     let mut beta: opus_val16 = 0.;
     let mut budget: i32 = 0;
     let mut tell: i32 = 0;
     if intra != 0 {
-        coef = 0 as i32 as opus_val16;
+        coef = 0 as opus_val16;
         beta = beta_intra;
     } else {
         beta = beta_coef[LM as usize];
         coef = pred_coef[LM as usize];
     }
-    budget = ((*dec).storage).wrapping_mul(8 as i32 as u32) as i32;
+    budget = ((*dec).storage).wrapping_mul(8) as i32;
     i = start;
     while i < end {
-        c = 0 as i32;
+        c = 0;
         loop {
             let mut qi: i32 = 0;
             let mut q: opus_val32 = 0.;
             let mut tmp: opus_val32 = 0.;
             tell = ec_tell(dec);
-            if budget - tell >= 15 as i32 {
+            if budget - tell >= 15 {
                 let mut pi: i32 = 0;
-                pi = 2 as i32 * (if i < 20 as i32 { i } else { 20 as i32 });
+                pi = 2 * (if i < 20 { i } else { 20 });
                 qi = ec_laplace_decode(
                     dec,
-                    ((*prob_model.offset(pi as isize) as i32) << 7 as i32) as u32,
-                    (*prob_model.offset((pi + 1 as i32) as isize) as i32) << 6 as i32,
+                    ((*prob_model.offset(pi as isize) as i32) << 7) as u32,
+                    (*prob_model.offset((pi + 1) as isize) as i32) << 6,
                 );
-            } else if budget - tell >= 2 as i32 {
-                qi = ec_dec_icdf(dec, small_energy_icdf.as_ptr(), 2 as i32 as u32);
-                qi = qi >> 1 as i32 ^ -(qi & 1 as i32);
-            } else if budget - tell >= 1 as i32 {
-                qi = -ec_dec_bit_logp(dec, 1 as i32 as u32);
+            } else if budget - tell >= 2 {
+                qi = ec_dec_icdf(dec, small_energy_icdf.as_ptr(), 2);
+                qi = qi >> 1 ^ -(qi & 1);
+            } else if budget - tell >= 1 {
+                qi = -ec_dec_bit_logp(dec, 1);
             } else {
-                qi = -(1 as i32);
+                qi = -1;
             }
             q = qi as opus_val32;
             *oldEBands.offset((i + c * (*m).nbEBands) as isize) =
@@ -977,15 +648,15 @@ pub unsafe fn unquant_fine_energy(
     let mut c: i32 = 0;
     i = start;
     while i < end {
-        if !(*fine_quant.offset(i as isize) <= 0 as i32) {
-            c = 0 as i32;
+        if !(*fine_quant.offset(i as isize) <= 0) {
+            c = 0;
             loop {
                 let mut q2: i32 = 0;
                 let mut offset: opus_val16 = 0.;
                 q2 = ec_dec_bits(dec, *fine_quant.offset(i as isize) as u32) as i32;
                 offset = (q2 as f32 + 0.5f32)
-                    * ((1 as i32) << 14 as i32 - *fine_quant.offset(i as isize)) as f32
-                    * (1.0f32 / 16384 as i32 as f32)
+                    * ((1) << 14 - *fine_quant.offset(i as isize)) as f32
+                    * (1.0f32 / 16384 as f32)
                     - 0.5f32;
                 let ref mut fresh4 = *oldEBands.offset((i + c * (*m).nbEBands) as isize);
                 *fresh4 += offset;
@@ -1012,22 +683,21 @@ pub unsafe fn unquant_energy_finalise(
     let mut i: i32 = 0;
     let mut prio: i32 = 0;
     let mut c: i32 = 0;
-    prio = 0 as i32;
-    while prio < 2 as i32 {
+    prio = 0;
+    while prio < 2 {
         i = start;
         while i < end && bits_left >= C {
             if !(*fine_quant.offset(i as isize) >= MAX_FINE_BITS
                 || *fine_priority.offset(i as isize) != prio)
             {
-                c = 0 as i32;
+                c = 0;
                 loop {
                     let mut q2: i32 = 0;
                     let mut offset: opus_val16 = 0.;
-                    q2 = ec_dec_bits(dec, 1 as i32 as u32) as i32;
+                    q2 = ec_dec_bits(dec, 1) as i32;
                     offset = (q2 as f32 - 0.5f32)
-                        * ((1 as i32) << 14 as i32 - *fine_quant.offset(i as isize) - 1 as i32)
-                            as f32
-                        * (1.0f32 / 16384 as i32 as f32);
+                        * ((1) << 14 - *fine_quant.offset(i as isize) - 1) as f32
+                        * (1.0f32 / 16384 as f32);
                     let ref mut fresh5 = *oldEBands.offset((i + c * (*m).nbEBands) as isize);
                     *fresh5 += offset;
                     bits_left -= 1;
@@ -1052,9 +722,9 @@ pub unsafe fn amp2Log2(
 ) {
     let mut c: i32 = 0;
     let mut i: i32 = 0;
-    c = 0 as i32;
+    c = 0;
     loop {
-        i = 0 as i32;
+        i = 0;
         while i < effEnd {
             *bandLogE.offset((i + c * (*m).nbEBands) as isize) = (std::f32::consts::LOG2_E
                 * (*bandE.offset((i + c * (*m).nbEBands) as isize)).ln())

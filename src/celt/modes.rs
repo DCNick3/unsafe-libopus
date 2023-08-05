@@ -31,7 +31,7 @@ pub mod arch_h {
     pub type opus_val16 = f32;
 }
 pub mod stddef_h {
-    pub const NULL: i32 = 0 as i32;
+    pub const NULL: i32 = 0;
 }
 
 pub mod static_modes_float_h;

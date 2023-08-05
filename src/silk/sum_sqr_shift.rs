@@ -6,33 +6,31 @@ pub unsafe fn silk_sum_sqr_shift(energy: *mut i32, shift: *mut i32, x: *const i1
     let mut shft: i32 = 0;
     let mut nrg_tmp: u32 = 0;
     let mut nrg: i32 = 0;
-    shft = 31 as i32 - silk_CLZ32(len);
+    shft = 31 - silk_CLZ32(len);
     nrg = len;
-    i = 0 as i32;
-    while i < len - 1 as i32 {
+    i = 0;
+    while i < len - 1 {
         nrg_tmp = (*x.offset(i as isize) as i32 * *x.offset(i as isize) as i32) as u32;
         nrg_tmp = nrg_tmp.wrapping_add(
-            (*x.offset((i + 1 as i32) as isize) as i32 * *x.offset((i + 1 as i32) as isize) as i32)
-                as u32,
+            (*x.offset((i + 1) as isize) as i32 * *x.offset((i + 1) as isize) as i32) as u32,
         ) as i32 as u32;
         nrg = (nrg as u32).wrapping_add(nrg_tmp >> shft) as i32;
-        i += 2 as i32;
+        i += 2;
     }
     if i < len {
         nrg_tmp = (*x.offset(i as isize) as i32 * *x.offset(i as isize) as i32) as u32;
         nrg = (nrg as u32).wrapping_add(nrg_tmp >> shft) as i32;
     }
-    shft = silk_max_32(0 as i32, shft + 3 as i32 - silk_CLZ32(nrg));
-    nrg = 0 as i32;
-    i = 0 as i32;
-    while i < len - 1 as i32 {
+    shft = silk_max_32(0, shft + 3 - silk_CLZ32(nrg));
+    nrg = 0;
+    i = 0;
+    while i < len - 1 {
         nrg_tmp = (*x.offset(i as isize) as i32 * *x.offset(i as isize) as i32) as u32;
         nrg_tmp = nrg_tmp.wrapping_add(
-            (*x.offset((i + 1 as i32) as isize) as i32 * *x.offset((i + 1 as i32) as isize) as i32)
-                as u32,
+            (*x.offset((i + 1) as isize) as i32 * *x.offset((i + 1) as isize) as i32) as u32,
         ) as i32 as u32;
         nrg = (nrg as u32).wrapping_add(nrg_tmp >> shft) as i32;
-        i += 2 as i32;
+        i += 2;
     }
     if i < len {
         nrg_tmp = (*x.offset(i as isize) as i32 * *x.offset(i as isize) as i32) as u32;

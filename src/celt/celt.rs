@@ -30,26 +30,26 @@ pub const CELT_SET_END_BAND_REQUEST: i32 = 10012;
 pub const CELT_SET_PREDICTION_REQUEST: i32 = 10002;
 pub const CELT_GET_AND_CLEAR_ERROR_REQUEST: i32 = 10007;
 
-pub const COMBFILTER_MAXPERIOD: i32 = 1024 as i32;
-pub const COMBFILTER_MINPERIOD: i32 = 16 as i32;
+pub const COMBFILTER_MAXPERIOD: i32 = 1024;
+pub const COMBFILTER_MINPERIOD: i32 = 16;
 
 pub unsafe fn resampling_factor(rate: i32) -> i32 {
     let mut ret: i32 = 0;
     match rate {
         48000 => {
-            ret = 1 as i32;
+            ret = 1;
         }
         24000 => {
-            ret = 2 as i32;
+            ret = 2;
         }
         16000 => {
-            ret = 3 as i32;
+            ret = 3;
         }
         12000 => {
-            ret = 4 as i32;
+            ret = 4;
         }
         8000 => {
-            ret = 6 as i32;
+            ret = 6;
         }
         _ => panic!("libopus: assert(0) called"),
     }
@@ -70,13 +70,13 @@ unsafe fn comb_filter_const_c(
     let mut x3: opus_val32 = 0.;
     let mut x4: opus_val32 = 0.;
     let mut i: i32 = 0;
-    x4 = *x.offset((-T - 2 as i32) as isize);
-    x3 = *x.offset((-T - 1 as i32) as isize);
+    x4 = *x.offset((-T - 2) as isize);
+    x3 = *x.offset((-T - 1) as isize);
     x2 = *x.offset(-T as isize);
-    x1 = *x.offset((-T + 1 as i32) as isize);
-    i = 0 as i32;
+    x1 = *x.offset((-T + 1) as isize);
+    i = 0;
     while i < N {
-        x0 = *x.offset((i - T + 2 as i32) as isize);
+        x0 = *x.offset((i - T + 2) as isize);
         *y.offset(i as isize) =
             *x.offset(i as isize) + g10 * x2 + g11 * (x1 + x3) + g12 * (x0 + x4);
         *y.offset(i as isize) = *y.offset(i as isize);
@@ -118,48 +118,46 @@ pub unsafe fn comb_filter(
         [0.4638671875f32, 0.2680664062f32, 0.0f32],
         [0.7998046875f32, 0.1000976562f32, 0.0f32],
     ];
-    if g0 == 0 as i32 as f32 && g1 == 0 as i32 as f32 {
+    if g0 == 0 as f32 && g1 == 0 as f32 {
         if x != y {
             memmove(
                 y as *mut core::ffi::c_void,
                 x as *const core::ffi::c_void,
                 (N as u64)
                     .wrapping_mul(::core::mem::size_of::<opus_val32>() as u64)
-                    .wrapping_add((0 as i32 as i64 * y.offset_from(x) as i64) as u64),
+                    .wrapping_add((0 * y.offset_from(x) as i64) as u64),
             );
         }
         return;
     }
-    T0 = if T0 > 15 as i32 { T0 } else { 15 as i32 };
-    T1 = if T1 > 15 as i32 { T1 } else { 15 as i32 };
-    g00 = g0 * gains[tapset0 as usize][0 as i32 as usize];
-    g01 = g0 * gains[tapset0 as usize][1 as i32 as usize];
-    g02 = g0 * gains[tapset0 as usize][2 as i32 as usize];
-    g10 = g1 * gains[tapset1 as usize][0 as i32 as usize];
-    g11 = g1 * gains[tapset1 as usize][1 as i32 as usize];
-    g12 = g1 * gains[tapset1 as usize][2 as i32 as usize];
-    x1 = *x.offset((-T1 + 1 as i32) as isize);
+    T0 = if T0 > 15 { T0 } else { 15 };
+    T1 = if T1 > 15 { T1 } else { 15 };
+    g00 = g0 * gains[tapset0 as usize][0 as usize];
+    g01 = g0 * gains[tapset0 as usize][1 as usize];
+    g02 = g0 * gains[tapset0 as usize][2 as usize];
+    g10 = g1 * gains[tapset1 as usize][0 as usize];
+    g11 = g1 * gains[tapset1 as usize][1 as usize];
+    g12 = g1 * gains[tapset1 as usize][2 as usize];
+    x1 = *x.offset((-T1 + 1) as isize);
     x2 = *x.offset(-T1 as isize);
-    x3 = *x.offset((-T1 - 1 as i32) as isize);
-    x4 = *x.offset((-T1 - 2 as i32) as isize);
+    x3 = *x.offset((-T1 - 1) as isize);
+    x4 = *x.offset((-T1 - 2) as isize);
     if g0 == g1 && T0 == T1 && tapset0 == tapset1 {
-        overlap = 0 as i32;
+        overlap = 0;
     }
-    i = 0 as i32;
+    i = 0;
     while i < overlap {
         let mut f: opus_val16 = 0.;
-        x0 = *x.offset((i - T1 + 2 as i32) as isize);
+        x0 = *x.offset((i - T1 + 2) as isize);
         f = *window.offset(i as isize) * *window.offset(i as isize);
         *y.offset(i as isize) = *x.offset(i as isize)
             + (1.0f32 - f) * g00 * *x.offset((i - T0) as isize)
             + (1.0f32 - f)
                 * g01
-                * (*x.offset((i - T0 + 1 as i32) as isize)
-                    + *x.offset((i - T0 - 1 as i32) as isize))
+                * (*x.offset((i - T0 + 1) as isize) + *x.offset((i - T0 - 1) as isize))
             + (1.0f32 - f)
                 * g02
-                * (*x.offset((i - T0 + 2 as i32) as isize)
-                    + *x.offset((i - T0 - 2 as i32) as isize))
+                * (*x.offset((i - T0 + 2) as isize) + *x.offset((i - T0 - 2) as isize))
             + f * g10 * x2
             + f * g11 * (x1 + x3)
             + f * g12 * (x0 + x4);
@@ -170,7 +168,7 @@ pub unsafe fn comb_filter(
         x1 = x0;
         i += 1;
     }
-    if g1 == 0 as i32 as f32 {
+    if g1 == 0 as f32 {
         if x != y {
             memmove(
                 y.offset(overlap as isize) as *mut core::ffi::c_void,
@@ -178,10 +176,10 @@ pub unsafe fn comb_filter(
                 ((N - overlap) as u64)
                     .wrapping_mul(::core::mem::size_of::<opus_val32>() as u64)
                     .wrapping_add(
-                        (0 as i32 as i64
-                            * y.offset(overlap as isize)
-                                .offset_from(x.offset(overlap as isize))
-                                as i64) as u64,
+                        (0 * y
+                            .offset(overlap as isize)
+                            .offset_from(x.offset(overlap as isize))
+                            as i64) as u64,
                     ),
             );
         }
@@ -199,19 +197,18 @@ pub unsafe fn comb_filter(
 }
 pub unsafe fn init_caps(m: *const OpusCustomMode, cap: *mut i32, LM: i32, C: i32) {
     let mut i: i32 = 0;
-    i = 0 as i32;
+    i = 0;
     while i < (*m).nbEBands {
         let mut N: i32 = 0;
-        N = (*((*m).eBands).offset((i + 1 as i32) as isize) as i32
+        N = (*((*m).eBands).offset((i + 1) as isize) as i32
             - *((*m).eBands).offset(i as isize) as i32)
             << LM;
-        *cap.offset(i as isize) = (*((*m).cache.caps)
-            .offset(((*m).nbEBands * (2 as i32 * LM + C - 1 as i32) + i) as isize)
-            as i32
-            + 64 as i32)
-            * C
-            * N
-            >> 2 as i32;
+        *cap.offset(i as isize) =
+            (*((*m).cache.caps).offset(((*m).nbEBands * (2 * LM + C - 1) + i) as isize) as i32
+                + 64)
+                * C
+                * N
+                >> 2;
         i += 1;
     }
 }
@@ -226,7 +223,7 @@ pub unsafe fn opus_strerror(error: i32) -> *const i8 {
         b"invalid state\0" as *const u8 as *const i8,
         b"memory allocation failed\0" as *const u8 as *const i8,
     ];
-    if error > 0 as i32 || error < -(7 as i32) {
+    if error > 0 || error < -(7) {
         return b"unknown error\0" as *const u8 as *const i8;
     } else {
         return error_strings[-error as usize];

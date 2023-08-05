@@ -6,14 +6,14 @@ pub unsafe fn silk_interpolate(
     d: i32,
 ) {
     let mut i: i32 = 0;
-    assert!(ifact_Q2 >= 0 as i32);
-    assert!(ifact_Q2 <= 4 as i32);
-    i = 0 as i32;
+    assert!(ifact_Q2 >= 0);
+    assert!(ifact_Q2 <= 4);
+    i = 0;
     while i < d {
         *xi.offset(i as isize) = (*x0.offset(i as isize) as i32
             + ((*x1.offset(i as isize) as i32 - *x0.offset(i as isize) as i32) as i16 as i32
                 * ifact_Q2 as i16 as i32
-                >> 2 as i32)) as i16;
+                >> 2)) as i16;
         i += 1;
     }
 }

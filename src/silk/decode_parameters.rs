@@ -33,33 +33,33 @@ pub unsafe fn silk_decode_parameters(
         (*psDec).psNLSF_CB,
     );
     silk_NLSF2A(
-        ((*psDecCtrl).PredCoef_Q12[1 as i32 as usize]).as_mut_ptr(),
+        ((*psDecCtrl).PredCoef_Q12[1 as usize]).as_mut_ptr(),
         pNLSF_Q15.as_mut_ptr(),
         (*psDec).LPC_order,
         (*psDec).arch,
     );
-    if (*psDec).first_frame_after_reset == 1 as i32 {
-        (*psDec).indices.NLSFInterpCoef_Q2 = 4 as i32 as i8;
+    if (*psDec).first_frame_after_reset == 1 {
+        (*psDec).indices.NLSFInterpCoef_Q2 = 4;
     }
-    if ((*psDec).indices.NLSFInterpCoef_Q2 as i32) < 4 as i32 {
-        i = 0 as i32;
+    if ((*psDec).indices.NLSFInterpCoef_Q2 as i32) < 4 {
+        i = 0;
         while i < (*psDec).LPC_order {
             pNLSF0_Q15[i as usize] = ((*psDec).prevNLSF_Q15[i as usize] as i32
                 + ((*psDec).indices.NLSFInterpCoef_Q2 as i32
                     * (pNLSF_Q15[i as usize] as i32 - (*psDec).prevNLSF_Q15[i as usize] as i32)
-                    >> 2 as i32)) as i16;
+                    >> 2)) as i16;
             i += 1;
         }
         silk_NLSF2A(
-            ((*psDecCtrl).PredCoef_Q12[0 as i32 as usize]).as_mut_ptr(),
+            ((*psDecCtrl).PredCoef_Q12[0 as usize]).as_mut_ptr(),
             pNLSF0_Q15.as_mut_ptr(),
             (*psDec).LPC_order,
             (*psDec).arch,
         );
     } else {
         memcpy(
-            ((*psDecCtrl).PredCoef_Q12[0 as i32 as usize]).as_mut_ptr() as *mut core::ffi::c_void,
-            ((*psDecCtrl).PredCoef_Q12[1 as i32 as usize]).as_mut_ptr() as *const core::ffi::c_void,
+            ((*psDecCtrl).PredCoef_Q12[0 as usize]).as_mut_ptr() as *mut core::ffi::c_void,
+            ((*psDecCtrl).PredCoef_Q12[1 as usize]).as_mut_ptr() as *const core::ffi::c_void,
             ((*psDec).LPC_order as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
         );
     }
@@ -70,12 +70,12 @@ pub unsafe fn silk_decode_parameters(
     );
     if (*psDec).lossCnt != 0 {
         silk_bwexpander(
-            ((*psDecCtrl).PredCoef_Q12[0 as i32 as usize]).as_mut_ptr(),
+            ((*psDecCtrl).PredCoef_Q12[0 as usize]).as_mut_ptr(),
             (*psDec).LPC_order,
             BWE_AFTER_LOSS_Q16,
         );
         silk_bwexpander(
-            ((*psDecCtrl).PredCoef_Q12[1 as i32 as usize]).as_mut_ptr(),
+            ((*psDecCtrl).PredCoef_Q12[1 as usize]).as_mut_ptr(),
             (*psDec).LPC_order,
             BWE_AFTER_LOSS_Q16,
         );
@@ -89,14 +89,13 @@ pub unsafe fn silk_decode_parameters(
             (*psDec).nb_subfr,
         );
         cbk_ptr_Q7 = silk_LTP_vq_ptrs_Q7[(*psDec).indices.PERIndex as usize];
-        k = 0 as i32;
+        k = 0;
         while k < (*psDec).nb_subfr {
             Ix = (*psDec).indices.LTPIndex[k as usize] as i32;
-            i = 0 as i32;
+            i = 0;
             while i < LTP_ORDER {
                 (*psDecCtrl).LTPCoef_Q14[(k * LTP_ORDER + i) as usize] =
-                    ((*cbk_ptr_Q7.offset((Ix * 5 as i32 + i) as isize) as u32) << 7 as i32) as i32
-                        as i16;
+                    ((*cbk_ptr_Q7.offset((Ix * 5 + i) as isize) as u32) << 7) as i32 as i16;
                 i += 1;
             }
             k += 1;
@@ -106,16 +105,15 @@ pub unsafe fn silk_decode_parameters(
     } else {
         memset(
             ((*psDecCtrl).pitchL).as_mut_ptr() as *mut core::ffi::c_void,
-            0 as i32,
+            0,
             ((*psDec).nb_subfr as u64).wrapping_mul(::core::mem::size_of::<i32>() as u64),
         );
         memset(
             ((*psDecCtrl).LTPCoef_Q14).as_mut_ptr() as *mut core::ffi::c_void,
-            0 as i32,
-            ((5 as i32 * (*psDec).nb_subfr) as u64)
-                .wrapping_mul(::core::mem::size_of::<i16>() as u64),
+            0,
+            ((5 * (*psDec).nb_subfr) as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
         );
-        (*psDec).indices.PERIndex = 0 as i32 as i8;
-        (*psDecCtrl).LTP_scale_Q14 = 0 as i32;
+        (*psDec).indices.PERIndex = 0;
+        (*psDecCtrl).LTP_scale_Q14 = 0;
     };
 }

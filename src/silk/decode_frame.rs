@@ -20,7 +20,7 @@ pub unsafe fn silk_decode_frame(
 ) -> i32 {
     let mut L: i32 = 0;
     let mut mv_len: i32 = 0;
-    let ret: i32 = 0 as i32;
+    let ret: i32 = 0;
     L = (*psDec).frame_length;
     let mut psDecCtrl: [silk_decoder_control; 1] = [silk_decoder_control {
         pitchL: [0; 4],
@@ -29,13 +29,13 @@ pub unsafe fn silk_decode_frame(
         LTPCoef_Q14: [0; 20],
         LTP_scale_Q14: 0,
     }; 1];
-    (*psDecCtrl.as_mut_ptr()).LTP_scale_Q14 = 0 as i32;
-    assert!(L > 0 as i32 && L <= 5 as i32 * 4 as i32 * 16 as i32);
+    (*psDecCtrl.as_mut_ptr()).LTP_scale_Q14 = 0;
+    assert!(L > 0 && L <= 5 * 4 * 16);
     if lostFlag == FLAG_DECODE_NORMAL
         || lostFlag == FLAG_DECODE_LBRR
-            && (*psDec).LBRR_flags[(*psDec).nFramesDecoded as usize] == 1 as i32
+            && (*psDec).LBRR_flags[(*psDec).nFramesDecoded as usize] == 1
     {
-        let vla = (L + 16 as i32 - 1 as i32 & !(16 as i32 - 1 as i32)) as usize;
+        let vla = (L + 16 - 1 & !(16 - 1)) as usize;
         let mut pulses: Vec<i16> = ::std::vec::from_elem(0, vla);
         silk_decode_indices(
             psDec,
@@ -59,14 +59,14 @@ pub unsafe fn silk_decode_frame(
             pulses.as_mut_ptr() as *const i16,
             arch,
         );
-        silk_PLC(psDec, psDecCtrl.as_mut_ptr(), pOut, 0 as i32, arch);
-        (*psDec).lossCnt = 0 as i32;
+        silk_PLC(psDec, psDecCtrl.as_mut_ptr(), pOut, 0, arch);
+        (*psDec).lossCnt = 0;
         (*psDec).prevSignalType = (*psDec).indices.signalType as i32;
-        assert!((*psDec).prevSignalType >= 0 as i32 && (*psDec).prevSignalType <= 2 as i32);
-        (*psDec).first_frame_after_reset = 0 as i32;
+        assert!((*psDec).prevSignalType >= 0 && (*psDec).prevSignalType <= 2);
+        (*psDec).first_frame_after_reset = 0;
     } else {
         (*psDec).indices.signalType = (*psDec).prevSignalType as i8;
-        silk_PLC(psDec, psDecCtrl.as_mut_ptr(), pOut, 1 as i32, arch);
+        silk_PLC(psDec, psDecCtrl.as_mut_ptr(), pOut, 1, arch);
     }
     assert!((*psDec).ltp_mem_length >= (*psDec).frame_length);
     mv_len = (*psDec).ltp_mem_length - (*psDec).frame_length;
@@ -85,7 +85,7 @@ pub unsafe fn silk_decode_frame(
     );
     silk_CNG(psDec, psDecCtrl.as_mut_ptr(), pOut, L);
     silk_PLC_glue_frames(psDec, pOut, L);
-    (*psDec).lagPrev = (*psDecCtrl.as_mut_ptr()).pitchL[((*psDec).nb_subfr - 1 as i32) as usize];
+    (*psDec).lagPrev = (*psDecCtrl.as_mut_ptr()).pitchL[((*psDec).nb_subfr - 1) as usize];
     *pN = L;
     return ret;
 }

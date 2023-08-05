@@ -17,35 +17,35 @@ pub unsafe fn silk_decode_pitch(
     let mut max_lag: i32 = 0;
     let mut cbk_size: i32 = 0;
     let mut Lag_CB_ptr: *const i8 = 0 as *const i8;
-    if Fs_kHz == 8 as i32 {
+    if Fs_kHz == 8 {
         if nb_subfr == PE_MAX_NB_SUBFR {
-            Lag_CB_ptr = &*(*silk_CB_lags_stage2.as_ptr().offset(0 as i32 as isize))
+            Lag_CB_ptr = &*(*silk_CB_lags_stage2.as_ptr().offset(0 as isize))
                 .as_ptr()
-                .offset(0 as i32 as isize) as *const i8;
+                .offset(0 as isize) as *const i8;
             cbk_size = PE_NB_CBKS_STAGE2_EXT;
         } else {
-            assert!(nb_subfr == 4 as i32 >> 1 as i32);
-            Lag_CB_ptr = &*(*silk_CB_lags_stage2_10_ms.as_ptr().offset(0 as i32 as isize))
+            assert!(nb_subfr == 4 >> 1);
+            Lag_CB_ptr = &*(*silk_CB_lags_stage2_10_ms.as_ptr().offset(0 as isize))
                 .as_ptr()
-                .offset(0 as i32 as isize) as *const i8;
+                .offset(0 as isize) as *const i8;
             cbk_size = PE_NB_CBKS_STAGE2_10MS;
         }
     } else if nb_subfr == PE_MAX_NB_SUBFR {
-        Lag_CB_ptr = &*(*silk_CB_lags_stage3.as_ptr().offset(0 as i32 as isize))
+        Lag_CB_ptr = &*(*silk_CB_lags_stage3.as_ptr().offset(0 as isize))
             .as_ptr()
-            .offset(0 as i32 as isize) as *const i8;
+            .offset(0 as isize) as *const i8;
         cbk_size = PE_NB_CBKS_STAGE3_MAX;
     } else {
-        assert!(nb_subfr == 4 as i32 >> 1 as i32);
-        Lag_CB_ptr = &*(*silk_CB_lags_stage3_10_ms.as_ptr().offset(0 as i32 as isize))
+        assert!(nb_subfr == 4 >> 1);
+        Lag_CB_ptr = &*(*silk_CB_lags_stage3_10_ms.as_ptr().offset(0 as isize))
             .as_ptr()
-            .offset(0 as i32 as isize) as *const i8;
+            .offset(0 as isize) as *const i8;
         cbk_size = PE_NB_CBKS_STAGE3_10MS;
     }
-    min_lag = 2 as i32 as i16 as i32 * Fs_kHz as i16 as i32;
-    max_lag = 18 as i32 as i16 as i32 * Fs_kHz as i16 as i32;
+    min_lag = 2 * Fs_kHz as i16 as i32;
+    max_lag = 18 * Fs_kHz as i16 as i32;
     lag = min_lag + lagIndex as i32;
-    k = 0 as i32;
+    k = 0;
     while k < nb_subfr {
         *pitch_lags.offset(k as isize) =
             lag + *Lag_CB_ptr.offset((k * cbk_size + contourIndex as i32) as isize) as i32;

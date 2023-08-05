@@ -44,68 +44,68 @@ pub mod entenc_c {
         let mut msk: u32 = 0;
         let mut end: u32 = 0;
         let mut l: i32 = 0;
-        l = 32 as i32
+        l = 32
             - (::core::mem::size_of::<u32>() as u64 as i32
-                * 8 as i32
+                * 8
                 - ((*_this).rng).leading_zeros() as i32);
-        msk = ((1 as u32) << 32 as i32 - 1 as i32)
-            .wrapping_sub(1 as i32 as u32)
+        msk = ((1 as u32) << 32 - 1)
+            .wrapping_sub(1)
             >> l;
         end = ((*_this).val).wrapping_add(msk) & !msk;
         if end | msk >= ((*_this).val).wrapping_add((*_this).rng) {
             l += 1;
-            msk >>= 1 as i32;
+            msk >>= 1;
             end = ((*_this).val).wrapping_add(msk) & !msk;
         }
-        while l > 0 as i32 {
+        while l > 0 {
             ec_enc_carry_out(
                 _this,
-                (end >> 32 as i32 - 8 as i32 - 1 as i32) as i32,
+                (end >> 32 - 8 - 1) as i32,
             );
-            end = end << 8 as i32
-                & ((1 as u32) << 32 as i32 - 1 as i32)
-                    .wrapping_sub(1 as i32 as u32);
-            l -= 8 as i32;
+            end = end << 8
+                & ((1 as u32) << 32 - 1)
+                    .wrapping_sub(1);
+            l -= 8;
         }
-        if (*_this).rem >= 0 as i32 || (*_this).ext > 0 as i32 as u32 {
-            ec_enc_carry_out(_this, 0 as i32);
+        if (*_this).rem >= 0 || (*_this).ext > 0 {
+            ec_enc_carry_out(_this, 0);
         }
         window = (*_this).end_window;
         used = (*_this).nend_bits;
-        while used >= 8 as i32 {
+        while used >= 8 {
             (*_this).error |= ec_write_byte_at_end(
                 _this,
                 window
-                    & ((1 as u32) << 8 as i32)
-                        .wrapping_sub(1 as i32 as u32),
+                    & ((1 as u32) << 8)
+                        .wrapping_sub(1),
             );
-            window >>= 8 as i32;
-            used -= 8 as i32;
+            window >>= 8;
+            used -= 8;
         }
         if (*_this).error == 0 {
             memset(
                 ((*_this).buf).offset((*_this).offs as isize) as *mut core::ffi::c_void,
-                0 as i32,
+                0,
                 (((*_this).storage)
                     .wrapping_sub((*_this).offs)
                     .wrapping_sub((*_this).end_offs) as u64)
                     .wrapping_mul(::core::mem::size_of::<u8>() as u64),
             );
-            if used > 0 as i32 {
+            if used > 0 {
                 if (*_this).end_offs >= (*_this).storage {
-                    (*_this).error = -(1 as i32);
+                    (*_this).error = -1;
                 } else {
                     l = -l;
                     if ((*_this).offs).wrapping_add((*_this).end_offs) >= (*_this).storage
                         && l < used
                     {
-                        window &= (((1 as i32) << l) - 1 as i32) as u32;
-                        (*_this).error = -(1 as i32);
+                        window &= (((1) << l) - 1) as u32;
+                        (*_this).error = -1;
                     }
                     let ref mut fresh0 = *((*_this).buf).offset(
                         ((*_this).storage)
                             .wrapping_sub((*_this).end_offs)
-                            .wrapping_sub(1 as i32 as u32)
+                            .wrapping_sub(1)
                             as isize,
                     );
                     *fresh0 = (*fresh0 as i32 | window as u8 as i32)
@@ -125,7 +125,7 @@ pub mod entenc_c {
             ((*_this).end_offs as u64)
                 .wrapping_mul(::core::mem::size_of::<u8>() as u64)
                 .wrapping_add(
-                    (0 as i32 as i64
+                    (0
                         * ((*_this).buf)
                             .offset(_size as isize)
                             .offset(-((*_this).end_offs as isize))
@@ -145,22 +145,22 @@ pub mod entenc_c {
     ) {
         let mut shift: i32 = 0;
         let mut mask: u32 = 0;
-        shift = (8 as i32 as u32).wrapping_sub(_nbits) as i32;
-        mask = ((((1 as i32) << _nbits) - 1 as i32) << shift) as u32;
-        if (*_this).offs > 0 as i32 as u32 {
-            *((*_this).buf).offset(0 as i32 as isize) =
-                (*((*_this).buf).offset(0 as i32 as isize) as u32 & !mask
+        shift = (8).wrapping_sub(_nbits) as i32;
+        mask = ((((1) << _nbits) - 1) << shift) as u32;
+        if (*_this).offs > 0 {
+            *((*_this).buf).offset(0 as isize) =
+                (*((*_this).buf).offset(0 as isize) as u32 & !mask
                     | _val << shift) as u8;
-        } else if (*_this).rem >= 0 as i32 {
+        } else if (*_this).rem >= 0 {
             (*_this).rem = ((*_this).rem as u32 & !mask | _val << shift) as i32;
         } else if (*_this).rng
-            <= (1 as u32) << 32 as i32 - 1 as i32 >> _nbits
+            <= (1 as u32) << 32 - 1 >> _nbits
         {
             (*_this).val = (*_this).val
-                & !(mask << 32 as i32 - 8 as i32 - 1 as i32)
-                | _val << 32 as i32 - 8 as i32 - 1 as i32 + shift;
+                & !(mask << 32 - 8 - 1)
+                | _val << 32 - 8 - 1 + shift;
         } else {
-            (*_this).error = -(1 as i32);
+            (*_this).error = -1;
         };
     }
         pub unsafe fn ec_write_byte_at_end(
@@ -168,12 +168,12 @@ pub mod entenc_c {
         mut _value: u32,
     ) -> i32 {
         if ((*_this).offs).wrapping_add((*_this).end_offs) >= (*_this).storage {
-            return -(1 as i32);
+            return -1;
         }
         (*_this).end_offs = ((*_this).end_offs).wrapping_add(1);
         *((*_this).buf).offset(((*_this).storage).wrapping_sub((*_this).end_offs) as isize) =
             _value as u8;
-        return 0 as i32;
+        return 0;
     }
         pub unsafe fn ec_enc_bits(
         mut _this: *mut ec_enc,
@@ -186,18 +186,18 @@ pub mod entenc_c {
         used = (*_this).nend_bits;
         if (used as u32).wrapping_add(_bits)
             > (::core::mem::size_of::<ec_window>() as u64 as i32
-                * 8 as i32) as u32
+                * 8) as u32
         {
             loop {
                 (*_this).error |= ec_write_byte_at_end(
                     _this,
                     window
-                        & ((1 as u32) << 8 as i32)
-                            .wrapping_sub(1 as i32 as u32),
+                        & ((1 as u32) << 8)
+                            .wrapping_sub(1),
                 );
-                window >>= 8 as i32;
-                used -= 8 as i32;
-                if !(used >= 8 as i32) {
+                window >>= 8;
+                used -= 8;
+                if !(used >= 8) {
                     break;
                 }
             }
@@ -215,29 +215,29 @@ pub mod entenc_c {
         let mut ftb: i32 = 0;
         _ft = _ft.wrapping_sub(1);
         ftb = ::core::mem::size_of::<u32>() as u64 as i32
-            * 8 as i32
+            * 8
             - _ft.leading_zeros() as i32;
-        if ftb > 8 as i32 {
-            ftb -= 8 as i32;
-            ft = (_ft >> ftb).wrapping_add(1 as i32 as u32);
+        if ftb > 8 {
+            ftb -= 8;
+            ft = (_ft >> ftb).wrapping_add(1);
             fl = _fl >> ftb;
             ec_encode(
                 _this,
                 fl,
-                fl.wrapping_add(1 as i32 as u32),
+                fl.wrapping_add(1),
                 ft,
             );
             ec_enc_bits(
                 _this,
-                _fl & ((1 as i32 as u32) << ftb).wrapping_sub(1 as u32),
+                _fl & ((1) << ftb).wrapping_sub(1 as u32),
                 ftb as u32,
             );
         } else {
             ec_encode(
                 _this,
                 _fl,
-                _fl.wrapping_add(1 as i32 as u32),
-                _ft.wrapping_add(1 as i32 as u32),
+                _fl.wrapping_add(1),
+                _ft.wrapping_add(1),
             );
         };
     }
@@ -249,12 +249,12 @@ pub mod entenc_c {
     ) {
         let mut r: u32 = 0;
         r = (*_this).rng >> _ftb;
-        if _s > 0 as i32 {
+        if _s > 0 {
             (*_this).val = ((*_this).val as u32).wrapping_add(((*_this).rng).wrapping_sub(
-                r.wrapping_mul(*_icdf.offset((_s - 1 as i32) as isize) as u32),
+                r.wrapping_mul(*_icdf.offset((_s - 1) as isize) as u32),
             )) as u32 as u32;
             (*_this).rng = r.wrapping_mul(
-                (*_icdf.offset((_s - 1 as i32) as isize) as i32
+                (*_icdf.offset((_s - 1) as isize) as i32
                     - *_icdf.offset(_s as isize) as i32) as u32,
             );
         } else {
@@ -290,7 +290,7 @@ pub mod entenc_c {
     ) {
         let mut r: u32 = 0;
         r = (*_this).rng >> _bits;
-        if _fl > 0 as i32 as u32 {
+        if _fl > 0 {
             (*_this).val = ((*_this).val as u32).wrapping_add(
                 ((*_this).rng)
                     .wrapping_sub(r.wrapping_mul(((1 as u32) << _bits).wrapping_sub(_fl))),
@@ -308,41 +308,41 @@ pub mod entenc_c {
         mut _value: u32,
     ) -> i32 {
         if ((*_this).offs).wrapping_add((*_this).end_offs) >= (*_this).storage {
-            return -(1 as i32);
+            return -1;
         }
         let fresh1 = (*_this).offs;
         (*_this).offs = ((*_this).offs).wrapping_add(1);
         *((*_this).buf).offset(fresh1 as isize) = _value as u8;
-        return 0 as i32;
+        return 0;
     }
         pub unsafe fn ec_enc_carry_out(mut _this: *mut ec_enc, mut _c: i32) {
         if _c as u32
-            != ((1 as u32) << 8 as i32)
-                .wrapping_sub(1 as i32 as u32)
+            != ((1 as u32) << 8)
+                .wrapping_sub(1)
         {
             let mut carry: i32 = 0;
-            carry = _c >> 8 as i32;
-            if (*_this).rem >= 0 as i32 {
+            carry = _c >> 8;
+            if (*_this).rem >= 0 {
                 (*_this).error |= ec_write_byte(_this, ((*_this).rem + carry) as u32);
             }
-            if (*_this).ext > 0 as i32 as u32 {
+            if (*_this).ext > 0 {
                 let mut sym: u32 = 0;
-                sym = ((1 as u32) << 8 as i32)
-                    .wrapping_sub(1 as i32 as u32)
+                sym = ((1 as u32) << 8)
+                    .wrapping_sub(1)
                     .wrapping_add(carry as u32)
-                    & ((1 as u32) << 8 as i32)
-                        .wrapping_sub(1 as i32 as u32);
+                    & ((1 as u32) << 8)
+                        .wrapping_sub(1);
                 loop {
                     (*_this).error |= ec_write_byte(_this, sym);
                     (*_this).ext = ((*_this).ext).wrapping_sub(1);
-                    if !((*_this).ext > 0 as i32 as u32) {
+                    if !((*_this).ext > 0) {
                         break;
                     }
                 }
             }
             (*_this).rem = (_c as u32
-                & ((1 as u32) << 8 as i32)
-                    .wrapping_sub(1 as i32 as u32))
+                & ((1 as u32) << 8)
+                    .wrapping_sub(1))
                 as i32;
         } else {
             (*_this).ext = ((*_this).ext).wrapping_add(1);
@@ -351,18 +351,18 @@ pub mod entenc_c {
     #[inline]
         pub unsafe fn ec_enc_normalize(mut _this: *mut ec_enc) {
         while (*_this).rng
-            <= (1 as u32) << 32 as i32 - 1 as i32 >> 8 as i32
+            <= (1 as u32) << 32 - 1 >> 8
         {
             ec_enc_carry_out(
                 _this,
-                ((*_this).val >> 32 as i32 - 8 as i32 - 1 as i32)
+                ((*_this).val >> 32 - 8 - 1)
                     as i32,
             );
-            (*_this).val = (*_this).val << 8 as i32
-                & ((1 as u32) << 32 as i32 - 1 as i32)
-                    .wrapping_sub(1 as i32 as u32);
-            (*_this).rng <<= 8 as i32;
-            (*_this).nbits_total += 8 as i32;
+            (*_this).val = (*_this).val << 8
+                & ((1 as u32) << 32 - 1)
+                    .wrapping_sub(1);
+            (*_this).rng <<= 8;
+            (*_this).nbits_total += 8;
         }
     }
         pub unsafe fn ec_encode(
@@ -373,7 +373,7 @@ pub mod entenc_c {
     ) {
         let mut r: u32 = 0;
         r = celt_udiv((*_this).rng, _ft);
-        if _fl > 0 as i32 as u32 {
+        if _fl > 0 {
             (*_this).val = ((*_this).val as u32)
                 .wrapping_add(((*_this).rng).wrapping_sub(r.wrapping_mul(_ft.wrapping_sub(_fl))))
                 as u32 as u32;
@@ -391,17 +391,17 @@ pub mod entenc_c {
         mut _size: u32,
     ) {
         (*_this).buf = _buf;
-        (*_this).end_offs = 0 as i32 as u32;
-        (*_this).end_window = 0 as i32 as ec_window;
-        (*_this).nend_bits = 0 as i32;
-        (*_this).nbits_total = 32 as i32 + 1 as i32;
-        (*_this).offs = 0 as i32 as u32;
-        (*_this).rng = (1 as u32) << 32 as i32 - 1 as i32;
-        (*_this).rem = -(1 as i32);
-        (*_this).val = 0 as i32 as u32;
-        (*_this).ext = 0 as i32 as u32;
+        (*_this).end_offs = 0;
+        (*_this).end_window = 0 as ec_window;
+        (*_this).nend_bits = 0;
+        (*_this).nbits_total = 32 + 1;
+        (*_this).offs = 0;
+        (*_this).rng = (1 as u32) << 32 - 1;
+        (*_this).rem = -1;
+        (*_this).val = 0;
+        (*_this).ext = 0;
         (*_this).storage = _size;
-        (*_this).error = 0 as i32;
+        (*_this).error = 0;
     }
     use super::entcode_h::{celt_udiv, ec_enc, ec_window};
     use crate::externs::{memmove, memset};
@@ -418,7 +418,7 @@ pub mod entdec_c {
             (*_this).offs = ((*_this).offs).wrapping_add(1);
             *((*_this).buf).offset(fresh2 as isize) as i32
         } else {
-            0 as i32
+            0
         };
     }
         pub unsafe fn ec_read_byte_from_end(mut _this: *mut ec_dec) -> i32 {
@@ -427,28 +427,28 @@ pub mod entdec_c {
             *((*_this).buf).offset(((*_this).storage).wrapping_sub((*_this).end_offs) as isize)
                 as i32
         } else {
-            0 as i32
+            0
         };
     }
         pub unsafe fn ec_dec_normalize(mut _this: *mut ec_dec) {
         while (*_this).rng
-            <= (1 as u32) << 32 as i32 - 1 as i32 >> 8 as i32
+            <= (1 as u32) << 32 - 1 >> 8
         {
             let mut sym: i32 = 0;
-            (*_this).nbits_total += 8 as i32;
-            (*_this).rng <<= 8 as i32;
+            (*_this).nbits_total += 8;
+            (*_this).rng <<= 8;
             sym = (*_this).rem;
             (*_this).rem = ec_read_byte(_this);
-            sym = (sym << 8 as i32 | (*_this).rem)
-                >> 8 as i32
-                    - ((32 as i32 - 2 as i32) % 8 as i32
-                        + 1 as i32);
-            (*_this).val = ((*_this).val << 8 as i32).wrapping_add(
-                ((1 as u32) << 8 as i32)
-                    .wrapping_sub(1 as i32 as u32)
+            sym = (sym << 8 | (*_this).rem)
+                >> 8
+                    - ((32 - 2) % 8
+                        + 1);
+            (*_this).val = ((*_this).val << 8).wrapping_add(
+                ((1 as u32) << 8)
+                    .wrapping_sub(1)
                     & !sym as u32,
-            ) & ((1 as u32) << 32 as i32 - 1 as i32)
-                .wrapping_sub(1 as i32 as u32);
+            ) & ((1 as u32) << 32 - 1)
+                .wrapping_sub(1);
         }
     }
         pub unsafe fn ec_decode_bin(
@@ -475,7 +475,7 @@ pub mod entdec_c {
         let mut s: u32 = 0;
         s = ((*_this).ext).wrapping_mul(_ft.wrapping_sub(_fh));
         (*_this).val = ((*_this).val as u32).wrapping_sub(s) as u32 as u32;
-        (*_this).rng = if _fl > 0 as i32 as u32 {
+        (*_this).rng = if _fl > 0 {
             ((*_this).ext).wrapping_mul(_fh.wrapping_sub(_fl))
         } else {
             ((*_this).rng).wrapping_sub(s)
@@ -514,7 +514,7 @@ pub mod entdec_c {
         s = (*_this).rng;
         d = (*_this).val;
         r = s >> _ftb;
-        ret = -(1 as i32);
+        ret = -1;
         loop {
             t = s;
             ret += 1;
@@ -534,24 +534,24 @@ pub mod entdec_c {
         let mut ftb: i32 = 0;
         _ft = _ft.wrapping_sub(1);
         ftb = ::core::mem::size_of::<u32>() as u64 as i32
-            * 8 as i32
+            * 8
             - _ft.leading_zeros() as i32;
-        if ftb > 8 as i32 {
+        if ftb > 8 {
             let mut t: u32 = 0;
-            ftb -= 8 as i32;
-            ft = (_ft >> ftb).wrapping_add(1 as i32 as u32);
+            ftb -= 8;
+            ft = (_ft >> ftb).wrapping_add(1);
             s = ec_decode(_this, ft);
             ec_dec_update(
                 _this,
                 s,
-                s.wrapping_add(1 as i32 as u32),
+                s.wrapping_add(1),
                 ft,
             );
             t = s << ftb | ec_dec_bits(_this, ftb as u32);
             if t <= _ft {
                 return t;
             }
-            (*_this).error = 1 as i32;
+            (*_this).error = 1;
             return _ft;
         } else {
             _ft = _ft.wrapping_add(1);
@@ -559,7 +559,7 @@ pub mod entdec_c {
             ec_dec_update(
                 _this,
                 s,
-                s.wrapping_add(1 as i32 as u32),
+                s.wrapping_add(1),
                 _ft,
             );
             return s;
@@ -574,17 +574,17 @@ pub mod entdec_c {
         if (available as u32) < _bits {
             loop {
                 window |= (ec_read_byte_from_end(_this) as ec_window) << available;
-                available += 8 as i32;
+                available += 8;
                 if !(available
                     <= ::core::mem::size_of::<ec_window>() as u64 as i32
-                        * 8 as i32
-                        - 8 as i32)
+                        * 8
+                        - 8)
                 {
                     break;
                 }
             }
         }
-        ret = window & ((1 as i32 as u32) << _bits).wrapping_sub(1 as u32);
+        ret = window & ((1) << _bits).wrapping_sub(1 as u32);
         window >>= _bits;
         available = (available as u32).wrapping_sub(_bits) as i32 as i32;
         (*_this).end_window = window;
@@ -601,10 +601,10 @@ pub mod entdec_c {
         (*_this).ext = celt_udiv((*_this).rng, _ft);
         s = ((*_this).val).wrapping_div((*_this).ext);
         return _ft.wrapping_sub(
-            s.wrapping_add(1 as i32 as u32)
+            s.wrapping_add(1)
                 .wrapping_add(
-                    _ft.wrapping_sub(s.wrapping_add(1 as i32 as u32))
-                        & -((_ft < s.wrapping_add(1 as i32 as u32)) as i32)
+                    _ft.wrapping_sub(s.wrapping_add(1))
+                        & -((_ft < s.wrapping_add(1)) as i32)
                             as u32,
                 ),
         );
@@ -616,27 +616,27 @@ pub mod entdec_c {
     ) {
         (*_this).buf = _buf;
         (*_this).storage = _storage;
-        (*_this).end_offs = 0 as i32 as u32;
-        (*_this).end_window = 0 as i32 as ec_window;
-        (*_this).nend_bits = 0 as i32;
-        (*_this).nbits_total = 32 as i32 + 1 as i32
-            - (32 as i32
-                - ((32 as i32 - 2 as i32) % 8 as i32 + 1 as i32))
-                / 8 as i32
-                * 8 as i32;
-        (*_this).offs = 0 as i32 as u32;
+        (*_this).end_offs = 0;
+        (*_this).end_window = 0 as ec_window;
+        (*_this).nend_bits = 0;
+        (*_this).nbits_total = 32 + 1
+            - (32
+                - ((32 - 2) % 8 + 1))
+                / 8
+                * 8;
+        (*_this).offs = 0;
         (*_this).rng = (1 as u32)
-            << (32 as i32 - 2 as i32) % 8 as i32 + 1 as i32;
+            << (32 - 2) % 8 + 1;
         (*_this).rem = ec_read_byte(_this);
         (*_this).val = ((*_this).rng)
-            .wrapping_sub(1 as i32 as u32)
+            .wrapping_sub(1)
             .wrapping_sub(
                 ((*_this).rem
-                    >> 8 as i32
-                        - ((32 as i32 - 2 as i32) % 8 as i32
-                            + 1 as i32)) as u32,
+                    >> 8
+                        - ((32 - 2) % 8
+                            + 1)) as u32,
             );
-        (*_this).error = 0 as i32;
+        (*_this).error = 0;
         ec_dec_normalize(_this);
     }
     use super::entcode_h::{celt_udiv, ec_dec, ec_window};
@@ -644,27 +644,27 @@ pub mod entdec_c {
 pub mod entcode_c {
         pub unsafe fn ec_tell_frac(mut _this: *mut ec_ctx) -> u32 {
         pub static mut correction: [u32; 8] = [
-            35733 as i32 as u32,
-            38967 as i32 as u32,
-            42495 as i32 as u32,
-            46340 as i32 as u32,
-            50535 as i32 as u32,
-            55109 as i32 as u32,
-            60097 as i32 as u32,
-            65535 as i32 as u32,
+            35733,
+            38967,
+            42495,
+            46340,
+            50535,
+            55109,
+            60097,
+            65535,
         ];
         let mut nbits: u32 = 0;
         let mut r: u32 = 0;
         let mut l: i32 = 0;
         let mut b: u32 = 0;
-        nbits = ((*_this).nbits_total << 3 as i32) as u32;
+        nbits = ((*_this).nbits_total << 3) as u32;
         l = ::core::mem::size_of::<u32>() as u64 as i32
-            * 8 as i32
+            * 8
             - ((*_this).rng).leading_zeros() as i32;
-        r = (*_this).rng >> l - 16 as i32;
-        b = (r >> 12 as i32).wrapping_sub(8 as i32 as u32);
+        r = (*_this).rng >> l - 16;
+        b = (r >> 12).wrapping_sub(8);
         b = b.wrapping_add((r > correction[b as usize]) as i32 as u32);
-        l = ((l << 3 as i32) as u32).wrapping_add(b) as i32;
+        l = ((l << 3) as u32).wrapping_add(b) as i32;
         return nbits.wrapping_sub(l as u32);
     }
     use super::entcode_h::ec_ctx;
@@ -673,1367 +673,1367 @@ pub mod cwrs_c {
         pub unsafe fn log2_frac(mut val: u32, mut frac: i32) -> i32 {
         let mut l: i32 = 0;
         l = ::core::mem::size_of::<u32>() as u64 as i32
-            * 8 as i32
+            * 8
             - val.leading_zeros() as i32;
-        if val & val.wrapping_sub(1 as i32 as u32) != 0 {
-            if l > 16 as i32 {
-                val = (val.wrapping_sub(1 as i32 as u32) >> l - 16 as i32)
-                    .wrapping_add(1 as i32 as u32);
+        if val & val.wrapping_sub(1) != 0 {
+            if l > 16 {
+                val = (val.wrapping_sub(1) >> l - 16)
+                    .wrapping_add(1);
             } else {
-                val <<= 16 as i32 - l;
+                val <<= 16 - l;
             }
-            l = (l - 1 as i32) << frac;
+            l = (l - 1) << frac;
             loop {
                 let mut b: i32 = 0;
-                b = (val >> 16 as i32) as i32;
+                b = (val >> 16) as i32;
                 l += b << frac;
                 val = val.wrapping_add(b as u32) >> b;
                 val = val
                     .wrapping_mul(val)
-                    .wrapping_add(0x7fff as i32 as u32)
-                    >> 15 as i32;
+                    .wrapping_add(0x7fff)
+                    >> 15;
                 let fresh3 = frac;
                 frac = frac - 1;
-                if !(fresh3 > 0 as i32) {
+                if !(fresh3 > 0) {
                     break;
                 }
             }
-            return l + (val > 0x8000 as i32 as u32) as i32;
+            return l + (val > 0x8000) as i32;
         } else {
-            return (l - 1 as i32) << frac;
+            return (l - 1) << frac;
         };
     }
         pub static mut CELT_PVQ_U_DATA: [u32; 1488] = [
-        1 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        0 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        1 as i32 as u32,
-        3 as i32 as u32,
-        5 as i32 as u32,
-        7 as i32 as u32,
-        9 as i32 as u32,
-        11 as i32 as u32,
-        13 as i32 as u32,
-        15 as i32 as u32,
-        17 as i32 as u32,
-        19 as i32 as u32,
-        21 as i32 as u32,
-        23 as i32 as u32,
-        25 as i32 as u32,
-        27 as i32 as u32,
-        29 as i32 as u32,
-        31 as i32 as u32,
-        33 as i32 as u32,
-        35 as i32 as u32,
-        37 as i32 as u32,
-        39 as i32 as u32,
-        41 as i32 as u32,
-        43 as i32 as u32,
-        45 as i32 as u32,
-        47 as i32 as u32,
-        49 as i32 as u32,
-        51 as i32 as u32,
-        53 as i32 as u32,
-        55 as i32 as u32,
-        57 as i32 as u32,
-        59 as i32 as u32,
-        61 as i32 as u32,
-        63 as i32 as u32,
-        65 as i32 as u32,
-        67 as i32 as u32,
-        69 as i32 as u32,
-        71 as i32 as u32,
-        73 as i32 as u32,
-        75 as i32 as u32,
-        77 as i32 as u32,
-        79 as i32 as u32,
-        81 as i32 as u32,
-        83 as i32 as u32,
-        85 as i32 as u32,
-        87 as i32 as u32,
-        89 as i32 as u32,
-        91 as i32 as u32,
-        93 as i32 as u32,
-        95 as i32 as u32,
-        97 as i32 as u32,
-        99 as i32 as u32,
-        101 as i32 as u32,
-        103 as i32 as u32,
-        105 as i32 as u32,
-        107 as i32 as u32,
-        109 as i32 as u32,
-        111 as i32 as u32,
-        113 as i32 as u32,
-        115 as i32 as u32,
-        117 as i32 as u32,
-        119 as i32 as u32,
-        121 as i32 as u32,
-        123 as i32 as u32,
-        125 as i32 as u32,
-        127 as i32 as u32,
-        129 as i32 as u32,
-        131 as i32 as u32,
-        133 as i32 as u32,
-        135 as i32 as u32,
-        137 as i32 as u32,
-        139 as i32 as u32,
-        141 as i32 as u32,
-        143 as i32 as u32,
-        145 as i32 as u32,
-        147 as i32 as u32,
-        149 as i32 as u32,
-        151 as i32 as u32,
-        153 as i32 as u32,
-        155 as i32 as u32,
-        157 as i32 as u32,
-        159 as i32 as u32,
-        161 as i32 as u32,
-        163 as i32 as u32,
-        165 as i32 as u32,
-        167 as i32 as u32,
-        169 as i32 as u32,
-        171 as i32 as u32,
-        173 as i32 as u32,
-        175 as i32 as u32,
-        177 as i32 as u32,
-        179 as i32 as u32,
-        181 as i32 as u32,
-        183 as i32 as u32,
-        185 as i32 as u32,
-        187 as i32 as u32,
-        189 as i32 as u32,
-        191 as i32 as u32,
-        193 as i32 as u32,
-        195 as i32 as u32,
-        197 as i32 as u32,
-        199 as i32 as u32,
-        201 as i32 as u32,
-        203 as i32 as u32,
-        205 as i32 as u32,
-        207 as i32 as u32,
-        209 as i32 as u32,
-        211 as i32 as u32,
-        213 as i32 as u32,
-        215 as i32 as u32,
-        217 as i32 as u32,
-        219 as i32 as u32,
-        221 as i32 as u32,
-        223 as i32 as u32,
-        225 as i32 as u32,
-        227 as i32 as u32,
-        229 as i32 as u32,
-        231 as i32 as u32,
-        233 as i32 as u32,
-        235 as i32 as u32,
-        237 as i32 as u32,
-        239 as i32 as u32,
-        241 as i32 as u32,
-        243 as i32 as u32,
-        245 as i32 as u32,
-        247 as i32 as u32,
-        249 as i32 as u32,
-        251 as i32 as u32,
-        253 as i32 as u32,
-        255 as i32 as u32,
-        257 as i32 as u32,
-        259 as i32 as u32,
-        261 as i32 as u32,
-        263 as i32 as u32,
-        265 as i32 as u32,
-        267 as i32 as u32,
-        269 as i32 as u32,
-        271 as i32 as u32,
-        273 as i32 as u32,
-        275 as i32 as u32,
-        277 as i32 as u32,
-        279 as i32 as u32,
-        281 as i32 as u32,
-        283 as i32 as u32,
-        285 as i32 as u32,
-        287 as i32 as u32,
-        289 as i32 as u32,
-        291 as i32 as u32,
-        293 as i32 as u32,
-        295 as i32 as u32,
-        297 as i32 as u32,
-        299 as i32 as u32,
-        301 as i32 as u32,
-        303 as i32 as u32,
-        305 as i32 as u32,
-        307 as i32 as u32,
-        309 as i32 as u32,
-        311 as i32 as u32,
-        313 as i32 as u32,
-        315 as i32 as u32,
-        317 as i32 as u32,
-        319 as i32 as u32,
-        321 as i32 as u32,
-        323 as i32 as u32,
-        325 as i32 as u32,
-        327 as i32 as u32,
-        329 as i32 as u32,
-        331 as i32 as u32,
-        333 as i32 as u32,
-        335 as i32 as u32,
-        337 as i32 as u32,
-        339 as i32 as u32,
-        341 as i32 as u32,
-        343 as i32 as u32,
-        345 as i32 as u32,
-        347 as i32 as u32,
-        349 as i32 as u32,
-        351 as i32 as u32,
-        353 as i32 as u32,
-        355 as i32 as u32,
-        357 as i32 as u32,
-        359 as i32 as u32,
-        361 as i32 as u32,
-        363 as i32 as u32,
-        365 as i32 as u32,
-        367 as i32 as u32,
-        369 as i32 as u32,
-        371 as i32 as u32,
-        373 as i32 as u32,
-        375 as i32 as u32,
-        377 as i32 as u32,
-        379 as i32 as u32,
-        381 as i32 as u32,
-        383 as i32 as u32,
-        385 as i32 as u32,
-        387 as i32 as u32,
-        389 as i32 as u32,
-        391 as i32 as u32,
-        393 as i32 as u32,
-        395 as i32 as u32,
-        397 as i32 as u32,
-        399 as i32 as u32,
-        401 as i32 as u32,
-        403 as i32 as u32,
-        405 as i32 as u32,
-        407 as i32 as u32,
-        409 as i32 as u32,
-        411 as i32 as u32,
-        413 as i32 as u32,
-        415 as i32 as u32,
-        13 as i32 as u32,
-        25 as i32 as u32,
-        41 as i32 as u32,
-        61 as i32 as u32,
-        85 as i32 as u32,
-        113 as i32 as u32,
-        145 as i32 as u32,
-        181 as i32 as u32,
-        221 as i32 as u32,
-        265 as i32 as u32,
-        313 as i32 as u32,
-        365 as i32 as u32,
-        421 as i32 as u32,
-        481 as i32 as u32,
-        545 as i32 as u32,
-        613 as i32 as u32,
-        685 as i32 as u32,
-        761 as i32 as u32,
-        841 as i32 as u32,
-        925 as i32 as u32,
-        1013 as i32 as u32,
-        1105 as i32 as u32,
-        1201 as i32 as u32,
-        1301 as i32 as u32,
-        1405 as i32 as u32,
-        1513 as i32 as u32,
-        1625 as i32 as u32,
-        1741 as i32 as u32,
-        1861 as i32 as u32,
-        1985 as i32 as u32,
-        2113 as i32 as u32,
-        2245 as i32 as u32,
-        2381 as i32 as u32,
-        2521 as i32 as u32,
-        2665 as i32 as u32,
-        2813 as i32 as u32,
-        2965 as i32 as u32,
-        3121 as i32 as u32,
-        3281 as i32 as u32,
-        3445 as i32 as u32,
-        3613 as i32 as u32,
-        3785 as i32 as u32,
-        3961 as i32 as u32,
-        4141 as i32 as u32,
-        4325 as i32 as u32,
-        4513 as i32 as u32,
-        4705 as i32 as u32,
-        4901 as i32 as u32,
-        5101 as i32 as u32,
-        5305 as i32 as u32,
-        5513 as i32 as u32,
-        5725 as i32 as u32,
-        5941 as i32 as u32,
-        6161 as i32 as u32,
-        6385 as i32 as u32,
-        6613 as i32 as u32,
-        6845 as i32 as u32,
-        7081 as i32 as u32,
-        7321 as i32 as u32,
-        7565 as i32 as u32,
-        7813 as i32 as u32,
-        8065 as i32 as u32,
-        8321 as i32 as u32,
-        8581 as i32 as u32,
-        8845 as i32 as u32,
-        9113 as i32 as u32,
-        9385 as i32 as u32,
-        9661 as i32 as u32,
-        9941 as i32 as u32,
-        10225 as i32 as u32,
-        10513 as i32 as u32,
-        10805 as i32 as u32,
-        11101 as i32 as u32,
-        11401 as i32 as u32,
-        11705 as i32 as u32,
-        12013 as i32 as u32,
-        12325 as i32 as u32,
-        12641 as i32 as u32,
-        12961 as i32 as u32,
-        13285 as i32 as u32,
-        13613 as i32 as u32,
-        13945 as i32 as u32,
-        14281 as i32 as u32,
-        14621 as i32 as u32,
-        14965 as i32 as u32,
-        15313 as i32 as u32,
-        15665 as i32 as u32,
-        16021 as i32 as u32,
-        16381 as i32 as u32,
-        16745 as i32 as u32,
-        17113 as i32 as u32,
-        17485 as i32 as u32,
-        17861 as i32 as u32,
-        18241 as i32 as u32,
-        18625 as i32 as u32,
-        19013 as i32 as u32,
-        19405 as i32 as u32,
-        19801 as i32 as u32,
-        20201 as i32 as u32,
-        20605 as i32 as u32,
-        21013 as i32 as u32,
-        21425 as i32 as u32,
-        21841 as i32 as u32,
-        22261 as i32 as u32,
-        22685 as i32 as u32,
-        23113 as i32 as u32,
-        23545 as i32 as u32,
-        23981 as i32 as u32,
-        24421 as i32 as u32,
-        24865 as i32 as u32,
-        25313 as i32 as u32,
-        25765 as i32 as u32,
-        26221 as i32 as u32,
-        26681 as i32 as u32,
-        27145 as i32 as u32,
-        27613 as i32 as u32,
-        28085 as i32 as u32,
-        28561 as i32 as u32,
-        29041 as i32 as u32,
-        29525 as i32 as u32,
-        30013 as i32 as u32,
-        30505 as i32 as u32,
-        31001 as i32 as u32,
-        31501 as i32 as u32,
-        32005 as i32 as u32,
-        32513 as i32 as u32,
-        33025 as i32 as u32,
-        33541 as i32 as u32,
-        34061 as i32 as u32,
-        34585 as i32 as u32,
-        35113 as i32 as u32,
-        35645 as i32 as u32,
-        36181 as i32 as u32,
-        36721 as i32 as u32,
-        37265 as i32 as u32,
-        37813 as i32 as u32,
-        38365 as i32 as u32,
-        38921 as i32 as u32,
-        39481 as i32 as u32,
-        40045 as i32 as u32,
-        40613 as i32 as u32,
-        41185 as i32 as u32,
-        41761 as i32 as u32,
-        42341 as i32 as u32,
-        42925 as i32 as u32,
-        43513 as i32 as u32,
-        44105 as i32 as u32,
-        44701 as i32 as u32,
-        45301 as i32 as u32,
-        45905 as i32 as u32,
-        46513 as i32 as u32,
-        47125 as i32 as u32,
-        47741 as i32 as u32,
-        48361 as i32 as u32,
-        48985 as i32 as u32,
-        49613 as i32 as u32,
-        50245 as i32 as u32,
-        50881 as i32 as u32,
-        51521 as i32 as u32,
-        52165 as i32 as u32,
-        52813 as i32 as u32,
-        53465 as i32 as u32,
-        54121 as i32 as u32,
-        54781 as i32 as u32,
-        55445 as i32 as u32,
-        56113 as i32 as u32,
-        56785 as i32 as u32,
-        57461 as i32 as u32,
-        58141 as i32 as u32,
-        58825 as i32 as u32,
-        59513 as i32 as u32,
-        60205 as i32 as u32,
-        60901 as i32 as u32,
-        61601 as i32 as u32,
-        62305 as i32 as u32,
-        63013 as i32 as u32,
-        63725 as i32 as u32,
-        64441 as i32 as u32,
-        65161 as i32 as u32,
-        65885 as i32 as u32,
-        66613 as i32 as u32,
-        67345 as i32 as u32,
-        68081 as i32 as u32,
-        68821 as i32 as u32,
-        69565 as i32 as u32,
-        70313 as i32 as u32,
-        71065 as i32 as u32,
-        71821 as i32 as u32,
-        72581 as i32 as u32,
-        73345 as i32 as u32,
-        74113 as i32 as u32,
-        74885 as i32 as u32,
-        75661 as i32 as u32,
-        76441 as i32 as u32,
-        77225 as i32 as u32,
-        78013 as i32 as u32,
-        78805 as i32 as u32,
-        79601 as i32 as u32,
-        80401 as i32 as u32,
-        81205 as i32 as u32,
-        82013 as i32 as u32,
-        82825 as i32 as u32,
-        83641 as i32 as u32,
-        84461 as i32 as u32,
-        85285 as i32 as u32,
-        86113 as i32 as u32,
-        63 as i32 as u32,
-        129 as i32 as u32,
-        231 as i32 as u32,
-        377 as i32 as u32,
-        575 as i32 as u32,
-        833 as i32 as u32,
-        1159 as i32 as u32,
-        1561 as i32 as u32,
-        2047 as i32 as u32,
-        2625 as i32 as u32,
-        3303 as i32 as u32,
-        4089 as i32 as u32,
-        4991 as i32 as u32,
-        6017 as i32 as u32,
-        7175 as i32 as u32,
-        8473 as i32 as u32,
-        9919 as i32 as u32,
-        11521 as i32 as u32,
-        13287 as i32 as u32,
-        15225 as i32 as u32,
-        17343 as i32 as u32,
-        19649 as i32 as u32,
-        22151 as i32 as u32,
-        24857 as i32 as u32,
-        27775 as i32 as u32,
-        30913 as i32 as u32,
-        34279 as i32 as u32,
-        37881 as i32 as u32,
-        41727 as i32 as u32,
-        45825 as i32 as u32,
-        50183 as i32 as u32,
-        54809 as i32 as u32,
-        59711 as i32 as u32,
-        64897 as i32 as u32,
-        70375 as i32 as u32,
-        76153 as i32 as u32,
-        82239 as i32 as u32,
-        88641 as i32 as u32,
-        95367 as i32 as u32,
-        102425 as i32 as u32,
-        109823 as i32 as u32,
-        117569 as i32 as u32,
-        125671 as i32 as u32,
-        134137 as i32 as u32,
-        142975 as i32 as u32,
-        152193 as i32 as u32,
-        161799 as i32 as u32,
-        171801 as i32 as u32,
-        182207 as i32 as u32,
-        193025 as i32 as u32,
-        204263 as i32 as u32,
-        215929 as i32 as u32,
-        228031 as i32 as u32,
-        240577 as i32 as u32,
-        253575 as i32 as u32,
-        267033 as i32 as u32,
-        280959 as i32 as u32,
-        295361 as i32 as u32,
-        310247 as i32 as u32,
-        325625 as i32 as u32,
-        341503 as i32 as u32,
-        357889 as i32 as u32,
-        374791 as i32 as u32,
-        392217 as i32 as u32,
-        410175 as i32 as u32,
-        428673 as i32 as u32,
-        447719 as i32 as u32,
-        467321 as i32 as u32,
-        487487 as i32 as u32,
-        508225 as i32 as u32,
-        529543 as i32 as u32,
-        551449 as i32 as u32,
-        573951 as i32 as u32,
-        597057 as i32 as u32,
-        620775 as i32 as u32,
-        645113 as i32 as u32,
-        670079 as i32 as u32,
-        695681 as i32 as u32,
-        721927 as i32 as u32,
-        748825 as i32 as u32,
-        776383 as i32 as u32,
-        804609 as i32 as u32,
-        833511 as i32 as u32,
-        863097 as i32 as u32,
-        893375 as i32 as u32,
-        924353 as i32 as u32,
-        956039 as i32 as u32,
-        988441 as i32 as u32,
-        1021567 as i32 as u32,
-        1055425 as i32 as u32,
-        1090023 as i32 as u32,
-        1125369 as i32 as u32,
-        1161471 as i32 as u32,
-        1198337 as i32 as u32,
-        1235975 as i32 as u32,
-        1274393 as i32 as u32,
-        1313599 as i32 as u32,
-        1353601 as i32 as u32,
-        1394407 as i32 as u32,
-        1436025 as i32 as u32,
-        1478463 as i32 as u32,
-        1521729 as i32 as u32,
-        1565831 as i32 as u32,
-        1610777 as i32 as u32,
-        1656575 as i32 as u32,
-        1703233 as i32 as u32,
-        1750759 as i32 as u32,
-        1799161 as i32 as u32,
-        1848447 as i32 as u32,
-        1898625 as i32 as u32,
-        1949703 as i32 as u32,
-        2001689 as i32 as u32,
-        2054591 as i32 as u32,
-        2108417 as i32 as u32,
-        2163175 as i32 as u32,
-        2218873 as i32 as u32,
-        2275519 as i32 as u32,
-        2333121 as i32 as u32,
-        2391687 as i32 as u32,
-        2451225 as i32 as u32,
-        2511743 as i32 as u32,
-        2573249 as i32 as u32,
-        2635751 as i32 as u32,
-        2699257 as i32 as u32,
-        2763775 as i32 as u32,
-        2829313 as i32 as u32,
-        2895879 as i32 as u32,
-        2963481 as i32 as u32,
-        3032127 as i32 as u32,
-        3101825 as i32 as u32,
-        3172583 as i32 as u32,
-        3244409 as i32 as u32,
-        3317311 as i32 as u32,
-        3391297 as i32 as u32,
-        3466375 as i32 as u32,
-        3542553 as i32 as u32,
-        3619839 as i32 as u32,
-        3698241 as i32 as u32,
-        3777767 as i32 as u32,
-        3858425 as i32 as u32,
-        3940223 as i32 as u32,
-        4023169 as i32 as u32,
-        4107271 as i32 as u32,
-        4192537 as i32 as u32,
-        4278975 as i32 as u32,
-        4366593 as i32 as u32,
-        4455399 as i32 as u32,
-        4545401 as i32 as u32,
-        4636607 as i32 as u32,
-        4729025 as i32 as u32,
-        4822663 as i32 as u32,
-        4917529 as i32 as u32,
-        5013631 as i32 as u32,
-        5110977 as i32 as u32,
-        5209575 as i32 as u32,
-        5309433 as i32 as u32,
-        5410559 as i32 as u32,
-        5512961 as i32 as u32,
-        5616647 as i32 as u32,
-        5721625 as i32 as u32,
-        5827903 as i32 as u32,
-        5935489 as i32 as u32,
-        6044391 as i32 as u32,
-        6154617 as i32 as u32,
-        6266175 as i32 as u32,
-        6379073 as i32 as u32,
-        6493319 as i32 as u32,
-        6608921 as i32 as u32,
-        6725887 as i32 as u32,
-        6844225 as i32 as u32,
-        6963943 as i32 as u32,
-        7085049 as i32 as u32,
-        7207551 as i32 as u32,
-        7331457 as i32 as u32,
-        7456775 as i32 as u32,
-        7583513 as i32 as u32,
-        7711679 as i32 as u32,
-        7841281 as i32 as u32,
-        7972327 as i32 as u32,
-        8104825 as i32 as u32,
-        8238783 as i32 as u32,
-        8374209 as i32 as u32,
-        8511111 as i32 as u32,
-        8649497 as i32 as u32,
-        8789375 as i32 as u32,
-        8930753 as i32 as u32,
-        9073639 as i32 as u32,
-        9218041 as i32 as u32,
-        9363967 as i32 as u32,
-        9511425 as i32 as u32,
-        9660423 as i32 as u32,
-        9810969 as i32 as u32,
-        9963071 as i32 as u32,
-        10116737 as i32 as u32,
-        10271975 as i32 as u32,
-        10428793 as i32 as u32,
-        10587199 as i32 as u32,
-        10747201 as i32 as u32,
-        10908807 as i32 as u32,
-        11072025 as i32 as u32,
-        11236863 as i32 as u32,
-        11403329 as i32 as u32,
-        11571431 as i32 as u32,
-        11741177 as i32 as u32,
-        11912575 as i32 as u32,
-        321 as i32 as u32,
-        681 as i32 as u32,
-        1289 as i32 as u32,
-        2241 as i32 as u32,
-        3649 as i32 as u32,
-        5641 as i32 as u32,
-        8361 as i32 as u32,
-        11969 as i32 as u32,
-        16641 as i32 as u32,
-        22569 as i32 as u32,
-        29961 as i32 as u32,
-        39041 as i32 as u32,
-        50049 as i32 as u32,
-        63241 as i32 as u32,
-        78889 as i32 as u32,
-        97281 as i32 as u32,
-        118721 as i32 as u32,
-        143529 as i32 as u32,
-        172041 as i32 as u32,
-        204609 as i32 as u32,
-        241601 as i32 as u32,
-        283401 as i32 as u32,
-        330409 as i32 as u32,
-        383041 as i32 as u32,
-        441729 as i32 as u32,
-        506921 as i32 as u32,
-        579081 as i32 as u32,
-        658689 as i32 as u32,
-        746241 as i32 as u32,
-        842249 as i32 as u32,
-        947241 as i32 as u32,
-        1061761 as i32 as u32,
-        1186369 as i32 as u32,
-        1321641 as i32 as u32,
-        1468169 as i32 as u32,
-        1626561 as i32 as u32,
-        1797441 as i32 as u32,
-        1981449 as i32 as u32,
-        2179241 as i32 as u32,
-        2391489 as i32 as u32,
-        2618881 as i32 as u32,
-        2862121 as i32 as u32,
-        3121929 as i32 as u32,
-        3399041 as i32 as u32,
-        3694209 as i32 as u32,
-        4008201 as i32 as u32,
-        4341801 as i32 as u32,
-        4695809 as i32 as u32,
-        5071041 as i32 as u32,
-        5468329 as i32 as u32,
-        5888521 as i32 as u32,
-        6332481 as i32 as u32,
-        6801089 as i32 as u32,
-        7295241 as i32 as u32,
-        7815849 as i32 as u32,
-        8363841 as i32 as u32,
-        8940161 as i32 as u32,
-        9545769 as i32 as u32,
-        10181641 as i32 as u32,
-        10848769 as i32 as u32,
-        11548161 as i32 as u32,
-        12280841 as i32 as u32,
-        13047849 as i32 as u32,
-        13850241 as i32 as u32,
-        14689089 as i32 as u32,
-        15565481 as i32 as u32,
-        16480521 as i32 as u32,
-        17435329 as i32 as u32,
-        18431041 as i32 as u32,
-        19468809 as i32 as u32,
-        20549801 as i32 as u32,
-        21675201 as i32 as u32,
-        22846209 as i32 as u32,
-        24064041 as i32 as u32,
-        25329929 as i32 as u32,
-        26645121 as i32 as u32,
-        28010881 as i32 as u32,
-        29428489 as i32 as u32,
-        30899241 as i32 as u32,
-        32424449 as i32 as u32,
-        34005441 as i32 as u32,
-        35643561 as i32 as u32,
-        37340169 as i32 as u32,
-        39096641 as i32 as u32,
-        40914369 as i32 as u32,
-        42794761 as i32 as u32,
-        44739241 as i32 as u32,
-        46749249 as i32 as u32,
-        48826241 as i32 as u32,
-        50971689 as i32 as u32,
-        53187081 as i32 as u32,
-        55473921 as i32 as u32,
-        57833729 as i32 as u32,
-        60268041 as i32 as u32,
-        62778409 as i32 as u32,
-        65366401 as i32 as u32,
-        68033601 as i32 as u32,
-        70781609 as i32 as u32,
-        73612041 as i32 as u32,
-        76526529 as i32 as u32,
-        79526721 as i32 as u32,
-        82614281 as i32 as u32,
-        85790889 as i32 as u32,
-        89058241 as i32 as u32,
-        92418049 as i32 as u32,
-        95872041 as i32 as u32,
-        99421961 as i32 as u32,
-        103069569 as i32 as u32,
-        106816641 as i32 as u32,
-        110664969 as i32 as u32,
-        114616361 as i32 as u32,
-        118672641 as i32 as u32,
-        122835649 as i32 as u32,
-        127107241 as i32 as u32,
-        131489289 as i32 as u32,
-        135983681 as i32 as u32,
-        140592321 as i32 as u32,
-        145317129 as i32 as u32,
-        150160041 as i32 as u32,
-        155123009 as i32 as u32,
-        160208001 as i32 as u32,
-        165417001 as i32 as u32,
-        170752009 as i32 as u32,
-        176215041 as i32 as u32,
-        181808129 as i32 as u32,
-        187533321 as i32 as u32,
-        193392681 as i32 as u32,
-        199388289 as i32 as u32,
-        205522241 as i32 as u32,
-        211796649 as i32 as u32,
-        218213641 as i32 as u32,
-        224775361 as i32 as u32,
-        231483969 as i32 as u32,
-        238341641 as i32 as u32,
-        245350569 as i32 as u32,
-        252512961 as i32 as u32,
-        259831041 as i32 as u32,
-        267307049 as i32 as u32,
-        274943241 as i32 as u32,
-        282741889 as i32 as u32,
-        290705281 as i32 as u32,
-        298835721 as i32 as u32,
-        307135529 as i32 as u32,
-        315607041 as i32 as u32,
-        324252609 as i32 as u32,
-        333074601 as i32 as u32,
-        342075401 as i32 as u32,
-        351257409 as i32 as u32,
-        360623041 as i32 as u32,
-        370174729 as i32 as u32,
-        379914921 as i32 as u32,
-        389846081 as i32 as u32,
-        399970689 as i32 as u32,
-        410291241 as i32 as u32,
-        420810249 as i32 as u32,
-        431530241 as i32 as u32,
-        442453761 as i32 as u32,
-        453583369 as i32 as u32,
-        464921641 as i32 as u32,
-        476471169 as i32 as u32,
-        488234561 as i32 as u32,
-        500214441 as i32 as u32,
-        512413449 as i32 as u32,
-        524834241 as i32 as u32,
-        537479489 as i32 as u32,
-        550351881 as i32 as u32,
-        563454121 as i32 as u32,
-        576788929 as i32 as u32,
-        590359041 as i32 as u32,
-        604167209 as i32 as u32,
-        618216201 as i32 as u32,
-        632508801 as i32 as u32,
-        647047809 as i32 as u32,
-        661836041 as i32 as u32,
-        676876329 as i32 as u32,
-        692171521 as i32 as u32,
-        707724481 as i32 as u32,
-        723538089 as i32 as u32,
-        739615241 as i32 as u32,
-        755958849 as i32 as u32,
-        772571841 as i32 as u32,
-        789457161 as i32 as u32,
-        806617769 as i32 as u32,
-        824056641 as i32 as u32,
-        841776769 as i32 as u32,
-        859781161 as i32 as u32,
-        878072841 as i32 as u32,
-        896654849 as i32 as u32,
-        915530241 as i32 as u32,
-        934702089 as i32 as u32,
-        954173481 as i32 as u32,
-        973947521 as i32 as u32,
-        994027329 as i32 as u32,
-        1014416041 as i32 as u32,
-        1035116809 as i32 as u32,
-        1056132801 as i32 as u32,
-        1077467201 as i32 as u32,
-        1099123209 as i32 as u32,
-        1121104041 as i32 as u32,
-        1143412929 as i32 as u32,
-        1166053121 as i32 as u32,
-        1189027881 as i32 as u32,
-        1212340489 as i32 as u32,
-        1235994241 as i32 as u32,
-        1683 as i32 as u32,
-        3653 as i32 as u32,
-        7183 as i32 as u32,
-        13073 as i32 as u32,
-        22363 as i32 as u32,
-        36365 as i32 as u32,
-        56695 as i32 as u32,
-        85305 as i32 as u32,
-        124515 as i32 as u32,
-        177045 as i32 as u32,
-        246047 as i32 as u32,
-        335137 as i32 as u32,
-        448427 as i32 as u32,
-        590557 as i32 as u32,
-        766727 as i32 as u32,
-        982729 as i32 as u32,
-        1244979 as i32 as u32,
-        1560549 as i32 as u32,
-        1937199 as i32 as u32,
-        2383409 as i32 as u32,
-        2908411 as i32 as u32,
-        3522221 as i32 as u32,
-        4235671 as i32 as u32,
-        5060441 as i32 as u32,
-        6009091 as i32 as u32,
-        7095093 as i32 as u32,
-        8332863 as i32 as u32,
-        9737793 as i32 as u32,
-        11326283 as i32 as u32,
-        13115773 as i32 as u32,
-        15124775 as i32 as u32,
-        17372905 as i32 as u32,
-        19880915 as i32 as u32,
-        22670725 as i32 as u32,
-        25765455 as i32 as u32,
-        29189457 as i32 as u32,
-        32968347 as i32 as u32,
-        37129037 as i32 as u32,
-        41699767 as i32 as u32,
-        46710137 as i32 as u32,
-        52191139 as i32 as u32,
-        58175189 as i32 as u32,
-        64696159 as i32 as u32,
-        71789409 as i32 as u32,
-        79491819 as i32 as u32,
-        87841821 as i32 as u32,
-        96879431 as i32 as u32,
-        106646281 as i32 as u32,
-        117185651 as i32 as u32,
-        128542501 as i32 as u32,
-        140763503 as i32 as u32,
-        153897073 as i32 as u32,
-        167993403 as i32 as u32,
-        183104493 as i32 as u32,
-        199284183 as i32 as u32,
-        216588185 as i32 as u32,
-        235074115 as i32 as u32,
-        254801525 as i32 as u32,
-        275831935 as i32 as u32,
-        298228865 as i32 as u32,
-        322057867 as i32 as u32,
-        347386557 as i32 as u32,
-        374284647 as i32 as u32,
-        402823977 as i32 as u32,
-        433078547 as i32 as u32,
-        465124549 as i32 as u32,
-        499040399 as i32 as u32,
-        534906769 as i32 as u32,
-        572806619 as i32 as u32,
-        612825229 as i32 as u32,
-        655050231 as i32 as u32,
-        699571641 as i32 as u32,
-        746481891 as i32 as u32,
-        795875861 as i32 as u32,
-        847850911 as i32 as u32,
-        902506913 as i32 as u32,
-        959946283 as i32 as u32,
-        1020274013 as i32 as u32,
-        1083597703 as i32 as u32,
-        1150027593 as i32 as u32,
-        1219676595 as i32 as u32,
-        1292660325 as i32 as u32,
-        1369097135 as i32 as u32,
-        1449108145 as i32 as u32,
-        1532817275 as i32 as u32,
-        1620351277 as i32 as u32,
-        1711839767 as i32 as u32,
-        1807415257 as i32 as u32,
-        1907213187 as i32 as u32,
-        2011371957 as i32 as u32,
-        2120032959 as i32 as u32,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15,
+        17,
+        19,
+        21,
+        23,
+        25,
+        27,
+        29,
+        31,
+        33,
+        35,
+        37,
+        39,
+        41,
+        43,
+        45,
+        47,
+        49,
+        51,
+        53,
+        55,
+        57,
+        59,
+        61,
+        63,
+        65,
+        67,
+        69,
+        71,
+        73,
+        75,
+        77,
+        79,
+        81,
+        83,
+        85,
+        87,
+        89,
+        91,
+        93,
+        95,
+        97,
+        99,
+        101,
+        103,
+        105,
+        107,
+        109,
+        111,
+        113,
+        115,
+        117,
+        119,
+        121,
+        123,
+        125,
+        127,
+        129,
+        131,
+        133,
+        135,
+        137,
+        139,
+        141,
+        143,
+        145,
+        147,
+        149,
+        151,
+        153,
+        155,
+        157,
+        159,
+        161,
+        163,
+        165,
+        167,
+        169,
+        171,
+        173,
+        175,
+        177,
+        179,
+        181,
+        183,
+        185,
+        187,
+        189,
+        191,
+        193,
+        195,
+        197,
+        199,
+        201,
+        203,
+        205,
+        207,
+        209,
+        211,
+        213,
+        215,
+        217,
+        219,
+        221,
+        223,
+        225,
+        227,
+        229,
+        231,
+        233,
+        235,
+        237,
+        239,
+        241,
+        243,
+        245,
+        247,
+        249,
+        251,
+        253,
+        255,
+        257,
+        259,
+        261,
+        263,
+        265,
+        267,
+        269,
+        271,
+        273,
+        275,
+        277,
+        279,
+        281,
+        283,
+        285,
+        287,
+        289,
+        291,
+        293,
+        295,
+        297,
+        299,
+        301,
+        303,
+        305,
+        307,
+        309,
+        311,
+        313,
+        315,
+        317,
+        319,
+        321,
+        323,
+        325,
+        327,
+        329,
+        331,
+        333,
+        335,
+        337,
+        339,
+        341,
+        343,
+        345,
+        347,
+        349,
+        351,
+        353,
+        355,
+        357,
+        359,
+        361,
+        363,
+        365,
+        367,
+        369,
+        371,
+        373,
+        375,
+        377,
+        379,
+        381,
+        383,
+        385,
+        387,
+        389,
+        391,
+        393,
+        395,
+        397,
+        399,
+        401,
+        403,
+        405,
+        407,
+        409,
+        411,
+        413,
+        415,
+        13,
+        25,
+        41,
+        61,
+        85,
+        113,
+        145,
+        181,
+        221,
+        265,
+        313,
+        365,
+        421,
+        481,
+        545,
+        613,
+        685,
+        761,
+        841,
+        925,
+        1013,
+        1105,
+        1201,
+        1301,
+        1405,
+        1513,
+        1625,
+        1741,
+        1861,
+        1985,
+        2113,
+        2245,
+        2381,
+        2521,
+        2665,
+        2813,
+        2965,
+        3121,
+        3281,
+        3445,
+        3613,
+        3785,
+        3961,
+        4141,
+        4325,
+        4513,
+        4705,
+        4901,
+        5101,
+        5305,
+        5513,
+        5725,
+        5941,
+        6161,
+        6385,
+        6613,
+        6845,
+        7081,
+        7321,
+        7565,
+        7813,
+        8065,
+        8321,
+        8581,
+        8845,
+        9113,
+        9385,
+        9661,
+        9941,
+        10225,
+        10513,
+        10805,
+        11101,
+        11401,
+        11705,
+        12013,
+        12325,
+        12641,
+        12961,
+        13285,
+        13613,
+        13945,
+        14281,
+        14621,
+        14965,
+        15313,
+        15665,
+        16021,
+        16381,
+        16745,
+        17113,
+        17485,
+        17861,
+        18241,
+        18625,
+        19013,
+        19405,
+        19801,
+        20201,
+        20605,
+        21013,
+        21425,
+        21841,
+        22261,
+        22685,
+        23113,
+        23545,
+        23981,
+        24421,
+        24865,
+        25313,
+        25765,
+        26221,
+        26681,
+        27145,
+        27613,
+        28085,
+        28561,
+        29041,
+        29525,
+        30013,
+        30505,
+        31001,
+        31501,
+        32005,
+        32513,
+        33025,
+        33541,
+        34061,
+        34585,
+        35113,
+        35645,
+        36181,
+        36721,
+        37265,
+        37813,
+        38365,
+        38921,
+        39481,
+        40045,
+        40613,
+        41185,
+        41761,
+        42341,
+        42925,
+        43513,
+        44105,
+        44701,
+        45301,
+        45905,
+        46513,
+        47125,
+        47741,
+        48361,
+        48985,
+        49613,
+        50245,
+        50881,
+        51521,
+        52165,
+        52813,
+        53465,
+        54121,
+        54781,
+        55445,
+        56113,
+        56785,
+        57461,
+        58141,
+        58825,
+        59513,
+        60205,
+        60901,
+        61601,
+        62305,
+        63013,
+        63725,
+        64441,
+        65161,
+        65885,
+        66613,
+        67345,
+        68081,
+        68821,
+        69565,
+        70313,
+        71065,
+        71821,
+        72581,
+        73345,
+        74113,
+        74885,
+        75661,
+        76441,
+        77225,
+        78013,
+        78805,
+        79601,
+        80401,
+        81205,
+        82013,
+        82825,
+        83641,
+        84461,
+        85285,
+        86113,
+        63,
+        129,
+        231,
+        377,
+        575,
+        833,
+        1159,
+        1561,
+        2047,
+        2625,
+        3303,
+        4089,
+        4991,
+        6017,
+        7175,
+        8473,
+        9919,
+        11521,
+        13287,
+        15225,
+        17343,
+        19649,
+        22151,
+        24857,
+        27775,
+        30913,
+        34279,
+        37881,
+        41727,
+        45825,
+        50183,
+        54809,
+        59711,
+        64897,
+        70375,
+        76153,
+        82239,
+        88641,
+        95367,
+        102425,
+        109823,
+        117569,
+        125671,
+        134137,
+        142975,
+        152193,
+        161799,
+        171801,
+        182207,
+        193025,
+        204263,
+        215929,
+        228031,
+        240577,
+        253575,
+        267033,
+        280959,
+        295361,
+        310247,
+        325625,
+        341503,
+        357889,
+        374791,
+        392217,
+        410175,
+        428673,
+        447719,
+        467321,
+        487487,
+        508225,
+        529543,
+        551449,
+        573951,
+        597057,
+        620775,
+        645113,
+        670079,
+        695681,
+        721927,
+        748825,
+        776383,
+        804609,
+        833511,
+        863097,
+        893375,
+        924353,
+        956039,
+        988441,
+        1021567,
+        1055425,
+        1090023,
+        1125369,
+        1161471,
+        1198337,
+        1235975,
+        1274393,
+        1313599,
+        1353601,
+        1394407,
+        1436025,
+        1478463,
+        1521729,
+        1565831,
+        1610777,
+        1656575,
+        1703233,
+        1750759,
+        1799161,
+        1848447,
+        1898625,
+        1949703,
+        2001689,
+        2054591,
+        2108417,
+        2163175,
+        2218873,
+        2275519,
+        2333121,
+        2391687,
+        2451225,
+        2511743,
+        2573249,
+        2635751,
+        2699257,
+        2763775,
+        2829313,
+        2895879,
+        2963481,
+        3032127,
+        3101825,
+        3172583,
+        3244409,
+        3317311,
+        3391297,
+        3466375,
+        3542553,
+        3619839,
+        3698241,
+        3777767,
+        3858425,
+        3940223,
+        4023169,
+        4107271,
+        4192537,
+        4278975,
+        4366593,
+        4455399,
+        4545401,
+        4636607,
+        4729025,
+        4822663,
+        4917529,
+        5013631,
+        5110977,
+        5209575,
+        5309433,
+        5410559,
+        5512961,
+        5616647,
+        5721625,
+        5827903,
+        5935489,
+        6044391,
+        6154617,
+        6266175,
+        6379073,
+        6493319,
+        6608921,
+        6725887,
+        6844225,
+        6963943,
+        7085049,
+        7207551,
+        7331457,
+        7456775,
+        7583513,
+        7711679,
+        7841281,
+        7972327,
+        8104825,
+        8238783,
+        8374209,
+        8511111,
+        8649497,
+        8789375,
+        8930753,
+        9073639,
+        9218041,
+        9363967,
+        9511425,
+        9660423,
+        9810969,
+        9963071,
+        10116737,
+        10271975,
+        10428793,
+        10587199,
+        10747201,
+        10908807,
+        11072025,
+        11236863,
+        11403329,
+        11571431,
+        11741177,
+        11912575,
+        321,
+        681,
+        1289,
+        2241,
+        3649,
+        5641,
+        8361,
+        11969,
+        16641,
+        22569,
+        29961,
+        39041,
+        50049,
+        63241,
+        78889,
+        97281,
+        118721,
+        143529,
+        172041,
+        204609,
+        241601,
+        283401,
+        330409,
+        383041,
+        441729,
+        506921,
+        579081,
+        658689,
+        746241,
+        842249,
+        947241,
+        1061761,
+        1186369,
+        1321641,
+        1468169,
+        1626561,
+        1797441,
+        1981449,
+        2179241,
+        2391489,
+        2618881,
+        2862121,
+        3121929,
+        3399041,
+        3694209,
+        4008201,
+        4341801,
+        4695809,
+        5071041,
+        5468329,
+        5888521,
+        6332481,
+        6801089,
+        7295241,
+        7815849,
+        8363841,
+        8940161,
+        9545769,
+        10181641,
+        10848769,
+        11548161,
+        12280841,
+        13047849,
+        13850241,
+        14689089,
+        15565481,
+        16480521,
+        17435329,
+        18431041,
+        19468809,
+        20549801,
+        21675201,
+        22846209,
+        24064041,
+        25329929,
+        26645121,
+        28010881,
+        29428489,
+        30899241,
+        32424449,
+        34005441,
+        35643561,
+        37340169,
+        39096641,
+        40914369,
+        42794761,
+        44739241,
+        46749249,
+        48826241,
+        50971689,
+        53187081,
+        55473921,
+        57833729,
+        60268041,
+        62778409,
+        65366401,
+        68033601,
+        70781609,
+        73612041,
+        76526529,
+        79526721,
+        82614281,
+        85790889,
+        89058241,
+        92418049,
+        95872041,
+        99421961,
+        103069569,
+        106816641,
+        110664969,
+        114616361,
+        118672641,
+        122835649,
+        127107241,
+        131489289,
+        135983681,
+        140592321,
+        145317129,
+        150160041,
+        155123009,
+        160208001,
+        165417001,
+        170752009,
+        176215041,
+        181808129,
+        187533321,
+        193392681,
+        199388289,
+        205522241,
+        211796649,
+        218213641,
+        224775361,
+        231483969,
+        238341641,
+        245350569,
+        252512961,
+        259831041,
+        267307049,
+        274943241,
+        282741889,
+        290705281,
+        298835721,
+        307135529,
+        315607041,
+        324252609,
+        333074601,
+        342075401,
+        351257409,
+        360623041,
+        370174729,
+        379914921,
+        389846081,
+        399970689,
+        410291241,
+        420810249,
+        431530241,
+        442453761,
+        453583369,
+        464921641,
+        476471169,
+        488234561,
+        500214441,
+        512413449,
+        524834241,
+        537479489,
+        550351881,
+        563454121,
+        576788929,
+        590359041,
+        604167209,
+        618216201,
+        632508801,
+        647047809,
+        661836041,
+        676876329,
+        692171521,
+        707724481,
+        723538089,
+        739615241,
+        755958849,
+        772571841,
+        789457161,
+        806617769,
+        824056641,
+        841776769,
+        859781161,
+        878072841,
+        896654849,
+        915530241,
+        934702089,
+        954173481,
+        973947521,
+        994027329,
+        1014416041,
+        1035116809,
+        1056132801,
+        1077467201,
+        1099123209,
+        1121104041,
+        1143412929,
+        1166053121,
+        1189027881,
+        1212340489,
+        1235994241,
+        1683,
+        3653,
+        7183,
+        13073,
+        22363,
+        36365,
+        56695,
+        85305,
+        124515,
+        177045,
+        246047,
+        335137,
+        448427,
+        590557,
+        766727,
+        982729,
+        1244979,
+        1560549,
+        1937199,
+        2383409,
+        2908411,
+        3522221,
+        4235671,
+        5060441,
+        6009091,
+        7095093,
+        8332863,
+        9737793,
+        11326283,
+        13115773,
+        15124775,
+        17372905,
+        19880915,
+        22670725,
+        25765455,
+        29189457,
+        32968347,
+        37129037,
+        41699767,
+        46710137,
+        52191139,
+        58175189,
+        64696159,
+        71789409,
+        79491819,
+        87841821,
+        96879431,
+        106646281,
+        117185651,
+        128542501,
+        140763503,
+        153897073,
+        167993403,
+        183104493,
+        199284183,
+        216588185,
+        235074115,
+        254801525,
+        275831935,
+        298228865,
+        322057867,
+        347386557,
+        374284647,
+        402823977,
+        433078547,
+        465124549,
+        499040399,
+        534906769,
+        572806619,
+        612825229,
+        655050231,
+        699571641,
+        746481891,
+        795875861,
+        847850911,
+        902506913,
+        959946283,
+        1020274013,
+        1083597703,
+        1150027593,
+        1219676595,
+        1292660325,
+        1369097135,
+        1449108145,
+        1532817275,
+        1620351277,
+        1711839767,
+        1807415257,
+        1907213187,
+        2011371957,
+        2120032959,
         2233340609 as u32,
         2351442379 as u32,
         2474488829 as u32,
@@ -2047,188 +2047,188 @@ pub mod cwrs_c {
         3655980493 as u32,
         3830829623 as u32,
         4012305913 as u32,
-        8989 as i32 as u32,
-        19825 as i32 as u32,
-        40081 as i32 as u32,
-        75517 as i32 as u32,
-        134245 as i32 as u32,
-        227305 as i32 as u32,
-        369305 as i32 as u32,
-        579125 as i32 as u32,
-        880685 as i32 as u32,
-        1303777 as i32 as u32,
-        1884961 as i32 as u32,
-        2668525 as i32 as u32,
-        3707509 as i32 as u32,
-        5064793 as i32 as u32,
-        6814249 as i32 as u32,
-        9041957 as i32 as u32,
-        11847485 as i32 as u32,
-        15345233 as i32 as u32,
-        19665841 as i32 as u32,
-        24957661 as i32 as u32,
-        31388293 as i32 as u32,
-        39146185 as i32 as u32,
-        48442297 as i32 as u32,
-        59511829 as i32 as u32,
-        72616013 as i32 as u32,
-        88043969 as i32 as u32,
-        106114625 as i32 as u32,
-        127178701 as i32 as u32,
-        151620757 as i32 as u32,
-        179861305 as i32 as u32,
-        212358985 as i32 as u32,
-        249612805 as i32 as u32,
-        292164445 as i32 as u32,
-        340600625 as i32 as u32,
-        395555537 as i32 as u32,
-        457713341 as i32 as u32,
-        527810725 as i32 as u32,
-        606639529 as i32 as u32,
-        695049433 as i32 as u32,
-        793950709 as i32 as u32,
-        904317037 as i32 as u32,
-        1027188385 as i32 as u32,
-        1163673953 as i32 as u32,
-        1314955181 as i32 as u32,
-        1482288821 as i32 as u32,
-        1667010073 as i32 as u32,
-        1870535785 as i32 as u32,
-        2094367717 as i32 as u32,
+        8989,
+        19825,
+        40081,
+        75517,
+        134245,
+        227305,
+        369305,
+        579125,
+        880685,
+        1303777,
+        1884961,
+        2668525,
+        3707509,
+        5064793,
+        6814249,
+        9041957,
+        11847485,
+        15345233,
+        19665841,
+        24957661,
+        31388293,
+        39146185,
+        48442297,
+        59511829,
+        72616013,
+        88043969,
+        106114625,
+        127178701,
+        151620757,
+        179861305,
+        212358985,
+        249612805,
+        292164445,
+        340600625,
+        395555537,
+        457713341,
+        527810725,
+        606639529,
+        695049433,
+        793950709,
+        904317037,
+        1027188385,
+        1163673953,
+        1314955181,
+        1482288821,
+        1667010073,
+        1870535785,
+        2094367717,
         2340095869 as u32,
         2609401873 as u32,
         2904062449 as u32,
         3225952925 as u32,
         3577050821 as u32,
         3959439497 as u32,
-        48639 as i32 as u32,
-        108545 as i32 as u32,
-        224143 as i32 as u32,
-        433905 as i32 as u32,
-        795455 as i32 as u32,
-        1392065 as i32 as u32,
-        2340495 as i32 as u32,
-        3800305 as i32 as u32,
-        5984767 as i32 as u32,
-        9173505 as i32 as u32,
-        13726991 as i32 as u32,
-        20103025 as i32 as u32,
-        28875327 as i32 as u32,
-        40754369 as i32 as u32,
-        56610575 as i32 as u32,
-        77500017 as i32 as u32,
-        104692735 as i32 as u32,
-        139703809 as i32 as u32,
-        184327311 as i32 as u32,
-        240673265 as i32 as u32,
-        311207743 as i32 as u32,
-        398796225 as i32 as u32,
-        506750351 as i32 as u32,
-        638878193 as i32 as u32,
-        799538175 as i32 as u32,
-        993696769 as i32 as u32,
-        1226990095 as i32 as u32,
-        1505789553 as i32 as u32,
-        1837271615 as i32 as u32,
+        48639,
+        108545,
+        224143,
+        433905,
+        795455,
+        1392065,
+        2340495,
+        3800305,
+        5984767,
+        9173505,
+        13726991,
+        20103025,
+        28875327,
+        40754369,
+        56610575,
+        77500017,
+        104692735,
+        139703809,
+        184327311,
+        240673265,
+        311207743,
+        398796225,
+        506750351,
+        638878193,
+        799538175,
+        993696769,
+        1226990095,
+        1505789553,
+        1837271615,
         2229491905 as u32,
         2691463695 as u32,
         3233240945 as u32,
         3866006015 as u32,
-        265729 as i32 as u32,
-        598417 as i32 as u32,
-        1256465 as i32 as u32,
-        2485825 as i32 as u32,
-        4673345 as i32 as u32,
-        8405905 as i32 as u32,
-        14546705 as i32 as u32,
-        24331777 as i32 as u32,
-        39490049 as i32 as u32,
-        62390545 as i32 as u32,
-        96220561 as i32 as u32,
-        145198913 as i32 as u32,
-        214828609 as i32 as u32,
-        312193553 as i32 as u32,
-        446304145 as i32 as u32,
-        628496897 as i32 as u32,
-        872893441 as i32 as u32,
-        1196924561 as i32 as u32,
-        1621925137 as i32 as u32,
+        265729,
+        598417,
+        1256465,
+        2485825,
+        4673345,
+        8405905,
+        14546705,
+        24331777,
+        39490049,
+        62390545,
+        96220561,
+        145198913,
+        214828609,
+        312193553,
+        446304145,
+        628496897,
+        872893441,
+        1196924561,
+        1621925137,
         2173806145 as u32,
         2883810113 as u32,
-        1462563 as i32 as u32,
-        3317445 as i32 as u32,
-        7059735 as i32 as u32,
-        14218905 as i32 as u32,
-        27298155 as i32 as u32,
-        50250765 as i32 as u32,
-        89129247 as i32 as u32,
-        152951073 as i32 as u32,
-        254831667 as i32 as u32,
-        413442773 as i32 as u32,
-        654862247 as i32 as u32,
-        1014889769 as i32 as u32,
-        1541911931 as i32 as u32,
+        1462563,
+        3317445,
+        7059735,
+        14218905,
+        27298155,
+        50250765,
+        89129247,
+        152951073,
+        254831667,
+        413442773,
+        654862247,
+        1014889769,
+        1541911931,
         2300409629 as u32,
         3375210671 as u32,
-        8097453 as i32 as u32,
-        18474633 as i32 as u32,
-        39753273 as i32 as u32,
-        81270333 as i32 as u32,
-        158819253 as i32 as u32,
-        298199265 as i32 as u32,
-        540279585 as i32 as u32,
-        948062325 as i32 as u32,
-        1616336765 as i32 as u32,
+        8097453,
+        18474633,
+        39753273,
+        81270333,
+        158819253,
+        298199265,
+        540279585,
+        948062325,
+        1616336765,
         2684641785 as u32,
-        45046719 as i32 as u32,
-        103274625 as i32 as u32,
-        224298231 as i32 as u32,
-        464387817 as i32 as u32,
-        921406335 as i32 as u32,
-        1759885185 as i32 as u32,
+        45046719,
+        103274625,
+        224298231,
+        464387817,
+        921406335,
+        1759885185,
         3248227095 as u32,
-        251595969 as i32 as u32,
-        579168825 as i32 as u32,
-        1267854873 as i32 as u32,
+        251595969,
+        579168825,
+        1267854873,
         2653649025 as u32,
-        1409933619 as i32 as u32,
+        1409933619,
     ];
         pub static mut CELT_PVQ_U_ROW: [*const u32; 15] = unsafe { [
-            CELT_PVQ_U_DATA.as_ptr().offset(0 as i32 as isize),
-            CELT_PVQ_U_DATA.as_ptr().offset(208 as i32 as isize),
-            CELT_PVQ_U_DATA.as_ptr().offset(415 as i32 as isize),
-            CELT_PVQ_U_DATA.as_ptr().offset(621 as i32 as isize),
-            CELT_PVQ_U_DATA.as_ptr().offset(826 as i32 as isize),
+            CELT_PVQ_U_DATA.as_ptr().offset(0 as isize),
+            CELT_PVQ_U_DATA.as_ptr().offset(208 as isize),
+            CELT_PVQ_U_DATA.as_ptr().offset(415 as isize),
+            CELT_PVQ_U_DATA.as_ptr().offset(621 as isize),
+            CELT_PVQ_U_DATA.as_ptr().offset(826 as isize),
             CELT_PVQ_U_DATA
                 .as_ptr()
-                .offset(1030 as i32 as isize),
+                .offset(1030 as isize),
             CELT_PVQ_U_DATA
                 .as_ptr()
-                .offset(1233 as i32 as isize),
+                .offset(1233 as isize),
             CELT_PVQ_U_DATA
                 .as_ptr()
-                .offset(1336 as i32 as isize),
+                .offset(1336 as isize),
             CELT_PVQ_U_DATA
                 .as_ptr()
-                .offset(1389 as i32 as isize),
+                .offset(1389 as isize),
             CELT_PVQ_U_DATA
                 .as_ptr()
-                .offset(1421 as i32 as isize),
+                .offset(1421 as isize),
             CELT_PVQ_U_DATA
                 .as_ptr()
-                .offset(1441 as i32 as isize),
+                .offset(1441 as isize),
             CELT_PVQ_U_DATA
                 .as_ptr()
-                .offset(1455 as i32 as isize),
+                .offset(1455 as isize),
             CELT_PVQ_U_DATA
                 .as_ptr()
-                .offset(1464 as i32 as isize),
+                .offset(1464 as isize),
             CELT_PVQ_U_DATA
                 .as_ptr()
-                .offset(1470 as i32 as isize),
+                .offset(1470 as isize),
             CELT_PVQ_U_DATA
                 .as_ptr()
-                .offset(1473 as i32 as isize),
+                .offset(1473 as isize),
         ] };
         pub unsafe fn get_required_bits(
         mut _bits: *mut i16,
@@ -2237,23 +2237,23 @@ pub mod cwrs_c {
         mut _frac: i32,
     ) {
         let mut k: i32 = 0;
-        *_bits.offset(0 as i32 as isize) = 0 as i32 as i16;
-        k = 1 as i32;
+        *_bits.offset(0 as isize) = 0;
+        k = 1;
         while k <= _maxk {
             *_bits.offset(k as isize) = log2_frac(
                 (*(CELT_PVQ_U_ROW[(if _n < k { _n } else { k }) as usize])
                     .offset((if _n > k { _n } else { k }) as isize))
                 .wrapping_add(
-                    *(CELT_PVQ_U_ROW[(if _n < k + 1 as i32 {
+                    *(CELT_PVQ_U_ROW[(if _n < k + 1 {
                         _n
                     } else {
-                        k + 1 as i32
+                        k + 1
                     }) as usize])
                         .offset(
-                            (if _n > k + 1 as i32 {
+                            (if _n > k + 1 {
                                 _n
                             } else {
-                                k + 1 as i32
+                                k + 1
                             }) as isize,
                         ),
                 ),
@@ -2266,8 +2266,8 @@ pub mod cwrs_c {
         let mut i: u32 = 0;
         let mut j: i32 = 0;
         let mut k: i32 = 0;
-        j = _n - 1 as i32;
-        i = (*_y.offset(j as isize) < 0 as i32) as i32 as u32;
+        j = _n - 1;
+        i = (*_y.offset(j as isize) < 0) as i32 as u32;
         k = abs(*_y.offset(j as isize));
         loop {
             j -= 1;
@@ -2276,23 +2276,23 @@ pub mod cwrs_c {
                     .offset((if _n - j > k { _n - j } else { k }) as isize),
             ) as u32 as u32;
             k += abs(*_y.offset(j as isize));
-            if *_y.offset(j as isize) < 0 as i32 {
+            if *_y.offset(j as isize) < 0 {
                 i = (i as u32).wrapping_add(
-                    *(CELT_PVQ_U_ROW[(if _n - j < k + 1 as i32 {
+                    *(CELT_PVQ_U_ROW[(if _n - j < k + 1 {
                         _n - j
                     } else {
-                        k + 1 as i32
+                        k + 1
                     }) as usize])
                         .offset(
-                            (if _n - j > k + 1 as i32 {
+                            (if _n - j > k + 1 {
                                 _n - j
                             } else {
-                                k + 1 as i32
+                                k + 1
                             }) as isize,
                         ),
                 ) as u32 as u32;
             }
-            if !(j > 0 as i32) {
+            if !(j > 0) {
                 break;
             }
         }
@@ -2310,16 +2310,16 @@ pub mod cwrs_c {
             (*(CELT_PVQ_U_ROW[(if _n < _k { _n } else { _k }) as usize])
                 .offset((if _n > _k { _n } else { _k }) as isize))
             .wrapping_add(
-                *(CELT_PVQ_U_ROW[(if _n < _k + 1 as i32 {
+                *(CELT_PVQ_U_ROW[(if _n < _k + 1 {
                     _n
                 } else {
-                    _k + 1 as i32
+                    _k + 1
                 }) as usize])
                     .offset(
-                        (if _n > _k + 1 as i32 {
+                        (if _n > _k + 1 {
                             _n
                         } else {
-                            _k + 1 as i32
+                            _k + 1
                         }) as isize,
                     ),
             ),
@@ -2335,13 +2335,13 @@ pub mod cwrs_c {
         let mut s: i32 = 0;
         let mut k0: i32 = 0;
         let mut val: i16 = 0;
-        let mut yy: opus_val32 = 0 as i32 as opus_val32;
-        while _n > 2 as i32 {
+        let mut yy: opus_val32 = 0 as opus_val32;
+        while _n > 2 {
             let mut q: u32 = 0;
             if _k >= _n {
                 let mut row: *const u32 = 0 as *const u32;
                 row = CELT_PVQ_U_ROW[_n as usize];
-                p = *row.offset((_k + 1 as i32) as isize);
+                p = *row.offset((_k + 1) as isize);
                 s = -((_i >= p) as i32);
                 _i = (_i as u32).wrapping_sub(p & s as u32) as u32 as u32;
                 k0 = _k;
@@ -2370,12 +2370,12 @@ pub mod cwrs_c {
                 yy = yy + val as opus_val32 * val as opus_val32;
             } else {
                 p = *(CELT_PVQ_U_ROW[_k as usize]).offset(_n as isize);
-                q = *(CELT_PVQ_U_ROW[(_k + 1 as i32) as usize]).offset(_n as isize);
+                q = *(CELT_PVQ_U_ROW[(_k + 1) as usize]).offset(_n as isize);
                 if p <= _i && _i < q {
                     _i = (_i as u32).wrapping_sub(p) as u32 as u32;
                     let fresh5 = _y;
                     _y = _y.offset(1);
-                    *fresh5 = 0 as i32;
+                    *fresh5 = 0;
                 } else {
                     s = -((_i >= q) as i32);
                     _i = (_i as u32).wrapping_sub(q & s as u32) as u32 as u32;
@@ -2397,14 +2397,14 @@ pub mod cwrs_c {
             }
             _n -= 1;
         }
-        p = (2 as i32 * _k + 1 as i32) as u32;
+        p = (2 * _k + 1) as u32;
         s = -((_i >= p) as i32);
         _i = (_i as u32).wrapping_sub(p & s as u32) as u32 as u32;
         k0 = _k;
-        _k = (_i.wrapping_add(1 as i32 as u32) >> 1 as i32) as i32;
+        _k = (_i.wrapping_add(1) >> 1) as i32;
         if _k != 0 {
             _i = (_i as u32)
-                .wrapping_sub((2 as i32 * _k - 1 as i32) as u32)
+                .wrapping_sub((2 * _k - 1) as u32)
                 as u32 as u32;
         }
         val = (k0 - _k + s ^ s) as i16;
@@ -2432,16 +2432,16 @@ pub mod cwrs_c {
                 (*(CELT_PVQ_U_ROW[(if _n < _k { _n } else { _k }) as usize])
                     .offset((if _n > _k { _n } else { _k }) as isize))
                 .wrapping_add(
-                    *(CELT_PVQ_U_ROW[(if _n < _k + 1 as i32 {
+                    *(CELT_PVQ_U_ROW[(if _n < _k + 1 {
                         _n
                     } else {
-                        _k + 1 as i32
+                        _k + 1
                     }) as usize])
                         .offset(
-                            (if _n > _k + 1 as i32 {
+                            (if _n > _k + 1 {
                                 _n
                             } else {
-                                _k + 1 as i32
+                                _k + 1
                             }) as isize,
                         ),
                 ),
@@ -2460,23 +2460,23 @@ pub mod mathops_c {
         let mut b: u32 = 0;
         let mut g: u32 = 0;
         let mut bshift: i32 = 0;
-        g = 0 as i32 as u32;
+        g = 0;
         bshift = ::core::mem::size_of::<u32>() as u64 as i32
-            * 8 as i32
+            * 8
             - _val.leading_zeros() as i32
-            - 1 as i32
-            >> 1 as i32;
+            - 1
+            >> 1;
         b = (1 as u32) << bshift;
         loop {
             let mut t: u32 = 0;
-            t = (g << 1 as i32).wrapping_add(b) << bshift;
+            t = (g << 1).wrapping_add(b) << bshift;
             if t <= _val {
                 g = g.wrapping_add(b);
                 _val = (_val as u32).wrapping_sub(t) as u32 as u32;
             }
-            b >>= 1 as i32;
+            b >>= 1;
             bshift -= 1;
-            if !(bshift >= 0 as i32) {
+            if !(bshift >= 0) {
                 break;
             }
         }
@@ -2486,10 +2486,10 @@ pub mod mathops_c {
 pub mod rate_h {
     #[inline]
         pub unsafe fn get_pulses(mut i: i32) -> i32 {
-        return if i < 8 as i32 {
+        return if i < 8 {
             i
         } else {
-            8 as i32 + (i & 7 as i32) << (i >> 3 as i32) - 1 as i32
+            8 + (i & 7) << (i >> 3) - 1
         };
     }
 }
@@ -2520,62 +2520,62 @@ pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data
 pub use self::FILE_h::FILE;
 use crate::externs::{memmove, memset};
 static mut pn: [i32; 22] = [
-    2 as i32,
-    3 as i32,
-    4 as i32,
-    6 as i32,
-    8 as i32,
-    9 as i32,
-    11 as i32,
-    12 as i32,
-    16 as i32,
-    18 as i32,
-    22 as i32,
-    24 as i32,
-    32 as i32,
-    36 as i32,
-    44 as i32,
-    48 as i32,
-    64 as i32,
-    72 as i32,
-    88 as i32,
-    96 as i32,
-    144 as i32,
-    176 as i32,
+    2,
+    3,
+    4,
+    6,
+    8,
+    9,
+    11,
+    12,
+    16,
+    18,
+    22,
+    24,
+    32,
+    36,
+    44,
+    48,
+    64,
+    72,
+    88,
+    96,
+    144,
+    176,
 ];
 static mut pkmax: [i32; 22] = [
-    128 as i32,
-    128 as i32,
-    128 as i32,
-    88 as i32,
-    36 as i32,
-    26 as i32,
-    18 as i32,
-    16 as i32,
-    12 as i32,
-    11 as i32,
-    9 as i32,
-    9 as i32,
-    7 as i32,
-    7 as i32,
-    6 as i32,
-    6 as i32,
-    5 as i32,
-    5 as i32,
-    5 as i32,
-    5 as i32,
-    4 as i32,
-    4 as i32,
+    128,
+    128,
+    128,
+    88,
+    36,
+    26,
+    18,
+    16,
+    12,
+    11,
+    9,
+    9,
+    7,
+    7,
+    6,
+    6,
+    5,
+    5,
+    5,
+    5,
+    4,
+    4,
 ];
 unsafe fn main_0() -> i32 {
     let mut t: i32 = 0;
     let mut n: i32 = 0;
-    t = 0 as i32;
-    while t < 22 as i32 {
+    t = 0;
+    while t < 22 {
         let mut pseudo: i32 = 0;
         n = pn[t as usize];
-        pseudo = 1 as i32;
-        while pseudo < 41 as i32 {
+        pseudo = 1;
+        while pseudo < 41 {
             let mut k: i32 = 0;
             let mut inc: u32 = 0;
             let mut nc: u32 = 0;
@@ -2592,24 +2592,24 @@ unsafe fn main_0() -> i32 {
             nc = (*(CELT_PVQ_U_ROW[(if n < k { n } else { k }) as usize])
                 .offset((if n > k { n } else { k }) as isize))
             .wrapping_add(
-                *(CELT_PVQ_U_ROW[(if n < k + 1 as i32 {
+                *(CELT_PVQ_U_ROW[(if n < k + 1 {
                     n
                 } else {
-                    k + 1 as i32
+                    k + 1
                 }) as usize])
                     .offset(
-                        (if n > k + 1 as i32 {
+                        (if n > k + 1 {
                             n
                         } else {
-                            k + 1 as i32
+                            k + 1
                         }) as isize,
                     ),
             );
-            inc = nc.wrapping_div(20000 as i32 as u32);
-            if inc < 1 as i32 as u32 {
-                inc = 1 as i32 as u32;
+            inc = nc.wrapping_div(20000);
+            if inc < 1 {
+                inc = 1;
             }
-            i = 0 as i32 as u32;
+            i = 0;
             while i < nc {
                 let mut y: [i32; 240] = [0; 240];
                 let mut sy: i32 = 0;
@@ -2617,8 +2617,8 @@ unsafe fn main_0() -> i32 {
                 let mut ii: u32 = 0;
                 let mut j: i32 = 0;
                 cwrsi(n, k, i, y.as_mut_ptr());
-                sy = 0 as i32;
-                j = 0 as i32;
+                sy = 0;
+                j = 0;
                 while j < n {
                     sy += abs(y[j as usize]);
                     j += 1;
@@ -2632,22 +2632,22 @@ unsafe fn main_0() -> i32 {
                         sy,
                         k,
                     );
-                    return 99 as i32;
+                    return 99;
                 }
                 ii = icwrs(n, y.as_mut_ptr());
                 v = (*(CELT_PVQ_U_ROW[(if n < k { n } else { k }) as usize])
                     .offset((if n > k { n } else { k }) as isize))
                 .wrapping_add(
-                    *(CELT_PVQ_U_ROW[(if n < k + 1 as i32 {
+                    *(CELT_PVQ_U_ROW[(if n < k + 1 {
                         n
                     } else {
-                        k + 1 as i32
+                        k + 1
                     }) as usize])
                         .offset(
-                            (if n > k + 1 as i32 {
+                            (if n > k + 1 {
                                 n
                             } else {
-                                k + 1 as i32
+                                k + 1
                             }) as isize,
                         ),
                 );
@@ -2659,7 +2659,7 @@ unsafe fn main_0() -> i32 {
                         ii as i64,
                         i as i64,
                     );
-                    return 1 as i32;
+                    return 1;
                 }
                 if v != nc {
                     fprintf(
@@ -2669,7 +2669,7 @@ unsafe fn main_0() -> i32 {
                         v as i64,
                         nc as i64,
                     );
-                    return 2 as i32;
+                    return 2;
                 }
                 i = (i as u32).wrapping_add(inc) as u32 as u32;
             }
@@ -2677,7 +2677,7 @@ unsafe fn main_0() -> i32 {
         }
         t += 1;
     }
-    return 0 as i32;
+    return 0;
 }
 pub fn main() {
     unsafe { ::std::process::exit(main_0() as i32) }

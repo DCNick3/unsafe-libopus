@@ -18,42 +18,30 @@ pub unsafe fn silk_residual_energy_FLP(
     shift = LPC_order + subfr_length;
     silk_LPC_analysis_filter_FLP(
         LPC_res.as_mut_ptr(),
-        (*a.offset(0 as i32 as isize)).as_mut_ptr() as *const f32,
-        x.offset((0 as i32 * shift) as isize),
-        2 as i32 * shift,
+        (*a.offset(0 as isize)).as_mut_ptr() as *const f32,
+        x.offset((0 * shift) as isize),
+        2 * shift,
         LPC_order,
     );
-    *nrgs.offset(0 as i32 as isize) = ((*gains.offset(0 as i32 as isize)
-        * *gains.offset(0 as i32 as isize)) as f64
-        * silk_energy_FLP(
-            LPC_res_ptr.offset((0 as i32 * shift) as isize),
-            subfr_length,
-        )) as f32;
-    *nrgs.offset(1 as i32 as isize) = ((*gains.offset(1 as i32 as isize)
-        * *gains.offset(1 as i32 as isize)) as f64
-        * silk_energy_FLP(
-            LPC_res_ptr.offset((1 as i32 * shift) as isize),
-            subfr_length,
-        )) as f32;
+    *nrgs.offset(0 as isize) = ((*gains.offset(0 as isize) * *gains.offset(0 as isize)) as f64
+        * silk_energy_FLP(LPC_res_ptr.offset((0 * shift) as isize), subfr_length))
+        as f32;
+    *nrgs.offset(1 as isize) = ((*gains.offset(1 as isize) * *gains.offset(1 as isize)) as f64
+        * silk_energy_FLP(LPC_res_ptr.offset((1 * shift) as isize), subfr_length))
+        as f32;
     if nb_subfr == MAX_NB_SUBFR {
         silk_LPC_analysis_filter_FLP(
             LPC_res.as_mut_ptr(),
-            (*a.offset(1 as i32 as isize)).as_mut_ptr() as *const f32,
-            x.offset((2 as i32 * shift) as isize),
-            2 as i32 * shift,
+            (*a.offset(1 as isize)).as_mut_ptr() as *const f32,
+            x.offset((2 * shift) as isize),
+            2 * shift,
             LPC_order,
         );
-        *nrgs.offset(2 as i32 as isize) = ((*gains.offset(2 as i32 as isize)
-            * *gains.offset(2 as i32 as isize)) as f64
-            * silk_energy_FLP(
-                LPC_res_ptr.offset((0 as i32 * shift) as isize),
-                subfr_length,
-            )) as f32;
-        *nrgs.offset(3 as i32 as isize) = ((*gains.offset(3 as i32 as isize)
-            * *gains.offset(3 as i32 as isize)) as f64
-            * silk_energy_FLP(
-                LPC_res_ptr.offset((1 as i32 * shift) as isize),
-                subfr_length,
-            )) as f32;
+        *nrgs.offset(2 as isize) = ((*gains.offset(2 as isize) * *gains.offset(2 as isize)) as f64
+            * silk_energy_FLP(LPC_res_ptr.offset((0 * shift) as isize), subfr_length))
+            as f32;
+        *nrgs.offset(3 as isize) = ((*gains.offset(3 as isize) * *gains.offset(3 as isize)) as f64
+            * silk_energy_FLP(LPC_res_ptr.offset((1 * shift) as isize), subfr_length))
+            as f32;
     }
 }

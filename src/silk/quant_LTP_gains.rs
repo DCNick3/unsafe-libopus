@@ -42,25 +42,25 @@ pub unsafe fn silk_quant_LTP_gains(
     let mut max_gain_Q7: i32 = 0;
     let mut gain_Q7: i32 = 0;
     min_rate_dist_Q7 = silk_int32_MAX;
-    best_sum_log_gain_Q7 = 0 as i32;
-    k = 0 as i32;
-    while k < 3 as i32 {
-        let gain_safety: i32 = (0.4f64 * ((1 as i32 as i64) << 7 as i32) as f64 + 0.5f64) as i32;
+    best_sum_log_gain_Q7 = 0;
+    k = 0;
+    while k < 3 {
+        let gain_safety: i32 = (0.4f64 * ((1) << 7) as f64 + 0.5f64) as i32;
         cl_ptr_Q5 = silk_LTP_gain_BITS_Q5_ptrs[k as usize];
         cbk_ptr_Q7 = silk_LTP_vq_ptrs_Q7[k as usize];
         cbk_gain_ptr_Q7 = silk_LTP_vq_gain_ptrs_Q7[k as usize];
         cbk_size = silk_LTP_vq_sizes[k as usize] as i32;
         XX_Q17_ptr = XX_Q17;
         xX_Q17_ptr = xX_Q17;
-        res_nrg_Q15 = 0 as i32;
-        rate_dist_Q7 = 0 as i32;
+        res_nrg_Q15 = 0;
+        rate_dist_Q7 = 0;
         sum_log_gain_tmp_Q7 = *sum_log_gain_Q7;
-        j = 0 as i32;
+        j = 0;
         while j < nb_subfr {
             max_gain_Q7 = silk_log2lin(
-                (250.0f32 as f64 / 6.0f64 * ((1 as i32 as i64) << 7 as i32) as f64 + 0.5f64) as i32
+                (250.0f32 as f64 / 6.0f64 * ((1) << 7) as f64 + 0.5f64) as i32
                     - sum_log_gain_tmp_Q7
-                    + ((7 as i32 as i64 * ((1 as i32 as i64) << 7 as i32)) as f64 + 0.5f64) as i32,
+                    + ((7 * ((1) << 7)) as f64 + 0.5f64) as i32,
             ) - gain_safety;
             silk_VQ_WMat_EC_c(
                 &mut *temp_idx.as_mut_ptr().offset(j as isize),
@@ -92,14 +92,13 @@ pub unsafe fn silk_quant_LTP_gains(
             } else {
                 rate_dist_Q7 + rate_dist_Q7_subfr
             };
-            sum_log_gain_tmp_Q7 = if 0 as i32
-                > sum_log_gain_tmp_Q7 + silk_lin2log(gain_safety + gain_Q7)
-                    - ((7 as i32 as i64 * ((1 as i32 as i64) << 7 as i32)) as f64 + 0.5f64) as i32
+            sum_log_gain_tmp_Q7 = if 0 > sum_log_gain_tmp_Q7 + silk_lin2log(gain_safety + gain_Q7)
+                - ((7 * ((1) << 7)) as f64 + 0.5f64) as i32
             {
-                0 as i32
+                0
             } else {
                 sum_log_gain_tmp_Q7 + silk_lin2log(gain_safety + gain_Q7)
-                    - ((7 as i32 as i64 * ((1 as i32 as i64) << 7 as i32)) as f64 + 0.5f64) as i32
+                    - ((7 * ((1) << 7)) as f64 + 0.5f64) as i32
             };
             XX_Q17_ptr = XX_Q17_ptr.offset((LTP_ORDER * LTP_ORDER) as isize);
             xX_Q17_ptr = xX_Q17_ptr.offset(LTP_ORDER as isize);
@@ -118,25 +117,23 @@ pub unsafe fn silk_quant_LTP_gains(
         k += 1;
     }
     cbk_ptr_Q7 = silk_LTP_vq_ptrs_Q7[*periodicity_index as usize];
-    j = 0 as i32;
+    j = 0;
     while j < nb_subfr {
-        k = 0 as i32;
+        k = 0;
         while k < LTP_ORDER {
             *B_Q14.offset((j * LTP_ORDER + k) as isize) = ((*cbk_ptr_Q7
-                .offset((*cbk_index.offset(j as isize) as i32 * 5 as i32 + k) as isize)
+                .offset((*cbk_index.offset(j as isize) as i32 * 5 + k) as isize)
                 as u32)
-                << 7 as i32) as i32
-                as i16;
+                << 7) as i32 as i16;
             k += 1;
         }
         j += 1;
     }
-    if nb_subfr == 2 as i32 {
-        res_nrg_Q15 = res_nrg_Q15 >> 1 as i32;
+    if nb_subfr == 2 {
+        res_nrg_Q15 = res_nrg_Q15 >> 1;
     } else {
-        res_nrg_Q15 = res_nrg_Q15 >> 2 as i32;
+        res_nrg_Q15 = res_nrg_Q15 >> 2;
     }
     *sum_log_gain_Q7 = best_sum_log_gain_Q7;
-    *pred_gain_dB_Q7 = -(3 as i32) as i16 as i32
-        * (silk_lin2log(res_nrg_Q15) - ((15 as i32) << 7 as i32)) as i16 as i32;
+    *pred_gain_dB_Q7 = -(3) as i16 as i32 * (silk_lin2log(res_nrg_Q15) - ((15) << 7)) as i16 as i32;
 }

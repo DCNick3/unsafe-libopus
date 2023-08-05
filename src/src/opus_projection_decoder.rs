@@ -5,7 +5,7 @@ pub mod arch_h {
 }
 pub mod stddef_h {
     pub type size_t = u64;
-    pub const NULL: i32 = 0 as i32;
+    pub const NULL: i32 = 0;
 }
 pub use self::arch_h::opus_val16;
 pub use self::stddef_h::{size_t, NULL};
@@ -41,10 +41,10 @@ unsafe fn opus_projection_copy_channel_out_float(
     let mut matrix: *const MappingMatrix = 0 as *const MappingMatrix;
     float_dst = dst as *mut f32;
     matrix = user_data as *const MappingMatrix;
-    if dst_channel == 0 as i32 {
+    if dst_channel == 0 {
         memset(
             float_dst as *mut core::ffi::c_void,
-            0 as i32,
+            0,
             ((frame_size * dst_stride) as u64).wrapping_mul(::core::mem::size_of::<f32>() as u64),
         );
     }
@@ -73,10 +73,10 @@ unsafe fn opus_projection_copy_channel_out_short(
     let mut matrix: *const MappingMatrix = 0 as *const MappingMatrix;
     short_dst = dst as *mut i16;
     matrix = user_data as *const MappingMatrix;
-    if dst_channel == 0 as i32 {
+    if dst_channel == 0 {
         memset(
             short_dst as *mut core::ffi::c_void,
-            0 as i32,
+            0,
             ((frame_size * dst_stride) as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
         );
     }
@@ -112,11 +112,11 @@ pub unsafe fn opus_projection_decoder_get_size(
     let mut decoder_size: i32 = 0;
     matrix_size = mapping_matrix_get_size(streams + coupled_streams, channels);
     if matrix_size == 0 {
-        return 0 as i32;
+        return 0;
     }
     decoder_size = opus_multistream_decoder_get_size(streams, coupled_streams);
     if decoder_size == 0 {
-        return 0 as i32;
+        return 0;
     }
     return align(::core::mem::size_of::<OpusProjectionDecoder>() as u64 as i32)
         + matrix_size
@@ -144,12 +144,11 @@ pub unsafe fn opus_projection_decoder_init(
     }
     let vla = (nb_input_streams * channels) as usize;
     let mut buf: Vec<i16> = ::std::vec::from_elem(0, vla);
-    i = 0 as i32;
+    i = 0;
     while i < nb_input_streams * channels {
-        let mut s: i32 = (*demixing_matrix.offset((2 as i32 * i + 1 as i32) as isize) as i32)
-            << 8 as i32
-            | *demixing_matrix.offset((2 as i32 * i) as isize) as i32;
-        s = (s & 0xffff as i32 ^ 0x8000 as i32) - 0x8000 as i32;
+        let mut s: i32 = (*demixing_matrix.offset((2 * i + 1) as isize) as i32) << 8
+            | *demixing_matrix.offset((2 * i) as isize) as i32;
+        s = (s & 0xffff ^ 0x8000) - 0x8000;
         *buf.as_mut_ptr().offset(i as isize) = s as i16;
         i += 1;
     }
@@ -161,11 +160,11 @@ pub unsafe fn opus_projection_decoder_init(
         get_dec_demixing_matrix(st),
         channels,
         nb_input_streams,
-        0 as i32,
+        0,
         buf.as_mut_ptr(),
         demixing_matrix_size,
     );
-    i = 0 as i32;
+    i = 0;
     while i < channels {
         mapping[i as usize] = i as u8;
         i += 1;
@@ -251,7 +250,7 @@ pub unsafe fn opus_projection_decode(
         ),
         frame_size,
         decode_fec,
-        1 as i32,
+        1,
         get_dec_demixing_matrix(st) as *mut core::ffi::c_void,
     );
 }
@@ -282,7 +281,7 @@ pub unsafe fn opus_projection_decode_float(
         ),
         frame_size,
         decode_fec,
-        0 as i32,
+        0,
         get_dec_demixing_matrix(st) as *mut core::ffi::c_void,
     );
 }

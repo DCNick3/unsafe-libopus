@@ -29,16 +29,16 @@ use self::stdio_h::{fprintf, stderr};
 pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
 
 pub use self::FILE_h::FILE;
-pub static mut ret: i32 = 0 as i32;
+pub static mut ret: i32 = 0;
 pub unsafe fn testdiv() {
     let mut i: i32 = 0;
-    i = 1 as i32;
-    while i <= 327670 as i32 {
+    i = 1;
+    while i <= 327670 {
         let mut prod: f64 = 0.;
         let mut val: opus_val32 = 0.;
         val = 1.0f32 / i as f32;
         prod = (val * i as f32) as f64;
-        if fabs(prod - 1 as i32 as f64) > 0.00025f64 {
+        if fabs(prod - 1 as f64) > 0.00025f64 {
             fprintf(
                 stderr(),
                 b"div failed: 1/%d=%f (product = %f)\n\0" as *const u8 as *const i8,
@@ -46,22 +46,22 @@ pub unsafe fn testdiv() {
                 val as f64,
                 prod,
             );
-            ret = 1 as i32;
+            ret = 1;
         }
         i += 1;
     }
 }
 pub unsafe fn testsqrt() {
     let mut i: i32 = 0;
-    i = 1 as i32;
-    while i <= 1000000000 as i32 {
+    i = 1;
+    while i <= 1000000000 {
         let mut ratio: f64 = 0.;
         let mut val: opus_val16 = 0.;
         val = sqrt(i as f64) as f32;
         ratio = val as f64 / sqrt(i as f64);
-        if fabs(ratio - 1 as i32 as f64) > 0.0005f64
+        if fabs(ratio - 1 as f64) > 0.0005f64
             && fabs(val as f64 - sqrt(i as f64))
-                > 2 as i32 as f64
+                > 2 as f64
         {
             fprintf(
                 stderr(),
@@ -70,9 +70,9 @@ pub unsafe fn testsqrt() {
                 val as f64,
                 ratio,
             );
-            ret = 1 as i32;
+            ret = 1;
         }
-        i += i >> 10 as i32;
+        i += i >> 10;
         i += 1;
     }
 }
@@ -82,12 +82,12 @@ pub unsafe fn testbitexactcos() {
     let mut max_d: i32 = 0;
     let mut last: i32 = 0;
     let mut chk: i32 = 0;
-    max_d = 0 as i32;
+    max_d = 0;
     chk = max_d;
-    min_d = 32767 as i32;
+    min_d = 32767;
     last = min_d;
-    i = 64 as i32;
-    while i <= 16320 as i32 {
+    i = 64;
+    while i <= 16320 {
         let mut d: i32 = 0;
         let mut q: i32 = bitexact_cos(i as i16) as i32;
         chk ^= q * i;
@@ -101,18 +101,18 @@ pub unsafe fn testbitexactcos() {
         last = q;
         i += 1;
     }
-    if chk != 89408644 as i32
-        || max_d != 5 as i32
-        || min_d != 0 as i32
-        || bitexact_cos(64 as i32 as i16) as i32 != 32767 as i32
-        || bitexact_cos(16320 as i32 as i16) as i32 != 200 as i32
-        || bitexact_cos(8192 as i32 as i16) as i32 != 23171 as i32
+    if chk != 89408644
+        || max_d != 5
+        || min_d != 0
+        || bitexact_cos(64) as i32 != 32767
+        || bitexact_cos(16320) as i32 != 200
+        || bitexact_cos(8192) as i32 != 23171
     {
         fprintf(
             stderr(),
             b"bitexact_cos failed\n\0" as *const u8 as *const i8,
         );
-        ret = 1 as i32;
+        ret = 1;
     }
 }
 pub unsafe fn testbitexactlog2tan() {
@@ -122,21 +122,21 @@ pub unsafe fn testbitexactlog2tan() {
     let mut max_d: i32 = 0;
     let mut last: i32 = 0;
     let mut chk: i32 = 0;
-    max_d = 0 as i32;
+    max_d = 0;
     chk = max_d;
     fail = chk;
-    min_d = 15059 as i32;
+    min_d = 15059;
     last = min_d;
-    i = 64 as i32;
-    while i < 8193 as i32 {
+    i = 64;
+    while i < 8193 {
         let mut d: i32 = 0;
         let mut mid: i32 = bitexact_cos(i as i16) as i32;
-        let mut side: i32 = bitexact_cos((16384 as i32 - i) as i16) as i32;
+        let mut side: i32 = bitexact_cos((16384 - i) as i16) as i32;
         let mut q: i32 = bitexact_log2tan(mid, side);
         chk ^= q * i;
         d = last - q;
-        if q != -(1 as i32) * bitexact_log2tan(side, mid) {
-            fail = 1 as i32;
+        if q != -1 * bitexact_log2tan(side, mid) {
+            fail = 1;
         }
         if d > max_d {
             max_d = d;
@@ -147,19 +147,19 @@ pub unsafe fn testbitexactlog2tan() {
         last = q;
         i += 1;
     }
-    if chk != 15821257 as i32
-        || max_d != 61 as i32
-        || min_d != -(2 as i32)
+    if chk != 15821257
+        || max_d != 61
+        || min_d != -(2)
         || fail != 0
-        || bitexact_log2tan(32767 as i32, 200 as i32) != 15059 as i32
-        || bitexact_log2tan(30274 as i32, 12540 as i32) != 2611 as i32
-        || bitexact_log2tan(23171 as i32, 23171 as i32) != 0 as i32
+        || bitexact_log2tan(32767, 200) != 15059
+        || bitexact_log2tan(30274, 12540) != 2611
+        || bitexact_log2tan(23171, 23171) != 0
     {
         fprintf(
             stderr(),
             b"bitexact_log2tan failed\n\0" as *const u8 as *const i8,
         );
-        ret = 1 as i32;
+        ret = 1;
     }
 }
 pub unsafe fn testlog2() {
@@ -179,7 +179,7 @@ pub unsafe fn testlog2() {
                 x as f64,
                 error as f64,
             );
-            ret = 1 as i32;
+            ret = 1;
         }
         x = (x as f64 + x as f64 / 8.0f64) as f32;
     }
@@ -204,7 +204,7 @@ pub unsafe fn testexp2() {
                 x as f64,
                 error as f64,
             );
-            ret = 1 as i32;
+            ret = 1;
         }
         x = (x as f64 + 0.0007f64) as f32;
     }
@@ -228,7 +228,7 @@ pub unsafe fn testexp2log2() {
                 x as f64,
                 error as f64,
             );
-            ret = 1 as i32;
+            ret = 1;
         }
         x = (x as f64 + 0.0007f64) as f32;
     }

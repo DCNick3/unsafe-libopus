@@ -15,28 +15,28 @@ unsafe fn celt_ec_internal_error() -> i32 {
     let mut coupled_streams: i32 = 0;
     let mut mapping: [u8; 1] = [0; 1];
     enc = opus_multistream_surround_encoder_create(
-        16000 as i32,
-        1 as i32,
-        1 as i32,
+        16000,
+        1,
+        1,
         &mut streams,
         &mut coupled_streams,
         mapping.as_mut_ptr(),
-        2048 as i32,
+        2048,
         &mut err,
     );
-    opus_multistream_encoder_ctl!(enc, 4024 as i32, 3002 as i32);
-    opus_multistream_encoder_ctl!(enc, 4006 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4020 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4042 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4046 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4016 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4010 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4004 as i32, 1101 as i32);
-    opus_multistream_encoder_ctl!(enc, 4008 as i32, -(1000 as i32));
-    opus_multistream_encoder_ctl!(enc, 4036 as i32, 8 as i32);
-    opus_multistream_encoder_ctl!(enc, 4012 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4014 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4002 as i32, -(1000 as i32));
+    opus_multistream_encoder_ctl!(enc, 4024, 3002);
+    opus_multistream_encoder_ctl!(enc, 4006, 0);
+    opus_multistream_encoder_ctl!(enc, 4020, 0);
+    opus_multistream_encoder_ctl!(enc, 4042, 1);
+    opus_multistream_encoder_ctl!(enc, 4046, 0);
+    opus_multistream_encoder_ctl!(enc, 4016, 0);
+    opus_multistream_encoder_ctl!(enc, 4010, 0);
+    opus_multistream_encoder_ctl!(enc, 4004, 1101);
+    opus_multistream_encoder_ctl!(enc, 4008, -(1000));
+    opus_multistream_encoder_ctl!(enc, 4036, 8);
+    opus_multistream_encoder_ctl!(enc, 4012, 0);
+    opus_multistream_encoder_ctl!(enc, 4014, 0);
+    opus_multistream_encoder_ctl!(enc, 4002, -(1000));
     static mut pcm: [libc::c_short; 320] = [
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1792, 1799, 1799, 1799, 1799, 1799, 1799,
         1799, 1799, 1799, 1799, 1799, 1799, 1799, 1799, 1799, 1799, 0, 25600, 1799, 1799, 1799,
@@ -54,27 +54,21 @@ unsafe fn celt_ec_internal_error() -> i32 {
         0, 1799, 1799, 1799, 1799, 1799, -2553, 7, 1792, 1799, 1799, 1799, 1799, 1799, 1799, 1799,
         1799, 1799, 1799, 1799, -9721,
     ];
-    err = opus_multistream_encode(
-        enc,
-        pcm.as_ptr(),
-        320 as i32,
-        data.as_mut_ptr(),
-        2460 as i32,
-    );
+    err = opus_multistream_encode(enc, pcm.as_ptr(), 320, data.as_mut_ptr(), 2460);
     assert!(err > 0);
-    opus_multistream_encoder_ctl!(enc, 4024 as i32, 3002 as i32);
-    opus_multistream_encoder_ctl!(enc, 4006 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4020 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4042 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4046 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4016 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4010 as i32, 10 as i32);
-    opus_multistream_encoder_ctl!(enc, 4004 as i32, 1105 as i32);
-    opus_multistream_encoder_ctl!(enc, 4008 as i32, 1105 as i32);
-    opus_multistream_encoder_ctl!(enc, 4036 as i32, 18 as i32);
-    opus_multistream_encoder_ctl!(enc, 4012 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4014 as i32, 90 as i32);
-    opus_multistream_encoder_ctl!(enc, 4002 as i32, 280130 as i32);
+    opus_multistream_encoder_ctl!(enc, 4024, 3002);
+    opus_multistream_encoder_ctl!(enc, 4006, 0);
+    opus_multistream_encoder_ctl!(enc, 4020, 1);
+    opus_multistream_encoder_ctl!(enc, 4042, 1);
+    opus_multistream_encoder_ctl!(enc, 4046, 0);
+    opus_multistream_encoder_ctl!(enc, 4016, 1);
+    opus_multistream_encoder_ctl!(enc, 4010, 10);
+    opus_multistream_encoder_ctl!(enc, 4004, 1105);
+    opus_multistream_encoder_ctl!(enc, 4008, 1105);
+    opus_multistream_encoder_ctl!(enc, 4036, 18);
+    opus_multistream_encoder_ctl!(enc, 4012, 1);
+    opus_multistream_encoder_ctl!(enc, 4014, 90);
+    opus_multistream_encoder_ctl!(enc, 4002, 280130);
     static mut pcm_0: [libc::c_short; 160] = [
         -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510,
         -9510, -9510, -9526, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510,
@@ -90,27 +84,21 @@ unsafe fn celt_ec_internal_error() -> i32 {
         -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510,
         -9510, -9510, -9510, -9510,
     ];
-    err = opus_multistream_encode(
-        enc,
-        pcm_0.as_ptr(),
-        160 as i32,
-        data.as_mut_ptr(),
-        2460 as i32,
-    );
+    err = opus_multistream_encode(enc, pcm_0.as_ptr(), 160, data.as_mut_ptr(), 2460);
     assert!(err > 0);
-    opus_multistream_encoder_ctl!(enc, 4024 as i32, 3002 as i32);
-    opus_multistream_encoder_ctl!(enc, 4006 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4020 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4042 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4046 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4016 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4010 as i32, 10 as i32);
-    opus_multistream_encoder_ctl!(enc, 4004 as i32, 1105 as i32);
-    opus_multistream_encoder_ctl!(enc, 4008 as i32, 1105 as i32);
-    opus_multistream_encoder_ctl!(enc, 4036 as i32, 18 as i32);
-    opus_multistream_encoder_ctl!(enc, 4012 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4014 as i32, 90 as i32);
-    opus_multistream_encoder_ctl!(enc, 4002 as i32, 280130 as i32);
+    opus_multistream_encoder_ctl!(enc, 4024, 3002);
+    opus_multistream_encoder_ctl!(enc, 4006, 0);
+    opus_multistream_encoder_ctl!(enc, 4020, 1);
+    opus_multistream_encoder_ctl!(enc, 4042, 1);
+    opus_multistream_encoder_ctl!(enc, 4046, 0);
+    opus_multistream_encoder_ctl!(enc, 4016, 1);
+    opus_multistream_encoder_ctl!(enc, 4010, 10);
+    opus_multistream_encoder_ctl!(enc, 4004, 1105);
+    opus_multistream_encoder_ctl!(enc, 4008, 1105);
+    opus_multistream_encoder_ctl!(enc, 4036, 18);
+    opus_multistream_encoder_ctl!(enc, 4012, 1);
+    opus_multistream_encoder_ctl!(enc, 4014, 90);
+    opus_multistream_encoder_ctl!(enc, 4002, 280130);
     static mut pcm_1: [libc::c_short; 160] = [
         -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510,
         -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510,
@@ -126,27 +114,21 @@ unsafe fn celt_ec_internal_error() -> i32 {
         -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510,
         -9510, -9510, -9510, -9510,
     ];
-    err = opus_multistream_encode(
-        enc,
-        pcm_1.as_ptr(),
-        160 as i32,
-        data.as_mut_ptr(),
-        2460 as i32,
-    );
+    err = opus_multistream_encode(enc, pcm_1.as_ptr(), 160, data.as_mut_ptr(), 2460);
     assert!(err > 0);
-    opus_multistream_encoder_ctl!(enc, 4024 as i32, 3002 as i32);
-    opus_multistream_encoder_ctl!(enc, 4006 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4020 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4042 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4046 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4016 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4010 as i32, 10 as i32);
-    opus_multistream_encoder_ctl!(enc, 4004 as i32, 1105 as i32);
-    opus_multistream_encoder_ctl!(enc, 4008 as i32, 1105 as i32);
-    opus_multistream_encoder_ctl!(enc, 4036 as i32, 18 as i32);
-    opus_multistream_encoder_ctl!(enc, 4012 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4014 as i32, 90 as i32);
-    opus_multistream_encoder_ctl!(enc, 4002 as i32, 280130 as i32);
+    opus_multistream_encoder_ctl!(enc, 4024, 3002);
+    opus_multistream_encoder_ctl!(enc, 4006, 0);
+    opus_multistream_encoder_ctl!(enc, 4020, 1);
+    opus_multistream_encoder_ctl!(enc, 4042, 1);
+    opus_multistream_encoder_ctl!(enc, 4046, 0);
+    opus_multistream_encoder_ctl!(enc, 4016, 1);
+    opus_multistream_encoder_ctl!(enc, 4010, 10);
+    opus_multistream_encoder_ctl!(enc, 4004, 1105);
+    opus_multistream_encoder_ctl!(enc, 4008, 1105);
+    opus_multistream_encoder_ctl!(enc, 4036, 18);
+    opus_multistream_encoder_ctl!(enc, 4012, 1);
+    opus_multistream_encoder_ctl!(enc, 4014, 90);
+    opus_multistream_encoder_ctl!(enc, 4002, 280130);
     static mut pcm_2: [libc::c_short; 160] = [
         -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510,
         -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510,
@@ -162,27 +144,21 @@ unsafe fn celt_ec_internal_error() -> i32 {
         -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510, -9510,
         -9510, -9510, -9510, -9510,
     ];
-    err = opus_multistream_encode(
-        enc,
-        pcm_2.as_ptr(),
-        160 as i32,
-        data.as_mut_ptr(),
-        2460 as i32,
-    );
+    err = opus_multistream_encode(enc, pcm_2.as_ptr(), 160, data.as_mut_ptr(), 2460);
     assert!(err > 0);
-    opus_multistream_encoder_ctl!(enc, 4024 as i32, 3002 as i32);
-    opus_multistream_encoder_ctl!(enc, 4006 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4020 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4042 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4046 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4016 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4010 as i32, 10 as i32);
-    opus_multistream_encoder_ctl!(enc, 4004 as i32, 1105 as i32);
-    opus_multistream_encoder_ctl!(enc, 4008 as i32, 1105 as i32);
-    opus_multistream_encoder_ctl!(enc, 4036 as i32, 18 as i32);
-    opus_multistream_encoder_ctl!(enc, 4012 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4014 as i32, 90 as i32);
-    opus_multistream_encoder_ctl!(enc, 4002 as i32, 280130 as i32);
+    opus_multistream_encoder_ctl!(enc, 4024, 3002);
+    opus_multistream_encoder_ctl!(enc, 4006, 0);
+    opus_multistream_encoder_ctl!(enc, 4020, 1);
+    opus_multistream_encoder_ctl!(enc, 4042, 1);
+    opus_multistream_encoder_ctl!(enc, 4046, 0);
+    opus_multistream_encoder_ctl!(enc, 4016, 1);
+    opus_multistream_encoder_ctl!(enc, 4010, 10);
+    opus_multistream_encoder_ctl!(enc, 4004, 1105);
+    opus_multistream_encoder_ctl!(enc, 4008, 1105);
+    opus_multistream_encoder_ctl!(enc, 4036, 18);
+    opus_multistream_encoder_ctl!(enc, 4012, 1);
+    opus_multistream_encoder_ctl!(enc, 4014, 90);
+    opus_multistream_encoder_ctl!(enc, 4002, 280130);
     static mut pcm_3: [libc::c_short; 160] = [
         -9510, -9510, 1799, 1799, 1799, 1799, 1799, 1799, 1799, 1799, 1799, 1799, 1799, 1799, 1799,
         1799, 1799, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -192,42 +168,30 @@ unsafe fn celt_ec_internal_error() -> i32 {
         148, 0, 0, 0, 0, 5632, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0,
     ];
-    err = opus_multistream_encode(
-        enc,
-        pcm_3.as_ptr(),
-        160 as i32,
-        data.as_mut_ptr(),
-        2460 as i32,
-    );
+    err = opus_multistream_encode(enc, pcm_3.as_ptr(), 160, data.as_mut_ptr(), 2460);
     assert!(err > 0);
-    opus_multistream_encoder_ctl!(enc, 4024 as i32, 3001 as i32);
-    opus_multistream_encoder_ctl!(enc, 4006 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4020 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4042 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4046 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4016 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4010 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4004 as i32, 1101 as i32);
-    opus_multistream_encoder_ctl!(enc, 4008 as i32, -(1000 as i32));
-    opus_multistream_encoder_ctl!(enc, 4036 as i32, 12 as i32);
-    opus_multistream_encoder_ctl!(enc, 4012 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4014 as i32, 41 as i32);
-    opus_multistream_encoder_ctl!(enc, 4002 as i32, 21425 as i32);
+    opus_multistream_encoder_ctl!(enc, 4024, 3001);
+    opus_multistream_encoder_ctl!(enc, 4006, 0);
+    opus_multistream_encoder_ctl!(enc, 4020, 1);
+    opus_multistream_encoder_ctl!(enc, 4042, 1);
+    opus_multistream_encoder_ctl!(enc, 4046, 1);
+    opus_multistream_encoder_ctl!(enc, 4016, 1);
+    opus_multistream_encoder_ctl!(enc, 4010, 0);
+    opus_multistream_encoder_ctl!(enc, 4004, 1101);
+    opus_multistream_encoder_ctl!(enc, 4008, -(1000));
+    opus_multistream_encoder_ctl!(enc, 4036, 12);
+    opus_multistream_encoder_ctl!(enc, 4012, 0);
+    opus_multistream_encoder_ctl!(enc, 4014, 41);
+    opus_multistream_encoder_ctl!(enc, 4002, 21425);
     static mut pcm_4: [libc::c_short; 40] = [
         10459, -6474, 10204, -6539, 11601, -6824, 13385, -7142, 13872, -11553, 13670, -7725, 13463,
         -6887, 12482, -5580, 12600, -4964, 12480, 3254, 11741, -4210, 9741, -3155, 7558, -5468,
         5431, -1073, 3641, -1304, 0, -1, 343, 26, 0, 0, 0, 0, -256, 226,
     ];
-    err = opus_multistream_encode(
-        enc,
-        pcm_4.as_ptr(),
-        40 as i32,
-        data.as_mut_ptr(),
-        2460 as i32,
-    );
+    err = opus_multistream_encode(enc, pcm_4.as_ptr(), 40, data.as_mut_ptr(), 2460);
     assert!(err > 0);
     opus_multistream_encoder_destroy(enc);
-    0 as i32
+    0
 }
 unsafe fn mscbr_encode_fail10() -> i32 {
     let mut enc: *mut OpusMSEncoder = std::ptr::null_mut::<OpusMSEncoder>();
@@ -248,29 +212,21 @@ unsafe fn mscbr_encode_fail10() -> i32 {
         221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238,
         239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254,
     ];
-    enc = opus_multistream_encoder_create(
-        8000 as i32,
-        255 as i32,
-        254 as i32,
-        1 as i32,
-        mapping.as_ptr(),
-        2051 as i32,
-        &mut err,
-    );
-    opus_multistream_encoder_ctl!(enc, 4024 as i32, 3001 as i32);
-    opus_multistream_encoder_ctl!(enc, 4006 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4020 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4042 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4022 as i32, 2 as i32);
-    opus_multistream_encoder_ctl!(enc, 4046 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4016 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4010 as i32, 2 as i32);
-    opus_multistream_encoder_ctl!(enc, 4004 as i32, 1101 as i32);
-    opus_multistream_encoder_ctl!(enc, 4008 as i32, -(1000 as i32));
-    opus_multistream_encoder_ctl!(enc, 4036 as i32, 14 as i32);
-    opus_multistream_encoder_ctl!(enc, 4012 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4014 as i32, 57 as i32);
-    opus_multistream_encoder_ctl!(enc, 4002 as i32, 3642675 as i32);
+    enc = opus_multistream_encoder_create(8000, 255, 254, 1, mapping.as_ptr(), 2051, &mut err);
+    opus_multistream_encoder_ctl!(enc, 4024, 3001);
+    opus_multistream_encoder_ctl!(enc, 4006, 0);
+    opus_multistream_encoder_ctl!(enc, 4020, 0);
+    opus_multistream_encoder_ctl!(enc, 4042, 0);
+    opus_multistream_encoder_ctl!(enc, 4022, 2);
+    opus_multistream_encoder_ctl!(enc, 4046, 1);
+    opus_multistream_encoder_ctl!(enc, 4016, 1);
+    opus_multistream_encoder_ctl!(enc, 4010, 2);
+    opus_multistream_encoder_ctl!(enc, 4004, 1101);
+    opus_multistream_encoder_ctl!(enc, 4008, -(1000));
+    opus_multistream_encoder_ctl!(enc, 4036, 14);
+    opus_multistream_encoder_ctl!(enc, 4012, 0);
+    opus_multistream_encoder_ctl!(enc, 4014, 57);
+    opus_multistream_encoder_ctl!(enc, 4002, 3642675);
     static mut pcm: [libc::c_short; 5100] = [
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -443,16 +399,10 @@ unsafe fn mscbr_encode_fail10() -> i32 {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ];
-    err = opus_multistream_encode(
-        enc,
-        pcm.as_ptr(),
-        20 as i32,
-        data.as_mut_ptr(),
-        627300 as i32,
-    );
+    err = opus_multistream_encode(enc, pcm.as_ptr(), 20, data.as_mut_ptr(), 627300);
     assert!(err > 0);
     opus_multistream_encoder_destroy(enc);
-    0 as i32
+    0
 }
 unsafe fn mscbr_encode_fail() -> i32 {
     let mut enc: *mut OpusMSEncoder = std::ptr::null_mut::<OpusMSEncoder>();
@@ -470,29 +420,21 @@ unsafe fn mscbr_encode_fail() -> i32 {
         167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184,
         185, 186, 187, 188, 189, 190, 191,
     ];
-    enc = opus_multistream_encoder_create(
-        8000 as i32,
-        192 as i32,
-        189 as i32,
-        3 as i32,
-        mapping.as_ptr(),
-        2051 as i32,
-        &mut err,
-    );
-    opus_multistream_encoder_ctl!(enc, 4024 as i32, 3002 as i32);
-    opus_multistream_encoder_ctl!(enc, 4006 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4020 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4042 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4022 as i32, -(1000 as i32));
-    opus_multistream_encoder_ctl!(enc, 4046 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4016 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4010 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4004 as i32, 1102 as i32);
-    opus_multistream_encoder_ctl!(enc, 4008 as i32, -(1000 as i32));
-    opus_multistream_encoder_ctl!(enc, 4036 as i32, 8 as i32);
-    opus_multistream_encoder_ctl!(enc, 4012 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4014 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4002 as i32, 15360 as i32);
+    enc = opus_multistream_encoder_create(8000, 192, 189, 3, mapping.as_ptr(), 2051, &mut err);
+    opus_multistream_encoder_ctl!(enc, 4024, 3002);
+    opus_multistream_encoder_ctl!(enc, 4006, 0);
+    opus_multistream_encoder_ctl!(enc, 4020, 0);
+    opus_multistream_encoder_ctl!(enc, 4042, 0);
+    opus_multistream_encoder_ctl!(enc, 4022, -(1000));
+    opus_multistream_encoder_ctl!(enc, 4046, 0);
+    opus_multistream_encoder_ctl!(enc, 4016, 0);
+    opus_multistream_encoder_ctl!(enc, 4010, 0);
+    opus_multistream_encoder_ctl!(enc, 4004, 1102);
+    opus_multistream_encoder_ctl!(enc, 4008, -(1000));
+    opus_multistream_encoder_ctl!(enc, 4036, 8);
+    opus_multistream_encoder_ctl!(enc, 4012, 0);
+    opus_multistream_encoder_ctl!(enc, 4014, 0);
+    opus_multistream_encoder_ctl!(enc, 4002, 15360);
     static mut pcm: [libc::c_short; 3840] = [
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -623,16 +565,10 @@ unsafe fn mscbr_encode_fail() -> i32 {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ];
-    err = opus_multistream_encode(
-        enc,
-        pcm.as_ptr(),
-        20 as i32,
-        data.as_mut_ptr(),
-        472320 as i32,
-    );
+    err = opus_multistream_encode(enc, pcm.as_ptr(), 20, data.as_mut_ptr(), 472320);
     assert!(err > 0);
     opus_multistream_encoder_destroy(enc);
-    0 as i32
+    0
 }
 unsafe fn surround_analysis_uninit() -> i32 {
     let mut enc: *mut OpusMSEncoder = std::ptr::null_mut::<OpusMSEncoder>();
@@ -642,28 +578,28 @@ unsafe fn surround_analysis_uninit() -> i32 {
     let mut coupled_streams: i32 = 0;
     let mut mapping: [u8; 3] = [0; 3];
     enc = opus_multistream_surround_encoder_create(
-        24000 as i32,
-        3 as i32,
-        1 as i32,
+        24000,
+        3,
+        1,
         &mut streams,
         &mut coupled_streams,
         mapping.as_mut_ptr(),
-        2049 as i32,
+        2049,
         &mut err,
     );
-    opus_multistream_encoder_ctl!(enc, 4024 as i32, 3001 as i32);
-    opus_multistream_encoder_ctl!(enc, 4006 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4020 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4042 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4022 as i32, -(1000 as i32));
-    opus_multistream_encoder_ctl!(enc, 4046 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4016 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4010 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4004 as i32, 1101 as i32);
-    opus_multistream_encoder_ctl!(enc, 4008 as i32, 1101 as i32);
-    opus_multistream_encoder_ctl!(enc, 4036 as i32, 8 as i32);
-    opus_multistream_encoder_ctl!(enc, 4012 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4002 as i32, 84315 as i32);
+    opus_multistream_encoder_ctl!(enc, 4024, 3001);
+    opus_multistream_encoder_ctl!(enc, 4006, 1);
+    opus_multistream_encoder_ctl!(enc, 4020, 1);
+    opus_multistream_encoder_ctl!(enc, 4042, 0);
+    opus_multistream_encoder_ctl!(enc, 4022, -(1000));
+    opus_multistream_encoder_ctl!(enc, 4046, 0);
+    opus_multistream_encoder_ctl!(enc, 4016, 0);
+    opus_multistream_encoder_ctl!(enc, 4010, 0);
+    opus_multistream_encoder_ctl!(enc, 4004, 1101);
+    opus_multistream_encoder_ctl!(enc, 4008, 1101);
+    opus_multistream_encoder_ctl!(enc, 4036, 8);
+    opus_multistream_encoder_ctl!(enc, 4012, 1);
+    opus_multistream_encoder_ctl!(enc, 4002, 84315);
     static mut pcm: [libc::c_short; 2880] = [
         -6896, 4901, -6158, 4120, -5164, 3631, -4442, 3153, -4070, 3349, -4577, 4474, -5541, 5058,
         -6701, 3881, -7933, 1863, -8041, 697, -6738, -31464, 14330, -12523, 4096, -6130, 29178,
@@ -899,28 +835,22 @@ unsafe fn surround_analysis_uninit() -> i32 {
         4922, -9579, 4556, -12007, 4236, -14023, 3879, -15553, 3158, -16161, 2576, 18398, -12535,
         -6645, -20735, -32763, -13824, -20992, 25859, 5372, 12040, 13307, -4355, -30213, -9, -6019,
     ];
-    err = opus_multistream_encode(
-        enc,
-        pcm.as_ptr(),
-        960 as i32,
-        data.as_mut_ptr(),
-        7380 as i32,
-    );
+    err = opus_multistream_encode(enc, pcm.as_ptr(), 960, data.as_mut_ptr(), 7380);
     assert!(err > 0);
-    opus_multistream_encoder_ctl!(enc, 4024 as i32, 3002 as i32);
-    opus_multistream_encoder_ctl!(enc, 4006 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4020 as i32, 0 as i32);
-    opus_multistream_encoder_ctl!(enc, 4042 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4022 as i32, -(1000 as i32));
-    opus_multistream_encoder_ctl!(enc, 4046 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4016 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4010 as i32, 6 as i32);
-    opus_multistream_encoder_ctl!(enc, 4004 as i32, 1101 as i32);
-    opus_multistream_encoder_ctl!(enc, 4008 as i32, -(1000 as i32));
-    opus_multistream_encoder_ctl!(enc, 4036 as i32, 9 as i32);
-    opus_multistream_encoder_ctl!(enc, 4012 as i32, 1 as i32);
-    opus_multistream_encoder_ctl!(enc, 4014 as i32, 5 as i32);
-    opus_multistream_encoder_ctl!(enc, 4002 as i32, 775410 as i32);
+    opus_multistream_encoder_ctl!(enc, 4024, 3002);
+    opus_multistream_encoder_ctl!(enc, 4006, 1);
+    opus_multistream_encoder_ctl!(enc, 4020, 0);
+    opus_multistream_encoder_ctl!(enc, 4042, 1);
+    opus_multistream_encoder_ctl!(enc, 4022, -(1000));
+    opus_multistream_encoder_ctl!(enc, 4046, 1);
+    opus_multistream_encoder_ctl!(enc, 4016, 1);
+    opus_multistream_encoder_ctl!(enc, 4010, 6);
+    opus_multistream_encoder_ctl!(enc, 4004, 1101);
+    opus_multistream_encoder_ctl!(enc, 4008, -(1000));
+    opus_multistream_encoder_ctl!(enc, 4036, 9);
+    opus_multistream_encoder_ctl!(enc, 4012, 1);
+    opus_multistream_encoder_ctl!(enc, 4014, 5);
+    opus_multistream_encoder_ctl!(enc, 4002, 775410);
     static mut pcm_0: [libc::c_short; 4320] = [
         30449, 15083, 14088, 31205, -18678, -12830, 14090, -26138, -25337, -11541, -3254, 27628,
         -22270, 30953, -16136, -30745, 20991, -17406, 5632, -14330, 28911, -25594, 17408, -20474,
@@ -1118,16 +1048,10 @@ unsafe fn surround_analysis_uninit() -> i32 {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ];
-    err = opus_multistream_encode(
-        enc,
-        pcm_0.as_ptr(),
-        1440 as i32,
-        data.as_mut_ptr(),
-        7380 as i32,
-    );
+    err = opus_multistream_encode(enc, pcm_0.as_ptr(), 1440, data.as_mut_ptr(), 7380);
     assert!(err > 0);
     opus_multistream_encoder_destroy(enc);
-    0 as i32
+    0
 }
 unsafe fn ec_enc_shrink_assert() -> i32 {
     let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
@@ -1374,55 +1298,37 @@ unsafe fn ec_enc_shrink_assert() -> i32 {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ];
-    enc = opus_encoder_create(48000 as i32, 1 as i32, 2049 as i32, &mut err);
-    opus_encoder_ctl!(enc, 4010 as i32, 10 as i32);
-    opus_encoder_ctl!(enc, 4014 as i32, 6 as i32);
-    opus_encoder_ctl!(enc, 4002 as i32, 6000 as i32);
-    data_len = opus_encode(
-        enc,
-        pcm1.as_ptr(),
-        960 as i32,
-        data.as_mut_ptr(),
-        2000 as i32,
-    );
+    enc = opus_encoder_create(48000, 1, 2049, &mut err);
+    opus_encoder_ctl!(enc, 4010, 10);
+    opus_encoder_ctl!(enc, 4014, 6);
+    opus_encoder_ctl!(enc, 4002, 6000);
+    data_len = opus_encode(enc, pcm1.as_ptr(), 960, data.as_mut_ptr(), 2000);
     assert!(data_len > 0);
-    opus_encoder_ctl!(enc, 4024 as i32, 3001 as i32);
-    opus_encoder_ctl!(enc, 4042 as i32, 1 as i32);
-    opus_encoder_ctl!(enc, 4008 as i32, 1104 as i32);
-    opus_encoder_ctl!(enc, 4012 as i32, 1 as i32);
-    opus_encoder_ctl!(enc, 4002 as i32, 15600 as i32);
-    data_len = opus_encode(
-        enc,
-        pcm2.as_ptr(),
-        2880 as i32,
-        data.as_mut_ptr(),
-        122 as i32,
-    );
+    opus_encoder_ctl!(enc, 4024, 3001);
+    opus_encoder_ctl!(enc, 4042, 1);
+    opus_encoder_ctl!(enc, 4008, 1104);
+    opus_encoder_ctl!(enc, 4012, 1);
+    opus_encoder_ctl!(enc, 4002, 15600);
+    data_len = opus_encode(enc, pcm2.as_ptr(), 2880, data.as_mut_ptr(), 122);
     assert!(data_len > 0);
-    opus_encoder_ctl!(enc, 4024 as i32, 3002 as i32);
-    opus_encoder_ctl!(enc, 4002 as i32, 27000 as i32);
-    data_len = opus_encode(
-        enc,
-        pcm3.as_ptr(),
-        2880 as i32,
-        data.as_mut_ptr(),
-        122 as i32,
-    );
+    opus_encoder_ctl!(enc, 4024, 3002);
+    opus_encoder_ctl!(enc, 4002, 27000);
+    data_len = opus_encode(enc, pcm3.as_ptr(), 2880, data.as_mut_ptr(), 122);
     assert!(data_len > 0);
     opus_encoder_destroy(enc);
-    0 as i32
+    0
 }
 unsafe fn ec_enc_shrink_assert2() -> i32 {
     let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
     let mut err: i32 = 0;
     let mut data_len: i32 = 0;
     let mut data: [u8; 2000] = [0; 2000];
-    enc = opus_encoder_create(48000 as i32, 1 as i32, 2049 as i32, &mut err);
-    opus_encoder_ctl!(enc, 4010 as i32, 6 as i32);
-    opus_encoder_ctl!(enc, 4024 as i32, 3001 as i32);
-    opus_encoder_ctl!(enc, 4008 as i32, 1105 as i32);
-    opus_encoder_ctl!(enc, 4014 as i32, 26 as i32);
-    opus_encoder_ctl!(enc, 4002 as i32, 27000 as i32);
+    enc = opus_encoder_create(48000, 1, 2049, &mut err);
+    opus_encoder_ctl!(enc, 4010, 6);
+    opus_encoder_ctl!(enc, 4024, 3001);
+    opus_encoder_ctl!(enc, 4008, 1105);
+    opus_encoder_ctl!(enc, 4014, 26);
+    opus_encoder_ctl!(enc, 4002, 27000);
     static mut pcm: [libc::c_short; 960] = [
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -1457,15 +1363,9 @@ unsafe fn ec_enc_shrink_assert2() -> i32 {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ];
-    data_len = opus_encode(
-        enc,
-        pcm.as_ptr(),
-        960 as i32,
-        data.as_mut_ptr(),
-        2000 as i32,
-    );
+    data_len = opus_encode(enc, pcm.as_ptr(), 960, data.as_mut_ptr(), 2000);
     assert!(data_len > 0);
-    opus_encoder_ctl!(enc, 4024 as i32, 3002 as i32);
+    opus_encoder_ctl!(enc, 4024, 3002);
     static mut pcm_0: [libc::c_short; 480] = [
         32767, 32767, 0, 0, 32767, 32767, 0, 0, 32767, 32767, -32768, -32768, 0, 0, -32768, -32768,
         0, 0, -32768, -32768, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -1485,16 +1385,10 @@ unsafe fn ec_enc_shrink_assert2() -> i32 {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ];
-    data_len = opus_encode(
-        enc,
-        pcm_0.as_ptr(),
-        480 as i32,
-        data.as_mut_ptr(),
-        19 as i32,
-    );
+    data_len = opus_encode(enc, pcm_0.as_ptr(), 480, data.as_mut_ptr(), 19);
     assert!(data_len > 0);
     opus_encoder_destroy(enc);
-    0 as i32
+    0
 }
 unsafe fn silk_gain_assert() -> i32 {
     let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
@@ -1544,32 +1438,20 @@ unsafe fn silk_gain_assert() -> i32 {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0,
     ];
-    enc = opus_encoder_create(8000 as i32, 1 as i32, 2049 as i32, &mut err);
-    opus_encoder_ctl!(enc, 4010 as i32, 3 as i32);
-    opus_encoder_ctl!(enc, 4004 as i32, 1101 as i32);
-    opus_encoder_ctl!(enc, 4002 as i32, 6000 as i32);
-    data_len = opus_encode(
-        enc,
-        pcm1.as_ptr(),
-        160 as i32,
-        data.as_mut_ptr(),
-        1000 as i32,
-    );
+    enc = opus_encoder_create(8000, 1, 2049, &mut err);
+    opus_encoder_ctl!(enc, 4010, 3);
+    opus_encoder_ctl!(enc, 4004, 1101);
+    opus_encoder_ctl!(enc, 4002, 6000);
+    data_len = opus_encode(enc, pcm1.as_ptr(), 160, data.as_mut_ptr(), 1000);
     assert!(data_len > 0);
-    opus_encoder_ctl!(enc, 4006 as i32, 0 as i32);
-    opus_encoder_ctl!(enc, 4010 as i32, 0 as i32);
-    opus_encoder_ctl!(enc, 4004 as i32, 1102 as i32);
-    opus_encoder_ctl!(enc, 4002 as i32, 2867 as i32);
-    data_len = opus_encode(
-        enc,
-        pcm2.as_ptr(),
-        960 as i32,
-        data.as_mut_ptr(),
-        1000 as i32,
-    );
+    opus_encoder_ctl!(enc, 4006, 0);
+    opus_encoder_ctl!(enc, 4010, 0);
+    opus_encoder_ctl!(enc, 4004, 1102);
+    opus_encoder_ctl!(enc, 4002, 2867);
+    data_len = opus_encode(enc, pcm2.as_ptr(), 960, data.as_mut_ptr(), 1000);
     assert!(data_len > 0);
     opus_encoder_destroy(enc);
-    0 as i32
+    0
 }
 
 pub unsafe fn regression_test() {

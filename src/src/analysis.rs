@@ -21,7 +21,7 @@ pub struct AnalysisInfo {
     pub max_pitch_ratio: f32,
     pub leak_boost: [u8; 19],
 }
-pub const LEAK_BANDS: i32 = 19 as i32;
+pub const LEAK_BANDS: i32 = 19;
 
 pub type downmix_func =
     Option<unsafe fn(*const core::ffi::c_void, *mut opus_val32, i32, i32, i32, i32, i32) -> ()>;
@@ -62,10 +62,10 @@ pub struct TonalityAnalysisState {
     pub downmix_state: [opus_val32; 3],
     pub info: [AnalysisInfo; 100],
 }
-pub const ANALYSIS_BUF_SIZE: i32 = 720 as i32;
-pub const DETECT_SIZE: i32 = 100 as i32;
-pub const NB_FRAMES: i32 = 8 as i32;
-pub const NB_TBANDS: i32 = 18 as i32;
+pub const ANALYSIS_BUF_SIZE: i32 = 720;
+pub const DETECT_SIZE: i32 = 100;
+pub const NB_FRAMES: i32 = 8;
+pub const NB_TBANDS: i32 = 18;
 pub mod xmmintrin_h {
     #[cfg(target_arch = "x86")]
     pub use core::arch::x86::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
@@ -78,7 +78,7 @@ pub mod math_h {
 pub mod cpu_support_h {
     #[inline]
     pub unsafe fn opus_select_arch() -> i32 {
-        return 0 as i32;
+        return 0;
     }
 }
 pub use self::arch_h::{opus_val32, opus_val64};
@@ -467,11 +467,9 @@ static mut analysis_window: [f32; 240] = [
     1.000000f32,
 ];
 static mut tbands: [i32; 19] = [
-    4 as i32, 8 as i32, 12 as i32, 16 as i32, 20 as i32, 24 as i32, 28 as i32, 32 as i32,
-    40 as i32, 48 as i32, 56 as i32, 64 as i32, 80 as i32, 96 as i32, 112 as i32, 136 as i32,
-    160 as i32, 192 as i32, 240 as i32,
+    4, 8, 12, 16, 20, 24, 28, 32, 40, 48, 56, 64, 80, 96, 112, 136, 160, 192, 240,
 ];
-pub const NB_TONAL_SKIP_BANDS: i32 = 9 as i32;
+pub const NB_TONAL_SKIP_BANDS: i32 = 9;
 unsafe fn silk_resampler_down2_hp(
     S: *mut opus_val32,
     out: *mut opus_val32,
@@ -479,32 +477,32 @@ unsafe fn silk_resampler_down2_hp(
     inLen: i32,
 ) -> opus_val32 {
     let mut k: i32 = 0;
-    let len2: i32 = inLen / 2 as i32;
+    let len2: i32 = inLen / 2;
     let mut in32: opus_val32 = 0.;
     let mut out32: opus_val32 = 0.;
     let mut out32_hp: opus_val32 = 0.;
     let mut Y: opus_val32 = 0.;
     let mut X: opus_val32 = 0.;
-    let mut hp_ener: opus_val64 = 0 as i32 as opus_val64;
-    k = 0 as i32;
+    let mut hp_ener: opus_val64 = 0 as opus_val64;
+    k = 0;
     while k < len2 {
-        in32 = *in_0.offset((2 as i32 * k) as isize);
-        Y = in32 - *S.offset(0 as i32 as isize);
+        in32 = *in_0.offset((2 * k) as isize);
+        Y = in32 - *S.offset(0 as isize);
         X = 0.6074371f32 * Y;
-        out32 = *S.offset(0 as i32 as isize) + X;
-        *S.offset(0 as i32 as isize) = in32 + X;
+        out32 = *S.offset(0 as isize) + X;
+        *S.offset(0 as isize) = in32 + X;
         out32_hp = out32;
-        in32 = *in_0.offset((2 as i32 * k + 1 as i32) as isize);
-        Y = in32 - *S.offset(1 as i32 as isize);
+        in32 = *in_0.offset((2 * k + 1) as isize);
+        Y = in32 - *S.offset(1 as isize);
         X = 0.15063f32 * Y;
-        out32 = out32 + *S.offset(1 as i32 as isize);
+        out32 = out32 + *S.offset(1 as isize);
         out32 = out32 + X;
-        *S.offset(1 as i32 as isize) = in32 + X;
-        Y = -in32 - *S.offset(2 as i32 as isize);
+        *S.offset(1 as isize) = in32 + X;
+        Y = -in32 - *S.offset(2 as isize);
         X = 0.15063f32 * Y;
-        out32_hp = out32_hp + *S.offset(2 as i32 as isize);
+        out32_hp = out32_hp + *S.offset(2 as isize);
         out32_hp = out32_hp + X;
-        *S.offset(2 as i32 as isize) = -in32 + X;
+        *S.offset(2 as isize) = -in32 + X;
         hp_ener += out32_hp * out32_hp;
         *out.offset(k as isize) = 0.5f32 * out32;
         k += 1;
@@ -525,58 +523,53 @@ unsafe fn downmix_and_resample(
 ) -> opus_val32 {
     let mut scale: opus_val32 = 0.;
     let mut j: i32 = 0;
-    let mut ret: opus_val32 = 0 as i32 as opus_val32;
-    if subframe == 0 as i32 {
-        return 0 as i32 as opus_val32;
+    let mut ret: opus_val32 = 0 as opus_val32;
+    if subframe == 0 {
+        return 0 as opus_val32;
     }
-    if Fs == 48000 as i32 {
-        subframe *= 2 as i32;
-        offset *= 2 as i32;
-    } else if Fs == 16000 as i32 {
-        subframe = subframe * 2 as i32 / 3 as i32;
-        offset = offset * 2 as i32 / 3 as i32;
+    if Fs == 48000 {
+        subframe *= 2;
+        offset *= 2;
+    } else if Fs == 16000 {
+        subframe = subframe * 2 / 3;
+        offset = offset * 2 / 3;
     }
     let vla = subframe as usize;
     let mut tmp: Vec<opus_val32> = ::std::vec::from_elem(0., vla);
     downmix.expect("non-null function pointer")(_x, tmp.as_mut_ptr(), subframe, offset, c1, c2, C);
-    scale = 1.0f32 / 32768 as i32 as f32;
-    if c2 == -(2 as i32) {
+    scale = 1.0f32 / 32768 as f32;
+    if c2 == -(2) {
         scale /= C as f32;
-    } else if c2 > -(1 as i32) {
-        scale /= 2 as i32 as f32;
+    } else if c2 > -1 {
+        scale /= 2 as f32;
     }
-    j = 0 as i32;
+    j = 0;
     while j < subframe {
         let ref mut fresh0 = *tmp.as_mut_ptr().offset(j as isize);
         *fresh0 *= scale;
         j += 1;
     }
-    if Fs == 48000 as i32 {
+    if Fs == 48000 {
         ret = silk_resampler_down2_hp(S, y, tmp.as_mut_ptr(), subframe);
-    } else if Fs == 24000 as i32 {
+    } else if Fs == 24000 {
         memcpy(
             y as *mut core::ffi::c_void,
             tmp.as_mut_ptr() as *const core::ffi::c_void,
             (subframe as u64)
                 .wrapping_mul(::core::mem::size_of::<opus_val32>() as u64)
-                .wrapping_add((0 as i32 as i64 * y.offset_from(tmp.as_mut_ptr()) as i64) as u64),
+                .wrapping_add((0 * y.offset_from(tmp.as_mut_ptr()) as i64) as u64),
         );
-    } else if Fs == 16000 as i32 {
-        let vla_0 = (3 as i32 * subframe) as usize;
+    } else if Fs == 16000 {
+        let vla_0 = (3 * subframe) as usize;
         let mut tmp3x: Vec<opus_val32> = ::std::vec::from_elem(0., vla_0);
-        j = 0 as i32;
+        j = 0;
         while j < subframe {
-            *tmp3x.as_mut_ptr().offset((3 as i32 * j) as isize) =
-                *tmp.as_mut_ptr().offset(j as isize);
-            *tmp3x
-                .as_mut_ptr()
-                .offset((3 as i32 * j + 1 as i32) as isize) = *tmp.as_mut_ptr().offset(j as isize);
-            *tmp3x
-                .as_mut_ptr()
-                .offset((3 as i32 * j + 2 as i32) as isize) = *tmp.as_mut_ptr().offset(j as isize);
+            *tmp3x.as_mut_ptr().offset((3 * j) as isize) = *tmp.as_mut_ptr().offset(j as isize);
+            *tmp3x.as_mut_ptr().offset((3 * j + 1) as isize) = *tmp.as_mut_ptr().offset(j as isize);
+            *tmp3x.as_mut_ptr().offset((3 * j + 2) as isize) = *tmp.as_mut_ptr().offset(j as isize);
             j += 1;
         }
-        silk_resampler_down2_hp(S, y, tmp3x.as_mut_ptr(), 3 as i32 * subframe);
+        silk_resampler_down2_hp(S, y, tmp3x.as_mut_ptr(), 3 * subframe);
     }
     return ret;
 }
@@ -589,7 +582,7 @@ pub unsafe fn tonality_analysis_reset(tonal: *mut TonalityAnalysisState) {
     let start: *mut i8 = &mut (*tonal).angle as *mut [f32; 240] as *mut i8;
     memset(
         start as *mut core::ffi::c_void,
-        0 as i32,
+        0,
         (::core::mem::size_of::<TonalityAnalysisState>() as u64)
             .wrapping_sub(start.offset_from(tonal as *mut i8) as i64 as u64)
             .wrapping_mul(::core::mem::size_of::<i8>() as u64),
@@ -617,40 +610,39 @@ pub unsafe fn tonality_get_info(
     let mut bandwidth_span: i32 = 0;
     pos = (*tonal).read_pos;
     curr_lookahead = (*tonal).write_pos - (*tonal).read_pos;
-    if curr_lookahead < 0 as i32 {
+    if curr_lookahead < 0 {
         curr_lookahead += DETECT_SIZE;
     }
-    (*tonal).read_subframe += len / ((*tonal).Fs / 400 as i32);
-    while (*tonal).read_subframe >= 8 as i32 {
-        (*tonal).read_subframe -= 8 as i32;
+    (*tonal).read_subframe += len / ((*tonal).Fs / 400);
+    while (*tonal).read_subframe >= 8 {
+        (*tonal).read_subframe -= 8;
         (*tonal).read_pos += 1;
     }
     if (*tonal).read_pos >= DETECT_SIZE {
         (*tonal).read_pos -= DETECT_SIZE;
     }
-    if len > (*tonal).Fs / 50 as i32 && pos != (*tonal).write_pos {
+    if len > (*tonal).Fs / 50 && pos != (*tonal).write_pos {
         pos += 1;
         if pos == DETECT_SIZE {
-            pos = 0 as i32;
+            pos = 0;
         }
     }
     if pos == (*tonal).write_pos {
         pos -= 1;
     }
-    if pos < 0 as i32 {
-        pos = DETECT_SIZE - 1 as i32;
+    if pos < 0 {
+        pos = DETECT_SIZE - 1;
     }
     pos0 = pos;
     memcpy(
         info_out as *mut core::ffi::c_void,
         &mut *((*tonal).info).as_mut_ptr().offset(pos as isize) as *mut AnalysisInfo
             as *const core::ffi::c_void,
-        (1 as i32 as u64)
+        1_u64
             .wrapping_mul(::core::mem::size_of::<AnalysisInfo>() as u64)
             .wrapping_add(
-                (0 as i32 as i64
-                    * info_out.offset_from(&mut *((*tonal).info).as_mut_ptr().offset(pos as isize))
-                        as i64) as u64,
+                (0 * info_out.offset_from(&mut *((*tonal).info).as_mut_ptr().offset(pos as isize))
+                    as i64) as u64,
             ),
     );
     if (*info_out).valid == 0 {
@@ -658,13 +650,13 @@ pub unsafe fn tonality_get_info(
     }
     tonality_avg = (*info_out).tonality;
     tonality_max = tonality_avg;
-    tonality_count = 1 as i32;
-    bandwidth_span = 6 as i32;
-    i = 0 as i32;
-    while i < 3 as i32 {
+    tonality_count = 1;
+    bandwidth_span = 6;
+    i = 0;
+    while i < 3 {
         pos += 1;
         if pos == DETECT_SIZE {
-            pos = 0 as i32;
+            pos = 0;
         }
         if pos == (*tonal).write_pos {
             break;
@@ -685,11 +677,11 @@ pub unsafe fn tonality_get_info(
         i += 1;
     }
     pos = pos0;
-    i = 0 as i32;
+    i = 0;
     while i < bandwidth_span {
         pos -= 1;
-        if pos < 0 as i32 {
-            pos = DETECT_SIZE - 1 as i32;
+        if pos < 0 {
+            pos = DETECT_SIZE - 1;
         }
         if pos == (*tonal).write_pos {
             break;
@@ -708,12 +700,12 @@ pub unsafe fn tonality_get_info(
     };
     vpos = pos0;
     mpos = vpos;
-    if curr_lookahead > 15 as i32 {
-        mpos += 5 as i32;
+    if curr_lookahead > 15 {
+        mpos += 5;
         if mpos >= DETECT_SIZE {
             mpos -= DETECT_SIZE;
         }
-        vpos += 1 as i32;
+        vpos += 1;
         if vpos >= DETECT_SIZE {
             vpos -= DETECT_SIZE;
         }
@@ -728,26 +720,26 @@ pub unsafe fn tonality_get_info(
         let mut pos_vad: f32 = 0.;
         mpos += 1;
         if mpos == DETECT_SIZE {
-            mpos = 0 as i32;
+            mpos = 0;
         }
         if mpos == (*tonal).write_pos {
             break;
         }
         vpos += 1;
         if vpos == DETECT_SIZE {
-            vpos = 0 as i32;
+            vpos = 0;
         }
         if vpos == (*tonal).write_pos {
             break;
         }
         pos_vad = (*tonal).info[vpos as usize].activity_probability;
-        prob_min = if (prob_avg - 10 as i32 as f32 * (vad_prob - pos_vad)) / prob_count < prob_min {
-            (prob_avg - 10 as i32 as f32 * (vad_prob - pos_vad)) / prob_count
+        prob_min = if (prob_avg - 10 as f32 * (vad_prob - pos_vad)) / prob_count < prob_min {
+            (prob_avg - 10 as f32 * (vad_prob - pos_vad)) / prob_count
         } else {
             prob_min
         };
-        prob_max = if (prob_avg + 10 as i32 as f32 * (vad_prob - pos_vad)) / prob_count > prob_max {
-            (prob_avg + 10 as i32 as f32 * (vad_prob - pos_vad)) / prob_count
+        prob_max = if (prob_avg + 10 as f32 * (vad_prob - pos_vad)) / prob_count > prob_max {
+            (prob_avg + 10 as f32 * (vad_prob - pos_vad)) / prob_count
         } else {
             prob_max
         };
@@ -768,23 +760,23 @@ pub unsafe fn tonality_get_info(
     };
     prob_min = if prob_min > 0.0f32 { prob_min } else { 0.0f32 };
     prob_max = if prob_max < 1.0f32 { prob_max } else { 1.0f32 };
-    if curr_lookahead < 10 as i32 {
+    if curr_lookahead < 10 {
         let mut pmin: f32 = 0.;
         let mut pmax: f32 = 0.;
         pmin = prob_min;
         pmax = prob_max;
         pos = pos0;
-        i = 0 as i32;
+        i = 0;
         while i
-            < (if ((*tonal).count - 1 as i32) < 15 as i32 {
-                (*tonal).count - 1 as i32
+            < (if ((*tonal).count - 1) < 15 {
+                (*tonal).count - 1
             } else {
-                15 as i32
+                15
             })
         {
             pos -= 1;
-            if pos < 0 as i32 {
-                pos = DETECT_SIZE - 1 as i32;
+            if pos < 0 {
+                pos = DETECT_SIZE - 1;
             }
             pmin = if pmin < (*tonal).info[pos as usize].music_prob {
                 pmin
@@ -841,8 +833,8 @@ unsafe fn tonality_analysis(
 ) {
     let mut i: i32 = 0;
     let mut b: i32 = 0;
-    let N: i32 = 480 as i32;
-    let N2: i32 = 240 as i32;
+    let N: i32 = 480;
+    let N2: i32 = 240;
     let A: *mut f32 = ((*tonal).angle).as_mut_ptr();
     let dA: *mut f32 = ((*tonal).d_angle).as_mut_ptr();
     let d2A: *mut f32 = ((*tonal).d2_angle).as_mut_ptr();
@@ -854,7 +846,7 @@ unsafe fn tonality_analysis(
     let mut max_frame_tonality: f32 = 0.;
     let mut frame_noisiness: f32 = 0.;
     let pi4: f32 = (M_PI * M_PI * M_PI * M_PI) as f32;
-    let mut slope: f32 = 0 as i32 as f32;
+    let mut slope: f32 = 0 as f32;
     let mut frame_stationarity: f32 = 0.;
     let mut relativeE: f32 = 0.;
     let mut frame_probs: [f32; 2] = [0.; 2];
@@ -864,15 +856,15 @@ unsafe fn tonality_analysis(
     let mut frame_loudness: f32 = 0.;
     let mut bandwidth_mask: f32 = 0.;
     let mut is_masked: [i32; 19] = [0; 19];
-    let mut bandwidth: i32 = 0 as i32;
-    let mut maxE: f32 = 0 as i32 as f32;
+    let mut bandwidth: i32 = 0;
+    let mut maxE: f32 = 0 as f32;
     let mut noise_floor: f32 = 0.;
     let mut remaining: i32 = 0;
     let mut info: *mut AnalysisInfo = 0 as *mut AnalysisInfo;
     let mut hp_ener: f32 = 0.;
     let mut tonality2: [f32; 240] = [0.; 240];
     let mut midE: [f32; 8] = [0.; 8];
-    let mut spec_variability: f32 = 0 as i32 as f32;
+    let mut spec_variability: f32 = 0 as f32;
     let mut band_log2: [f32; 19] = [0.; 19];
     let mut leakage_from: [f32; 19] = [0.; 19];
     let mut leakage_to: [f32; 19] = [0.; 19];
@@ -881,36 +873,36 @@ unsafe fn tonality_analysis(
     let mut above_max_pitch: f32 = 0.;
     let mut is_silence: i32 = 0;
     if (*tonal).initialized == 0 {
-        (*tonal).mem_fill = 240 as i32;
-        (*tonal).initialized = 1 as i32;
+        (*tonal).mem_fill = 240;
+        (*tonal).initialized = 1;
     }
     alpha = 1.0f32
-        / (if (10 as i32) < 1 as i32 + (*tonal).count {
-            10 as i32
+        / (if (10) < 1 + (*tonal).count {
+            10
         } else {
-            1 as i32 + (*tonal).count
+            1 + (*tonal).count
         }) as f32;
     alphaE = 1.0f32
-        / (if (25 as i32) < 1 as i32 + (*tonal).count {
-            25 as i32
+        / (if (25) < 1 + (*tonal).count {
+            25
         } else {
-            1 as i32 + (*tonal).count
+            1 + (*tonal).count
         }) as f32;
     alphaE2 = 1.0f32
-        / (if (100 as i32) < 1 as i32 + (*tonal).count {
-            100 as i32
+        / (if (100) < 1 + (*tonal).count {
+            100
         } else {
-            1 as i32 + (*tonal).count
+            1 + (*tonal).count
         }) as f32;
-    if (*tonal).count <= 1 as i32 {
-        alphaE2 = 1 as i32 as f32;
+    if (*tonal).count <= 1 {
+        alphaE2 = 1 as f32;
     }
-    if (*tonal).Fs == 48000 as i32 {
-        len /= 2 as i32;
-        offset /= 2 as i32;
-    } else if (*tonal).Fs == 16000 as i32 {
-        len = 3 as i32 * len / 2 as i32;
-        offset = 3 as i32 * offset / 2 as i32;
+    if (*tonal).Fs == 48000 {
+        len /= 2;
+        offset /= 2;
+    } else if (*tonal).Fs == 16000 {
+        len = 3 * len / 2;
+        offset = 3 * offset / 2;
     }
     let kfft = (*celt_mode).mdct.kfft[0];
     (*tonal).hp_ener_accum += downmix_and_resample(
@@ -920,10 +912,10 @@ unsafe fn tonality_analysis(
             .as_mut_ptr()
             .offset((*tonal).mem_fill as isize),
         ((*tonal).downmix_state).as_mut_ptr(),
-        if len < 720 as i32 - (*tonal).mem_fill {
+        if len < 720 - (*tonal).mem_fill {
             len
         } else {
-            720 as i32 - (*tonal).mem_fill
+            720 - (*tonal).mem_fill
         },
         offset,
         c1,
@@ -942,48 +934,42 @@ unsafe fn tonality_analysis(
     if (*tonal).write_pos >= DETECT_SIZE {
         (*tonal).write_pos -= DETECT_SIZE;
     }
-    is_silence = is_digital_silence(
-        ((*tonal).inmem).as_mut_ptr(),
-        720 as i32,
-        1 as i32,
-        lsb_depth,
-    );
+    is_silence = is_digital_silence(((*tonal).inmem).as_mut_ptr(), 720, 1, lsb_depth);
     let mut in_0: [kiss_fft_cpx; 480] = [kiss_fft_cpx::zero(); 480];
     let mut out: [kiss_fft_cpx; 480] = [kiss_fft_cpx::zero(); 480];
     let mut tonality: [f32; 240] = [0.; 240];
     let mut noisiness: [f32; 240] = [0.; 240];
-    i = 0 as i32;
+    i = 0;
     while i < N2 {
         let w: f32 = analysis_window[i as usize];
         in_0[i as usize].re = w * (*tonal).inmem[i as usize];
         in_0[i as usize].im = w * (*tonal).inmem[(N2 + i) as usize];
-        in_0[(N - i - 1 as i32) as usize].re = w * (*tonal).inmem[(N - i - 1 as i32) as usize];
-        in_0[(N - i - 1 as i32) as usize].im = w * (*tonal).inmem[(N + N2 - i - 1 as i32) as usize];
+        in_0[(N - i - 1) as usize].re = w * (*tonal).inmem[(N - i - 1) as usize];
+        in_0[(N - i - 1) as usize].im = w * (*tonal).inmem[(N + N2 - i - 1) as usize];
         i += 1;
     }
     memmove(
         ((*tonal).inmem).as_mut_ptr() as *mut core::ffi::c_void,
         ((*tonal).inmem)
             .as_mut_ptr()
-            .offset(720 as i32 as isize)
-            .offset(-(240 as i32 as isize)) as *const core::ffi::c_void,
-        (240 as i32 as u64)
+            .offset(720 as isize)
+            .offset(-(240 as isize)) as *const core::ffi::c_void,
+        240_u64
             .wrapping_mul(::core::mem::size_of::<opus_val32>() as u64)
             .wrapping_add(
-                (0 as i32 as i64
-                    * ((*tonal).inmem).as_mut_ptr().offset_from(
-                        ((*tonal).inmem)
-                            .as_mut_ptr()
-                            .offset(720 as i32 as isize)
-                            .offset(-(240 as i32 as isize)),
-                    ) as i64) as u64,
+                (0 * ((*tonal).inmem).as_mut_ptr().offset_from(
+                    ((*tonal).inmem)
+                        .as_mut_ptr()
+                        .offset(720 as isize)
+                        .offset(-(240 as isize)),
+                ) as i64) as u64,
             ),
     );
     remaining = len - (ANALYSIS_BUF_SIZE - (*tonal).mem_fill);
     (*tonal).hp_ener_accum = downmix_and_resample(
         downmix,
         x,
-        &mut *((*tonal).inmem).as_mut_ptr().offset(240 as i32 as isize),
+        &mut *((*tonal).inmem).as_mut_ptr().offset(240 as isize),
         ((*tonal).downmix_state).as_mut_ptr(),
         remaining,
         offset + ANALYSIS_BUF_SIZE - (*tonal).mem_fill,
@@ -992,23 +978,22 @@ unsafe fn tonality_analysis(
         C,
         (*tonal).Fs,
     );
-    (*tonal).mem_fill = 240 as i32 + remaining;
+    (*tonal).mem_fill = 240 + remaining;
     if is_silence != 0 {
-        let mut prev_pos: i32 = (*tonal).write_pos - 2 as i32;
-        if prev_pos < 0 as i32 {
+        let mut prev_pos: i32 = (*tonal).write_pos - 2;
+        if prev_pos < 0 {
             prev_pos += DETECT_SIZE;
         }
         memcpy(
             info as *mut core::ffi::c_void,
             &mut *((*tonal).info).as_mut_ptr().offset(prev_pos as isize) as *mut AnalysisInfo
                 as *const core::ffi::c_void,
-            (1 as i32 as u64)
+            1_u64
                 .wrapping_mul(::core::mem::size_of::<AnalysisInfo>() as u64)
                 .wrapping_add(
-                    (0 as i32 as i64
-                        * info.offset_from(
-                            &mut *((*tonal).info).as_mut_ptr().offset(prev_pos as isize),
-                        ) as i64) as u64,
+                    (0 * info
+                        .offset_from(&mut *((*tonal).info).as_mut_ptr().offset(prev_pos as isize))
+                        as i64) as u64,
                 ),
         );
         return;
@@ -1018,7 +1003,7 @@ unsafe fn tonality_analysis(
         (*info).valid = 0;
         return;
     }
-    i = 1 as i32;
+    i = 1;
     while i < N2 {
         let mut X1r: f32 = 0.;
         let mut X2r: f32 = 0.;
@@ -1051,7 +1036,7 @@ unsafe fn tonality_analysis(
         noisiness[i as usize] += (mod2).abs();
         mod2 *= mod2;
         mod2 *= mod2;
-        avg_mod = 0.25f32 * (*d2A.offset(i as isize) + mod1 + 2 as i32 as f32 * mod2);
+        avg_mod = 0.25f32 * (*d2A.offset(i as isize) + mod1 + 2 as f32 * mod2);
         tonality[i as usize] = 1.0f32 / (1.0f32 + 40.0f32 * 16.0f32 * pi4 * avg_mod) - 0.015f32;
         tonality2[i as usize] = 1.0f32 / (1.0f32 + 40.0f32 * 16.0f32 * pi4 * mod2) - 0.015f32;
         *A.offset(i as isize) = angle2;
@@ -1059,19 +1044,19 @@ unsafe fn tonality_analysis(
         *d2A.offset(i as isize) = mod2;
         i += 1;
     }
-    i = 2 as i32;
-    while i < N2 - 1 as i32 {
+    i = 2;
+    while i < N2 - 1 {
         let tt: f32 = if tonality2[i as usize]
-            < (if tonality2[(i - 1 as i32) as usize] > tonality2[(i + 1 as i32) as usize] {
-                tonality2[(i - 1 as i32) as usize]
+            < (if tonality2[(i - 1) as usize] > tonality2[(i + 1) as usize] {
+                tonality2[(i - 1) as usize]
             } else {
-                tonality2[(i + 1 as i32) as usize]
+                tonality2[(i + 1) as usize]
             }) {
             tonality2[i as usize]
-        } else if tonality2[(i - 1 as i32) as usize] > tonality2[(i + 1 as i32) as usize] {
-            tonality2[(i - 1 as i32) as usize]
+        } else if tonality2[(i - 1) as usize] > tonality2[(i + 1) as usize] {
+            tonality2[(i - 1) as usize]
         } else {
-            tonality2[(i + 1 as i32) as usize]
+            tonality2[(i + 1) as usize]
         };
         tonality[i as usize] = 0.9f32
             * (if tonality[i as usize] > tt - 0.1f32 {
@@ -1081,29 +1066,29 @@ unsafe fn tonality_analysis(
             });
         i += 1;
     }
-    frame_tonality = 0 as i32 as f32;
-    max_frame_tonality = 0 as i32 as f32;
-    (*info).activity = 0 as i32 as f32;
-    frame_noisiness = 0 as i32 as f32;
-    frame_stationarity = 0 as i32 as f32;
+    frame_tonality = 0 as f32;
+    max_frame_tonality = 0 as f32;
+    (*info).activity = 0 as f32;
+    frame_noisiness = 0 as f32;
+    frame_stationarity = 0 as f32;
     if (*tonal).count == 0 {
-        b = 0 as i32;
+        b = 0;
         while b < NB_TBANDS {
             (*tonal).lowE[b as usize] = 1e10f64 as f32;
             (*tonal).highE[b as usize] = -1e10f64 as f32;
             b += 1;
         }
     }
-    relativeE = 0 as i32 as f32;
-    frame_loudness = 0 as i32 as f32;
-    let mut E: f32 = 0 as i32 as f32;
+    relativeE = 0 as f32;
+    frame_loudness = 0 as f32;
+    let mut E: f32 = 0 as f32;
     let mut X1r_0: f32 = 0.;
     let mut X2r_0: f32 = 0.;
-    X1r_0 = 2 as i32 as f32 * out[0 as i32 as usize].re;
-    X2r_0 = 2 as i32 as f32 * out[0 as i32 as usize].im;
+    X1r_0 = 2 as f32 * out[0 as usize].re;
+    X2r_0 = 2 as f32 * out[0 as usize].im;
     E = X1r_0 * X1r_0 + X2r_0 * X2r_0;
-    i = 1 as i32;
-    while i < 4 as i32 {
+    i = 1;
+    while i < 4 {
         let binE: f32 = out[i as usize].re * out[i as usize].re
             + out[(N - i) as usize].re * out[(N - i) as usize].re
             + out[i as usize].im * out[i as usize].im
@@ -1112,17 +1097,17 @@ unsafe fn tonality_analysis(
         i += 1;
     }
     E = E;
-    band_log2[0 as i32 as usize] = 0.5f32 * std::f32::consts::LOG2_E * (E + 1e-10f32).ln();
-    b = 0 as i32;
+    band_log2[0 as usize] = 0.5f32 * std::f32::consts::LOG2_E * (E + 1e-10f32).ln();
+    b = 0;
     while b < NB_TBANDS {
-        let mut E_0: f32 = 0 as i32 as f32;
-        let mut tE: f32 = 0 as i32 as f32;
-        let mut nE: f32 = 0 as i32 as f32;
+        let mut E_0: f32 = 0 as f32;
+        let mut tE: f32 = 0 as f32;
+        let mut nE: f32 = 0 as f32;
         let mut L1: f32 = 0.;
         let mut L2: f32 = 0.;
         let mut stationarity: f32 = 0.;
         i = tbands[b as usize];
-        while i < tbands[(b + 1 as i32) as usize] {
+        while i < tbands[(b + 1) as usize] {
             let mut binE_0: f32 = out[i as usize].re * out[i as usize].re
                 + out[(N - i) as usize].re * out[(N - i) as usize].re
                 + out[i as usize].im * out[i as usize].im
@@ -1130,8 +1115,8 @@ unsafe fn tonality_analysis(
             binE_0 = binE_0;
             E_0 += binE_0;
             tE += binE_0
-                * (if 0 as i32 as f32 > tonality[i as usize] {
-                    0 as i32 as f32
+                * (if 0 as f32 > tonality[i as usize] {
+                    0 as f32
                 } else {
                     tonality[i as usize]
                 });
@@ -1139,17 +1124,16 @@ unsafe fn tonality_analysis(
             i += 1;
         }
         if !(E_0 < 1e9f32) || E_0 != E_0 {
-            (*info).valid = 0 as i32;
+            (*info).valid = 0;
             return;
         }
         (*tonal).E[(*tonal).E_count as usize][b as usize] = E_0;
         frame_noisiness += nE / (1e-15f32 + E_0);
         frame_loudness += (E_0 + 1e-10f32).sqrt();
         logE[b as usize] = (E_0 + 1e-10f32).ln();
-        band_log2[(b + 1 as i32) as usize] =
-            0.5f32 * std::f32::consts::LOG2_E * (E_0 + 1e-10f32).ln();
+        band_log2[(b + 1) as usize] = 0.5f32 * std::f32::consts::LOG2_E * (E_0 + 1e-10f32).ln();
         (*tonal).logE[(*tonal).E_count as usize][b as usize] = logE[b as usize];
-        if (*tonal).count == 0 as i32 {
+        if (*tonal).count == 0 {
             (*tonal).lowE[b as usize] = logE[b as usize];
             (*tonal).highE[b as usize] = (*tonal).lowE[b as usize];
         }
@@ -1165,34 +1149,34 @@ unsafe fn tonality_analysis(
         if logE[b as usize] > (*tonal).highE[b as usize] {
             (*tonal).highE[b as usize] = logE[b as usize];
             (*tonal).lowE[b as usize] =
-                if (*tonal).highE[b as usize] - 15 as i32 as f32 > (*tonal).lowE[b as usize] {
-                    (*tonal).highE[b as usize] - 15 as i32 as f32
+                if (*tonal).highE[b as usize] - 15 as f32 > (*tonal).lowE[b as usize] {
+                    (*tonal).highE[b as usize] - 15 as f32
                 } else {
                     (*tonal).lowE[b as usize]
                 };
         } else if logE[b as usize] < (*tonal).lowE[b as usize] {
             (*tonal).lowE[b as usize] = logE[b as usize];
             (*tonal).highE[b as usize] =
-                if ((*tonal).lowE[b as usize] + 15 as i32 as f32) < (*tonal).highE[b as usize] {
-                    (*tonal).lowE[b as usize] + 15 as i32 as f32
+                if ((*tonal).lowE[b as usize] + 15 as f32) < (*tonal).highE[b as usize] {
+                    (*tonal).lowE[b as usize] + 15 as f32
                 } else {
                     (*tonal).highE[b as usize]
                 };
         }
         relativeE += (logE[b as usize] - (*tonal).lowE[b as usize])
             / (1e-5f32 + ((*tonal).highE[b as usize] - (*tonal).lowE[b as usize]));
-        L2 = 0 as i32 as f32;
+        L2 = 0 as f32;
         L1 = L2;
-        i = 0 as i32;
+        i = 0;
         while i < NB_FRAMES {
             L1 += ((*tonal).E[i as usize][b as usize]).sqrt();
             L2 += (*tonal).E[i as usize][b as usize];
             i += 1;
         }
-        stationarity = if 0.99f32 < L1 / (1e-15 + (8 as i32 as f32 * L2)).sqrt() {
+        stationarity = if 0.99f32 < L1 / (1e-15 + (8 as f32 * L2)).sqrt() {
             0.99f32
         } else {
-            L1 / (1e-15 + (8 as i32 as f32 * L2)).sqrt()
+            L1 / (1e-15 + (8 as f32 * L2)).sqrt()
         };
         stationarity *= stationarity;
         stationarity *= stationarity;
@@ -1208,88 +1192,86 @@ unsafe fn tonality_analysis(
             frame_tonality -= band_tonality[(b - NB_TBANDS + NB_TONAL_SKIP_BANDS) as usize];
         }
         max_frame_tonality =
-            if max_frame_tonality > (1.0f32 + 0.03f32 * (b - 18 as i32) as f32) * frame_tonality {
+            if max_frame_tonality > (1.0f32 + 0.03f32 * (b - 18) as f32) * frame_tonality {
                 max_frame_tonality
             } else {
-                (1.0f32 + 0.03f32 * (b - 18 as i32) as f32) * frame_tonality
+                (1.0f32 + 0.03f32 * (b - 18) as f32) * frame_tonality
             };
-        slope += band_tonality[b as usize] * (b - 8 as i32) as f32;
+        slope += band_tonality[b as usize] * (b - 8) as f32;
         (*tonal).prev_band_tonality[b as usize] = band_tonality[b as usize];
         b += 1;
     }
-    leakage_from[0 as i32 as usize] = band_log2[0 as i32 as usize];
-    leakage_to[0 as i32 as usize] = band_log2[0 as i32 as usize] - LEAKAGE_OFFSET;
-    b = 1 as i32;
-    while b < NB_TBANDS + 1 as i32 {
-        let leak_slope: f32 = LEAKAGE_SLOPE
-            * (tbands[b as usize] - tbands[(b - 1 as i32) as usize]) as f32
-            / 4 as i32 as f32;
+    leakage_from[0 as usize] = band_log2[0 as usize];
+    leakage_to[0 as usize] = band_log2[0 as usize] - LEAKAGE_OFFSET;
+    b = 1;
+    while b < NB_TBANDS + 1 {
+        let leak_slope: f32 =
+            LEAKAGE_SLOPE * (tbands[b as usize] - tbands[(b - 1) as usize]) as f32 / 4 as f32;
         leakage_from[b as usize] =
-            if leakage_from[(b - 1 as i32) as usize] + leak_slope < band_log2[b as usize] {
-                leakage_from[(b - 1 as i32) as usize] + leak_slope
+            if leakage_from[(b - 1) as usize] + leak_slope < band_log2[b as usize] {
+                leakage_from[(b - 1) as usize] + leak_slope
             } else {
                 band_log2[b as usize]
             };
         leakage_to[b as usize] =
-            if leakage_to[(b - 1 as i32) as usize] - leak_slope > band_log2[b as usize] - 2.5f32 {
-                leakage_to[(b - 1 as i32) as usize] - leak_slope
+            if leakage_to[(b - 1) as usize] - leak_slope > band_log2[b as usize] - 2.5f32 {
+                leakage_to[(b - 1) as usize] - leak_slope
             } else {
                 band_log2[b as usize] - 2.5f32
             };
         b += 1;
     }
-    b = NB_TBANDS - 2 as i32;
-    while b >= 0 as i32 {
-        let leak_slope_0: f32 = LEAKAGE_SLOPE
-            * (tbands[(b + 1 as i32) as usize] - tbands[b as usize]) as f32
-            / 4 as i32 as f32;
+    b = NB_TBANDS - 2;
+    while b >= 0 {
+        let leak_slope_0: f32 =
+            LEAKAGE_SLOPE * (tbands[(b + 1) as usize] - tbands[b as usize]) as f32 / 4 as f32;
         leakage_from[b as usize] =
-            if leakage_from[(b + 1 as i32) as usize] + leak_slope_0 < leakage_from[b as usize] {
-                leakage_from[(b + 1 as i32) as usize] + leak_slope_0
+            if leakage_from[(b + 1) as usize] + leak_slope_0 < leakage_from[b as usize] {
+                leakage_from[(b + 1) as usize] + leak_slope_0
             } else {
                 leakage_from[b as usize]
             };
         leakage_to[b as usize] =
-            if leakage_to[(b + 1 as i32) as usize] - leak_slope_0 > leakage_to[b as usize] {
-                leakage_to[(b + 1 as i32) as usize] - leak_slope_0
+            if leakage_to[(b + 1) as usize] - leak_slope_0 > leakage_to[b as usize] {
+                leakage_to[(b + 1) as usize] - leak_slope_0
             } else {
                 leakage_to[b as usize]
             };
         b -= 1;
     }
-    assert!(18 as i32 + 1 as i32 <= 19 as i32);
-    b = 0 as i32;
-    while b < NB_TBANDS + 1 as i32 {
+    assert!(18 + 1 <= 19);
+    b = 0;
+    while b < NB_TBANDS + 1 {
         let boost: f32 =
-            (if 0 as i32 as f32 > leakage_to[b as usize] - band_log2[b as usize] {
-                0 as i32 as f32
+            (if 0 as f32 > leakage_to[b as usize] - band_log2[b as usize] {
+                0 as f32
             } else {
                 leakage_to[b as usize] - band_log2[b as usize]
-            }) + (if 0 as i32 as f32 > band_log2[b as usize] - (leakage_from[b as usize] + 2.5f32) {
-                0 as i32 as f32
+            }) + (if 0 as f32 > band_log2[b as usize] - (leakage_from[b as usize] + 2.5f32) {
+                0 as f32
             } else {
                 band_log2[b as usize] - (leakage_from[b as usize] + 2.5f32)
             });
-        (*info).leak_boost[b as usize] = (if (255 as i32) < (0.5 + (64.0 * boost)).floor() as i32 {
-            255 as i32
+        (*info).leak_boost[b as usize] = (if (255) < (0.5 + (64.0 * boost)).floor() as i32 {
+            255
         } else {
             (0.5 + (64.0 * boost)).floor() as i32
         }) as u8;
         b += 1;
     }
     while b < LEAK_BANDS {
-        (*info).leak_boost[b as usize] = 0 as i32 as u8;
+        (*info).leak_boost[b as usize] = 0;
         b += 1;
     }
-    i = 0 as i32;
+    i = 0;
     while i < NB_FRAMES {
         let mut j: i32 = 0;
         let mut mindist: f32 = 1e15f32;
-        j = 0 as i32;
+        j = 0;
         while j < NB_FRAMES {
             let mut k: i32 = 0;
-            let mut dist: f32 = 0 as i32 as f32;
-            k = 0 as i32;
+            let mut dist: f32 = 0 as f32;
+            k = 0;
             while k < NB_TBANDS {
                 let mut tmp: f32 = 0.;
                 tmp = (*tonal).logE[i as usize][k as usize] - (*tonal).logE[j as usize][k as usize];
@@ -1305,27 +1287,21 @@ unsafe fn tonality_analysis(
         i += 1;
     }
     spec_variability = (spec_variability / NB_FRAMES as f32 / NB_TBANDS as f32).sqrt();
-    bandwidth_mask = 0 as i32 as f32;
-    bandwidth = 0 as i32;
-    maxE = 0 as i32 as f32;
-    noise_floor = 5.7e-4f32
-        / ((1 as i32)
-            << (if 0 as i32 > lsb_depth - 8 as i32 {
-                0 as i32
-            } else {
-                lsb_depth - 8 as i32
-            })) as f32;
+    bandwidth_mask = 0 as f32;
+    bandwidth = 0;
+    maxE = 0 as f32;
+    noise_floor = 5.7e-4f32 / ((1) << (if 0 > lsb_depth - 8 { 0 } else { lsb_depth - 8 })) as f32;
     noise_floor *= noise_floor;
-    below_max_pitch = 0 as i32 as f32;
-    above_max_pitch = 0 as i32 as f32;
-    b = 0 as i32;
+    below_max_pitch = 0 as f32;
+    above_max_pitch = 0 as f32;
+    b = 0;
     while b < NB_TBANDS {
-        let mut E_1: f32 = 0 as i32 as f32;
+        let mut E_1: f32 = 0 as f32;
         let mut Em: f32 = 0.;
         let mut band_start: i32 = 0;
         let mut band_end: i32 = 0;
         band_start = tbands[b as usize];
-        band_end = tbands[(b + 1 as i32) as usize];
+        band_end = tbands[(b + 1) as usize];
         i = band_start;
         while i < band_end {
             let binE_1: f32 = out[i as usize].re * out[i as usize].re
@@ -1337,30 +1313,29 @@ unsafe fn tonality_analysis(
         }
         E_1 = E_1;
         maxE = if maxE > E_1 { maxE } else { E_1 };
-        if band_start < 64 as i32 {
+        if band_start < 64 {
             below_max_pitch += E_1;
         } else {
             above_max_pitch += E_1;
         }
-        (*tonal).meanE[b as usize] =
-            if (1 as i32 as f32 - alphaE2) * (*tonal).meanE[b as usize] > E_1 {
-                (1 as i32 as f32 - alphaE2) * (*tonal).meanE[b as usize]
-            } else {
-                E_1
-            };
+        (*tonal).meanE[b as usize] = if (1 as f32 - alphaE2) * (*tonal).meanE[b as usize] > E_1 {
+            (1 as f32 - alphaE2) * (*tonal).meanE[b as usize]
+        } else {
+            E_1
+        };
         Em = if E_1 > (*tonal).meanE[b as usize] {
             E_1
         } else {
             (*tonal).meanE[b as usize]
         };
         if E_1 * 1e9f32 > maxE
-            && (Em > 3 as i32 as f32 * noise_floor * (band_end - band_start) as f32
+            && (Em > 3 as f32 * noise_floor * (band_end - band_start) as f32
                 || E_1 > noise_floor * (band_end - band_start) as f32)
         {
-            bandwidth = b + 1 as i32;
+            bandwidth = b + 1;
         }
         is_masked[b as usize] = (E_1
-            < (if (*tonal).prev_bandwidth >= b + 1 as i32 {
+            < (if (*tonal).prev_bandwidth >= b + 1 {
                 0.01f32
             } else {
                 0.05f32
@@ -1372,34 +1347,33 @@ unsafe fn tonality_analysis(
         };
         b += 1;
     }
-    if (*tonal).Fs == 48000 as i32 {
+    if (*tonal).Fs == 48000 {
         let mut noise_ratio: f32 = 0.;
         let mut Em_0: f32 = 0.;
-        let E_2: f32 = hp_ener * (1.0f32 / (60 as i32 * 60 as i32) as f32);
-        noise_ratio = if (*tonal).prev_bandwidth == 20 as i32 {
+        let E_2: f32 = hp_ener * (1.0f32 / (60 * 60) as f32);
+        noise_ratio = if (*tonal).prev_bandwidth == 20 {
             10.0f32
         } else {
             30.0f32
         };
         above_max_pitch += E_2;
-        (*tonal).meanE[b as usize] =
-            if (1 as i32 as f32 - alphaE2) * (*tonal).meanE[b as usize] > E_2 {
-                (1 as i32 as f32 - alphaE2) * (*tonal).meanE[b as usize]
-            } else {
-                E_2
-            };
+        (*tonal).meanE[b as usize] = if (1 as f32 - alphaE2) * (*tonal).meanE[b as usize] > E_2 {
+            (1 as f32 - alphaE2) * (*tonal).meanE[b as usize]
+        } else {
+            E_2
+        };
         Em_0 = if E_2 > (*tonal).meanE[b as usize] {
             E_2
         } else {
             (*tonal).meanE[b as usize]
         };
-        if Em_0 > 3 as i32 as f32 * noise_ratio * noise_floor * 160 as i32 as f32
-            || E_2 > noise_ratio * noise_floor * 160 as i32 as f32
+        if Em_0 > 3 as f32 * noise_ratio * noise_floor * 160 as f32
+            || E_2 > noise_ratio * noise_floor * 160 as f32
         {
-            bandwidth = 20 as i32;
+            bandwidth = 20;
         }
         is_masked[b as usize] = (E_2
-            < (if (*tonal).prev_bandwidth == 20 as i32 {
+            < (if (*tonal).prev_bandwidth == 20 {
                 0.01f32
             } else {
                 0.05f32
@@ -1408,46 +1382,43 @@ unsafe fn tonality_analysis(
     if above_max_pitch > below_max_pitch {
         (*info).max_pitch_ratio = below_max_pitch / above_max_pitch;
     } else {
-        (*info).max_pitch_ratio = 1 as i32 as f32;
+        (*info).max_pitch_ratio = 1 as f32;
     }
-    if bandwidth == 20 as i32 && is_masked[NB_TBANDS as usize] != 0 {
-        bandwidth -= 2 as i32;
-    } else if bandwidth > 0 as i32
-        && bandwidth <= NB_TBANDS
-        && is_masked[(bandwidth - 1 as i32) as usize] != 0
-    {
+    if bandwidth == 20 && is_masked[NB_TBANDS as usize] != 0 {
+        bandwidth -= 2;
+    } else if bandwidth > 0 && bandwidth <= NB_TBANDS && is_masked[(bandwidth - 1) as usize] != 0 {
         bandwidth -= 1;
     }
-    if (*tonal).count <= 2 as i32 {
-        bandwidth = 20 as i32;
+    if (*tonal).count <= 2 {
+        bandwidth = 20;
     }
-    frame_loudness = 20 as i32 as f32 * frame_loudness.log10();
+    frame_loudness = 20 as f32 * frame_loudness.log10();
     (*tonal).Etracker = if (*tonal).Etracker - 0.003f32 > frame_loudness {
         (*tonal).Etracker - 0.003f32
     } else {
         frame_loudness
     };
-    (*tonal).lowECount *= 1 as i32 as f32 - alphaE;
-    if frame_loudness < (*tonal).Etracker - 30 as i32 as f32 {
+    (*tonal).lowECount *= 1 as f32 - alphaE;
+    if frame_loudness < (*tonal).Etracker - 30 as f32 {
         (*tonal).lowECount += alphaE;
     }
-    i = 0 as i32;
-    while i < 8 as i32 {
-        let mut sum: f32 = 0 as i32 as f32;
-        b = 0 as i32;
-        while b < 16 as i32 {
-            sum += dct_table[(i * 16 as i32 + b) as usize] * logE[b as usize];
+    i = 0;
+    while i < 8 {
+        let mut sum: f32 = 0 as f32;
+        b = 0;
+        while b < 16 {
+            sum += dct_table[(i * 16 + b) as usize] * logE[b as usize];
             b += 1;
         }
         BFCC[i as usize] = sum;
         i += 1;
     }
-    i = 0 as i32;
-    while i < 8 as i32 {
-        let mut sum_0: f32 = 0 as i32 as f32;
-        b = 0 as i32;
-        while b < 16 as i32 {
-            sum_0 += dct_table[(i * 16 as i32 + b) as usize]
+    i = 0;
+    while i < 8 {
+        let mut sum_0: f32 = 0 as f32;
+        b = 0;
+        while b < 16 {
+            sum_0 += dct_table[(i * 16 + b) as usize]
                 * 0.5f32
                 * ((*tonal).highE[b as usize] + (*tonal).lowE[b as usize]);
             b += 1;
@@ -1457,11 +1428,11 @@ unsafe fn tonality_analysis(
     }
     frame_stationarity /= NB_TBANDS as f32;
     relativeE /= NB_TBANDS as f32;
-    if (*tonal).count < 10 as i32 {
+    if (*tonal).count < 10 {
         relativeE = 0.5f32;
     }
     frame_noisiness /= NB_TBANDS as f32;
-    (*info).activity = frame_noisiness + (1 as i32 as f32 - frame_noisiness) * relativeE;
+    (*info).activity = frame_noisiness + (1 as f32 - frame_noisiness) * relativeE;
     frame_tonality = max_frame_tonality / (NB_TBANDS - NB_TONAL_SKIP_BANDS) as f32;
     frame_tonality = if frame_tonality > (*tonal).prev_tonality * 0.8f32 {
         frame_tonality
@@ -1469,78 +1440,77 @@ unsafe fn tonality_analysis(
         (*tonal).prev_tonality * 0.8f32
     };
     (*tonal).prev_tonality = frame_tonality;
-    slope /= (8 as i32 * 8 as i32) as f32;
+    slope /= (8 * 8) as f32;
     (*info).tonality_slope = slope;
-    (*tonal).E_count = ((*tonal).E_count + 1 as i32) % NB_FRAMES;
-    (*tonal).count = if ((*tonal).count + 1 as i32) < 10000 as i32 {
-        (*tonal).count + 1 as i32
+    (*tonal).E_count = ((*tonal).E_count + 1) % NB_FRAMES;
+    (*tonal).count = if ((*tonal).count + 1) < 10000 {
+        (*tonal).count + 1
     } else {
-        10000 as i32
+        10000
     };
     (*info).tonality = frame_tonality;
-    i = 0 as i32;
-    while i < 4 as i32 {
-        features[i as usize] = -0.12299f32
-            * (BFCC[i as usize] + (*tonal).mem[(i + 24 as i32) as usize])
-            + 0.49195f32 * ((*tonal).mem[i as usize] + (*tonal).mem[(i + 16 as i32) as usize])
-            + 0.69693f32 * (*tonal).mem[(i + 8 as i32) as usize]
+    i = 0;
+    while i < 4 {
+        features[i as usize] = -0.12299f32 * (BFCC[i as usize] + (*tonal).mem[(i + 24) as usize])
+            + 0.49195f32 * ((*tonal).mem[i as usize] + (*tonal).mem[(i + 16) as usize])
+            + 0.69693f32 * (*tonal).mem[(i + 8) as usize]
             - 1.4349f32 * (*tonal).cmean[i as usize];
         i += 1;
     }
-    i = 0 as i32;
-    while i < 4 as i32 {
+    i = 0;
+    while i < 4 {
         (*tonal).cmean[i as usize] =
-            (1 as i32 as f32 - alpha) * (*tonal).cmean[i as usize] + alpha * BFCC[i as usize];
+            (1 as f32 - alpha) * (*tonal).cmean[i as usize] + alpha * BFCC[i as usize];
         i += 1;
     }
-    i = 0 as i32;
-    while i < 4 as i32 {
-        features[(4 as i32 + i) as usize] = 0.63246f32
-            * (BFCC[i as usize] - (*tonal).mem[(i + 24 as i32) as usize])
-            + 0.31623f32 * ((*tonal).mem[i as usize] - (*tonal).mem[(i + 16 as i32) as usize]);
+    i = 0;
+    while i < 4 {
+        features[(4 + i) as usize] = 0.63246f32
+            * (BFCC[i as usize] - (*tonal).mem[(i + 24) as usize])
+            + 0.31623f32 * ((*tonal).mem[i as usize] - (*tonal).mem[(i + 16) as usize]);
         i += 1;
     }
-    i = 0 as i32;
-    while i < 3 as i32 {
-        features[(8 as i32 + i) as usize] = 0.53452f32
-            * (BFCC[i as usize] + (*tonal).mem[(i + 24 as i32) as usize])
-            - 0.26726f32 * ((*tonal).mem[i as usize] + (*tonal).mem[(i + 16 as i32) as usize])
-            - 0.53452f32 * (*tonal).mem[(i + 8 as i32) as usize];
+    i = 0;
+    while i < 3 {
+        features[(8 + i) as usize] = 0.53452f32
+            * (BFCC[i as usize] + (*tonal).mem[(i + 24) as usize])
+            - 0.26726f32 * ((*tonal).mem[i as usize] + (*tonal).mem[(i + 16) as usize])
+            - 0.53452f32 * (*tonal).mem[(i + 8) as usize];
         i += 1;
     }
-    if (*tonal).count > 5 as i32 {
-        i = 0 as i32;
-        while i < 9 as i32 {
-            (*tonal).std[i as usize] = (1 as i32 as f32 - alpha) * (*tonal).std[i as usize]
+    if (*tonal).count > 5 {
+        i = 0;
+        while i < 9 {
+            (*tonal).std[i as usize] = (1 as f32 - alpha) * (*tonal).std[i as usize]
                 + alpha * features[i as usize] * features[i as usize];
             i += 1;
         }
     }
-    i = 0 as i32;
-    while i < 4 as i32 {
+    i = 0;
+    while i < 4 {
         features[i as usize] = BFCC[i as usize] - midE[i as usize];
         i += 1;
     }
-    i = 0 as i32;
-    while i < 8 as i32 {
-        (*tonal).mem[(i + 24 as i32) as usize] = (*tonal).mem[(i + 16 as i32) as usize];
-        (*tonal).mem[(i + 16 as i32) as usize] = (*tonal).mem[(i + 8 as i32) as usize];
-        (*tonal).mem[(i + 8 as i32) as usize] = (*tonal).mem[i as usize];
+    i = 0;
+    while i < 8 {
+        (*tonal).mem[(i + 24) as usize] = (*tonal).mem[(i + 16) as usize];
+        (*tonal).mem[(i + 16) as usize] = (*tonal).mem[(i + 8) as usize];
+        (*tonal).mem[(i + 8) as usize] = (*tonal).mem[i as usize];
         (*tonal).mem[i as usize] = BFCC[i as usize];
         i += 1;
     }
-    i = 0 as i32;
-    while i < 9 as i32 {
-        features[(11 as i32 + i) as usize] =
+    i = 0;
+    while i < 9 {
+        features[(11 + i) as usize] =
             ((*tonal).std[i as usize]).sqrt() - std_feature_bias[i as usize];
         i += 1;
     }
-    features[18 as i32 as usize] = spec_variability - 0.78f32;
-    features[20 as i32 as usize] = (*info).tonality - 0.154723f32;
-    features[21 as i32 as usize] = (*info).activity - 0.724643f32;
-    features[22 as i32 as usize] = frame_stationarity - 0.743717f32;
-    features[23 as i32 as usize] = (*info).tonality_slope + 0.069216f32;
-    features[24 as i32 as usize] = (*tonal).lowECount - 0.067930f32;
+    features[18 as usize] = spec_variability - 0.78f32;
+    features[20 as usize] = (*info).tonality - 0.154723f32;
+    features[21 as usize] = (*info).activity - 0.724643f32;
+    features[22 as usize] = frame_stationarity - 0.743717f32;
+    features[23 as usize] = (*info).tonality_slope + 0.069216f32;
+    features[24 as usize] = (*tonal).lowECount - 0.067930f32;
     compute_dense(&layer0, layer_out.as_mut_ptr(), features.as_mut_ptr());
     compute_gru(
         &layer1,
@@ -1552,12 +1522,12 @@ unsafe fn tonality_analysis(
         frame_probs.as_mut_ptr(),
         ((*tonal).rnn_state).as_mut_ptr(),
     );
-    (*info).activity_probability = frame_probs[1 as i32 as usize];
-    (*info).music_prob = frame_probs[0 as i32 as usize];
+    (*info).activity_probability = frame_probs[1 as usize];
+    (*info).music_prob = frame_probs[0 as usize];
     (*info).bandwidth = bandwidth;
     (*tonal).prev_bandwidth = bandwidth;
     (*info).noisiness = frame_noisiness;
-    (*info).valid = 1 as i32;
+    (*info).valid = 1;
 }
 pub unsafe fn run_analysis(
     analysis: *mut TonalityAnalysisState,
@@ -1575,22 +1545,22 @@ pub unsafe fn run_analysis(
 ) {
     let mut offset: i32 = 0;
     let mut pcm_len: i32 = 0;
-    analysis_frame_size -= analysis_frame_size & 1 as i32;
+    analysis_frame_size -= analysis_frame_size & 1;
     if !analysis_pcm.is_null() {
-        analysis_frame_size = if ((100 as i32 - 5 as i32) * Fs / 50 as i32) < analysis_frame_size {
-            (100 as i32 - 5 as i32) * Fs / 50 as i32
+        analysis_frame_size = if ((100 - 5) * Fs / 50) < analysis_frame_size {
+            (100 - 5) * Fs / 50
         } else {
             analysis_frame_size
         };
         pcm_len = analysis_frame_size - (*analysis).analysis_offset;
         offset = (*analysis).analysis_offset;
-        while pcm_len > 0 as i32 {
+        while pcm_len > 0 {
             tonality_analysis(
                 analysis,
                 celt_mode,
                 analysis_pcm,
-                if (Fs / 50 as i32) < pcm_len {
-                    Fs / 50 as i32
+                if (Fs / 50) < pcm_len {
+                    Fs / 50
                 } else {
                     pcm_len
                 },
@@ -1601,8 +1571,8 @@ pub unsafe fn run_analysis(
                 lsb_depth,
                 downmix,
             );
-            offset += Fs / 50 as i32;
-            pcm_len -= Fs / 50 as i32;
+            offset += Fs / 50;
+            pcm_len -= Fs / 50;
         }
         (*analysis).analysis_offset = analysis_frame_size;
         (*analysis).analysis_offset -= frame_size;

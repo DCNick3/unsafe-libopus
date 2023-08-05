@@ -14,36 +14,36 @@ pub unsafe fn silk_NLSF_VQ(
     let mut pred_Q24: i32 = 0;
     let mut w_Q9_ptr: *const i16 = 0 as *const i16;
     let mut cb_Q8_ptr: *const u8 = 0 as *const u8;
-    assert!(LPC_order & 1 as i32 == 0 as i32);
+    assert!(LPC_order & 1 == 0);
     cb_Q8_ptr = pCB_Q8;
     w_Q9_ptr = pWght_Q9;
-    i = 0 as i32;
+    i = 0;
     while i < K {
-        sum_error_Q24 = 0 as i32;
-        pred_Q24 = 0 as i32;
-        m = LPC_order - 2 as i32;
-        while m >= 0 as i32 {
-            diff_Q15 = *in_Q15.offset((m + 1 as i32) as isize) as i32
-                - ((*cb_Q8_ptr.offset((m + 1 as i32) as isize) as i32 as u32) << 7 as i32) as i32;
-            diffw_Q24 = diff_Q15 as i16 as i32 * *w_Q9_ptr.offset((m + 1 as i32) as isize) as i32;
+        sum_error_Q24 = 0;
+        pred_Q24 = 0;
+        m = LPC_order - 2;
+        while m >= 0 {
+            diff_Q15 = *in_Q15.offset((m + 1) as isize) as i32
+                - ((*cb_Q8_ptr.offset((m + 1) as isize) as i32 as u32) << 7) as i32;
+            diffw_Q24 = diff_Q15 as i16 as i32 * *w_Q9_ptr.offset((m + 1) as isize) as i32;
             sum_error_Q24 = sum_error_Q24
-                + (if diffw_Q24 - (pred_Q24 >> 1 as i32) > 0 as i32 {
-                    diffw_Q24 - (pred_Q24 >> 1 as i32)
+                + (if diffw_Q24 - (pred_Q24 >> 1) > 0 {
+                    diffw_Q24 - (pred_Q24 >> 1)
                 } else {
-                    -(diffw_Q24 - (pred_Q24 >> 1 as i32))
+                    -(diffw_Q24 - (pred_Q24 >> 1))
                 });
             pred_Q24 = diffw_Q24;
             diff_Q15 = *in_Q15.offset(m as isize) as i32
-                - ((*cb_Q8_ptr.offset(m as isize) as i32 as u32) << 7 as i32) as i32;
+                - ((*cb_Q8_ptr.offset(m as isize) as i32 as u32) << 7) as i32;
             diffw_Q24 = diff_Q15 as i16 as i32 * *w_Q9_ptr.offset(m as isize) as i32;
             sum_error_Q24 = sum_error_Q24
-                + (if diffw_Q24 - (pred_Q24 >> 1 as i32) > 0 as i32 {
-                    diffw_Q24 - (pred_Q24 >> 1 as i32)
+                + (if diffw_Q24 - (pred_Q24 >> 1) > 0 {
+                    diffw_Q24 - (pred_Q24 >> 1)
                 } else {
-                    -(diffw_Q24 - (pred_Q24 >> 1 as i32))
+                    -(diffw_Q24 - (pred_Q24 >> 1))
                 });
             pred_Q24 = diffw_Q24;
-            m -= 2 as i32;
+            m -= 2;
         }
         *err_Q24.offset(i as isize) = sum_error_Q24;
         cb_Q8_ptr = cb_Q8_ptr.offset(LPC_order as isize);

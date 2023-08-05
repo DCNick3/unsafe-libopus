@@ -51,32 +51,32 @@ pub mod stdlib_h {
 pub mod entenc_c {
         pub unsafe fn ec_enc_carry_out(mut _this: *mut ec_enc, mut _c: i32) {
         if _c as u32
-            != ((1 as u32) << 8 as i32)
-                .wrapping_sub(1 as i32 as u32)
+            != ((1 as u32) << 8)
+                .wrapping_sub(1)
         {
             let mut carry: i32 = 0;
-            carry = _c >> 8 as i32;
-            if (*_this).rem >= 0 as i32 {
+            carry = _c >> 8;
+            if (*_this).rem >= 0 {
                 (*_this).error |= ec_write_byte(_this, ((*_this).rem + carry) as u32);
             }
-            if (*_this).ext > 0 as i32 as u32 {
+            if (*_this).ext > 0 {
                 let mut sym: u32 = 0;
-                sym = ((1 as u32) << 8 as i32)
-                    .wrapping_sub(1 as i32 as u32)
+                sym = ((1 as u32) << 8)
+                    .wrapping_sub(1)
                     .wrapping_add(carry as u32)
-                    & ((1 as u32) << 8 as i32)
-                        .wrapping_sub(1 as i32 as u32);
+                    & ((1 as u32) << 8)
+                        .wrapping_sub(1);
                 loop {
                     (*_this).error |= ec_write_byte(_this, sym);
                     (*_this).ext = ((*_this).ext).wrapping_sub(1);
-                    if !((*_this).ext > 0 as i32 as u32) {
+                    if !((*_this).ext > 0) {
                         break;
                     }
                 }
             }
             (*_this).rem = (_c as u32
-                & ((1 as u32) << 8 as i32)
-                    .wrapping_sub(1 as i32 as u32))
+                & ((1 as u32) << 8)
+                    .wrapping_sub(1))
                 as i32;
         } else {
             (*_this).ext = ((*_this).ext).wrapping_add(1);
@@ -87,40 +87,40 @@ pub mod entenc_c {
         mut _value: u32,
     ) -> i32 {
         if ((*_this).offs).wrapping_add((*_this).end_offs) >= (*_this).storage {
-            return -(1 as i32);
+            return -1;
         }
         let fresh0 = (*_this).offs;
         (*_this).offs = ((*_this).offs).wrapping_add(1);
         *((*_this).buf).offset(fresh0 as isize) = _value as u8;
-        return 0 as i32;
+        return 0;
     }
         pub unsafe fn ec_write_byte_at_end(
         mut _this: *mut ec_enc,
         mut _value: u32,
     ) -> i32 {
         if ((*_this).offs).wrapping_add((*_this).end_offs) >= (*_this).storage {
-            return -(1 as i32);
+            return -1;
         }
         (*_this).end_offs = ((*_this).end_offs).wrapping_add(1);
         *((*_this).buf).offset(((*_this).storage).wrapping_sub((*_this).end_offs) as isize) =
             _value as u8;
-        return 0 as i32;
+        return 0;
     }
     #[inline]
         pub unsafe fn ec_enc_normalize(mut _this: *mut ec_enc) {
         while (*_this).rng
-            <= (1 as u32) << 32 as i32 - 1 as i32 >> 8 as i32
+            <= (1 as u32) << 32 - 1 >> 8
         {
             ec_enc_carry_out(
                 _this,
-                ((*_this).val >> 32 as i32 - 8 as i32 - 1 as i32)
+                ((*_this).val >> 32 - 8 - 1)
                     as i32,
             );
-            (*_this).val = (*_this).val << 8 as i32
-                & ((1 as u32) << 32 as i32 - 1 as i32)
-                    .wrapping_sub(1 as i32 as u32);
-            (*_this).rng <<= 8 as i32;
-            (*_this).nbits_total += 8 as i32;
+            (*_this).val = (*_this).val << 8
+                & ((1 as u32) << 32 - 1)
+                    .wrapping_sub(1);
+            (*_this).rng <<= 8;
+            (*_this).nbits_total += 8;
         }
     }
         pub unsafe fn ec_enc_init(
@@ -129,17 +129,17 @@ pub mod entenc_c {
         mut _size: u32,
     ) {
         (*_this).buf = _buf;
-        (*_this).end_offs = 0 as i32 as u32;
-        (*_this).end_window = 0 as i32 as ec_window;
-        (*_this).nend_bits = 0 as i32;
-        (*_this).nbits_total = 32 as i32 + 1 as i32;
-        (*_this).offs = 0 as i32 as u32;
-        (*_this).rng = (1 as u32) << 32 as i32 - 1 as i32;
-        (*_this).rem = -(1 as i32);
-        (*_this).val = 0 as i32 as u32;
-        (*_this).ext = 0 as i32 as u32;
+        (*_this).end_offs = 0;
+        (*_this).end_window = 0 as ec_window;
+        (*_this).nend_bits = 0;
+        (*_this).nbits_total = 32 + 1;
+        (*_this).offs = 0;
+        (*_this).rng = (1 as u32) << 32 - 1;
+        (*_this).rem = -1;
+        (*_this).val = 0;
+        (*_this).ext = 0;
         (*_this).storage = _size;
-        (*_this).error = 0 as i32;
+        (*_this).error = 0;
     }
         pub unsafe fn ec_encode(
         mut _this: *mut ec_enc,
@@ -149,7 +149,7 @@ pub mod entenc_c {
     ) {
         let mut r: u32 = 0;
         r = celt_udiv((*_this).rng, _ft);
-        if _fl > 0 as i32 as u32 {
+        if _fl > 0 {
             (*_this).val = ((*_this).val as u32)
                 .wrapping_add(((*_this).rng).wrapping_sub(r.wrapping_mul(_ft.wrapping_sub(_fl))))
                 as u32 as u32;
@@ -169,7 +169,7 @@ pub mod entenc_c {
     ) {
         let mut r: u32 = 0;
         r = (*_this).rng >> _bits;
-        if _fl > 0 as i32 as u32 {
+        if _fl > 0 {
             (*_this).val = ((*_this).val as u32).wrapping_add(
                 ((*_this).rng)
                     .wrapping_sub(r.wrapping_mul(((1 as u32) << _bits).wrapping_sub(_fl))),
@@ -208,12 +208,12 @@ pub mod entenc_c {
     ) {
         let mut r: u32 = 0;
         r = (*_this).rng >> _ftb;
-        if _s > 0 as i32 {
+        if _s > 0 {
             (*_this).val = ((*_this).val as u32).wrapping_add(((*_this).rng).wrapping_sub(
-                r.wrapping_mul(*_icdf.offset((_s - 1 as i32) as isize) as u32),
+                r.wrapping_mul(*_icdf.offset((_s - 1) as isize) as u32),
             )) as u32 as u32;
             (*_this).rng = r.wrapping_mul(
-                (*_icdf.offset((_s - 1 as i32) as isize) as i32
+                (*_icdf.offset((_s - 1) as isize) as i32
                     - *_icdf.offset(_s as isize) as i32) as u32,
             );
         } else {
@@ -229,29 +229,29 @@ pub mod entenc_c {
         let mut ftb: i32 = 0;
         _ft = _ft.wrapping_sub(1);
         ftb = ::core::mem::size_of::<u32>() as u64 as i32
-            * 8 as i32
+            * 8
             - _ft.leading_zeros() as i32;
-        if ftb > 8 as i32 {
-            ftb -= 8 as i32;
-            ft = (_ft >> ftb).wrapping_add(1 as i32 as u32);
+        if ftb > 8 {
+            ftb -= 8;
+            ft = (_ft >> ftb).wrapping_add(1);
             fl = _fl >> ftb;
             ec_encode(
                 _this,
                 fl,
-                fl.wrapping_add(1 as i32 as u32),
+                fl.wrapping_add(1),
                 ft,
             );
             ec_enc_bits(
                 _this,
-                _fl & ((1 as i32 as u32) << ftb).wrapping_sub(1 as u32),
+                _fl & ((1) << ftb).wrapping_sub(1 as u32),
                 ftb as u32,
             );
         } else {
             ec_encode(
                 _this,
                 _fl,
-                _fl.wrapping_add(1 as i32 as u32),
-                _ft.wrapping_add(1 as i32 as u32),
+                _fl.wrapping_add(1),
+                _ft.wrapping_add(1),
             );
         };
     }
@@ -266,18 +266,18 @@ pub mod entenc_c {
         used = (*_this).nend_bits;
         if (used as u32).wrapping_add(_bits)
             > (::core::mem::size_of::<ec_window>() as u64 as i32
-                * 8 as i32) as u32
+                * 8) as u32
         {
             loop {
                 (*_this).error |= ec_write_byte_at_end(
                     _this,
                     window
-                        & ((1 as u32) << 8 as i32)
-                            .wrapping_sub(1 as i32 as u32),
+                        & ((1 as u32) << 8)
+                            .wrapping_sub(1),
                 );
-                window >>= 8 as i32;
-                used -= 8 as i32;
-                if !(used >= 8 as i32) {
+                window >>= 8;
+                used -= 8;
+                if !(used >= 8) {
                     break;
                 }
             }
@@ -296,22 +296,22 @@ pub mod entenc_c {
     ) {
         let mut shift: i32 = 0;
         let mut mask: u32 = 0;
-        shift = (8 as i32 as u32).wrapping_sub(_nbits) as i32;
-        mask = ((((1 as i32) << _nbits) - 1 as i32) << shift) as u32;
-        if (*_this).offs > 0 as i32 as u32 {
-            *((*_this).buf).offset(0 as i32 as isize) =
-                (*((*_this).buf).offset(0 as i32 as isize) as u32 & !mask
+        shift = (8).wrapping_sub(_nbits) as i32;
+        mask = ((((1) << _nbits) - 1) << shift) as u32;
+        if (*_this).offs > 0 {
+            *((*_this).buf).offset(0 as isize) =
+                (*((*_this).buf).offset(0 as isize) as u32 & !mask
                     | _val << shift) as u8;
-        } else if (*_this).rem >= 0 as i32 {
+        } else if (*_this).rem >= 0 {
             (*_this).rem = ((*_this).rem as u32 & !mask | _val << shift) as i32;
         } else if (*_this).rng
-            <= (1 as u32) << 32 as i32 - 1 as i32 >> _nbits
+            <= (1 as u32) << 32 - 1 >> _nbits
         {
             (*_this).val = (*_this).val
-                & !(mask << 32 as i32 - 8 as i32 - 1 as i32)
-                | _val << 32 as i32 - 8 as i32 - 1 as i32 + shift;
+                & !(mask << 32 - 8 - 1)
+                | _val << 32 - 8 - 1 + shift;
         } else {
-            (*_this).error = -(1 as i32);
+            (*_this).error = -1;
         };
     }
         pub unsafe fn ec_enc_shrink(mut _this: *mut ec_enc, mut _size: u32) {
@@ -325,7 +325,7 @@ pub mod entenc_c {
             ((*_this).end_offs as u64)
                 .wrapping_mul(::core::mem::size_of::<u8>() as u64)
                 .wrapping_add(
-                    (0 as i32 as i64
+                    (0
                         * ((*_this).buf)
                             .offset(_size as isize)
                             .offset(-((*_this).end_offs as isize))
@@ -344,68 +344,68 @@ pub mod entenc_c {
         let mut msk: u32 = 0;
         let mut end: u32 = 0;
         let mut l: i32 = 0;
-        l = 32 as i32
+        l = 32
             - (::core::mem::size_of::<u32>() as u64 as i32
-                * 8 as i32
+                * 8
                 - ((*_this).rng).leading_zeros() as i32);
-        msk = ((1 as u32) << 32 as i32 - 1 as i32)
-            .wrapping_sub(1 as i32 as u32)
+        msk = ((1 as u32) << 32 - 1)
+            .wrapping_sub(1)
             >> l;
         end = ((*_this).val).wrapping_add(msk) & !msk;
         if end | msk >= ((*_this).val).wrapping_add((*_this).rng) {
             l += 1;
-            msk >>= 1 as i32;
+            msk >>= 1;
             end = ((*_this).val).wrapping_add(msk) & !msk;
         }
-        while l > 0 as i32 {
+        while l > 0 {
             ec_enc_carry_out(
                 _this,
-                (end >> 32 as i32 - 8 as i32 - 1 as i32) as i32,
+                (end >> 32 - 8 - 1) as i32,
             );
-            end = end << 8 as i32
-                & ((1 as u32) << 32 as i32 - 1 as i32)
-                    .wrapping_sub(1 as i32 as u32);
-            l -= 8 as i32;
+            end = end << 8
+                & ((1 as u32) << 32 - 1)
+                    .wrapping_sub(1);
+            l -= 8;
         }
-        if (*_this).rem >= 0 as i32 || (*_this).ext > 0 as i32 as u32 {
-            ec_enc_carry_out(_this, 0 as i32);
+        if (*_this).rem >= 0 || (*_this).ext > 0 {
+            ec_enc_carry_out(_this, 0);
         }
         window = (*_this).end_window;
         used = (*_this).nend_bits;
-        while used >= 8 as i32 {
+        while used >= 8 {
             (*_this).error |= ec_write_byte_at_end(
                 _this,
                 window
-                    & ((1 as u32) << 8 as i32)
-                        .wrapping_sub(1 as i32 as u32),
+                    & ((1 as u32) << 8)
+                        .wrapping_sub(1),
             );
-            window >>= 8 as i32;
-            used -= 8 as i32;
+            window >>= 8;
+            used -= 8;
         }
         if (*_this).error == 0 {
             memset(
                 ((*_this).buf).offset((*_this).offs as isize) as *mut core::ffi::c_void,
-                0 as i32,
+                0,
                 (((*_this).storage)
                     .wrapping_sub((*_this).offs)
                     .wrapping_sub((*_this).end_offs) as u64)
                     .wrapping_mul(::core::mem::size_of::<u8>() as u64),
             );
-            if used > 0 as i32 {
+            if used > 0 {
                 if (*_this).end_offs >= (*_this).storage {
-                    (*_this).error = -(1 as i32);
+                    (*_this).error = -1;
                 } else {
                     l = -l;
                     if ((*_this).offs).wrapping_add((*_this).end_offs) >= (*_this).storage
                         && l < used
                     {
-                        window &= (((1 as i32) << l) - 1 as i32) as u32;
-                        (*_this).error = -(1 as i32);
+                        window &= (((1) << l) - 1) as u32;
+                        (*_this).error = -1;
                     }
                     let ref mut fresh1 = *((*_this).buf).offset(
                         ((*_this).storage)
                             .wrapping_sub((*_this).end_offs)
-                            .wrapping_sub(1 as i32 as u32)
+                            .wrapping_sub(1)
                             as isize,
                     );
                     *fresh1 = (*fresh1 as i32 | window as u8 as i32)
@@ -424,7 +424,7 @@ pub mod entdec_c {
             (*_this).offs = ((*_this).offs).wrapping_add(1);
             *((*_this).buf).offset(fresh2 as isize) as i32
         } else {
-            0 as i32
+            0
         };
     }
         pub unsafe fn ec_read_byte_from_end(mut _this: *mut ec_dec) -> i32 {
@@ -433,28 +433,28 @@ pub mod entdec_c {
             *((*_this).buf).offset(((*_this).storage).wrapping_sub((*_this).end_offs) as isize)
                 as i32
         } else {
-            0 as i32
+            0
         };
     }
         pub unsafe fn ec_dec_normalize(mut _this: *mut ec_dec) {
         while (*_this).rng
-            <= (1 as u32) << 32 as i32 - 1 as i32 >> 8 as i32
+            <= (1 as u32) << 32 - 1 >> 8
         {
             let mut sym: i32 = 0;
-            (*_this).nbits_total += 8 as i32;
-            (*_this).rng <<= 8 as i32;
+            (*_this).nbits_total += 8;
+            (*_this).rng <<= 8;
             sym = (*_this).rem;
             (*_this).rem = ec_read_byte(_this);
-            sym = (sym << 8 as i32 | (*_this).rem)
-                >> 8 as i32
-                    - ((32 as i32 - 2 as i32) % 8 as i32
-                        + 1 as i32);
-            (*_this).val = ((*_this).val << 8 as i32).wrapping_add(
-                ((1 as u32) << 8 as i32)
-                    .wrapping_sub(1 as i32 as u32)
+            sym = (sym << 8 | (*_this).rem)
+                >> 8
+                    - ((32 - 2) % 8
+                        + 1);
+            (*_this).val = ((*_this).val << 8).wrapping_add(
+                ((1 as u32) << 8)
+                    .wrapping_sub(1)
                     & !sym as u32,
-            ) & ((1 as u32) << 32 as i32 - 1 as i32)
-                .wrapping_sub(1 as i32 as u32);
+            ) & ((1 as u32) << 32 - 1)
+                .wrapping_sub(1);
         }
     }
         pub unsafe fn ec_dec_init(
@@ -464,27 +464,27 @@ pub mod entdec_c {
     ) {
         (*_this).buf = _buf;
         (*_this).storage = _storage;
-        (*_this).end_offs = 0 as i32 as u32;
-        (*_this).end_window = 0 as i32 as ec_window;
-        (*_this).nend_bits = 0 as i32;
-        (*_this).nbits_total = 32 as i32 + 1 as i32
-            - (32 as i32
-                - ((32 as i32 - 2 as i32) % 8 as i32 + 1 as i32))
-                / 8 as i32
-                * 8 as i32;
-        (*_this).offs = 0 as i32 as u32;
+        (*_this).end_offs = 0;
+        (*_this).end_window = 0 as ec_window;
+        (*_this).nend_bits = 0;
+        (*_this).nbits_total = 32 + 1
+            - (32
+                - ((32 - 2) % 8 + 1))
+                / 8
+                * 8;
+        (*_this).offs = 0;
         (*_this).rng = (1 as u32)
-            << (32 as i32 - 2 as i32) % 8 as i32 + 1 as i32;
+            << (32 - 2) % 8 + 1;
         (*_this).rem = ec_read_byte(_this);
         (*_this).val = ((*_this).rng)
-            .wrapping_sub(1 as i32 as u32)
+            .wrapping_sub(1)
             .wrapping_sub(
                 ((*_this).rem
-                    >> 8 as i32
-                        - ((32 as i32 - 2 as i32) % 8 as i32
-                            + 1 as i32)) as u32,
+                    >> 8
+                        - ((32 - 2) % 8
+                            + 1)) as u32,
             );
-        (*_this).error = 0 as i32;
+        (*_this).error = 0;
         ec_dec_normalize(_this);
     }
         pub unsafe fn ec_decode(
@@ -495,10 +495,10 @@ pub mod entdec_c {
         (*_this).ext = celt_udiv((*_this).rng, _ft);
         s = ((*_this).val).wrapping_div((*_this).ext);
         return _ft.wrapping_sub(
-            s.wrapping_add(1 as i32 as u32)
+            s.wrapping_add(1)
                 .wrapping_add(
-                    _ft.wrapping_sub(s.wrapping_add(1 as i32 as u32))
-                        & -((_ft < s.wrapping_add(1 as i32 as u32)) as i32)
+                    _ft.wrapping_sub(s.wrapping_add(1))
+                        & -((_ft < s.wrapping_add(1)) as i32)
                             as u32,
                 ),
         );
@@ -527,7 +527,7 @@ pub mod entdec_c {
         let mut s: u32 = 0;
         s = ((*_this).ext).wrapping_mul(_ft.wrapping_sub(_fh));
         (*_this).val = ((*_this).val as u32).wrapping_sub(s) as u32 as u32;
-        (*_this).rng = if _fl > 0 as i32 as u32 {
+        (*_this).rng = if _fl > 0 {
             ((*_this).ext).wrapping_mul(_fh.wrapping_sub(_fl))
         } else {
             ((*_this).rng).wrapping_sub(s)
@@ -566,7 +566,7 @@ pub mod entdec_c {
         s = (*_this).rng;
         d = (*_this).val;
         r = s >> _ftb;
-        ret = -(1 as i32);
+        ret = -1;
         loop {
             t = s;
             ret += 1;
@@ -586,24 +586,24 @@ pub mod entdec_c {
         let mut ftb: i32 = 0;
         _ft = _ft.wrapping_sub(1);
         ftb = ::core::mem::size_of::<u32>() as u64 as i32
-            * 8 as i32
+            * 8
             - _ft.leading_zeros() as i32;
-        if ftb > 8 as i32 {
+        if ftb > 8 {
             let mut t: u32 = 0;
-            ftb -= 8 as i32;
-            ft = (_ft >> ftb).wrapping_add(1 as i32 as u32);
+            ftb -= 8;
+            ft = (_ft >> ftb).wrapping_add(1);
             s = ec_decode(_this, ft);
             ec_dec_update(
                 _this,
                 s,
-                s.wrapping_add(1 as i32 as u32),
+                s.wrapping_add(1),
                 ft,
             );
             t = s << ftb | ec_dec_bits(_this, ftb as u32);
             if t <= _ft {
                 return t;
             }
-            (*_this).error = 1 as i32;
+            (*_this).error = 1;
             return _ft;
         } else {
             _ft = _ft.wrapping_add(1);
@@ -611,7 +611,7 @@ pub mod entdec_c {
             ec_dec_update(
                 _this,
                 s,
-                s.wrapping_add(1 as i32 as u32),
+                s.wrapping_add(1),
                 _ft,
             );
             return s;
@@ -626,17 +626,17 @@ pub mod entdec_c {
         if (available as u32) < _bits {
             loop {
                 window |= (ec_read_byte_from_end(_this) as ec_window) << available;
-                available += 8 as i32;
+                available += 8;
                 if !(available
                     <= ::core::mem::size_of::<ec_window>() as u64 as i32
-                        * 8 as i32
-                        - 8 as i32)
+                        * 8
+                        - 8)
                 {
                     break;
                 }
             }
         }
-        ret = window & ((1 as i32 as u32) << _bits).wrapping_sub(1 as u32);
+        ret = window & ((1) << _bits).wrapping_sub(1 as u32);
         window >>= _bits;
         available = (available as u32).wrapping_sub(_bits) as i32 as i32;
         (*_this).end_window = window;
@@ -650,27 +650,27 @@ pub mod entdec_c {
 pub mod entcode_c {
         pub unsafe fn ec_tell_frac(mut _this: *mut ec_ctx) -> u32 {
         pub static mut correction: [u32; 8] = [
-            35733 as i32 as u32,
-            38967 as i32 as u32,
-            42495 as i32 as u32,
-            46340 as i32 as u32,
-            50535 as i32 as u32,
-            55109 as i32 as u32,
-            60097 as i32 as u32,
-            65535 as i32 as u32,
+            35733,
+            38967,
+            42495,
+            46340,
+            50535,
+            55109,
+            60097,
+            65535,
         ];
         let mut nbits: u32 = 0;
         let mut r: u32 = 0;
         let mut l: i32 = 0;
         let mut b: u32 = 0;
-        nbits = ((*_this).nbits_total << 3 as i32) as u32;
+        nbits = ((*_this).nbits_total << 3) as u32;
         l = ::core::mem::size_of::<u32>() as u64 as i32
-            * 8 as i32
+            * 8
             - ((*_this).rng).leading_zeros() as i32;
-        r = (*_this).rng >> l - 16 as i32;
-        b = (r >> 12 as i32).wrapping_sub(8 as i32 as u32);
+        r = (*_this).rng >> l - 16;
+        b = (r >> 12).wrapping_sub(8);
         b = b.wrapping_add((r > correction[b as usize]) as i32 as u32);
-        l = ((l << 3 as i32) as u32).wrapping_add(b) as i32;
+        l = ((l << 3) as u32).wrapping_add(b) as i32;
         return nbits.wrapping_sub(l as u32);
     }
     use super::entcode_h::ec_ctx;
@@ -681,12 +681,12 @@ pub mod laplace_c {
         mut decay: i32,
     ) -> u32 {
         let mut ft: u32 = 0;
-        ft = ((32768 as i32
-            - ((1 as i32) << 0 as i32) * (2 as i32 * 16 as i32))
+        ft = ((32768
+            - ((1) << 0) * (2 * 16))
             as u32)
             .wrapping_sub(fs0);
-        return ft.wrapping_mul((16384 as i32 - decay) as u32)
-            >> 15 as i32;
+        return ft.wrapping_mul((16384 - decay) as u32)
+            >> 15;
     }
         pub unsafe fn ec_laplace_encode(
         mut enc: *mut ec_enc,
@@ -696,52 +696,52 @@ pub mod laplace_c {
     ) {
         let mut fl: u32 = 0;
         let mut val: i32 = *value;
-        fl = 0 as i32 as u32;
+        fl = 0;
         if val != 0 {
             let mut s: i32 = 0;
             let mut i: i32 = 0;
-            s = -((val < 0 as i32) as i32);
+            s = -((val < 0) as i32);
             val = val + s ^ s;
             fl = fs;
             fs = ec_laplace_get_freq1(fs, decay);
-            i = 1 as i32;
-            while fs > 0 as i32 as u32 && i < val {
-                fs = fs.wrapping_mul(2 as i32 as u32);
+            i = 1;
+            while fs > 0 && i < val {
+                fs = fs.wrapping_mul(2);
                 fl = fl.wrapping_add(fs.wrapping_add(
-                    (2 as i32 * ((1 as i32) << 0 as i32)) as u32,
+                    (2 * ((1) << 0)) as u32,
                 ));
-                fs = fs.wrapping_mul(decay as u32) >> 15 as i32;
+                fs = fs.wrapping_mul(decay as u32) >> 15;
                 i += 1;
             }
             if fs == 0 {
                 let mut di: i32 = 0;
                 let mut ndi_max: i32 = 0;
-                ndi_max = ((32768 as i32 as u32)
+                ndi_max = ((32768)
                     .wrapping_sub(fl)
-                    .wrapping_add(((1 as i32) << 0 as i32) as u32)
-                    .wrapping_sub(1 as i32 as u32)
-                    >> 0 as i32) as i32;
-                ndi_max = ndi_max - s >> 1 as i32;
-                di = if val - i < ndi_max - 1 as i32 {
+                    .wrapping_add(((1) << 0) as u32)
+                    .wrapping_sub(1)
+                    >> 0) as i32;
+                ndi_max = ndi_max - s >> 1;
+                di = if val - i < ndi_max - 1 {
                     val - i
                 } else {
-                    ndi_max - 1 as i32
+                    ndi_max - 1
                 };
                 fl = fl.wrapping_add(
-                    ((2 as i32 * di + 1 as i32 + s)
-                        * ((1 as i32) << 0 as i32))
+                    ((2 * di + 1 + s)
+                        * ((1) << 0))
                         as u32,
                 );
-                fs = if (((1 as i32) << 0 as i32) as u32)
-                    < (32768 as i32 as u32).wrapping_sub(fl)
+                fs = if (((1) << 0) as u32)
+                    < (32768).wrapping_sub(fl)
                 {
-                    ((1 as i32) << 0 as i32) as u32
+                    ((1) << 0) as u32
                 } else {
-                    (32768 as i32 as u32).wrapping_sub(fl)
+                    (32768).wrapping_sub(fl)
                 };
                 *value = i + di + s ^ s;
             } else {
-                fs = fs.wrapping_add(((1 as i32) << 0 as i32) as u32);
+                fs = fs.wrapping_add(((1) << 0) as u32);
                 fl = fl.wrapping_add(fs & !s as u32);
             }
         }
@@ -749,7 +749,7 @@ pub mod laplace_c {
             enc,
             fl,
             fl.wrapping_add(fs),
-            15 as i32 as u32,
+            15,
         );
     }
         pub unsafe fn ec_laplace_decode(
@@ -757,37 +757,37 @@ pub mod laplace_c {
         mut fs: u32,
         mut decay: i32,
     ) -> i32 {
-        let mut val: i32 = 0 as i32;
+        let mut val: i32 = 0;
         let mut fl: u32 = 0;
         let mut fm: u32 = 0;
-        fm = ec_decode_bin(dec, 15 as i32 as u32);
-        fl = 0 as i32 as u32;
+        fm = ec_decode_bin(dec, 15);
+        fl = 0;
         if fm >= fs {
             val += 1;
             fl = fs;
             fs = (ec_laplace_get_freq1(fs, decay))
-                .wrapping_add(((1 as i32) << 0 as i32) as u32);
-            while fs > ((1 as i32) << 0 as i32) as u32
-                && fm >= fl.wrapping_add((2 as i32 as u32).wrapping_mul(fs))
+                .wrapping_add(((1) << 0) as u32);
+            while fs > ((1) << 0) as u32
+                && fm >= fl.wrapping_add((2).wrapping_mul(fs))
             {
-                fs = fs.wrapping_mul(2 as i32 as u32);
+                fs = fs.wrapping_mul(2);
                 fl = fl.wrapping_add(fs);
                 fs = fs
                     .wrapping_sub(
-                        (2 as i32 * ((1 as i32) << 0 as i32))
+                        (2 * ((1) << 0))
                             as u32,
                     )
                     .wrapping_mul(decay as u32)
-                    >> 15 as i32;
-                fs = fs.wrapping_add(((1 as i32) << 0 as i32) as u32);
+                    >> 15;
+                fs = fs.wrapping_add(((1) << 0) as u32);
                 val += 1;
             }
-            if fs <= ((1 as i32) << 0 as i32) as u32 {
+            if fs <= ((1) << 0) as u32 {
                 let mut di: i32 = 0;
-                di = (fm.wrapping_sub(fl) >> 0 as i32 + 1 as i32) as i32;
+                di = (fm.wrapping_sub(fl) >> 0 + 1) as i32;
                 val += di;
                 fl = fl.wrapping_add(
-                    (2 as i32 * di * ((1 as i32) << 0 as i32))
+                    (2 * di * ((1) << 0))
                         as u32,
                 );
             }
@@ -800,12 +800,12 @@ pub mod laplace_c {
         ec_dec_update(
             dec,
             fl,
-            if fl.wrapping_add(fs) < 32768 as i32 as u32 {
+            if fl.wrapping_add(fs) < 32768 {
                 fl.wrapping_add(fs)
             } else {
-                32768 as i32 as u32
+                32768
             },
-            32768 as i32 as u32,
+            32768,
         );
         return val;
     }
@@ -836,18 +836,18 @@ pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data
 pub use self::FILE_h::FILE;
 use crate::externs::{memmove, memset};
 pub unsafe fn ec_laplace_get_start_freq(mut decay: i32) -> i32 {
-    let mut ft: u32 = (32768 as i32
-        - ((1 as i32) << 0 as i32)
-            * (2 as i32 * 16 as i32 + 1 as i32))
+    let mut ft: u32 = (32768
+        - ((1) << 0)
+            * (2 * 16 + 1))
         as u32;
     let mut fs: i32 =
-        ft.wrapping_mul((16384 as i32 - decay) as u32)
-            .wrapping_div((16384 as i32 + decay) as u32) as i32;
-    return fs + ((1 as i32) << 0 as i32);
+        ft.wrapping_mul((16384 - decay) as u32)
+            .wrapping_div((16384 + decay) as u32) as i32;
+    return fs + ((1) << 0);
 }
 unsafe fn main_0() -> i32 {
     let mut i: i32 = 0;
-    let mut ret: i32 = 0 as i32;
+    let mut ret: i32 = 0;
     let mut enc: ec_enc = ec_enc {
         buf: 0 as *mut u8,
         storage: 0,
@@ -879,22 +879,22 @@ unsafe fn main_0() -> i32 {
     let mut ptr: *mut u8 = 0 as *mut u8;
     let mut val: [i32; 10000] = [0; 10000];
     let mut decay: [i32; 10000] = [0; 10000];
-    ptr = malloc(40000 as i32 as u64) as *mut u8;
-    ec_enc_init(&mut enc, ptr, 40000 as i32 as u32);
-    val[0 as i32 as usize] = 3 as i32;
-    decay[0 as i32 as usize] = 6000 as i32;
-    val[1 as i32 as usize] = 0 as i32;
-    decay[1 as i32 as usize] = 5800 as i32;
-    val[2 as i32 as usize] = -(1 as i32);
-    decay[2 as i32 as usize] = 5600 as i32;
-    i = 3 as i32;
-    while i < 10000 as i32 {
-        val[i as usize] = rand() % 15 as i32 - 7 as i32;
-        decay[i as usize] = rand() % 11000 as i32 + 5000 as i32;
+    ptr = malloc(40000) as *mut u8;
+    ec_enc_init(&mut enc, ptr, 40000);
+    val[0 as usize] = 3;
+    decay[0 as usize] = 6000;
+    val[1 as usize] = 0;
+    decay[1 as usize] = 5800;
+    val[2 as usize] = -1;
+    decay[2 as usize] = 5600;
+    i = 3;
+    while i < 10000 {
+        val[i as usize] = rand() % 15 - 7;
+        decay[i as usize] = rand() % 11000 + 5000;
         i += 1;
     }
-    i = 0 as i32;
-    while i < 10000 as i32 {
+    i = 0;
+    while i < 10000 {
         ec_laplace_encode(
             &mut enc,
             &mut *val.as_mut_ptr().offset(i as isize),
@@ -905,8 +905,8 @@ unsafe fn main_0() -> i32 {
     }
     ec_enc_done(&mut enc);
     ec_dec_init(&mut dec, ec_get_buffer(&mut enc), ec_range_bytes(&mut enc));
-    i = 0 as i32;
-    while i < 10000 as i32 {
+    i = 0;
+    while i < 10000 {
         let mut d: i32 = ec_laplace_decode(
             &mut dec,
             ec_laplace_get_start_freq(decay[i as usize]) as u32,
@@ -919,7 +919,7 @@ unsafe fn main_0() -> i32 {
                 d,
                 val[i as usize],
             );
-            ret = 1 as i32;
+            ret = 1;
         }
         i += 1;
     }

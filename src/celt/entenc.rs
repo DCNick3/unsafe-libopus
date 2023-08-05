@@ -11,36 +11,36 @@ use crate::silk::macros::EC_CLZ0;
 
 unsafe fn ec_write_byte(mut _this: *mut ec_enc, mut _value: u32) -> i32 {
     if ((*_this).offs).wrapping_add((*_this).end_offs) >= (*_this).storage {
-        return -(1 as i32);
+        return -1;
     }
     let fresh0 = (*_this).offs;
     (*_this).offs = ((*_this).offs).wrapping_add(1);
     *((*_this).buf).offset(fresh0 as isize) = _value as u8;
-    return 0 as i32;
+    return 0;
 }
 unsafe fn ec_write_byte_at_end(mut _this: *mut ec_enc, mut _value: u32) -> i32 {
     if ((*_this).offs).wrapping_add((*_this).end_offs) >= (*_this).storage {
-        return -(1 as i32);
+        return -1;
     }
     (*_this).end_offs = ((*_this).end_offs).wrapping_add(1);
     *((*_this).buf).offset(((*_this).storage).wrapping_sub((*_this).end_offs) as isize) =
         _value as u8;
-    return 0 as i32;
+    return 0;
 }
 unsafe fn ec_enc_carry_out(mut _this: *mut ec_enc, mut _c: i32) {
     if _c as u32 != EC_SYM_MAX {
         let mut carry: i32 = 0;
         carry = _c >> EC_SYM_BITS;
-        if (*_this).rem >= 0 as i32 {
+        if (*_this).rem >= 0 {
             (*_this).error |= ec_write_byte(_this, ((*_this).rem + carry) as u32);
         }
-        if (*_this).ext > 0 as i32 as u32 {
+        if (*_this).ext > 0 {
             let mut sym: u32 = 0;
             sym = EC_SYM_MAX.wrapping_add(carry as u32) & EC_SYM_MAX;
             loop {
                 (*_this).error |= ec_write_byte(_this, sym);
                 (*_this).ext = ((*_this).ext).wrapping_sub(1);
-                if !((*_this).ext > 0 as i32 as u32) {
+                if !((*_this).ext > 0) {
                     break;
                 }
             }
@@ -54,29 +54,29 @@ unsafe fn ec_enc_carry_out(mut _this: *mut ec_enc, mut _c: i32) {
 unsafe fn ec_enc_normalize(mut _this: *mut ec_enc) {
     while (*_this).rng <= EC_CODE_BOT {
         ec_enc_carry_out(_this, ((*_this).val >> EC_CODE_SHIFT) as i32);
-        (*_this).val = (*_this).val << EC_SYM_BITS & EC_CODE_TOP.wrapping_sub(1 as i32 as u32);
+        (*_this).val = (*_this).val << EC_SYM_BITS & EC_CODE_TOP.wrapping_sub(1);
         (*_this).rng <<= EC_SYM_BITS;
         (*_this).nbits_total += EC_SYM_BITS;
     }
 }
 pub unsafe fn ec_enc_init(mut _this: *mut ec_enc, mut _buf: *mut u8, mut _size: u32) {
     (*_this).buf = _buf;
-    (*_this).end_offs = 0 as i32 as u32;
-    (*_this).end_window = 0 as i32 as ec_window;
-    (*_this).nend_bits = 0 as i32;
-    (*_this).nbits_total = EC_CODE_BITS + 1 as i32;
-    (*_this).offs = 0 as i32 as u32;
+    (*_this).end_offs = 0;
+    (*_this).end_window = 0 as ec_window;
+    (*_this).nend_bits = 0;
+    (*_this).nbits_total = EC_CODE_BITS + 1;
+    (*_this).offs = 0;
     (*_this).rng = EC_CODE_TOP;
-    (*_this).rem = -(1 as i32);
-    (*_this).val = 0 as i32 as u32;
-    (*_this).ext = 0 as i32 as u32;
+    (*_this).rem = -1;
+    (*_this).val = 0;
+    (*_this).ext = 0;
     (*_this).storage = _size;
-    (*_this).error = 0 as i32;
+    (*_this).error = 0;
 }
 pub unsafe fn ec_encode(mut _this: *mut ec_enc, mut _fl: u32, mut _fh: u32, mut _ft: u32) {
     let mut r: u32 = 0;
     r = celt_udiv((*_this).rng, _ft);
-    if _fl > 0 as i32 as u32 {
+    if _fl > 0 {
         (*_this).val = ((*_this).val as u32)
             .wrapping_add(((*_this).rng).wrapping_sub(r.wrapping_mul(_ft.wrapping_sub(_fl))))
             as u32 as u32;
@@ -90,7 +90,7 @@ pub unsafe fn ec_encode(mut _this: *mut ec_enc, mut _fl: u32, mut _fh: u32, mut 
 pub unsafe fn ec_encode_bin(mut _this: *mut ec_enc, mut _fl: u32, mut _fh: u32, mut _bits: u32) {
     let mut r: u32 = 0;
     r = (*_this).rng >> _bits;
-    if _fl > 0 as i32 as u32 {
+    if _fl > 0 {
         (*_this).val = ((*_this).val as u32).wrapping_add(
             ((*_this).rng).wrapping_sub(r.wrapping_mul(((1 as u32) << _bits).wrapping_sub(_fl))),
         ) as u32 as u32;
@@ -124,14 +124,12 @@ pub unsafe fn ec_enc_icdf(
 ) {
     let mut r: u32 = 0;
     r = (*_this).rng >> _ftb;
-    if _s > 0 as i32 {
+    if _s > 0 {
         (*_this).val = ((*_this).val as u32).wrapping_add(
-            ((*_this).rng)
-                .wrapping_sub(r.wrapping_mul(*_icdf.offset((_s - 1 as i32) as isize) as u32)),
+            ((*_this).rng).wrapping_sub(r.wrapping_mul(*_icdf.offset((_s - 1) as isize) as u32)),
         ) as u32 as u32;
         (*_this).rng = r.wrapping_mul(
-            (*_icdf.offset((_s - 1 as i32) as isize) as i32 - *_icdf.offset(_s as isize) as i32)
-                as u32,
+            (*_icdf.offset((_s - 1) as isize) as i32 - *_icdf.offset(_s as isize) as i32) as u32,
         );
     } else {
         (*_this).rng = ((*_this).rng as u32)
@@ -144,26 +142,17 @@ pub unsafe fn ec_enc_uint(mut _this: *mut ec_enc, mut _fl: u32, mut _ft: u32) {
     let mut ft: u32 = 0;
     let mut fl: u32 = 0;
     let mut ftb: i32 = 0;
-    assert!(_ft > 1 as i32 as u32);
+    assert!(_ft > 1);
     _ft = _ft.wrapping_sub(1);
     ftb = EC_CLZ0 - _ft.leading_zeros() as i32;
     if ftb > EC_UINT_BITS {
         ftb -= EC_UINT_BITS;
-        ft = (_ft >> ftb).wrapping_add(1 as i32 as u32);
+        ft = (_ft >> ftb).wrapping_add(1);
         fl = _fl >> ftb;
-        ec_encode(_this, fl, fl.wrapping_add(1 as i32 as u32), ft);
-        ec_enc_bits(
-            _this,
-            _fl & ((1 as i32 as u32) << ftb).wrapping_sub(1 as u32),
-            ftb as u32,
-        );
+        ec_encode(_this, fl, fl.wrapping_add(1), ft);
+        ec_enc_bits(_this, _fl & (1_u32 << ftb).wrapping_sub(1), ftb as u32);
     } else {
-        ec_encode(
-            _this,
-            _fl,
-            _fl.wrapping_add(1 as i32 as u32),
-            _ft.wrapping_add(1 as i32 as u32),
-        );
+        ec_encode(_this, _fl, _fl.wrapping_add(1), _ft.wrapping_add(1));
     };
 }
 pub unsafe fn ec_enc_bits(mut _this: *mut ec_enc, mut _fl: u32, mut _bits: u32) {
@@ -171,7 +160,7 @@ pub unsafe fn ec_enc_bits(mut _this: *mut ec_enc, mut _fl: u32, mut _bits: u32) 
     let mut used: i32 = 0;
     window = (*_this).end_window;
     used = (*_this).nend_bits;
-    assert!(_bits > 0 as i32 as u32);
+    assert!(_bits > 0);
     if (used as u32).wrapping_add(_bits) > EC_WINDOW_SIZE as u32 {
         loop {
             (*_this).error |= ec_write_byte_at_end(_this, window & EC_SYM_MAX);
@@ -191,18 +180,18 @@ pub unsafe fn ec_enc_bits(mut _this: *mut ec_enc, mut _fl: u32, mut _bits: u32) 
 pub unsafe fn ec_enc_patch_initial_bits(mut _this: *mut ec_enc, mut _val: u32, mut _nbits: u32) {
     let mut shift: i32 = 0;
     let mut mask: u32 = 0;
-    assert!(_nbits <= 8 as i32 as u32);
+    assert!(_nbits <= 8);
     shift = (EC_SYM_BITS as u32).wrapping_sub(_nbits) as i32;
-    mask = ((((1 as i32) << _nbits) - 1 as i32) << shift) as u32;
-    if (*_this).offs > 0 as i32 as u32 {
-        *((*_this).buf).offset(0 as i32 as isize) =
-            (*((*_this).buf).offset(0 as i32 as isize) as u32 & !mask | _val << shift) as u8;
-    } else if (*_this).rem >= 0 as i32 {
+    mask = ((((1) << _nbits) - 1) << shift) as u32;
+    if (*_this).offs > 0 {
+        *((*_this).buf).offset(0 as isize) =
+            (*((*_this).buf).offset(0 as isize) as u32 & !mask | _val << shift) as u8;
+    } else if (*_this).rem >= 0 {
         (*_this).rem = ((*_this).rem as u32 & !mask | _val << shift) as i32;
     } else if (*_this).rng <= EC_CODE_TOP >> _nbits {
         (*_this).val = (*_this).val & !(mask << EC_CODE_SHIFT) | _val << EC_CODE_SHIFT + shift;
     } else {
-        (*_this).error = -(1 as i32);
+        (*_this).error = -1;
     };
 }
 pub unsafe fn ec_enc_shrink(mut _this: *mut ec_enc, mut _size: u32) {
@@ -217,15 +206,14 @@ pub unsafe fn ec_enc_shrink(mut _this: *mut ec_enc, mut _size: u32) {
         ((*_this).end_offs as u64)
             .wrapping_mul(::core::mem::size_of::<u8>() as u64)
             .wrapping_add(
-                (0 as i32 as i64
-                    * ((*_this).buf)
-                        .offset(_size as isize)
-                        .offset(-((*_this).end_offs as isize))
-                        .offset_from(
-                            ((*_this).buf)
-                                .offset((*_this).storage as isize)
-                                .offset(-((*_this).end_offs as isize)),
-                        ) as i64) as u64,
+                (0 * ((*_this).buf)
+                    .offset(_size as isize)
+                    .offset(-((*_this).end_offs as isize))
+                    .offset_from(
+                        ((*_this).buf)
+                            .offset((*_this).storage as isize)
+                            .offset(-((*_this).end_offs as isize)),
+                    ) as i64) as u64,
             ),
     );
     (*_this).storage = _size;
@@ -237,20 +225,20 @@ pub unsafe fn ec_enc_done(mut _this: *mut ec_enc) {
     let mut end: u32 = 0;
     let mut l: i32 = 0;
     l = EC_CODE_BITS - (EC_CLZ0 - ((*_this).rng).leading_zeros() as i32);
-    msk = EC_CODE_TOP.wrapping_sub(1 as i32 as u32) >> l;
+    msk = EC_CODE_TOP.wrapping_sub(1) >> l;
     end = ((*_this).val).wrapping_add(msk) & !msk;
     if end | msk >= ((*_this).val).wrapping_add((*_this).rng) {
         l += 1;
-        msk >>= 1 as i32;
+        msk >>= 1;
         end = ((*_this).val).wrapping_add(msk) & !msk;
     }
-    while l > 0 as i32 {
+    while l > 0 {
         ec_enc_carry_out(_this, (end >> EC_CODE_SHIFT) as i32);
-        end = end << EC_SYM_BITS & EC_CODE_TOP.wrapping_sub(1 as i32 as u32);
+        end = end << EC_SYM_BITS & EC_CODE_TOP.wrapping_sub(1);
         l -= EC_SYM_BITS;
     }
-    if (*_this).rem >= 0 as i32 || (*_this).ext > 0 as i32 as u32 {
-        ec_enc_carry_out(_this, 0 as i32);
+    if (*_this).rem >= 0 || (*_this).ext > 0 {
+        ec_enc_carry_out(_this, 0);
     }
     window = (*_this).end_window;
     used = (*_this).nend_bits;
@@ -262,25 +250,25 @@ pub unsafe fn ec_enc_done(mut _this: *mut ec_enc) {
     if (*_this).error == 0 {
         memset(
             ((*_this).buf).offset((*_this).offs as isize) as *mut core::ffi::c_void,
-            0 as i32,
+            0,
             (((*_this).storage)
                 .wrapping_sub((*_this).offs)
                 .wrapping_sub((*_this).end_offs) as u64)
                 .wrapping_mul(::core::mem::size_of::<u8>() as u64),
         );
-        if used > 0 as i32 {
+        if used > 0 {
             if (*_this).end_offs >= (*_this).storage {
-                (*_this).error = -(1 as i32);
+                (*_this).error = -1;
             } else {
                 l = -l;
                 if ((*_this).offs).wrapping_add((*_this).end_offs) >= (*_this).storage && l < used {
-                    window &= (((1 as i32) << l) - 1 as i32) as u32;
-                    (*_this).error = -(1 as i32);
+                    window &= (((1) << l) - 1) as u32;
+                    (*_this).error = -1;
                 }
                 let ref mut fresh1 = *((*_this).buf).offset(
                     ((*_this).storage)
                         .wrapping_sub((*_this).end_offs)
-                        .wrapping_sub(1 as i32 as u32) as isize,
+                        .wrapping_sub(1) as isize,
                 );
                 *fresh1 = (*fresh1 as i32 | window as u8 as i32) as u8;
             }

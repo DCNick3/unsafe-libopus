@@ -36,7 +36,7 @@ pub unsafe fn silk_find_LPC_FLP(
     let mut a_tmp: [f32; 16] = [0.; 16];
     let mut LPC_res: [f32; 384] = [0.; 384];
     subfr_length = (*psEncC).subfr_length + (*psEncC).predictLPCOrder;
-    (*psEncC).indices.NLSFInterpCoef_Q2 = 4 as i32 as i8;
+    (*psEncC).indices.NLSFInterpCoef_Q2 = 4;
     res_nrg = silk_burg_modified_FLP(
         a.as_mut_ptr(),
         x,
@@ -51,16 +51,16 @@ pub unsafe fn silk_find_LPC_FLP(
     {
         res_nrg -= silk_burg_modified_FLP(
             a_tmp.as_mut_ptr(),
-            x.offset((MAX_NB_SUBFR / 2 as i32 * subfr_length) as isize),
+            x.offset((MAX_NB_SUBFR / 2 * subfr_length) as isize),
             minInvGain,
             subfr_length,
-            MAX_NB_SUBFR / 2 as i32,
+            MAX_NB_SUBFR / 2,
             (*psEncC).predictLPCOrder,
         );
         silk_A2NLSF_FLP(NLSF_Q15, a_tmp.as_mut_ptr(), (*psEncC).predictLPCOrder);
         res_nrg_2nd = silk_float_MAX;
-        k = 3 as i32;
-        while k >= 0 as i32 {
+        k = 3;
+        while k >= 0 {
             silk_interpolate(
                 NLSF0_Q15.as_mut_ptr(),
                 ((*psEncC).prev_NLSFq_Q15).as_mut_ptr() as *const i16,
@@ -78,7 +78,7 @@ pub unsafe fn silk_find_LPC_FLP(
                 LPC_res.as_mut_ptr(),
                 a_tmp.as_mut_ptr() as *const f32,
                 x,
-                2 as i32 * subfr_length,
+                2 * subfr_length,
                 (*psEncC).predictLPCOrder,
             );
             res_nrg_interp = (silk_energy_FLP(
@@ -103,13 +103,13 @@ pub unsafe fn silk_find_LPC_FLP(
             k -= 1;
         }
     }
-    if (*psEncC).indices.NLSFInterpCoef_Q2 as i32 == 4 as i32 {
+    if (*psEncC).indices.NLSFInterpCoef_Q2 as i32 == 4 {
         silk_A2NLSF_FLP(NLSF_Q15, a.as_mut_ptr(), (*psEncC).predictLPCOrder);
     }
     assert!(
-        (*psEncC).indices.NLSFInterpCoef_Q2 as i32 == 4 as i32
+        (*psEncC).indices.NLSFInterpCoef_Q2 as i32 == 4
             || (*psEncC).useInterpolatedNLSFs != 0
                 && (*psEncC).first_frame_after_reset == 0
-                && (*psEncC).nb_subfr == 4 as i32
+                && (*psEncC).nb_subfr == 4
     );
 }

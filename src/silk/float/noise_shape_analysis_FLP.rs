@@ -49,9 +49,9 @@ unsafe fn warped_gain(coefs: *const f32, mut lambda: f32, order: i32) -> f32 {
     let mut i: i32 = 0;
     let mut gain: f32 = 0.;
     lambda = -lambda;
-    gain = *coefs.offset((order - 1 as i32) as isize);
-    i = order - 2 as i32;
-    while i >= 0 as i32 {
+    gain = *coefs.offset((order - 1) as isize);
+    i = order - 2;
+    while i >= 0 {
         gain = lambda * gain + *coefs.offset(i as isize);
         i -= 1;
     }
@@ -61,26 +61,26 @@ unsafe fn warped_gain(coefs: *const f32, mut lambda: f32, order: i32) -> f32 {
 unsafe fn warped_true2monic_coefs(coefs: *mut f32, lambda: f32, limit: f32, order: i32) {
     let mut i: i32 = 0;
     let mut iter: i32 = 0;
-    let mut ind: i32 = 0 as i32;
+    let mut ind: i32 = 0;
     let mut tmp: f32 = 0.;
     let mut maxabs: f32 = 0.;
     let mut chirp: f32 = 0.;
     let mut gain: f32 = 0.;
-    i = order - 1 as i32;
-    while i > 0 as i32 {
-        *coefs.offset((i - 1 as i32) as isize) -= lambda * *coefs.offset(i as isize);
+    i = order - 1;
+    while i > 0 {
+        *coefs.offset((i - 1) as isize) -= lambda * *coefs.offset(i as isize);
         i -= 1;
     }
-    gain = (1.0f32 - lambda * lambda) / (1.0f32 + lambda * *coefs.offset(0 as i32 as isize));
-    i = 0 as i32;
+    gain = (1.0f32 - lambda * lambda) / (1.0f32 + lambda * *coefs.offset(0 as isize));
+    i = 0;
     while i < order {
         *coefs.offset(i as isize) *= gain;
         i += 1;
     }
-    iter = 0 as i32;
-    while iter < 10 as i32 {
+    iter = 0;
+    while iter < 10 {
         maxabs = -1.0f32;
-        i = 0 as i32;
+        i = 0;
         while i < order {
             tmp = (*coefs.offset(i as isize)).abs();
             if tmp > maxabs {
@@ -92,28 +92,27 @@ unsafe fn warped_true2monic_coefs(coefs: *mut f32, lambda: f32, limit: f32, orde
         if maxabs <= limit {
             return;
         }
-        i = 1 as i32;
+        i = 1;
         while i < order {
-            *coefs.offset((i - 1 as i32) as isize) += lambda * *coefs.offset(i as isize);
+            *coefs.offset((i - 1) as isize) += lambda * *coefs.offset(i as isize);
             i += 1;
         }
         gain = 1.0f32 / gain;
-        i = 0 as i32;
+        i = 0;
         while i < order {
             *coefs.offset(i as isize) *= gain;
             i += 1;
         }
         chirp = 0.99f32
-            - (0.8f32 + 0.1f32 * iter as f32) * (maxabs - limit)
-                / (maxabs * (ind + 1 as i32) as f32);
+            - (0.8f32 + 0.1f32 * iter as f32) * (maxabs - limit) / (maxabs * (ind + 1) as f32);
         silk_bwexpander_FLP(coefs, order, chirp);
-        i = order - 1 as i32;
-        while i > 0 as i32 {
-            *coefs.offset((i - 1 as i32) as isize) -= lambda * *coefs.offset(i as isize);
+        i = order - 1;
+        while i > 0 {
+            *coefs.offset((i - 1) as isize) -= lambda * *coefs.offset(i as isize);
             i -= 1;
         }
-        gain = (1.0f32 - lambda * lambda) / (1.0f32 + lambda * *coefs.offset(0 as i32 as isize));
-        i = 0 as i32;
+        gain = (1.0f32 - lambda * lambda) / (1.0f32 + lambda * *coefs.offset(0 as isize));
+        i = 0;
         while i < order {
             *coefs.offset(i as isize) *= gain;
             i += 1;
@@ -125,14 +124,14 @@ unsafe fn warped_true2monic_coefs(coefs: *mut f32, lambda: f32, limit: f32, orde
 unsafe fn limit_coefs(coefs: *mut f32, limit: f32, order: i32) {
     let mut i: i32 = 0;
     let mut iter: i32 = 0;
-    let mut ind: i32 = 0 as i32;
+    let mut ind: i32 = 0;
     let mut tmp: f32 = 0.;
     let mut maxabs: f32 = 0.;
     let mut chirp: f32 = 0.;
-    iter = 0 as i32;
-    while iter < 10 as i32 {
+    iter = 0;
+    while iter < 10 {
         maxabs = -1.0f32;
-        i = 0 as i32;
+        i = 0;
         while i < order {
             tmp = (*coefs.offset(i as isize)).abs();
             if tmp > maxabs {
@@ -145,8 +144,7 @@ unsafe fn limit_coefs(coefs: *mut f32, limit: f32, order: i32) {
             return;
         }
         chirp = 0.99f32
-            - (0.8f32 + 0.1f32 * iter as f32) * (maxabs - limit)
-                / (maxabs * (ind + 1 as i32) as f32);
+            - (0.8f32 + 0.1f32 * iter as f32) * (maxabs - limit) / (maxabs * (ind + 1) as f32);
         silk_bwexpander_FLP(coefs, order, chirp);
         iter += 1;
     }
@@ -180,13 +178,13 @@ pub unsafe fn silk_noise_shape_analysis_FLP(
     let mut x_ptr: *const f32 = 0 as *const f32;
     let mut pitch_res_ptr: *const f32 = 0 as *const f32;
     x_ptr = x.offset(-((*psEnc).sCmn.la_shape as isize));
-    SNR_adj_dB = (*psEnc).sCmn.SNR_dB_Q7 as f32 * (1 as i32 as f32 / 128.0f32);
+    SNR_adj_dB = (*psEnc).sCmn.SNR_dB_Q7 as f32 * (1 as f32 / 128.0f32);
     (*psEncCtrl).input_quality = 0.5f32
-        * ((*psEnc).sCmn.input_quality_bands_Q15[0 as i32 as usize]
-            + (*psEnc).sCmn.input_quality_bands_Q15[1 as i32 as usize]) as f32
+        * ((*psEnc).sCmn.input_quality_bands_Q15[0 as usize]
+            + (*psEnc).sCmn.input_quality_bands_Q15[1 as usize]) as f32
         * (1.0f32 / 32768.0f32);
     (*psEncCtrl).coding_quality = silk_sigmoid(0.25f32 * (SNR_adj_dB - 20.0f32));
-    if (*psEnc).sCmn.useCBR == 0 as i32 {
+    if (*psEnc).sCmn.useCBR == 0 {
         b = 1.0f32 - (*psEnc).sCmn.speech_activity_Q8 as f32 * (1.0f32 / 256.0f32);
         SNR_adj_dB -= BG_SNR_DECR_dB
             * (*psEncCtrl).coding_quality
@@ -197,46 +195,45 @@ pub unsafe fn silk_noise_shape_analysis_FLP(
     if (*psEnc).sCmn.indices.signalType as i32 == TYPE_VOICED {
         SNR_adj_dB += HARM_SNR_INCR_dB * (*psEnc).LTPCorr;
     } else {
-        SNR_adj_dB += (-0.4f32 * (*psEnc).sCmn.SNR_dB_Q7 as f32 * (1 as i32 as f32 / 128.0f32)
-            + 6.0f32)
+        SNR_adj_dB += (-0.4f32 * (*psEnc).sCmn.SNR_dB_Q7 as f32 * (1 as f32 / 128.0f32) + 6.0f32)
             * (1.0f32 - (*psEncCtrl).input_quality);
     }
     if (*psEnc).sCmn.indices.signalType as i32 == TYPE_VOICED {
-        (*psEnc).sCmn.indices.quantOffsetType = 0 as i32 as i8;
+        (*psEnc).sCmn.indices.quantOffsetType = 0;
     } else {
-        nSamples = 2 as i32 * (*psEnc).sCmn.fs_kHz;
+        nSamples = 2 * (*psEnc).sCmn.fs_kHz;
         energy_variation = 0.0f32;
         log_energy_prev = 0.0f32;
         pitch_res_ptr = pitch_res;
-        nSegs = 5 as i32 as i16 as i32 * (*psEnc).sCmn.nb_subfr as i16 as i32 / 2 as i32;
-        k = 0 as i32;
+        nSegs = 5 * (*psEnc).sCmn.nb_subfr as i16 as i32 / 2;
+        k = 0;
         while k < nSegs {
             nrg = nSamples as f32 + silk_energy_FLP(pitch_res_ptr, nSamples) as f32;
             log_energy = silk_log2(nrg as f64);
-            if k > 0 as i32 {
+            if k > 0 {
                 energy_variation += (log_energy - log_energy_prev).abs();
             }
             log_energy_prev = log_energy;
             pitch_res_ptr = pitch_res_ptr.offset(nSamples as isize);
             k += 1;
         }
-        if energy_variation > ENERGY_VARIATION_THRESHOLD_QNT_OFFSET * (nSegs - 1 as i32) as f32 {
-            (*psEnc).sCmn.indices.quantOffsetType = 0 as i32 as i8;
+        if energy_variation > ENERGY_VARIATION_THRESHOLD_QNT_OFFSET * (nSegs - 1) as f32 {
+            (*psEnc).sCmn.indices.quantOffsetType = 0;
         } else {
-            (*psEnc).sCmn.indices.quantOffsetType = 1 as i32 as i8;
+            (*psEnc).sCmn.indices.quantOffsetType = 1;
         }
     }
     strength = FIND_PITCH_WHITE_NOISE_FRACTION * (*psEncCtrl).predGain;
     BWExp = BANDWIDTH_EXPANSION / (1.0f32 + strength * strength);
     warping = (*psEnc).sCmn.warping_Q16 as f32 / 65536.0f32 + 0.01f32 * (*psEncCtrl).coding_quality;
-    k = 0 as i32;
+    k = 0;
     while k < (*psEnc).sCmn.nb_subfr {
         let mut shift: i32 = 0;
         let mut slope_part: i32 = 0;
         let mut flat_part: i32 = 0;
-        flat_part = (*psEnc).sCmn.fs_kHz * 3 as i32;
-        slope_part = ((*psEnc).sCmn.shapeWinLength - flat_part) / 2 as i32;
-        silk_apply_sine_window_FLP(x_windowed.as_mut_ptr(), x_ptr, 1 as i32, slope_part);
+        flat_part = (*psEnc).sCmn.fs_kHz * 3;
+        slope_part = ((*psEnc).sCmn.shapeWinLength - flat_part) / 2;
+        silk_apply_sine_window_FLP(x_windowed.as_mut_ptr(), x_ptr, 1, slope_part);
         shift = slope_part;
         memcpy(
             x_windowed.as_mut_ptr().offset(shift as isize) as *mut core::ffi::c_void,
@@ -247,11 +244,11 @@ pub unsafe fn silk_noise_shape_analysis_FLP(
         silk_apply_sine_window_FLP(
             x_windowed.as_mut_ptr().offset(shift as isize),
             x_ptr.offset(shift as isize),
-            2 as i32,
+            2,
             slope_part,
         );
         x_ptr = x_ptr.offset((*psEnc).sCmn.subfr_length as isize);
-        if (*psEnc).sCmn.warping_Q16 > 0 as i32 {
+        if (*psEnc).sCmn.warping_Q16 > 0 {
             silk_warped_autocorrelation_FLP(
                 auto_corr.as_mut_ptr(),
                 x_windowed.as_mut_ptr(),
@@ -264,11 +261,10 @@ pub unsafe fn silk_noise_shape_analysis_FLP(
                 auto_corr.as_mut_ptr(),
                 x_windowed.as_mut_ptr(),
                 (*psEnc).sCmn.shapeWinLength,
-                (*psEnc).sCmn.shapingLPCOrder + 1 as i32,
+                (*psEnc).sCmn.shapingLPCOrder + 1,
             );
         }
-        auto_corr[0 as i32 as usize] +=
-            auto_corr[0 as i32 as usize] * SHAPE_WHITE_NOISE_FRACTION + 1.0f32;
+        auto_corr[0 as usize] += auto_corr[0 as usize] * SHAPE_WHITE_NOISE_FRACTION + 1.0f32;
         nrg = silk_schur_FLP(
             rc.as_mut_ptr(),
             auto_corr.as_mut_ptr() as *const f32,
@@ -282,7 +278,7 @@ pub unsafe fn silk_noise_shape_analysis_FLP(
             (*psEnc).sCmn.shapingLPCOrder,
         );
         (*psEncCtrl).Gains[k as usize] = (nrg).sqrt();
-        if (*psEnc).sCmn.warping_Q16 > 0 as i32 {
+        if (*psEnc).sCmn.warping_Q16 > 0 {
             (*psEncCtrl).Gains[k as usize] *= warped_gain(
                 &mut *((*psEncCtrl).AR)
                     .as_mut_ptr()
@@ -298,7 +294,7 @@ pub unsafe fn silk_noise_shape_analysis_FLP(
             (*psEnc).sCmn.shapingLPCOrder,
             BWExp,
         );
-        if (*psEnc).sCmn.warping_Q16 > 0 as i32 {
+        if (*psEnc).sCmn.warping_Q16 > 0 {
             warped_true2monic_coefs(
                 &mut *((*psEncCtrl).AR)
                     .as_mut_ptr()
@@ -320,7 +316,7 @@ pub unsafe fn silk_noise_shape_analysis_FLP(
     }
     gain_mult = 2.0f32.powf(-0.16f32 * SNR_adj_dB);
     gain_add = 2.0f32.powf(0.16f32 * MIN_QGAIN_DB as f32);
-    k = 0 as i32;
+    k = 0;
     while k < (*psEnc).sCmn.nb_subfr {
         (*psEncCtrl).Gains[k as usize] *= gain_mult;
         (*psEncCtrl).Gains[k as usize] += gain_add;
@@ -329,12 +325,12 @@ pub unsafe fn silk_noise_shape_analysis_FLP(
     strength = LOW_FREQ_SHAPING
         * (1.0f32
             + LOW_QUALITY_LOW_FREQ_SHAPING_DECR
-                * ((*psEnc).sCmn.input_quality_bands_Q15[0 as i32 as usize] as f32
+                * ((*psEnc).sCmn.input_quality_bands_Q15[0 as usize] as f32
                     * (1.0f32 / 32768.0f32)
                     - 1.0f32));
     strength *= (*psEnc).sCmn.speech_activity_Q8 as f32 * (1.0f32 / 256.0f32);
     if (*psEnc).sCmn.indices.signalType as i32 == TYPE_VOICED {
-        k = 0 as i32;
+        k = 0;
         while k < (*psEnc).sCmn.nb_subfr {
             b = 0.2f32 / (*psEnc).sCmn.fs_kHz as f32
                 + 3.0f32 / (*psEncCtrl).pitchL[k as usize] as f32;
@@ -343,18 +339,18 @@ pub unsafe fn silk_noise_shape_analysis_FLP(
             k += 1;
         }
         Tilt = -HP_NOISE_COEF
-            - (1 as i32 as f32 - HP_NOISE_COEF)
+            - (1 as f32 - HP_NOISE_COEF)
                 * HARM_HP_NOISE_COEF
                 * (*psEnc).sCmn.speech_activity_Q8 as f32
                 * (1.0f32 / 256.0f32);
     } else {
         b = 1.3f32 / (*psEnc).sCmn.fs_kHz as f32;
-        (*psEncCtrl).LF_MA_shp[0 as i32 as usize] = -1.0f32 + b;
-        (*psEncCtrl).LF_AR_shp[0 as i32 as usize] = 1.0f32 - b - b * strength * 0.6f32;
-        k = 1 as i32;
+        (*psEncCtrl).LF_MA_shp[0 as usize] = -1.0f32 + b;
+        (*psEncCtrl).LF_AR_shp[0 as usize] = 1.0f32 - b - b * strength * 0.6f32;
+        k = 1;
         while k < (*psEnc).sCmn.nb_subfr {
-            (*psEncCtrl).LF_MA_shp[k as usize] = (*psEncCtrl).LF_MA_shp[0 as i32 as usize];
-            (*psEncCtrl).LF_AR_shp[k as usize] = (*psEncCtrl).LF_AR_shp[0 as i32 as usize];
+            (*psEncCtrl).LF_MA_shp[k as usize] = (*psEncCtrl).LF_MA_shp[0 as usize];
+            (*psEncCtrl).LF_AR_shp[k as usize] = (*psEncCtrl).LF_AR_shp[0 as usize];
             k += 1;
         }
         Tilt = -HP_NOISE_COEF;
@@ -367,7 +363,7 @@ pub unsafe fn silk_noise_shape_analysis_FLP(
     } else {
         HarmShapeGain = 0.0f32;
     }
-    k = 0 as i32;
+    k = 0;
     while k < (*psEnc).sCmn.nb_subfr {
         (*psShapeSt).HarmShapeGain_smth +=
             SUBFR_SMTH_COEF * (HarmShapeGain - (*psShapeSt).HarmShapeGain_smth);

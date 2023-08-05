@@ -19,24 +19,20 @@ pub unsafe fn silk_find_LTP_FLP(
     let mut temp: f32 = 0.;
     xX_ptr = xX;
     XX_ptr = XX;
-    k = 0 as i32;
+    k = 0;
     while k < nb_subfr {
-        lag_ptr = r_ptr.offset(-((*lag.offset(k as isize) + LTP_ORDER / 2 as i32) as isize));
+        lag_ptr = r_ptr.offset(-((*lag.offset(k as isize) + LTP_ORDER / 2) as isize));
         silk_corrMatrix_FLP(lag_ptr, subfr_length, LTP_ORDER, XX_ptr);
         silk_corrVector_FLP(lag_ptr, r_ptr, subfr_length, LTP_ORDER, xX_ptr);
         xx = silk_energy_FLP(r_ptr, subfr_length + LTP_ORDER) as f32;
         temp = 1.0f32
             / (if xx
-                > 0.03f32
-                    * 0.5f32
-                    * (*XX_ptr.offset(0 as i32 as isize) + *XX_ptr.offset(24 as i32 as isize))
+                > 0.03f32 * 0.5f32 * (*XX_ptr.offset(0 as isize) + *XX_ptr.offset(24 as isize))
                     + 1.0f32
             {
                 xx
             } else {
-                0.03f32
-                    * 0.5f32
-                    * (*XX_ptr.offset(0 as i32 as isize) + *XX_ptr.offset(24 as i32 as isize))
+                0.03f32 * 0.5f32 * (*XX_ptr.offset(0 as isize) + *XX_ptr.offset(24 as isize))
                     + 1.0f32
             });
         silk_scale_vector_FLP(XX_ptr, temp, LTP_ORDER * LTP_ORDER);

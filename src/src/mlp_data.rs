@@ -249,9 +249,9 @@ pub static mut layer0: DenseLayer = unsafe {
         let init = DenseLayer {
             bias: layer0_bias.as_ptr(),
             input_weights: layer0_weights.as_ptr(),
-            nb_inputs: 25 as i32,
-            nb_neurons: 32 as i32,
-            sigmoid: 0 as i32,
+            nb_inputs: 25,
+            nb_neurons: 32,
+            sigmoid: 0,
         };
         init
     }
@@ -262,8 +262,8 @@ pub static mut layer1: GRULayer = unsafe {
             bias: layer1_bias.as_ptr(),
             input_weights: layer1_weights.as_ptr(),
             recurrent_weights: layer1_recur_weights.as_ptr(),
-            nb_inputs: 32 as i32,
-            nb_neurons: 24 as i32,
+            nb_inputs: 32,
+            nb_neurons: 24,
         };
         init
     }
@@ -273,9 +273,9 @@ pub static mut layer2: DenseLayer = unsafe {
         let init = DenseLayer {
             bias: layer2_bias.as_ptr(),
             input_weights: layer2_weights.as_ptr(),
-            nb_inputs: 24 as i32,
-            nb_neurons: 2 as i32,
-            sigmoid: 1 as i32,
+            nb_inputs: 24,
+            nb_neurons: 2,
+            sigmoid: 1,
         };
         init
     }

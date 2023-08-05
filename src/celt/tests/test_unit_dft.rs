@@ -108,7 +108,7 @@ pub mod stdlib_h {
         return strtol(
             __nptr,
             0 as *mut core::ffi::c_void as *mut *mut i8,
-            10 as i32,
+            10,
         ) as i32;
     }
     {
@@ -125,7 +125,7 @@ pub mod stdlib_h {
 pub mod cpu_support_h {
     #[inline]
         pub unsafe fn opus_select_arch() -> i32 {
-        return 0 as i32;
+        return 0;
     }
 }
 pub mod opus_custom_h {
@@ -152,7 +152,7 @@ use crate::celt::mdct::mdct_lookup;
 use self::stdio_h::printf;
 pub use self::stdlib_h::{atoi, free, malloc, rand, strtol};
 
-pub static mut ret: i32 = 0 as i32;
+pub static mut ret: i32 = 0;
 pub unsafe fn check(
     mut in_0: *mut kiss_fft_cpx,
     mut out: *mut kiss_fft_cpx,
@@ -161,18 +161,18 @@ pub unsafe fn check(
 ) {
     let mut bin: i32 = 0;
     let mut k: i32 = 0;
-    let mut errpow: f64 = 0 as i32 as f64;
-    let mut sigpow: f64 = 0 as i32 as f64;
+    let mut errpow: f64 = 0 as f64;
+    let mut sigpow: f64 = 0 as f64;
     let mut snr: f64 = 0.;
-    bin = 0 as i32;
+    bin = 0;
     while bin < nfft {
-        let mut ansr: f64 = 0 as i32 as f64;
-        let mut ansi: f64 = 0 as i32 as f64;
+        let mut ansr: f64 = 0 as f64;
+        let mut ansi: f64 = 0 as f64;
         let mut difr: f64 = 0.;
         let mut difi: f64 = 0.;
-        k = 0 as i32;
+        k = 0;
         while k < nfft {
-            let mut phase: f64 = -(2 as i32) as f64
+            let mut phase: f64 = -(2) as f64
                 * 3.14159265358979323846f64
                 * bin as f64
                 * k as f64
@@ -198,19 +198,19 @@ pub unsafe fn check(
         sigpow += ansr * ansr + ansi * ansi;
         bin += 1;
     }
-    snr = 10 as i32 as f64 * log10(sigpow / errpow);
+    snr = 10 as f64 * log10(sigpow / errpow);
     printf(
         b"nfft=%d inverse=%d,snr = %f\n\0" as *const u8 as *const i8,
         nfft,
         isinverse,
         snr,
     );
-    if snr < 60 as i32 as f64 {
+    if snr < 60 as f64 {
         printf(
             b"** poor snr: %f ** \n\0" as *const u8 as *const i8,
             snr,
         );
-        ret = 1 as i32;
+        ret = 1;
     }
 }
 pub unsafe fn test1d(
@@ -226,40 +226,40 @@ pub unsafe fn test1d(
     let mut id: i32 = 0;
     let mut cfg: *const kiss_fft_state = 0 as *const kiss_fft_state;
     let mut mode: *mut OpusCustomMode = opus_custom_mode_create(
-        48000 as i32,
-        960 as i32,
+        48000,
+        960,
         0 as *mut i32,
     );
-    if nfft == 480 as i32 {
-        id = 0 as i32;
-    } else if nfft == 240 as i32 {
-        id = 1 as i32;
-    } else if nfft == 120 as i32 {
-        id = 2 as i32;
-    } else if nfft == 60 as i32 {
-        id = 3 as i32;
+    if nfft == 480 {
+        id = 0;
+    } else if nfft == 240 {
+        id = 1;
+    } else if nfft == 120 {
+        id = 2;
+    } else if nfft == 60 {
+        id = 3;
     } else {
         return;
     }
     cfg = (*mode).mdct.kfft[id as usize];
     in_0 = malloc(buflen) as *mut kiss_fft_cpx;
     out = malloc(buflen) as *mut kiss_fft_cpx;
-    k = 0 as i32;
+    k = 0;
     while k < nfft {
         (*in_0.offset(k as isize)).r =
-            (rand() % 32767 as i32 - 16384 as i32) as f32;
+            (rand() % 32767 - 16384) as f32;
         (*in_0.offset(k as isize)).i =
-            (rand() % 32767 as i32 - 16384 as i32) as f32;
+            (rand() % 32767 - 16384) as f32;
         k += 1;
     }
-    k = 0 as i32;
+    k = 0;
     while k < nfft {
-        (*in_0.offset(k as isize)).r *= 32768 as i32 as f32;
-        (*in_0.offset(k as isize)).i *= 32768 as i32 as f32;
+        (*in_0.offset(k as isize)).r *= 32768 as f32;
+        (*in_0.offset(k as isize)).i *= 32768 as f32;
         k += 1;
     }
     if isinverse != 0 {
-        k = 0 as i32;
+        k = 0;
         while k < nfft {
             (*in_0.offset(k as isize)).r /= nfft as f32;
             (*in_0.offset(k as isize)).i /= nfft as f32;
@@ -277,33 +277,33 @@ pub unsafe fn test1d(
 }
 unsafe fn main_0(mut argc: i32, mut argv: *mut *mut i8) -> i32 {
     let mut arch: i32 = opus_select_arch();
-    if argc > 1 as i32 {
+    if argc > 1 {
         let mut k: i32 = 0;
-        k = 1 as i32;
+        k = 1;
         while k < argc {
-            test1d(atoi(*argv.offset(k as isize)), 0 as i32, arch);
-            test1d(atoi(*argv.offset(k as isize)), 1 as i32, arch);
+            test1d(atoi(*argv.offset(k as isize)), 0, arch);
+            test1d(atoi(*argv.offset(k as isize)), 1, arch);
             k += 1;
         }
     } else {
-        test1d(32 as i32, 0 as i32, arch);
-        test1d(32 as i32, 1 as i32, arch);
-        test1d(128 as i32, 0 as i32, arch);
-        test1d(128 as i32, 1 as i32, arch);
-        test1d(256 as i32, 0 as i32, arch);
-        test1d(256 as i32, 1 as i32, arch);
-        test1d(36 as i32, 0 as i32, arch);
-        test1d(36 as i32, 1 as i32, arch);
-        test1d(50 as i32, 0 as i32, arch);
-        test1d(50 as i32, 1 as i32, arch);
-        test1d(60 as i32, 0 as i32, arch);
-        test1d(60 as i32, 1 as i32, arch);
-        test1d(120 as i32, 0 as i32, arch);
-        test1d(120 as i32, 1 as i32, arch);
-        test1d(240 as i32, 0 as i32, arch);
-        test1d(240 as i32, 1 as i32, arch);
-        test1d(480 as i32, 0 as i32, arch);
-        test1d(480 as i32, 1 as i32, arch);
+        test1d(32, 0, arch);
+        test1d(32, 1, arch);
+        test1d(128, 0, arch);
+        test1d(128, 1, arch);
+        test1d(256, 0, arch);
+        test1d(256, 1, arch);
+        test1d(36, 0, arch);
+        test1d(36, 1, arch);
+        test1d(50, 0, arch);
+        test1d(50, 1, arch);
+        test1d(60, 0, arch);
+        test1d(60, 1, arch);
+        test1d(120, 0, arch);
+        test1d(120, 1, arch);
+        test1d(240, 0, arch);
+        test1d(240, 1, arch);
+        test1d(480, 0, arch);
+        test1d(480, 1, arch);
     }
     return ret;
 }

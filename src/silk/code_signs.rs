@@ -17,31 +17,25 @@ pub unsafe fn silk_encode_signs(
     let mut icdf: [u8; 2] = [0; 2];
     let mut q_ptr: *const i8 = 0 as *const i8;
     let mut icdf_ptr: *const u8 = 0 as *const u8;
-    icdf[1 as i32 as usize] = 0 as i32 as u8;
+    icdf[1 as usize] = 0;
     q_ptr = pulses;
-    i = 7 as i32 as i16 as i32
-        * (quantOffsetType + ((signalType as u32) << 1 as i32) as i32) as i16 as i32;
+    i = 7 * (quantOffsetType + ((signalType as u32) << 1) as i32) as i16 as i32;
     icdf_ptr = &*silk_sign_iCDF.as_ptr().offset(i as isize) as *const u8;
-    length = length + 16 as i32 / 2 as i32 >> 4 as i32;
-    i = 0 as i32;
+    length = length + 16 / 2 >> 4;
+    i = 0;
     while i < length {
         p = *sum_pulses.offset(i as isize);
-        if p > 0 as i32 {
-            icdf[0 as i32 as usize] = *icdf_ptr.offset(
-                (if (p & 0x1f as i32) < 6 as i32 {
-                    p & 0x1f as i32
-                } else {
-                    6 as i32
-                }) as isize,
-            );
-            j = 0 as i32;
+        if p > 0 {
+            icdf[0 as usize] =
+                *icdf_ptr.offset((if (p & 0x1f) < 6 { p & 0x1f } else { 6 }) as isize);
+            j = 0;
             while j < SHELL_CODEC_FRAME_LENGTH {
-                if *q_ptr.offset(j as isize) as i32 != 0 as i32 {
+                if *q_ptr.offset(j as isize) as i32 != 0 {
                     ec_enc_icdf(
                         psRangeEnc,
-                        (*q_ptr.offset(j as isize) as i32 >> 15 as i32) + 1 as i32,
+                        (*q_ptr.offset(j as isize) as i32 >> 15) + 1,
                         icdf.as_mut_ptr(),
-                        8 as i32 as u32,
+                        8,
                     );
                 }
                 j += 1;
@@ -65,31 +59,24 @@ pub unsafe fn silk_decode_signs(
     let mut icdf: [u8; 2] = [0; 2];
     let mut q_ptr: *mut i16 = 0 as *mut i16;
     let mut icdf_ptr: *const u8 = 0 as *const u8;
-    icdf[1 as i32 as usize] = 0 as i32 as u8;
+    icdf[1 as usize] = 0;
     q_ptr = pulses;
-    i = 7 as i32 as i16 as i32
-        * (quantOffsetType + ((signalType as u32) << 1 as i32) as i32) as i16 as i32;
+    i = 7 * (quantOffsetType + ((signalType as u32) << 1) as i32) as i16 as i32;
     icdf_ptr = &*silk_sign_iCDF.as_ptr().offset(i as isize) as *const u8;
-    length = length + 16 as i32 / 2 as i32 >> 4 as i32;
-    i = 0 as i32;
+    length = length + 16 / 2 >> 4;
+    i = 0;
     while i < length {
         p = *sum_pulses.offset(i as isize);
-        if p > 0 as i32 {
-            icdf[0 as i32 as usize] = *icdf_ptr.offset(
-                (if (p & 0x1f as i32) < 6 as i32 {
-                    p & 0x1f as i32
-                } else {
-                    6 as i32
-                }) as isize,
-            );
-            j = 0 as i32;
+        if p > 0 {
+            icdf[0 as usize] =
+                *icdf_ptr.offset((if (p & 0x1f) < 6 { p & 0x1f } else { 6 }) as isize);
+            j = 0;
             while j < SHELL_CODEC_FRAME_LENGTH {
-                if *q_ptr.offset(j as isize) as i32 > 0 as i32 {
+                if *q_ptr.offset(j as isize) as i32 > 0 {
                     let ref mut fresh0 = *q_ptr.offset(j as isize);
                     *fresh0 = (*fresh0 as i32
-                        * (((ec_dec_icdf(psRangeDec, icdf.as_mut_ptr(), 8 as i32 as u32) as u32)
-                            << 1 as i32) as i32
-                            - 1 as i32)) as i16;
+                        * (((ec_dec_icdf(psRangeDec, icdf.as_mut_ptr(), 8) as u32) << 1) as i32
+                            - 1)) as i16;
                 }
                 j += 1;
             }
