@@ -1,14 +1,19 @@
 use crate::silk::macros::silk_CLZ32;
 use crate::silk::SigProc_FIX::silk_ROR32;
 
+/// get number of leading zeros and fractional part (the bits right after the leading one
 #[inline]
-pub unsafe fn silk_CLZ_FRAC(in_0: i32, lz: *mut i32, frac_Q7: *mut i32) {
+pub fn silk_CLZ_FRAC(in_0: i32, lz: &mut i32, frac_Q7: &mut i32) {
     let lzeros: i32 = silk_CLZ32(in_0);
     *lz = lzeros;
     *frac_Q7 = silk_ROR32(in_0, 24 - lzeros) & 0x7f;
 }
+
+///  Approximation of square root
+///  Accuracy: < +/- 10%  for output values > 15       
+///            < +/- 2.5% for output values > 120      
 #[inline]
-pub unsafe fn silk_SQRT_APPROX(x: i32) -> i32 {
+pub fn silk_SQRT_APPROX(x: i32) -> i32 {
     let mut y: i32 = 0;
     let mut lz: i32 = 0;
     let mut frac_Q7: i32 = 0;
@@ -22,11 +27,13 @@ pub unsafe fn silk_SQRT_APPROX(x: i32) -> i32 {
         y = 46214;
     }
     y >>= lz >> 1;
-    y = (y as i64 + (y as i64 * (213 * frac_Q7 as i16 as i32) as i16 as i64 >> 16)) as i32;
+    y = (y as i64 + ((y as i64 * (213 * frac_Q7 as i16 as i32) as i16 as i64) >> 16)) as i32;
     return y;
 }
+
+/// Divide two int32 values and return result as int32 in a given Q-domain
 #[inline]
-pub unsafe fn silk_DIV32_varQ(a32: i32, b32: i32, Qres: i32) -> i32 {
+pub fn silk_DIV32_varQ(a32: i32, b32: i32, Qres: i32) -> i32 {
     let mut a_headrm: i32 = 0;
     let mut b_headrm: i32 = 0;
     let mut lshift: i32 = 0;
@@ -74,8 +81,12 @@ pub unsafe fn silk_DIV32_varQ(a32: i32, b32: i32, Qres: i32) -> i32 {
         return 0;
     };
 }
+
+/// Invert int32 value and return result as int32 in a given Q-domain
+///
+/// returns a good approximation of "(1 << Qres) / b32"
 #[inline]
-pub unsafe fn silk_INVERSE32_varQ(b32: i32, Qres: i32) -> i32 {
+pub fn silk_INVERSE32_varQ(b32: i32, Qres: i32) -> i32 {
     let mut b_headrm: i32 = 0;
     let mut lshift: i32 = 0;
     let mut b32_inv: i32 = 0;

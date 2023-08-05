@@ -1,13 +1,12 @@
-#![allow(non_camel_case_types)]
-#![allow(non_snake_case)]
-#![allow(non_upper_case_globals)]
-#![allow(unused_assignments)]
-
 extern crate core;
 
 pub mod externs;
 pub mod varargs;
 
+#[allow(non_camel_case_types)]
+#[allow(non_snake_case)]
+#[allow(non_upper_case_globals)]
+#[allow(unused_assignments)]
 mod celt {
     pub mod bands;
     pub mod celt;
@@ -40,6 +39,11 @@ mod celt {
     // stuff for structs that do not have a clear home, named after the header files
     pub mod float_cast;
 } // mod celt
+
+#[allow(non_camel_case_types)]
+#[allow(non_snake_case)]
+#[allow(non_upper_case_globals)]
+#[allow(unused_assignments)]
 mod silk {
     pub mod A2NLSF;
     pub mod CNG;
@@ -155,6 +159,11 @@ mod silk {
     pub mod resampler_structs;
     pub mod structs;
 } // mod silk
+
+#[allow(non_camel_case_types)]
+#[allow(non_snake_case)]
+#[allow(non_upper_case_globals)]
+#[allow(unused_assignments)]
 mod src {
     pub mod analysis;
     pub mod mapping_matrix;

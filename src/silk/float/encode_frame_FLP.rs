@@ -254,8 +254,7 @@ pub unsafe fn silk_encode_frame_FLP(
                     psRangeEnc,
                     (*psEnc).sCmn.indices.signalType as i32,
                     (*psEnc).sCmn.indices.quantOffsetType as i32,
-                    ((*psEnc).sCmn.pulses).as_mut_ptr(),
-                    (*psEnc).sCmn.frame_length,
+                    &mut (*psEnc).sCmn.pulses[..(*psEnc).sCmn.frame_length as usize],
                 );
                 nBits = ec_tell(psRangeEnc);
                 if iter == maxIter && found_lower == 0 && nBits > maxBits {
@@ -287,8 +286,7 @@ pub unsafe fn silk_encode_frame_FLP(
                         psRangeEnc,
                         (*psEnc).sCmn.indices.signalType as i32,
                         (*psEnc).sCmn.indices.quantOffsetType as i32,
-                        ((*psEnc).sCmn.pulses).as_mut_ptr(),
-                        (*psEnc).sCmn.frame_length,
+                        &mut (*psEnc).sCmn.pulses[..(*psEnc).sCmn.frame_length as usize],
                     );
                     nBits = ec_tell(psRangeEnc);
                 }

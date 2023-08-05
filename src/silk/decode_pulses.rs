@@ -53,7 +53,10 @@ pub unsafe fn silk_decode_pulses(
     while i < iter {
         if sum_pulses[i as usize] > 0 {
             silk_shell_decoder(
-                &mut *pulses.offset((i as i16 as i32 * 16) as isize),
+                std::slice::from_raw_parts_mut(
+                    &mut *pulses.offset((i as i16 as i32 * 16) as isize),
+                    SHELL_CODEC_FRAME_LENGTH as usize,
+                ),
                 psRangeDec,
                 sum_pulses[i as usize],
             );
