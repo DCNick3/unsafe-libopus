@@ -33,14 +33,14 @@ pub unsafe fn silk_decoder_set_fs(
     if (*psDec).fs_kHz != fs_kHz || frame_length != (*psDec).frame_length {
         if fs_kHz == 8 {
             if (*psDec).nb_subfr == MAX_NB_SUBFR {
-                (*psDec).pitch_contour_iCDF = silk_pitch_contour_NB_iCDF.as_ptr();
+                (*psDec).pitch_contour_iCDF = &silk_pitch_contour_NB_iCDF;
             } else {
-                (*psDec).pitch_contour_iCDF = silk_pitch_contour_10_ms_NB_iCDF.as_ptr();
+                (*psDec).pitch_contour_iCDF = &silk_pitch_contour_10_ms_NB_iCDF;
             }
         } else if (*psDec).nb_subfr == MAX_NB_SUBFR {
-            (*psDec).pitch_contour_iCDF = silk_pitch_contour_iCDF.as_ptr();
+            (*psDec).pitch_contour_iCDF = &silk_pitch_contour_iCDF;
         } else {
-            (*psDec).pitch_contour_iCDF = silk_pitch_contour_10_ms_iCDF.as_ptr();
+            (*psDec).pitch_contour_iCDF = &silk_pitch_contour_10_ms_iCDF;
         }
         if (*psDec).fs_kHz != fs_kHz {
             (*psDec).ltp_mem_length = 20 * fs_kHz as i16 as i32;
@@ -52,11 +52,11 @@ pub unsafe fn silk_decoder_set_fs(
                 (*psDec).psNLSF_CB = &silk_NLSF_CB_WB;
             }
             if fs_kHz == 16 {
-                (*psDec).pitch_lag_low_bits_iCDF = silk_uniform8_iCDF.as_ptr();
+                (*psDec).pitch_lag_low_bits_iCDF = &silk_uniform8_iCDF;
             } else if fs_kHz == 12 {
-                (*psDec).pitch_lag_low_bits_iCDF = silk_uniform6_iCDF.as_ptr();
+                (*psDec).pitch_lag_low_bits_iCDF = &silk_uniform6_iCDF;
             } else if fs_kHz == 8 {
-                (*psDec).pitch_lag_low_bits_iCDF = silk_uniform4_iCDF.as_ptr();
+                (*psDec).pitch_lag_low_bits_iCDF = &silk_uniform4_iCDF;
             } else {
                 panic!("libopus: assert(0) called");
             }

@@ -34,7 +34,7 @@ pub unsafe fn silk_encode_signs(
                     ec_enc_icdf(
                         psRangeEnc,
                         (*q_ptr.offset(j as isize) as i32 >> 15) + 1,
-                        icdf.as_mut_ptr(),
+                        &icdf,
                         8,
                     );
                 }
@@ -75,8 +75,8 @@ pub unsafe fn silk_decode_signs(
                 if *q_ptr.offset(j as isize) as i32 > 0 {
                     let ref mut fresh0 = *q_ptr.offset(j as isize);
                     *fresh0 = (*fresh0 as i32
-                        * (((ec_dec_icdf(psRangeDec, icdf.as_mut_ptr(), 8) as u32) << 1) as i32
-                            - 1)) as i16;
+                        * (((ec_dec_icdf(psRangeDec, &icdf, 8) as u32) << 1) as i32 - 1))
+                        as i16;
                 }
                 j += 1;
             }

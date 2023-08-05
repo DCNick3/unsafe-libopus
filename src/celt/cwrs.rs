@@ -1,3 +1,5 @@
+#![forbid(unsafe_code)]
+
 use crate::celt::entdec::{ec_dec, ec_dec_uint};
 use crate::celt::entenc::{ec_enc, ec_enc_uint};
 
@@ -389,7 +391,7 @@ fn cwrsi(mut k: i32, mut i: u32, mut y: &mut [i32]) -> f32 {
             y[0] = val as i32;
             y = &mut y[1..];
 
-            yy = yy + val as f32 * val as f32;
+            yy += val as f32 * val as f32;
         } else {
             p = PVQ_U_DATA2[k as usize][n as usize];
             q = PVQ_U_DATA2[k as usize + 1][n as usize];
@@ -415,7 +417,7 @@ fn cwrsi(mut k: i32, mut i: u32, mut y: &mut [i32]) -> f32 {
                 y[0] = val as i32;
                 y = &mut y[1..];
 
-                yy = yy + val as f32 * val as f32;
+                yy += val as f32 * val as f32;
             }
         }
         n -= 1;
@@ -433,11 +435,11 @@ fn cwrsi(mut k: i32, mut i: u32, mut y: &mut [i32]) -> f32 {
     y[0] = val as i32;
     y = &mut y[1..];
 
-    yy = yy + val as f32 * val as f32;
+    yy += val as f32 * val as f32;
     s = -(i as i32);
     val = ((k + s) ^ s) as i16;
     y[0] = val as i32;
-    yy = yy + val as f32 * val as f32;
+    yy += val as f32 * val as f32;
 
     yy
 }

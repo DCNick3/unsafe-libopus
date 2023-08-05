@@ -23,10 +23,9 @@ pub unsafe fn silk_decode_pulses(
     let mut sum_pulses: [i32; 20] = [0; 20];
     let mut nLshifts: [i32; 20] = [0; 20];
     let mut pulses_ptr: *mut i16 = 0 as *mut i16;
-    let mut cdf_ptr: *const u8 = 0 as *const u8;
     RateLevelIndex = ec_dec_icdf(
         psRangeDec,
-        (silk_rate_levels_iCDF[(signalType >> 1) as usize]).as_ptr(),
+        &(silk_rate_levels_iCDF[(signalType >> 1) as usize]),
         8,
     );
     iter = frame_length >> 4;
@@ -34,7 +33,7 @@ pub unsafe fn silk_decode_pulses(
         assert!(frame_length == 12 * 10);
         iter += 1;
     }
-    cdf_ptr = (silk_pulses_per_block_iCDF[RateLevelIndex as usize]).as_ptr();
+    let cdf_ptr = &silk_pulses_per_block_iCDF[RateLevelIndex as usize];
     i = 0;
     while i < iter {
         nLshifts[i as usize] = 0;
@@ -43,9 +42,8 @@ pub unsafe fn silk_decode_pulses(
             nLshifts[i as usize] += 1;
             sum_pulses[i as usize] = ec_dec_icdf(
                 psRangeDec,
-                (silk_pulses_per_block_iCDF[(N_RATE_LEVELS - 1) as usize])
-                    .as_ptr()
-                    .offset((nLshifts[i as usize] == 10) as i32 as isize),
+                &silk_pulses_per_block_iCDF[(N_RATE_LEVELS - 1) as usize]
+                    [(nLshifts[i as usize] == 10) as i32 as usize..],
                 8,
             );
         }
@@ -80,7 +78,7 @@ pub unsafe fn silk_decode_pulses(
                 j = 0;
                 while j < nLS {
                     abs_q = ((abs_q as u32) << 1) as i32;
-                    abs_q += ec_dec_icdf(psRangeDec, silk_lsb_iCDF.as_ptr(), 8);
+                    abs_q += ec_dec_icdf(psRangeDec, &silk_lsb_iCDF, 8);
                     j += 1;
                 }
                 *pulses_ptr.offset(k as isize) = abs_q as i16;

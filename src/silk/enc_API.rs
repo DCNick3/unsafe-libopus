@@ -505,11 +505,11 @@ pub unsafe fn silk_Encode(
             let psRangeEnc = &mut **psRangeEnc.as_mut().unwrap();
 
             let mut iCDF: [u8; 2] = [0, 0];
-            iCDF[0 as usize] = (256
+            iCDF[0] = (256
                 - (256
-                    >> ((*psEnc).state_Fxx[0 as usize].sCmn.nFramesPerPacket + 1)
-                        * (*encControl).nChannelsInternal)) as u8;
-            ec_enc_icdf(psRangeEnc, 0, iCDF.as_mut_ptr(), 8);
+                    >> (((*psEnc).state_Fxx[0 as usize].sCmn.nFramesPerPacket + 1)
+                        * (*encControl).nChannelsInternal))) as u8;
+            ec_enc_icdf(psRangeEnc, 0, &iCDF, 8);
             n = 0;
             while n < (*encControl).nChannelsInternal {
                 LBRR_symbol = 0;

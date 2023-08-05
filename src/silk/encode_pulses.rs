@@ -54,7 +54,6 @@ pub unsafe fn silk_encode_pulses(
     let mut pulses_comb: [i32; 8] = [0; 8];
     let mut abs_pulses_ptr: *mut i32 = 0 as *mut i32;
     let mut pulses_ptr: *const i8 = 0 as *const i8;
-    let mut cdf_ptr: *const u8 = 0 as *const u8;
     let mut nBits_ptr: *const u8 = 0 as *const u8;
     memset(
         pulses_comb.as_mut_ptr() as *mut core::ffi::c_void,
@@ -172,10 +171,10 @@ pub unsafe fn silk_encode_pulses(
     ec_enc_icdf(
         psRangeEnc,
         RateLevelIndex,
-        (silk_rate_levels_iCDF[(signalType >> 1) as usize]).as_ptr(),
+        &silk_rate_levels_iCDF[(signalType >> 1) as usize],
         8,
     );
-    cdf_ptr = (silk_pulses_per_block_iCDF[RateLevelIndex as usize]).as_ptr();
+    let cdf_ptr = &silk_pulses_per_block_iCDF[RateLevelIndex as usize];
     i = 0;
     while i < iter {
         if *nRshifts.as_mut_ptr().offset(i as isize) == 0 {
@@ -192,7 +191,7 @@ pub unsafe fn silk_encode_pulses(
                 ec_enc_icdf(
                     psRangeEnc,
                     SILK_MAX_PULSES + 1,
-                    (silk_pulses_per_block_iCDF[(N_RATE_LEVELS - 1) as usize]).as_ptr(),
+                    &silk_pulses_per_block_iCDF[(N_RATE_LEVELS - 1) as usize],
                     8,
                 );
                 k += 1;
@@ -200,7 +199,7 @@ pub unsafe fn silk_encode_pulses(
             ec_enc_icdf(
                 psRangeEnc,
                 *sum_pulses.as_mut_ptr().offset(i as isize),
-                (silk_pulses_per_block_iCDF[(N_RATE_LEVELS - 1) as usize]).as_ptr(),
+                &silk_pulses_per_block_iCDF[(N_RATE_LEVELS - 1) as usize],
                 8,
             );
         }
@@ -233,11 +232,11 @@ pub unsafe fn silk_encode_pulses(
                 j = nLS;
                 while j > 0 {
                     bit = abs_q >> j & 1;
-                    ec_enc_icdf(psRangeEnc, bit, silk_lsb_iCDF.as_ptr(), 8);
+                    ec_enc_icdf(psRangeEnc, bit, &silk_lsb_iCDF, 8);
                     j -= 1;
                 }
                 bit = abs_q & 1;
-                ec_enc_icdf(psRangeEnc, bit, silk_lsb_iCDF.as_ptr(), 8);
+                ec_enc_icdf(psRangeEnc, bit, &silk_lsb_iCDF, 8);
                 k += 1;
             }
         }

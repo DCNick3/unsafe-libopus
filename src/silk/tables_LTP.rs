@@ -15,15 +15,15 @@ static silk_LTP_gain_BITS_Q5_2: [u8; 32] = [
     131, 128, 134, 141, 141, 141, 145, 145, 145, 150, 155, 155, 155, 155, 160, 160, 160, 160, 166,
     166, 173, 173, 182, 192, 182, 192, 192, 192, 205, 192, 205, 224,
 ];
-pub static mut silk_LTP_gain_iCDF_ptrs: [*const u8; 3] = [
-    silk_LTP_gain_iCDF_0.as_ptr(),
-    silk_LTP_gain_iCDF_1.as_ptr(),
-    silk_LTP_gain_iCDF_2.as_ptr(),
+pub static silk_LTP_gain_iCDF_ptrs: [&[u8]; 3] = [
+    &silk_LTP_gain_iCDF_0,
+    &silk_LTP_gain_iCDF_1,
+    &silk_LTP_gain_iCDF_2,
 ];
-pub static mut silk_LTP_gain_BITS_Q5_ptrs: [*const u8; 3] = [
-    silk_LTP_gain_BITS_Q5_0.as_ptr(),
-    silk_LTP_gain_BITS_Q5_1.as_ptr(),
-    silk_LTP_gain_BITS_Q5_2.as_ptr(),
+pub static silk_LTP_gain_BITS_Q5_ptrs: [&[u8]; 3] = [
+    &silk_LTP_gain_BITS_Q5_0,
+    &silk_LTP_gain_BITS_Q5_1,
+    &silk_LTP_gain_BITS_Q5_2,
 ];
 static silk_LTP_gain_vq_0: [[i8; 5]; 8] = [
     [4, 6, 24, 7, 5],

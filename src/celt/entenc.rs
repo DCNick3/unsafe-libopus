@@ -1,3 +1,5 @@
+#![forbid(unsafe_code)]
+
 use crate::celt::entcode::{celt_udiv, ec_ctx, ec_window, EC_UINT_BITS, EC_WINDOW_SIZE};
 
 pub type ec_enc<'a> = ec_ctx<'a>;
@@ -127,21 +129,19 @@ pub fn ec_enc_bit_logp(this: &mut ec_enc, mut _val: i32, mut _logp: u32) {
     ec_enc_normalize(this);
 }
 
-pub unsafe fn ec_enc_icdf(this: &mut ec_enc, mut _s: i32, mut _icdf: *const u8, mut _ftb: u32) {
+pub fn ec_enc_icdf(this: &mut ec_enc, s: i32, icdf: &[u8], ftb: u32) {
     let mut r: u32 = 0;
-    r = this.rng >> _ftb;
-    if _s > 0 {
+    r = this.rng >> ftb;
+    if s > 0 {
         this.val = this.val.wrapping_add(
             this.rng
-                .wrapping_sub(r.wrapping_mul(*_icdf.offset((_s - 1) as isize) as u32)),
+                .wrapping_sub(r.wrapping_mul(icdf[s as usize - 1] as u32)),
         );
-        this.rng = r.wrapping_mul(
-            (*_icdf.offset((_s - 1) as isize) as i32 - *_icdf.offset(_s as isize) as i32) as u32,
-        );
+        this.rng = r.wrapping_mul((icdf[s as usize - 1] as i32 - icdf[s as usize] as i32) as u32);
     } else {
         this.rng = this
             .rng
-            .wrapping_sub(r.wrapping_mul(*_icdf.offset(_s as isize) as u32));
+            .wrapping_sub(r.wrapping_mul(icdf[s as usize] as u32));
     }
     ec_enc_normalize(this);
 }

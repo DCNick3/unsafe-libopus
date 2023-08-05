@@ -236,12 +236,7 @@ unsafe fn quant_coarse_energy_impl(
                 } else {
                     1
                 };
-                ec_enc_icdf(
-                    enc,
-                    2 * qi ^ -((qi < 0) as i32),
-                    small_energy_icdf.as_ptr(),
-                    2,
-                );
+                ec_enc_icdf(enc, 2 * qi ^ -((qi < 0) as i32), &small_energy_icdf, 2);
             } else if budget - tell >= 1 {
                 qi = if (0) < qi { 0 } else { qi };
                 ec_enc_bit_logp(enc, -qi, 1);
@@ -584,7 +579,7 @@ pub unsafe fn unquant_coarse_energy(
                     (*prob_model.offset((pi + 1) as isize) as i32) << 6,
                 );
             } else if budget - tell >= 2 {
-                qi = ec_dec_icdf(dec, small_energy_icdf.as_ptr(), 2);
+                qi = ec_dec_icdf(dec, &small_energy_icdf, 2);
                 qi = qi >> 1 ^ -(qi & 1);
             } else if budget - tell >= 1 {
                 qi = -ec_dec_bit_logp(dec, 1);

@@ -1,3 +1,5 @@
+#![forbid(unsafe_code)]
+
 use crate::celt::entcode::{celt_udiv, ec_ctx, ec_window, EC_UINT_BITS, EC_WINDOW_SIZE};
 use crate::silk::macros::EC_CLZ0;
 
@@ -42,7 +44,7 @@ fn ec_dec_normalize(this: &mut ec_dec) {
     }
 }
 
-pub unsafe fn ec_dec_init(buf: &mut [u8]) -> ec_dec {
+pub fn ec_dec_init(buf: &mut [u8]) -> ec_dec {
     let mut this = ec_dec {
         storage: buf.len() as u32,
         buf,
@@ -120,7 +122,7 @@ pub fn ec_dec_bit_logp(mut _this: &mut ec_dec, mut _logp: u32) -> i32 {
     ret
 }
 
-pub unsafe fn ec_dec_icdf(mut _this: &mut ec_dec, mut _icdf: *const u8, mut _ftb: u32) -> i32 {
+pub fn ec_dec_icdf(mut _this: &mut ec_dec, icdf: &[u8], mut _ftb: u32) -> i32 {
     let mut r: u32 = 0;
     let mut d: u32 = 0;
     let mut s: u32 = 0;
@@ -133,7 +135,7 @@ pub unsafe fn ec_dec_icdf(mut _this: &mut ec_dec, mut _icdf: *const u8, mut _ftb
     loop {
         t = s;
         ret += 1;
-        s = r.wrapping_mul(*_icdf.offset(ret as isize) as u32);
+        s = r.wrapping_mul(icdf[ret as usize] as u32);
         if !(d < s) {
             break;
         }

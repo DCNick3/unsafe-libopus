@@ -2,17 +2,17 @@ use crate::silk::resampler_structs::silk_resampler_state_struct;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-pub struct silk_NLSF_CB_struct {
+pub struct silk_NLSF_CB_struct<'a> {
     pub nVectors: i16,
     pub order: i16,
     pub quantStepSize_Q16: i16,
     pub invQuantStepSize_Q6: i16,
     pub CB1_NLSF_Q8: *const u8,
     pub CB1_Wght_Q9: *const i16,
-    pub CB1_iCDF: *const u8,
+    pub CB1_iCDF: &'a [u8],
     pub pred_Q8: *const u8,
     pub ec_sel: *const u8,
-    pub ec_iCDF: *const u8,
+    pub ec_iCDF: &'a [u8],
     pub ec_Rates_Q5: *const u8,
     pub deltaMin_Q15: *const i16,
 }
@@ -76,8 +76,8 @@ pub struct silk_decoder_state {
     pub LPC_order: i32,
     pub prevNLSF_Q15: [i16; 16],
     pub first_frame_after_reset: i32,
-    pub pitch_lag_low_bits_iCDF: *const u8,
-    pub pitch_contour_iCDF: *const u8,
+    pub pitch_lag_low_bits_iCDF: &'static [u8],
+    pub pitch_contour_iCDF: &'static [u8],
     pub nFramesDecoded: i32,
     pub nFramesPerPacket: i32,
     pub ec_prevSignalType: i32,
@@ -86,7 +86,7 @@ pub struct silk_decoder_state {
     pub LBRR_flag: i32,
     pub LBRR_flags: [i32; 3],
     pub resampler_state: silk_resampler_state_struct,
-    pub psNLSF_CB: *const silk_NLSF_CB_struct,
+    pub psNLSF_CB: *const silk_NLSF_CB_struct<'static>,
     pub indices: SideInfoIndices,
     pub sCNG: silk_CNG_struct,
     pub lossCnt: i32,
@@ -191,9 +191,9 @@ pub struct silk_encoder_state {
     pub warping_Q16: i32,
     pub useCBR: i32,
     pub prefillFlag: i32,
-    pub pitch_lag_low_bits_iCDF: *const u8,
-    pub pitch_contour_iCDF: *const u8,
-    pub psNLSF_CB: *const silk_NLSF_CB_struct,
+    pub pitch_lag_low_bits_iCDF: &'static [u8],
+    pub pitch_contour_iCDF: &'static [u8],
+    pub psNLSF_CB: *const silk_NLSF_CB_struct<'static>,
     pub input_quality_bands_Q15: [i32; 4],
     pub input_tilt_Q15: i32,
     pub SNR_dB_Q7: i32,

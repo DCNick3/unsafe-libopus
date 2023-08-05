@@ -1,3 +1,5 @@
+#![forbid(unsafe_code)]
+
 use crate::silk::macros::EC_CLZ0;
 
 pub const EC_SYM_BITS: i32 = 8;

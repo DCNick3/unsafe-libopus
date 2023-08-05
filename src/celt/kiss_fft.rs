@@ -1,3 +1,5 @@
+#![forbid(unsafe_code)]
+
 use num_traits::Zero;
 pub type kiss_fft_cpx = num_complex::Complex32;
 pub type kiss_twiddle_cpx = num_complex::Complex32;
@@ -227,18 +229,10 @@ pub fn opus_fft_impl(st: &kiss_fft_state, fout: &mut [kiss_fft_cpx]) {
     for i in (0..L).rev() {
         let m2 = if i > 0 { st.factors[i - 1].1 } else { 1 };
         match st.factors[i].0 {
-            2 => {
-                kf_bfly2(fout, m, fstride[i]);
-            }
-            4 => {
-                kf_bfly4(fout, (fstride[i] << shift) as usize, st, m, fstride[i], m2);
-            }
-            3 => {
-                kf_bfly3(fout, (fstride[i] << shift) as usize, st, m, fstride[i], m2);
-            }
-            5 => {
-                kf_bfly5(fout, (fstride[i] << shift) as usize, st, m, fstride[i], m2);
-            }
+            2 => kf_bfly2(fout, m, fstride[i]),
+            4 => kf_bfly4(fout, (fstride[i] << shift) as usize, st, m, fstride[i], m2),
+            3 => kf_bfly3(fout, (fstride[i] << shift) as usize, st, m, fstride[i], m2),
+            5 => kf_bfly5(fout, (fstride[i] << shift) as usize, st, m, fstride[i], m2),
             _ => {}
         }
         m = m2;

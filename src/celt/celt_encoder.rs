@@ -2242,7 +2242,7 @@ pub unsafe fn celt_encode_with_ec(
         );
         pitch_index -= 1;
         ec_enc_bits(enc, qg as u32, 3);
-        ec_enc_icdf(enc, prefilter_tapset, tapset_icdf.as_ptr(), 2);
+        ec_enc_icdf(enc, prefilter_tapset, &tapset_icdf, 2);
     }
     isTransient = 0;
     shortBlocks = 0;
@@ -2769,7 +2769,7 @@ pub unsafe fn celt_encode_with_ec(
                 spread_weight.as_mut_ptr(),
             );
         }
-        ec_enc_icdf(enc, (*st).spread_decision, spread_icdf.as_ptr(), 5);
+        ec_enc_icdf(enc, (*st).spread_decision, &spread_icdf, 5);
     }
     if (*st).lfe != 0 {
         *offsets.as_mut_ptr().offset(0 as isize) = if (8) < effectiveBytes / 3 {
@@ -2922,7 +2922,7 @@ pub unsafe fn celt_encode_with_ec(
                 (*st).arch,
             );
         }
-        ec_enc_icdf(enc, alloc_trim, trim_icdf.as_ptr(), 7);
+        ec_enc_icdf(enc, alloc_trim, &trim_icdf, 7);
         tell = ec_tell_frac(enc) as i32;
     }
     if vbr_rate > 0 {

@@ -11,10 +11,8 @@ pub static silk_stereo_pred_joint_iCDF: [u8; 25] = [
 pub static silk_stereo_only_code_mid_iCDF: [u8; 2] = [64, 0];
 static silk_LBRR_flags_2_iCDF: [u8; 3] = [203, 150, 0];
 static silk_LBRR_flags_3_iCDF: [u8; 7] = [215, 195, 166, 125, 110, 82, 0];
-pub static mut silk_LBRR_flags_iCDF_ptr: [*const u8; 2] = [
-    silk_LBRR_flags_2_iCDF.as_ptr(),
-    silk_LBRR_flags_3_iCDF.as_ptr(),
-];
+pub static silk_LBRR_flags_iCDF_ptr: [&[u8]; 2] =
+    [&silk_LBRR_flags_2_iCDF, &silk_LBRR_flags_3_iCDF];
 pub static silk_lsb_iCDF: [u8; 2] = [120, 0];
 pub static silk_LTPscale_iCDF: [u8; 3] = [128, 64, 0];
 pub static silk_type_offset_VAD_iCDF: [u8; 4] = [232, 158, 10, 0];

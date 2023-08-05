@@ -203,9 +203,9 @@ unsafe fn silk_setup_fs(
             (*psEnc).sCmn.pitch_LPC_win_length =
                 (10 + ((2) << 1)) as i16 as i32 * fs_kHz as i16 as i32;
             if (*psEnc).sCmn.fs_kHz == 8 {
-                (*psEnc).sCmn.pitch_contour_iCDF = silk_pitch_contour_10_ms_NB_iCDF.as_ptr();
+                (*psEnc).sCmn.pitch_contour_iCDF = &silk_pitch_contour_10_ms_NB_iCDF;
             } else {
-                (*psEnc).sCmn.pitch_contour_iCDF = silk_pitch_contour_10_ms_iCDF.as_ptr();
+                (*psEnc).sCmn.pitch_contour_iCDF = &silk_pitch_contour_10_ms_iCDF;
             }
         } else {
             (*psEnc).sCmn.nFramesPerPacket = PacketSize_ms / (5 * 4);
@@ -214,9 +214,9 @@ unsafe fn silk_setup_fs(
             (*psEnc).sCmn.pitch_LPC_win_length =
                 (20 + ((2) << 1)) as i16 as i32 * fs_kHz as i16 as i32;
             if (*psEnc).sCmn.fs_kHz == 8 {
-                (*psEnc).sCmn.pitch_contour_iCDF = silk_pitch_contour_NB_iCDF.as_ptr();
+                (*psEnc).sCmn.pitch_contour_iCDF = &silk_pitch_contour_NB_iCDF;
             } else {
-                (*psEnc).sCmn.pitch_contour_iCDF = silk_pitch_contour_iCDF.as_ptr();
+                (*psEnc).sCmn.pitch_contour_iCDF = &silk_pitch_contour_iCDF;
             }
         }
         (*psEnc).sCmn.PacketSize_ms = PacketSize_ms;
@@ -257,14 +257,14 @@ unsafe fn silk_setup_fs(
         (*psEnc).sCmn.fs_kHz = fs_kHz;
         if (*psEnc).sCmn.fs_kHz == 8 {
             if (*psEnc).sCmn.nb_subfr == MAX_NB_SUBFR {
-                (*psEnc).sCmn.pitch_contour_iCDF = silk_pitch_contour_NB_iCDF.as_ptr();
+                (*psEnc).sCmn.pitch_contour_iCDF = &silk_pitch_contour_NB_iCDF;
             } else {
-                (*psEnc).sCmn.pitch_contour_iCDF = silk_pitch_contour_10_ms_NB_iCDF.as_ptr();
+                (*psEnc).sCmn.pitch_contour_iCDF = &silk_pitch_contour_10_ms_NB_iCDF;
             }
         } else if (*psEnc).sCmn.nb_subfr == MAX_NB_SUBFR {
-            (*psEnc).sCmn.pitch_contour_iCDF = silk_pitch_contour_iCDF.as_ptr();
+            (*psEnc).sCmn.pitch_contour_iCDF = &silk_pitch_contour_iCDF;
         } else {
-            (*psEnc).sCmn.pitch_contour_iCDF = silk_pitch_contour_10_ms_iCDF.as_ptr();
+            (*psEnc).sCmn.pitch_contour_iCDF = &silk_pitch_contour_10_ms_iCDF;
         }
         if (*psEnc).sCmn.fs_kHz == 8 || (*psEnc).sCmn.fs_kHz == 12 {
             (*psEnc).sCmn.predictLPCOrder = MIN_LPC_ORDER;
@@ -287,11 +287,11 @@ unsafe fn silk_setup_fs(
                 (10 + ((2) << 1)) as i16 as i32 * fs_kHz as i16 as i32;
         }
         if (*psEnc).sCmn.fs_kHz == 16 {
-            (*psEnc).sCmn.pitch_lag_low_bits_iCDF = silk_uniform8_iCDF.as_ptr();
+            (*psEnc).sCmn.pitch_lag_low_bits_iCDF = &silk_uniform8_iCDF;
         } else if (*psEnc).sCmn.fs_kHz == 12 {
-            (*psEnc).sCmn.pitch_lag_low_bits_iCDF = silk_uniform6_iCDF.as_ptr();
+            (*psEnc).sCmn.pitch_lag_low_bits_iCDF = &silk_uniform6_iCDF;
         } else {
-            (*psEnc).sCmn.pitch_lag_low_bits_iCDF = silk_uniform4_iCDF.as_ptr();
+            (*psEnc).sCmn.pitch_lag_low_bits_iCDF = &silk_uniform4_iCDF;
         }
     }
     assert!((*psEnc).sCmn.subfr_length * (*psEnc).sCmn.nb_subfr == (*psEnc).sCmn.frame_length);

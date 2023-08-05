@@ -33,7 +33,6 @@ pub unsafe fn silk_NLSF_encode(
     let mut pred_Q8: [u8; 16] = [0; 16];
     let mut ec_ix: [i16; 16] = [0; 16];
     let mut pCB_element: *const u8 = 0 as *const u8;
-    let mut iCDF_ptr: *const u8 = 0 as *const u8;
     let mut pCB_Wght_Q9: *const i16 = 0 as *const i16;
     assert!(signalType >= 0 && signalType <= 2);
     silk_NLSF_stabilize(
@@ -102,14 +101,12 @@ pub unsafe fn silk_NLSF_encode(
             NLSF_mu_Q20,
             (*psNLSF_CB).order,
         );
-        iCDF_ptr = &*((*psNLSF_CB).CB1_iCDF)
-            .offset(((signalType >> 1) * (*psNLSF_CB).nVectors as i32) as isize)
-            as *const u8;
+        let iCDF_ptr =
+            &((*psNLSF_CB).CB1_iCDF)[((signalType >> 1) * (*psNLSF_CB).nVectors as i32) as usize..];
         if ind1 == 0 {
-            prob_Q8 = 256 - *iCDF_ptr.offset(ind1 as isize) as i32;
+            prob_Q8 = 256 - iCDF_ptr[ind1 as usize] as i32;
         } else {
-            prob_Q8 = *iCDF_ptr.offset((ind1 - 1) as isize) as i32
-                - *iCDF_ptr.offset(ind1 as isize) as i32;
+            prob_Q8 = iCDF_ptr[(ind1 - 1) as usize] as i32 - iCDF_ptr[ind1 as usize] as i32;
         }
         bits_q7 = ((8) << 7) - silk_lin2log(prob_Q8);
         *RD_Q25.as_mut_ptr().offset(s as isize) = *RD_Q25.as_mut_ptr().offset(s as isize)

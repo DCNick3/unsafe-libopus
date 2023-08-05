@@ -1053,7 +1053,7 @@ pub unsafe fn celt_decode_with_ec(
                 .wrapping_sub(1) as i32;
             qg = ec_dec_bits(dec, 3) as i32;
             if ec_tell(dec) + 2 <= total_bits {
-                postfilter_tapset = ec_dec_icdf(dec, tapset_icdf.as_ptr(), 2);
+                postfilter_tapset = ec_dec_icdf(dec, &tapset_icdf, 2);
             }
             postfilter_gain = 0.09375f32 * (qg + 1) as f32;
         }
@@ -1082,7 +1082,7 @@ pub unsafe fn celt_decode_with_ec(
     tell = ec_tell(dec);
     spread_decision = SPREAD_NORMAL;
     if tell + 4 <= total_bits {
-        spread_decision = ec_dec_icdf(dec, spread_icdf.as_ptr(), 5);
+        spread_decision = ec_dec_icdf(dec, &spread_icdf, 5);
     }
     let vla_0 = nbEBands as usize;
     let mut cap: Vec<i32> = ::std::vec::from_elem(0, vla_0);
@@ -1135,7 +1135,7 @@ pub unsafe fn celt_decode_with_ec(
     let vla_2 = nbEBands as usize;
     let mut fine_quant: Vec<i32> = ::std::vec::from_elem(0, vla_2);
     alloc_trim = if tell + ((6) << BITRES) <= total_bits {
-        ec_dec_icdf(dec, trim_icdf.as_ptr(), 7)
+        ec_dec_icdf(dec, &trim_icdf, 7)
     } else {
         5
     };
