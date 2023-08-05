@@ -40,7 +40,7 @@ pub const SPREAD_AGGRESSIVE: i32 = 3;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-pub struct band_ctx {
+pub struct band_ctx<'a> {
     pub encode: i32,
     pub resynth: i32,
     pub m: *const OpusCustomMode,
@@ -48,7 +48,7 @@ pub struct band_ctx {
     pub intensity: i32,
     pub spread: i32,
     pub tf_change: i32,
-    pub ec: *mut ec_ctx,
+    pub ec: *mut ec_ctx<'a>,
     pub remaining_bits: i32,
     pub bandE: *const celt_ener,
     pub seed: u32,
@@ -1889,7 +1889,7 @@ pub unsafe fn quant_all_bands(
                     let mut nstart_bytes: i32 = 0;
                     let mut nend_bytes: i32 = 0;
                     let mut save_bytes: i32 = 0;
-                    let mut bytes_buf: *mut u8 = 0 as *mut u8;
+                    let mut bytes_buf: *const u8 = 0 as *const u8;
                     let mut bytes_save: [u8; 1275] = [0; 1275];
                     let mut w: [opus_val16; 2] = [0.; 2];
                     compute_channel_weights(
@@ -1976,7 +1976,7 @@ pub unsafe fn quant_all_bands(
                     }
                     nstart_bytes = ec_save.offs as i32;
                     nend_bytes = (*ec).storage as i32;
-                    bytes_buf = ((*ec).buf).offset(nstart_bytes as isize);
+                    bytes_buf = ec.buf.as_ptr().offset(nstart_bytes as isize);
                     save_bytes = nend_bytes - nstart_bytes;
                     memcpy(
                         bytes_save.as_mut_ptr() as *mut core::ffi::c_void,

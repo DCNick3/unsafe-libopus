@@ -354,7 +354,7 @@ pub unsafe fn quant_coarse_energy(
         enc_intra_state = enc.save();
         nstart_bytes = enc_start_state.offs;
         nintra_bytes = enc_intra_state.offs;
-        intra_buf = (enc.buf).offset(nstart_bytes as isize);
+        intra_buf = (enc.buf.as_mut_ptr()).offset(nstart_bytes as isize);
         save_bytes = nintra_bytes.wrapping_sub(nstart_bytes);
         if save_bytes == 0 {
             save_bytes = ALLOC_NONE as u32;

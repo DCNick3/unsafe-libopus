@@ -1932,7 +1932,7 @@ pub unsafe fn celt_encode_with_ec(
     let mut N: i32 = 0;
     let mut bits: i32 = 0;
     let mut _enc: ec_enc = ec_enc {
-        buf: 0 as *mut u8,
+        buf: &mut [],
         storage: 0,
         end_offs: 0,
         end_window: 0,
@@ -2089,7 +2089,10 @@ pub unsafe fn celt_encode_with_ec(
     let enc = if let Some(enc) = enc {
         enc
     } else {
-        ec_enc_init(&mut _enc, compressed, nbCompressedBytes as u32);
+        _enc = ec_enc_init(std::slice::from_raw_parts_mut(
+            compressed,
+            nbCompressedBytes as usize,
+        ));
         &mut _enc
     };
     if vbr_rate > 0 {

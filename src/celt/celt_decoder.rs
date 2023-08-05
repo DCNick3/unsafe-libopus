@@ -896,7 +896,7 @@ pub unsafe fn celt_decode_with_ec(
     let mut spread_decision: i32 = 0;
     let mut bits: i32 = 0;
     let mut _dec: ec_dec = ec_dec {
-        buf: 0 as *mut u8,
+        buf: &mut [],
         storage: 0,
         end_offs: 0,
         end_window: 0,
@@ -1009,7 +1009,10 @@ pub unsafe fn celt_decode_with_ec(
     let dec = if let Some(dec) = dec {
         dec
     } else {
-        ec_dec_init(&mut _dec, data as *mut u8, len as u32);
+        _dec = ec_dec_init(std::slice::from_raw_parts_mut(
+            data as *mut u8,
+            len as usize,
+        ));
         &mut _dec
     };
     if C == 1 {

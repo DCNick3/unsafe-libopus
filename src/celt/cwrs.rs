@@ -342,7 +342,7 @@ fn icwrs(y: &[i32]) -> u32 {
     return i;
 }
 
-pub unsafe fn encode_pulses(y: &[i32], k: i32, enc: &mut ec_enc) {
+pub fn encode_pulses(y: &[i32], k: i32, enc: &mut ec_enc) {
     assert!(k > 0);
     ec_enc_uint(enc, icwrs(y), pvq_v(y.len() as u32, k as u32));
 }
@@ -384,7 +384,7 @@ fn cwrsi(mut k: i32, mut i: u32, mut y: &mut [i32]) -> f32 {
                 }
             }
             i = (i).wrapping_sub(p);
-            val = (k0 - k + s ^ s) as i16;
+            val = ((k0 - k + s) ^ s) as i16;
 
             y[0] = val as i32;
             y = &mut y[1..];
@@ -410,7 +410,7 @@ fn cwrsi(mut k: i32, mut i: u32, mut y: &mut [i32]) -> f32 {
                     }
                 }
                 i = i.wrapping_sub(p);
-                val = (k0 - k + s ^ s) as i16;
+                val = ((k0 - k + s) ^ s) as i16;
 
                 y[0] = val as i32;
                 y = &mut y[1..];
@@ -428,19 +428,20 @@ fn cwrsi(mut k: i32, mut i: u32, mut y: &mut [i32]) -> f32 {
     if k != 0 {
         i = i.wrapping_sub((2 * k - 1) as u32);
     }
-    val = (k0 - k + s ^ s) as i16;
+    val = ((k0 - k + s) ^ s) as i16;
 
     y[0] = val as i32;
     y = &mut y[1..];
 
     yy = yy + val as f32 * val as f32;
     s = -(i as i32);
-    val = (k + s ^ s) as i16;
+    val = ((k + s) ^ s) as i16;
     y[0] = val as i32;
     yy = yy + val as f32 * val as f32;
-    return yy;
+
+    yy
 }
 
-pub unsafe fn decode_pulses(y: &mut [i32], k: i32, dec: &mut ec_dec) -> f32 {
-    return cwrsi(k, ec_dec_uint(dec, pvq_v(y.len() as u32, k as u32)), y);
+pub fn decode_pulses(y: &mut [i32], k: i32, dec: &mut ec_dec) -> f32 {
+    cwrsi(k, ec_dec_uint(dec, pvq_v(y.len() as u32, k as u32)), y)
 }

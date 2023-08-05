@@ -10,8 +10,8 @@ pub const EC_CODE_EXTRA: i32 = (EC_CODE_BITS - 2) % EC_SYM_BITS + 1;
 
 pub type ec_window = u32;
 
-pub struct ec_ctx {
-    pub buf: *mut u8,
+pub struct ec_ctx<'a> {
+    pub buf: &'a mut [u8],
     pub storage: u32,
     pub end_offs: u32,
     pub end_window: ec_window,
@@ -27,6 +27,7 @@ pub struct ec_ctx {
 
 #[derive(Default, Copy, Clone)]
 pub struct ec_ctx_saved {
+    pub storage: u32,
     pub end_offs: u32,
     pub end_window: ec_window,
     pub nend_bits: i32,
@@ -39,9 +40,10 @@ pub struct ec_ctx_saved {
     pub error: i32,
 }
 
-impl ec_ctx {
+impl ec_ctx<'_> {
     pub fn save(&self) -> ec_ctx_saved {
         ec_ctx_saved {
+            storage: self.storage,
             end_offs: self.end_offs,
             end_window: self.end_window,
             nend_bits: self.nend_bits,
@@ -59,6 +61,7 @@ impl ec_ctx {
     ///
     /// Also, you obviously don't want to pass a default `ec_ctx_saved` value.
     pub fn restore(&mut self, saved: ec_ctx_saved) {
+        self.storage = saved.storage;
         self.end_offs = saved.end_offs;
         self.end_window = saved.end_window;
         self.nend_bits = saved.nend_bits;

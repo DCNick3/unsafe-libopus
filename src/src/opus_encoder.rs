@@ -1161,7 +1161,7 @@ pub unsafe fn opus_encode_native(
     let mut ret: i32 = 0;
     let mut nBytes: i32 = 0;
     let mut enc: ec_enc = ec_enc {
-        buf: 0 as *mut u8,
+        buf: &mut [],
         storage: 0,
         end_offs: 0,
         end_window: 0,
@@ -1734,7 +1734,10 @@ pub unsafe fn opus_encode_native(
             (*st).bitrate_bps * frame_size / ((*st).Fs * 8)
         }) - 1;
     data = data.offset(1 as isize);
-    ec_enc_init(&mut enc, data, (max_data_bytes - 1) as u32);
+    enc = ec_enc_init(std::slice::from_raw_parts_mut(
+        data,
+        (max_data_bytes - 1) as usize,
+    ));
     let vla = ((total_buffer + frame_size) * (*st).channels) as usize;
     let mut pcm_buf: Vec<opus_val16> = ::std::vec::from_elem(0., vla);
     memcpy(

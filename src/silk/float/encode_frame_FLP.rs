@@ -301,7 +301,7 @@ pub unsafe fn silk_encode_frame_FLP(
                     psRangeEnc.restore(sRangeEnc_copy2);
                     assert!(sRangeEnc_copy2.offs <= 1275);
                     memcpy(
-                        (*psRangeEnc).buf as *mut core::ffi::c_void,
+                        (*psRangeEnc).buf.as_mut_ptr() as *mut core::ffi::c_void,
                         ec_buf_copy.as_mut_ptr() as *const core::ffi::c_void,
                         sRangeEnc_copy2.offs as u64,
                     );
@@ -343,7 +343,7 @@ pub unsafe fn silk_encode_frame_FLP(
                         assert!((*psRangeEnc).offs <= 1275);
                         memcpy(
                             ec_buf_copy.as_mut_ptr() as *mut core::ffi::c_void,
-                            (*psRangeEnc).buf as *const core::ffi::c_void,
+                            (*psRangeEnc).buf.as_mut_ptr() as *const core::ffi::c_void,
                             (*psRangeEnc).offs as u64,
                         );
                         memcpy(
