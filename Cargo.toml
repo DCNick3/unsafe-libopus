@@ -18,5 +18,8 @@ num-traits = "0.2.16"
 num-complex = "0.4.1"
 
 [dev-dependencies]
+# some translated tests haven't been rewritten not to use libc yet
 libc = "0.2"
 libc-stdhandle = "0.1.0"
+
+insta = "1.29.0"
