@@ -10,7 +10,6 @@ pub const EC_CODE_EXTRA: i32 = (EC_CODE_BITS - 2) % EC_SYM_BITS + 1;
 
 pub type ec_window = u32;
 
-#[derive(Copy, Clone)]
 pub struct ec_ctx {
     pub buf: *mut u8,
     pub storage: u32,
@@ -26,22 +25,62 @@ pub struct ec_ctx {
     pub error: i32,
 }
 
+#[derive(Default, Copy, Clone)]
+pub struct ec_ctx_saved {
+    pub end_offs: u32,
+    pub end_window: ec_window,
+    pub nend_bits: i32,
+    pub nbits_total: i32,
+    pub offs: u32,
+    pub rng: u32,
+    pub val: u32,
+    pub ext: u32,
+    pub rem: i32,
+    pub error: i32,
+}
+
+impl ec_ctx {
+    pub fn save(&self) -> ec_ctx_saved {
+        ec_ctx_saved {
+            end_offs: self.end_offs,
+            end_window: self.end_window,
+            nend_bits: self.nend_bits,
+            nbits_total: self.nbits_total,
+            offs: self.offs,
+            rng: self.rng,
+            val: self.val,
+            ext: self.ext,
+            rem: self.rem,
+            error: self.error,
+        }
+    }
+
+    /// NOTE: this function will summon dragons if you pass a `saved` value from a different `ec_ctx`.
+    ///
+    /// Also, you obviously don't want to pass a default `ec_ctx_saved` value.
+    pub fn restore(&mut self, saved: ec_ctx_saved) {
+        self.end_offs = saved.end_offs;
+        self.end_window = saved.end_window;
+        self.nend_bits = saved.nend_bits;
+        self.nbits_total = saved.nbits_total;
+        self.offs = saved.offs;
+        self.rng = saved.rng;
+        self.val = saved.val;
+        self.ext = saved.ext;
+        self.rem = saved.rem;
+        self.error = saved.error;
+    }
+}
+
 pub const EC_UINT_BITS: i32 = 8;
 pub const EC_WINDOW_SIZE: i32 = ::core::mem::size_of::<ec_window>() as i32 * 8;
 pub const BITRES: i32 = 3;
 
 #[inline]
-pub unsafe fn ec_get_error(this: &ec_ctx) -> i32 {
+pub fn ec_get_error(this: &ec_ctx) -> i32 {
     this.error
 }
-#[inline]
-pub unsafe fn ec_range_bytes(this: &ec_ctx) -> u32 {
-    this.offs
-}
-#[inline]
-pub unsafe fn ec_get_buffer(this: &ec_ctx) -> *mut u8 {
-    this.buf
-}
+
 #[inline]
 pub fn ec_tell(this: &ec_ctx) -> i32 {
     this.nbits_total - (EC_CLZ0 - this.rng.leading_zeros() as i32)
@@ -65,7 +104,7 @@ pub fn ec_tell_frac(this: &ec_ctx) -> u32 {
     let mut b: u32 = 0;
     nbits = (this.nbits_total << BITRES) as u32;
     l = EC_CLZ0 - (this.rng).leading_zeros() as i32;
-    r = this.rng >> l - 16;
+    r = this.rng >> (l - 16);
     b = (r >> 12).wrapping_sub(8);
     b = b.wrapping_add((r > correction[b as usize]) as i32 as u32);
     l = ((l << 3) as u32).wrapping_add(b) as i32;

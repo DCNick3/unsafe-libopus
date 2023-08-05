@@ -1,4 +1,4 @@
-use crate::celt::entcode::{ec_get_buffer, ec_range_bytes, ec_tell, ec_tell_frac};
+use crate::celt::entcode::{ec_ctx_saved, ec_tell, ec_tell_frac};
 use crate::celt::entdec::{ec_dec, ec_dec_bit_logp, ec_dec_bits, ec_dec_icdf};
 use crate::celt::entenc::{ec_enc, ec_enc_bit_logp, ec_enc_bits, ec_enc_icdf};
 use crate::celt::laplace::{ec_laplace_decode, ec_laplace_encode};
@@ -284,20 +284,7 @@ pub unsafe fn quant_coarse_energy(
 ) {
     let mut intra: i32 = 0;
     let mut max_decay: opus_val16 = 0.;
-    let mut enc_start_state: ec_enc = ec_enc {
-        buf: 0 as *mut u8,
-        storage: 0,
-        end_offs: 0,
-        end_window: 0,
-        nend_bits: 0,
-        nbits_total: 0,
-        offs: 0,
-        rng: 0,
-        val: 0,
-        ext: 0,
-        rem: 0,
-        error: 0,
-    };
+    let mut enc_start_state = ec_ctx_saved::default();
     let mut tell: u32 = 0;
     let mut badness1: i32 = 0;
     let mut intra_bias: i32 = 0;
@@ -324,7 +311,7 @@ pub unsafe fn quant_coarse_energy(
     if lfe != 0 {
         max_decay = 3.0f32;
     }
-    enc_start_state = *enc;
+    enc_start_state = enc.save();
     let vla = (C * (*m).nbEBands) as usize;
     let mut oldEBands_intra: Vec<opus_val16> = ::std::vec::from_elem(0., vla);
     let vla_0 = (C * (*m).nbEBands) as usize;
@@ -345,7 +332,7 @@ pub unsafe fn quant_coarse_energy(
             oldEBands_intra.as_mut_ptr(),
             budget as i32,
             tell as i32,
-            (e_prob_model[LM as usize][1 as usize]).as_ptr(),
+            (e_prob_model[LM as usize][1]).as_ptr(),
             error_intra.as_mut_ptr(),
             enc,
             C,
@@ -357,30 +344,17 @@ pub unsafe fn quant_coarse_energy(
     }
     if intra == 0 {
         let mut intra_buf: *mut u8 = 0 as *mut u8;
-        let mut enc_intra_state: ec_enc = ec_enc {
-            buf: 0 as *mut u8,
-            storage: 0,
-            end_offs: 0,
-            end_window: 0,
-            nend_bits: 0,
-            nbits_total: 0,
-            offs: 0,
-            rng: 0,
-            val: 0,
-            ext: 0,
-            rem: 0,
-            error: 0,
-        };
+        let mut enc_intra_state = ec_ctx_saved::default();
         let mut tell_intra: i32 = 0;
         let mut nstart_bytes: u32 = 0;
         let mut nintra_bytes: u32 = 0;
         let mut save_bytes: u32 = 0;
         let mut badness2: i32 = 0;
         tell_intra = ec_tell_frac(enc) as i32;
-        enc_intra_state = *enc;
-        nstart_bytes = ec_range_bytes(&mut enc_start_state);
-        nintra_bytes = ec_range_bytes(&mut enc_intra_state);
-        intra_buf = (ec_get_buffer(&mut enc_intra_state)).offset(nstart_bytes as isize);
+        enc_intra_state = enc.save();
+        nstart_bytes = enc_start_state.offs;
+        nintra_bytes = enc_intra_state.offs;
+        intra_buf = (enc.buf).offset(nstart_bytes as isize);
         save_bytes = nintra_bytes.wrapping_sub(nstart_bytes);
         if save_bytes == 0 {
             save_bytes = ALLOC_NONE as u32;
@@ -394,7 +368,7 @@ pub unsafe fn quant_coarse_energy(
                 .wrapping_mul(::core::mem::size_of::<u8>() as u64)
                 .wrapping_add((0 * intra_bits.as_mut_ptr().offset_from(intra_buf) as i64) as u64),
         );
-        *enc = enc_start_state;
+        enc.restore(enc_start_state);
         badness2 = quant_coarse_energy_impl(
             m,
             start,
@@ -416,7 +390,7 @@ pub unsafe fn quant_coarse_energy(
             && (badness1 < badness2
                 || badness1 == badness2 && ec_tell_frac(enc) as i32 + intra_bias > tell_intra)
         {
-            *enc = enc_intra_state;
+            enc.restore(enc_intra_state);
             memcpy(
                 intra_buf as *mut core::ffi::c_void,
                 intra_bits.as_mut_ptr() as *const core::ffi::c_void,

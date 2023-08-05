@@ -10,7 +10,7 @@ pub mod SigProc_FLP_h {
     }
 }
 pub use self::SigProc_FLP_h::silk_short2float_array;
-use crate::celt::entcode::ec_tell;
+use crate::celt::entcode::{ec_ctx_saved, ec_tell};
 use crate::celt::entenc::ec_enc;
 use crate::externs::{memcpy, memmove};
 use crate::silk::define::{
@@ -96,34 +96,8 @@ pub unsafe fn silk_encode_frame_FLP(
     let mut x_frame: *mut f32 = 0 as *mut f32;
     let mut res_pitch_frame: *mut f32 = 0 as *mut f32;
     let mut res_pitch: [f32; 672] = [0.; 672];
-    let mut sRangeEnc_copy: ec_enc = ec_enc {
-        buf: 0 as *mut u8,
-        storage: 0,
-        end_offs: 0,
-        end_window: 0,
-        nend_bits: 0,
-        nbits_total: 0,
-        offs: 0,
-        rng: 0,
-        val: 0,
-        ext: 0,
-        rem: 0,
-        error: 0,
-    };
-    let mut sRangeEnc_copy2: ec_enc = ec_enc {
-        buf: 0 as *mut u8,
-        storage: 0,
-        end_offs: 0,
-        end_window: 0,
-        nend_bits: 0,
-        nbits_total: 0,
-        offs: 0,
-        rng: 0,
-        val: 0,
-        ext: 0,
-        rem: 0,
-        error: 0,
-    };
+    let mut sRangeEnc_copy = ec_ctx_saved::default();
+    let mut sRangeEnc_copy2 = ec_ctx_saved::default();
     let mut sNSQ_copy: silk_nsq_state = silk_nsq_state {
         xq: [0; 640],
         sLTP_shp_Q14: [0; 640],
@@ -231,7 +205,7 @@ pub unsafe fn silk_encode_frame_FLP(
         );
         gainsID_lower = -1;
         gainsID_upper = -1;
-        sRangeEnc_copy = psRangeEnc.clone();
+        sRangeEnc_copy = psRangeEnc.save();
         memcpy(
             &mut sNSQ_copy as *mut silk_nsq_state as *mut core::ffi::c_void,
             &mut (*psEnc).sCmn.sNSQ as *mut silk_nsq_state as *const core::ffi::c_void,
@@ -248,7 +222,7 @@ pub unsafe fn silk_encode_frame_FLP(
                 nBits = nBits_upper;
             } else {
                 if iter > 0 {
-                    *psRangeEnc = sRangeEnc_copy.clone();
+                    psRangeEnc.restore(sRangeEnc_copy);
                     memcpy(
                         &mut (*psEnc).sCmn.sNSQ as *mut silk_nsq_state as *mut core::ffi::c_void,
                         &mut sNSQ_copy as *mut silk_nsq_state as *const core::ffi::c_void,
@@ -267,7 +241,7 @@ pub unsafe fn silk_encode_frame_FLP(
                     x_frame as *const f32,
                 );
                 if iter == maxIter && found_lower == 0 {
-                    sRangeEnc_copy2 = psRangeEnc.clone();
+                    sRangeEnc_copy2 = psRangeEnc.save();
                 }
                 silk_encode_indices(
                     &mut (*psEnc).sCmn,
@@ -285,7 +259,7 @@ pub unsafe fn silk_encode_frame_FLP(
                 );
                 nBits = ec_tell(psRangeEnc);
                 if iter == maxIter && found_lower == 0 && nBits > maxBits {
-                    *psRangeEnc = sRangeEnc_copy2.clone();
+                    psRangeEnc.restore(sRangeEnc_copy2);
                     (*psEnc).sShape.LastGainIndex = sEncCtrl.lastGainIndexPrev;
                     i = 0;
                     while i < (*psEnc).sCmn.nb_subfr {
@@ -324,7 +298,7 @@ pub unsafe fn silk_encode_frame_FLP(
             }
             if iter == maxIter {
                 if found_lower != 0 && (gainsID == gainsID_lower || nBits > maxBits) {
-                    *psRangeEnc = sRangeEnc_copy2.clone();
+                    psRangeEnc.restore(sRangeEnc_copy2);
                     assert!(sRangeEnc_copy2.offs <= 1275);
                     memcpy(
                         (*psRangeEnc).buf as *mut core::ffi::c_void,
@@ -365,7 +339,7 @@ pub unsafe fn silk_encode_frame_FLP(
                     gainMult_lower = gainMult_Q8 as i32;
                     if gainsID != gainsID_lower {
                         gainsID_lower = gainsID;
-                        sRangeEnc_copy2 = psRangeEnc.clone();
+                        sRangeEnc_copy2 = psRangeEnc.save();
                         assert!((*psRangeEnc).offs <= 1275);
                         memcpy(
                             ec_buf_copy.as_mut_ptr() as *mut core::ffi::c_void,

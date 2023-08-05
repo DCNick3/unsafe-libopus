@@ -19,7 +19,7 @@ pub use self::arch_h::{
 };
 pub use self::stack_alloc_h::ALLOC_NONE;
 pub use self::stddef_h::NULL;
-use crate::celt::entcode::{celt_sudiv, celt_udiv, ec_ctx, ec_tell_frac, BITRES};
+use crate::celt::entcode::{celt_sudiv, celt_udiv, ec_ctx, ec_ctx_saved, ec_tell_frac, BITRES};
 use crate::celt::entdec::{ec_dec_bit_logp, ec_dec_bits, ec_dec_uint, ec_dec_update, ec_decode};
 use crate::celt::entenc::{ec_enc_bit_logp, ec_enc_bits, ec_enc_uint, ec_encode};
 use crate::celt::mathops::isqrt32;
@@ -1559,7 +1559,7 @@ pub unsafe fn quant_all_bands(
     tf_res: *mut i32,
     total_bits: i32,
     mut balance: i32,
-    ec: *mut ec_ctx,
+    ec: &mut ec_ctx,
     LM: i32,
     codedBands: i32,
     seed: *mut u32,
@@ -1846,34 +1846,8 @@ pub unsafe fn quant_all_bands(
         } else {
             if !Y.is_null() {
                 if theta_rdo != 0 && i < intensity {
-                    let mut ec_save: ec_ctx = ec_ctx {
-                        buf: 0 as *mut u8,
-                        storage: 0,
-                        end_offs: 0,
-                        end_window: 0,
-                        nend_bits: 0,
-                        nbits_total: 0,
-                        offs: 0,
-                        rng: 0,
-                        val: 0,
-                        ext: 0,
-                        rem: 0,
-                        error: 0,
-                    };
-                    let mut ec_save2: ec_ctx = ec_ctx {
-                        buf: 0 as *mut u8,
-                        storage: 0,
-                        end_offs: 0,
-                        end_window: 0,
-                        nend_bits: 0,
-                        nbits_total: 0,
-                        offs: 0,
-                        rng: 0,
-                        val: 0,
-                        ext: 0,
-                        rem: 0,
-                        error: 0,
-                    };
+                    let mut ec_save = ec_ctx_saved::default();
+                    let mut ec_save2 = ec_ctx_saved::default();
                     let mut ctx_save: band_ctx = band_ctx {
                         encode: 0,
                         resynth: 0,
@@ -1924,7 +1898,7 @@ pub unsafe fn quant_all_bands(
                         w.as_mut_ptr(),
                     );
                     cm = x_cm | y_cm;
-                    ec_save = *ec;
+                    ec_save = (*ec).save();
                     ctx_save = ctx;
                     memcpy(
                         X_save.as_mut_ptr() as *mut core::ffi::c_void,
@@ -1966,7 +1940,7 @@ pub unsafe fn quant_all_bands(
                     dist0 = w[0 as usize] * celt_inner_prod_c(X_save.as_mut_ptr(), X, N)
                         + w[1 as usize] * celt_inner_prod_c(Y_save.as_mut_ptr(), Y, N);
                     cm2 = x_cm;
-                    ec_save2 = *ec;
+                    ec_save2 = (*ec).save();
                     ctx_save2 = ctx;
                     memcpy(
                         X_save2.as_mut_ptr() as *mut core::ffi::c_void,
@@ -2001,8 +1975,8 @@ pub unsafe fn quant_all_bands(
                         );
                     }
                     nstart_bytes = ec_save.offs as i32;
-                    nend_bytes = ec_save.storage as i32;
-                    bytes_buf = (ec_save.buf).offset(nstart_bytes as isize);
+                    nend_bytes = (*ec).storage as i32;
+                    bytes_buf = ((*ec).buf).offset(nstart_bytes as isize);
                     save_bytes = nend_bytes - nstart_bytes;
                     memcpy(
                         bytes_save.as_mut_ptr() as *mut core::ffi::c_void,
@@ -2013,7 +1987,7 @@ pub unsafe fn quant_all_bands(
                                 (0 * bytes_save.as_mut_ptr().offset_from(bytes_buf) as i64) as u64,
                             ),
                     );
-                    *ec = ec_save;
+                    (*ec).restore(ec_save);
                     ctx = ctx_save;
                     memcpy(
                         X as *mut core::ffi::c_void,
@@ -2059,7 +2033,7 @@ pub unsafe fn quant_all_bands(
                         + w[1 as usize] * celt_inner_prod_c(Y_save.as_mut_ptr(), Y, N);
                     if dist0 >= dist1 {
                         x_cm = cm2;
-                        *ec = ec_save2;
+                        (*ec).restore(ec_save2);
                         ctx = ctx_save2;
                         memcpy(
                             X as *mut core::ffi::c_void,
