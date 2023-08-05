@@ -34,7 +34,7 @@ unsafe fn combine_and_check(
     return 0;
 }
 pub unsafe fn silk_encode_pulses(
-    psRangeEnc: *mut ec_enc,
+    psRangeEnc: &mut ec_enc,
     signalType: i32,
     quantOffsetType: i32,
     pulses: *mut i8,

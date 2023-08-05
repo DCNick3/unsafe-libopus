@@ -4,7 +4,7 @@ use crate::silk::define::SHELL_CODEC_FRAME_LENGTH;
 use crate::silk::tables_pulses_per_block::silk_sign_iCDF;
 
 pub unsafe fn silk_encode_signs(
-    psRangeEnc: *mut ec_enc,
+    psRangeEnc: &mut ec_enc,
     pulses: *const i8,
     mut length: i32,
     signalType: i32,
@@ -46,7 +46,7 @@ pub unsafe fn silk_encode_signs(
     }
 }
 pub unsafe fn silk_decode_signs(
-    psRangeDec: *mut ec_dec,
+    psRangeDec: &mut ec_dec,
     pulses: *mut i16,
     mut length: i32,
     signalType: i32,

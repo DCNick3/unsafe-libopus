@@ -7,7 +7,7 @@ use crate::celt::entcode::{
     EC_CODE_BITS, EC_CODE_BOT, EC_CODE_EXTRA, EC_CODE_TOP, EC_SYM_BITS, EC_SYM_MAX,
 };
 
-unsafe fn ec_read_byte(mut _this: *mut ec_dec) -> i32 {
+unsafe fn ec_read_byte(mut _this: &mut ec_dec) -> i32 {
     return if (*_this).offs < (*_this).storage {
         let fresh0 = (*_this).offs;
         (*_this).offs = ((*_this).offs).wrapping_add(1);
@@ -16,7 +16,7 @@ unsafe fn ec_read_byte(mut _this: *mut ec_dec) -> i32 {
         0
     };
 }
-unsafe fn ec_read_byte_from_end(mut _this: *mut ec_dec) -> i32 {
+unsafe fn ec_read_byte_from_end(mut _this: &mut ec_dec) -> i32 {
     return if (*_this).end_offs < (*_this).storage {
         (*_this).end_offs = ((*_this).end_offs).wrapping_add(1);
         *((*_this).buf).offset(((*_this).storage).wrapping_sub((*_this).end_offs) as isize) as i32
@@ -24,7 +24,7 @@ unsafe fn ec_read_byte_from_end(mut _this: *mut ec_dec) -> i32 {
         0
     };
 }
-unsafe fn ec_dec_normalize(mut _this: *mut ec_dec) {
+unsafe fn ec_dec_normalize(mut _this: &mut ec_dec) {
     while (*_this).rng <= EC_CODE_BOT {
         let mut sym: i32 = 0;
         (*_this).nbits_total += EC_SYM_BITS;
@@ -36,7 +36,7 @@ unsafe fn ec_dec_normalize(mut _this: *mut ec_dec) {
             & EC_CODE_TOP.wrapping_sub(1);
     }
 }
-pub unsafe fn ec_dec_init(mut _this: *mut ec_dec, mut _buf: *mut u8, mut _storage: u32) {
+pub unsafe fn ec_dec_init(mut _this: &mut ec_dec, mut _buf: *mut u8, mut _storage: u32) {
     (*_this).buf = _buf;
     (*_this).storage = _storage;
     (*_this).end_offs = 0;
@@ -53,7 +53,7 @@ pub unsafe fn ec_dec_init(mut _this: *mut ec_dec, mut _buf: *mut u8, mut _storag
     (*_this).error = 0;
     ec_dec_normalize(_this);
 }
-pub unsafe fn ec_decode(mut _this: *mut ec_dec, mut _ft: u32) -> u32 {
+pub unsafe fn ec_decode(mut _this: &mut ec_dec, mut _ft: u32) -> u32 {
     let mut s: u32 = 0;
     (*_this).ext = celt_udiv((*_this).rng, _ft);
     s = ((*_this).val).wrapping_div((*_this).ext);
@@ -61,7 +61,7 @@ pub unsafe fn ec_decode(mut _this: *mut ec_dec, mut _ft: u32) -> u32 {
         _ft.wrapping_sub(s.wrapping_add(1)) & -((_ft < s.wrapping_add(1)) as i32) as u32,
     ));
 }
-pub unsafe fn ec_decode_bin(mut _this: *mut ec_dec, mut _bits: u32) -> u32 {
+pub unsafe fn ec_decode_bin(mut _this: &mut ec_dec, mut _bits: u32) -> u32 {
     let mut s: u32 = 0;
     (*_this).ext = (*_this).rng >> _bits;
     s = ((*_this).val).wrapping_div((*_this).ext);
@@ -70,7 +70,7 @@ pub unsafe fn ec_decode_bin(mut _this: *mut ec_dec, mut _bits: u32) -> u32 {
             & -(((1 as u32) << _bits < s.wrapping_add(1 as u32)) as i32) as u32,
     ));
 }
-pub unsafe fn ec_dec_update(mut _this: *mut ec_dec, mut _fl: u32, mut _fh: u32, mut _ft: u32) {
+pub unsafe fn ec_dec_update(mut _this: &mut ec_dec, mut _fl: u32, mut _fh: u32, mut _ft: u32) {
     let mut s: u32 = 0;
     s = ((*_this).ext).wrapping_mul(_ft.wrapping_sub(_fh));
     (*_this).val = ((*_this).val as u32).wrapping_sub(s) as u32 as u32;
@@ -81,7 +81,7 @@ pub unsafe fn ec_dec_update(mut _this: *mut ec_dec, mut _fl: u32, mut _fh: u32, 
     };
     ec_dec_normalize(_this);
 }
-pub unsafe fn ec_dec_bit_logp(mut _this: *mut ec_dec, mut _logp: u32) -> i32 {
+pub unsafe fn ec_dec_bit_logp(mut _this: &mut ec_dec, mut _logp: u32) -> i32 {
     let mut r: u32 = 0;
     let mut d: u32 = 0;
     let mut s: u32 = 0;
@@ -97,7 +97,7 @@ pub unsafe fn ec_dec_bit_logp(mut _this: *mut ec_dec, mut _logp: u32) -> i32 {
     ec_dec_normalize(_this);
     return ret;
 }
-pub unsafe fn ec_dec_icdf(mut _this: *mut ec_dec, mut _icdf: *const u8, mut _ftb: u32) -> i32 {
+pub unsafe fn ec_dec_icdf(mut _this: &mut ec_dec, mut _icdf: *const u8, mut _ftb: u32) -> i32 {
     let mut r: u32 = 0;
     let mut d: u32 = 0;
     let mut s: u32 = 0;
@@ -120,7 +120,7 @@ pub unsafe fn ec_dec_icdf(mut _this: *mut ec_dec, mut _icdf: *const u8, mut _ftb
     ec_dec_normalize(_this);
     return ret;
 }
-pub unsafe fn ec_dec_uint(mut _this: *mut ec_dec, mut _ft: u32) -> u32 {
+pub unsafe fn ec_dec_uint(mut _this: &mut ec_dec, mut _ft: u32) -> u32 {
     let mut ft: u32 = 0;
     let mut s: u32 = 0;
     let mut ftb: i32 = 0;
@@ -146,7 +146,7 @@ pub unsafe fn ec_dec_uint(mut _this: *mut ec_dec, mut _ft: u32) -> u32 {
         return s;
     };
 }
-pub unsafe fn ec_dec_bits(mut _this: *mut ec_dec, mut _bits: u32) -> u32 {
+pub unsafe fn ec_dec_bits(mut _this: &mut ec_dec, mut _bits: u32) -> u32 {
     let mut window: ec_window = 0;
     let mut available: i32 = 0;
     let mut ret: u32 = 0;

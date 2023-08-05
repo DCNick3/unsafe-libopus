@@ -9,8 +9,8 @@ pub const EC_CODE_BOT: u32 = EC_CODE_TOP >> EC_SYM_BITS;
 pub const EC_CODE_EXTRA: i32 = (EC_CODE_BITS - 2) % EC_SYM_BITS + 1;
 
 pub type ec_window = u32;
+
 #[derive(Copy, Clone)]
-#[repr(C)]
 pub struct ec_ctx {
     pub buf: *mut u8,
     pub storage: u32,
@@ -31,43 +31,43 @@ pub const EC_WINDOW_SIZE: i32 = ::core::mem::size_of::<ec_window>() as i32 * 8;
 pub const BITRES: i32 = 3;
 
 #[inline]
-pub unsafe fn ec_get_error(mut _this: *mut ec_ctx) -> i32 {
-    return (*_this).error;
+pub unsafe fn ec_get_error(this: &ec_ctx) -> i32 {
+    this.error
 }
 #[inline]
-pub unsafe fn ec_range_bytes(mut _this: *mut ec_ctx) -> u32 {
-    return (*_this).offs;
+pub unsafe fn ec_range_bytes(this: &ec_ctx) -> u32 {
+    this.offs
 }
 #[inline]
-pub unsafe fn ec_get_buffer(mut _this: *mut ec_ctx) -> *mut u8 {
-    return (*_this).buf;
+pub unsafe fn ec_get_buffer(this: &ec_ctx) -> *mut u8 {
+    this.buf
 }
 #[inline]
-pub unsafe fn ec_tell(mut _this: *mut ec_ctx) -> i32 {
-    return (*_this).nbits_total - (EC_CLZ0 - ((*_this).rng).leading_zeros() as i32);
+pub fn ec_tell(this: &ec_ctx) -> i32 {
+    this.nbits_total - (EC_CLZ0 - this.rng.leading_zeros() as i32)
 }
 
 #[inline]
-pub unsafe fn celt_udiv(n: u32, d: u32) -> u32 {
-    return n.wrapping_div(d);
+pub fn celt_udiv(n: u32, d: u32) -> u32 {
+    n.wrapping_div(d)
 }
 
 #[inline]
-pub unsafe fn celt_sudiv(n: i32, d: i32) -> i32 {
-    return n / d;
+pub fn celt_sudiv(n: i32, d: i32) -> i32 {
+    n / d
 }
 
-pub unsafe fn ec_tell_frac(mut _this: *mut ec_ctx) -> u32 {
-    static mut correction: [u32; 8] = [35733, 38967, 42495, 46340, 50535, 55109, 60097, 65535];
+pub fn ec_tell_frac(this: &ec_ctx) -> u32 {
+    static correction: [u32; 8] = [35733, 38967, 42495, 46340, 50535, 55109, 60097, 65535];
     let mut nbits: u32 = 0;
     let mut r: u32 = 0;
     let mut l: i32 = 0;
     let mut b: u32 = 0;
-    nbits = ((*_this).nbits_total << BITRES) as u32;
-    l = EC_CLZ0 - ((*_this).rng).leading_zeros() as i32;
-    r = (*_this).rng >> l - 16;
+    nbits = (this.nbits_total << BITRES) as u32;
+    l = EC_CLZ0 - (this.rng).leading_zeros() as i32;
+    r = this.rng >> l - 16;
     b = (r >> 12).wrapping_sub(8);
     b = b.wrapping_add((r > correction[b as usize]) as i32 as u32);
     l = ((l << 3) as u32).wrapping_add(b) as i32;
-    return nbits.wrapping_sub(l as u32);
+    nbits.wrapping_sub(l as u32)
 }

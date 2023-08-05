@@ -542,7 +542,7 @@ unsafe fn opus_decode_frame(
             redundancy_bytes,
             redundant_audio.as_mut_ptr(),
             F5,
-            NULL as *mut ec_dec,
+            None,
             0,
         );
         assert!(opus_custom_decoder_ctl!(celt_dec, 4031, &mut redundant_rng) == 0);
@@ -563,7 +563,7 @@ unsafe fn opus_decode_frame(
             len,
             pcm,
             celt_frame_size,
-            &mut dec,
+            Some(&mut dec),
             celt_accum,
         );
     } else {
@@ -585,7 +585,7 @@ unsafe fn opus_decode_frame(
                 2,
                 pcm,
                 F2_5,
-                NULL as *mut ec_dec,
+                None,
                 celt_accum,
             );
         }
@@ -610,7 +610,7 @@ unsafe fn opus_decode_frame(
             redundancy_bytes,
             redundant_audio.as_mut_ptr(),
             F5,
-            NULL as *mut ec_dec,
+            None,
             0,
         );
         assert!(opus_custom_decoder_ctl!(celt_dec, 4031, &mut redundant_rng) == 0);

@@ -16,7 +16,7 @@ unsafe fn combine_pulses(out: *mut i32, in_0: *const i32, len: i32) {
     }
 }
 #[inline]
-unsafe fn encode_split(psRangeEnc: *mut ec_enc, p_child1: i32, p: i32, shell_table: *const u8) {
+unsafe fn encode_split(psRangeEnc: &mut ec_enc, p_child1: i32, p: i32, shell_table: *const u8) {
     if p > 0 {
         ec_enc_icdf(
             psRangeEnc,
@@ -31,7 +31,7 @@ unsafe fn encode_split(psRangeEnc: *mut ec_enc, p_child1: i32, p: i32, shell_tab
 unsafe fn decode_split(
     p_child1: *mut i16,
     p_child2: *mut i16,
-    psRangeDec: *mut ec_dec,
+    psRangeDec: &mut ec_dec,
     p: i32,
     shell_table: *const u8,
 ) {
@@ -48,7 +48,7 @@ unsafe fn decode_split(
         *p_child2.offset(0 as isize) = 0;
     };
 }
-pub unsafe fn silk_shell_encoder(psRangeEnc: *mut ec_enc, pulses0: *const i32) {
+pub unsafe fn silk_shell_encoder(psRangeEnc: &mut ec_enc, pulses0: *const i32) {
     let mut pulses1: [i32; 8] = [0; 8];
     let mut pulses2: [i32; 4] = [0; 4];
     let mut pulses3: [i32; 2] = [0; 2];
@@ -148,7 +148,7 @@ pub unsafe fn silk_shell_encoder(psRangeEnc: *mut ec_enc, pulses0: *const i32) {
         silk_shell_code_table0.as_ptr(),
     );
 }
-pub unsafe fn silk_shell_decoder(pulses0: *mut i16, psRangeDec: *mut ec_dec, pulses4: i32) {
+pub unsafe fn silk_shell_decoder(pulses0: *mut i16, psRangeDec: &mut ec_dec, pulses4: i32) {
     let mut pulses3: [i16; 2] = [0; 2];
     let mut pulses2: [i16; 4] = [0; 4];
     let mut pulses1: [i16; 8] = [0; 8];

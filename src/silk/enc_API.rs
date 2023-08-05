@@ -129,7 +129,7 @@ pub unsafe fn silk_Encode(
     encControl: *mut silk_EncControlStruct,
     mut samplesIn: *const i16,
     mut nSamplesIn: i32,
-    psRangeEnc: *mut ec_enc,
+    mut psRangeEnc: Option<&mut ec_enc>,
     nBytesOut: *mut i32,
     prefillFlag: i32,
     activity: i32,
@@ -501,6 +501,9 @@ pub unsafe fn silk_Encode(
                     == (*psEnc).state_Fxx[1 as usize].sCmn.frame_length
         );
         if (*psEnc).state_Fxx[0 as usize].sCmn.nFramesEncoded == 0 && prefillFlag == 0 {
+            // https://stackoverflow.com/questions/69615120/extracting-a-mutable-reference-from-an-option
+            let psRangeEnc = &mut **psRangeEnc.as_mut().unwrap();
+
             let mut iCDF: [u8; 2] = [0, 0];
             iCDF[0 as usize] = (256
                 - (256
@@ -602,7 +605,7 @@ pub unsafe fn silk_Encode(
         }
         TargetRate_bps -= (*psEnc).nBitsExceeded * 1000 / 500;
         if prefillFlag == 0 && (*psEnc).state_Fxx[0 as usize].sCmn.nFramesEncoded > 0 {
-            let bitsBalance: i32 = ec_tell(psRangeEnc)
+            let bitsBalance: i32 = ec_tell(&mut **psRangeEnc.as_mut().unwrap())
                 - (*psEnc).nBitsUsedLBRR
                 - nBits * (*psEnc).state_Fxx[0 as usize].sCmn.nFramesEncoded;
             TargetRate_bps -= bitsBalance * 1000 / 500;
@@ -702,6 +705,7 @@ pub unsafe fn silk_Encode(
                     [(*psEnc).state_Fxx[0 as usize].sCmn.nFramesEncoded as usize] = 0;
             }
             if prefillFlag == 0 {
+                let psRangeEnc = &mut **psRangeEnc.as_mut().unwrap();
                 silk_stereo_encode_pred(
                     psRangeEnc,
                     ((*psEnc).sStereo.predIx
@@ -785,7 +789,7 @@ pub unsafe fn silk_Encode(
                 ret = silk_encode_frame_FLP(
                     &mut *((*psEnc).state_Fxx).as_mut_ptr().offset(n as isize),
                     nBytesOut,
-                    psRangeEnc,
+                    &mut **psRangeEnc.as_mut().unwrap(),
                     condCoding_0,
                     maxBits,
                     useCBR,
@@ -821,7 +825,7 @@ pub unsafe fn silk_Encode(
             }
             if prefillFlag == 0 {
                 ec_enc_patch_initial_bits(
-                    psRangeEnc,
+                    &mut **psRangeEnc.as_mut().unwrap(),
                     flags as u32,
                     (((*psEnc).state_Fxx[0 as usize].sCmn.nFramesPerPacket + 1)
                         * (*encControl).nChannelsInternal) as u32,

@@ -4,7 +4,7 @@ use crate::silk::tables_other::{
     silk_uniform3_iCDF, silk_uniform5_iCDF,
 };
 
-pub unsafe fn silk_stereo_decode_pred(psRangeDec: *mut ec_dec, pred_Q13: *mut i32) {
+pub unsafe fn silk_stereo_decode_pred(psRangeDec: &mut ec_dec, pred_Q13: *mut i32) {
     let mut n: i32 = 0;
     let mut ix: [[i32; 3]; 2] = [[0; 3]; 2];
     let mut low_Q13: i32 = 0;
@@ -33,6 +33,6 @@ pub unsafe fn silk_stereo_decode_pred(psRangeDec: *mut ec_dec, pred_Q13: *mut i3
     let ref mut fresh0 = *pred_Q13.offset(0 as isize);
     *fresh0 -= *pred_Q13.offset(1 as isize);
 }
-pub unsafe fn silk_stereo_decode_mid_only(psRangeDec: *mut ec_dec, decode_only_mid: *mut i32) {
+pub unsafe fn silk_stereo_decode_mid_only(psRangeDec: &mut ec_dec, decode_only_mid: *mut i32) {
     *decode_only_mid = ec_dec_icdf(psRangeDec, silk_stereo_only_code_mid_iCDF.as_ptr(), 8);
 }

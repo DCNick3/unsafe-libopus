@@ -722,13 +722,12 @@ unsafe fn compute_theta(
     let mut m: *const OpusCustomMode = 0 as *const OpusCustomMode;
     let mut i: i32 = 0;
     let mut intensity: i32 = 0;
-    let mut ec: *mut ec_ctx = 0 as *mut ec_ctx;
     let mut bandE: *const celt_ener = 0 as *const celt_ener;
     encode = (*ctx).encode;
     m = (*ctx).m;
     i = (*ctx).i;
     intensity = (*ctx).intensity;
-    ec = (*ctx).ec;
+    let ec = &mut *(*ctx).ec;
     bandE = (*ctx).bandE;
     pulse_cap = *((*m).logN).offset(i as isize) as i32 + LM * ((1) << BITRES);
     offset = (pulse_cap >> 1)
@@ -948,9 +947,8 @@ unsafe fn quant_band_n1(
     let mut stereo: i32 = 0;
     let mut x: *mut celt_norm = X;
     let mut encode: i32 = 0;
-    let mut ec: *mut ec_ctx = 0 as *mut ec_ctx;
     encode = (*ctx).encode;
-    ec = (*ctx).ec;
+    let ec = &mut *(*ctx).ec;
     stereo = (Y != NULL as *mut celt_norm) as i32;
     c = 0;
     loop {
@@ -1008,12 +1006,11 @@ unsafe fn quant_partition(
     let mut m: *const OpusCustomMode = 0 as *const OpusCustomMode;
     let mut i: i32 = 0;
     let mut spread: i32 = 0;
-    let mut ec: *mut ec_ctx = 0 as *mut ec_ctx;
     encode = (*ctx).encode;
     m = (*ctx).m;
     i = (*ctx).i;
     spread = (*ctx).spread;
-    ec = (*ctx).ec;
+    let ec = &mut *(*ctx).ec;
     cache = ((*m).cache.bits).offset(
         *((*m).cache.index).offset(((LM + 1) * (*m).nbEBands + i) as isize) as i32 as isize,
     );
@@ -1125,7 +1122,17 @@ unsafe fn quant_partition(
         if q != 0 {
             let K: i32 = get_pulses(q);
             if encode != 0 {
-                cm = alg_quant(X, N, K, spread, B, ec, gain, (*ctx).resynth, (*ctx).arch);
+                cm = alg_quant(
+                    X,
+                    N,
+                    K,
+                    spread,
+                    B,
+                    &mut *ec,
+                    gain,
+                    (*ctx).resynth,
+                    (*ctx).arch,
+                );
             } else {
                 cm = alg_unquant(X, N, K, spread, B, ec, gain);
             }
@@ -1329,9 +1336,8 @@ unsafe fn quant_band_stereo(
     };
     let mut orig_fill: i32 = 0;
     let mut encode: i32 = 0;
-    let mut ec: *mut ec_ctx = 0 as *mut ec_ctx;
     encode = (*ctx).encode;
-    ec = (*ctx).ec;
+    let ec = &mut *(*ctx).ec;
     if N == 1 {
         return quant_band_n1(ctx, X, Y, b, lowband_out);
     }
@@ -1665,7 +1671,7 @@ pub unsafe fn quant_all_bands(
         }
         N = M * *eBands.offset((i + 1) as isize) as i32 - M * *eBands.offset(i as isize) as i32;
         assert!(N > 0);
-        tell = ec_tell_frac(ec) as i32;
+        tell = ec_tell_frac(&mut *ec) as i32;
         if i != start {
             balance -= tell;
         }

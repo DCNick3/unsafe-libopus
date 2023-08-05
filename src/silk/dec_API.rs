@@ -74,7 +74,7 @@ pub unsafe fn silk_Decode(
     decControl: *mut silk_DecControlStruct,
     lostFlag: i32,
     newPacketFlag: i32,
-    psRangeDec: *mut ec_dec,
+    psRangeDec: &mut ec_dec,
     samplesOut: *mut i16,
     nSamplesOut: *mut i32,
     arch: i32,

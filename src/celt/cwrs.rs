@@ -342,7 +342,7 @@ fn icwrs(y: &[i32]) -> u32 {
     return i;
 }
 
-pub unsafe fn encode_pulses(y: &[i32], k: i32, enc: *mut ec_enc) {
+pub unsafe fn encode_pulses(y: &[i32], k: i32, enc: &mut ec_enc) {
     assert!(k > 0);
     ec_enc_uint(enc, icwrs(y), pvq_v(y.len() as u32, k as u32));
 }
@@ -441,6 +441,6 @@ fn cwrsi(mut k: i32, mut i: u32, mut y: &mut [i32]) -> f32 {
     return yy;
 }
 
-pub unsafe fn decode_pulses(y: &mut [i32], k: i32, dec: *mut ec_dec) -> f32 {
+pub unsafe fn decode_pulses(y: &mut [i32], k: i32, dec: &mut ec_dec) -> f32 {
     return cwrsi(k, ec_dec_uint(dec, pvq_v(y.len() as u32, k as u32)), y);
 }

@@ -275,7 +275,7 @@ pub unsafe fn alg_quant(
     K: i32,
     spread: i32,
     B: i32,
-    enc: *mut ec_enc,
+    enc: &mut ec_enc,
     gain: opus_val16,
     resynth: i32,
     arch: i32,
@@ -302,7 +302,7 @@ pub unsafe fn alg_unquant(
     K: i32,
     spread: i32,
     B: i32,
-    dec: *mut ec_dec,
+    dec: &mut ec_dec,
     gain: opus_val16,
 ) -> u32 {
     let mut Ryy: opus_val32 = 0.;

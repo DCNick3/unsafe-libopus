@@ -15,7 +15,7 @@ use crate::silk::NLSF_unpack::silk_NLSF_unpack;
 
 pub unsafe fn silk_decode_indices(
     psDec: *mut silk_decoder_state,
-    psRangeDec: *mut ec_dec,
+    psRangeDec: &mut ec_dec,
     FrameIndex: i32,
     decode_LBRR: i32,
     condCoding: i32,

@@ -412,7 +412,7 @@ pub mod stdlib_h {
     }
 }
 pub mod entdec_c {
-        pub unsafe fn ec_read_byte(mut _this: *mut ec_dec) -> i32 {
+        pub unsafe fn ec_read_byte(mut _this: &mut ec_dec) -> i32 {
         return if (*_this).offs < (*_this).storage {
             let fresh2 = (*_this).offs;
             (*_this).offs = ((*_this).offs).wrapping_add(1);
@@ -421,7 +421,7 @@ pub mod entdec_c {
             0
         };
     }
-        pub unsafe fn ec_read_byte_from_end(mut _this: *mut ec_dec) -> i32 {
+        pub unsafe fn ec_read_byte_from_end(mut _this: &mut ec_dec) -> i32 {
         return if (*_this).end_offs < (*_this).storage {
             (*_this).end_offs = ((*_this).end_offs).wrapping_add(1);
             *((*_this).buf).offset(((*_this).storage).wrapping_sub((*_this).end_offs) as isize)
@@ -430,7 +430,7 @@ pub mod entdec_c {
             0
         };
     }
-        pub unsafe fn ec_dec_normalize(mut _this: *mut ec_dec) {
+        pub unsafe fn ec_dec_normalize(mut _this: &mut ec_dec) {
         while (*_this).rng
             <= (1 as u32) << 32 - 1 >> 8
         {
@@ -452,7 +452,7 @@ pub mod entdec_c {
         }
     }
         pub unsafe fn ec_decode_bin(
-        mut _this: *mut ec_dec,
+        mut _this: &mut ec_dec,
         mut _bits: u32,
     ) -> u32 {
         let mut s: u32 = 0;
@@ -467,7 +467,7 @@ pub mod entdec_c {
         );
     }
         pub unsafe fn ec_dec_update(
-        mut _this: *mut ec_dec,
+        mut _this: &mut ec_dec,
         mut _fl: u32,
         mut _fh: u32,
         mut _ft: u32,
@@ -483,7 +483,7 @@ pub mod entdec_c {
         ec_dec_normalize(_this);
     }
         pub unsafe fn ec_dec_bit_logp(
-        mut _this: *mut ec_dec,
+        mut _this: &mut ec_dec,
         mut _logp: u32,
     ) -> i32 {
         let mut r: u32 = 0;
@@ -502,7 +502,7 @@ pub mod entdec_c {
         return ret;
     }
         pub unsafe fn ec_dec_icdf(
-        mut _this: *mut ec_dec,
+        mut _this: &mut ec_dec,
         mut _icdf: *const u8,
         mut _ftb: u32,
     ) -> i32 {
@@ -528,7 +528,7 @@ pub mod entdec_c {
         ec_dec_normalize(_this);
         return ret;
     }
-        pub unsafe fn ec_dec_uint(mut _this: *mut ec_dec, mut _ft: u32) -> u32 {
+        pub unsafe fn ec_dec_uint(mut _this: &mut ec_dec, mut _ft: u32) -> u32 {
         let mut ft: u32 = 0;
         let mut s: u32 = 0;
         let mut ftb: i32 = 0;
@@ -565,7 +565,7 @@ pub mod entdec_c {
             return s;
         };
     }
-        pub unsafe fn ec_dec_bits(mut _this: *mut ec_dec, mut _bits: u32) -> u32 {
+        pub unsafe fn ec_dec_bits(mut _this: &mut ec_dec, mut _bits: u32) -> u32 {
         let mut window: ec_window = 0;
         let mut available: i32 = 0;
         let mut ret: u32 = 0;
@@ -594,7 +594,7 @@ pub mod entdec_c {
         return ret;
     }
         pub unsafe fn ec_decode(
-        mut _this: *mut ec_dec,
+        mut _this: &mut ec_dec,
         mut _ft: u32,
     ) -> u32 {
         let mut s: u32 = 0;
@@ -610,7 +610,7 @@ pub mod entdec_c {
         );
     }
         pub unsafe fn ec_dec_init(
-        mut _this: *mut ec_dec,
+        mut _this: &mut ec_dec,
         mut _buf: *mut u8,
         mut _storage: u32,
     ) {
@@ -2422,7 +2422,7 @@ pub mod cwrs_c {
         mut _y: *mut i32,
         mut _n: i32,
         mut _k: i32,
-        mut _dec: *mut ec_dec,
+        mut _dec: &mut ec_dec,
     ) -> opus_val32 {
         return cwrsi(
             _n,

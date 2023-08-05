@@ -451,7 +451,7 @@ pub mod entenc_c {
     use crate::externs::{memmove, memset};
 }
 pub mod entdec_c {
-        pub unsafe fn ec_read_byte(mut _this: *mut ec_dec) -> i32 {
+        pub unsafe fn ec_read_byte(mut _this: &mut ec_dec) -> i32 {
         return if (*_this).offs < (*_this).storage {
             let fresh2 = (*_this).offs;
             (*_this).offs = ((*_this).offs).wrapping_add(1);
@@ -460,7 +460,7 @@ pub mod entdec_c {
             0
         };
     }
-        pub unsafe fn ec_read_byte_from_end(mut _this: *mut ec_dec) -> i32 {
+        pub unsafe fn ec_read_byte_from_end(mut _this: &mut ec_dec) -> i32 {
         return if (*_this).end_offs < (*_this).storage {
             (*_this).end_offs = ((*_this).end_offs).wrapping_add(1);
             *((*_this).buf).offset(((*_this).storage).wrapping_sub((*_this).end_offs) as isize)
@@ -469,7 +469,7 @@ pub mod entdec_c {
             0
         };
     }
-        pub unsafe fn ec_dec_normalize(mut _this: *mut ec_dec) {
+        pub unsafe fn ec_dec_normalize(mut _this: &mut ec_dec) {
         while (*_this).rng
             <= (1 as u32) << 32 - 1 >> 8
         {
@@ -491,7 +491,7 @@ pub mod entdec_c {
         }
     }
         pub unsafe fn ec_dec_init(
-        mut _this: *mut ec_dec,
+        mut _this: &mut ec_dec,
         mut _buf: *mut u8,
         mut _storage: u32,
     ) {
@@ -521,7 +521,7 @@ pub mod entdec_c {
         ec_dec_normalize(_this);
     }
         pub unsafe fn ec_decode(
-        mut _this: *mut ec_dec,
+        mut _this: &mut ec_dec,
         mut _ft: u32,
     ) -> u32 {
         let mut s: u32 = 0;
@@ -537,7 +537,7 @@ pub mod entdec_c {
         );
     }
         pub unsafe fn ec_decode_bin(
-        mut _this: *mut ec_dec,
+        mut _this: &mut ec_dec,
         mut _bits: u32,
     ) -> u32 {
         let mut s: u32 = 0;
@@ -552,7 +552,7 @@ pub mod entdec_c {
         );
     }
         pub unsafe fn ec_dec_update(
-        mut _this: *mut ec_dec,
+        mut _this: &mut ec_dec,
         mut _fl: u32,
         mut _fh: u32,
         mut _ft: u32,
@@ -568,7 +568,7 @@ pub mod entdec_c {
         ec_dec_normalize(_this);
     }
         pub unsafe fn ec_dec_bit_logp(
-        mut _this: *mut ec_dec,
+        mut _this: &mut ec_dec,
         mut _logp: u32,
     ) -> i32 {
         let mut r: u32 = 0;
@@ -587,7 +587,7 @@ pub mod entdec_c {
         return ret;
     }
         pub unsafe fn ec_dec_icdf(
-        mut _this: *mut ec_dec,
+        mut _this: &mut ec_dec,
         mut _icdf: *const u8,
         mut _ftb: u32,
     ) -> i32 {
@@ -613,7 +613,7 @@ pub mod entdec_c {
         ec_dec_normalize(_this);
         return ret;
     }
-        pub unsafe fn ec_dec_uint(mut _this: *mut ec_dec, mut _ft: u32) -> u32 {
+        pub unsafe fn ec_dec_uint(mut _this: &mut ec_dec, mut _ft: u32) -> u32 {
         let mut ft: u32 = 0;
         let mut s: u32 = 0;
         let mut ftb: i32 = 0;
@@ -650,7 +650,7 @@ pub mod entdec_c {
             return s;
         };
     }
-        pub unsafe fn ec_dec_bits(mut _this: *mut ec_dec, mut _bits: u32) -> u32 {
+        pub unsafe fn ec_dec_bits(mut _this: &mut ec_dec, mut _bits: u32) -> u32 {
         let mut window: ec_window = 0;
         let mut available: i32 = 0;
         let mut ret: u32 = 0;
@@ -840,12 +840,12 @@ unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
         b"Packed to %li bytes.\n\0" as *const u8 as *const i8,
         ec_range_bytes(&mut enc) as i64,
     );
-    ec_dec_init(&mut dec, ptr, 10000000);
+    ec_dec_init(dec, ptr, 10000000);
     ft = 2;
     while ft < 1024 {
         i = 0;
         while i < ft {
-            sym = ec_dec_uint(&mut dec, ft as u32);
+            sym = ec_dec_uint(dec, ft as u32);
             if sym != i as u32 {
                 fprintf(
                     stderr(),
@@ -865,7 +865,7 @@ unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
     while ftb < 16 {
         i = 0;
         while i < (1) << ftb {
-            sym = ec_dec_bits(&mut dec, ftb as u32);
+            sym = ec_dec_bits(dec, ftb as u32);
             if sym != i as u32 {
                 fprintf(
                     stderr(),
@@ -881,7 +881,7 @@ unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
         }
         ftb += 1;
     }
-    nbits2 = ec_tell_frac(&mut dec) as i64;
+    nbits2 = ec_tell_frac(dec) as i64;
     if nbits != nbits2 {
         fprintf(
             stderr(),
@@ -905,16 +905,16 @@ unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
     ec_enc_uint(&mut enc, 2, 6);
     ec_enc_uint(&mut enc, 6, 7);
     ec_enc_done(&mut enc);
-    ec_dec_init(&mut dec, ptr, 2);
+    ec_dec_init(dec, ptr, 2);
     if enc.error == 0
-        || ec_dec_bits(&mut dec, 7)
+        || ec_dec_bits(dec, 7)
             != 0x5
-        || ec_dec_uint(&mut dec, 2) != 1
-        || ec_dec_uint(&mut dec, 3) != 1
-        || ec_dec_uint(&mut dec, 4) != 1
-        || ec_dec_uint(&mut dec, 5) != 1
-        || ec_dec_uint(&mut dec, 6) != 2
-        || ec_dec_uint(&mut dec, 7) != 6
+        || ec_dec_uint(dec, 2) != 1
+        || ec_dec_uint(dec, 3) != 1
+        || ec_dec_uint(dec, 4) != 1
+        || ec_dec_uint(dec, 5) != 1
+        || ec_dec_uint(dec, 6) != 2
+        || ec_dec_uint(dec, 7) != 6
     {
         fprintf(
             stderr(),
@@ -1013,21 +1013,21 @@ unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
             );
             ret = -1;
         }
-        ec_dec_init(&mut dec, ptr, 10000);
-        if ec_tell_frac(&mut dec) != *tell.offset(0 as isize) {
+        ec_dec_init(dec, ptr, 10000);
+        if ec_tell_frac(dec) != *tell.offset(0 as isize) {
             fprintf(
                 stderr(),
                 b"Tell mismatch between encoder and decoder at symbol %i: %i instead of %i (Random seed: %u).\n\0"
                     as *const u8 as *const i8,
                 0,
-                ec_tell_frac(&mut dec),
+                ec_tell_frac(dec),
                 *tell.offset(0 as isize),
                 seed,
             );
         }
         j = 0;
         while j < sz {
-            sym = ec_dec_uint(&mut dec, ft as u32);
+            sym = ec_dec_uint(dec, ft as u32);
             if sym != *data.offset(j as isize) {
                 fprintf(
                     stderr(),
@@ -1042,13 +1042,13 @@ unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
                 );
                 ret = -1;
             }
-            if ec_tell_frac(&mut dec) != *tell.offset((j + 1) as isize) {
+            if ec_tell_frac(dec) != *tell.offset((j + 1) as isize) {
                 fprintf(
                     stderr(),
                     b"Tell mismatch between encoder and decoder at symbol %i: %i instead of %i (Random seed: %u).\n\0"
                         as *const u8 as *const i8,
                     j + 1,
-                    ec_tell_frac(&mut dec),
+                    ec_tell_frac(dec),
                     *tell.offset((j + 1) as isize),
                     seed,
                 );
@@ -1175,14 +1175,14 @@ unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
             );
             ret = -1;
         }
-        ec_dec_init(&mut dec, ptr, 10000);
-        if ec_tell_frac(&mut dec) != *tell_0.offset(0 as isize) {
+        ec_dec_init(dec, ptr, 10000);
+        if ec_tell_frac(dec) != *tell_0.offset(0 as isize) {
             fprintf(
                 stderr(),
                 b"Tell mismatch between encoder and decoder at symbol %i: %i instead of %i (Random seed: %u).\n\0"
                     as *const u8 as *const i8,
                 0,
-                ec_tell_frac(&mut dec),
+                ec_tell_frac(dec),
                 *tell_0.offset(0 as isize),
                 seed,
             );
@@ -1196,14 +1196,14 @@ unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
             match dec_method {
                 0 => {
                     fs = ec_decode(
-                        &mut dec,
+                        dec,
                         ((1) << *logp1.offset(j_0 as isize)) as u32,
                     ) as i32;
                     sym = (fs
                         >= ((1) << *logp1.offset(j_0 as isize)) - 1)
                         as i32 as u32;
                     ec_dec_update(
-                        &mut dec,
+                        dec,
                         (if sym != 0 {
                             ((1) << *logp1.offset(j_0 as isize)) - 1
                         } else {
@@ -1219,12 +1219,12 @@ unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
                     );
                 }
                 1 => {
-                    fs = ec_decode_bin(&mut dec, *logp1.offset(j_0 as isize)) as i32;
+                    fs = ec_decode_bin(dec, *logp1.offset(j_0 as isize)) as i32;
                     sym = (fs
                         >= ((1) << *logp1.offset(j_0 as isize)) - 1)
                         as i32 as u32;
                     ec_dec_update(
-                        &mut dec,
+                        dec,
                         (if sym != 0 {
                             ((1) << *logp1.offset(j_0 as isize)) - 1
                         } else {
@@ -1240,13 +1240,13 @@ unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
                     );
                 }
                 2 => {
-                    sym = ec_dec_bit_logp(&mut dec, *logp1.offset(j_0 as isize)) as u32;
+                    sym = ec_dec_bit_logp(dec, *logp1.offset(j_0 as isize)) as u32;
                 }
                 3 => {
                     let mut icdf_0: [u8; 2] = [0; 2];
                     icdf_0[0 as usize] = 1;
                     icdf_0[1 as usize] = 0;
-                    sym = ec_dec_icdf(&mut dec, icdf_0.as_mut_ptr(), *logp1.offset(j_0 as isize))
+                    sym = ec_dec_icdf(dec, icdf_0.as_mut_ptr(), *logp1.offset(j_0 as isize))
                         as u32;
                 }
                 _ => {}
@@ -1272,13 +1272,13 @@ unsafe fn main_0(mut _argc: i32, mut _argv: *mut *mut i8) -> i32 {
                 );
                 ret = -1;
             }
-            if ec_tell_frac(&mut dec) != *tell_0.offset((j_0 + 1) as isize) {
+            if ec_tell_frac(dec) != *tell_0.offset((j_0 + 1) as isize) {
                 fprintf(
                     stderr(),
                     b"Tell mismatch between encoder and decoder at symbol %i: %i instead of %i (Random seed: %u).\n\0"
                         as *const u8 as *const i8,
                     j_0 + 1,
-                    ec_tell_frac(&mut dec),
+                    ec_tell_frac(dec),
                     *tell_0.offset((j_0 + 1) as isize),
                     seed,
                 );

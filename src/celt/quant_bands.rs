@@ -150,7 +150,7 @@ unsafe fn quant_coarse_energy_impl(
     mut tell: i32,
     prob_model: *const u8,
     error: *mut opus_val16,
-    enc: *mut ec_enc,
+    enc: &mut ec_enc,
     C: i32,
     LM: i32,
     intra: i32,
@@ -272,7 +272,7 @@ pub unsafe fn quant_coarse_energy(
     oldEBands: *mut opus_val16,
     budget: u32,
     error: *mut opus_val16,
-    enc: *mut ec_enc,
+    enc: &mut ec_enc,
     C: i32,
     LM: i32,
     nbAvailableBytes: i32,
@@ -476,7 +476,7 @@ pub unsafe fn quant_fine_energy(
     oldEBands: *mut opus_val16,
     error: *mut opus_val16,
     fine_quant: *mut i32,
-    enc: *mut ec_enc,
+    enc: &mut ec_enc,
     C: i32,
 ) {
     let mut i: i32 = 0;
@@ -525,7 +525,7 @@ pub unsafe fn quant_energy_finalise(
     fine_quant: *mut i32,
     fine_priority: *mut i32,
     mut bits_left: i32,
-    enc: *mut ec_enc,
+    enc: &mut ec_enc,
     C: i32,
 ) {
     let mut i: i32 = 0;
@@ -573,7 +573,7 @@ pub unsafe fn unquant_coarse_energy(
     end: i32,
     oldEBands: *mut opus_val16,
     intra: i32,
-    dec: *mut ec_dec,
+    dec: &mut ec_dec,
     C: i32,
     LM: i32,
 ) {
@@ -641,7 +641,7 @@ pub unsafe fn unquant_fine_energy(
     end: i32,
     oldEBands: *mut opus_val16,
     fine_quant: *mut i32,
-    dec: *mut ec_dec,
+    dec: &mut ec_dec,
     C: i32,
 ) {
     let mut i: i32 = 0;
@@ -677,7 +677,7 @@ pub unsafe fn unquant_energy_finalise(
     fine_quant: *mut i32,
     fine_priority: *mut i32,
     mut bits_left: i32,
-    dec: *mut ec_dec,
+    dec: &mut ec_dec,
     C: i32,
 ) {
     let mut i: i32 = 0;

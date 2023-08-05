@@ -62,7 +62,7 @@ pub unsafe fn silk_encode_do_VAD_FLP(psEnc: *mut silk_encoder_state_FLP, activit
 pub unsafe fn silk_encode_frame_FLP(
     psEnc: *mut silk_encoder_state_FLP,
     pnBytesOut: *mut i32,
-    psRangeEnc: *mut ec_enc,
+    psRangeEnc: &mut ec_enc,
     condCoding: i32,
     maxBits: i32,
     useCBR: i32,
@@ -229,11 +229,7 @@ pub unsafe fn silk_encode_frame_FLP(
         );
         gainsID_lower = -1;
         gainsID_upper = -1;
-        memcpy(
-            &mut sRangeEnc_copy as *mut ec_enc as *mut core::ffi::c_void,
-            psRangeEnc as *const core::ffi::c_void,
-            ::core::mem::size_of::<ec_enc>() as u64,
-        );
+        sRangeEnc_copy = psRangeEnc.clone();
         memcpy(
             &mut sNSQ_copy as *mut silk_nsq_state as *mut core::ffi::c_void,
             &mut (*psEnc).sCmn.sNSQ as *mut silk_nsq_state as *const core::ffi::c_void,
@@ -250,11 +246,7 @@ pub unsafe fn silk_encode_frame_FLP(
                 nBits = nBits_upper;
             } else {
                 if iter > 0 {
-                    memcpy(
-                        psRangeEnc as *mut core::ffi::c_void,
-                        &mut sRangeEnc_copy as *mut ec_enc as *const core::ffi::c_void,
-                        ::core::mem::size_of::<ec_enc>() as u64,
-                    );
+                    *psRangeEnc = sRangeEnc_copy.clone();
                     memcpy(
                         &mut (*psEnc).sCmn.sNSQ as *mut silk_nsq_state as *mut core::ffi::c_void,
                         &mut sNSQ_copy as *mut silk_nsq_state as *const core::ffi::c_void,
@@ -273,11 +265,7 @@ pub unsafe fn silk_encode_frame_FLP(
                     x_frame as *const f32,
                 );
                 if iter == maxIter && found_lower == 0 {
-                    memcpy(
-                        &mut sRangeEnc_copy2 as *mut ec_enc as *mut core::ffi::c_void,
-                        psRangeEnc as *const core::ffi::c_void,
-                        ::core::mem::size_of::<ec_enc>() as u64,
-                    );
+                    sRangeEnc_copy2 = psRangeEnc.clone();
                 }
                 silk_encode_indices(
                     &mut (*psEnc).sCmn,
@@ -295,11 +283,7 @@ pub unsafe fn silk_encode_frame_FLP(
                 );
                 nBits = ec_tell(psRangeEnc);
                 if iter == maxIter && found_lower == 0 && nBits > maxBits {
-                    memcpy(
-                        psRangeEnc as *mut core::ffi::c_void,
-                        &mut sRangeEnc_copy2 as *mut ec_enc as *const core::ffi::c_void,
-                        ::core::mem::size_of::<ec_enc>() as u64,
-                    );
+                    *psRangeEnc = sRangeEnc_copy2.clone();
                     (*psEnc).sShape.LastGainIndex = sEncCtrl.lastGainIndexPrev;
                     i = 0;
                     while i < (*psEnc).sCmn.nb_subfr {
@@ -338,11 +322,7 @@ pub unsafe fn silk_encode_frame_FLP(
             }
             if iter == maxIter {
                 if found_lower != 0 && (gainsID == gainsID_lower || nBits > maxBits) {
-                    memcpy(
-                        psRangeEnc as *mut core::ffi::c_void,
-                        &mut sRangeEnc_copy2 as *mut ec_enc as *const core::ffi::c_void,
-                        ::core::mem::size_of::<ec_enc>() as u64,
-                    );
+                    *psRangeEnc = sRangeEnc_copy2.clone();
                     assert!(sRangeEnc_copy2.offs <= 1275);
                     memcpy(
                         (*psRangeEnc).buf as *mut core::ffi::c_void,
@@ -383,11 +363,7 @@ pub unsafe fn silk_encode_frame_FLP(
                     gainMult_lower = gainMult_Q8 as i32;
                     if gainsID != gainsID_lower {
                         gainsID_lower = gainsID;
-                        memcpy(
-                            &mut sRangeEnc_copy2 as *mut ec_enc as *mut core::ffi::c_void,
-                            psRangeEnc as *const core::ffi::c_void,
-                            ::core::mem::size_of::<ec_enc>() as u64,
-                        );
+                        sRangeEnc_copy2 = psRangeEnc.clone();
                         assert!((*psRangeEnc).offs <= 1275);
                         memcpy(
                             ec_buf_copy.as_mut_ptr() as *mut core::ffi::c_void,

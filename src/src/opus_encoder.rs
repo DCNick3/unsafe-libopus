@@ -2009,7 +2009,7 @@ pub unsafe fn opus_encode_native(
                 &mut (*st).silk_mode,
                 pcm_silk.as_mut_ptr(),
                 (*st).encoder_buffer,
-                NULL as *mut ec_enc,
+                None,
                 &mut zero,
                 prefill,
                 activity,
@@ -2030,7 +2030,7 @@ pub unsafe fn opus_encode_native(
             &mut (*st).silk_mode,
             pcm_silk.as_mut_ptr(),
             frame_size,
-            &mut enc,
+            Some(&mut enc),
             &mut nBytes,
             0,
             activity,
@@ -2315,7 +2315,7 @@ pub unsafe fn opus_encode_native(
             (*st).Fs / 200,
             data.offset(nb_compr_bytes as isize),
             redundancy_bytes,
-            NULL as *mut ec_enc,
+            None,
         );
         if err < 0 {
             return OPUS_INTERNAL_ERROR;
@@ -2334,7 +2334,7 @@ pub unsafe fn opus_encode_native(
                 (*st).Fs / 400,
                 dummy_0.as_mut_ptr(),
                 2,
-                NULL as *mut ec_enc,
+                None,
             );
             opus_custom_encoder_ctl!(celt_enc, CELT_SET_PREDICTION_REQUEST, 0);
         }
@@ -2357,7 +2357,7 @@ pub unsafe fn opus_encode_native(
                 frame_size,
                 NULL as *mut u8,
                 nb_compr_bytes,
-                &mut enc,
+                Some(&mut enc),
             );
             if ret < 0 {
                 return OPUS_INTERNAL_ERROR;
@@ -2407,7 +2407,7 @@ pub unsafe fn opus_encode_native(
             N4,
             dummy_1.as_mut_ptr(),
             2,
-            NULL as *mut ec_enc,
+            None,
         );
         err_0 = celt_encode_with_ec(
             celt_enc,
@@ -2417,7 +2417,7 @@ pub unsafe fn opus_encode_native(
             N2,
             data.offset(nb_compr_bytes as isize),
             redundancy_bytes,
-            NULL as *mut ec_enc,
+            None,
         );
         if err_0 < 0 {
             return OPUS_INTERNAL_ERROR;

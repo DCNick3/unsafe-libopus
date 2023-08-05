@@ -9,7 +9,7 @@ unsafe fn ec_laplace_get_freq1(fs0: u32, decay: i32) -> u32 {
     ft = ((32768 - LAPLACE_MINP * (2 * LAPLACE_NMIN)) as u32).wrapping_sub(fs0);
     return ft.wrapping_mul((16384 - decay) as u32) >> 15;
 }
-pub unsafe fn ec_laplace_encode(enc: *mut ec_enc, value: *mut i32, mut fs: u32, decay: i32) {
+pub unsafe fn ec_laplace_encode(enc: &mut ec_enc, value: *mut i32, mut fs: u32, decay: i32) {
     let mut fl: u32 = 0;
     let mut val: i32 = *value;
     fl = 0;
@@ -57,7 +57,7 @@ pub unsafe fn ec_laplace_encode(enc: *mut ec_enc, value: *mut i32, mut fs: u32, 
     }
     ec_encode_bin(enc, fl, fl.wrapping_add(fs), 15);
 }
-pub unsafe fn ec_laplace_decode(dec: *mut ec_dec, mut fs: u32, decay: i32) -> i32 {
+pub unsafe fn ec_laplace_decode(dec: &mut ec_dec, mut fs: u32, decay: i32) -> i32 {
     let mut val: i32 = 0;
     let mut fl: u32 = 0;
     let mut fm: u32 = 0;

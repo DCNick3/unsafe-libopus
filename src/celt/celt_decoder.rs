@@ -467,7 +467,7 @@ unsafe fn tf_decode(
     isTransient: i32,
     tf_res: *mut i32,
     LM: i32,
-    dec: *mut ec_dec,
+    dec: &mut ec_dec,
 ) {
     let mut i: i32 = 0;
     let mut curr: i32 = 0;
@@ -477,11 +477,11 @@ unsafe fn tf_decode(
     let mut logp: i32 = 0;
     let mut budget: u32 = 0;
     let mut tell: u32 = 0;
-    budget = ((*dec).storage).wrapping_mul(8);
+    budget = dec.storage.wrapping_mul(8);
     tell = ec_tell(dec) as u32;
     logp = if isTransient != 0 { 2 } else { 4 };
     tf_select_rsv = (LM > 0 && tell.wrapping_add(logp as u32).wrapping_add(1) <= budget) as i32;
-    budget = (budget as u32).wrapping_sub(tf_select_rsv as u32) as u32 as u32;
+    budget = budget.wrapping_sub(tf_select_rsv as u32);
     curr = 0;
     tf_changed = curr;
     i = start;
@@ -887,7 +887,7 @@ pub unsafe fn celt_decode_with_ec(
     len: i32,
     pcm: *mut opus_val16,
     mut frame_size: i32,
-    mut dec: *mut ec_dec,
+    dec: Option<&mut ec_dec>,
     accum: i32,
 ) -> i32 {
     let mut c: i32 = 0;
@@ -1006,10 +1006,12 @@ pub unsafe fn celt_decode_with_ec(
         return frame_size / (*st).downsample;
     }
     (*st).skip_plc = ((*st).loss_count != 0) as i32;
-    if dec.is_null() {
+    let dec = if let Some(dec) = dec {
+        dec
+    } else {
         ec_dec_init(&mut _dec, data as *mut u8, len as u32);
-        dec = &mut _dec;
-    }
+        &mut _dec
+    };
     if C == 1 {
         i = 0;
         while i < nbEBands {

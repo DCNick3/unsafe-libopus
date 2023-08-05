@@ -11,7 +11,7 @@ use crate::silk::PLC::{silk_PLC, silk_PLC_glue_frames};
 
 pub unsafe fn silk_decode_frame(
     psDec: *mut silk_decoder_state,
-    psRangeDec: *mut ec_dec,
+    psRangeDec: &mut ec_dec,
     pOut: *mut i16,
     pN: *mut i32,
     lostFlag: i32,

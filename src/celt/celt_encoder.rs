@@ -821,7 +821,7 @@ unsafe fn tf_encode(
     tf_res: *mut i32,
     LM: i32,
     mut tf_select: i32,
-    enc: *mut ec_enc,
+    enc: &mut ec_enc,
 ) {
     let mut curr: i32 = 0;
     let mut i: i32 = 0;
@@ -1925,7 +1925,7 @@ pub unsafe fn celt_encode_with_ec(
     mut frame_size: i32,
     compressed: *mut u8,
     mut nbCompressedBytes: i32,
-    mut enc: *mut ec_enc,
+    mut enc: Option<&mut ec_enc>,
 ) -> i32 {
     let mut i: i32 = 0;
     let mut c: i32 = 0;
@@ -2031,14 +2031,14 @@ pub unsafe fn celt_encode_with_ec(
     oldLogE = oldBandE.offset((CC * nbEBands) as isize);
     oldLogE2 = oldLogE.offset((CC * nbEBands) as isize);
     energyError = oldLogE2.offset((CC * nbEBands) as isize);
-    if enc.is_null() {
+    if let Some(enc) = enc.as_mut() {
+        tell0_frac = ec_tell_frac(*enc) as i32;
+        tell = ec_tell(*enc);
+        nbFilledBytes = tell + 4 >> 3;
+    } else {
         tell = 1;
         tell0_frac = tell;
         nbFilledBytes = 0;
-    } else {
-        tell0_frac = ec_tell_frac(enc) as i32;
-        tell = ec_tell(enc);
-        nbFilledBytes = tell + 4 >> 3;
     }
     assert!((*st).signalling == 0);
     nbCompressedBytes = if nbCompressedBytes < 1275 {
@@ -2086,10 +2086,12 @@ pub unsafe fn celt_encode_with_ec(
             (*st).bitrate - (40 * C + 20) * ((400 >> LM) - 50)
         };
     }
-    if enc.is_null() {
+    let enc = if let Some(enc) = enc {
+        enc
+    } else {
         ec_enc_init(&mut _enc, compressed, nbCompressedBytes as u32);
-        enc = &mut _enc;
-    }
+        &mut _enc
+    };
     if vbr_rate > 0 {
         if (*st).constrained_vbr != 0 {
             let mut vbr_bound: i32 = 0;
