@@ -29,7 +29,7 @@ pub mod test_opus_common_h {
 pub use self::test_opus_common_h::_test_failed;
 
 use unsafe_libopus::externs::{free, malloc};
-use unsafe_libopus::externs::{memcmp, memcpy, memset, strlen};
+use unsafe_libopus::externs::{memcmp, memcpy, memset};
 use unsafe_libopus::{
     opus_decode, opus_decode_float, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy,
     opus_decoder_get_nb_samples, opus_decoder_get_size, opus_decoder_init, opus_encode,
@@ -2913,7 +2913,7 @@ unsafe fn main_0() -> i32 {
     if (opus_strerror(32767)).is_null() {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1890);
     }
-    if strlen(opus_strerror(0)) < 1 {
+    if std::ffi::CStr::from_ptr(opus_strerror(0)).to_bytes().len() < 1 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1891);
     }
     total = 4;
