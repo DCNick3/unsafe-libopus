@@ -33,27 +33,15 @@ pub const CELT_GET_AND_CLEAR_ERROR_REQUEST: i32 = 10007;
 pub const COMBFILTER_MAXPERIOD: i32 = 1024;
 pub const COMBFILTER_MINPERIOD: i32 = 16;
 
-pub unsafe fn resampling_factor(rate: i32) -> i32 {
-    let mut ret: i32 = 0;
+pub fn resampling_factor(rate: i32) -> i32 {
     match rate {
-        48000 => {
-            ret = 1;
-        }
-        24000 => {
-            ret = 2;
-        }
-        16000 => {
-            ret = 3;
-        }
-        12000 => {
-            ret = 4;
-        }
-        8000 => {
-            ret = 6;
-        }
-        _ => panic!("libopus: assert(0) called"),
+        48000 => 1,
+        24000 => 2,
+        16000 => 3,
+        12000 => 4,
+        8000 => 6,
+        _ => panic!("Unsupported sampling rate: {}", rate),
     }
-    return ret;
 }
 unsafe fn comb_filter_const_c(
     y: *mut opus_val32,
