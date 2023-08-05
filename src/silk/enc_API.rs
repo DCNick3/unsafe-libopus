@@ -786,10 +786,16 @@ pub unsafe fn silk_Encode(
                 } else {
                     condCoding_0 = CODE_CONDITIONALLY;
                 }
+                let psRangeEnc = if let Some(psRangeEnc) = psRangeEnc.as_mut() {
+                    Some(&mut **psRangeEnc)
+                } else {
+                    None
+                };
+
                 ret = silk_encode_frame_FLP(
                     &mut *((*psEnc).state_Fxx).as_mut_ptr().offset(n as isize),
                     nBytesOut,
-                    &mut **psRangeEnc.as_mut().unwrap(),
+                    psRangeEnc,
                     condCoding_0,
                     maxBits,
                     useCBR,

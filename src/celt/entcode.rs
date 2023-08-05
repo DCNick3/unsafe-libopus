@@ -2,9 +2,9 @@ use crate::silk::macros::EC_CLZ0;
 
 pub const EC_SYM_BITS: i32 = 8;
 pub const EC_CODE_BITS: i32 = 32;
-pub const EC_SYM_MAX: u32 = ((1 as u32) << EC_SYM_BITS).wrapping_sub(1);
+pub const EC_SYM_MAX: u32 = (1_u32 << EC_SYM_BITS).wrapping_sub(1);
 pub const EC_CODE_SHIFT: i32 = EC_CODE_BITS - EC_SYM_BITS - 1;
-pub const EC_CODE_TOP: u32 = (1 as u32) << EC_CODE_BITS - 1;
+pub const EC_CODE_TOP: u32 = 1_u32 << (EC_CODE_BITS - 1);
 pub const EC_CODE_BOT: u32 = EC_CODE_TOP >> EC_SYM_BITS;
 pub const EC_CODE_EXTRA: i32 = (EC_CODE_BITS - 2) % EC_SYM_BITS + 1;
 

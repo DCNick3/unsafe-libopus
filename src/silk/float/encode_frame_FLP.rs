@@ -62,7 +62,7 @@ pub unsafe fn silk_encode_do_VAD_FLP(psEnc: *mut silk_encoder_state_FLP, activit
 pub unsafe fn silk_encode_frame_FLP(
     psEnc: *mut silk_encoder_state_FLP,
     pnBytesOut: *mut i32,
-    psRangeEnc: &mut ec_enc,
+    mut psRangeEnc: Option<&mut ec_enc>,
     condCoding: i32,
     maxBits: i32,
     useCBR: i32,
@@ -202,6 +202,8 @@ pub unsafe fn silk_encode_frame_FLP(
         i += 1;
     }
     if (*psEnc).sCmn.prefillFlag == 0 {
+        let psRangeEnc = &mut **psRangeEnc.as_mut().unwrap();
+
         silk_find_pitch_lags_FLP(
             psEnc,
             &mut sEncCtrl,
@@ -508,8 +510,9 @@ pub unsafe fn silk_encode_frame_FLP(
     (*psEnc).sCmn.prevLag = sEncCtrl.pitchL[((*psEnc).sCmn.nb_subfr - 1) as usize];
     (*psEnc).sCmn.prevSignalType = (*psEnc).sCmn.indices.signalType;
     (*psEnc).sCmn.first_frame_after_reset = 0;
-    *pnBytesOut = ec_tell(psRangeEnc) + 7 >> 3;
-    return ret;
+    *pnBytesOut = (ec_tell(psRangeEnc.unwrap()) + 7) >> 3;
+
+    ret
 }
 #[inline]
 unsafe fn silk_LBRR_encode_FLP(
