@@ -288,7 +288,7 @@ pub unsafe fn alg_quant(
     let mut iy: Vec<i32> = ::std::vec::from_elem(0, vla);
     exp_rotation(X, N, 1, B, K, spread);
     yy = op_pvq_search_c(X, iy.as_mut_ptr(), K, N, arch);
-    encode_pulses(iy.as_mut_ptr(), N, K, enc);
+    encode_pulses(&iy[..N as usize], K, enc);
     if resynth != 0 {
         normalise_residual(iy.as_mut_ptr(), X, N, yy, gain);
         exp_rotation(X, N, -1, B, K, spread);
@@ -309,9 +309,8 @@ pub unsafe fn alg_unquant(
     let mut collapse_mask: u32 = 0;
     assert!(K > 0);
     assert!(N > 1);
-    let vla = N as usize;
-    let mut iy: Vec<i32> = ::std::vec::from_elem(0, vla);
-    Ryy = decode_pulses(iy.as_mut_ptr(), N, K, dec);
+    let mut iy: Vec<i32> = ::std::vec::from_elem(0, N as usize);
+    Ryy = decode_pulses(iy.as_mut_slice(), K, dec);
     normalise_residual(iy.as_mut_ptr(), X, N, Ryy, gain);
     exp_rotation(X, N, -1, B, K, spread);
     collapse_mask = extract_collapse_mask(iy.as_mut_ptr(), N, B);

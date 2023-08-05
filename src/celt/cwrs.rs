@@ -1,7 +1,3 @@
-pub mod arch_h {
-    pub type opus_val32 = f32;
-}
-pub use self::arch_h::opus_val32;
 use crate::celt::entdec::{ec_dec, ec_dec_uint};
 use crate::celt::entenc::{ec_enc, ec_enc_uint};
 
@@ -327,126 +323,124 @@ mod test {
     }
 }
 
-unsafe fn icwrs(mut _n: i32, mut _y: *const i32) -> u32 {
+fn icwrs(y: &[i32]) -> u32 {
     let mut i: u32 = 0;
-    let mut j: u32 = 0;
     let mut k: u32 = 0;
-    assert!(_n >= 2);
-    let n = _n as u32;
-    j = _n as u32 - 1;
-    i = (*_y.offset(j as isize) < 0) as u32;
-    k = (*_y.offset(j as isize)).abs() as u32;
-    loop {
-        j -= 1;
-        i = i.wrapping_add(pvq_u(n - j, k));
-        k += (*_y.offset(j as isize)).abs() as u32;
-        if *_y.offset(j as isize) < 0 {
-            i = i.wrapping_add(pvq_u(n - j, k + 1));
-        }
-        if !(j > 0) {
-            break;
+    let n = y.len() as u32;
+    assert!(n >= 2);
+
+    i = (*y.last().unwrap() < 0) as u32;
+    k = y.last().unwrap().abs() as u32;
+    for j in y.len() - 2..=0 {
+        // j -= 1;
+        i += pvq_u(n - j as u32, k);
+        k += y[j].abs() as u32;
+        if y[j] < 0 {
+            i += pvq_u(n - j as u32, k + 1);
         }
     }
     return i;
 }
 
-pub unsafe fn encode_pulses(mut _y: *const i32, mut _n: i32, mut _k: i32, mut _enc: *mut ec_enc) {
-    assert!(_k > 0);
-    ec_enc_uint(_enc, icwrs(_n, _y), pvq_v(_n as u32, _k as u32));
+pub unsafe fn encode_pulses(y: &[i32], k: i32, enc: *mut ec_enc) {
+    assert!(k > 0);
+    ec_enc_uint(enc, icwrs(y), pvq_v(y.len() as u32, k as u32));
 }
 
-unsafe fn cwrsi(mut _n: i32, mut _k: i32, mut _i: u32, mut _y: *mut i32) -> opus_val32 {
+fn cwrsi(mut k: i32, mut i: u32, mut y: &mut [i32]) -> f32 {
     let mut p: u32 = 0;
     let mut s: i32 = 0;
     let mut k0: i32 = 0;
     let mut val: i16 = 0;
-    let mut yy: opus_val32 = 0 as opus_val32;
-    assert!(_k > 0);
-    assert!(_n > 1);
-    while _n > 2 {
+    let mut yy = 0.0;
+
+    let mut n = y.len() as i32;
+
+    assert!(k > 0);
+    assert!(n > 1);
+    while n > 2 {
         let mut q: u32 = 0;
-        if _k >= _n {
-            let row = PVQ_U_DATA2[_n as usize];
-            p = row[(_k + 1) as usize];
-            s = -((_i >= p) as i32);
-            _i = (_i).wrapping_sub(p & s as u32);
-            k0 = _k;
-            q = row[_n as usize];
-            if q > _i {
-                _k = _n;
+        if k >= n {
+            let row = PVQ_U_DATA2[n as usize];
+            p = row[(k + 1) as usize];
+            s = -((i >= p) as i32);
+            i = (i).wrapping_sub(p & s as u32);
+            k0 = k;
+            q = row[n as usize];
+            if q > i {
+                k = n;
                 loop {
-                    _k -= 1;
-                    p = PVQ_U_DATA2[_k as usize][_n as usize];
-                    if !(p > _i) {
+                    k -= 1;
+                    p = PVQ_U_DATA2[k as usize][n as usize];
+                    if !(p > i) {
                         break;
                     }
                 }
             } else {
-                p = row[_k as usize];
-                while p > _i {
-                    _k -= 1;
-                    p = row[_k as usize];
+                p = row[k as usize];
+                while p > i {
+                    k -= 1;
+                    p = row[k as usize];
                 }
             }
-            _i = (_i).wrapping_sub(p);
-            val = (k0 - _k + s ^ s) as i16;
-            let fresh0 = _y;
-            _y = _y.offset(1);
-            *fresh0 = val as i32;
-            yy = yy + val as opus_val32 * val as opus_val32;
+            i = (i).wrapping_sub(p);
+            val = (k0 - k + s ^ s) as i16;
+
+            y[0] = val as i32;
+            y = &mut y[1..];
+
+            yy = yy + val as f32 * val as f32;
         } else {
-            p = PVQ_U_DATA2[_k as usize][_n as usize];
-            q = PVQ_U_DATA2[_k as usize + 1][_n as usize];
-            if p <= _i && _i < q {
-                _i = _i.wrapping_sub(p);
-                let fresh1 = _y;
-                _y = _y.offset(1);
-                *fresh1 = 0;
+            p = PVQ_U_DATA2[k as usize][n as usize];
+            q = PVQ_U_DATA2[k as usize + 1][n as usize];
+            if p <= i && i < q {
+                i = i.wrapping_sub(p);
+
+                y[0] = 0;
+                y = &mut y[1..];
             } else {
-                s = -((_i >= q) as i32);
-                _i = _i.wrapping_sub(q & s as u32);
-                k0 = _k;
+                s = -((i >= q) as i32);
+                i = i.wrapping_sub(q & s as u32);
+                k0 = k;
                 loop {
-                    _k -= 1;
-                    p = PVQ_U_DATA2[_k as usize][_n as usize];
-                    if !(p > _i) {
+                    k -= 1;
+                    p = PVQ_U_DATA2[k as usize][n as usize];
+                    if !(p > i) {
                         break;
                     }
                 }
-                _i = _i.wrapping_sub(p);
-                val = (k0 - _k + s ^ s) as i16;
-                let fresh2 = _y;
-                _y = _y.offset(1);
-                *fresh2 = val as i32;
-                yy = yy + val as opus_val32 * val as opus_val32;
+                i = i.wrapping_sub(p);
+                val = (k0 - k + s ^ s) as i16;
+
+                y[0] = val as i32;
+                y = &mut y[1..];
+
+                yy = yy + val as f32 * val as f32;
             }
         }
-        _n -= 1;
+        n -= 1;
     }
-    p = (2 * _k + 1) as u32;
-    s = -((_i >= p) as i32);
-    _i = _i.wrapping_sub(p & s as u32);
-    k0 = _k;
-    _k = (_i.wrapping_add(1) >> 1) as i32;
-    if _k != 0 {
-        _i = _i.wrapping_sub((2 * _k - 1) as u32);
+    p = (2 * k + 1) as u32;
+    s = -((i >= p) as i32);
+    i = i.wrapping_sub(p & s as u32);
+    k0 = k;
+    k = (i.wrapping_add(1) >> 1) as i32;
+    if k != 0 {
+        i = i.wrapping_sub((2 * k - 1) as u32);
     }
-    val = (k0 - _k + s ^ s) as i16;
-    let fresh3 = _y;
-    _y = _y.offset(1);
-    *fresh3 = val as i32;
-    yy = yy + val as opus_val32 * val as opus_val32;
-    s = -(_i as i32);
-    val = (_k + s ^ s) as i16;
-    *_y = val as i32;
-    yy = yy + val as opus_val32 * val as opus_val32;
+    val = (k0 - k + s ^ s) as i16;
+
+    y[0] = val as i32;
+    y = &mut y[1..];
+
+    yy = yy + val as f32 * val as f32;
+    s = -(i as i32);
+    val = (k + s ^ s) as i16;
+    y[0] = val as i32;
+    yy = yy + val as f32 * val as f32;
     return yy;
 }
-pub unsafe fn decode_pulses(
-    mut _y: *mut i32,
-    mut _n: i32,
-    mut _k: i32,
-    mut _dec: *mut ec_dec,
-) -> opus_val32 {
-    return cwrsi(_n, _k, ec_dec_uint(_dec, pvq_v(_n as u32, _k as u32)), _y);
+
+pub unsafe fn decode_pulses(y: &mut [i32], k: i32, dec: *mut ec_dec) -> f32 {
+    return cwrsi(k, ec_dec_uint(dec, pvq_v(y.len() as u32, k as u32)), y);
 }
