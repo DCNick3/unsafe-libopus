@@ -55,7 +55,6 @@ use crate::silk::pitch_est_tables::{
     SILK_PE_MAX_COMPLEX, SILK_PE_MID_COMPLEX, SILK_PE_MIN_COMPLEX,
 };
 use crate::silk::resampler::{silk_resampler, silk_resampler_init};
-use crate::silk::resampler_structs::silk_resampler_state_struct;
 use crate::silk::structs::{silk_encoder_state, silk_nsq_state};
 use crate::silk::tables_NLSF_CB_NB_MB::silk_NLSF_CB_NB_MB;
 use crate::silk::tables_NLSF_CB_WB::silk_NLSF_CB_WB;
@@ -108,12 +107,8 @@ unsafe fn silk_setup_resamplers(psEnc: *mut silk_encoder_state_FLP, fs_kHz: i32)
     let mut ret: i32 = SILK_NO_ERROR;
     if (*psEnc).sCmn.fs_kHz != fs_kHz || (*psEnc).sCmn.prev_API_fs_Hz != (*psEnc).sCmn.API_fs_Hz {
         if (*psEnc).sCmn.fs_kHz == 0 {
-            ret += silk_resampler_init(
-                &mut (*psEnc).sCmn.resampler_state,
-                (*psEnc).sCmn.API_fs_Hz,
-                fs_kHz * 1000,
-                1,
-            );
+            (*psEnc).sCmn.resampler_state =
+                silk_resampler_init((*psEnc).sCmn.API_fs_Hz, fs_kHz * 1000, 1);
         } else {
             let mut new_buf_samples: i32 = 0;
             let mut api_buf_samples: i32 = 0;
@@ -133,42 +128,28 @@ unsafe fn silk_setup_resamplers(psEnc: *mut silk_encoder_state_FLP, fs_kHz: i32)
                 ((*psEnc).x_buf).as_mut_ptr(),
                 old_buf_samples,
             );
-            let mut temp_resampler_state: [silk_resampler_state_struct; 1] =
-                [silk_resampler_state_struct {
-                    sIIR: [0; 6],
-                    sFIR: crate::silk::resampler_structs::sFIR_union { i32_0: [0; 36] },
-                    delayBuf: [0; 48],
-                    resampler_function: 0,
-                    batchSize: 0,
-                    invRatio_Q16: 0,
-                    FIR_Order: 0,
-                    FIR_Fracs: 0,
-                    Fs_in_kHz: 0,
-                    Fs_out_kHz: 0,
-                    inputDelay: 0,
-                    Coefs: 0 as *const i16,
-                }; 1];
-            ret += silk_resampler_init(
-                temp_resampler_state.as_mut_ptr(),
+
+            /* Initialize resampler for temporary resampling of x_buf data to API_fs_Hz */
+            let mut temp_resampler_state = silk_resampler_init(
                 (*psEnc).sCmn.fs_kHz as i16 as i32 * 1000,
                 (*psEnc).sCmn.API_fs_Hz,
                 0,
             );
+
+            /* Calculate number of samples to temporarily upsample */
             api_buf_samples = buf_length_ms * ((*psEnc).sCmn.API_fs_Hz / 1000);
+
+            /* Temporary resampling of x_buf data to API_fs_Hz */
             let vla_0 = api_buf_samples as usize;
             let mut x_buf_API_fs_Hz: Vec<i16> = ::std::vec::from_elem(0, vla_0);
             ret += silk_resampler(
-                temp_resampler_state.as_mut_ptr(),
+                &mut temp_resampler_state,
                 x_buf_API_fs_Hz.as_mut_ptr(),
                 x_bufFIX.as_mut_ptr() as *const i16,
                 old_buf_samples,
             );
-            ret += silk_resampler_init(
-                &mut (*psEnc).sCmn.resampler_state,
-                (*psEnc).sCmn.API_fs_Hz,
-                fs_kHz as i16 as i32 * 1000,
-                1,
-            );
+            (*psEnc).sCmn.resampler_state =
+                silk_resampler_init((*psEnc).sCmn.API_fs_Hz, fs_kHz as i16 as i32 * 1000, 1);
             ret += silk_resampler(
                 &mut (*psEnc).sCmn.resampler_state,
                 x_bufFIX.as_mut_ptr(),

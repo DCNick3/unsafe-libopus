@@ -9,6 +9,13 @@ pub const silk_resampler_down2_1: i16 = (39809 - 65536) as i16;
 pub const silk_resampler_up2_hq_0: [i16; 3] = [1746, 14986, (39083 - 65536) as i16];
 pub const silk_resampler_up2_hq_1: [i16; 3] = [6854, 25769, (55542 - 65536) as i16];
 
+/* Matlab code for the notch filter coefficients: */
+/* B = [1, 0.147, 1];  A = [1, 0.107, 0.89]; G = 0.93; freqz(G * B, A, 2^14, 16e3); axis([0, 8000, -10, 1]) */
+/* fprintf('\t%6d, %6d, %6d, %6d\n', round(B(2)*2^16), round(-A(2)*2^16), round((1-A(3))*2^16), round(G*2^15)) */
+/* const opus_int16 silk_resampler_up2_hq_notch[ 4 ] = { 9634,  -7012,   7209,  30474 }; */
+
+/* Tables with IIR and FIR coefficients for fractional downsamplers (123 Words) */
+
 pub static silk_Resampler_3_4_COEFS: [i16; 29] = [
     -20694, -13867, -49, 64, 17, -157, 353, -496, 163, 11047, 22205, -39, 6, 91, -170, 186, 23,
     -896, 6336, 19928, -19, -36, 102, -89, -24, 328, -951, 2568, 15909,

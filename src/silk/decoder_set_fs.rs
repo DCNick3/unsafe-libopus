@@ -16,18 +16,12 @@ pub unsafe fn silk_decoder_set_fs(
     fs_API_Hz: i32,
 ) -> i32 {
     let mut frame_length: i32 = 0;
-    let mut ret: i32 = 0;
     assert!(fs_kHz == 8 || fs_kHz == 12 || fs_kHz == 16);
     assert!((*psDec).nb_subfr == 4 || (*psDec).nb_subfr == 4 / 2);
     (*psDec).subfr_length = 5 * fs_kHz as i16 as i32;
     frame_length = (*psDec).nb_subfr as i16 as i32 * (*psDec).subfr_length as i16 as i32;
     if (*psDec).fs_kHz != fs_kHz || (*psDec).fs_API_hz != fs_API_Hz {
-        ret += silk_resampler_init(
-            &mut (*psDec).resampler_state,
-            fs_kHz as i16 as i32 * 1000,
-            fs_API_Hz,
-            0,
-        );
+        (*psDec).resampler_state = silk_resampler_init(fs_kHz as i16 as i32 * 1000, fs_API_Hz, 0);
         (*psDec).fs_API_hz = fs_API_Hz;
     }
     if (*psDec).fs_kHz != fs_kHz || frame_length != (*psDec).frame_length {
@@ -79,5 +73,6 @@ pub unsafe fn silk_decoder_set_fs(
         (*psDec).frame_length = frame_length;
     }
     assert!((*psDec).frame_length > 0 && (*psDec).frame_length <= 5 * 4 * 16);
-    return ret;
+
+    return 0;
 }

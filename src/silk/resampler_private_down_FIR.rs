@@ -330,7 +330,7 @@ pub unsafe fn silk_resampler_private_down_FIR(
         ((*S).sFIR.i32_0).as_mut_ptr() as *const core::ffi::c_void,
         ((*S).FIR_Order as u64).wrapping_mul(::core::mem::size_of::<i32>() as u64),
     );
-    FIR_Coefs = &*((*S).Coefs).offset(2 as isize) as *const i16;
+    FIR_Coefs = &*((*S).Coefs).as_ptr().offset(2 as isize) as *const i16;
     index_increment_Q16 = (*S).invRatio_Q16;
     loop {
         nSamplesIn = if inLen < (*S).batchSize {
@@ -342,7 +342,7 @@ pub unsafe fn silk_resampler_private_down_FIR(
             ((*S).sIIR).as_mut_ptr(),
             &mut *buf.as_mut_ptr().offset((*S).FIR_Order as isize),
             in_0,
-            (*S).Coefs,
+            (*S).Coefs.as_ptr(),
             nSamplesIn,
         );
         max_index_Q16 = ((nSamplesIn as u32) << 16) as i32;

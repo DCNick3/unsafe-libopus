@@ -15,7 +15,7 @@ pub struct silk_resampler_state_struct {
     pub Fs_in_kHz: i32,
     pub Fs_out_kHz: i32,
     pub inputDelay: i32,
-    pub Coefs: *const i16,
+    pub Coefs: &'static [i16],
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
