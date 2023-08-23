@@ -37,6 +37,11 @@ jobs:
           - ubuntu-latest
           - macOS-latest
           - windows-latest
+        rate:
+          - 48000
+          - 24000
+          - 16000
+          - 12000
 
     steps:
       - uses: actions/checkout@v2
@@ -64,7 +69,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: run
-          args: --bin run_vectors -- target/release opus_newvectors 48000
+          args: --bin run_vectors -- target/release opus_newvectors ${{ matrix.rate }}
 
       - name: Upload logs
         if: always() # always upload logs, even if the test fails
