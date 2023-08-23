@@ -33,39 +33,35 @@ unsafe fn silk_NLSF_residual_dequant(
 pub unsafe fn silk_NLSF_decode(
     pNLSF_Q15: *mut i16,
     NLSFIndices: *mut i8,
-    psNLSF_CB: *const silk_NLSF_CB_struct,
+    psNLSF_CB: &silk_NLSF_CB_struct,
 ) {
     let mut i: i32 = 0;
     let mut pred_Q8: [u8; 16] = [0; 16];
     let mut ec_ix: [i16; 16] = [0; 16];
     let mut res_Q10: [i16; 16] = [0; 16];
     let mut NLSF_Q15_tmp: i32 = 0;
-    let mut pCB_element: *const u8 = 0 as *const u8;
-    let mut pCB_Wght_Q9: *const i16 = 0 as *const i16;
     silk_NLSF_unpack(
         ec_ix.as_mut_ptr(),
         pred_Q8.as_mut_ptr(),
         psNLSF_CB,
-        *NLSFIndices.offset(0 as isize) as i32,
+        *NLSFIndices.offset(0) as i32,
     );
     silk_NLSF_residual_dequant(
         res_Q10.as_mut_ptr(),
-        &mut *NLSFIndices.offset(1 as isize) as *mut i8 as *const i8,
+        &mut *NLSFIndices.offset(1) as *mut i8 as *const i8,
         pred_Q8.as_mut_ptr() as *const u8,
-        (*psNLSF_CB).quantStepSize_Q16 as i32,
-        (*psNLSF_CB).order,
+        psNLSF_CB.quantStepSize_Q16 as i32,
+        psNLSF_CB.order,
     );
-    pCB_element = &*((*psNLSF_CB).CB1_NLSF_Q8)
-        .offset((*NLSFIndices.offset(0 as isize) as i32 * (*psNLSF_CB).order as i32) as isize)
-        as *const u8;
-    pCB_Wght_Q9 = &*((*psNLSF_CB).CB1_Wght_Q9)
-        .offset((*NLSFIndices.offset(0 as isize) as i32 * (*psNLSF_CB).order as i32) as isize)
-        as *const i16;
+    let pCB_element =
+        &psNLSF_CB.CB1_NLSF_Q8[(*NLSFIndices.offset(0) as i32 * psNLSF_CB.order as i32) as usize..];
+    let pCB_Wght_Q9 =
+        &psNLSF_CB.CB1_Wght_Q9[(*NLSFIndices.offset(0) as i32 * psNLSF_CB.order as i32) as usize..];
     i = 0;
-    while i < (*psNLSF_CB).order as i32 {
+    while i < psNLSF_CB.order as i32 {
         NLSF_Q15_tmp = ((res_Q10[i as usize] as i32 as u32) << 14) as i32
-            / *pCB_Wght_Q9.offset(i as isize) as i32
-            + ((*pCB_element.offset(i as isize) as i16 as u32) << 7) as i32;
+            / pCB_Wght_Q9[i as usize] as i32
+            + ((pCB_element[i as usize] as i16 as u32) << 7) as i32;
         *pNLSF_Q15.offset(i as isize) = (if 0 > 32767 {
             if NLSF_Q15_tmp > 0 {
                 0
@@ -83,9 +79,5 @@ pub unsafe fn silk_NLSF_decode(
         }) as i16;
         i += 1;
     }
-    silk_NLSF_stabilize(
-        pNLSF_Q15,
-        (*psNLSF_CB).deltaMin_Q15,
-        (*psNLSF_CB).order as i32,
-    );
+    silk_NLSF_stabilize(pNLSF_Q15, psNLSF_CB.deltaMin_Q15, psNLSF_CB.order as i32);
 }

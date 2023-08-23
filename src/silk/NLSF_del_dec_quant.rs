@@ -14,7 +14,7 @@ pub unsafe fn silk_NLSF_del_dec_quant(
     w_Q5: *const i16,
     pred_coef_Q8: *const u8,
     ec_ix: *const i16,
-    ec_rates_Q5: *const u8,
+    ec_rates_Q5: &[u8],
     quant_step_size_Q16: i32,
     inv_quant_step_size_Q6: i16,
     mu_Q20: i32,
@@ -73,7 +73,9 @@ pub unsafe fn silk_NLSF_del_dec_quant(
     prev_out_Q10[0 as usize] = 0;
     i = order as i32 - 1;
     while i >= 0 {
-        rates_Q5 = &*ec_rates_Q5.offset(*ec_ix.offset(i as isize) as isize) as *const u8;
+        rates_Q5 = &*ec_rates_Q5
+            .as_ptr()
+            .offset(*ec_ix.offset(i as isize) as isize) as *const u8;
         in_Q10 = *x_Q10.offset(i as isize) as i32;
         j = 0;
         while j < nStates {

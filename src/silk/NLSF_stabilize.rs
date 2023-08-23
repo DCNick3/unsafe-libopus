@@ -20,7 +20,7 @@ pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 pub const MAX_LOOPS: i32 = 20;
 
 /// NLSF stabilizer, for a single input data vector
-pub unsafe fn silk_NLSF_stabilize(NLSF_Q15: *mut i16, NDeltaMin_Q15: *const i16, L: i32) {
+pub unsafe fn silk_NLSF_stabilize(NLSF_Q15: *mut i16, NDeltaMin_Q15: &[i16], L: i32) {
     let mut i: i32 = 0;
     let mut I: i32 = 0;
     let mut k: i32 = 0;
@@ -32,7 +32,7 @@ pub unsafe fn silk_NLSF_stabilize(NLSF_Q15: *mut i16, NDeltaMin_Q15: *const i16,
     let mut max_center_Q15: i32 = 0;
 
     /* This is necessary to ensure an output within range of a opus_int16 */
-    assert!(*NDeltaMin_Q15.offset(L as isize) >= 1);
+    assert!(NDeltaMin_Q15[L as usize] >= 1);
 
     loops = 0;
     while loops < MAX_LOOPS {
@@ -40,15 +40,13 @@ pub unsafe fn silk_NLSF_stabilize(NLSF_Q15: *mut i16, NDeltaMin_Q15: *const i16,
         /* Find smallest distance */
         /**************************/
         /* First element */
-        min_diff_Q15 =
-            *NLSF_Q15.offset(0 as isize) as i32 - *NDeltaMin_Q15.offset(0 as isize) as i32;
+        min_diff_Q15 = *NLSF_Q15.offset(0) as i32 - NDeltaMin_Q15[0] as i32;
         I = 0;
         /* Middle elements */
         i = 1;
         while i < L {
             diff_Q15 = *NLSF_Q15.offset(i as isize) as i32
-                - (*NLSF_Q15.offset((i - 1) as isize) as i32
-                    + *NDeltaMin_Q15.offset(i as isize) as i32);
+                - (*NLSF_Q15.offset((i - 1) as isize) as i32 + NDeltaMin_Q15[i as usize] as i32);
             if diff_Q15 < min_diff_Q15 {
                 min_diff_Q15 = diff_Q15;
                 I = i;
@@ -57,8 +55,7 @@ pub unsafe fn silk_NLSF_stabilize(NLSF_Q15: *mut i16, NDeltaMin_Q15: *const i16,
         }
         /* Last element */
         diff_Q15 = ((1) << 15)
-            - (*NLSF_Q15.offset((L - 1) as isize) as i32
-                + *NDeltaMin_Q15.offset(L as isize) as i32);
+            - (*NLSF_Q15.offset((L - 1) as isize) as i32 + NDeltaMin_Q15[L as usize] as i32);
         if diff_Q15 < min_diff_Q15 {
             min_diff_Q15 = diff_Q15;
             I = L;
@@ -72,29 +69,29 @@ pub unsafe fn silk_NLSF_stabilize(NLSF_Q15: *mut i16, NDeltaMin_Q15: *const i16,
         }
         if I == 0 {
             /* Move away from lower limit */
-            *NLSF_Q15.offset(0 as isize) = *NDeltaMin_Q15.offset(0 as isize);
+            *NLSF_Q15.offset(0) = NDeltaMin_Q15[0];
         } else if I == L {
             /* Move away from higher limit */
             *NLSF_Q15.offset((L - 1) as isize) =
-                (((1) << 15) - *NDeltaMin_Q15.offset(L as isize) as i32) as i16;
+                (((1) << 15) - NDeltaMin_Q15[L as usize] as i32) as i16;
         } else {
             /* Find the lower extreme for the location of the current center frequency */
             min_center_Q15 = 0;
             k = 0;
             while k < I {
-                min_center_Q15 += *NDeltaMin_Q15.offset(k as isize) as i32;
+                min_center_Q15 += NDeltaMin_Q15[k as usize] as i32;
                 k += 1;
             }
-            min_center_Q15 += *NDeltaMin_Q15.offset(I as isize) as i32 >> 1;
+            min_center_Q15 += NDeltaMin_Q15[I as usize] as i32 >> 1;
 
             /* Find the upper extreme for the location of the current center frequency */
             max_center_Q15 = (1) << 15;
             k = L;
             while k > I {
-                max_center_Q15 -= *NDeltaMin_Q15.offset(k as isize) as i32;
+                max_center_Q15 -= NDeltaMin_Q15[k as usize] as i32;
                 k -= 1;
             }
-            max_center_Q15 -= *NDeltaMin_Q15.offset(I as isize) as i32 >> 1;
+            max_center_Q15 -= NDeltaMin_Q15[I as usize] as i32 >> 1;
 
             /* Move apart, sorted by value, keeping the same center frequency */
             center_freq_Q15 = (if min_center_Q15 > max_center_Q15 {
@@ -185,9 +182,9 @@ pub unsafe fn silk_NLSF_stabilize(NLSF_Q15: *mut i16, NDeltaMin_Q15: *const i16,
                     >> 1
             }) as i16;
             *NLSF_Q15.offset((I - 1) as isize) =
-                (center_freq_Q15 as i32 - (*NDeltaMin_Q15.offset(I as isize) as i32 >> 1)) as i16;
+                (center_freq_Q15 as i32 - (NDeltaMin_Q15[I as usize] as i32 >> 1)) as i16;
             *NLSF_Q15.offset(I as isize) = (*NLSF_Q15.offset((I - 1) as isize) as i32
-                + *NDeltaMin_Q15.offset(I as isize) as i32)
+                + NDeltaMin_Q15[I as usize] as i32)
                 as i16;
         }
         loops += 1;
@@ -205,7 +202,7 @@ pub unsafe fn silk_NLSF_stabilize(NLSF_Q15: *mut i16, NDeltaMin_Q15: *const i16,
         /* First NLSF should be no less than NDeltaMin[0] */
         *NLSF_Q15.offset(0 as isize) = silk_max_int(
             *NLSF_Q15.offset(0 as isize) as i32,
-            *NDeltaMin_Q15.offset(0 as isize) as i32,
+            NDeltaMin_Q15[0 as usize] as i32,
         ) as i16;
 
         /* Keep delta_min distance between the NLSFs */
@@ -213,19 +210,17 @@ pub unsafe fn silk_NLSF_stabilize(NLSF_Q15: *mut i16, NDeltaMin_Q15: *const i16,
         while i < L {
             *NLSF_Q15.offset(i as isize) = silk_max_int(
                 *NLSF_Q15.offset(i as isize) as i32,
-                (if *NLSF_Q15.offset((i - 1) as isize) as i32
-                    + *NDeltaMin_Q15.offset(i as isize) as i32
+                (if *NLSF_Q15.offset((i - 1) as isize) as i32 + NDeltaMin_Q15[i as usize] as i32
                     > silk_int16_MAX
                 {
                     silk_int16_MAX
                 } else if (*NLSF_Q15.offset((i - 1) as isize) as i32
-                    + *NDeltaMin_Q15.offset(i as isize) as i32)
+                    + NDeltaMin_Q15[i as usize] as i32)
                     < silk_int16_MIN
                 {
                     silk_int16_MIN
                 } else {
-                    *NLSF_Q15.offset((i - 1) as isize) as i32
-                        + *NDeltaMin_Q15.offset(i as isize) as i32
+                    *NLSF_Q15.offset((i - 1) as isize) as i32 + NDeltaMin_Q15[i as usize] as i32
                 }) as i16 as i32,
             ) as i16;
             i += 1;
@@ -234,7 +229,7 @@ pub unsafe fn silk_NLSF_stabilize(NLSF_Q15: *mut i16, NDeltaMin_Q15: *const i16,
         /* Last NLSF should be no higher than 1 - NDeltaMin[L] */
         *NLSF_Q15.offset((L - 1) as isize) = silk_min_int(
             *NLSF_Q15.offset((L - 1) as isize) as i32,
-            ((1) << 15) - *NDeltaMin_Q15.offset(L as isize) as i32,
+            ((1) << 15) - NDeltaMin_Q15[L as usize] as i32,
         ) as i16;
 
         /* Keep NDeltaMin distance between the NLSFs */
@@ -242,8 +237,7 @@ pub unsafe fn silk_NLSF_stabilize(NLSF_Q15: *mut i16, NDeltaMin_Q15: *const i16,
         while i >= 0 {
             *NLSF_Q15.offset(i as isize) = silk_min_int(
                 *NLSF_Q15.offset(i as isize) as i32,
-                *NLSF_Q15.offset((i + 1) as isize) as i32
-                    - *NDeltaMin_Q15.offset((i + 1) as isize) as i32,
+                *NLSF_Q15.offset((i + 1) as isize) as i32 - NDeltaMin_Q15[(i + 1) as usize] as i32,
             ) as i16;
             i -= 1;
         }

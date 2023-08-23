@@ -98,17 +98,17 @@ static silk_NLSF_PRED_WB_Q8: [u8; 30] = [
 ];
 static silk_NLSF_DELTA_MIN_WB_Q15: [i16; 17] =
     [100, 3, 40, 3, 3, 3, 5, 14, 14, 10, 11, 3, 8, 9, 7, 3, 347];
-pub static mut silk_NLSF_CB_WB: silk_NLSF_CB_struct = silk_NLSF_CB_struct {
+pub static silk_NLSF_CB_WB: silk_NLSF_CB_struct = silk_NLSF_CB_struct {
     nVectors: 32,
     order: 16,
     quantStepSize_Q16: (0.15f64 * ((1) << 16) as f64 + 0.5f64) as i32 as i16,
     invQuantStepSize_Q6: (1.0f64 / 0.15f64 * ((1) << 6) as f64 + 0.5f64) as i32 as i16,
-    CB1_NLSF_Q8: silk_NLSF_CB1_WB_Q8.as_ptr(),
-    CB1_Wght_Q9: silk_NLSF_CB1_WB_Wght_Q9.as_ptr(),
+    CB1_NLSF_Q8: &silk_NLSF_CB1_WB_Q8,
+    CB1_Wght_Q9: &silk_NLSF_CB1_WB_Wght_Q9,
     CB1_iCDF: &silk_NLSF_CB1_iCDF_WB,
-    pred_Q8: silk_NLSF_PRED_WB_Q8.as_ptr(),
-    ec_sel: silk_NLSF_CB2_SELECT_WB.as_ptr(),
+    pred_Q8: &silk_NLSF_PRED_WB_Q8,
+    ec_sel: &silk_NLSF_CB2_SELECT_WB,
     ec_iCDF: &silk_NLSF_CB2_iCDF_WB,
-    ec_Rates_Q5: silk_NLSF_CB2_BITS_WB_Q5.as_ptr(),
-    deltaMin_Q15: silk_NLSF_DELTA_MIN_WB_Q15.as_ptr(),
+    ec_Rates_Q5: &silk_NLSF_CB2_BITS_WB_Q5,
+    deltaMin_Q15: &silk_NLSF_DELTA_MIN_WB_Q15,
 };
