@@ -230,7 +230,7 @@ unsafe fn main_0() -> i32 {
     let mut yfreqs: i32 = 0;
     let mut max_compare: i32 = 0;
 
-    let mut args = std::env::args();
+    let mut args = std::env::args().peekable();
     let argc = args.len();
     let argv0 = args.next().unwrap();
 
@@ -240,7 +240,8 @@ unsafe fn main_0() -> i32 {
     }
 
     nchannels = 1;
-    if args.next().unwrap() == "-s" {
+    if args.peek().unwrap() == "-s" {
+        args.next().unwrap();
         nchannels = 2;
     }
 
@@ -248,7 +249,8 @@ unsafe fn main_0() -> i32 {
     ybands = 21;
     yfreqs = 240;
     downsample = 1;
-    if args.next().unwrap() == "-r" {
+    if args.peek().unwrap() == "-r" {
+        args.next().unwrap();
         rate = args.next().unwrap().parse().expect("Could not parse rate");
         if rate != 8000 && rate != 12000 && rate != 16000 && rate != 24000 && rate != 48000 {
             eprintln!("Sampling rate must be 8000, 12000, 16000, 24000, or 48000");
