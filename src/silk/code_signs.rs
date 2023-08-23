@@ -3,18 +3,17 @@ use crate::celt::entenc::{ec_enc, ec_enc_icdf};
 use crate::silk::define::SHELL_CODEC_FRAME_LENGTH;
 use crate::silk::tables_pulses_per_block::silk_sign_iCDF;
 
-pub unsafe fn silk_encode_signs(
+pub fn silk_encode_signs(
     psRangeEnc: &mut ec_enc,
-    pulses: *const i8,
+    pulses: &[i8],
     length: i32,
     signalType: i32,
     quantOffsetType: i32,
     sum_pulses: &[i32],
 ) {
     let mut icdf: [u8; 2] = [0; 2];
-    let mut q_ptr: *const i8 = 0 as *const i8;
     icdf[1] = 0;
-    q_ptr = pulses;
+    let mut q_ptr = pulses;
 
     let i = 7 * (quantOffsetType + ((signalType as u32) << 1) as i32) as i16 as i32;
     let icdf_ptr = &silk_sign_iCDF[i as usize..];
@@ -26,17 +25,12 @@ pub unsafe fn silk_encode_signs(
             icdf[0] = icdf_ptr[(p & 0x1f).min(6) as usize];
 
             for j in 0..SHELL_CODEC_FRAME_LENGTH {
-                if *q_ptr.offset(j as isize) as i32 != 0 {
-                    ec_enc_icdf(
-                        psRangeEnc,
-                        (*q_ptr.offset(j as isize) as i32 >> 15) + 1,
-                        &icdf,
-                        8,
-                    );
+                if q_ptr[j as usize] as i32 != 0 {
+                    ec_enc_icdf(psRangeEnc, (q_ptr[j as usize] as i32 >> 15) + 1, &icdf, 8);
                 }
             }
         }
-        q_ptr = q_ptr.offset(SHELL_CODEC_FRAME_LENGTH as isize);
+        q_ptr = &q_ptr[SHELL_CODEC_FRAME_LENGTH as usize..];
     }
 }
 pub unsafe fn silk_decode_signs(

@@ -3,7 +3,6 @@ pub mod typedef_h {
 }
 pub use self::typedef_h::silk_int32_MAX;
 use crate::celt::entenc::{ec_enc, ec_enc_icdf};
-use crate::externs::memset;
 use crate::silk::code_signs::silk_encode_signs;
 use crate::silk::define::{N_RATE_LEVELS, SHELL_CODEC_FRAME_LENGTH, SILK_MAX_PULSES};
 use crate::silk::shell_coder::silk_shell_encoder;
@@ -38,12 +37,12 @@ fn combine_and_check(
 }
 
 /// Encode quantization indices of excitation
-pub unsafe fn silk_encode_pulses(
+pub fn silk_encode_pulses(
     psRangeEnc: &mut ec_enc,
     signalType: i32,
     quantOffsetType: i32,
-    pulses: &mut [i8],
-    // frame_length: i32,
+    pulses_buffer: &mut [i8],
+    frame_length: i32,
 ) {
     let mut i: i32 = 0;
     let mut k: i32 = 0;
@@ -57,34 +56,29 @@ pub unsafe fn silk_encode_pulses(
     let mut minSumBits_Q5: i32 = 0;
     let mut sumBits_Q5: i32 = 0;
     let mut pulses_comb: [i32; 8] = [0; 8];
-    let mut pulses_ptr: *const i8 = 0 as *const i8;
-
-    let frame_length = pulses.len() as i32;
 
     /****************************/
     /* Prepare for shell coding */
     /****************************/
     /* Calculate number of shell blocks */
     iter = frame_length >> 4;
+    // special case for 10 ms @ 12 kHz: the frame length is not a multiple of SHELL_CODEC_FRAME_LENGTH
+    // we expand the frame length to the next multiple of SHELL_CODEC_FRAME_LENGTH, filling the extra space with zeros
     if iter * SHELL_CODEC_FRAME_LENGTH < frame_length {
         assert_eq!(frame_length, 12 * 10); /* Make sure only happens for 10 ms @ 12 kHz */
         iter += 1;
-        memset(
-            &mut *pulses.as_mut_ptr().offset(frame_length as isize) as *mut i8
-                as *mut core::ffi::c_void,
-            0,
-            16_u64.wrapping_mul(::core::mem::size_of::<i8>() as u64),
-        );
-        // todo!("this memset is meh")
+
+        // zero out the unused part of pulses_buffer
+        pulses_buffer[frame_length as usize..].fill(0);
     }
+    let pulses_frame = &mut pulses_buffer[..(iter * SHELL_CODEC_FRAME_LENGTH) as usize];
 
     /* Take the absolute value of the pulses */
-    let mut abs_pulses = pulses
+    let mut abs_pulses = pulses_frame
         .iter()
         .copied()
         .map(|v| v.abs() as i32)
         .collect::<Vec<_>>();
-    abs_pulses.resize((iter * SHELL_CODEC_FRAME_LENGTH) as usize, 0);
 
     /* Calc sum pulses per shell code frame */
     let vla_0 = iter as usize;
@@ -124,7 +118,6 @@ pub unsafe fn silk_encode_pulses(
         }
         abs_pulses_ptr = &mut abs_pulses_ptr[SHELL_CODEC_FRAME_LENGTH as usize..];
 
-        // abs_pulses_ptr = abs_pulses_ptr.offset(SHELL_CODEC_FRAME_LENGTH as isize);
         i += 1;
     }
 
@@ -205,18 +198,12 @@ pub unsafe fn silk_encode_pulses(
     i = 0;
     while i < iter {
         if nRshifts[i as usize] > 0 {
-            pulses_ptr = &mut *pulses
-                .as_mut_ptr()
-                .offset((i * SHELL_CODEC_FRAME_LENGTH) as isize)
-                as *mut i8;
+            let pulses_ptr = &mut pulses_frame[(i * SHELL_CODEC_FRAME_LENGTH) as usize..]
+                [..SHELL_CODEC_FRAME_LENGTH as usize];
             nLS = nRshifts[i as usize] - 1;
             k = 0;
             while k < SHELL_CODEC_FRAME_LENGTH {
-                abs_q = (if *pulses_ptr.offset(k as isize) as i32 > 0 {
-                    *pulses_ptr.offset(k as isize) as i32
-                } else {
-                    -(*pulses_ptr.offset(k as isize) as i32)
-                }) as i8 as i32;
+                abs_q = pulses_ptr[k as usize].abs() as i32;
                 j = nLS;
                 while j > 0 {
                     bit = abs_q >> j & 1;
@@ -236,7 +223,7 @@ pub unsafe fn silk_encode_pulses(
     /****************/
     silk_encode_signs(
         psRangeEnc,
-        pulses.as_ptr(),
+        pulses_frame,
         frame_length,
         signalType,
         quantOffsetType,

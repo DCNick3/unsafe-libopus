@@ -187,7 +187,7 @@ pub fn ec_enc_bits(this: &mut ec_enc, mut _fl: u32, mut _bits: u32) {
     this.nbits_total = (this.nbits_total as u32).wrapping_add(_bits) as i32;
 }
 
-pub fn ec_enc_patch_initial_bits(mut this: &mut ec_enc, mut _val: u32, mut _nbits: u32) {
+pub fn ec_enc_patch_initial_bits(this: &mut ec_enc, mut _val: u32, mut _nbits: u32) {
     let mut shift: i32 = 0;
     let mut mask: u32 = 0;
     assert!(_nbits <= 8);

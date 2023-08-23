@@ -571,8 +571,8 @@ pub unsafe fn silk_Encode(
                                 as i32,
                             (*psEnc).state_Fxx[n as usize].sCmn.indices_LBRR[i as usize]
                                 .quantOffsetType as i32,
-                            &mut (*psEnc).state_Fxx[n as usize].sCmn.pulses_LBRR[i as usize]
-                                [..(*psEnc).state_Fxx[n as usize].sCmn.frame_length as usize],
+                            &mut (*psEnc).state_Fxx[n as usize].sCmn.pulses_LBRR[i as usize],
+                            (*psEnc).state_Fxx[n as usize].sCmn.frame_length,
                         );
                     }
                     n += 1;
