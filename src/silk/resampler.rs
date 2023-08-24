@@ -1,4 +1,3 @@
-use crate::externs::memcpy;
 use crate::silk::resampler_private_IIR_FIR::{
     silk_resampler_private_IIR_FIR, ResamplerIirFirState,
 };
@@ -62,16 +61,11 @@ fn rate_id(r: i32) -> usize {
     }
 }
 
-const USE_silk_resampler_copy: i32 = 0;
-const USE_silk_resampler_private_up2_HQ_wrapper: i32 = 1;
-const USE_silk_resampler_private_IIR_FIR: i32 = 2;
-const USE_silk_resampler_private_down_FIR: i32 = 3;
-
 pub const SILK_RESAMPLER_MAX_FIR_ORDER: usize = 36;
 pub const SILK_RESAMPLER_MAX_IIR_ORDER: usize = 6;
 
 #[derive(Copy, Clone)]
-pub struct silk_resampler_state_struct {
+pub struct ResamplerState {
     params: ResamplerParams,
     mode: ResamplerMode,
     delay_buf: [i16; 48],
@@ -81,9 +75,9 @@ pub struct silk_resampler_state_struct {
 pub struct ResamplerParams {
     pub batch_size: usize,
     pub inv_ratio_q16: i32,
-    pub fs_in_khz: i32,
-    pub fs_out_khz: i32,
-    pub input_delay: i32,
+    pub fs_in_khz: usize,
+    pub fs_out_khz: usize,
+    pub input_delay: usize,
 }
 
 /// Includes the resampler mode, as well as the necessary params and state
@@ -102,11 +96,7 @@ pub union sFIR_union {
     pub i16_0: [i16; SILK_RESAMPLER_MAX_FIR_ORDER],
 }
 
-pub fn silk_resampler_init(
-    Fs_Hz_in: i32,
-    Fs_Hz_out: i32,
-    forEnc: i32,
-) -> silk_resampler_state_struct {
+pub fn silk_resampler_init(Fs_Hz_in: i32, Fs_Hz_out: i32, forEnc: i32) -> ResamplerState {
     let inputDelay = if forEnc != 0 {
         if !matches!(Fs_Hz_in, 8000 | 12000 | 16000 | 24000 | 48000)
             || !matches!(Fs_Hz_out, 8000 | 12000 | 16000)
@@ -215,12 +205,12 @@ pub fn silk_resampler_init(
     let params = ResamplerParams {
         batch_size: batchSize as usize,
         inv_ratio_q16: invRatio_Q16,
-        fs_in_khz: Fs_in_kHz,
-        fs_out_khz: Fs_out_kHz,
-        input_delay: inputDelay,
+        fs_in_khz: Fs_in_kHz as usize,
+        fs_out_khz: Fs_out_kHz as usize,
+        input_delay: inputDelay as usize,
     };
 
-    silk_resampler_state_struct {
+    ResamplerState {
         params,
         mode,
         delay_buf: [0; 48],
@@ -229,114 +219,45 @@ pub fn silk_resampler_init(
 
 /* Resampler: convert from one sampling rate to another */
 /* Input and output sampling rate are at most 48000 Hz  */
-pub unsafe fn silk_resampler(
-    S: &mut silk_resampler_state_struct,
-    out: *mut i16,
-    in_0: *const i16,
-    inLen: i32,
-) -> i32 {
+pub fn silk_resampler(S: &mut ResamplerState, out: &mut [i16], in_0: &[i16]) -> i32 {
     /* Need at least 1 ms of input data */
-    assert!(inLen >= S.params.fs_in_khz);
+    assert!(in_0.len() >= S.params.fs_in_khz);
     /* Delay can't exceed the 1 ms of buffering */
     assert!(S.params.input_delay <= S.params.fs_in_khz);
 
     let nSamples = S.params.fs_in_khz - S.params.input_delay;
 
     /* Copy to delay buffer */
-    memcpy(
-        &mut *(S.delay_buf)
-            .as_mut_ptr()
-            .offset(S.params.input_delay as isize) as *mut i16 as *mut core::ffi::c_void,
-        in_0 as *const core::ffi::c_void,
-        (nSamples as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
-    );
+    S.delay_buf[S.params.input_delay..][..nSamples].copy_from_slice(&in_0[..nSamples]);
+
+    let delay_in = &S.delay_buf[..S.params.fs_in_khz];
+    let rest_in = &in_0[nSamples..][..in_0.len() - S.params.fs_in_khz];
+    let (delay_out, rest_out) = out.split_at_mut(S.params.fs_out_khz);
+
+    // ensure we have exactly the right amount of space in the out buffer
+    let rest_out = &mut rest_out[..rest_in.len() * S.params.fs_out_khz / S.params.fs_in_khz];
 
     match &mut S.mode {
         ResamplerMode::Up2Hq(state) => {
-            silk_resampler_private_up2_HQ(
-                state,
-                std::slice::from_raw_parts_mut(out, S.params.fs_in_khz as usize * 2),
-                &S.delay_buf[..S.params.fs_in_khz as usize],
-            );
-            silk_resampler_private_up2_HQ(
-                state,
-                std::slice::from_raw_parts_mut(
-                    &mut *out.offset(S.params.fs_out_khz as isize),
-                    (inLen - S.params.fs_in_khz) as usize * 2,
-                ),
-                std::slice::from_raw_parts(
-                    &*in_0.offset(nSamples as isize),
-                    (inLen - S.params.fs_in_khz) as usize,
-                ),
-            );
+            silk_resampler_private_up2_HQ(state, delay_out, delay_in);
+            silk_resampler_private_up2_HQ(state, rest_out, rest_in);
         }
         ResamplerMode::IirFir(state) => {
-            silk_resampler_private_IIR_FIR(
-                &S.params,
-                state,
-                std::slice::from_raw_parts_mut(out, S.params.fs_out_khz as usize),
-                &S.delay_buf[..S.params.fs_in_khz as usize],
-            );
-            silk_resampler_private_IIR_FIR(
-                &S.params,
-                state,
-                std::slice::from_raw_parts_mut(
-                    &mut *out.offset(S.params.fs_out_khz as isize),
-                    ((inLen - S.params.fs_in_khz) * S.params.fs_out_khz / S.params.fs_in_khz)
-                        as usize,
-                ),
-                std::slice::from_raw_parts(
-                    &*in_0.offset(nSamples as isize),
-                    (inLen - S.params.fs_in_khz) as usize,
-                ),
-            );
+            silk_resampler_private_IIR_FIR(&S.params, state, delay_out, delay_in);
+            silk_resampler_private_IIR_FIR(&S.params, state, rest_out, rest_in);
         }
         ResamplerMode::DownFir(ref params, state) => {
-            silk_resampler_private_down_FIR(
-                &S.params,
-                params,
-                state,
-                std::slice::from_raw_parts_mut(out, S.params.fs_out_khz as usize),
-                &S.delay_buf[..S.params.fs_in_khz as usize],
-            );
-            silk_resampler_private_down_FIR(
-                &S.params,
-                params,
-                state,
-                std::slice::from_raw_parts_mut(
-                    &mut *out.offset(S.params.fs_out_khz as isize),
-                    ((inLen - S.params.fs_in_khz) * S.params.fs_out_khz / S.params.fs_in_khz)
-                        as usize,
-                ),
-                std::slice::from_raw_parts(
-                    &*in_0.offset(nSamples as isize),
-                    (inLen - S.params.fs_in_khz) as usize,
-                ),
-            );
+            silk_resampler_private_down_FIR(&S.params, params, state, delay_out, delay_in);
+            silk_resampler_private_down_FIR(&S.params, params, state, rest_out, rest_in);
         }
         ResamplerMode::Copy => {
-            memcpy(
-                out as *mut core::ffi::c_void,
-                (S.delay_buf).as_mut_ptr() as *const core::ffi::c_void,
-                (S.params.fs_in_khz as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
-            );
-            memcpy(
-                &mut *out.offset(S.params.fs_out_khz as isize) as *mut i16
-                    as *mut core::ffi::c_void,
-                &*in_0.offset(nSamples as isize) as *const i16 as *const core::ffi::c_void,
-                ((inLen - S.params.fs_in_khz) as u64)
-                    .wrapping_mul(::core::mem::size_of::<i16>() as u64),
-            );
+            delay_out.copy_from_slice(delay_in);
+            rest_out.copy_from_slice(rest_in);
         }
     }
 
     /* Copy to delay buffer */
-    memcpy(
-        (S.delay_buf).as_mut_ptr() as *mut core::ffi::c_void,
-        &*in_0.offset((inLen - S.params.input_delay) as isize) as *const i16
-            as *const core::ffi::c_void,
-        (S.params.input_delay as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
-    );
+    S.delay_buf[..S.params.input_delay].copy_from_slice(&in_0[in_0.len() - S.params.input_delay..]);
 
-    return 0;
+    0
 }

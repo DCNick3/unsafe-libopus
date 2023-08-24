@@ -49,7 +49,7 @@ use crate::silk::float::encode_frame_FLP::{silk_encode_do_VAD_FLP, silk_encode_f
 use crate::silk::float::structs_FLP::{silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP};
 use crate::silk::init_encoder::silk_init_encoder;
 use crate::silk::resampler::silk_resampler;
-use crate::silk::resampler::silk_resampler_state_struct;
+use crate::silk::resampler::ResamplerState;
 use crate::silk::stereo_LR_to_MS::silk_stereo_LR_to_MS;
 use crate::silk::stereo_encode_pred::{silk_stereo_encode_mid_only, silk_stereo_encode_pred};
 use crate::silk::structs::{silk_LP_state, silk_nsq_state};
@@ -195,13 +195,13 @@ pub unsafe fn silk_Encode(
             memcpy(
                 &mut (*((*psEnc).state_Fxx).as_mut_ptr().offset(1 as isize))
                     .sCmn
-                    .resampler_state as *mut silk_resampler_state_struct
+                    .resampler_state as *mut ResamplerState
                     as *mut core::ffi::c_void,
                 &mut (*((*psEnc).state_Fxx).as_mut_ptr().offset(0 as isize))
                     .sCmn
-                    .resampler_state as *mut silk_resampler_state_struct
+                    .resampler_state as *mut ResamplerState
                     as *const core::ffi::c_void,
-                ::core::mem::size_of::<silk_resampler_state_struct>() as u64,
+                ::core::mem::size_of::<ResamplerState>() as u64,
             );
             memcpy(
                 &mut (*((*psEnc).state_Fxx).as_mut_ptr().offset(1 as isize))
@@ -330,37 +330,31 @@ pub unsafe fn silk_Encode(
                 *buf.as_mut_ptr().offset(n as isize) = *samplesIn.offset((2 * n) as isize);
                 n += 1;
             }
+            /* Making sure to start both resamplers from the same state when switching from mono to stereo */
             if (*psEnc).nPrevChannelsInternal == 1 && id == 0 {
                 memcpy(
                     &mut (*((*psEnc).state_Fxx).as_mut_ptr().offset(1 as isize))
                         .sCmn
-                        .resampler_state as *mut silk_resampler_state_struct
+                        .resampler_state as *mut ResamplerState
                         as *mut core::ffi::c_void,
                     &mut (*((*psEnc).state_Fxx).as_mut_ptr().offset(0 as isize))
                         .sCmn
-                        .resampler_state as *mut silk_resampler_state_struct
+                        .resampler_state as *mut ResamplerState
                         as *const core::ffi::c_void,
-                    ::core::mem::size_of::<silk_resampler_state_struct>() as u64,
+                    ::core::mem::size_of::<ResamplerState>() as u64,
                 );
             }
             ret += silk_resampler(
                 &mut (*((*psEnc).state_Fxx).as_mut_ptr().offset(0 as isize))
                     .sCmn
                     .resampler_state,
-                &mut *((*((*psEnc).state_Fxx).as_mut_ptr().offset(0 as isize))
-                    .sCmn
-                    .inputBuf)
-                    .as_mut_ptr()
-                    .offset(
-                        ((*((*psEnc).state_Fxx).as_mut_ptr().offset(0 as isize))
-                            .sCmn
-                            .inputBufIx
-                            + 2) as isize,
-                    ),
-                buf.as_mut_ptr() as *const i16,
-                nSamplesFromInput,
+                &mut (*psEnc).state_Fxx[0].sCmn.inputBuf
+                    [((*psEnc).state_Fxx[0].sCmn.inputBufIx + 2) as usize..]
+                    [..nSamplesToBuffer as usize],
+                &buf[..nSamplesFromInput as usize],
             );
             (*psEnc).state_Fxx[0 as usize].sCmn.inputBufIx += nSamplesToBuffer;
+
             nSamplesToBuffer = (*psEnc).state_Fxx[1 as usize].sCmn.frame_length
                 - (*psEnc).state_Fxx[1 as usize].sCmn.inputBufIx;
             nSamplesToBuffer = if nSamplesToBuffer
@@ -379,20 +373,13 @@ pub unsafe fn silk_Encode(
                 &mut (*((*psEnc).state_Fxx).as_mut_ptr().offset(1 as isize))
                     .sCmn
                     .resampler_state,
-                &mut *((*((*psEnc).state_Fxx).as_mut_ptr().offset(1 as isize))
-                    .sCmn
-                    .inputBuf)
-                    .as_mut_ptr()
-                    .offset(
-                        ((*((*psEnc).state_Fxx).as_mut_ptr().offset(1 as isize))
-                            .sCmn
-                            .inputBufIx
-                            + 2) as isize,
-                    ),
-                buf.as_mut_ptr() as *const i16,
-                nSamplesFromInput,
+                &mut (*psEnc).state_Fxx[1].sCmn.inputBuf
+                    [((*psEnc).state_Fxx[1].sCmn.inputBufIx + 2) as usize..]
+                    [..nSamplesToBuffer as usize],
+                &buf[..nSamplesFromInput as usize],
             );
-            (*psEnc).state_Fxx[1 as usize].sCmn.inputBufIx += nSamplesToBuffer;
+
+            (*psEnc).state_Fxx[1].sCmn.inputBufIx += nSamplesToBuffer;
         } else if (*encControl).nChannelsAPI == 2 && (*encControl).nChannelsInternal == 1 {
             n = 0;
             while n < nSamplesFromInput {
@@ -409,38 +396,20 @@ pub unsafe fn silk_Encode(
                 &mut (*((*psEnc).state_Fxx).as_mut_ptr().offset(0 as isize))
                     .sCmn
                     .resampler_state,
-                &mut *((*((*psEnc).state_Fxx).as_mut_ptr().offset(0 as isize))
-                    .sCmn
-                    .inputBuf)
-                    .as_mut_ptr()
-                    .offset(
-                        ((*((*psEnc).state_Fxx).as_mut_ptr().offset(0 as isize))
-                            .sCmn
-                            .inputBufIx
-                            + 2) as isize,
-                    ),
-                buf.as_mut_ptr() as *const i16,
-                nSamplesFromInput,
+                &mut (*psEnc).state_Fxx[0].sCmn.inputBuf
+                    [((*psEnc).state_Fxx[0].sCmn.inputBufIx + 2) as usize..]
+                    [..nSamplesToBuffer as usize],
+                &buf[..nSamplesFromInput as usize],
             );
-            if (*psEnc).nPrevChannelsInternal == 2
-                && (*psEnc).state_Fxx[0 as usize].sCmn.nFramesEncoded == 0
+            if (*psEnc).nPrevChannelsInternal == 2 && (*psEnc).state_Fxx[0].sCmn.nFramesEncoded == 0
             {
                 ret += silk_resampler(
                     &mut (*((*psEnc).state_Fxx).as_mut_ptr().offset(1 as isize))
                         .sCmn
                         .resampler_state,
-                    &mut *((*((*psEnc).state_Fxx).as_mut_ptr().offset(1 as isize))
-                        .sCmn
-                        .inputBuf)
-                        .as_mut_ptr()
-                        .offset(
-                            ((*((*psEnc).state_Fxx).as_mut_ptr().offset(1 as isize))
-                                .sCmn
-                                .inputBufIx
-                                + 2) as isize,
-                        ),
-                    buf.as_mut_ptr() as *const i16,
-                    nSamplesFromInput,
+                    &mut (*psEnc).state_Fxx[1].sCmn.inputBuf
+                        [((*psEnc).state_Fxx[1].sCmn.inputBufIx + 2) as usize..],
+                    &buf[..nSamplesFromInput as usize],
                 );
                 n = 0;
                 while n < (*psEnc).state_Fxx[0 as usize].sCmn.frame_length {
@@ -468,18 +437,10 @@ pub unsafe fn silk_Encode(
                 &mut (*((*psEnc).state_Fxx).as_mut_ptr().offset(0 as isize))
                     .sCmn
                     .resampler_state,
-                &mut *((*((*psEnc).state_Fxx).as_mut_ptr().offset(0 as isize))
-                    .sCmn
-                    .inputBuf)
-                    .as_mut_ptr()
-                    .offset(
-                        ((*((*psEnc).state_Fxx).as_mut_ptr().offset(0 as isize))
-                            .sCmn
-                            .inputBufIx
-                            + 2) as isize,
-                    ),
-                buf.as_mut_ptr() as *const i16,
-                nSamplesFromInput,
+                &mut (*psEnc).state_Fxx[0].sCmn.inputBuf
+                    [((*psEnc).state_Fxx[0].sCmn.inputBufIx + 2) as usize..]
+                    [..nSamplesToBuffer as usize],
+                &buf[..nSamplesFromInput as usize],
             );
             (*psEnc).state_Fxx[0 as usize].sCmn.inputBufIx += nSamplesToBuffer;
         }

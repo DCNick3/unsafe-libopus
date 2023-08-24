@@ -20,11 +20,11 @@ pub struct ResamplerDownFirParams {
 
 #[derive(Copy, Clone)]
 pub struct ResamplerDownFirState {
-    // temporarily public
-    pub iir_state: [i32; SILK_RESAMPLER_MAX_IIR_ORDER],
-    pub fir_state: [i32; SILK_RESAMPLER_MAX_FIR_ORDER],
+    iir_state: [i32; SILK_RESAMPLER_MAX_IIR_ORDER],
+    fir_state: [i32; SILK_RESAMPLER_MAX_FIR_ORDER],
 }
 
+// can't derive Default because of the array size
 impl Default for ResamplerDownFirState {
     fn default() -> Self {
         ResamplerDownFirState {

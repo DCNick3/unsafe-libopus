@@ -30,7 +30,7 @@ use crate::silk::define::{
 };
 use crate::silk::init_decoder::silk_init_decoder;
 use crate::silk::resampler::silk_resampler;
-use crate::silk::resampler::silk_resampler_state_struct;
+use crate::silk::resampler::ResamplerState;
 use crate::silk::stereo_MS_to_LR::silk_stereo_MS_to_LR;
 use crate::silk::stereo_decode_pred::{silk_stereo_decode_mid_only, silk_stereo_decode_pred};
 use crate::silk::structs::{silk_decoder_state, stereo_dec_state};
@@ -87,7 +87,6 @@ pub unsafe fn silk_Decode(
     let mut LBRR_symbol: i32 = 0;
     let mut samplesOut1_tmp: [*mut i16; 2] = [0 as *mut i16; 2];
     let mut MS_pred_Q13: [i32; 2] = [0, 0];
-    let mut resample_out_ptr: *mut i16 = 0 as *mut i16;
     let psDec: *mut silk_decoder = decState as *mut silk_decoder;
     let channel_state: *mut silk_decoder_state = ((*psDec).channel_state).as_mut_ptr();
     let mut has_side: i32 = 0;
@@ -160,11 +159,11 @@ pub unsafe fn silk_Decode(
             ::core::mem::size_of::<[i16; 2]>() as u64,
         );
         memcpy(
-            &mut (*channel_state.offset(1 as isize)).resampler_state
-                as *mut silk_resampler_state_struct as *mut core::ffi::c_void,
-            &mut (*channel_state.offset(0 as isize)).resampler_state
-                as *mut silk_resampler_state_struct as *const core::ffi::c_void,
-            ::core::mem::size_of::<silk_resampler_state_struct>() as u64,
+            &mut (*channel_state.offset(1 as isize)).resampler_state as *mut ResamplerState
+                as *mut core::ffi::c_void,
+            &mut (*channel_state.offset(0 as isize)).resampler_state as *mut ResamplerState
+                as *const core::ffi::c_void,
+            ::core::mem::size_of::<ResamplerState>() as u64,
         );
     }
     (*psDec).nChannelsAPI = (*decControl).nChannelsAPI;
@@ -401,17 +400,20 @@ pub unsafe fn silk_Decode(
     }
     *nSamplesOut = nSamplesOutDec * (*decControl).API_sampleRate
         / ((*channel_state.offset(0 as isize)).fs_kHz as i16 as i32 * 1000);
+
     let vla_0 = (if (*decControl).nChannelsAPI == 2 {
         *nSamplesOut
     } else {
         1
     }) as usize;
     let mut samplesOut2_tmp: Vec<i16> = ::std::vec::from_elem(0, vla_0);
-    if (*decControl).nChannelsAPI == 2 {
-        resample_out_ptr = samplesOut2_tmp.as_mut_ptr();
+
+    let resample_out_ptr = if (*decControl).nChannelsAPI == 2 {
+        samplesOut2_tmp.as_mut_slice()
     } else {
-        resample_out_ptr = samplesOut;
-    }
+        std::slice::from_raw_parts_mut(samplesOut, *nSamplesOut as usize)
+    };
+
     let vla_1 = (if delay_stack_alloc != 0 {
         (*decControl).nChannelsInternal * ((*channel_state.offset(0 as isize)).frame_length + 2)
     } else {
@@ -445,34 +447,41 @@ pub unsafe fn silk_Decode(
             (*decControl).nChannelsInternal
         })
     {
+        /* Resample decoded signal to API_sampleRate */
         ret += silk_resampler(
             &mut (*channel_state.offset(n as isize)).resampler_state,
             resample_out_ptr,
-            &mut *(*samplesOut1_tmp.as_mut_ptr().offset(n as isize)).offset(1 as isize) as *mut i16
-                as *const i16,
-            nSamplesOutDec,
+            std::slice::from_raw_parts(
+                &mut *samplesOut1_tmp[n as usize].offset(1 as isize) as *mut i16 as *const i16,
+                nSamplesOutDec as usize,
+            ),
         );
         if (*decControl).nChannelsAPI == 2 {
             i = 0;
             while i < *nSamplesOut {
-                *samplesOut.offset((n + 2 * i) as isize) = *resample_out_ptr.offset(i as isize);
+                *samplesOut.offset((n + 2 * i) as isize) = resample_out_ptr[i as usize];
                 i += 1;
             }
         }
         n += 1;
     }
+
+    /* Create two channel output from mono stream */
     if (*decControl).nChannelsAPI == 2 && (*decControl).nChannelsInternal == 1 {
         if stereo_to_mono != 0 {
+            /* Resample right channel for newly collapsed stereo just in case
+            we weren't doing collapsing when switching to mono */
             ret += silk_resampler(
                 &mut (*channel_state.offset(1 as isize)).resampler_state,
                 resample_out_ptr,
-                &mut *(*samplesOut1_tmp.as_mut_ptr().offset(0 as isize)).offset(1 as isize)
-                    as *mut i16 as *const i16,
-                nSamplesOutDec,
+                std::slice::from_raw_parts(
+                    &mut *samplesOut1_tmp[0].offset(1 as isize) as *mut i16 as *const i16,
+                    nSamplesOutDec as usize,
+                ),
             );
             i = 0;
             while i < *nSamplesOut {
-                *samplesOut.offset((1 + 2 * i) as isize) = *resample_out_ptr.offset(i as isize);
+                *samplesOut.offset((1 + 2 * i) as isize) = resample_out_ptr[i as usize];
                 i += 1;
             }
         } else {

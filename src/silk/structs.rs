@@ -1,4 +1,4 @@
-use crate::silk::resampler::silk_resampler_state_struct;
+use crate::silk::resampler::ResamplerState;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -85,7 +85,7 @@ pub struct silk_decoder_state {
     pub VAD_flags: [i32; 3],
     pub LBRR_flag: i32,
     pub LBRR_flags: [i32; 3],
-    pub resampler_state: silk_resampler_state_struct,
+    pub resampler_state: ResamplerState,
     pub psNLSF_CB: &'static silk_NLSF_CB_struct,
     pub indices: SideInfoIndices,
     pub sCNG: silk_CNG_struct,
@@ -213,7 +213,7 @@ pub struct silk_encoder_state {
     pub frames_since_onset: i32,
     pub ec_prevSignalType: i32,
     pub ec_prevLagIndex: i16,
-    pub resampler_state: silk_resampler_state_struct,
+    pub resampler_state: ResamplerState,
     pub useDTX: i32,
     pub inDTX: i32,
     pub noSpeechCounter: i32,

@@ -144,17 +144,15 @@ unsafe fn silk_setup_resamplers(psEnc: *mut silk_encoder_state_FLP, fs_kHz: i32)
             let mut x_buf_API_fs_Hz: Vec<i16> = ::std::vec::from_elem(0, vla_0);
             ret += silk_resampler(
                 &mut temp_resampler_state,
-                x_buf_API_fs_Hz.as_mut_ptr(),
-                x_bufFIX.as_mut_ptr() as *const i16,
-                old_buf_samples,
+                &mut x_buf_API_fs_Hz,
+                &x_bufFIX[..old_buf_samples as usize],
             );
             (*psEnc).sCmn.resampler_state =
                 silk_resampler_init((*psEnc).sCmn.API_fs_Hz, fs_kHz as i16 as i32 * 1000, 1);
             ret += silk_resampler(
                 &mut (*psEnc).sCmn.resampler_state,
-                x_bufFIX.as_mut_ptr(),
-                x_buf_API_fs_Hz.as_mut_ptr() as *const i16,
-                api_buf_samples,
+                &mut x_bufFIX,
+                &x_buf_API_fs_Hz[..api_buf_samples as usize],
             );
             silk_short2float_array(
                 ((*psEnc).x_buf).as_mut_ptr(),
