@@ -1,4 +1,4 @@
-use crate::silk::resampler_rom::{silk_resampler_up2_hq_0, silk_resampler_up2_hq_1};
+use super::rom::{silk_resampler_up2_hq_0, silk_resampler_up2_hq_1};
 
 pub mod typedef_h {
     pub const silk_int16_MAX: i32 = i16::MAX as i32;

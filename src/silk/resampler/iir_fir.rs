@@ -1,3 +1,5 @@
+#![forbid(unsafe_code)]
+
 pub mod typedef_h {
     pub const silk_int16_MAX: i32 = i16::MAX as i32;
     pub const silk_int16_MIN: i32 = i16::MIN as i32;
@@ -6,8 +8,8 @@ use crate::silk::resampler::ResamplerParams;
 
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 
-use crate::silk::resampler_private_up2_HQ::{silk_resampler_private_up2_HQ, ResamplerUp2HqState};
-use crate::silk::resampler_rom::{silk_resampler_frac_FIR_12, RESAMPLER_ORDER_FIR_12};
+use super::rom::{silk_resampler_frac_FIR_12, RESAMPLER_ORDER_FIR_12};
+use super::up2_hq::{silk_resampler_private_up2_HQ, ResamplerUp2HqState};
 
 #[derive(Default, Copy, Clone)]
 pub struct ResamplerIirFirState {
@@ -68,8 +70,7 @@ fn silk_resampler_private_IIR_FIR_INTERPOL<'a>(
 }
 
 /* Upsample using a combination of allpass-based 2x upsampling and FIR interpolation */
-pub fn silk_resampler_private_IIR_FIR(
-    // S: &mut silk_resampler_state_struct,
+pub(super) fn silk_resampler_private_IIR_FIR(
     resampler_params: &ResamplerParams,
     state: &mut ResamplerIirFirState,
     mut out: &mut [i16],

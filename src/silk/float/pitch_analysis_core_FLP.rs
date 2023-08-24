@@ -43,6 +43,7 @@ pub mod typedef_h {
     pub const silk_int16_MAX: i32 = i16::MAX as i32;
     pub const silk_int16_MIN: i32 = i16::MIN as i32;
 }
+
 use self::arch_h::opus_val32;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 pub use self::SigProc_FLP_h::{silk_float2short_array, silk_log2, silk_short2float_array};
@@ -59,9 +60,9 @@ use crate::silk::pitch_est_tables::{
     PE_NB_CBKS_STAGE3_MAX, PE_NB_STAGE3_LAGS, PE_PREVLAG_BIAS, PE_SHORTLAG_BIAS,
     PE_SUBFR_LENGTH_MS, SILK_PE_MIN_COMPLEX,
 };
-use crate::silk::resampler_down2::silk_resampler_down2;
-use crate::silk::resampler_down2_3::silk_resampler_down2_3;
+use crate::silk::resampler::{silk_resampler_down2, silk_resampler_down2_3};
 use crate::silk::SigProc_FIX::{silk_max_int, silk_min_int};
+use arrayref::array_mut_ref;
 
 pub unsafe fn silk_pitch_analysis_core_FLP(
     frame: *const f32,
@@ -151,16 +152,12 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
     if Fs_kHz == 16 {
         let mut frame_16_FIX: [i16; 640] = [0; 640];
         silk_float2short_array(frame_16_FIX.as_mut_ptr(), frame, frame_length);
-        memset(
-            filt_state.as_mut_ptr() as *mut core::ffi::c_void,
-            0,
-            2_u64.wrapping_mul(::core::mem::size_of::<i32>() as u64),
-        );
+        let filt_state = array_mut_ref![filt_state, 0, 2];
+        filt_state.fill(0);
         silk_resampler_down2(
-            filt_state.as_mut_ptr(),
-            frame_8_FIX.as_mut_ptr(),
-            frame_16_FIX.as_mut_ptr(),
-            frame_length,
+            filt_state,
+            &mut frame_8_FIX[..frame_length_8kHz as usize],
+            &frame_16_FIX[..frame_length as usize],
         );
         silk_short2float_array(
             frame_8kHz.as_mut_ptr(),
@@ -170,16 +167,11 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
     } else if Fs_kHz == 12 {
         let mut frame_12_FIX: [i16; 480] = [0; 480];
         silk_float2short_array(frame_12_FIX.as_mut_ptr(), frame, frame_length);
-        memset(
-            filt_state.as_mut_ptr() as *mut core::ffi::c_void,
-            0,
-            6_u64.wrapping_mul(::core::mem::size_of::<i32>() as u64),
-        );
+        filt_state.fill(0);
         silk_resampler_down2_3(
             &mut filt_state,
-            frame_8_FIX.as_mut_ptr(),
-            frame_12_FIX.as_mut_ptr(),
-            frame_length,
+            &mut frame_8_FIX[..frame_length_8kHz as usize],
+            &frame_12_FIX[..frame_length as usize],
         );
         silk_short2float_array(
             frame_8kHz.as_mut_ptr(),
@@ -190,17 +182,15 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
         assert!(Fs_kHz == 8);
         silk_float2short_array(frame_8_FIX.as_mut_ptr(), frame, frame_length_8kHz);
     }
-    memset(
-        filt_state.as_mut_ptr() as *mut core::ffi::c_void,
-        0,
-        2_u64.wrapping_mul(::core::mem::size_of::<i32>() as u64),
-    );
-    silk_resampler_down2(
-        filt_state.as_mut_ptr(),
-        frame_4_FIX.as_mut_ptr(),
-        frame_8_FIX.as_mut_ptr(),
-        frame_length_8kHz,
-    );
+    {
+        let filt_state = array_mut_ref![filt_state, 0, 2];
+        filt_state.fill(0);
+        silk_resampler_down2(
+            filt_state,
+            &mut frame_4_FIX[..frame_length_4kHz as usize],
+            &frame_8_FIX[..frame_length_8kHz as usize],
+        );
+    }
     silk_short2float_array(
         frame_4kHz.as_mut_ptr(),
         frame_4_FIX.as_mut_ptr(),

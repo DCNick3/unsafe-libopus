@@ -126,13 +126,6 @@ mod silk {
     pub mod process_NLSFs;
     pub mod quant_LTP_gains;
     pub mod resampler;
-    pub mod resampler_down2;
-    pub mod resampler_down2_3;
-    pub mod resampler_private_AR2;
-    pub mod resampler_private_IIR_FIR;
-    pub mod resampler_private_down_FIR;
-    pub mod resampler_private_up2_HQ;
-    pub mod resampler_rom;
     pub mod shell_coder;
     pub mod sigm_Q15;
     pub mod sort;

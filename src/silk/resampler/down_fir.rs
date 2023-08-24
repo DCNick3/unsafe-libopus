@@ -3,13 +3,9 @@ pub mod typedef_h {
     pub const silk_int16_MIN: i32 = i16::MIN as i32;
 }
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
-use crate::silk::resampler::{
-    ResamplerParams, SILK_RESAMPLER_MAX_FIR_ORDER, SILK_RESAMPLER_MAX_IIR_ORDER,
-};
-use crate::silk::resampler_private_AR2::silk_resampler_private_AR2;
-use crate::silk::resampler_rom::{
-    RESAMPLER_DOWN_ORDER_FIR0, RESAMPLER_DOWN_ORDER_FIR1, RESAMPLER_DOWN_ORDER_FIR2,
-};
+use super::ar2::silk_resampler_private_AR2;
+use super::rom::{RESAMPLER_DOWN_ORDER_FIR0, RESAMPLER_DOWN_ORDER_FIR1, RESAMPLER_DOWN_ORDER_FIR2};
+use crate::silk::resampler::{ResamplerParams, SILK_RESAMPLER_MAX_FIR_ORDER};
 
 #[derive(Copy, Clone)]
 pub struct ResamplerDownFirParams {
@@ -20,7 +16,7 @@ pub struct ResamplerDownFirParams {
 
 #[derive(Copy, Clone)]
 pub struct ResamplerDownFirState {
-    iir_state: [i32; SILK_RESAMPLER_MAX_IIR_ORDER],
+    ar2_state: [i32; 2],
     fir_state: [i32; SILK_RESAMPLER_MAX_FIR_ORDER],
 }
 
@@ -28,7 +24,7 @@ pub struct ResamplerDownFirState {
 impl Default for ResamplerDownFirState {
     fn default() -> Self {
         ResamplerDownFirState {
-            iir_state: [0; SILK_RESAMPLER_MAX_IIR_ORDER],
+            ar2_state: [0; 2],
             fir_state: [0; SILK_RESAMPLER_MAX_FIR_ORDER],
         }
     }
@@ -214,7 +210,7 @@ fn silk_resampler_private_down_FIR_INTERPOL<'a>(
     out
 }
 
-pub fn silk_resampler_private_down_FIR(
+pub(super) fn silk_resampler_private_down_FIR(
     resampler_params: &ResamplerParams,
     params: &ResamplerDownFirParams,
     state: &mut ResamplerDownFirState,
@@ -232,7 +228,7 @@ pub fn silk_resampler_private_down_FIR(
     loop {
         nSamplesIn = in_0.len().min(resampler_params.batch_size);
         silk_resampler_private_AR2(
-            &mut state.iir_state,
+            &mut state.ar2_state,
             &mut buf[params.fir_order..][..nSamplesIn],
             &in_0[..nSamplesIn],
             &params.coefs[..2],

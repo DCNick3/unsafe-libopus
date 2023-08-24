@@ -1,18 +1,31 @@
-use crate::silk::resampler_private_IIR_FIR::{
-    silk_resampler_private_IIR_FIR, ResamplerIirFirState,
-};
-use crate::silk::resampler_private_down_FIR::{
-    silk_resampler_private_down_FIR, ResamplerDownFirParams, ResamplerDownFirState,
-};
-use crate::silk::resampler_private_up2_HQ::{silk_resampler_private_up2_HQ, ResamplerUp2HqState};
-use crate::silk::resampler_rom::{
+#![forbid(unsafe_code)]
+
+mod ar2;
+mod down_fir;
+mod iir_fir;
+mod rom;
+mod up2_hq;
+
+mod down2;
+mod down2_3;
+
+use down_fir::{silk_resampler_private_down_FIR, ResamplerDownFirParams, ResamplerDownFirState};
+use iir_fir::{silk_resampler_private_IIR_FIR, ResamplerIirFirState};
+use rom::{
     silk_Resampler_1_2_COEFS, silk_Resampler_1_3_COEFS, silk_Resampler_1_4_COEFS,
     silk_Resampler_1_6_COEFS, silk_Resampler_2_3_COEFS, silk_Resampler_3_4_COEFS,
     RESAMPLER_DOWN_ORDER_FIR0, RESAMPLER_DOWN_ORDER_FIR1, RESAMPLER_DOWN_ORDER_FIR2,
 };
 use std::cmp::Ordering;
+use up2_hq::{silk_resampler_private_up2_HQ, ResamplerUp2HqState};
 
-pub const RESAMPLER_MAX_BATCH_SIZE_MS: i32 = 10;
+pub use down2::silk_resampler_down2;
+pub use down2_3::silk_resampler_down2_3;
+
+const RESAMPLER_MAX_BATCH_SIZE_MS: i32 = 10;
+const RESAMPLER_MAX_FS_KHZ: usize = 48;
+const RESAMPLER_MAX_BATCH_SIZE_IN: usize =
+    RESAMPLER_MAX_BATCH_SIZE_MS as usize * RESAMPLER_MAX_FS_KHZ;
 
 /*
  * Matrix of resampling methods used:
@@ -61,8 +74,7 @@ fn rate_id(r: i32) -> usize {
     }
 }
 
-pub const SILK_RESAMPLER_MAX_FIR_ORDER: usize = 36;
-pub const SILK_RESAMPLER_MAX_IIR_ORDER: usize = 6;
+const SILK_RESAMPLER_MAX_FIR_ORDER: usize = 36;
 
 #[derive(Copy, Clone)]
 pub struct ResamplerState {
@@ -72,7 +84,7 @@ pub struct ResamplerState {
 }
 
 #[derive(Copy, Clone)]
-pub struct ResamplerParams {
+struct ResamplerParams {
     pub batch_size: usize,
     pub inv_ratio_q16: i32,
     pub fs_in_khz: usize,
@@ -82,7 +94,7 @@ pub struct ResamplerParams {
 
 /// Includes the resampler mode, as well as the necessary params and state
 #[derive(Copy, Clone)]
-pub enum ResamplerMode {
+enum ResamplerMode {
     Copy,
     Up2Hq(ResamplerUp2HqState),
     IirFir(ResamplerIirFirState),
