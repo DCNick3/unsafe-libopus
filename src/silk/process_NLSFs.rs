@@ -31,24 +31,21 @@ pub unsafe fn silk_process_NLSFs(
     }
     assert!(NLSF_mu_Q20 > 0);
     silk_NLSF_VQ_weights_laroia(
-        pNLSFW_QW.as_mut_ptr(),
-        pNLSF_Q15 as *const i16,
-        (*psEncC).predictLPCOrder,
+        &mut pNLSFW_QW[..(*psEncC).predictLPCOrder as usize],
+        std::slice::from_raw_parts(pNLSF_Q15, (*psEncC).predictLPCOrder as usize),
     );
     doInterpolate = ((*psEncC).useInterpolatedNLSFs == 1
         && ((*psEncC).indices.NLSFInterpCoef_Q2 as i32) < 4) as i32;
     if doInterpolate != 0 {
         silk_interpolate(
-            pNLSF0_temp_Q15.as_mut_ptr(),
-            prev_NLSFq_Q15,
-            pNLSF_Q15 as *const i16,
+            &mut pNLSF0_temp_Q15[..(*psEncC).predictLPCOrder as usize],
+            std::slice::from_raw_parts(prev_NLSFq_Q15, (*psEncC).predictLPCOrder as usize),
+            std::slice::from_raw_parts(pNLSF_Q15, (*psEncC).predictLPCOrder as usize),
             (*psEncC).indices.NLSFInterpCoef_Q2 as i32,
-            (*psEncC).predictLPCOrder,
         );
         silk_NLSF_VQ_weights_laroia(
-            pNLSFW0_temp_QW.as_mut_ptr(),
-            pNLSF0_temp_Q15.as_mut_ptr(),
-            (*psEncC).predictLPCOrder,
+            &mut pNLSFW0_temp_QW[..(*psEncC).predictLPCOrder as usize],
+            &pNLSF0_temp_Q15[..(*psEncC).predictLPCOrder as usize],
         );
         i_sqr_Q15 = ((((*psEncC).indices.NLSFInterpCoef_Q2 as i16 as i32
             * (*psEncC).indices.NLSFInterpCoef_Q2 as i16 as i32) as u32)
@@ -78,11 +75,10 @@ pub unsafe fn silk_process_NLSFs(
     );
     if doInterpolate != 0 {
         silk_interpolate(
-            pNLSF0_temp_Q15.as_mut_ptr(),
-            prev_NLSFq_Q15,
-            pNLSF_Q15 as *const i16,
+            &mut pNLSF0_temp_Q15[..(*psEncC).predictLPCOrder as usize],
+            std::slice::from_raw_parts(prev_NLSFq_Q15, (*psEncC).predictLPCOrder as usize),
+            std::slice::from_raw_parts(pNLSF_Q15 as *const i16, (*psEncC).predictLPCOrder as usize),
             (*psEncC).indices.NLSFInterpCoef_Q2 as i32,
-            (*psEncC).predictLPCOrder,
         );
         silk_NLSF2A(
             (*PredCoef_Q12.offset(0 as isize)).as_mut_ptr(),

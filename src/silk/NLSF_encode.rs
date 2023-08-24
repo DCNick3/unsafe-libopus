@@ -32,17 +32,20 @@ pub unsafe fn silk_NLSF_encode(
     let mut W_adj_Q5: [i16; 16] = [0; 16];
     let mut pred_Q8: [u8; 16] = [0; 16];
     let mut ec_ix: [i16; 16] = [0; 16];
-    assert!(signalType >= 0 && signalType <= 2);
-    silk_NLSF_stabilize(pNLSF_Q15, psNLSF_CB.deltaMin_Q15, psNLSF_CB.order as i32);
+    assert!((0..=2).contains(&signalType));
+    silk_NLSF_stabilize(
+        std::slice::from_raw_parts_mut(pNLSF_Q15, psNLSF_CB.order as usize),
+        psNLSF_CB.deltaMin_Q15,
+    );
     let vla = psNLSF_CB.nVectors as usize;
     let mut err_Q24: Vec<i32> = ::std::vec::from_elem(0, vla);
     silk_NLSF_VQ(
-        err_Q24.as_mut_ptr(),
-        pNLSF_Q15 as *const i16,
+        &mut err_Q24,
+        std::slice::from_raw_parts(pNLSF_Q15, psNLSF_CB.order as usize),
         psNLSF_CB.CB1_NLSF_Q8,
         psNLSF_CB.CB1_Wght_Q9,
-        psNLSF_CB.nVectors as i32,
-        psNLSF_CB.order as i32,
+        psNLSF_CB.nVectors as usize,
+        psNLSF_CB.order as usize,
     );
     let vla_0 = nSurvivors as usize;
     let mut tempIndices1: Vec<i32> = ::std::vec::from_elem(0, vla_0);
@@ -76,7 +79,7 @@ pub unsafe fn silk_NLSF_encode(
             ) as i16;
             i += 1;
         }
-        silk_NLSF_unpack(ec_ix.as_mut_ptr(), pred_Q8.as_mut_ptr(), psNLSF_CB, ind1);
+        silk_NLSF_unpack(&mut ec_ix, &mut pred_Q8, psNLSF_CB, ind1);
         *RD_Q25.as_mut_ptr().offset(s as isize) = silk_NLSF_del_dec_quant(
             &mut *tempIndices2
                 .as_mut_ptr()

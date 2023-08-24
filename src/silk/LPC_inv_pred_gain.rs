@@ -7,6 +7,9 @@ use crate::silk::macros::silk_CLZ32;
 use crate::silk::Inlines::silk_INVERSE32_varQ;
 
 pub const A_LIMIT: f64 = 0.99975f64 * ((1) << 24) as f64 + 0.5f64;
+
+/// Compute inverse of LPC prediction gain, and
+/// test if LPC coefficients are stable (all poles within unit circle)
 unsafe fn LPC_inverse_pred_gain_QA_c(A_QA: *mut i32, order: i32) -> i32 {
     let mut k: i32 = 0;
     let mut n: i32 = 0;
@@ -374,6 +377,7 @@ unsafe fn LPC_inverse_pred_gain_QA_c(A_QA: *mut i32, order: i32) -> i32 {
     }
     return invGain_Q30;
 }
+
 pub unsafe fn silk_LPC_inverse_pred_gain_c(A_Q12: *const i16, order: i32) -> i32 {
     let mut k: i32 = 0;
     let mut Atmp_QA: [i32; 24] = [0; 24];

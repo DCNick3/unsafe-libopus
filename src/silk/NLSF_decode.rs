@@ -30,6 +30,7 @@ unsafe fn silk_NLSF_residual_dequant(
         i -= 1;
     }
 }
+
 pub unsafe fn silk_NLSF_decode(
     pNLSF_Q15: *mut i16,
     NLSFIndices: *mut i8,
@@ -41,8 +42,8 @@ pub unsafe fn silk_NLSF_decode(
     let mut res_Q10: [i16; 16] = [0; 16];
     let mut NLSF_Q15_tmp: i32 = 0;
     silk_NLSF_unpack(
-        ec_ix.as_mut_ptr(),
-        pred_Q8.as_mut_ptr(),
+        &mut ec_ix,
+        &mut pred_Q8,
         psNLSF_CB,
         *NLSFIndices.offset(0) as i32,
     );
@@ -79,5 +80,8 @@ pub unsafe fn silk_NLSF_decode(
         }) as i16;
         i += 1;
     }
-    silk_NLSF_stabilize(pNLSF_Q15, psNLSF_CB.deltaMin_Q15, psNLSF_CB.order as i32);
+    silk_NLSF_stabilize(
+        std::slice::from_raw_parts_mut(pNLSF_Q15, psNLSF_CB.order as usize),
+        psNLSF_CB.deltaMin_Q15,
+    );
 }

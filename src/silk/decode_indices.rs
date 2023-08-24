@@ -62,8 +62,8 @@ pub unsafe fn silk_decode_indices(
         8,
     ) as i8;
     silk_NLSF_unpack(
-        ec_ix.as_mut_ptr(),
-        pred_Q8.as_mut_ptr(),
+        &mut ec_ix,
+        &mut pred_Q8,
         (*psDec).psNLSF_CB,
         (*psDec).indices.NLSFIndices[0 as usize] as i32,
     );

@@ -62,11 +62,10 @@ pub unsafe fn silk_find_LPC_FLP(
         k = 3;
         while k >= 0 {
             silk_interpolate(
-                NLSF0_Q15.as_mut_ptr(),
-                ((*psEncC).prev_NLSFq_Q15).as_mut_ptr() as *const i16,
-                NLSF_Q15 as *const i16,
+                &mut NLSF0_Q15[..(*psEncC).predictLPCOrder as usize],
+                &(*psEncC).prev_NLSFq_Q15[..(*psEncC).predictLPCOrder as usize],
+                std::slice::from_raw_parts(NLSF_Q15, (*psEncC).predictLPCOrder as usize),
                 k,
-                (*psEncC).predictLPCOrder,
             );
             silk_NLSF2A_FLP(
                 a_tmp.as_mut_ptr(),
