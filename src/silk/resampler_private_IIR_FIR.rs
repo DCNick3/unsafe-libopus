@@ -2,14 +2,14 @@ pub mod typedef_h {
     pub const silk_int16_MAX: i32 = i16::MAX as i32;
     pub const silk_int16_MIN: i32 = i16::MIN as i32;
 }
-use crate::silk::resampler::silk_resampler_state_struct;
+use crate::silk::resampler::ResamplerParams;
 
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 
 use crate::silk::resampler_private_up2_HQ::{silk_resampler_private_up2_HQ, ResamplerUp2HqState};
 use crate::silk::resampler_rom::{silk_resampler_frac_FIR_12, RESAMPLER_ORDER_FIR_12};
 
-#[derive(Default)]
+#[derive(Default, Copy, Clone)]
 pub struct ResamplerIirFirState {
     up2_HQ: ResamplerUp2HqState,
     fir_state: [i16; RESAMPLER_ORDER_FIR_12],
@@ -68,31 +68,26 @@ fn silk_resampler_private_IIR_FIR_INTERPOL<'a>(
 }
 
 /* Upsample using a combination of allpass-based 2x upsampling and FIR interpolation */
-pub unsafe fn silk_resampler_private_IIR_FIR(
-    S: &mut silk_resampler_state_struct,
+pub fn silk_resampler_private_IIR_FIR(
+    // S: &mut silk_resampler_state_struct,
+    resampler_params: &ResamplerParams,
+    state: &mut ResamplerIirFirState,
     mut out: &mut [i16],
     mut in_0: &[i16],
 ) {
     let mut nSamplesIn: usize = 0;
     let mut max_index_Q16: i32 = 0;
-    let mut index_increment_Q16: i32 = 0;
-    let vla = (2 * S.batchSize + 8) as usize;
-    let mut buf: Vec<i16> = ::std::vec::from_elem(0, vla);
+    let mut buf: Vec<i16> = ::std::vec::from_elem(0, 2 * resampler_params.batch_size + 8);
 
     /* Copy buffered samples to start of buffer */
-    buf[0..RESAMPLER_ORDER_FIR_12].copy_from_slice(&S.sFIR.i16_0[..RESAMPLER_ORDER_FIR_12]);
-
-    // let mut in_0 = std::slice::from_raw_parts(in_0, inLen as usize);
-
-    // let out_size = inLen * S.Fs_out_kHz / S.Fs_in_kHz;
-    // let mut out = std::slice::from_raw_parts_mut(out, out_size as usize);
+    buf[0..RESAMPLER_ORDER_FIR_12].copy_from_slice(&state.fir_state);
 
     /* Iterate over blocks of frameSizeIn input samples */
-    index_increment_Q16 = S.invRatio_Q16;
+    let index_increment_Q16 = resampler_params.inv_ratio_q16;
     loop {
-        nSamplesIn = (S.batchSize as usize).min(in_0.len());
+        nSamplesIn = in_0.len().min(resampler_params.batch_size);
         silk_resampler_private_up2_HQ(
-            &mut S.sIIR,
+            &mut state.up2_HQ,
             &mut buf[RESAMPLER_ORDER_FIR_12..][..nSamplesIn * 2],
             &in_0[..nSamplesIn],
         );
@@ -110,6 +105,7 @@ pub unsafe fn silk_resampler_private_IIR_FIR(
     }
 
     /* Copy last part of filtered signal to the state for the next call */
-    S.sFIR.i16_0[..RESAMPLER_ORDER_FIR_12]
+    state
+        .fir_state
         .copy_from_slice(&buf[nSamplesIn * 2..][..RESAMPLER_ORDER_FIR_12]);
 }

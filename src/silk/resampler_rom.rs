@@ -1,6 +1,6 @@
-pub const RESAMPLER_DOWN_ORDER_FIR2: i32 = 36;
-pub const RESAMPLER_DOWN_ORDER_FIR1: i32 = 24;
-pub const RESAMPLER_DOWN_ORDER_FIR0: i32 = 18;
+pub const RESAMPLER_DOWN_ORDER_FIR2: usize = 36;
+pub const RESAMPLER_DOWN_ORDER_FIR1: usize = 24;
+pub const RESAMPLER_DOWN_ORDER_FIR0: usize = 18;
 pub const RESAMPLER_ORDER_FIR_12: usize = 8;
 
 /* Tables for 2x downsampler */
