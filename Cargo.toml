@@ -20,9 +20,34 @@ num-complex = "0.4.1"
 # for slicing arrays to other arrays
 arrayref = "0.3.7"
 
+# for parsing cli arguments in binaries
+clap = { version = "4.3.23", features = ["derive"], optional = true }
+
 [dev-dependencies]
 # some translated tests haven't been rewritten not to use libc yet
 libc = "0.2"
 libc-stdhandle = "0.1.0"
 
 insta = "1.29.0"
+
+[features]
+test = []
+bins = [
+    "clap"
+]
+
+[[bin]]
+name = "opus_compare"
+required-features = ["bins", "test"]
+
+[[bin]]
+name = "opus_demo"
+required-features = ["bins"]
+
+[[bin]]
+name = "repacketizer_demo"
+required-features = ["bins"]
+
+[[bin]]
+name = "run_vectors"
+required-features = ["bins"]

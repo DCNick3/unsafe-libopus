@@ -1,8 +1,10 @@
 extern crate core;
 
 pub mod externs;
-pub mod test;
 pub mod varargs;
+
+#[cfg(feature = "test")]
+pub mod test;
 
 #[allow(non_camel_case_types)]
 #[allow(non_snake_case)]

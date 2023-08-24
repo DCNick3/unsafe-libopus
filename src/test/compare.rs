@@ -120,11 +120,7 @@ pub struct CompareResult {
     pub quality: f64,
 }
 
-pub fn opus_compare(
-    params: CompareParams,
-    true_samples: &[u8],
-    comparing_samples: &[u8],
-) -> CompareResult {
+pub fn opus_compare(params: CompareParams, true_file: &[u8], tested_file: &[u8]) -> CompareResult {
     let nchannels = if params.stereo { 2 } else { 1 };
 
     assert!(
@@ -142,7 +138,7 @@ pub fn opus_compare(
     };
     let yfreqs = NFREQS / downsample;
 
-    let (mut x, xlength) = read_pcm16(&true_samples, 2);
+    let (mut x, xlength) = read_pcm16(&true_file, 2);
 
     if nchannels == 1 {
         for xi in 0..xlength {
@@ -150,7 +146,7 @@ pub fn opus_compare(
         }
     }
 
-    let (y, ylength) = read_pcm16(&comparing_samples, nchannels);
+    let (y, ylength) = read_pcm16(&tested_file, nchannels);
 
     assert_eq!(xlength, ylength * downsample, "Sample counts do not match");
     assert!(
