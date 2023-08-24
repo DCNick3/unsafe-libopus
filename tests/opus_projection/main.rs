@@ -30,9 +30,7 @@ pub mod test_opus_common_h {
             iseed,
             std::ffi::CStr::from_ptr(file as _).to_str().unwrap(),
             line,
-            std::ffi::CStr::from_ptr(opus_get_version_string() as _)
-                .to_str()
-                .unwrap()
+            opus_get_version_string()
         );
         eprintln!("and any relevant details about your system.");
         panic!("test failed");

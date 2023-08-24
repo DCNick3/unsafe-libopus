@@ -17,9 +17,7 @@ pub mod test_opus_common_h {
             iseed,
             std::ffi::CStr::from_ptr(file as _).to_str().unwrap(),
             line,
-            std::ffi::CStr::from_ptr(opus_get_version_string() as _)
-                .to_str()
-                .unwrap()
+            opus_get_version_string()
         );
         eprintln!("and any relevant details about your system.");
         panic!("test failed");
@@ -63,17 +61,10 @@ pub unsafe fn test_overflow() -> i32 {
     1
 }
 unsafe fn main_0() -> i32 {
-    let mut oversion: *const i8 = std::ptr::null::<i8>();
     let mut _tests: i32 = 0;
     iseed = 0;
-    oversion = opus_get_version_string();
-    if oversion.is_null() {
-        _test_failed(b"tests/test_opus_padding.c\0" as *const u8 as *const i8, 85);
-    }
-    eprintln!(
-        "Testing {} padding.",
-        std::ffi::CStr::from_ptr(oversion as _).to_str().unwrap()
-    );
+    let oversion = opus_get_version_string();
+    eprintln!("Testing {} padding.", oversion);
     _tests += test_overflow();
     eprintln!("All padding tests passed.");
     0

@@ -200,23 +200,25 @@ pub unsafe fn init_caps(m: *const OpusCustomMode, cap: *mut i32, LM: i32, C: i32
         i += 1;
     }
 }
-pub unsafe fn opus_strerror(error: i32) -> *const i8 {
-    static mut error_strings: [*const i8; 8] = [
-        b"success\0" as *const u8 as *const i8,
-        b"invalid argument\0" as *const u8 as *const i8,
-        b"buffer too small\0" as *const u8 as *const i8,
-        b"internal error\0" as *const u8 as *const i8,
-        b"corrupted stream\0" as *const u8 as *const i8,
-        b"request not implemented\0" as *const u8 as *const i8,
-        b"invalid state\0" as *const u8 as *const i8,
-        b"memory allocation failed\0" as *const u8 as *const i8,
+
+pub fn opus_strerror(error: i32) -> &'static str {
+    static error_strings: [&str; 8] = [
+        "success (0)",
+        "invalid argument (-1)",
+        "buffer too small (-2)",
+        "internal error (-3)",
+        "corrupted stream (-4)",
+        "request not implemented (-5)",
+        "invalid state (-6)",
+        "memory allocation failed (-7)",
     ];
-    if error > 0 || error < -(7) {
-        return b"unknown error\0" as *const u8 as *const i8;
+    if error > 0 || error < -7 {
+        "unknown error"
     } else {
-        return error_strings[-error as usize];
-    };
+        error_strings[-error as usize]
+    }
 }
-pub unsafe fn opus_get_version_string() -> *const i8 {
-    return b"unsafe-libopus (rust port) 1.3.1\0" as *const u8 as *const i8;
+
+pub fn opus_get_version_string() -> &'static str {
+    "unsafe-libopus (rust port) 1.3.1"
 }

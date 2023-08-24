@@ -76,9 +76,7 @@ pub mod test_opus_common_h {
             iseed,
             std::ffi::CStr::from_ptr(file as _).to_str().unwrap(),
             line,
-            std::ffi::CStr::from_ptr(opus_get_version_string() as _)
-                .to_str()
-                .unwrap()
+            opus_get_version_string()
         );
         eprintln!("and any relevant details about your system.");
         panic!("test failed");
@@ -806,12 +804,10 @@ unsafe fn main_0() -> i32 {
     Rw = Rz;
 
     let oversion = opus_get_version_string();
-    if oversion.is_null() {
-        _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 450);
-    }
+
     eprintln!(
         "Testing {} decoder. Random seed: {} ({:4X})",
-        std::ffi::CStr::from_ptr(oversion as _).to_str().unwrap(),
+        oversion,
         iseed,
         (fast_rand() % 65535)
     );

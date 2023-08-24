@@ -15,9 +15,7 @@ pub mod test_opus_common_h {
             "'make check fails {} at line {} for {}'",
             std::ffi::CStr::from_ptr(file as _).to_str().unwrap(),
             line,
-            std::ffi::CStr::from_ptr(opus_get_version_string() as _)
-                .to_str()
-                .unwrap()
+            opus_get_version_string()
         );
         eprintln!("and any relevant details about your system.");
         panic!("test failed");
@@ -2898,22 +2896,11 @@ pub unsafe fn test_malloc_fail() -> i32 {
 
 unsafe fn main_0() -> i32 {
     let mut total: i32 = 0;
-    let mut oversion: *const i8 = std::ptr::null::<i8>();
-    oversion = opus_get_version_string();
-    if oversion.is_null() {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1887);
-    }
-    eprintln!(
-        "Testing the {} API deterministically",
-        std::ffi::CStr::from_ptr(oversion as _).to_str().unwrap()
-    );
-    if (opus_strerror(-(32768))).is_null() {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1889);
-    }
-    if (opus_strerror(32767)).is_null() {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1890);
-    }
-    if std::ffi::CStr::from_ptr(opus_strerror(0)).to_bytes().len() < 1 {
+    let oversion = opus_get_version_string();
+    eprintln!("Testing the {} API deterministically", oversion);
+    opus_strerror(-(32768));
+    opus_strerror(32767);
+    if opus_strerror(0).len() < 1 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1891);
     }
     total = 4;

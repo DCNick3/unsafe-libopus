@@ -4,7 +4,6 @@
 #![allow(unused_assignments)]
 #![allow(unused_mut)]
 
-use std::ffi::CStr;
 use std::fs::File;
 use std::io::{Read, Seek, Write};
 
@@ -105,9 +104,7 @@ unsafe fn main_0() -> i32 {
                         len[i as usize],
                     );
                     if err != 0 {
-                        let err = CStr::from_ptr(opus_strerror(err) as _);
-                        let err = err.to_str().unwrap();
-                        eprintln!("opus_repacketizer_cat() failed: {}", err);
+                        eprintln!("opus_repacketizer_cat() failed: {}", opus_strerror(err));
                         break;
                     } else {
                         i += 1;
@@ -130,9 +127,7 @@ unsafe fn main_0() -> i32 {
 
                 fout.write_all(&output_packet[..err as usize]).unwrap();
             } else {
-                let err = CStr::from_ptr(opus_strerror(err) as _);
-                let err = err.to_str().unwrap();
-                eprintln!("opus_repacketizer_out() failed: {}", err);
+                eprintln!("opus_repacketizer_out() failed: {}", opus_strerror(err));
             }
         } else {
             let mut nb_frames: i32 = opus_repacketizer_get_nb_frames(rp);
@@ -151,9 +146,10 @@ unsafe fn main_0() -> i32 {
 
                     fout.write_all(&output_packet[..err as usize]).unwrap();
                 } else {
-                    let err = CStr::from_ptr(opus_strerror(err) as _);
-                    let err = err.to_str().unwrap();
-                    eprintln!("opus_repacketizer_out_range() failed: {}", err);
+                    eprintln!(
+                        "opus_repacketizer_out_range() failed: {}",
+                        opus_strerror(err)
+                    );
                 }
                 i += 1;
             }
