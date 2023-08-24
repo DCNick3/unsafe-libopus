@@ -156,7 +156,6 @@ mod silk {
     pub mod SigProc_FIX;
     pub mod define;
     pub mod macros;
-    pub mod resampler_structs;
     pub mod structs;
 } // mod silk
 

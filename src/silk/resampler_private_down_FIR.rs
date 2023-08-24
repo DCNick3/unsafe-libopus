@@ -3,114 +3,82 @@ pub mod typedef_h {
     pub const silk_int16_MIN: i32 = i16::MIN as i32;
 }
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
-use crate::externs::memcpy;
+use crate::silk::resampler::{
+    silk_resampler_state_struct, SILK_RESAMPLER_MAX_FIR_ORDER, SILK_RESAMPLER_MAX_IIR_ORDER,
+};
 use crate::silk::resampler_private_AR2::silk_resampler_private_AR2;
 use crate::silk::resampler_rom::{
     RESAMPLER_DOWN_ORDER_FIR0, RESAMPLER_DOWN_ORDER_FIR1, RESAMPLER_DOWN_ORDER_FIR2,
 };
-use crate::silk::resampler_structs::silk_resampler_state_struct;
+
+pub struct ResamplerDownFirParams {
+    fir_order: i32,
+    fir_fracs: i32,
+    coefs: &'static [i16],
+}
+
+pub struct ResamplerDownFirState {
+    iir_state: [i32; SILK_RESAMPLER_MAX_IIR_ORDER],
+    fir_state: [i32; SILK_RESAMPLER_MAX_FIR_ORDER],
+}
+
+impl Default for ResamplerDownFirState {
+    fn default() -> Self {
+        ResamplerDownFirState {
+            iir_state: [0; SILK_RESAMPLER_MAX_IIR_ORDER],
+            fir_state: [0; SILK_RESAMPLER_MAX_FIR_ORDER],
+        }
+    }
+}
 
 #[inline]
-unsafe fn silk_resampler_private_down_FIR_INTERPOL(
-    mut out: *mut i16,
-    buf: *mut i32,
-    FIR_Coefs: *const i16,
+fn silk_resampler_private_down_FIR_INTERPOL<'a>(
+    mut out: &'a mut [i16],
+    buf: &[i32],
+    FIR_Coefs: &[i16],
     FIR_Order: i32,
     FIR_Fracs: i32,
     max_index_Q16: i32,
     index_increment_Q16: i32,
-) -> *mut i16 {
-    let mut index_Q16: i32 = 0;
-    let mut res_Q6: i32 = 0;
-    let mut buf_ptr: *mut i32 = 0 as *mut i32;
-    let mut interpol_ind: i32 = 0;
-    let mut interpol_ptr: *const i16 = 0 as *const i16;
+) -> &'a mut [i16] {
     match FIR_Order {
         RESAMPLER_DOWN_ORDER_FIR0 => {
-            index_Q16 = 0;
+            let mut index_Q16 = 0;
             while index_Q16 < max_index_Q16 {
-                buf_ptr = buf.offset((index_Q16 >> 16) as isize);
-                interpol_ind = ((index_Q16 & 0xffff) as i64 * FIR_Fracs as i16 as i64 >> 16) as i32;
-                interpol_ptr = &*FIR_Coefs
-                    .offset((RESAMPLER_DOWN_ORDER_FIR0 / 2 * interpol_ind) as isize)
-                    as *const i16;
-                res_Q6 = (*buf_ptr.offset(0 as isize) as i64
-                    * *interpol_ptr.offset(0 as isize) as i64
-                    >> 16) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + (*buf_ptr.offset(1 as isize) as i64
-                        * *interpol_ptr.offset(1 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + (*buf_ptr.offset(2 as isize) as i64
-                        * *interpol_ptr.offset(2 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + (*buf_ptr.offset(3 as isize) as i64
-                        * *interpol_ptr.offset(3 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + (*buf_ptr.offset(4 as isize) as i64
-                        * *interpol_ptr.offset(4 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + (*buf_ptr.offset(5 as isize) as i64
-                        * *interpol_ptr.offset(5 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + (*buf_ptr.offset(6 as isize) as i64
-                        * *interpol_ptr.offset(6 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + (*buf_ptr.offset(7 as isize) as i64
-                        * *interpol_ptr.offset(7 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + (*buf_ptr.offset(8 as isize) as i64
-                        * *interpol_ptr.offset(8 as isize) as i64
-                        >> 16)) as i32;
-                interpol_ptr = &*FIR_Coefs.offset(
-                    (RESAMPLER_DOWN_ORDER_FIR0 / 2 * (FIR_Fracs - 1 - interpol_ind)) as isize,
-                ) as *const i16;
-                res_Q6 = (res_Q6 as i64
-                    + (*buf_ptr.offset(17 as isize) as i64
-                        * *interpol_ptr.offset(0 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + (*buf_ptr.offset(16 as isize) as i64
-                        * *interpol_ptr.offset(1 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + (*buf_ptr.offset(15 as isize) as i64
-                        * *interpol_ptr.offset(2 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + (*buf_ptr.offset(14 as isize) as i64
-                        * *interpol_ptr.offset(3 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + (*buf_ptr.offset(13 as isize) as i64
-                        * *interpol_ptr.offset(4 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + (*buf_ptr.offset(12 as isize) as i64
-                        * *interpol_ptr.offset(5 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + (*buf_ptr.offset(11 as isize) as i64
-                        * *interpol_ptr.offset(6 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + (*buf_ptr.offset(10 as isize) as i64
-                        * *interpol_ptr.offset(7 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + (*buf_ptr.offset(9 as isize) as i64
-                        * *interpol_ptr.offset(8 as isize) as i64
-                        >> 16)) as i32;
-                let fresh0 = out;
-                out = out.offset(1);
-                *fresh0 = (if (if 6 == 1 {
+                /* Integer part gives pointer to buffered input */
+                let buf_ptr = &buf[(index_Q16 >> 16) as usize..];
+
+                /* Fractional part gives interpolation coefficients */
+                let interpol_ind =
+                    (((index_Q16 & 0xffff) as i64 * FIR_Fracs as i16 as i64) >> 16) as usize;
+
+                /* Inner product */
+                let interpol_ptr =
+                    &FIR_Coefs[(RESAMPLER_DOWN_ORDER_FIR0 as usize / 2 * interpol_ind)..];
+                let mut res_Q6 = ((buf_ptr[0] as i64 * interpol_ptr[0] as i64) >> 16) as i32;
+                res_Q6 += ((buf_ptr[1] as i64 * interpol_ptr[1] as i64) >> 16) as i32;
+                res_Q6 += ((buf_ptr[2] as i64 * interpol_ptr[2] as i64) >> 16) as i32;
+                res_Q6 += ((buf_ptr[3] as i64 * interpol_ptr[3] as i64) >> 16) as i32;
+                res_Q6 += ((buf_ptr[4] as i64 * interpol_ptr[4] as i64) >> 16) as i32;
+                res_Q6 += ((buf_ptr[5] as i64 * interpol_ptr[5] as i64) >> 16) as i32;
+                res_Q6 += ((buf_ptr[6] as i64 * interpol_ptr[6] as i64) >> 16) as i32;
+                res_Q6 += ((buf_ptr[7] as i64 * interpol_ptr[7] as i64) >> 16) as i32;
+                res_Q6 += ((buf_ptr[8] as i64 * interpol_ptr[8] as i64) >> 16) as i32;
+
+                let interpol_ptr = &FIR_Coefs[(RESAMPLER_DOWN_ORDER_FIR0 as usize / 2
+                    * (FIR_Fracs as usize - 1 - interpol_ind))..];
+                res_Q6 += ((buf_ptr[17] as i64 * interpol_ptr[0] as i64) >> 16) as i32;
+                res_Q6 += ((buf_ptr[16] as i64 * interpol_ptr[1] as i64) >> 16) as i32;
+                res_Q6 += ((buf_ptr[15] as i64 * interpol_ptr[2] as i64) >> 16) as i32;
+                res_Q6 += ((buf_ptr[14] as i64 * interpol_ptr[3] as i64) >> 16) as i32;
+                res_Q6 += ((buf_ptr[13] as i64 * interpol_ptr[4] as i64) >> 16) as i32;
+                res_Q6 += ((buf_ptr[12] as i64 * interpol_ptr[5] as i64) >> 16) as i32;
+                res_Q6 += ((buf_ptr[11] as i64 * interpol_ptr[6] as i64) >> 16) as i32;
+                res_Q6 += ((buf_ptr[10] as i64 * interpol_ptr[7] as i64) >> 16) as i32;
+                res_Q6 += (buf_ptr[9] as i64 * interpol_ptr[8] as i64 >> 16) as i32;
+
+                /* Scale down, saturate and store in output array */
+                out[0] = (if (if 6 == 1 {
                     (res_Q6 >> 1) + (res_Q6 & 1)
                 } else {
                     (res_Q6 >> 6 - 1) + 1 >> 1
@@ -129,63 +97,34 @@ unsafe fn silk_resampler_private_down_FIR_INTERPOL(
                 } else {
                     (res_Q6 >> 6 - 1) + 1 >> 1
                 }) as i16;
+                out = &mut out[1..];
+
                 index_Q16 += index_increment_Q16;
             }
         }
         RESAMPLER_DOWN_ORDER_FIR1 => {
-            index_Q16 = 0;
+            let mut index_Q16 = 0;
             while index_Q16 < max_index_Q16 {
-                buf_ptr = buf.offset((index_Q16 >> 16) as isize);
-                res_Q6 = ((*buf_ptr.offset(0 as isize) + *buf_ptr.offset(23 as isize)) as i64
-                    * *FIR_Coefs.offset(0 as isize) as i64
-                    >> 16) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(1 as isize) + *buf_ptr.offset(22 as isize)) as i64
-                        * *FIR_Coefs.offset(1 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(2 as isize) + *buf_ptr.offset(21 as isize)) as i64
-                        * *FIR_Coefs.offset(2 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(3 as isize) + *buf_ptr.offset(20 as isize)) as i64
-                        * *FIR_Coefs.offset(3 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(4 as isize) + *buf_ptr.offset(19 as isize)) as i64
-                        * *FIR_Coefs.offset(4 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(5 as isize) + *buf_ptr.offset(18 as isize)) as i64
-                        * *FIR_Coefs.offset(5 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(6 as isize) + *buf_ptr.offset(17 as isize)) as i64
-                        * *FIR_Coefs.offset(6 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(7 as isize) + *buf_ptr.offset(16 as isize)) as i64
-                        * *FIR_Coefs.offset(7 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(8 as isize) + *buf_ptr.offset(15 as isize)) as i64
-                        * *FIR_Coefs.offset(8 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(9 as isize) + *buf_ptr.offset(14 as isize)) as i64
-                        * *FIR_Coefs.offset(9 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(10 as isize) + *buf_ptr.offset(13 as isize)) as i64
-                        * *FIR_Coefs.offset(10 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(11 as isize) + *buf_ptr.offset(12 as isize)) as i64
-                        * *FIR_Coefs.offset(11 as isize) as i64
-                        >> 16)) as i32;
-                let fresh1 = out;
-                out = out.offset(1);
-                *fresh1 = (if (if 6 == 1 {
+                /* Integer part gives pointer to buffered input */
+                let buf_ptr = &buf[(index_Q16 >> 16) as usize..];
+
+                let mut res_Q6 =
+                    (((buf_ptr[0] + buf_ptr[23]) as i64 * FIR_Coefs[0] as i64) >> 16) as i32;
+                res_Q6 += (((buf_ptr[1] + buf_ptr[22]) as i64 * FIR_Coefs[1] as i64) >> 16) as i32;
+                res_Q6 += (((buf_ptr[2] + buf_ptr[21]) as i64 * FIR_Coefs[2] as i64) >> 16) as i32;
+                res_Q6 += (((buf_ptr[3] + buf_ptr[20]) as i64 * FIR_Coefs[3] as i64) >> 16) as i32;
+                res_Q6 += (((buf_ptr[4] + buf_ptr[19]) as i64 * FIR_Coefs[4] as i64) >> 16) as i32;
+                res_Q6 += (((buf_ptr[5] + buf_ptr[18]) as i64 * FIR_Coefs[5] as i64) >> 16) as i32;
+                res_Q6 += (((buf_ptr[6] + buf_ptr[17]) as i64 * FIR_Coefs[6] as i64) >> 16) as i32;
+                res_Q6 += (((buf_ptr[7] + buf_ptr[16]) as i64 * FIR_Coefs[7] as i64) >> 16) as i32;
+                res_Q6 += (((buf_ptr[8] + buf_ptr[15]) as i64 * FIR_Coefs[8] as i64) >> 16) as i32;
+                res_Q6 += (((buf_ptr[9] + buf_ptr[14]) as i64 * FIR_Coefs[9] as i64) >> 16) as i32;
+                res_Q6 +=
+                    (((buf_ptr[10] + buf_ptr[13]) as i64 * FIR_Coefs[10] as i64) >> 16) as i32;
+                res_Q6 +=
+                    (((buf_ptr[11] + buf_ptr[12]) as i64 * FIR_Coefs[11] as i64) >> 16) as i32;
+
+                out[0] = (if (if 6 == 1 {
                     (res_Q6 >> 1) + (res_Q6 & 1)
                 } else {
                     (res_Q6 >> 6 - 1) + 1 >> 1
@@ -204,87 +143,46 @@ unsafe fn silk_resampler_private_down_FIR_INTERPOL(
                 } else {
                     (res_Q6 >> 6 - 1) + 1 >> 1
                 }) as i16;
+                out = &mut out[1..];
+
                 index_Q16 += index_increment_Q16;
             }
         }
         RESAMPLER_DOWN_ORDER_FIR2 => {
-            index_Q16 = 0;
+            let mut index_Q16 = 0;
             while index_Q16 < max_index_Q16 {
-                buf_ptr = buf.offset((index_Q16 >> 16) as isize);
-                res_Q6 = ((*buf_ptr.offset(0 as isize) + *buf_ptr.offset(35 as isize)) as i64
-                    * *FIR_Coefs.offset(0 as isize) as i64
-                    >> 16) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(1 as isize) + *buf_ptr.offset(34 as isize)) as i64
-                        * *FIR_Coefs.offset(1 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(2 as isize) + *buf_ptr.offset(33 as isize)) as i64
-                        * *FIR_Coefs.offset(2 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(3 as isize) + *buf_ptr.offset(32 as isize)) as i64
-                        * *FIR_Coefs.offset(3 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(4 as isize) + *buf_ptr.offset(31 as isize)) as i64
-                        * *FIR_Coefs.offset(4 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(5 as isize) + *buf_ptr.offset(30 as isize)) as i64
-                        * *FIR_Coefs.offset(5 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(6 as isize) + *buf_ptr.offset(29 as isize)) as i64
-                        * *FIR_Coefs.offset(6 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(7 as isize) + *buf_ptr.offset(28 as isize)) as i64
-                        * *FIR_Coefs.offset(7 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(8 as isize) + *buf_ptr.offset(27 as isize)) as i64
-                        * *FIR_Coefs.offset(8 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(9 as isize) + *buf_ptr.offset(26 as isize)) as i64
-                        * *FIR_Coefs.offset(9 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(10 as isize) + *buf_ptr.offset(25 as isize)) as i64
-                        * *FIR_Coefs.offset(10 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(11 as isize) + *buf_ptr.offset(24 as isize)) as i64
-                        * *FIR_Coefs.offset(11 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(12 as isize) + *buf_ptr.offset(23 as isize)) as i64
-                        * *FIR_Coefs.offset(12 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(13 as isize) + *buf_ptr.offset(22 as isize)) as i64
-                        * *FIR_Coefs.offset(13 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(14 as isize) + *buf_ptr.offset(21 as isize)) as i64
-                        * *FIR_Coefs.offset(14 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(15 as isize) + *buf_ptr.offset(20 as isize)) as i64
-                        * *FIR_Coefs.offset(15 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(16 as isize) + *buf_ptr.offset(19 as isize)) as i64
-                        * *FIR_Coefs.offset(16 as isize) as i64
-                        >> 16)) as i32;
-                res_Q6 = (res_Q6 as i64
-                    + ((*buf_ptr.offset(17 as isize) + *buf_ptr.offset(18 as isize)) as i64
-                        * *FIR_Coefs.offset(17 as isize) as i64
-                        >> 16)) as i32;
-                let fresh2 = out;
-                out = out.offset(1);
-                *fresh2 = (if (if 6 == 1 {
+                /* Integer part gives pointer to buffered input */
+                let buf_ptr = &buf[(index_Q16 >> 16) as usize..];
+
+                let mut res_Q6 =
+                    (((buf_ptr[0] + buf_ptr[35]) as i64 * FIR_Coefs[0] as i64) >> 16) as i32;
+                res_Q6 += (((buf_ptr[1] + buf_ptr[34]) as i64 * FIR_Coefs[1] as i64) >> 16) as i32;
+                res_Q6 += (((buf_ptr[2] + buf_ptr[33]) as i64 * FIR_Coefs[2] as i64) >> 16) as i32;
+                res_Q6 += (((buf_ptr[3] + buf_ptr[32]) as i64 * FIR_Coefs[3] as i64) >> 16) as i32;
+                res_Q6 += (((buf_ptr[4] + buf_ptr[31]) as i64 * FIR_Coefs[4] as i64) >> 16) as i32;
+                res_Q6 += (((buf_ptr[5] + buf_ptr[30]) as i64 * FIR_Coefs[5] as i64) >> 16) as i32;
+                res_Q6 += (((buf_ptr[6] + buf_ptr[29]) as i64 * FIR_Coefs[6] as i64) >> 16) as i32;
+                res_Q6 += (((buf_ptr[7] + buf_ptr[28]) as i64 * FIR_Coefs[7] as i64) >> 16) as i32;
+                res_Q6 += (((buf_ptr[8] + buf_ptr[27]) as i64 * FIR_Coefs[8] as i64) >> 16) as i32;
+                res_Q6 += (((buf_ptr[9] + buf_ptr[26]) as i64 * FIR_Coefs[9] as i64) >> 16) as i32;
+                res_Q6 +=
+                    (((buf_ptr[10] + buf_ptr[25]) as i64 * FIR_Coefs[10] as i64) >> 16) as i32;
+                res_Q6 +=
+                    (((buf_ptr[11] + buf_ptr[24]) as i64 * FIR_Coefs[11] as i64) >> 16) as i32;
+                res_Q6 +=
+                    (((buf_ptr[12] + buf_ptr[23]) as i64 * FIR_Coefs[12] as i64) >> 16) as i32;
+                res_Q6 +=
+                    (((buf_ptr[13] + buf_ptr[22]) as i64 * FIR_Coefs[13] as i64) >> 16) as i32;
+                res_Q6 +=
+                    (((buf_ptr[14] + buf_ptr[21]) as i64 * FIR_Coefs[14] as i64) >> 16) as i32;
+                res_Q6 +=
+                    (((buf_ptr[15] + buf_ptr[20]) as i64 * FIR_Coefs[15] as i64) >> 16) as i32;
+                res_Q6 +=
+                    (((buf_ptr[16] + buf_ptr[19]) as i64 * FIR_Coefs[16] as i64) >> 16) as i32;
+                res_Q6 +=
+                    (((buf_ptr[17] + buf_ptr[18]) as i64 * FIR_Coefs[17] as i64) >> 16) as i32;
+
+                out[0] = (if (if 6 == 1 {
                     (res_Q6 >> 1) + (res_Q6 & 1)
                 } else {
                     (res_Q6 >> 6 - 1) + 1 >> 1
@@ -303,73 +201,55 @@ unsafe fn silk_resampler_private_down_FIR_INTERPOL(
                 } else {
                     (res_Q6 >> 6 - 1) + 1 >> 1
                 }) as i16;
+                out = &mut out[1..];
+
                 index_Q16 += index_increment_Q16;
             }
         }
-        _ => {
-            panic!("libopus: assert(0) called");
-        }
+        _ => unreachable!(),
     }
-    return out;
+
+    out
 }
+
 pub unsafe fn silk_resampler_private_down_FIR(
-    SS: *mut core::ffi::c_void,
-    mut out: *mut i16,
-    mut in_0: *const i16,
-    mut inLen: i32,
+    S: &mut silk_resampler_state_struct,
+    mut out: &mut [i16],
+    mut in_0: &[i16],
 ) {
-    let S: *mut silk_resampler_state_struct = SS as *mut silk_resampler_state_struct;
-    let mut nSamplesIn: i32 = 0;
-    let mut max_index_Q16: i32 = 0;
-    let mut index_increment_Q16: i32 = 0;
-    let mut FIR_Coefs: *const i16 = 0 as *const i16;
-    let vla = ((*S).batchSize + (*S).FIR_Order) as usize;
-    let mut buf: Vec<i32> = ::std::vec::from_elem(0, vla);
-    memcpy(
-        buf.as_mut_ptr() as *mut core::ffi::c_void,
-        ((*S).sFIR.i32_0).as_mut_ptr() as *const core::ffi::c_void,
-        ((*S).FIR_Order as u64).wrapping_mul(::core::mem::size_of::<i32>() as u64),
-    );
-    FIR_Coefs = &*((*S).Coefs).as_ptr().offset(2 as isize) as *const i16;
-    index_increment_Q16 = (*S).invRatio_Q16;
+    let mut nSamplesIn: usize = 0;
+
+    let mut buf: Vec<i32> = ::std::vec::from_elem(0, (S.batchSize + S.FIR_Order) as usize);
+
+    buf[..S.FIR_Order as usize].copy_from_slice(&S.sFIR.i32_0[..S.FIR_Order as usize]);
+
+    let FIR_Coefs = &S.Coefs[2..];
+    let index_increment_Q16 = S.invRatio_Q16;
     loop {
-        nSamplesIn = if inLen < (*S).batchSize {
-            inLen
-        } else {
-            (*S).batchSize
-        };
+        nSamplesIn = in_0.len().min(S.batchSize as usize);
         silk_resampler_private_AR2(
-            ((*S).sIIR).as_mut_ptr(),
-            &mut *buf.as_mut_ptr().offset((*S).FIR_Order as isize),
-            in_0,
-            (*S).Coefs.as_ptr(),
-            nSamplesIn,
+            &mut S.sIIR,
+            &mut buf[S.FIR_Order as usize..][..nSamplesIn],
+            &in_0[..nSamplesIn],
+            S.Coefs,
         );
-        max_index_Q16 = ((nSamplesIn as u32) << 16) as i32;
+        let max_index_Q16 = ((nSamplesIn as u32) << 16) as i32;
         out = silk_resampler_private_down_FIR_INTERPOL(
             out,
-            buf.as_mut_ptr(),
+            &buf,
             FIR_Coefs,
-            (*S).FIR_Order,
-            (*S).FIR_Fracs,
+            S.FIR_Order,
+            S.FIR_Fracs,
             max_index_Q16,
             index_increment_Q16,
         );
-        in_0 = in_0.offset(nSamplesIn as isize);
-        inLen -= nSamplesIn;
-        if !(inLen > 1) {
+        in_0 = &in_0[nSamplesIn..];
+        if in_0.is_empty() {
             break;
         }
-        memcpy(
-            buf.as_mut_ptr() as *mut core::ffi::c_void,
-            &mut *buf.as_mut_ptr().offset(nSamplesIn as isize) as *mut i32
-                as *const core::ffi::c_void,
-            ((*S).FIR_Order as u64).wrapping_mul(::core::mem::size_of::<i32>() as u64),
-        );
+
+        buf.copy_within(nSamplesIn..nSamplesIn + S.FIR_Order as usize, 0);
     }
-    memcpy(
-        ((*S).sFIR.i32_0).as_mut_ptr() as *mut core::ffi::c_void,
-        &mut *buf.as_mut_ptr().offset(nSamplesIn as isize) as *mut i32 as *const core::ffi::c_void,
-        ((*S).FIR_Order as u64).wrapping_mul(::core::mem::size_of::<i32>() as u64),
-    );
+    S.sFIR.i32_0[..S.FIR_Order as usize]
+        .copy_from_slice(&buf[nSamplesIn..nSamplesIn + S.FIR_Order as usize]);
 }

@@ -176,7 +176,7 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
             6_u64.wrapping_mul(::core::mem::size_of::<i32>() as u64),
         );
         silk_resampler_down2_3(
-            filt_state.as_mut_ptr(),
+            &mut filt_state,
             frame_8_FIX.as_mut_ptr(),
             frame_12_FIX.as_mut_ptr(),
             frame_length,

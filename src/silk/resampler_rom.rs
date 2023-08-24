@@ -1,11 +1,13 @@
 pub const RESAMPLER_DOWN_ORDER_FIR2: i32 = 36;
 pub const RESAMPLER_DOWN_ORDER_FIR1: i32 = 24;
 pub const RESAMPLER_DOWN_ORDER_FIR0: i32 = 18;
-pub const RESAMPLER_ORDER_FIR_12: i32 = 8;
+pub const RESAMPLER_ORDER_FIR_12: usize = 8;
 
+/* Tables for 2x downsampler */
 pub const silk_resampler_down2_0: i16 = 9872;
 pub const silk_resampler_down2_1: i16 = (39809 - 65536) as i16;
 
+/* Tables for 2x upsampler, high quality */
 pub const silk_resampler_up2_hq_0: [i16; 3] = [1746, 14986, (39083 - 65536) as i16];
 pub const silk_resampler_up2_hq_1: [i16; 3] = [6854, 25769, (55542 - 65536) as i16];
 
@@ -39,6 +41,8 @@ pub static silk_Resampler_1_6_COEFS: [i16; 20] = [
     27540, -15257, 17, 12, 8, 1, -10, -22, -30, -32, -22, 3, 44, 100, 168, 243, 317, 381, 429, 455,
 ];
 pub static silk_Resampler_2_3_COEFS_LQ: [i16; 6] = [-2797, -6507, 4697, 10739, 1567, 8276];
+
+/* Table with interplation fractions of 1/24, 3/24, ..., 23/24 */
 pub static silk_resampler_frac_FIR_12: [[i16; 4]; 12] = [
     [189, -600, 617, 30567],
     [117, -159, -1070, 29704],

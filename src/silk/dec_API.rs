@@ -30,7 +30,7 @@ use crate::silk::define::{
 };
 use crate::silk::init_decoder::silk_init_decoder;
 use crate::silk::resampler::silk_resampler;
-use crate::silk::resampler_structs::silk_resampler_state_struct;
+use crate::silk::resampler::silk_resampler_state_struct;
 use crate::silk::stereo_MS_to_LR::silk_stereo_MS_to_LR;
 use crate::silk::stereo_decode_pred::{silk_stereo_decode_mid_only, silk_stereo_decode_pred};
 use crate::silk::structs::{silk_decoder_state, stereo_dec_state};

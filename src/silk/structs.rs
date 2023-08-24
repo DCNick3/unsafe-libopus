@@ -1,4 +1,4 @@
-use crate::silk::resampler_structs::silk_resampler_state_struct;
+use crate::silk::resampler::silk_resampler_state_struct;
 
 #[derive(Copy, Clone)]
 #[repr(C)]

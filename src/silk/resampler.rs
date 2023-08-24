@@ -1,15 +1,15 @@
 use crate::externs::memcpy;
-use crate::silk::resampler_private_IIR_FIR::silk_resampler_private_IIR_FIR;
-use crate::silk::resampler_private_down_FIR::silk_resampler_private_down_FIR;
-use crate::silk::resampler_private_up2_HQ::silk_resampler_private_up2_HQ_wrapper;
+use crate::silk::resampler_private_IIR_FIR::{
+    silk_resampler_private_IIR_FIR, ResamplerIirFirState,
+};
+use crate::silk::resampler_private_down_FIR::{
+    silk_resampler_private_down_FIR, ResamplerDownFirState,
+};
+use crate::silk::resampler_private_up2_HQ::{silk_resampler_private_up2_HQ, ResamplerUp2HqState};
 use crate::silk::resampler_rom::{
     silk_Resampler_1_2_COEFS, silk_Resampler_1_3_COEFS, silk_Resampler_1_4_COEFS,
     silk_Resampler_1_6_COEFS, silk_Resampler_2_3_COEFS, silk_Resampler_3_4_COEFS,
     RESAMPLER_DOWN_ORDER_FIR0, RESAMPLER_DOWN_ORDER_FIR1, RESAMPLER_DOWN_ORDER_FIR2,
-};
-use crate::silk::resampler_structs::{
-    sFIR_union, silk_resampler_state_struct, SILK_RESAMPLER_MAX_FIR_ORDER,
-    SILK_RESAMPLER_MAX_IIR_ORDER,
 };
 
 pub const RESAMPLER_MAX_BATCH_SIZE_MS: i32 = 10;
@@ -66,6 +66,49 @@ const USE_silk_resampler_private_up2_HQ_wrapper: i32 = 1;
 const USE_silk_resampler_private_IIR_FIR: i32 = 2;
 const USE_silk_resampler_private_down_FIR: i32 = 3;
 
+pub const SILK_RESAMPLER_MAX_FIR_ORDER: usize = 36;
+pub const SILK_RESAMPLER_MAX_IIR_ORDER: usize = 6;
+
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct silk_resampler_state_struct {
+    pub sIIR: [i32; SILK_RESAMPLER_MAX_IIR_ORDER],
+    pub sFIR: sFIR_union,
+    pub delayBuf: [i16; 48],
+    pub resampler_function: i32,
+    pub batchSize: i32,
+    pub invRatio_Q16: i32,
+    pub FIR_Order: i32,
+    pub FIR_Fracs: i32,
+    pub Fs_in_kHz: i32,
+    pub Fs_out_kHz: i32,
+    pub inputDelay: i32,
+    pub Coefs: &'static [i16],
+}
+
+struct ResamplerParams {
+    batch_size: i32,
+    inv_ratio_q16: i32,
+    fs_in_khz: i32,
+    fs_out_khz: i32,
+    input_delay: i32,
+}
+
+/// Includes the resampler mode, as well as the necessary params and state
+enum ResamplerMode {
+    Copy,
+    Up2Hq(ResamplerUp2HqState),
+    IirFir(ResamplerIirFirState),
+    DownFir(ResamplerDownFirState),
+}
+
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub union sFIR_union {
+    pub i32_0: [i32; SILK_RESAMPLER_MAX_FIR_ORDER],
+    pub i16_0: [i16; SILK_RESAMPLER_MAX_FIR_ORDER],
+}
+
 pub fn silk_resampler_init(
     Fs_Hz_in: i32,
     Fs_Hz_out: i32,
@@ -105,13 +148,18 @@ pub fn silk_resampler_init(
 
     let mut up2x = 0;
     let resampler_function = if Fs_Hz_out > Fs_Hz_in {
+        /* Upsample */
+        /* Fs_out : Fs_in = 2 : 1 */
         if Fs_Hz_out == Fs_Hz_in * 2 {
+            /* Special case: directly use 2x upsampler */
             USE_silk_resampler_private_up2_HQ_wrapper
         } else {
+            /* Default resampler */
             up2x = 1;
             USE_silk_resampler_private_IIR_FIR
         }
     } else if Fs_Hz_out < Fs_Hz_in {
+        /* Downsample */
         if Fs_Hz_out * 4 == Fs_Hz_in * 3 {
             FIR_Fracs = 3;
             FIR_Order = RESAMPLER_DOWN_ORDER_FIR0;
@@ -176,84 +224,109 @@ pub fn silk_resampler_init(
     }
 }
 
+/* Resampler: convert from one sampling rate to another */
+/* Input and output sampling rate are at most 48000 Hz  */
 pub unsafe fn silk_resampler(
-    S: *mut silk_resampler_state_struct,
+    S: &mut silk_resampler_state_struct,
     out: *mut i16,
     in_0: *const i16,
     inLen: i32,
 ) -> i32 {
     let mut nSamples: i32 = 0;
-    assert!(inLen >= (*S).Fs_in_kHz);
-    assert!((*S).inputDelay <= (*S).Fs_in_kHz);
-    nSamples = (*S).Fs_in_kHz - (*S).inputDelay;
+    /* Need at least 1 ms of input data */
+    assert!(inLen >= S.Fs_in_kHz);
+    /* Delay can't exceed the 1 ms of buffering */
+    assert!(S.inputDelay <= S.Fs_in_kHz);
+
+    nSamples = S.Fs_in_kHz - S.inputDelay;
+
+    /* Copy to delay buffer */
     memcpy(
-        &mut *((*S).delayBuf)
-            .as_mut_ptr()
-            .offset((*S).inputDelay as isize) as *mut i16 as *mut core::ffi::c_void,
+        &mut *(S.delayBuf).as_mut_ptr().offset(S.inputDelay as isize) as *mut i16
+            as *mut core::ffi::c_void,
         in_0 as *const core::ffi::c_void,
         (nSamples as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
     );
-    match (*S).resampler_function {
+
+    match S.resampler_function {
         USE_silk_resampler_private_up2_HQ_wrapper => {
-            silk_resampler_private_up2_HQ_wrapper(
-                S as *mut core::ffi::c_void,
-                out,
-                ((*S).delayBuf).as_mut_ptr(),
-                (*S).Fs_in_kHz,
+            silk_resampler_private_up2_HQ(
+                &mut S.sIIR,
+                std::slice::from_raw_parts_mut(out, S.Fs_in_kHz as usize * 2),
+                &S.delayBuf[..S.Fs_in_kHz as usize],
             );
-            silk_resampler_private_up2_HQ_wrapper(
-                S as *mut core::ffi::c_void,
-                &mut *out.offset((*S).Fs_out_kHz as isize),
-                &*in_0.offset(nSamples as isize),
-                inLen - (*S).Fs_in_kHz,
+            silk_resampler_private_up2_HQ(
+                &mut S.sIIR,
+                std::slice::from_raw_parts_mut(
+                    &mut *out.offset(S.Fs_out_kHz as isize),
+                    (inLen - S.Fs_in_kHz) as usize * 2,
+                ),
+                std::slice::from_raw_parts(
+                    &*in_0.offset(nSamples as isize),
+                    (inLen - S.Fs_in_kHz) as usize,
+                ),
             );
         }
         USE_silk_resampler_private_IIR_FIR => {
+            // NOTE: fixing unsafe requires getting rid of the union
             silk_resampler_private_IIR_FIR(
-                S as *mut core::ffi::c_void,
-                out,
-                ((*S).delayBuf).as_mut_ptr() as *const i16,
-                (*S).Fs_in_kHz,
+                // HACK: this fucks with the borrow checker
+                &mut *(S as *mut silk_resampler_state_struct),
+                std::slice::from_raw_parts_mut(out, S.Fs_out_kHz as usize),
+                &S.delayBuf[..S.Fs_in_kHz as usize],
             );
             silk_resampler_private_IIR_FIR(
-                S as *mut core::ffi::c_void,
-                &mut *out.offset((*S).Fs_out_kHz as isize),
-                &*in_0.offset(nSamples as isize),
-                inLen - (*S).Fs_in_kHz,
+                S,
+                std::slice::from_raw_parts_mut(
+                    &mut *out.offset(S.Fs_out_kHz as isize),
+                    ((inLen - S.Fs_in_kHz) * S.Fs_out_kHz / S.Fs_in_kHz) as usize,
+                ),
+                std::slice::from_raw_parts(
+                    &*in_0.offset(nSamples as isize),
+                    (inLen - S.Fs_in_kHz) as usize,
+                ),
             );
         }
         USE_silk_resampler_private_down_FIR => {
+            // NOTE: fixing unsafe requires getting rid of the union
             silk_resampler_private_down_FIR(
-                S as *mut core::ffi::c_void,
-                out,
-                ((*S).delayBuf).as_mut_ptr() as *const i16,
-                (*S).Fs_in_kHz,
+                // HACK: this fucks with the borrow checker
+                &mut *(S as *mut silk_resampler_state_struct),
+                std::slice::from_raw_parts_mut(out, S.Fs_out_kHz as usize),
+                &S.delayBuf[..S.Fs_in_kHz as usize],
             );
             silk_resampler_private_down_FIR(
-                S as *mut core::ffi::c_void,
-                &mut *out.offset((*S).Fs_out_kHz as isize),
-                &*in_0.offset(nSamples as isize),
-                inLen - (*S).Fs_in_kHz,
+                S,
+                std::slice::from_raw_parts_mut(
+                    &mut *out.offset(S.Fs_out_kHz as isize),
+                    ((inLen - S.Fs_in_kHz) * S.Fs_out_kHz / S.Fs_in_kHz) as usize,
+                ),
+                std::slice::from_raw_parts(
+                    &*in_0.offset(nSamples as isize),
+                    (inLen - S.Fs_in_kHz) as usize,
+                ),
             );
         }
         _ => {
             memcpy(
                 out as *mut core::ffi::c_void,
-                ((*S).delayBuf).as_mut_ptr() as *const core::ffi::c_void,
-                ((*S).Fs_in_kHz as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
+                (S.delayBuf).as_mut_ptr() as *const core::ffi::c_void,
+                (S.Fs_in_kHz as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
             );
             memcpy(
-                &mut *out.offset((*S).Fs_out_kHz as isize) as *mut i16 as *mut core::ffi::c_void,
+                &mut *out.offset(S.Fs_out_kHz as isize) as *mut i16 as *mut core::ffi::c_void,
                 &*in_0.offset(nSamples as isize) as *const i16 as *const core::ffi::c_void,
-                ((inLen - (*S).Fs_in_kHz) as u64)
-                    .wrapping_mul(::core::mem::size_of::<i16>() as u64),
+                ((inLen - S.Fs_in_kHz) as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
             );
         }
     }
+
+    /* Copy to delay buffer */
     memcpy(
-        ((*S).delayBuf).as_mut_ptr() as *mut core::ffi::c_void,
-        &*in_0.offset((inLen - (*S).inputDelay) as isize) as *const i16 as *const core::ffi::c_void,
-        ((*S).inputDelay as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
+        (S.delayBuf).as_mut_ptr() as *mut core::ffi::c_void,
+        &*in_0.offset((inLen - S.inputDelay) as isize) as *const i16 as *const core::ffi::c_void,
+        (S.inputDelay as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
     );
+
     return 0;
 }

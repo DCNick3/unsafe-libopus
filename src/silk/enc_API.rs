@@ -49,7 +49,7 @@ use crate::silk::float::encode_frame_FLP::{silk_encode_do_VAD_FLP, silk_encode_f
 use crate::silk::float::structs_FLP::{silk_encoder, silk_encoder_state_FLP, silk_shape_state_FLP};
 use crate::silk::init_encoder::silk_init_encoder;
 use crate::silk::resampler::silk_resampler;
-use crate::silk::resampler_structs::silk_resampler_state_struct;
+use crate::silk::resampler::silk_resampler_state_struct;
 use crate::silk::stereo_LR_to_MS::silk_stereo_LR_to_MS;
 use crate::silk::stereo_encode_pred::{silk_stereo_encode_mid_only, silk_stereo_encode_pred};
 use crate::silk::structs::{silk_LP_state, silk_nsq_state};
