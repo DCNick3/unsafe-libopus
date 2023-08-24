@@ -16,6 +16,8 @@ debug = 1
 # for complex numbers impl
 num-traits = "0.2.16"
 num-complex = "0.4.1"
+
+# for slicing arrays to other arrays
 arrayref = "0.3.7"
 
 [dev-dependencies]

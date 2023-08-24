@@ -1,6 +1,7 @@
 extern crate core;
 
 pub mod externs;
+pub mod test;
 pub mod varargs;
 
 #[allow(non_camel_case_types)]
