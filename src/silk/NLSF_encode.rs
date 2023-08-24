@@ -114,7 +114,11 @@ pub unsafe fn silk_NLSF_encode(
             as *const core::ffi::c_void,
         (psNLSF_CB.order as u64).wrapping_mul(::core::mem::size_of::<i8>() as u64),
     );
-    silk_NLSF_decode(pNLSF_Q15, NLSFIndices, psNLSF_CB);
+    silk_NLSF_decode(
+        std::slice::from_raw_parts_mut(pNLSF_Q15, psNLSF_CB.order as usize),
+        std::slice::from_raw_parts(NLSFIndices, psNLSF_CB.order as usize + 1),
+        psNLSF_CB,
+    );
     ret = *RD_Q25.as_mut_ptr().offset(0 as isize);
     return ret;
 }

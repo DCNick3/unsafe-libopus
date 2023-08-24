@@ -28,8 +28,8 @@ pub unsafe fn silk_decode_parameters(
         (*psDec).nb_subfr,
     );
     silk_NLSF_decode(
-        pNLSF_Q15.as_mut_ptr(),
-        ((*psDec).indices.NLSFIndices).as_mut_ptr(),
+        &mut pNLSF_Q15[..(*psDec).psNLSF_CB.order as usize],
+        &(*psDec).indices.NLSFIndices[..(*psDec).psNLSF_CB.order as usize + 1],
         (*psDec).psNLSF_CB,
     );
     silk_NLSF2A(
