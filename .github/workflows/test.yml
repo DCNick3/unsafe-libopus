@@ -8,11 +8,13 @@ jobs:
     strategy:
       matrix:
         # TODO: test 32-bit targets
+        # TODO: test aarch64 targets
         os:
           - ubuntu-latest
           - macOS-latest
           - windows-latest
         profile: [release, dev]
+      fail-fast: false
 
     steps:
       - uses: actions/checkout@v2
@@ -28,7 +30,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: test
-          args: --all --profile=${{ matrix.profile }} -- --nocapture
+          args: --all --profile=${{ matrix.profile }} --all-features -- --nocapture
   test-vectors:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -42,6 +44,7 @@ jobs:
           - 24000
           - 16000
           - 12000
+      fail-fast: false
 
     steps:
       - uses: actions/checkout@v2
@@ -57,7 +60,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release
+          args: --release --all-features
 
       - name: Download test vectors from IETF site
         run: |
@@ -69,7 +72,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: run
-          args: --bin run_vectors -- target/release opus_newvectors ${{ matrix.rate }}
+          args: --release --bin run_vectors --all-features -- target/release opus_newvectors ${{ matrix.rate }}
 
       - name: Upload logs
         if: always() # always upload logs, even if the test fails
