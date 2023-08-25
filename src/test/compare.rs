@@ -1,3 +1,5 @@
+#![forbid(unsafe_code)]
+
 use std::f32::consts::PI;
 
 fn read_pcm16(raw_data: &[u8], nchannels: usize) -> (Vec<f32>, usize) {
