@@ -10,7 +10,7 @@ description = "libopus transpiled to rust by c2rust"
 license = "BSD-3-Clause"
 
 [profile.release]
-debug = 1
+debug = true
 
 [dependencies]
 # for complex numbers impl
@@ -22,6 +22,8 @@ arrayref = "0.3.7"
 
 # for parsing cli arguments in binaries
 clap = { version = "4.3.23", features = ["derive"], optional = true }
+
+audiopus_sys = { version = "0.2.2", optional = true }
 
 byteorder = { version = "1.4.3", optional = true }
 
@@ -35,6 +37,9 @@ insta = "1.29.0"
 [features]
 test = [
     "byteorder",
+]
+test-upstream-libopus = [
+    "audiopus_sys",
 ]
 bins = [
     "clap"

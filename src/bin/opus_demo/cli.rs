@@ -13,8 +13,9 @@ use unsafe_libopus::test::demo::{
 
 #[rustfmt::skip]
 fn usage(argv0: &str) {
-    eprintln!("Usage: {} [-e] <application> <sampling rate (Hz)> <channels (1/2)> <bits per second>  [options] <input> <output>", argv0);
-    eprintln!("       {} -d <sampling rate (Hz)> <channels (1/2)> [options] <input> <output>", argv0);
+    eprintln!("Usage: {} [-b <backend>]  [-e] <application> <sampling rate (Hz)> <channels (1/2)> <bits per second>  [options] <input> <output>", argv0);
+    eprintln!("       {} [-b <backend>] -d <sampling rate (Hz)> <channels (1/2)> [options] <input> <output>", argv0);
+    eprintln!("backend: unsafe | upstream");
     eprintln!("application: voip | audio | restricted-lowdelay");
     eprintln!("options:");
     eprintln!("-e                   : only runs the encoder (output the bit-stream)");
@@ -174,6 +175,25 @@ fn parse_decode_args<I: Iterator<Item = String>>(args: &mut ArgsCursor<I>) -> Re
     })
 }
 
+#[derive(Debug, Copy, Clone, Default)]
+pub enum Backend {
+    #[default]
+    UnsafeLibOpus,
+    UpstreamLibOpus,
+}
+
+impl FromStr for Backend {
+    type Err = &'static str;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        match s {
+            "unsafe" => Ok(Backend::UnsafeLibOpus),
+            "upstream" => Ok(Backend::UpstreamLibOpus),
+            _ => Err("Invalid backend"),
+        }
+    }
+}
+
 #[derive(Debug, Copy, Clone)]
 pub enum Mode {
     EncodeDecode(EncodeArgs),
@@ -183,6 +203,7 @@ pub enum Mode {
 
 #[derive(Debug, Clone)]
 pub struct Cli {
+    pub backend: Backend,
     pub mode: Mode,
     pub input: PathBuf,
     pub output: PathBuf,
@@ -212,6 +233,12 @@ impl Cli {
             .next::<String, _>()
             .map_err(|_| "Missing application".to_string())?;
 
+        let backend = if args.poke("-b")? {
+            args.next().map_err(|_| "Missing backend".to_string())?
+        } else {
+            Backend::default()
+        };
+
         let mode = if args.poke("-e")? {
             Mode::EncodeOnly(parse_encode_args(&mut args)?)
         } else if args.poke("-d")? {
@@ -226,6 +253,7 @@ impl Cli {
         args.finish()?;
 
         Ok(Self {
+            backend,
             mode,
             input,
             output,

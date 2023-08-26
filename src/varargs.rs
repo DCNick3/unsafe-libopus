@@ -60,7 +60,7 @@ impl_vararg!(&'a mut *mut crate::OpusEncoder, OpusEncoderOut);
 impl_vararg!(&'a mut crate::src::analysis::AnalysisInfo, AnalysisInfoOut);
 impl_vararg!(&'a mut crate::celt::celt_encoder::SILKInfo, SilkInfoOut);
 
-pub struct VarArgs<'a>(Vec<VarArg<'a>>);
+pub struct VarArgs<'a>(pub Vec<VarArg<'a>>);
 
 impl<'a> VarArgs<'a> {
     pub fn new(mut varargs: Vec<VarArg<'a>>) -> Self {
