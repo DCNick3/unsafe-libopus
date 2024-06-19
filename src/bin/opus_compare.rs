@@ -5,49 +5,8 @@
 #![forbid(unsafe_code)]
 
 use clap::Parser;
-use std::str::FromStr;
+use unsafe_libopus::test::demo::{Channels, SampleRate};
 use unsafe_libopus::test::{opus_compare, CompareParams, CompareResult};
-
-#[derive(Debug, Default, Copy, Clone)]
-enum SampleRate {
-    #[default]
-    R48000,
-    R24000,
-    R16000,
-    R12000,
-    R8000,
-}
-
-impl FromStr for SampleRate {
-    type Err = &'static str;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let s = s
-            .parse()
-            .map_err(|_| "Cannot parse the sample rate as number")?;
-
-        match s {
-            48000 => Ok(SampleRate::R48000),
-            24000 => Ok(SampleRate::R24000),
-            16000 => Ok(SampleRate::R16000),
-            12000 => Ok(SampleRate::R12000),
-            8000 => Ok(SampleRate::R8000),
-            _ => Err("Unsupported sample rate"),
-        }
-    }
-}
-
-impl From<SampleRate> for usize {
-    fn from(value: SampleRate) -> Self {
-        match value {
-            SampleRate::R48000 => 48000,
-            SampleRate::R24000 => 24000,
-            SampleRate::R16000 => 16000,
-            SampleRate::R12000 => 12000,
-            SampleRate::R8000 => 8000,
-        }
-    }
-}
 
 #[derive(Parser)]
 struct Args {
@@ -70,8 +29,12 @@ fn main() {
     let args: Args = Args::parse();
 
     let params = CompareParams {
-        sample_rate: args.sample_rate.into(),
-        stereo: args.stereo,
+        sample_rate: args.sample_rate,
+        channels: if args.stereo {
+            Channels::Stereo
+        } else {
+            Channels::Mono
+        },
     };
 
     let fin1 = std::fs::read(args.true_file).expect("Could not read true file");

@@ -8,9 +8,11 @@ mod cli;
 
 use crate::cli::{Backend, Cli, Mode};
 use unsafe_libopus::opus_get_version_string;
+#[cfg(feature = "test-upstream-libopus")]
+use unsafe_libopus::test::demo::UpstreamLibopusBackend;
 use unsafe_libopus::test::demo::{
-    opus_demo_decode, opus_demo_encode, DecodeArgs, OpusBackend, UnsafeLibopusBackend,
-    UpstreamLibopusBackend,
+    opus_demo_adjust_length, opus_demo_decode, opus_demo_encode, DecodeArgs, OpusBackend,
+    RustLibopusBackend,
 };
 
 pub fn main() {
@@ -19,29 +21,41 @@ pub fn main() {
     eprintln!("{}", opus_get_version_string());
 
     let backend: &dyn OpusBackend = match cli.backend {
-        Backend::UnsafeLibOpus => &UnsafeLibopusBackend,
+        Backend::RustLibOpus => &RustLibopusBackend,
+        #[cfg(feature = "test-upstream-libopus")]
         Backend::UpstreamLibOpus => &UpstreamLibopusBackend,
+        #[cfg(not(feature = "test-upstream-libopus"))]
+        Backend::UpstreamLibOpus => {
+            panic!("This build of opus_demo was built without the upstream libopus support")
+        }
     };
 
     match cli.mode {
         Mode::EncodeDecode(args) => {
             let fin = std::fs::read(&cli.input).expect("failed to read input file");
-            let encoded = opus_demo_encode(backend, &fin, args);
-            let decoded = opus_demo_decode(
+            let (encoded, pre_skip) = opus_demo_encode(backend, &fin, args);
+            let mut decoded = opus_demo_decode(
                 backend,
                 &encoded,
                 DecodeArgs {
-                    sampling_rate: args.sampling_rate,
+                    sample_rate: args.sample_rate,
                     channels: args.channels,
                     options: args.options.common,
                 },
+            );
+            opus_demo_adjust_length(
+                &mut decoded,
+                pre_skip,
+                fin.len(),
+                args.sample_rate,
+                args.channels,
             );
             std::fs::write(&cli.output, &decoded).expect("failed to write output file");
             // TODO: write statistics
         }
         Mode::EncodeOnly(args) => {
             let fin = std::fs::read(&cli.input).expect("failed to read input file");
-            let output = opus_demo_encode(backend, &fin, args);
+            let (output, _pre_skip) = opus_demo_encode(backend, &fin, args);
             std::fs::write(&cli.output, &output).expect("failed to write output file");
             // TODO: write statistics
         }

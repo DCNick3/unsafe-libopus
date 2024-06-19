@@ -1,6 +1,8 @@
 #![forbid(unsafe_code)]
 
+use crate::test::demo::{Channels, SampleRate};
 use std::f32::consts::PI;
+use std::fmt::Display;
 
 fn read_pcm16(raw_data: &[u8], nchannels: usize) -> (Vec<f32>, usize) {
     let mut samples = Vec::new();
@@ -104,43 +106,60 @@ const TEST_WIN_STEP: usize = 120;
 
 #[derive(Debug, Copy, Clone)]
 pub struct CompareParams {
-    pub sample_rate: usize,
-    pub stereo: bool,
+    pub sample_rate: SampleRate,
+    pub channels: Channels,
 }
 
 impl Default for CompareParams {
     fn default() -> Self {
         Self {
-            sample_rate: 48000,
-            stereo: false,
+            sample_rate: SampleRate::R48000,
+            channels: Channels::Mono,
         }
     }
 }
 
+#[derive(Debug, Copy, Clone)]
 pub struct CompareResult {
     pub error: f64,
     pub quality: f64,
 }
 
+impl CompareResult {
+    pub fn is_success(&self) -> bool {
+        self.quality >= 0f64
+    }
+}
+
+impl Display for CompareResult {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.is_success() {
+            write!(
+                f,
+                "PASS: quality={:.1}, error={:.4}",
+                self.quality, self.error
+            )
+        } else {
+            write!(f, "FAIL: error={:.4}", self.error)
+        }
+    }
+}
+
 pub fn opus_compare(params: CompareParams, true_file: &[u8], tested_file: &[u8]) -> CompareResult {
-    let nchannels = if params.stereo { 2 } else { 1 };
+    let nchannels: usize = params.channels.into();
+    let sample_rate: usize = params.sample_rate.into();
 
-    assert!(
-        matches!(params.sample_rate, 8000 | 12000 | 16000 | 24000 | 48000),
-        "Sampling rate must be 8000, 12000, 16000, 24000 or 48000"
-    );
-
-    let downsample = 48000 / params.sample_rate;
+    let downsample = 48000 / sample_rate;
     let ybands = match params.sample_rate {
-        8000 => 13,
-        12000 => 15,
-        16000 => 17,
-        24000 => 19,
+        SampleRate::R8000 => 13,
+        SampleRate::R12000 => 15,
+        SampleRate::R16000 => 17,
+        SampleRate::R24000 => 19,
         _ => 21,
     };
     let yfreqs = NFREQS / downsample;
 
-    let (mut x, xlength) = read_pcm16(&true_file, 2);
+    let (mut x, xlength) = read_pcm16(true_file, 2);
 
     if nchannels == 1 {
         for xi in 0..xlength {
@@ -148,7 +167,7 @@ pub fn opus_compare(params: CompareParams, true_file: &[u8], tested_file: &[u8])
         }
     }
 
-    let (y, ylength) = read_pcm16(&tested_file, nchannels);
+    let (y, ylength) = read_pcm16(tested_file, nchannels);
 
     assert_eq!(xlength, ylength * downsample, "Sample counts do not match");
     assert!(
@@ -262,8 +281,8 @@ pub fn opus_compare(params: CompareParams, true_file: &[u8], tested_file: &[u8])
     //     For 12 kHz, we don't skip anything, because the last band already skips
     //      400 Hz.
     let max_compare = match params.sample_rate {
-        48000 => BANDS[NBANDS],
-        12000 => BANDS[ybands],
+        SampleRate::R48000 => BANDS[NBANDS],
+        SampleRate::R12000 => BANDS[ybands],
         _ => BANDS[ybands] - 3,
     };
 

@@ -292,7 +292,7 @@ impl Default for EncoderOptions {
 #[derive(Debug, Copy, Clone)]
 pub struct EncodeArgs {
     pub application: Application,
-    pub sampling_rate: SampleRate,
+    pub sample_rate: SampleRate,
     pub channels: Channels,
     pub bitrate: u32,
     pub options: EncoderOptions,
@@ -300,7 +300,7 @@ pub struct EncodeArgs {
 
 #[derive(Debug, Copy, Clone)]
 pub struct DecodeArgs {
-    pub sampling_rate: SampleRate,
+    pub sample_rate: SampleRate,
     pub channels: Channels,
     pub options: CommonOptions,
 }

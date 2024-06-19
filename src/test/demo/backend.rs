@@ -47,9 +47,9 @@ mod unsafe_libopus {
         opus_encoder_create, opus_encoder_ctl_impl, opus_encoder_destroy,
     };
 
-    pub struct UnsafeLibopusBackend;
+    pub struct RustLibopusBackend;
 
-    impl super::OpusBackend for UnsafeLibopusBackend {
+    impl super::OpusBackend for RustLibopusBackend {
         unsafe fn opus_encoder_create(
             &self,
             Fs: i32,
@@ -119,13 +119,13 @@ mod unsafe_libopus {
         }
     }
 }
-pub use unsafe_libopus::UnsafeLibopusBackend;
+pub use unsafe_libopus::RustLibopusBackend;
 
 #[cfg(feature = "test-upstream-libopus")]
 mod libopus {
     use crate::test::demo::backend::{Decoder, Encoder};
     use crate::varargs::{VarArg, VarArgs};
-    use audiopus_sys::{
+    use upstream_libopus::{
         opus_decode, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy, opus_encode,
         opus_encoder_create, opus_encoder_ctl, opus_encoder_destroy,
     };

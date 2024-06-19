@@ -11,6 +11,8 @@ use crate::celt::entcode::{
 use crate::silk::macros::EC_CLZ0;
 
 fn ec_write_byte(this: &mut ec_enc, value: u32) -> i32 {
+    #[cfg(feature = "ent-dump")]
+    eprintln!("ec_write_byte(0x{:x} @ 0x{:x})", value, this.offs);
     if this.offs + this.end_offs >= this.storage {
         return -1;
     }
@@ -22,6 +24,11 @@ fn ec_write_byte(this: &mut ec_enc, value: u32) -> i32 {
 }
 
 fn ec_write_byte_at_end(this: &mut ec_enc, value: u32) -> i32 {
+    #[cfg(feature = "ent-dump")]
+    eprintln!(
+        "ec_write_byte_at_end(0x{:x} @ 0x{:x})",
+        value, this.end_offs
+    );
     if this.offs + this.end_offs >= this.storage {
         return -1;
     }
@@ -67,6 +74,8 @@ fn ec_enc_normalize(this: &mut ec_enc) {
 }
 
 pub fn ec_enc_init(buf: &mut [u8]) -> ec_enc {
+    #[cfg(feature = "ent-dump")]
+    eprintln!("ec_enc_init()");
     ec_enc {
         storage: buf.len() as u32,
         buf,
@@ -84,6 +93,8 @@ pub fn ec_enc_init(buf: &mut [u8]) -> ec_enc {
 }
 
 pub fn ec_encode(this: &mut ec_enc, mut _fl: u32, mut _fh: u32, mut _ft: u32) {
+    #[cfg(feature = "ent-dump")]
+    eprintln!("ec_encode({}, {}, {})", _fl, _fh, _ft);
     let mut r: u32 = 0;
     r = celt_udiv(this.rng, _ft);
     if _fl > 0 {
@@ -98,6 +109,8 @@ pub fn ec_encode(this: &mut ec_enc, mut _fl: u32, mut _fh: u32, mut _ft: u32) {
 }
 
 pub fn ec_encode_bin(this: &mut ec_enc, mut _fl: u32, mut _fh: u32, mut _bits: u32) {
+    #[cfg(feature = "ent-dump")]
+    eprintln!("ec_encode_bin({}, {}, {})", _fl, _fh, _bits);
     let mut r: u32 = 0;
     r = this.rng >> _bits;
     if _fl > 0 {
@@ -115,6 +128,8 @@ pub fn ec_encode_bin(this: &mut ec_enc, mut _fl: u32, mut _fh: u32, mut _bits: u
 }
 
 pub fn ec_enc_bit_logp(this: &mut ec_enc, mut _val: i32, mut _logp: u32) {
+    #[cfg(feature = "ent-dump")]
+    eprintln!("ec_enc_bit_logp({}, {})", _val, _logp);
     let mut r: u32 = 0;
     let mut s: u32 = 0;
     let mut l: u32 = 0;
@@ -130,6 +145,9 @@ pub fn ec_enc_bit_logp(this: &mut ec_enc, mut _val: i32, mut _logp: u32) {
 }
 
 pub fn ec_enc_icdf(this: &mut ec_enc, s: i32, icdf: &[u8], ftb: u32) {
+    // we do a sub-slice here because the C code doesn't have an idea about the icdf length (it doesn't need to)
+    #[cfg(feature = "ent-dump")]
+    eprintln!("ec_enc_icdf({}, {:?}, {})", s, &icdf[..=(s as usize)], ftb);
     let mut r: u32 = 0;
     r = this.rng >> ftb;
     if s > 0 {
@@ -147,6 +165,8 @@ pub fn ec_enc_icdf(this: &mut ec_enc, s: i32, icdf: &[u8], ftb: u32) {
 }
 
 pub fn ec_enc_uint(mut _this: &mut ec_enc, mut _fl: u32, mut _ft: u32) {
+    #[cfg(feature = "ent-dump")]
+    eprintln!("ec_enc_uint({}, {})", _fl, _ft);
     let mut ft: u32 = 0;
     let mut fl: u32 = 0;
     let mut ftb: i32 = 0;
@@ -165,6 +185,8 @@ pub fn ec_enc_uint(mut _this: &mut ec_enc, mut _fl: u32, mut _ft: u32) {
 }
 
 pub fn ec_enc_bits(this: &mut ec_enc, mut _fl: u32, mut _bits: u32) {
+    #[cfg(feature = "ent-dump")]
+    eprintln!("ec_enc_bits({}, {})", _fl, _bits);
     let mut window: ec_window = 0;
     let mut used: i32 = 0;
     window = this.end_window;
@@ -188,6 +210,8 @@ pub fn ec_enc_bits(this: &mut ec_enc, mut _fl: u32, mut _bits: u32) {
 }
 
 pub fn ec_enc_patch_initial_bits(this: &mut ec_enc, mut _val: u32, mut _nbits: u32) {
+    #[cfg(feature = "ent-dump")]
+    eprintln!("ec_enc_patch_initial_bits({}, {})", _val, _nbits);
     let mut shift: i32 = 0;
     let mut mask: u32 = 0;
     assert!(_nbits <= 8);
@@ -205,6 +229,8 @@ pub fn ec_enc_patch_initial_bits(this: &mut ec_enc, mut _val: u32, mut _nbits: u
 }
 
 pub fn ec_enc_shrink(this: &mut ec_enc, new_size: u32) {
+    #[cfg(feature = "ent-dump")]
+    eprintln!("ec_enc_shrink({})", new_size);
     assert!((this.offs).wrapping_add(this.end_offs) <= new_size);
 
     this.buf.copy_within(
@@ -267,4 +293,10 @@ pub fn ec_enc_done(this: &mut ec_enc) {
             }
         }
     }
+
+    #[cfg(feature = "ent-dump")]
+    eprintln!(
+        "ec_enc_done(): {}",
+        hex::encode(&this.buf[..this.storage as usize])
+    );
 }

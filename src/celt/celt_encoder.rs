@@ -2218,6 +2218,8 @@ pub unsafe fn celt_encode_with_ec(
         nbAvailableBytes,
         &mut (*st).analysis,
     );
+    #[cfg(feature = "ent-dump")]
+    eprintln!("prefilter: pitch_index={pitch_index}, gain1={gain1:1.6}, qg={qg}");
     if (gain1 > 0.4f32 || (*st).prefilter_gain > 0.4f32)
         && ((*st).analysis.valid == 0 || (*st).analysis.tonality as f64 > 0.3f64)
         && (pitch_index as f64 > 1.26f64 * (*st).prefilter_period as f64

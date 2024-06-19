@@ -1,0 +1,14 @@
+[package]
+name = "upstream-libopus"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[build-dependencies]
+cc = "1.0.99"
+bindgen = { version = "0.69.4", optional = true }
+
+[features]
+default = []
+generate_binding = ["bindgen"]

@@ -19,7 +19,7 @@ mod input;
 
 #[cfg(feature = "test-upstream-libopus")]
 pub use backend::UpstreamLibopusBackend;
-pub use backend::{OpusBackend, UnsafeLibopusBackend};
+pub use backend::{OpusBackend, RustLibopusBackend};
 
 pub use input::{
     Application, Bandwidth, Channels, CommonOptions, Complexity, DecodeArgs, EncodeArgs,
@@ -77,20 +77,20 @@ macro_rules! checked_opus_decoder_ctl {
     }
 }
 
-/// Encode an opus stream, , like `opus_demo -e`
+/// Encode an opus stream, like `opus_demo -e`
 ///
 /// See module documentation for the format of input and output data.
 pub fn opus_demo_encode(
     backend: &dyn OpusBackend,
     data: &[u8],
     EncodeArgs {
-        sampling_rate,
+        sample_rate: sampling_rate,
         channels,
         application,
         bitrate,
         options,
     }: EncodeArgs,
-) -> Vec<u8> {
+) -> (Vec<u8>, usize) {
     let channels: usize = channels.into();
 
     let mut samples = Vec::new();
@@ -163,13 +163,17 @@ pub fn opus_demo_encode(
 
     // pad samples with 0s to make it a multiple of frame_size
     let samples_len = samples.len();
-    let samples_len = samples_len + (frame_size - (samples_len % frame_size));
+    let samples_len = samples_len + (frame_size * channels - (samples_len % frame_size * channels));
     samples.resize(samples_len, 0);
 
     let mut output = Vec::<u8>::new();
 
     let mut buffer = vec![0u8; options.max_payload];
     for frame in samples.chunks_exact(frame_size * channels) {
+        let fpos = output.len();
+        #[cfg(feature = "ent-dump")]
+        eprintln!("START encoding packet @ 0x{:x}", fpos);
+
         let res = handle_opus_error(
             unsafe {
                 backend.opus_encode(
@@ -194,6 +198,8 @@ pub fn opus_demo_encode(
                 &mut enc_final_range
             );
         };
+        #[cfg(feature = "ent-dump")]
+        eprintln!("END encoding packet @ 0x{:x}", fpos);
 
         output.write_i32::<BigEndian>(data.len() as i32).unwrap();
         output.write_u32::<BigEndian>(enc_final_range).unwrap();
@@ -206,7 +212,7 @@ pub fn opus_demo_encode(
         backend.opus_encoder_destroy(enc);
     }
 
-    output
+    (output, skip as usize)
 }
 
 /// Decode an opus stream, like `opus_demo -d`
@@ -216,7 +222,7 @@ pub fn opus_demo_decode(
     backend: &dyn OpusBackend,
     data: &[u8],
     DecodeArgs {
-        sampling_rate,
+        sample_rate,
         channels,
         options,
     }: DecodeArgs,
@@ -229,11 +235,7 @@ pub fn opus_demo_decode(
     let dec = {
         let mut err: i32 = 0;
         let dec = unsafe {
-            backend.opus_decoder_create(
-                usize::from(sampling_rate) as i32,
-                channels as i32,
-                &mut err,
-            )
+            backend.opus_decoder_create(usize::from(sample_rate) as i32, channels as i32, &mut err)
         };
         handle_opus_error(err, "opus_decoder_create()");
         dec
@@ -303,4 +305,33 @@ pub fn opus_demo_decode(
     unsafe { backend.opus_decoder_destroy(dec) };
 
     output
+}
+
+pub fn opus_demo_adjust_length(
+    data: &mut Vec<u8>,
+    pre_skip_48k: usize,
+    orig_bytes_48k: usize,
+    sample_rate: SampleRate,
+    channels: Channels,
+) {
+    let sample_rate: usize = sample_rate.into();
+    let channels: usize = channels.into();
+
+    let samples_48k_to_current =
+        |samples_48k: usize| samples_48k * sample_rate * channels / 48000 / 2;
+
+    data.drain(..2 * samples_48k_to_current(pre_skip_48k));
+
+    let final_len = samples_48k_to_current(orig_bytes_48k);
+
+    // sanity check: the length should not differ more than a one frame of audio
+    assert!(
+        // two channels & two bytes per sample
+        data.len().abs_diff(final_len) < 48000 * 2 * 2 / 50, // the default frame size is 20ms. currently it's the only tested frame size
+        "length mismatch: {} vs {}",
+        data.len(),
+        final_len
+    );
+
+    data.resize(final_len, 0);
 }

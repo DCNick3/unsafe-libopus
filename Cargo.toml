@@ -23,9 +23,17 @@ arrayref = "0.3.7"
 # for parsing cli arguments in binaries
 clap = { version = "4.3.23", features = ["derive"], optional = true }
 
-audiopus_sys = { version = "0.2.2", optional = true }
+rayon = { version = "1.7.0", optional = true }
+itertools = { version = "0.11.0", optional = true }
+indicatif = { version = "0.17.6", features = ["rayon"], optional = true }
 
+upstream-libopus = { path = "upstream-libopus", optional = true }
+
+# for conviently writing i32 and u32 to a byte vector
 byteorder = { version = "1.4.3", optional = true }
+
+# for dumping data in ent-dump
+hex = { version = "0.4.3", optional = true }
 
 [dev-dependencies]
 # some translated tests haven't been rewritten not to use libc yet
@@ -39,10 +47,15 @@ test = [
     "byteorder",
 ]
 test-upstream-libopus = [
-    "audiopus_sys",
+    "upstream-libopus",
 ]
 bins = [
-    "clap"
+    "clap", "rayon", "itertools", "indicatif"
+]
+# dumps calls to entropy coder to console for easier upstream divergence debugging
+# in addition to the entropy coder has some additional prints where was found necessary
+ent-dump = [
+    "hex"
 ]
 
 [[bin]]
@@ -51,7 +64,7 @@ required-features = ["bins", "test"]
 
 [[bin]]
 name = "opus_demo"
-required-features = ["bins"]
+required-features = ["bins", "test"]
 
 [[bin]]
 name = "repacketizer_demo"
@@ -60,3 +73,7 @@ required-features = ["bins"]
 [[bin]]
 name = "run_vectors"
 required-features = ["bins"]
+
+[[bin]]
+name = "run_vectors2"
+required-features = ["bins", "test", "test-upstream-libopus"]

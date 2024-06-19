@@ -155,7 +155,7 @@ fn parse_encode_args<I: Iterator<Item = String>>(args: &mut ArgsCursor<I>) -> Re
 
     Ok(EncodeArgs {
         application,
-        sampling_rate,
+        sample_rate: sampling_rate,
         channels,
         bitrate,
         options,
@@ -169,7 +169,7 @@ fn parse_decode_args<I: Iterator<Item = String>>(args: &mut ArgsCursor<I>) -> Re
     let options = parse_common_options(args)?;
 
     Ok(DecodeArgs {
-        sampling_rate,
+        sample_rate: sampling_rate,
         channels,
         options,
     })
@@ -178,7 +178,7 @@ fn parse_decode_args<I: Iterator<Item = String>>(args: &mut ArgsCursor<I>) -> Re
 #[derive(Debug, Copy, Clone, Default)]
 pub enum Backend {
     #[default]
-    UnsafeLibOpus,
+    RustLibOpus,
     UpstreamLibOpus,
 }
 
@@ -187,7 +187,7 @@ impl FromStr for Backend {
 
     fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
         match s {
-            "unsafe" => Ok(Backend::UnsafeLibOpus),
+            "unsafe" => Ok(Backend::RustLibOpus),
             "upstream" => Ok(Backend::UpstreamLibOpus),
             _ => Err("Invalid backend"),
         }
