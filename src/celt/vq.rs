@@ -12,7 +12,7 @@ use crate::celt::cwrs::{decode_pulses, encode_pulses};
 use crate::celt::entcode::celt_udiv;
 use crate::celt::entdec::ec_dec;
 use crate::celt::entenc::ec_enc;
-use crate::celt::mathops::fast_atan2f;
+use crate::celt::mathops::{celt_cos_norm, celt_rsqrt_norm, celt_sqrt, fast_atan2f};
 use crate::celt::pitch::celt_inner_prod_c;
 
 unsafe fn exp_rotation1(X: *mut celt_norm, len: i32, stride: i32, c: opus_val16, s: opus_val16) {
@@ -69,8 +69,8 @@ pub unsafe fn exp_rotation(
     factor = SPREAD_FACTOR[(spread - 1) as usize];
     gain = 1.0f32 * len as opus_val32 / (len + factor * K) as opus_val32;
     theta = 0.5f32 * (gain * gain);
-    c = (0.5f32 * PI * theta).cos();
-    s = (0.5f32 * PI * (1.0f32 - theta)).cos();
+    c = celt_cos_norm(theta);
+    s = celt_cos_norm(1.0f32 - theta);
     if len >= 8 * stride {
         stride2 = 1;
         while (stride2 * stride2 + stride2) * stride + (stride >> 2) < len {
@@ -105,7 +105,7 @@ unsafe fn normalise_residual(
     let mut t: opus_val32 = 0.;
     let mut g: opus_val16 = 0.;
     t = Ryy;
-    g = 1.0f32 / t.sqrt() * gain;
+    g = celt_rsqrt_norm(t) * gain;
     i = 0;
     loop {
         *X.offset(i as isize) = g * *iy.offset(i as isize) as opus_val32;
@@ -325,7 +325,7 @@ pub unsafe fn renormalise_vector(X: *mut celt_norm, N: i32, gain: opus_val16, _a
     let mut xptr: *mut celt_norm = 0 as *mut celt_norm;
     E = EPSILON + celt_inner_prod_c(X, X, N);
     t = E;
-    g = 1.0f32 / t.sqrt() * gain;
+    g = celt_rsqrt_norm(t) * gain;
     xptr = X;
     i = 0;
     while i < N {
@@ -364,8 +364,8 @@ pub unsafe fn stereo_itheta(
         Emid += celt_inner_prod_c(X, X, N);
         Eside += celt_inner_prod_c(Y, Y, N);
     }
-    mid = Emid.sqrt();
-    side = Eside.sqrt();
+    mid = celt_sqrt(Emid);
+    side = celt_sqrt(Eside);
     itheta = (0.5f32 + 16384 as f32 * 0.63662f32 * fast_atan2f(side, mid)).floor() as i32;
     return itheta;
 }

@@ -39,6 +39,7 @@ use crate::celt::entcode::ec_tell;
 use crate::celt::entdec::ec_dec;
 use crate::celt::entdec::{ec_dec_bit_logp, ec_dec_init, ec_dec_uint};
 use crate::celt::float_cast::FLOAT2INT16;
+use crate::celt::mathops::celt_exp2;
 use crate::celt::modes::OpusCustomMode;
 use crate::externs::memset;
 use crate::silk::dec_API::silk_DecControlStruct;
@@ -683,7 +684,7 @@ unsafe fn opus_decode_frame(
     }
     if (*st).decode_gain != 0 {
         let mut gain: opus_val32 = 0.;
-        gain = (std::f32::consts::LN_2 * (6.48814081e-4f32 * (*st).decode_gain as f32)).exp();
+        gain = celt_exp2(6.48814081e-4f32 * (*st).decode_gain as f32);
         i = 0;
         while i < frame_size * (*st).channels {
             let mut x: opus_val32 = 0.;

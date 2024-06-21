@@ -22,7 +22,7 @@ pub use self::stddef_h::NULL;
 use crate::celt::entcode::{celt_sudiv, celt_udiv, ec_ctx, ec_ctx_saved, ec_tell_frac, BITRES};
 use crate::celt::entdec::{ec_dec_bit_logp, ec_dec_bits, ec_dec_uint, ec_dec_update, ec_decode};
 use crate::celt::entenc::{ec_enc_bit_logp, ec_enc_bits, ec_enc_uint, ec_encode};
-use crate::celt::mathops::isqrt32;
+use crate::celt::mathops::{celt_exp2, celt_rsqrt, celt_rsqrt_norm, celt_sqrt, isqrt32};
 use crate::celt::modes::OpusCustomMode;
 use crate::celt::pitch::{celt_inner_prod_c, dual_inner_prod_c};
 use crate::celt::quant_bands::eMeans;
@@ -156,7 +156,7 @@ pub unsafe fn compute_band_energies(
                     (*eBands.offset((i + 1) as isize) as i32 - *eBands.offset(i as isize) as i32)
                         << LM,
                 );
-            *bandE.offset((i + c * (*m).nbEBands) as isize) = sum.sqrt();
+            *bandE.offset((i + c * (*m).nbEBands) as isize) = celt_sqrt(sum);
             i += 1;
         }
         c += 1;
@@ -248,7 +248,7 @@ pub unsafe fn denormalise_bands(
         j = M * *eBands.offset(i as isize) as i32;
         band_end = M * *eBands.offset((i + 1) as isize) as i32;
         lg = *bandLogE.offset(i as isize) + eMeans[i as usize];
-        g = (std::f32::consts::LN_2 * (if 32.0 < lg { 32.0f32 } else { lg })).exp() as f32;
+        g = celt_exp2(if 32.0 < lg { 32.0f32 } else { lg });
         loop {
             let fresh1 = x;
             x = x.offset(1);
@@ -302,8 +302,8 @@ pub unsafe fn anti_collapse(
             (*((*m).eBands).offset((i + 1) as isize) as i32
                 - *((*m).eBands).offset(i as isize) as i32) as u32,
         ) >> LM) as i32;
-        thresh = 0.5f32 * (std::f32::consts::LN_2 * (-0.125f32 * depth as f32)).exp();
-        sqrt_1 = 1.0f32 / ((N0 << LM) as f32).sqrt();
+        thresh = 0.5f32 * celt_exp2(-0.125f32 * depth as f32);
+        sqrt_1 = celt_rsqrt((N0 << LM) as f32);
         c = 0;
         loop {
             let mut X: *mut celt_norm = 0 as *mut celt_norm;
@@ -329,7 +329,7 @@ pub unsafe fn anti_collapse(
             Ediff = *logE.offset((c * (*m).nbEBands + i) as isize)
                 - (if prev1 < prev2 { prev1 } else { prev2 });
             Ediff = if 0 as f32 > Ediff { 0 as f32 } else { Ediff };
-            r = 2.0f32 * (std::f32::consts::LN_2 * -Ediff).exp();
+            r = 2.0f32 * celt_exp2(-Ediff);
             if LM == 3 {
                 r *= 1.41421356f32;
             }
@@ -388,7 +388,7 @@ unsafe fn intensity_stereo(
     let mut norm: opus_val16 = 0.;
     left = *bandE.offset(i as isize);
     right = *bandE.offset((i + (*m).nbEBands) as isize);
-    norm = EPSILON + (1e-15f32 + left * left + right * right).sqrt();
+    norm = EPSILON + celt_sqrt(1e-15f32 + left * left + right * right);
     a1 = left / norm;
     a2 = right / norm;
     j = 0;
@@ -440,9 +440,9 @@ unsafe fn stereo_merge(X: *mut celt_norm, Y: *mut celt_norm, mid: opus_val16, N:
         return;
     }
     t = El;
-    lgain = 1.0f32 / t.sqrt();
+    lgain = celt_rsqrt_norm(t);
     t = Er;
-    rgain = 1.0f32 / t.sqrt();
+    rgain = celt_rsqrt_norm(t);
     j = 0;
     while j < N {
         let mut r: celt_norm = 0.;
@@ -1291,7 +1291,7 @@ unsafe fn quant_band(
         if !lowband_out.is_null() {
             let mut j: i32 = 0;
             let mut n: opus_val16 = 0.;
-            n = (N0 as f32).sqrt();
+            n = celt_sqrt(N0 as f32);
             j = 0;
             while j < N0 {
                 *lowband_out.offset(j as isize) = n * *X.offset(j as isize);

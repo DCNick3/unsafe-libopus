@@ -153,6 +153,8 @@ mod silk {
     pub mod define;
     pub mod macros;
     pub mod structs;
+
+    pub mod mathops;
 } // mod silk
 
 #[allow(non_camel_case_types)]

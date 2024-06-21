@@ -73,3 +73,47 @@ pub unsafe fn celt_maxabs16(x: *const opus_val16, len: i32) -> opus_val32 {
     }
     return if maxval > -minval { maxval } else { -minval };
 }
+
+// the functions below are analogous to the macros defined in mathops.h header.
+// importantly, some of them do conversion to f64 before doing the operation, to make sure the results will match the original implementation.
+// it uses the f64 math functions because they are more portable, so we are stuck with them too if we want reproducible bitcode.
+
+#[inline]
+pub fn celt_sqrt(x: f32) -> f32 {
+    (x as f64).sqrt() as f32
+}
+
+#[inline]
+pub fn celt_rsqrt(x: f32) -> f32 {
+    1.0f32 / celt_sqrt(x)
+}
+
+#[inline]
+pub fn celt_rsqrt_norm(x: f32) -> f32 {
+    celt_rsqrt(x)
+}
+
+#[inline]
+pub fn celt_cos_norm(x: f32) -> f32 {
+    ((0.5f32 * PI * x) as f64).cos() as f32
+}
+
+#[inline]
+pub fn celt_log(x: f32) -> f32 {
+    (x as f64).ln() as f32
+}
+
+#[inline]
+pub fn celt_log10(x: f32) -> f32 {
+    (x as f64).log10() as f32
+}
+
+#[inline]
+pub fn celt_log2(f: f32) -> f32 {
+    (std::f64::consts::LOG2_E * (f as f64).ln()) as f32
+}
+
+#[inline]
+pub fn celt_exp2(f: f32) -> f32 {
+    (std::f64::consts::LN_2 * f as f64).exp() as f32
+}

@@ -40,7 +40,7 @@ use crate::celt::entenc::{
     ec_enc, ec_enc_bit_logp, ec_enc_bits, ec_enc_done, ec_enc_icdf, ec_enc_init, ec_enc_shrink,
     ec_enc_uint,
 };
-use crate::celt::mathops::celt_maxabs16;
+use crate::celt::mathops::{celt_exp2, celt_log2, celt_maxabs16, celt_sqrt};
 use crate::celt::mdct::clt_mdct_forward_c;
 use crate::celt::modes::{opus_custom_mode_create, OpusCustomMode};
 use crate::celt::pitch::{celt_inner_prod_c, pitch_downsample, pitch_search, remove_doubling};
@@ -265,7 +265,7 @@ unsafe fn transient_analysis(
             maxE = if maxE > mem0 { maxE } else { mem0 };
             i -= 1;
         }
-        mean = ((mean * maxE) * 0.5f32 * len2 as f32).sqrt();
+        mean = celt_sqrt((mean * maxE) * 0.5f32 * len2 as f32);
         norm = len2 as f32 / (1e-15f32 + mean);
         unmask = 0;
         assert!(!(*tmp.as_mut_ptr().offset(0)).is_nan());
@@ -304,10 +304,10 @@ unsafe fn transient_analysis(
         is_transient = 0;
         *weak_transient = 1;
     }
-    tf_max = if 0 as f32 > ((27 * mask_metric) as f32).sqrt() - 42 as f32 {
+    tf_max = if 0 as f32 > celt_sqrt((27 * mask_metric) as f32) - 42 as f32 {
         0 as f32
     } else {
-        ((27 * mask_metric) as f32).sqrt() - 42 as f32
+        celt_sqrt((27 * mask_metric) as f32) - 42 as f32
     };
     *tf_estimate = (if 0 as f64
         > (0.0069f64 as opus_val32
@@ -328,6 +328,7 @@ unsafe fn transient_analysis(
             })) as f64
             - 0.139f64
     })
+    // here, a 64-bit sqrt __should__ be used
     .sqrt() as f32;
     return is_transient;
 }
@@ -940,11 +941,11 @@ unsafe fn alloc_trim_analysis(
         } else {
             (minXC).abs()
         };
-        logXC = std::f32::consts::LOG2_E * (1.001f32 - sum * sum).ln();
-        logXC2 = if 0.5f32 * logXC > std::f32::consts::LOG2_E * (1.001f32 - minXC * minXC).ln() {
+        logXC = celt_log2(1.001f32 - sum * sum);
+        logXC2 = if 0.5f32 * logXC > celt_log2(1.001f32 - minXC * minXC) {
             0.5f32 * logXC
         } else {
-            std::f32::consts::LOG2_E * (1.001f32 - minXC * minXC).ln()
+            celt_log2(1.001f32 - minXC * minXC)
         };
         trim += if -4.0f32 > 0.75f32 * logXC {
             -4.0f32
@@ -1412,13 +1413,11 @@ unsafe fn dynalloc_analysis(
         while i < end {
             *importance.offset(i as isize) = (0.5f32
                 + 13.0
-                    * (std::f32::consts::LN_2
-                        * (if *follower.as_mut_ptr().offset(i as isize) < 4.0f32 {
-                            *follower.as_mut_ptr().offset(i as isize)
-                        } else {
-                            4.0f32
-                        }))
-                    .exp())
+                    * celt_exp2(if *follower.as_mut_ptr().offset(i as isize) < 4.0f32 {
+                        *follower.as_mut_ptr().offset(i as isize)
+                    } else {
+                        4.0f32
+                    }))
             .floor() as i32;
             i += 1;
         }
@@ -2089,6 +2088,7 @@ pub unsafe fn celt_encode_with_ec(
     let enc = if let Some(enc) = enc {
         enc
     } else {
+        assert!(!compressed.is_null());
         _enc = ec_enc_init(std::slice::from_raw_parts_mut(
             compressed,
             nbCompressedBytes as usize,

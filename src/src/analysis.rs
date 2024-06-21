@@ -86,7 +86,7 @@ pub use self::cpu_support_h::opus_select_arch;
 pub use self::math_h::M_PI;
 use crate::celt::float_cast::float2int;
 use crate::celt::kiss_fft::{kiss_fft_cpx, opus_fft_c};
-use crate::celt::mathops::fast_atan2f;
+use crate::celt::mathops::{celt_log, celt_log10, celt_sqrt, fast_atan2f};
 use crate::celt::modes::OpusCustomMode;
 
 use crate::externs::{memcpy, memmove, memset};
@@ -1097,7 +1097,7 @@ unsafe fn tonality_analysis(
         i += 1;
     }
     E = E;
-    band_log2[0 as usize] = 0.5f32 * std::f32::consts::LOG2_E * (E + 1e-10f32).ln();
+    band_log2[0 as usize] = 0.5f32 * std::f32::consts::LOG2_E * celt_log(E + 1e-10f32);
     b = 0;
     while b < NB_TBANDS {
         let mut E_0: f32 = 0 as f32;
@@ -1129,9 +1129,9 @@ unsafe fn tonality_analysis(
         }
         (*tonal).E[(*tonal).E_count as usize][b as usize] = E_0;
         frame_noisiness += nE / (1e-15f32 + E_0);
-        frame_loudness += (E_0 + 1e-10f32).sqrt();
-        logE[b as usize] = (E_0 + 1e-10f32).ln();
-        band_log2[(b + 1) as usize] = 0.5f32 * std::f32::consts::LOG2_E * (E_0 + 1e-10f32).ln();
+        frame_loudness += celt_sqrt(E_0 + 1e-10f32);
+        logE[b as usize] = celt_log(E_0 + 1e-10f32);
+        band_log2[(b + 1) as usize] = 0.5f32 * std::f32::consts::LOG2_E * celt_log(E_0 + 1e-10f32);
         (*tonal).logE[(*tonal).E_count as usize][b as usize] = logE[b as usize];
         if (*tonal).count == 0 {
             (*tonal).lowE[b as usize] = logE[b as usize];
@@ -1169,14 +1169,14 @@ unsafe fn tonality_analysis(
         L1 = L2;
         i = 0;
         while i < NB_FRAMES {
-            L1 += ((*tonal).E[i as usize][b as usize]).sqrt();
+            L1 += celt_sqrt((*tonal).E[i as usize][b as usize]);
             L2 += (*tonal).E[i as usize][b as usize];
             i += 1;
         }
-        stationarity = if 0.99f32 < L1 / (1e-15 + (8 as f32 * L2)).sqrt() {
+        stationarity = if 0.99f32 < L1 / celt_sqrt(1e-15 + (NB_FRAMES as f32 * L2)) {
             0.99f32
         } else {
-            L1 / (1e-15 + (8 as f32 * L2)).sqrt()
+            L1 / celt_sqrt(1e-15 + (NB_FRAMES as f32 * L2))
         };
         stationarity *= stationarity;
         stationarity *= stationarity;
@@ -1286,7 +1286,7 @@ unsafe fn tonality_analysis(
         spec_variability += mindist;
         i += 1;
     }
-    spec_variability = (spec_variability / NB_FRAMES as f32 / NB_TBANDS as f32).sqrt();
+    spec_variability = celt_sqrt(spec_variability / NB_FRAMES as f32 / NB_TBANDS as f32);
     bandwidth_mask = 0 as f32;
     bandwidth = 0;
     maxE = 0 as f32;
@@ -1392,7 +1392,7 @@ unsafe fn tonality_analysis(
     if (*tonal).count <= 2 {
         bandwidth = 20;
     }
-    frame_loudness = 20 as f32 * frame_loudness.log10();
+    frame_loudness = celt_log10(20 as f32 * frame_loudness);
     (*tonal).Etracker = if (*tonal).Etracker - 0.003f32 > frame_loudness {
         (*tonal).Etracker - 0.003f32
     } else {
@@ -1502,7 +1502,7 @@ unsafe fn tonality_analysis(
     i = 0;
     while i < 9 {
         features[(11 + i) as usize] =
-            ((*tonal).std[i as usize]).sqrt() - std_feature_bias[i as usize];
+            celt_sqrt((*tonal).std[i as usize]) - std_feature_bias[i as usize];
         i += 1;
     }
     features[18 as usize] = spec_variability - 0.78f32;

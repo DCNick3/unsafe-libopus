@@ -40,6 +40,7 @@ use crate::celt::entcode::{ec_get_error, ec_tell, ec_tell_frac, BITRES};
 use crate::celt::entdec::{
     ec_dec, ec_dec_bit_logp, ec_dec_bits, ec_dec_icdf, ec_dec_init, ec_dec_uint,
 };
+use crate::celt::mathops::celt_sqrt;
 use crate::celt::mdct::clt_mdct_backward_c;
 use crate::celt::modes::{opus_custom_mode_create, OpusCustomMode, MAX_PERIOD};
 use crate::celt::pitch::{pitch_downsample, pitch_search};
@@ -779,7 +780,7 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
                 i += 1;
             }
             E1 = if E1 < E2 { E1 } else { E2 };
-            decay_0 = (E1 / E2).sqrt();
+            decay_0 = celt_sqrt(E1 / E2);
             memmove(
                 buf as *mut core::ffi::c_void,
                 buf.offset(N as isize) as *const core::ffi::c_void,
@@ -836,7 +837,7 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
                     i += 1;
                 }
             } else if S1 < S2 {
-                let ratio: opus_val16 = ((S1 + 1 as f32) / (S2 + 1 as f32)).sqrt();
+                let ratio: opus_val16 = celt_sqrt((S1 + 1 as f32) / (S2 + 1 as f32));
                 i = 0;
                 while i < overlap {
                     let tmp_g: opus_val16 = Q15ONE - *window.offset(i as isize) * (1.0f32 - ratio);

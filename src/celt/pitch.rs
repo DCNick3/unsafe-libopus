@@ -11,6 +11,7 @@ pub use self::arch_h::{celt_sig, opus_val16, opus_val32, Q15ONE};
 pub use self::stddef_h::NULL;
 use crate::celt::celt_lpc::{_celt_autocorr, _celt_lpc};
 use crate::celt::entcode::celt_udiv;
+use crate::celt::mathops::celt_sqrt;
 
 #[inline]
 pub unsafe fn dual_inner_prod_c(
@@ -437,7 +438,7 @@ pub unsafe fn pitch_search(
     *pitch = 2 * best_pitch[0 as usize] - offset;
 }
 unsafe fn compute_pitch_gain(xy: opus_val32, xx: opus_val32, yy: opus_val32) -> opus_val16 {
-    return xy / (1 as f32 + xx * yy).sqrt();
+    return xy / celt_sqrt(1 as f32 + xx * yy);
 }
 static mut second_check: [i32; 16] = [0, 0, 3, 2, 3, 2, 5, 2, 3, 2, 3, 2, 5, 2, 3, 2];
 pub unsafe fn remove_doubling(

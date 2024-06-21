@@ -40,7 +40,7 @@ use crate::celt::entcode::ec_tell;
 use crate::celt::entenc::ec_enc;
 use crate::celt::entenc::{ec_enc_bit_logp, ec_enc_done, ec_enc_init, ec_enc_shrink, ec_enc_uint};
 use crate::celt::float_cast::FLOAT2INT16;
-use crate::celt::mathops::celt_maxabs16;
+use crate::celt::mathops::{celt_exp2, celt_maxabs16, celt_sqrt};
 use crate::celt::modes::OpusCustomMode;
 use crate::celt::pitch::celt_inner_prod_c;
 use crate::externs::{memcpy, memmove, memset};
@@ -774,10 +774,10 @@ pub unsafe fn compute_stereo_width(
         let mut corr: opus_val16 = 0.;
         let mut ldiff: opus_val16 = 0.;
         let mut width: opus_val16 = 0.;
-        sqrt_xx = ((*mem).XX).sqrt();
-        sqrt_yy = ((*mem).YY).sqrt();
-        qrrt_xx = (sqrt_xx).sqrt();
-        qrrt_yy = (sqrt_yy).sqrt();
+        sqrt_xx = celt_sqrt((*mem).XX);
+        sqrt_yy = celt_sqrt((*mem).YY);
+        qrrt_xx = celt_sqrt(sqrt_xx);
+        qrrt_yy = celt_sqrt(sqrt_yy);
         (*mem).XY = if (*mem).XY < sqrt_xx * sqrt_yy {
             (*mem).XY
         } else {
@@ -785,7 +785,7 @@ pub unsafe fn compute_stereo_width(
         };
         corr = (*mem).XY / (1e-15f32 + sqrt_xx * sqrt_yy);
         ldiff = 1.0f32 * (qrrt_xx - qrrt_yy).abs() / (EPSILON + qrrt_xx + qrrt_yy);
-        width = (1.0f32 - corr * corr).sqrt() * ldiff;
+        width = celt_sqrt(1.0f32 - corr * corr) * ldiff;
         (*mem).smoothed_width += (width - (*mem).smoothed_width) / frame_rate as f32;
         (*mem).max_follower =
             if (*mem).max_follower - 0.02f32 / frame_rate as f32 > (*mem).smoothed_width {
@@ -1844,8 +1844,7 @@ pub unsafe fn opus_encode_native(
             );
             if ((*st).energy_masking).is_null() {
                 celt_rate = total_bitRate - (*st).silk_mode.bitRate;
-                HB_gain = Q15ONE
-                    - (std::f32::consts::LN_2 * (-celt_rate as f32 * (1.0f32 / 1024f32))).exp();
+                HB_gain = Q15ONE - celt_exp2(-celt_rate as f32 * (1.0f32 / 1024f32));
             }
         } else {
             (*st).silk_mode.bitRate = total_bitRate;

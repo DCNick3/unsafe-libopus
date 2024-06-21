@@ -2,6 +2,7 @@ use crate::celt::entcode::{ec_ctx_saved, ec_tell, ec_tell_frac};
 use crate::celt::entdec::{ec_dec, ec_dec_bit_logp, ec_dec_bits, ec_dec_icdf};
 use crate::celt::entenc::{ec_enc, ec_enc_bit_logp, ec_enc_bits, ec_enc_icdf};
 use crate::celt::laplace::{ec_laplace_decode, ec_laplace_encode};
+use crate::celt::mathops::celt_log2;
 use crate::celt::modes::OpusCustomMode;
 use crate::celt::rate::MAX_FINE_BITS;
 
@@ -695,9 +696,8 @@ pub unsafe fn amp2Log2(
     loop {
         i = 0;
         while i < effEnd {
-            *bandLogE.offset((i + c * (*m).nbEBands) as isize) = (std::f32::consts::LOG2_E
-                * (*bandE.offset((i + c * (*m).nbEBands) as isize)).ln())
-                - eMeans[i as usize];
+            *bandLogE.offset((i + c * (*m).nbEBands) as isize) =
+                celt_log2(*bandE.offset((i + c * (*m).nbEBands) as isize)) - eMeans[i as usize];
             i += 1;
         }
         i = effEnd;

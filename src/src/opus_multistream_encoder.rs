@@ -50,7 +50,7 @@ use crate::celt::celt::{
     CELT_GET_MODE_REQUEST, OPUS_SET_ENERGY_MASK_REQUEST, OPUS_SET_LFE_REQUEST,
 };
 use crate::celt::celt_encoder::celt_preemphasis;
-use crate::celt::mathops::isqrt32;
+use crate::celt::mathops::{celt_log2, isqrt32};
 use crate::celt::mdct::clt_mdct_forward_c;
 use crate::celt::modes::OpusCustomMode;
 use crate::celt::pitch::celt_inner_prod_c;
@@ -554,7 +554,7 @@ pub unsafe fn surround_analysis(
             };
         i += 1;
     }
-    channel_offset = 0.5f32 * (std::f32::consts::LOG2_E * (2.0f32 / (channels - 1) as f32).ln());
+    channel_offset = 0.5f32 * celt_log2(2.0f32 / (channels - 1) as f32);
     c = 0;
     while c < 3 {
         i = 0;

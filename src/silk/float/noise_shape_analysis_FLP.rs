@@ -23,12 +23,14 @@ pub mod tuning_parameters_h {
     pub const LOW_QUALITY_LOW_FREQ_SHAPING_DECR: f32 = 0.5f32;
     pub const SUBFR_SMTH_COEF: f32 = 0.4f32;
 }
+
 pub use self::tuning_parameters_h::{
     BG_SNR_DECR_dB, HARM_SNR_INCR_dB, BANDWIDTH_EXPANSION, ENERGY_VARIATION_THRESHOLD_QNT_OFFSET,
     FIND_PITCH_WHITE_NOISE_FRACTION, HARMONIC_SHAPING, HARM_HP_NOISE_COEF,
     HIGH_RATE_OR_LOW_QUALITY_HARMONIC_SHAPING, HP_NOISE_COEF, LOW_FREQ_SHAPING,
     LOW_QUALITY_LOW_FREQ_SHAPING_DECR, SHAPE_WHITE_NOISE_FRACTION, SUBFR_SMTH_COEF,
 };
+use crate::celt::mathops::celt_sqrt;
 use crate::silk::define::{MAX_SHAPE_LPC_ORDER, MIN_QGAIN_DB, TYPE_VOICED, USE_HARM_SHAPING};
 use crate::silk::float::structs_FLP::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
@@ -43,6 +45,7 @@ use crate::silk::float::energy_FLP::silk_energy_FLP;
 use crate::silk::float::k2a_FLP::silk_k2a_FLP;
 use crate::silk::float::schur_FLP::silk_schur_FLP;
 use crate::silk::float::warped_autocorrelation_FLP::silk_warped_autocorrelation_FLP;
+use crate::silk::mathops::silk_exp2;
 
 #[inline]
 unsafe fn warped_gain(coefs: *const f32, mut lambda: f32, order: i32) -> f32 {
@@ -277,7 +280,7 @@ pub unsafe fn silk_noise_shape_analysis_FLP(
             rc.as_mut_ptr(),
             (*psEnc).sCmn.shapingLPCOrder,
         );
-        (*psEncCtrl).Gains[k as usize] = (nrg).sqrt();
+        (*psEncCtrl).Gains[k as usize] = celt_sqrt(nrg);
         if (*psEnc).sCmn.warping_Q16 > 0 {
             (*psEncCtrl).Gains[k as usize] *= warped_gain(
                 &mut *((*psEncCtrl).AR)
@@ -314,8 +317,8 @@ pub unsafe fn silk_noise_shape_analysis_FLP(
         }
         k += 1;
     }
-    gain_mult = 2.0f32.powf(-0.16f32 * SNR_adj_dB);
-    gain_add = 2.0f32.powf(0.16f32 * MIN_QGAIN_DB as f32);
+    gain_mult = silk_exp2(-0.16f32 * SNR_adj_dB);
+    gain_add = silk_exp2(0.16f32 * MIN_QGAIN_DB as f32);
     k = 0;
     while k < (*psEnc).sCmn.nb_subfr {
         (*psEncCtrl).Gains[k as usize] *= gain_mult;
@@ -359,7 +362,7 @@ pub unsafe fn silk_noise_shape_analysis_FLP(
         HarmShapeGain = HARMONIC_SHAPING;
         HarmShapeGain += HIGH_RATE_OR_LOW_QUALITY_HARMONIC_SHAPING
             * (1.0f32 - (1.0f32 - (*psEncCtrl).coding_quality) * (*psEncCtrl).input_quality);
-        HarmShapeGain *= ((*psEnc).LTPCorr).sqrt();
+        HarmShapeGain *= celt_sqrt((*psEnc).LTPCorr);
     } else {
         HarmShapeGain = 0.0f32;
     }

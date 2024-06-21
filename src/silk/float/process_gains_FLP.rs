@@ -18,12 +18,14 @@ pub use self::tuning_parameters_h::{
     LAMBDA_QUANT_OFFSET, LAMBDA_SPEECH_ACT,
 };
 pub use self::SigProc_FLP_h::silk_sigmoid;
+use crate::celt::mathops::celt_sqrt;
 use crate::externs::memcpy;
 use crate::silk::define::{CODE_CONDITIONALLY, TYPE_VOICED};
 use crate::silk::float::structs_FLP::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
 };
 use crate::silk::gain_quant::silk_gains_quant;
+use crate::silk::mathops::silk_exp2;
 use crate::silk::tables_other::silk_Quantization_Offsets_Q10;
 
 pub unsafe fn silk_process_gains_FLP(
@@ -46,13 +48,12 @@ pub unsafe fn silk_process_gains_FLP(
             k += 1;
         }
     }
-    InvMaxSqrVal = 2.0f32
-        .powf(0.33f32 * (21.0f32 - (*psEnc).sCmn.SNR_dB_Q7 as f32 * (1.0 / 128.0)))
+    InvMaxSqrVal = silk_exp2(0.33f32 * (21.0f32 - (*psEnc).sCmn.SNR_dB_Q7 as f32 * (1.0 / 128.0)))
         / (*psEnc).sCmn.subfr_length as f32;
     k = 0;
     while k < (*psEnc).sCmn.nb_subfr {
         gain = (*psEncCtrl).Gains[k as usize];
-        gain = (gain * gain + (*psEncCtrl).ResNrg[k as usize] * InvMaxSqrVal).sqrt();
+        gain = celt_sqrt(gain * gain + (*psEncCtrl).ResNrg[k as usize] * InvMaxSqrVal);
         (*psEncCtrl).Gains[k as usize] = if gain < 32767.0f32 { gain } else { 32767.0f32 };
         k += 1;
     }

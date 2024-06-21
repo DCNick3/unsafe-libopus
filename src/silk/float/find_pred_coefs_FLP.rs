@@ -10,6 +10,7 @@ use crate::silk::float::structs_FLP::{silk_encoder_control_FLP, silk_encoder_sta
 use crate::silk::float::wrappers_FLP::{silk_process_NLSFs_FLP, silk_quant_LTP_gains_FLP};
 use crate::silk::float::LTP_analysis_filter_FLP::silk_LTP_analysis_filter_FLP;
 use crate::silk::float::LTP_scale_ctrl_FLP::silk_LTP_scale_ctrl_FLP;
+use crate::silk::mathops::silk_exp2;
 
 pub unsafe fn silk_find_pred_coefs_FLP(
     psEnc: *mut silk_encoder_state_FLP,
@@ -96,7 +97,7 @@ pub unsafe fn silk_find_pred_coefs_FLP(
     if (*psEnc).sCmn.first_frame_after_reset != 0 {
         minInvGain = 1.0f32 / MAX_PREDICTION_POWER_GAIN_AFTER_RESET;
     } else {
-        minInvGain = 2.0f32.powf((*psEncCtrl).LTPredCodGain / 3.0) / MAX_PREDICTION_POWER_GAIN;
+        minInvGain = silk_exp2((*psEncCtrl).LTPredCodGain / 3.0) / MAX_PREDICTION_POWER_GAIN;
         minInvGain /= 0.25f32 + 0.75f32 * (*psEncCtrl).coding_quality;
     }
     silk_find_LPC_FLP(
