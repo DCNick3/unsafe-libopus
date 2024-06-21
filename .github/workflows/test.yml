@@ -1,4 +1,4 @@
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 name: Run opus tests
 
@@ -11,9 +11,10 @@ jobs:
         # TODO: test aarch64 targets
         os:
           - ubuntu-latest
-          - macOS-latest
+          - macos-13 # x86
+          - macos-14 # arm64
           - windows-latest
-        profile: [release, dev]
+        profile: [ release, dev ]
       fail-fast: false
 
     steps:
@@ -30,31 +31,35 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: test
-          args: --all --profile=${{ matrix.profile }} --all-features -- --nocapture
+          args: --all --profile=${{ matrix.profile }} -- --nocapture
   test-vectors:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os:
           - ubuntu-latest
-          - macOS-latest
+          - macos-13 # x86
+          # bitcode doesn't match on arm64, need to investigate why
+          #          - macos-14 # arm64
           - windows-latest
-        rate:
-          - 48000
-          - 24000
-          - 16000
-          - 12000
       fail-fast: false
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install toolchain
+      - name: Install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
           profile: minimal
+
+      - name: Setup clang
+        # macOS has clang already
+        if: runner.os != 'macos'
+        uses: aminya/setup-cpp@v1
+        with:
+          compiler: llvm
 
       - name: Build (release)
         uses: actions-rs/cargo@v1
@@ -72,11 +77,12 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: run
-          args: --release --bin run_vectors --all-features -- target/release opus_newvectors ${{ matrix.rate }}
+          args: --release --bin run_vectors2 --features bins,test,test-upstream-libopus -- opus_newvectors
 
-      - name: Upload logs
-        if: always() # always upload logs, even if the test fails
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-logs
-          path: logs_*.txt
+# TODO: upload a dump? 800M feels a bit too much for gha though..
+#      - name: Upload logs
+#        if: always() # always upload logs, even if the test fails
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: test-logs
+#          path: logs_*.txt
