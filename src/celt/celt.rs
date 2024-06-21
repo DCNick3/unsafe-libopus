@@ -31,7 +31,7 @@ pub const CELT_SET_PREDICTION_REQUEST: i32 = 10002;
 pub const CELT_GET_AND_CLEAR_ERROR_REQUEST: i32 = 10007;
 
 pub const COMBFILTER_MAXPERIOD: i32 = 1024;
-pub const COMBFILTER_MINPERIOD: i32 = 16;
+pub const COMBFILTER_MINPERIOD: i32 = 15;
 
 pub fn resampling_factor(rate: i32) -> i32 {
     match rate {
