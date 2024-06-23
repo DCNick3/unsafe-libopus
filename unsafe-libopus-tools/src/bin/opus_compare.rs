@@ -5,8 +5,8 @@
 #![forbid(unsafe_code)]
 
 use clap::Parser;
-use unsafe_libopus::test::demo::{Channels, SampleRate};
-use unsafe_libopus::test::{opus_compare, CompareParams, CompareResult};
+use unsafe_libopus_tools::demo::{Channels, SampleRate};
+use unsafe_libopus_tools::{opus_compare, CompareParams, CompareResult};
 
 #[derive(Parser)]
 struct Args {

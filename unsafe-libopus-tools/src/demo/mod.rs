@@ -17,7 +17,6 @@
 mod backend;
 mod input;
 
-#[cfg(feature = "test-upstream-libopus")]
 pub use backend::UpstreamLibopusBackend;
 pub use backend::{OpusBackend, RustLibopusBackend};
 
@@ -26,7 +25,7 @@ pub use input::{
     EncoderOptions, FrameSize, SampleRate,
 };
 
-use crate::{
+use ::unsafe_libopus::{
     opus_strerror, OPUS_AUTO, OPUS_FRAMESIZE_ARG, OPUS_GET_FINAL_RANGE_REQUEST,
     OPUS_GET_LOOKAHEAD_REQUEST, OPUS_SET_BANDWIDTH_REQUEST, OPUS_SET_BITRATE_REQUEST,
     OPUS_SET_COMPLEXITY_REQUEST, OPUS_SET_DTX_REQUEST, OPUS_SET_EXPERT_FRAME_DURATION_REQUEST,
@@ -53,7 +52,7 @@ macro_rules! checked_opus_encoder_ctl {
             let ret = $backend.opus_encoder_ctl_impl(
                 $st,
                 $request,
-                $crate::varargs!($($arg),*)
+                unsafe_libopus::varargs!($($arg),*)
             );
 
             handle_opus_error(ret, stringify!(opus_encoder_ctl!($st:expr, $request:expr, $($arg:expr),*)));
@@ -68,7 +67,7 @@ macro_rules! checked_opus_decoder_ctl {
             let ret = $backend.opus_decoder_ctl_impl(
                 $st,
                 $request,
-                $crate::varargs!($($arg),*)
+                unsafe_libopus::varargs!($($arg),*)
             );
 
             handle_opus_error(ret, stringify!(opus_decoder_ctl!($st:expr, $request:expr, $($arg:expr),*)));
@@ -170,6 +169,7 @@ pub fn opus_demo_encode(
 
     let mut buffer = vec![0u8; options.max_payload];
     for frame in samples.chunks_exact(frame_size * channels) {
+        #[allow(unused)]
         let fpos = output.len();
         #[cfg(feature = "ent-dump")]
         eprintln!("START encoding packet @ 0x{:x}", fpos);

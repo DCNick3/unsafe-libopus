@@ -1,0 +1,29 @@
+[package]
+name = "unsafe-libopus-tools"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+unsafe-libopus = { path = ".." }
+upstream-libopus = { path = "../upstream-libopus" }
+
+byteorder = { version = "1.4.3" }
+
+clap = { version = "4.3.23", features = ["derive"] }
+
+rayon = { version = "1.7.0" }
+itertools = { version = "0.11.0" }
+indicatif = { version = "0.17.6", features = ["rayon"] }
+
+[[bin]]
+name = "opus_compare"
+
+[[bin]]
+name = "opus_demo"
+
+[[bin]]
+name = "repacketizer_demo"
+
+[[bin]]
+name = "run_vectors2"

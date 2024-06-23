@@ -1,11 +1,11 @@
 use super::MAX_PACKET;
 
-use crate::{
+use std::str::FromStr;
+use unsafe_libopus::{
     OPUS_APPLICATION_AUDIO, OPUS_APPLICATION_RESTRICTED_LOWDELAY, OPUS_APPLICATION_VOIP,
     OPUS_BANDWIDTH_FULLBAND, OPUS_BANDWIDTH_MEDIUMBAND, OPUS_BANDWIDTH_NARROWBAND,
     OPUS_BANDWIDTH_SUPERWIDEBAND, OPUS_BANDWIDTH_WIDEBAND,
 };
-use std::str::FromStr;
 
 #[derive(Debug, Copy, Clone)]
 pub enum Application {

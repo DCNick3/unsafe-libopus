@@ -14,11 +14,11 @@ use std::collections::BTreeMap;
 use std::fmt::Display;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
-use unsafe_libopus::test::demo::{
+use unsafe_libopus_tools::demo::{
     opus_demo_decode, opus_demo_encode, Application, Channels, DecodeArgs, EncodeArgs,
     RustLibopusBackend, SampleRate, UpstreamLibopusBackend,
 };
-use unsafe_libopus::test::{opus_compare, CompareParams, CompareResult};
+use unsafe_libopus_tools::CompareResult;
 
 #[derive(Parser)]
 struct Cli {
@@ -33,6 +33,7 @@ struct TestVector {
     name: String,
     encoded: Vec<u8>,
     decoded_stereo: Vec<u8>,
+    #[allow(unused)]
     decoded_mono: Vec<u8>,
 }
 
@@ -103,6 +104,7 @@ fn load_test_vectors(vector_dir: &Path) -> Vec<TestVector> {
 
 #[derive(Debug, Copy, Clone)]
 enum TestResult {
+    #[allow(unused)]
     FreqCompare(CompareResult),
     BitstreamCompare(bool),
     DecodedCompare(bool),

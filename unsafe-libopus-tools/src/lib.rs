@@ -1,6 +1,6 @@
-//! Utilities for testing
+//! Utilities for testing opus
 //!
-//! This module contains opus test utilities converted to functions
+//! This crate contains opus test utilities converted to functions
 //! Binaries are also available
 
 mod compare;

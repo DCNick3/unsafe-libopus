@@ -8,9 +8,8 @@ mod cli;
 
 use crate::cli::{Backend, Cli, Mode};
 use unsafe_libopus::opus_get_version_string;
-#[cfg(feature = "test-upstream-libopus")]
-use unsafe_libopus::test::demo::UpstreamLibopusBackend;
-use unsafe_libopus::test::demo::{
+use unsafe_libopus_tools::demo::UpstreamLibopusBackend;
+use unsafe_libopus_tools::demo::{
     opus_demo_adjust_length, opus_demo_decode, opus_demo_encode, DecodeArgs, OpusBackend,
     RustLibopusBackend,
 };
@@ -22,12 +21,7 @@ pub fn main() {
 
     let backend: &dyn OpusBackend = match cli.backend {
         Backend::RustLibOpus => &RustLibopusBackend,
-        #[cfg(feature = "test-upstream-libopus")]
         Backend::UpstreamLibOpus => &UpstreamLibopusBackend,
-        #[cfg(not(feature = "test-upstream-libopus"))]
-        Backend::UpstreamLibOpus => {
-            panic!("This build of opus_demo was built without the upstream libopus support")
-        }
     };
 
     match cli.mode {

@@ -1,7 +1,7 @@
 #![allow(non_snake_case)]
 #![allow(clippy::missing_safety_doc)]
 
-use crate::varargs::VarArgs;
+use ::unsafe_libopus::varargs::VarArgs;
 
 pub struct Encoder([u8; 1]);
 pub struct Decoder([u8; 1]);
@@ -40,9 +40,9 @@ pub trait OpusBackend {
 }
 
 mod unsafe_libopus {
-    use crate::test::demo::backend::{Decoder, Encoder};
-    use crate::varargs::VarArgs;
-    use crate::{
+    use crate::demo::backend::{Decoder, Encoder};
+    use ::unsafe_libopus::varargs::VarArgs;
+    use ::unsafe_libopus::{
         opus_decode, opus_decoder_create, opus_decoder_ctl_impl, opus_decoder_destroy, opus_encode,
         opus_encoder_create, opus_encoder_ctl_impl, opus_encoder_destroy,
     };
@@ -121,10 +121,9 @@ mod unsafe_libopus {
 }
 pub use unsafe_libopus::RustLibopusBackend;
 
-#[cfg(feature = "test-upstream-libopus")]
 mod libopus {
-    use crate::test::demo::backend::{Decoder, Encoder};
-    use crate::varargs::{VarArg, VarArgs};
+    use crate::demo::backend::{Decoder, Encoder};
+    use unsafe_libopus::varargs::{VarArg, VarArgs};
     use upstream_libopus::{
         opus_decode, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy, opus_encode,
         opus_encoder_create, opus_encoder_ctl, opus_encoder_destroy,
@@ -212,5 +211,4 @@ mod libopus {
         }
     }
 }
-#[cfg(feature = "test-upstream-libopus")]
 pub use libopus::UpstreamLibopusBackend;

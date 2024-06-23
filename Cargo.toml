@@ -9,6 +9,12 @@ description = "libopus transpiled to rust by c2rust"
 
 license = "BSD-3-Clause"
 
+[workspace]
+members = [
+    "upstream-libopus",
+    "unsafe-libopus-tools",
+]
+
 [profile.release]
 debug = true
 
@@ -19,18 +25,6 @@ num-complex = "0.4.1"
 
 # for slicing arrays to other arrays
 arrayref = "0.3.7"
-
-# for parsing cli arguments in binaries
-clap = { version = "4.3.23", features = ["derive"], optional = true }
-
-rayon = { version = "1.7.0", optional = true }
-itertools = { version = "0.11.0", optional = true }
-indicatif = { version = "0.17.6", features = ["rayon"], optional = true }
-
-upstream-libopus = { path = "upstream-libopus", optional = true }
-
-# for conviently writing i32 and u32 to a byte vector
-byteorder = { version = "1.4.3", optional = true }
 
 # for dumping data in ent-dump
 hex = { version = "0.4.3", optional = true }
@@ -43,37 +37,8 @@ libc-stdhandle = "0.1.0"
 insta = "1.29.0"
 
 [features]
-test = [
-    "byteorder",
-]
-test-upstream-libopus = [
-    "upstream-libopus",
-]
-bins = [
-    "clap", "rayon", "itertools", "indicatif"
-]
 # dumps calls to entropy coder to console for easier upstream divergence debugging
-# in addition to the entropy coder has some additional prints where was found necessary
+# (it's not _only_ entropy coder actually, there are some additional prints where it was found necessary)
 ent-dump = [
     "hex"
 ]
-
-[[bin]]
-name = "opus_compare"
-required-features = ["bins", "test"]
-
-[[bin]]
-name = "opus_demo"
-required-features = ["bins", "test"]
-
-[[bin]]
-name = "repacketizer_demo"
-required-features = ["bins"]
-
-[[bin]]
-name = "run_vectors"
-required-features = ["bins"]
-
-[[bin]]
-name = "run_vectors2"
-required-features = ["bins", "test", "test-upstream-libopus"]

@@ -7,7 +7,7 @@ use std::fmt::Debug;
 use std::iter::Peekable;
 use std::path::PathBuf;
 use std::str::FromStr;
-use unsafe_libopus::test::demo::{
+use unsafe_libopus_tools::demo::{
     CommonOptions, DecodeArgs, EncodeArgs, EncoderOptions, MAX_PACKET,
 };
 
