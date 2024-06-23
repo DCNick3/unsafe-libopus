@@ -538,7 +538,9 @@ fn build_opus() {
                 .map(|source| opus_build_src_dir.join(source)),
         )
         .define("HAVE_CONFIG_H", "1")
-        // .define("_FORTIFY_SOURCE", "2")
+        // this disables FMA fusion and other trickery that rust doesn't do
+        // it's important to get reproducible bitcode on FMA-capable CPUs (like Arm64)
+        .flag("-ffp-model=strict")
         .out_dir(&opus_build_dir)
         .compile("opus");
 
