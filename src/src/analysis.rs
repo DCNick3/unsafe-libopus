@@ -1173,11 +1173,10 @@ unsafe fn tonality_analysis(
             L2 += (*tonal).E[i as usize][b as usize];
             i += 1;
         }
-        stationarity = if 0.99f32 < L1 / celt_sqrt(1e-15 + (NB_FRAMES as f32 * L2)) {
-            0.99f32
-        } else {
-            L1 / celt_sqrt(1e-15 + (NB_FRAMES as f32 * L2))
-        };
+        // NB:
+        //  because `1e-15` is specified without a suffix in the upstream,
+        //   this addition is performed as f64 and `celt_sqrt` can't be used
+        stationarity = 0.99f32.min(L1 / (1e-15 + ((NB_FRAMES as f32 * L2) as f64)).sqrt() as f32);
         stationarity *= stationarity;
         stationarity *= stationarity;
         frame_stationarity += stationarity;
