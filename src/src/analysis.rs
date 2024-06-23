@@ -1528,6 +1528,22 @@ unsafe fn tonality_analysis(
     (*tonal).prev_bandwidth = bandwidth;
     (*info).noisiness = frame_noisiness;
     (*info).valid = 1;
+
+    #[cfg(feature = "ent-dump")]
+    eprintln!(
+        "tonality_analysis: \
+    tonality=0x{:x} tonality_slope=0x{:x} noisiness=0x{:x} activity=0x{:x} music_prob=0x{:x} \
+    music_prob_min=0x{:x} music_prob_max=0x{:x} activity_probability=0x{:x} max_pitch_ratio=0x{:x}",
+        (*info).tonality.to_bits(),
+        (*info).tonality_slope.to_bits(),
+        (*info).noisiness.to_bits(),
+        (*info).activity.to_bits(),
+        (*info).music_prob.to_bits(),
+        (*info).music_prob_min.to_bits(),
+        (*info).music_prob_max.to_bits(),
+        (*info).activity_probability.to_bits(),
+        (*info).max_pitch_ratio.to_bits()
+    );
 }
 pub unsafe fn run_analysis(
     analysis: *mut TonalityAnalysisState,
