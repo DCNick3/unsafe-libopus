@@ -39,8 +39,7 @@ jobs:
         os:
           - ubuntu-latest
           - macos-13 # x86
-          # bitcode doesn't match on arm64, need to investigate why
-          #          - macos-14 # arm64
+          - macos-14 # arm64
           - windows-latest
       fail-fast: false
 
