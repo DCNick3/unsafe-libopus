@@ -1392,7 +1392,7 @@ unsafe fn tonality_analysis(
     if (*tonal).count <= 2 {
         bandwidth = 20;
     }
-    frame_loudness = celt_log10(20 as f32 * frame_loudness);
+    frame_loudness = 20f32 * celt_log10(frame_loudness);
     (*tonal).Etracker = if (*tonal).Etracker - 0.003f32 > frame_loudness {
         (*tonal).Etracker - 0.003f32
     } else {
