@@ -76,7 +76,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: run
-          args: --release --bin run_vectors2 --features bins,test,test-upstream-libopus -- opus_newvectors
+          args: --release -p unsafe-libopus-tools --bin run_vectors2 -- opus_newvectors
 
 # TODO: upload a dump? 800M feels a bit too much for gha though..
 #      - name: Upload logs

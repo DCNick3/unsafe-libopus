@@ -64,7 +64,7 @@ on my machine.
 This library is tested using (most of) the original tests from the C codebase. They are present in form of rust
 integration tests in the `tests` directory. Still not translated are a bunch of unit tests from the C codebase.
 
-The crux of the testing happens in the `src/bin/run_vectors2.rs` though.
+The crux of the testing happens in the `unsafe-libopus-tools/src/bin/run_vectors2.rs` though.
 It tests both the decoder and encoder using IETF-published test vectors,
 comparing the results with the C implementation of opus 1.3.1 located in `upstream-libopus`.
 It does have a small number of patches to make the results more portable.

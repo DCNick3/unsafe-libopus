@@ -1,8 +1,9 @@
-//! A betterrer version of the `run_vectors` test.
+//! A betterrer version of the `run_vectors.sh` test from the upstream repo.
 //!
 //! Unlike the original, it uses the `unsafe-libopus` as a library, instead of calling the `opus_demo` binary.
 //!
-//! It also tests round-trip encoding, including replacing parts of the pipeline with the upstream libopus.
+//! Also, instead of testing encoder-decoder roundtrip quality, it tests the encoded/decoded results against those of the upstream library.
+//! This is a much stricter test, which prevents divergence of behavior from the upstream instead of testing that the encoder-decoder pair works "somehow".
 
 use clap::Parser;
 use itertools::iproduct;
