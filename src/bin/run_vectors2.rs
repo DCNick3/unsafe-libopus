@@ -105,6 +105,7 @@ fn load_test_vectors(vector_dir: &Path) -> Vec<TestVector> {
 enum TestResult {
     FreqCompare(CompareResult),
     BitstreamCompare(bool),
+    DecodedCompare(bool),
 }
 
 impl TestResult {
@@ -112,6 +113,7 @@ impl TestResult {
         match self {
             TestResult::FreqCompare(freq) => freq.is_success(),
             &TestResult::BitstreamCompare(result) => result,
+            &TestResult::DecodedCompare(result) => result,
         }
     }
 }
@@ -125,6 +127,12 @@ impl Display for TestResult {
             }
             TestResult::BitstreamCompare(false) => {
                 write!(f, "FAIL: different bitstream")
+            }
+            TestResult::DecodedCompare(true) => {
+                write!(f, "PASS: exact decoded audio")
+            }
+            TestResult::DecodedCompare(false) => {
+                write!(f, "FAIL: different decoded audio")
             }
         }
     }
@@ -146,34 +154,35 @@ fn run_test(
                 options: Default::default(),
             };
 
-            let compare_params = CompareParams {
-                sample_rate,
-                channels,
-            };
-            let decoded = opus_demo_decode(&RustLibopusBackend, &test_vector.encoded, decode_args);
-
-            let true_decoded = match channels {
-                Channels::Mono => &test_vector.decoded_mono,
-                Channels::Stereo => &test_vector.decoded_stereo,
-            };
+            let upstream_decoded =
+                opus_demo_decode(&UpstreamLibopusBackend, &test_vector.encoded, decode_args);
+            let rust_decoded =
+                opus_demo_decode(&RustLibopusBackend, &test_vector.encoded, decode_args);
 
             if let Some(dump_directory) = dump_directory {
+                let name_base = format!(
+                    "dec_{}_{}_{}",
+                    test_vector.name,
+                    usize::from(sample_rate),
+                    match channels {
+                        Channels::Mono => "mono",
+                        Channels::Stereo => "stereo",
+                    }
+                );
+
                 std::fs::write(
-                    dump_directory.join(format!(
-                        "dec_{}_{}_{}.dec",
-                        test_vector.name,
-                        usize::from(sample_rate),
-                        match channels {
-                            Channels::Mono => "mono",
-                            Channels::Stereo => "stereo",
-                        }
-                    )),
-                    &decoded,
+                    dump_directory.join(format!("{}_upstream.dec", &name_base)),
+                    &upstream_decoded,
+                )
+                .unwrap();
+                std::fs::write(
+                    dump_directory.join(format!("{}_rust.dec", &name_base)),
+                    &rust_decoded,
                 )
                 .unwrap();
             }
 
-            TestResult::FreqCompare(opus_compare(compare_params, &true_decoded, &decoded))
+            TestResult::DecodedCompare(upstream_decoded == rust_decoded)
         }
         TestKind::RustEncode { bitrate } => {
             let true_decoded = &test_vector.decoded_stereo;
