@@ -61,6 +61,8 @@
 **      the config.h file.
 */
 
+#if 0
+
 /* With GCC, when SSE is available, the fastest conversion is cvtss2si. */
 #if defined(__GNUC__) && defined(__SSE__)
 
@@ -131,6 +133,14 @@ static OPUS_INLINE opus_int32 float2int(float x) {return _mm_cvt_ss2si(_mm_set_s
 #endif /* __STDC_VERSION__ >= 199901L */
         #include <math.h>
         #define float2int(flt) ((int)(floor(.5+flt)))
+#endif
+
+#else
+
+// force the use of fallback float2int for portability
+#include <math.h>
+#define float2int(flt) ((int)(floor(.5+flt)))
+
 #endif
 
 #ifndef DISABLE_FLOAT_API
