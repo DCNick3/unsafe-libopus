@@ -256,7 +256,7 @@ fn main() {
             .expect("Removing dump directory");
         std::fs::create_dir(dump_dir).expect("Creating dump directory");
     }
-    
+    // TODO: test more configurations for the encoder/decoder
     let test_kinds = iproduct!(
         [
             SampleRate::R48000,
@@ -273,11 +273,14 @@ fn main() {
         channels,
     })
     .chain([
-        // these low bitrates don't produce exactly the same bitcode yet (probably due to some bugs in SILK translation)
-        // TestKind::RustEncode { bitrate: 10_000 },
-        // TestKind::RustEncode { bitrate: 30_000 },
+        TestKind::RustEncode { bitrate: 10_000 },
+        TestKind::RustEncode { bitrate: 20_000 },
+        TestKind::RustEncode { bitrate: 30_000 },
+        TestKind::RustEncode { bitrate: 45_000 },
         TestKind::RustEncode { bitrate: 60_000 },
+        TestKind::RustEncode { bitrate: 90_000 },
         TestKind::RustEncode { bitrate: 120_000 },
+        TestKind::RustEncode { bitrate: 180_000 },
         TestKind::RustEncode { bitrate: 240_000 },
     ]);
 
