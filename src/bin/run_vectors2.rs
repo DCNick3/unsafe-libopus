@@ -242,6 +242,21 @@ fn main() {
 
     let test_vectors = load_test_vectors(&args.vector_path);
 
+    if let Some(ref dump_dir) = args.dump_dir {
+        // remove existing files and create the directory
+        std::fs::remove_dir_all(dump_dir)
+            // ignore the "not exists" error
+            .or_else(|e| {
+                if e.kind() == std::io::ErrorKind::NotFound {
+                    Ok(())
+                } else {
+                    Err(e)
+                }
+            })
+            .expect("Removing dump directory");
+        std::fs::create_dir(dump_dir).expect("Creating dump directory");
+    }
+    
     let test_kinds = iproduct!(
         [
             SampleRate::R48000,
