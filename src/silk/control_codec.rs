@@ -1,9 +1,3 @@
-pub mod xmmintrin_h {
-    #[cfg(target_arch = "x86")]
-    pub use core::arch::x86::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
-    #[cfg(target_arch = "x86_64")]
-    pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
-}
 pub mod errors_h {
     pub const SILK_ENC_PACKET_SIZE_NOT_SUPPORTED: i32 = -(103);
     pub const SILK_NO_ERROR: i32 = 0;
@@ -41,7 +35,6 @@ pub mod typedef_h {
     pub const silk_int16_MAX: i32 = i16::MAX as i32;
 }
 use self::errors_h::{SILK_ENC_PACKET_SIZE_NOT_SUPPORTED, SILK_NO_ERROR};
-pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
 pub use self::SigProc_FLP_h::{silk_float2short_array, silk_short2float_array};
 use crate::externs::memset;
 use crate::silk::control_audio_bandwidth::silk_control_audio_bandwidth;

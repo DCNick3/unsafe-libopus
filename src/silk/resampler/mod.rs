@@ -101,13 +101,6 @@ enum ResamplerMode {
     DownFir(ResamplerDownFirParams, ResamplerDownFirState),
 }
 
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub union sFIR_union {
-    pub i32_0: [i32; SILK_RESAMPLER_MAX_FIR_ORDER],
-    pub i16_0: [i16; SILK_RESAMPLER_MAX_FIR_ORDER],
-}
-
 pub fn silk_resampler_init(Fs_Hz_in: i32, Fs_Hz_out: i32, forEnc: i32) -> ResamplerState {
     let inputDelay = if forEnc != 0 {
         if !matches!(Fs_Hz_in, 8000 | 12000 | 16000 | 24000 | 48000)

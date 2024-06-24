@@ -9,8 +9,6 @@ pub mod typedef_h {
 pub mod internal {
     pub const __FLT_MAX__: f32 = 3.40282347e+38f32;
 }
-pub use self::float_h::FLT_MAX;
-pub use self::internal::__FLT_MAX__;
 pub use self::typedef_h::silk_float_MAX;
 use crate::silk::define::MAX_NB_SUBFR;
 use crate::silk::float::burg_modified_FLP::silk_burg_modified_FLP;

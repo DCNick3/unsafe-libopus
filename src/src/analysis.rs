@@ -66,12 +66,6 @@ pub const ANALYSIS_BUF_SIZE: i32 = 720;
 pub const DETECT_SIZE: i32 = 100;
 pub const NB_FRAMES: i32 = 8;
 pub const NB_TBANDS: i32 = 18;
-pub mod xmmintrin_h {
-    #[cfg(target_arch = "x86")]
-    pub use core::arch::x86::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
-    #[cfg(target_arch = "x86_64")]
-    pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
-}
 pub mod math_h {
     pub const M_PI: f64 = 3.14159265358979323846f64;
 }

@@ -109,7 +109,7 @@ static mut e_prob_model: [[[u8; 42]; 2]; 4] = [
         ],
     ],
 ];
-static mut small_energy_icdf: [u8; 3] = [2, 1, 0];
+static small_energy_icdf: [u8; 3] = [2, 1, 0];
 unsafe fn loss_distortion(
     eBands: *const opus_val16,
     oldEBands: *mut opus_val16,

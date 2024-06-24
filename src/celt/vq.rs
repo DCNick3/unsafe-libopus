@@ -1,5 +1,4 @@
 use crate::celt::bands::SPREAD_NONE;
-use std::f32::consts::PI;
 
 pub mod arch_h {
     pub type opus_val16 = f32;

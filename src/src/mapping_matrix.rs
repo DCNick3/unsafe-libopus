@@ -2,13 +2,7 @@ pub mod arch_h {
     pub type opus_val16 = f32;
     pub type opus_val32 = f32;
 }
-pub mod xmmintrin_h {
-    #[cfg(target_arch = "x86")]
-    pub use core::arch::x86::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
-    #[cfg(target_arch = "x86_64")]
-    pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
-}
-pub use self::arch_h::{opus_val16, opus_val32};
+use self::arch_h::{opus_val16, opus_val32};
 use crate::celt::float_cast::FLOAT2INT16;
 use crate::src::opus_private::align;
 

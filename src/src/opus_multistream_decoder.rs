@@ -25,12 +25,6 @@ pub mod stddef_h {
     pub type size_t = u64;
     pub const NULL: i32 = 0;
 }
-pub mod xmmintrin_h {
-    #[cfg(target_arch = "x86")]
-    pub use core::arch::x86::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
-    #[cfg(target_arch = "x86_64")]
-    pub use core::arch::x86_64::{__m128, _mm_cvt_ss2si, _mm_cvtss_si32, _mm_set_ss};
-}
 use self::arch_h::opus_val16;
 pub use self::stddef_h::{size_t, NULL};
 use crate::celt::float_cast::FLOAT2INT16;

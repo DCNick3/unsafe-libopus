@@ -37,10 +37,7 @@ pub mod stddef_h {
 pub mod static_modes_float_h;
 
 pub use self::arch_h::opus_val16;
-pub use self::static_modes_float_h::{
-    cache_bits50, cache_caps50, cache_index50, fft_bitrev120, fft_bitrev240, fft_bitrev480,
-    fft_bitrev60, fft_twiddles48000_960, logN400, static_mode_list, window120,
-};
+pub use self::static_modes_float_h::static_mode_list;
 pub use self::stddef_h::NULL;
 use crate::celt::mdct::mdct_lookup;
 use crate::src::opus_defines::{OPUS_BAD_ARG, OPUS_OK};

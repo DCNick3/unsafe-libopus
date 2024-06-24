@@ -11,6 +11,9 @@ pub mod errors_h {
     pub const SILK_ENC_FS_NOT_SUPPORTED: i32 = -(102);
 }
 
+// I still am on the fence on whether I should handle user or just panic
+// these should stay until I decide
+#[allow(unused)]
 pub use self::errors_h::{
     SILK_ENC_FS_NOT_SUPPORTED, SILK_ENC_INVALID_CBR_SETTING, SILK_ENC_INVALID_COMPLEXITY_SETTING,
     SILK_ENC_INVALID_DTX_SETTING, SILK_ENC_INVALID_INBAND_FEC_SETTING, SILK_ENC_INVALID_LOSS_RATE,

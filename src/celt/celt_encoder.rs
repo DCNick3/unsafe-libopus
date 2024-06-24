@@ -430,7 +430,6 @@ unsafe fn compute_mdcts(
     CC: i32,
     LM: i32,
     upsample: i32,
-    arch: i32,
 ) {
     let overlap: i32 = (*mode).overlap;
     let mut N: i32 = 0;
@@ -464,7 +463,7 @@ unsafe fn compute_mdcts(
                 ),
                 std::slice::from_raw_parts_mut(
                     out.offset((b + c * N * B) as isize),
-                    (mdct_n / 2 * B as usize),
+                    mdct_n / 2 * B as usize,
                 ),
                 (*mode).window,
                 overlap as usize,
@@ -2296,7 +2295,6 @@ pub unsafe fn celt_encode_with_ec(
             CC,
             LM,
             (*st).upsample,
-            (*st).arch,
         );
         compute_band_energies(
             mode,
@@ -2331,7 +2329,6 @@ pub unsafe fn celt_encode_with_ec(
         CC,
         LM,
         (*st).upsample,
-        (*st).arch,
     );
     assert!(
         !(*freq.as_mut_ptr().offset(0 as isize) != *freq.as_mut_ptr().offset(0 as isize))
@@ -2574,7 +2571,6 @@ pub unsafe fn celt_encode_with_ec(
                 CC,
                 LM,
                 (*st).upsample,
-                (*st).arch,
             );
             compute_band_energies(
                 mode,

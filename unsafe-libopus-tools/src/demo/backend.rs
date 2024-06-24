@@ -3,8 +3,8 @@
 
 use ::unsafe_libopus::varargs::VarArgs;
 
-pub struct Encoder([u8; 1]);
-pub struct Decoder([u8; 1]);
+pub struct Encoder(());
+pub struct Decoder(());
 
 pub trait OpusBackend {
     unsafe fn opus_encoder_create(
