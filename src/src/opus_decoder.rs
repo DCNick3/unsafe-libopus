@@ -604,7 +604,7 @@ unsafe fn opus_decode_frame(
     }
     let mut celt_mode: *const OpusCustomMode = 0 as *const OpusCustomMode;
     assert!(opus_custom_decoder_ctl!(celt_dec, 10015, &mut celt_mode) == 0);
-    window = (*celt_mode).window;
+    window = (*celt_mode).window.as_ptr();
     if redundancy != 0 && celt_to_silk == 0 {
         assert!(opus_custom_decoder_ctl!(celt_dec, 4028) == 0);
         assert!(opus_custom_decoder_ctl!(celt_dec, 10010, 0) == 0);

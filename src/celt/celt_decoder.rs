@@ -347,7 +347,7 @@ unsafe fn celt_synthesis(
                 &(*mode).mdct,
                 &mut *freq2.offset(b as isize),
                 (*out_syn.offset(0 as isize)).offset((NB * b) as isize),
-                (*mode).window,
+                (*mode).window.as_ptr(),
                 overlap,
                 shift,
                 B,
@@ -361,7 +361,7 @@ unsafe fn celt_synthesis(
                 &(*mode).mdct,
                 &mut *freq.as_mut_ptr().offset(b as isize),
                 (*out_syn.offset(1 as isize)).offset((NB * b) as isize),
-                (*mode).window,
+                (*mode).window.as_ptr(),
                 overlap,
                 shift,
                 B,
@@ -406,7 +406,7 @@ unsafe fn celt_synthesis(
                 &(*mode).mdct,
                 &mut *freq.as_mut_ptr().offset(b as isize),
                 (*out_syn.offset(0 as isize)).offset((NB * b) as isize),
-                (*mode).window,
+                (*mode).window.as_ptr(),
                 overlap,
                 shift,
                 B,
@@ -434,7 +434,7 @@ unsafe fn celt_synthesis(
                     &(*mode).mdct,
                     &mut *freq.as_mut_ptr().offset(b as isize),
                     (*out_syn.offset(c as isize)).offset((NB * b) as isize),
-                    (*mode).window,
+                    (*mode).window.as_ptr(),
                     overlap,
                     shift,
                     B,
@@ -705,7 +705,7 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
         let vla_1 = exc_length as usize;
         let mut fir_tmp: Vec<opus_val16> = ::std::vec::from_elem(0., vla_1);
         exc = _exc.as_mut_ptr().offset(LPC_ORDER as isize);
-        window = (*mode).window;
+        window = (*mode).window.as_ptr();
         c = 0;
         loop {
             let mut decay_0: opus_val16 = 0.;
@@ -1302,7 +1302,7 @@ pub unsafe fn celt_decode_with_ec(
             (*st).postfilter_gain,
             (*st).postfilter_tapset_old,
             (*st).postfilter_tapset,
-            (*mode).window,
+            (*mode).window.as_ptr(),
             overlap,
             (*st).arch,
         );
@@ -1317,7 +1317,7 @@ pub unsafe fn celt_decode_with_ec(
                 postfilter_gain,
                 (*st).postfilter_tapset,
                 postfilter_tapset,
-                (*mode).window,
+                (*mode).window.as_ptr(),
                 overlap,
                 (*st).arch,
             );

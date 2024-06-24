@@ -854,7 +854,7 @@ pub static mut mode48000_960_120: OpusCustomMode = OpusCustomMode {
     nbAllocVectors: 11,
     allocVectors: band_allocation.as_ptr(),
     logN: logN400.as_ptr(),
-    window: window120.as_ptr(),
+    window: &window120,
     mdct: mdct_lookup {
         n: 1920,
         maxshift: 3,

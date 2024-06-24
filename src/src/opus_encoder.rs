@@ -1992,7 +1992,7 @@ pub unsafe fn opus_encode_native(
                 (*celt_mode).overlap,
                 (*st).Fs / 400,
                 (*st).channels,
-                (*celt_mode).window,
+                (*celt_mode).window.as_ptr(),
                 (*st).Fs,
             );
             memset(
@@ -2201,7 +2201,7 @@ pub unsafe fn opus_encode_native(
             (*celt_mode).overlap,
             frame_size,
             (*st).channels,
-            (*celt_mode).window,
+            (*celt_mode).window.as_ptr(),
             (*st).Fs,
         );
     }
@@ -2234,7 +2234,7 @@ pub unsafe fn opus_encode_native(
                 (*celt_mode).overlap,
                 frame_size,
                 (*st).channels,
-                (*celt_mode).window,
+                (*celt_mode).window.as_ptr(),
                 (*st).Fs,
             );
             (*st).hybrid_stereo_width_Q14 = (*st).silk_mode.stereoWidth_Q14 as i16;

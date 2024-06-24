@@ -427,13 +427,13 @@ pub unsafe fn surround_analysis(
             let mut tmpE: [opus_val32; 21] = [0.; 21];
             clt_mdct_forward_c(
                 &(*celt_mode).mdct,
-                in_0.as_mut_ptr().offset((960 * frame) as isize),
-                freq.as_mut_ptr(),
+                // TODO: figure out a correct (probably more narrow) slice
+                &in_0[960 * frame as usize..],
+                &mut freq,
                 (*celt_mode).window,
-                overlap,
-                (*celt_mode).maxLM - LM,
+                overlap as usize,
+                ((*celt_mode).maxLM - LM) as usize,
                 1,
-                arch,
             );
             if upsample != 1 {
                 let bound: i32 = freq_size / upsample;

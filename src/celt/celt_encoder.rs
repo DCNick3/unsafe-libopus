@@ -452,16 +452,24 @@ unsafe fn compute_mdcts(
     loop {
         b = 0;
         while b < B {
+            /* Interleaving the sub-frames while doing the MDCTs */
+            let mdct_n = (*mode).mdct.n;
+
             clt_mdct_forward_c(
                 &(*mode).mdct,
-                in_0.offset((c * (B * N + overlap)) as isize)
-                    .offset((b * N) as isize),
-                &mut *out.offset((b + c * N * B) as isize),
+                std::slice::from_raw_parts_mut(
+                    in_0.offset((c * (B * N + overlap)) as isize)
+                        .offset((b * N) as isize),
+                    mdct_n / 2 + overlap as usize,
+                ),
+                std::slice::from_raw_parts_mut(
+                    out.offset((b + c * N * B) as isize),
+                    (mdct_n / 2 * B as usize),
+                ),
                 (*mode).window,
-                overlap,
-                shift,
-                B,
-                arch,
+                overlap as usize,
+                shift as usize,
+                B as usize,
             );
             b += 1;
         }
@@ -1701,7 +1709,7 @@ unsafe fn run_prefilter(
             -gain1,
             (*st).prefilter_tapset,
             prefilter_tapset,
-            (*mode).window,
+            (*mode).window.as_ptr(),
             overlap,
             (*st).arch,
         );

@@ -25,6 +25,8 @@ num-complex = "0.4.1"
 
 # for slicing arrays to other arrays
 arrayref = "0.3.7"
+const-chunks = "0.3.0"
+ndarray = "0.15.6"
 
 # for dumping data in ent-dump
 hex = { version = "0.4.3", optional = true }
