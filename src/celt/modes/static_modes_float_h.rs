@@ -855,7 +855,7 @@ pub static mut mode48000_960_120: OpusCustomMode = OpusCustomMode {
     allocVectors: band_allocation.as_ptr(),
     logN: logN400.as_ptr(),
     window: &window120,
-    mdct: mdct_lookup {
+    mdct: MdctLookup {
         n: 1920,
         maxshift: 3,
         kfft: [
@@ -879,5 +879,5 @@ pub static mut static_mode_list: [*const OpusCustomMode; 1] =
 use super::arch_h::opus_val16;
 use super::{band_allocation, eband5ms};
 use crate::celt::kiss_fft::{kiss_fft_state, kiss_twiddle_cpx};
-use crate::celt::mdct::mdct_lookup;
+use crate::celt::mdct::MdctLookup;
 use crate::celt::modes::{OpusCustomMode, PulseCache};

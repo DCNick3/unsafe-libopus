@@ -210,6 +210,7 @@ fn kf_bfly5(
 }
 
 pub fn opus_fft_impl(st: &kiss_fft_state, fout: &mut [kiss_fft_cpx]) {
+    assert_eq!(st.nfft, fout.len());
     let shift = st.shift.max(0);
 
     let mut fstride: [i32; 8] = [0; 8];

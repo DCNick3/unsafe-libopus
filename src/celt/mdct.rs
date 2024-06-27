@@ -1,22 +1,28 @@
+#![forbid(
+    // we need this unsafe =(
+    // but it's nicer
+    // unsafe_code,
+    non_camel_case_types,
+    // we'll fix this
+    // non_snake_case,
+    non_upper_case_globals,
+    unused_assignments
+)]
+
 use crate::celt::kiss_fft::{kiss_fft_state, opus_fft_impl};
 use ndarray::{aview1, aview_mut1, azip, s, Axis};
 use num_complex::Complex;
 use num_traits::Zero as _;
 use std::ops::Neg as _;
 
-pub mod arch_h {
-    pub type opus_val16 = f32;
-}
-
 #[derive(Copy, Clone)]
 #[repr(C)]
-pub struct mdct_lookup<'a> {
+pub struct MdctLookup<'a> {
     pub n: usize,
     pub maxshift: i32,
     pub kfft: [&'a kiss_fft_state<'a>; 4],
     pub trig: &'a [&'a [f32]; 4],
 }
-pub use self::arch_h::opus_val16;
 
 mod ndutil {
     use ndarray::{ArrayView, ArrayViewMut, Axis, Dimension, Slice};
@@ -69,17 +75,17 @@ mod ndutil {
 }
 
 pub fn clt_mdct_forward_c(
-    l: &mdct_lookup,
+    l: &MdctLookup,
     input: &[f32],
     out: &mut [f32],
-    window: &[opus_val16],
+    window: &[f32],
     overlap: usize,
     shift: usize,
     output_stride: usize,
 ) {
-    let st: &kiss_fft_state = l.kfft[shift as usize];
+    let st: &kiss_fft_state = l.kfft[shift];
     let scale = st.scale;
-    let trig = aview1(l.trig[shift as usize]);
+    let trig = aview1(l.trig[shift]);
     let N = l.n >> shift;
     let N2 = N / 2;
     let N4 = N / 4;
@@ -199,104 +205,110 @@ pub fn clt_mdct_forward_c(
         });
     }
 }
-pub unsafe fn clt_mdct_backward_c(
-    l: &mdct_lookup,
-    in_0: *mut f32,
-    out: *mut f32,
-    window: *const opus_val16,
-    overlap: i32,
-    shift: i32,
-    stride: i32,
-    _arch: i32,
+
+pub fn mdct_backward(
+    l: &MdctLookup,
+    input: &[f32],
+    out: &mut [f32],
+    window: &[f32],
+    overlap: usize,
+    shift: usize,
+    input_stride: usize,
 ) {
-    let mut i: i32 = 0;
-    let mut N: i32 = 0;
-    let mut N2: i32 = 0;
-    let mut N4: i32 = 0;
-    let trig = l.trig[shift as usize];
-    N = (l.n >> shift) as _;
-    N2 = N >> 1;
-    N4 = N >> 2;
-    let mut xp1: *const f32 = in_0;
-    let mut xp2: *const f32 = in_0.offset((stride * (N2 - 1)) as isize);
-    let yp: *mut f32 = out.offset((overlap >> 1) as isize);
-    let t = trig;
-    let mut bitrev: *const i16 = l.kfft[shift as usize].bitrev.as_ptr();
-    i = 0;
-    while i < N4 {
-        let mut rev: i32 = 0;
-        let mut yr: f32 = 0.;
-        let mut yi: f32 = 0.;
-        let fresh8 = bitrev;
-        bitrev = bitrev.offset(1);
-        rev = *fresh8 as i32;
-        yr = *xp2 * t[i as usize] + *xp1 * t[(N4 + i) as usize];
-        yi = *xp1 * t[i as usize] - *xp2 * t[(N4 + i) as usize];
-        *yp.offset((2 * rev + 1) as isize) = yr;
-        *yp.offset((2 * rev) as isize) = yi;
-        xp1 = xp1.offset((2 * stride) as isize);
-        xp2 = xp2.offset(-((2 * stride) as isize));
-        i += 1;
+    let trig = aview1(l.trig[shift]);
+    let N = l.n >> shift;
+    let N2 = N / 2;
+    let N4 = N / 4;
+
+    let O = overlap;
+    let O2 = overlap / 2;
+
+    assert_eq!(l.kfft[shift].nfft, N4);
+
+    assert_eq!(window.len(), O);
+    assert_eq!(trig.len(), N2);
+    let window = aview1(window);
+
+    assert_eq!(input.len(), N2 * input_stride);
+    let input = aview1(input);
+    // TODO: it would be nice to accept a strided view directly as an `ArrayView1`
+    let input = input.slice(s![..N2 * input_stride;input_stride]);
+
+    assert_eq!(out.len(), N2 + O);
+    let out = &mut out[..N2 + O];
+
+    let (trig_real, trig_imag) = trig.split_at(Axis(0), N4);
+
+    let outmid_scalar = &mut out[O2..][..N2];
+
+    let (xf, xb) = ndutil::split_interleaving_opposite(input, Axis(0));
+
+    // use the output space temporarily to compute fft there
+    let outmid: &mut [Complex<f32>] = bytemuck::cast_slice_mut(outmid_scalar);
+
+    /* Pre-rotate */
+    {
+        azip!((&xr in xf, &xi in xb, &tr in trig_real, &ti in trig_imag, &rev in l.kfft[shift].bitrev) {
+            let t = Complex::new(tr, ti);
+            let x = Complex::new(xr, xi);
+            let y = x * t;
+            outmid[rev as usize] = y;
+        });
     }
-    opus_fft_impl(
-        l.kfft[shift as usize],
-        std::slice::from_raw_parts_mut(
-            out.offset((overlap >> 1) as isize) as *mut Complex<f32>,
-            l.kfft[shift as usize].nfft,
-        ),
-    );
-    let mut yp0: *mut f32 = out.offset((overlap >> 1) as isize);
-    let mut yp1: *mut f32 = out
-        .offset((overlap >> 1) as isize)
-        .offset(N2 as isize)
-        .offset(-(2 as isize));
-    let t = trig;
-    i = 0;
-    while i < N4 + 1 >> 1 {
-        let mut re: f32 = 0.;
-        let mut im: f32 = 0.;
-        let mut yr_0: f32 = 0.;
-        let mut yi_0: f32 = 0.;
-        let mut t0: f32 = 0.;
-        let mut t1: f32 = 0.;
-        re = *yp0.offset(1 as isize);
-        im = *yp0.offset(0 as isize);
-        t0 = t[i as usize];
-        t1 = t[(N4 + i) as usize];
-        yr_0 = re * t0 + im * t1;
-        yi_0 = re * t1 - im * t0;
-        re = *yp1.offset(1 as isize);
-        im = *yp1.offset(0 as isize);
-        *yp0.offset(0 as isize) = yr_0;
-        *yp1.offset(1 as isize) = yi_0;
-        t0 = t[(N4 - i - 1) as usize];
-        t1 = t[(N2 - i - 1) as usize];
-        yr_0 = re * t0 + im * t1;
-        yi_0 = re * t1 - im * t0;
-        *yp1.offset(0 as isize) = yr_0;
-        *yp0.offset(1 as isize) = yi_0;
-        yp0 = yp0.offset(2 as isize);
-        yp1 = yp1.offset(-(2 as isize));
-        i += 1;
+    opus_fft_impl(l.kfft[shift], outmid);
+
+    let mut outmid = aview_mut1(outmid);
+
+    /* Post-rotate and de-shuffle from both ends of the buffer at once to make
+    it in-place. */
+    /* Loop to (N4+1)>>1 to handle odd N4. When N4 is odd, the
+    middle pair will be computed twice. */
+    // additional asserts to maybe help the optimizer remove bounds checks
+    assert_eq!(outmid.len(), N4);
+    assert_eq!(trig_real.len(), N4);
+    assert_eq!(trig_imag.len(), N4);
+    for i in 0..(N4 + 1) / 2 {
+        // NB: unlike the loops in ctl_mdct_forward_c, the yp0 and yp1 "pointers" are NOT disjoint because they are stepped only by 1
+        // so yp0 and yp1 can alias, especially when N4 is odd
+        let yp0 = i;
+        let yp1 = N4 - i - 1;
+
+        fn swap(Complex { re, im }: Complex<f32>) -> Complex<f32> {
+            Complex { re: im, im: re }
+        }
+
+        /* We swap real and imag because we're using an FFT instead of an IFFT. */
+        let x = swap(outmid[yp0]);
+        let t = swap(Complex::new(trig_real[i], trig_imag[i]));
+        /* We'd scale up by 2 here, but instead it's done when mixing the windows */
+        let y = swap(x * t);
+
+        /* We swap real and imag because we're using an FFT instead of an IFFT. */
+        let x = swap(outmid[yp1]);
+        outmid[yp0].re = y.re;
+        outmid[yp1].im = y.im;
+
+        let t = swap(Complex::new(trig_real[N4 - i - 1], trig_imag[N4 - i - 1]));
+        /* We'd scale up by 2 here, but instead it's done when mixing the windows */
+        let y = swap(x * t);
+        outmid[yp1].re = y.re;
+        outmid[yp0].im = y.im;
     }
-    let mut xp1_0: *mut f32 = out.offset(overlap as isize).offset(-(1 as isize));
-    let mut yp1_0: *mut f32 = out;
-    let mut wp1: *const opus_val16 = window;
-    let mut wp2: *const opus_val16 = window.offset(overlap as isize).offset(-(1 as isize));
-    i = 0;
-    while i < overlap / 2 {
-        let mut x1: f32 = 0.;
-        let mut x2: f32 = 0.;
-        x1 = *xp1_0;
-        x2 = *yp1_0;
-        let fresh9 = yp1_0;
-        yp1_0 = yp1_0.offset(1);
-        *fresh9 = *wp2 * x2 - *wp1 * x1;
-        let fresh10 = xp1_0;
-        xp1_0 = xp1_0.offset(-1);
-        *fresh10 = *wp1 * x2 + *wp2 * x1;
-        wp1 = wp1.offset(1);
-        wp2 = wp2.offset(-1);
-        i += 1;
+
+    /* Mirror on both sides for TDAC */
+    {
+        let outh = aview_mut1(&mut out[..O]);
+        let (mut outhf, mut outhb) = outh.split_at(Axis(0), O2);
+        let mut outhb = outhb.slice_mut(s![..;-1]);
+
+        let (wf, wb) = window.split_at(Axis(0), O2);
+        let wb = wb.slice(s![..;-1]);
+
+        azip!((of in &mut outhf, ob in &mut outhb, &wf in wf, &wb in wb) {
+            let x1 = *ob;
+            let x2 = *of;
+            *of = wb * x2 - wf * x1;
+            *ob = wf * x2 + wb * x1;
+        });
     }
 }

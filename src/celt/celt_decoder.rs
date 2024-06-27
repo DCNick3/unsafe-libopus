@@ -41,7 +41,7 @@ use crate::celt::entdec::{
     ec_dec, ec_dec_bit_logp, ec_dec_bits, ec_dec_icdf, ec_dec_init, ec_dec_uint,
 };
 use crate::celt::mathops::celt_sqrt;
-use crate::celt::mdct::clt_mdct_backward_c;
+use crate::celt::mdct::mdct_backward;
 use crate::celt::modes::{opus_custom_mode_create, OpusCustomMode, MAX_PERIOD};
 use crate::celt::pitch::{pitch_downsample, pitch_search};
 use crate::celt::quant_bands::{
@@ -293,7 +293,7 @@ unsafe fn celt_synthesis(
     LM: i32,
     downsample: i32,
     silence: i32,
-    arch: i32,
+    _arch: i32,
 ) {
     let mut c: i32 = 0;
     let mut i: i32 = 0;
@@ -343,29 +343,39 @@ unsafe fn celt_synthesis(
         );
         b = 0;
         while b < B {
-            clt_mdct_backward_c(
+            mdct_backward(
                 &(*mode).mdct,
-                &mut *freq2.offset(b as isize),
-                (*out_syn.offset(0 as isize)).offset((NB * b) as isize),
-                (*mode).window.as_ptr(),
-                overlap,
-                shift,
-                B,
-                arch,
+                std::slice::from_raw_parts(
+                    freq2.offset(b as isize),
+                    ((*mode).mdct.n >> shift) / 2 * B as usize,
+                ),
+                std::slice::from_raw_parts_mut(
+                    (*out_syn.offset(0 as isize)).offset((NB * b) as isize),
+                    ((*mode).mdct.n >> shift) / 2 + overlap as usize,
+                ),
+                (*mode).window,
+                overlap as usize,
+                shift as usize,
+                B as usize,
             );
             b += 1;
         }
         b = 0;
         while b < B {
-            clt_mdct_backward_c(
+            mdct_backward(
                 &(*mode).mdct,
-                &mut *freq.as_mut_ptr().offset(b as isize),
-                (*out_syn.offset(1 as isize)).offset((NB * b) as isize),
-                (*mode).window.as_ptr(),
-                overlap,
-                shift,
-                B,
-                arch,
+                std::slice::from_raw_parts(
+                    freq.as_mut_ptr().offset(b as isize),
+                    ((*mode).mdct.n >> shift) / 2 * B as usize,
+                ),
+                std::slice::from_raw_parts_mut(
+                    (*out_syn.offset(1 as isize)).offset((NB * b) as isize),
+                    ((*mode).mdct.n >> shift) / 2 + overlap as usize,
+                ),
+                (*mode).window,
+                overlap as usize,
+                shift as usize,
+                B as usize,
             );
             b += 1;
         }
@@ -402,15 +412,20 @@ unsafe fn celt_synthesis(
         }
         b = 0;
         while b < B {
-            clt_mdct_backward_c(
+            mdct_backward(
                 &(*mode).mdct,
-                &mut *freq.as_mut_ptr().offset(b as isize),
-                (*out_syn.offset(0 as isize)).offset((NB * b) as isize),
-                (*mode).window.as_ptr(),
-                overlap,
-                shift,
-                B,
-                arch,
+                std::slice::from_raw_parts(
+                    freq.as_ptr().offset(b as isize),
+                    ((*mode).mdct.n >> shift) / 2 * B as usize,
+                ),
+                std::slice::from_raw_parts_mut(
+                    (*out_syn.offset(0 as isize)).offset((NB * b) as isize),
+                    ((*mode).mdct.n >> shift) / 2 + overlap as usize,
+                ),
+                (*mode).window,
+                overlap as usize,
+                shift as usize,
+                B as usize,
             );
             b += 1;
         }
@@ -430,15 +445,20 @@ unsafe fn celt_synthesis(
             );
             b = 0;
             while b < B {
-                clt_mdct_backward_c(
+                mdct_backward(
                     &(*mode).mdct,
-                    &mut *freq.as_mut_ptr().offset(b as isize),
-                    (*out_syn.offset(c as isize)).offset((NB * b) as isize),
-                    (*mode).window.as_ptr(),
-                    overlap,
-                    shift,
-                    B,
-                    arch,
+                    std::slice::from_raw_parts(
+                        freq.as_ptr().offset(b as isize),
+                        ((*mode).mdct.n >> shift) / 2 * B as usize,
+                    ),
+                    std::slice::from_raw_parts_mut(
+                        (*out_syn.offset(c as isize)).offset((NB * b) as isize),
+                        ((*mode).mdct.n >> shift) / 2 + overlap as usize,
+                    ),
+                    (*mode).window,
+                    overlap as usize,
+                    shift as usize,
+                    B as usize,
                 );
                 b += 1;
             }

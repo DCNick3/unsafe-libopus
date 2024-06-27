@@ -21,7 +21,10 @@ debug = true
 [dependencies]
 # for complex numbers impl
 num-traits = "0.2.16"
-num-complex = "0.4.1"
+num-complex = { version = "0.4.1", features = ["bytemuck"] }
+
+# for casting slices between different types
+bytemuck = "1.16.1"
 
 # for slicing arrays to other arrays
 arrayref = "0.3.7"
