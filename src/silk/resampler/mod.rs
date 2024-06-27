@@ -83,7 +83,17 @@ pub struct ResamplerState {
     delay_buf: [i16; 48],
 }
 
-#[derive(Copy, Clone)]
+impl Default for ResamplerState {
+    fn default() -> Self {
+        Self {
+            params: Default::default(),
+            mode: Default::default(),
+            delay_buf: [0; 48],
+        }
+    }
+}
+
+#[derive(Copy, Clone, Default)]
 struct ResamplerParams {
     pub batch_size: usize,
     pub inv_ratio_q16: i32,
@@ -93,8 +103,9 @@ struct ResamplerParams {
 }
 
 /// Includes the resampler mode, as well as the necessary params and state
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 enum ResamplerMode {
+    #[default]
     Copy,
     Up2Hq(ResamplerUp2HqState),
     IirFir(ResamplerIirFirState),

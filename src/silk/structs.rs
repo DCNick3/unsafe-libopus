@@ -16,7 +16,7 @@ pub struct silk_NLSF_CB_struct {
     pub ec_Rates_Q5: &'static [u8],
     pub deltaMin_Q15: &'static [i16],
 }
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 #[repr(C)]
 pub struct SideInfoIndices {
     pub GainsIndices: [i8; 4],
@@ -31,7 +31,7 @@ pub struct SideInfoIndices {
     pub LTP_scaleIndex: i8,
     pub Seed: i8,
 }
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 #[repr(C)]
 pub struct silk_PLC_struct {
     pub pitchL_Q8: i32,
@@ -58,6 +58,20 @@ pub struct silk_CNG_struct {
     pub rand_seed: i32,
     pub fs_kHz: i32,
 }
+
+impl Default for silk_CNG_struct {
+    fn default() -> Self {
+        Self {
+            CNG_exc_buf_Q14: [0; 320],
+            CNG_smth_NLSF_Q15: [0; 16],
+            CNG_synth_state: [0; 16],
+            CNG_smth_Gain_Q16: 0,
+            rand_seed: 0,
+            fs_kHz: 0,
+        }
+    }
+}
+
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct silk_decoder_state {
@@ -238,7 +252,7 @@ pub struct stereo_enc_state {
     pub mid_only_flags: [i8; 3],
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 #[repr(C)]
 pub struct stereo_dec_state {
     pub pred_prev_Q13: [i16; 2],

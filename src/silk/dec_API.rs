@@ -25,8 +25,8 @@ use crate::silk::decode_indices::silk_decode_indices;
 use crate::silk::decode_pulses::silk_decode_pulses;
 use crate::silk::decoder_set_fs::silk_decoder_set_fs;
 use crate::silk::define::{
-    CODE_CONDITIONALLY, CODE_INDEPENDENTLY, CODE_INDEPENDENTLY_NO_LTP_SCALING,
-    DECODER_NUM_CHANNELS, MAX_API_FS_KHZ, TYPE_NO_VOICE_ACTIVITY, TYPE_VOICED,
+    CODE_CONDITIONALLY, CODE_INDEPENDENTLY, CODE_INDEPENDENTLY_NO_LTP_SCALING, MAX_API_FS_KHZ,
+    TYPE_NO_VOICE_ACTIVITY, TYPE_VOICED,
 };
 use crate::silk::init_decoder::silk_init_decoder;
 use crate::silk::resampler::silk_resampler;
@@ -45,32 +45,22 @@ pub struct silk_decoder {
     pub nChannelsInternal: i32,
     pub prev_decode_only_middle: i32,
 }
-pub unsafe fn silk_Get_Decoder_Size(decSizeBytes: *mut i32) -> i32 {
+pub fn silk_Get_Decoder_Size(decSizeBytes: &mut i32) -> i32 {
     let ret: i32 = SILK_NO_ERROR;
     *decSizeBytes = ::core::mem::size_of::<silk_decoder>() as u64 as i32;
     return ret;
 }
-pub unsafe fn silk_InitDecoder(decState: *mut core::ffi::c_void) -> i32 {
-    let mut n: i32 = 0;
-    let mut ret: i32 = SILK_NO_ERROR;
-    let channel_state: *mut silk_decoder_state =
-        ((*(decState as *mut silk_decoder)).channel_state).as_mut_ptr();
-    n = 0;
-    while n < DECODER_NUM_CHANNELS {
-        ret = silk_init_decoder(&mut *channel_state.offset(n as isize));
-        n += 1;
+pub unsafe fn silk_InitDecoder() -> silk_decoder {
+    silk_decoder {
+        channel_state: [silk_init_decoder(), silk_init_decoder()],
+        sStereo: stereo_dec_state::default(),
+        nChannelsAPI: 0,
+        nChannelsInternal: 0,
+        prev_decode_only_middle: 0,
     }
-    memset(
-        &mut (*(decState as *mut silk_decoder)).sStereo as *mut stereo_dec_state
-            as *mut core::ffi::c_void,
-        0,
-        ::core::mem::size_of::<stereo_dec_state>() as u64,
-    );
-    (*(decState as *mut silk_decoder)).prev_decode_only_middle = 0;
-    return ret;
 }
 pub unsafe fn silk_Decode(
-    decState: *mut core::ffi::c_void,
+    decState: *mut silk_decoder,
     decControl: *mut silk_DecControlStruct,
     lostFlag: i32,
     newPacketFlag: i32,
@@ -101,7 +91,7 @@ pub unsafe fn silk_Decode(
         }
     }
     if (*decControl).nChannelsInternal > (*psDec).nChannelsInternal {
-        ret += silk_init_decoder(&mut *channel_state.offset(1 as isize));
+        *channel_state.offset(1 as isize) = silk_init_decoder();
     }
     stereo_to_mono = ((*decControl).nChannelsInternal == 1
         && (*psDec).nChannelsInternal == 2

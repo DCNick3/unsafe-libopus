@@ -21,7 +21,6 @@ pub const CODE_CONDITIONALLY: i32 = 2;
 pub const NLSF_QUANT_MAX_AMPLITUDE: i32 = 4;
 pub const CODE_INDEPENDENTLY_NO_LTP_SCALING: i32 = 1;
 pub const MAX_API_FS_KHZ: i32 = 48;
-pub const DECODER_NUM_CHANNELS: i32 = 2;
 pub const ENCODER_NUM_CHANNELS: i32 = 2;
 pub const QUANT_LEVEL_ADJUST_Q10: i32 = 80;
 pub const MIN_QGAIN_DB: i32 = 2;

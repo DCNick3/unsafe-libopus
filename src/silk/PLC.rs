@@ -26,12 +26,12 @@ pub const NB_ATT: i32 = 2;
 static mut HARM_ATT_Q15: [i16; 2] = [32440, 31130];
 static mut PLC_RAND_ATTENUATE_V_Q15: [i16; 2] = [31130, 26214];
 static mut PLC_RAND_ATTENUATE_UV_Q15: [i16; 2] = [32440, 29491];
-pub unsafe fn silk_PLC_Reset(psDec: *mut silk_decoder_state) {
-    (*psDec).sPLC.pitchL_Q8 = (((*psDec).frame_length as u32) << 8 - 1) as i32;
-    (*psDec).sPLC.prevGain_Q16[0 as usize] = ((1 * ((1) << 16)) as f64 + 0.5f64) as i32;
-    (*psDec).sPLC.prevGain_Q16[1 as usize] = ((1 * ((1) << 16)) as f64 + 0.5f64) as i32;
-    (*psDec).sPLC.subfr_length = 20;
-    (*psDec).sPLC.nb_subfr = 2;
+pub fn silk_PLC_Reset(psDec: &mut silk_decoder_state) {
+    psDec.sPLC.pitchL_Q8 = ((psDec.frame_length as u32) << (8 - 1)) as i32;
+    psDec.sPLC.prevGain_Q16[0] = ((1 * ((1) << 16)) as f64 + 0.5f64) as i32;
+    psDec.sPLC.prevGain_Q16[1] = ((1 * ((1) << 16)) as f64 + 0.5f64) as i32;
+    psDec.sPLC.subfr_length = 20;
+    psDec.sPLC.nb_subfr = 2;
 }
 pub unsafe fn silk_PLC(
     psDec: *mut silk_decoder_state,
@@ -41,7 +41,7 @@ pub unsafe fn silk_PLC(
     arch: i32,
 ) {
     if (*psDec).fs_kHz != (*psDec).sPLC.fs_kHz {
-        silk_PLC_Reset(psDec);
+        silk_PLC_Reset(&mut *psDec);
         (*psDec).sPLC.fs_kHz = (*psDec).fs_kHz;
     }
     if lost != 0 {
