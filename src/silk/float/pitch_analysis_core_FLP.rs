@@ -1,38 +1,6 @@
 pub mod arch_h {
     pub type opus_val32 = f32;
 }
-pub mod SigProc_FLP_h {
-    #[inline]
-    pub unsafe fn silk_float2short_array(out: *mut i16, in_0: *const f32, length: i32) {
-        let mut k: i32 = 0;
-        k = length - 1;
-        while k >= 0 {
-            *out.offset(k as isize) = (if float2int(*in_0.offset(k as isize)) > silk_int16_MAX {
-                silk_int16_MAX
-            } else if float2int(*in_0.offset(k as isize)) < silk_int16_MIN {
-                silk_int16_MIN
-            } else {
-                float2int(*in_0.offset(k as isize))
-            }) as i16;
-            k -= 1;
-        }
-    }
-    #[inline]
-    pub unsafe fn silk_short2float_array(out: *mut f32, in_0: *const i16, length: i32) {
-        let mut k: i32 = 0;
-        k = length - 1;
-        while k >= 0 {
-            *out.offset(k as isize) = *in_0.offset(k as isize) as f32;
-            k -= 1;
-        }
-    }
-    #[inline]
-    pub unsafe fn silk_log2(x: f64) -> f32 {
-        return (3.32192809488736f64 * x.log10()) as f32;
-    }
-    use super::typedef_h::{silk_int16_MAX, silk_int16_MIN};
-    use crate::celt::float_cast::float2int;
-}
 pub mod typedef_h {
     pub const silk_int16_MAX: i32 = i16::MAX as i32;
     pub const silk_int16_MIN: i32 = i16::MIN as i32;
@@ -40,12 +8,12 @@ pub mod typedef_h {
 
 use self::arch_h::opus_val32;
 pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
-pub use self::SigProc_FLP_h::{silk_float2short_array, silk_log2, silk_short2float_array};
 use crate::celt::pitch::celt_pitch_xcorr_c;
 use crate::externs::memset;
 use crate::silk::float::energy_FLP::silk_energy_FLP;
 use crate::silk::float::inner_product_FLP::silk_inner_product_FLP;
 use crate::silk::float::sort_FLP::silk_insertion_sort_decreasing_FLP;
+use crate::silk::float::SigProc_FLP::{silk_float2short_array, silk_log2, silk_short2float_array};
 use crate::silk::pitch_est_tables::{
     silk_CB_lags_stage2, silk_CB_lags_stage2_10_ms, silk_CB_lags_stage3, silk_CB_lags_stage3_10_ms,
     silk_Lag_range_stage3, silk_Lag_range_stage3_10_ms, silk_nb_cbk_searchs_stage3,

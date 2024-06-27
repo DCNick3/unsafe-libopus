@@ -1,13 +1,3 @@
-pub mod SigProc_FLP_h {
-    #[inline]
-    pub unsafe fn silk_sigmoid(x: f32) -> f32 {
-        return (1.0f64 / (1.0f64 + (-x as f64).exp())) as f32;
-    }
-    #[inline]
-    pub unsafe fn silk_log2(x: f64) -> f32 {
-        return (3.32192809488736f64 * x.log10()) as f32;
-    }
-}
 pub mod tuning_parameters_h {
     pub const FIND_PITCH_WHITE_NOISE_FRACTION: f32 = 1e-3f32;
     pub const BG_SNR_DECR_dB: f32 = 2.0f32;
@@ -36,7 +26,6 @@ use crate::silk::float::structs_FLP::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
 };
 
-pub use self::SigProc_FLP_h::{silk_log2, silk_sigmoid};
 use crate::externs::memcpy;
 use crate::silk::float::apply_sine_window_FLP::silk_apply_sine_window_FLP;
 use crate::silk::float::autocorrelation_FLP::silk_autocorrelation_FLP;
@@ -45,6 +34,7 @@ use crate::silk::float::energy_FLP::silk_energy_FLP;
 use crate::silk::float::k2a_FLP::silk_k2a_FLP;
 use crate::silk::float::schur_FLP::silk_schur_FLP;
 use crate::silk::float::warped_autocorrelation_FLP::silk_warped_autocorrelation_FLP;
+use crate::silk::float::SigProc_FLP::{silk_log2, silk_sigmoid};
 use crate::silk::mathops::silk_exp2;
 
 #[inline]

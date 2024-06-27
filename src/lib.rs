@@ -90,6 +90,7 @@ mod silk {
         pub mod LPC_analysis_filter_FLP;
         pub mod LTP_analysis_filter_FLP;
         pub mod LTP_scale_ctrl_FLP;
+        pub mod SigProc_FLP;
         pub mod apply_sine_window_FLP;
         pub mod autocorrelation_FLP;
         pub mod burg_modified_FLP;

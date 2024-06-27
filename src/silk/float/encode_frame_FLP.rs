@@ -1,15 +1,3 @@
-pub mod SigProc_FLP_h {
-    #[inline]
-    pub unsafe fn silk_short2float_array(out: *mut f32, in_0: *const i16, length: i32) {
-        let mut k: i32 = 0;
-        k = length - 1;
-        while k >= 0 {
-            *out.offset(k as isize) = *in_0.offset(k as isize) as f32;
-            k -= 1;
-        }
-    }
-}
-pub use self::SigProc_FLP_h::silk_short2float_array;
 use crate::celt::entcode::{ec_ctx_saved, ec_tell};
 use crate::celt::entenc::ec_enc;
 use crate::externs::{memcpy, memmove};
@@ -25,6 +13,7 @@ use crate::silk::float::noise_shape_analysis_FLP::silk_noise_shape_analysis_FLP;
 use crate::silk::float::process_gains_FLP::silk_process_gains_FLP;
 use crate::silk::float::structs_FLP::{silk_encoder_control_FLP, silk_encoder_state_FLP};
 use crate::silk::float::wrappers_FLP::silk_NSQ_wrapper_FLP;
+use crate::silk::float::SigProc_FLP::silk_short2float_array;
 use crate::silk::gain_quant::{silk_gains_ID, silk_gains_dequant, silk_gains_quant};
 use crate::silk::log2lin::silk_log2lin;
 use crate::silk::structs::{silk_nsq_state, SideInfoIndices};

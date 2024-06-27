@@ -1,9 +1,3 @@
-pub mod SigProc_FLP_h {
-    #[inline]
-    pub unsafe fn silk_sigmoid(x: f32) -> f32 {
-        return (1.0f64 / (1.0f64 + (-x as f64).exp())) as f32;
-    }
-}
 pub mod tuning_parameters_h {
     pub const LAMBDA_OFFSET: f32 = 1.2f32;
     pub const LAMBDA_SPEECH_ACT: f32 = -0.2f32;
@@ -17,13 +11,13 @@ pub use self::tuning_parameters_h::{
     LAMBDA_CODING_QUALITY, LAMBDA_DELAYED_DECISIONS, LAMBDA_INPUT_QUALITY, LAMBDA_OFFSET,
     LAMBDA_QUANT_OFFSET, LAMBDA_SPEECH_ACT,
 };
-pub use self::SigProc_FLP_h::silk_sigmoid;
 use crate::celt::mathops::celt_sqrt;
 use crate::externs::memcpy;
 use crate::silk::define::{CODE_CONDITIONALLY, TYPE_VOICED};
 use crate::silk::float::structs_FLP::{
     silk_encoder_control_FLP, silk_encoder_state_FLP, silk_shape_state_FLP,
 };
+use crate::silk::float::SigProc_FLP::silk_sigmoid;
 use crate::silk::gain_quant::silk_gains_quant;
 use crate::silk::mathops::silk_exp2;
 use crate::silk::tables_other::silk_Quantization_Offsets_Q10;

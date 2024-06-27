@@ -1,17 +1,9 @@
 use crate::silk::A2NLSF::silk_A2NLSF;
 use crate::silk::NLSF2A::silk_NLSF2A;
 
-pub mod SigProc_FLP_h {
-    #[inline]
-    pub unsafe fn silk_float2int(x: f32) -> i32 {
-        return float2int(x);
-    }
-    use crate::celt::float_cast::float2int;
-}
-
-pub use self::SigProc_FLP_h::silk_float2int;
 use crate::silk::define::{LTP_ORDER, MAX_SHAPE_LPC_ORDER, TYPE_VOICED};
 use crate::silk::float::structs_FLP::{silk_encoder_control_FLP, silk_encoder_state_FLP};
+use crate::silk::float::SigProc_FLP::silk_float2int;
 use crate::silk::process_NLSFs::silk_process_NLSFs;
 use crate::silk::quant_LTP_gains::silk_quant_LTP_gains;
 use crate::silk::structs::{silk_encoder_state, silk_nsq_state, SideInfoIndices};
