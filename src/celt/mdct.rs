@@ -1,10 +1,6 @@
 #![forbid(
-    // we need this unsafe =(
-    // but it's nicer
-    // unsafe_code,
     non_camel_case_types,
-    // we'll fix this
-    // non_snake_case,
+    non_snake_case,
     non_upper_case_globals,
     unused_assignments
 )]
@@ -24,6 +20,7 @@ pub struct MdctLookup<'a> {
     pub trig: &'a [&'a [f32]; 4],
 }
 
+// unsafe is required to split mutable view into two interlaced non-intersecting views
 mod ndutil {
     use ndarray::{ArrayView, ArrayViewMut, Axis, Dimension, Slice};
     /// Split an evenly sized dimension into two interleaving views going in different directions
@@ -86,28 +83,28 @@ pub fn mdct_forward(
     let st: &kiss_fft_state = l.kfft[shift];
     let scale = st.scale;
     let trig = aview1(l.trig[shift]);
-    let N = l.n >> shift;
-    let N2 = N / 2;
-    let N4 = N / 4;
+    let n = l.n >> shift;
+    let n2 = n / 2;
+    let n4 = n / 4;
 
-    let O = overlap;
-    let O2 = overlap / 2;
-    let O4 = overlap / 4;
+    let o = overlap;
+    let o2 = overlap / 2;
+    let o4 = overlap / 4;
 
-    assert_eq!(window.len(), O);
-    assert_eq!(trig.len(), N2);
+    assert_eq!(window.len(), o);
+    assert_eq!(trig.len(), n2);
     let window = aview1(window);
 
     // TODO: make sure all callers pass the exactly-sized slice
-    assert!(input.len() >= N2 + O);
-    let input = aview1(&input[..N2 + O]);
+    assert!(input.len() >= n2 + o);
+    let input = aview1(&input[..n2 + o]);
 
-    assert!(out.len() >= N2 * output_stride);
+    assert!(out.len() >= n2 * output_stride);
     let mut out = aview_mut1(out);
     // TODO: it would be nice to accept a strided view directly as an `ArrayViewMut1`
-    let out = out.slice_mut(s![..N2 * output_stride;output_stride]);
+    let out = out.slice_mut(s![..n2 * output_stride;output_stride]);
 
-    assert_eq!(O % 4, 0);
+    assert_eq!(o % 4, 0);
 
     // further down we split arrays into chunks.
     // and then split the chunks into two views with split_interleaving_opposite.
@@ -115,9 +112,9 @@ pub fn mdct_forward(
     // the input chunks are more numerous, so there are also h1, h2, mid, t1, t2 (for two heads and two tails).
     // the views are suffixed with f (for forward) and b (for backward).
 
-    let (trig_real, trig_imag) = trig.split_at(Axis(0), N4);
+    let (trig_real, trig_imag) = trig.split_at(Axis(0), n4);
 
-    let (wh, wt) = window.split_at(Axis(0), O2);
+    let (wh, wt) = window.split_at(Axis(0), o2);
     // [  wh  |  wt  ]
     // [<-O2->|<-O2->]
     // [<-----O----->]
@@ -125,10 +122,10 @@ pub fn mdct_forward(
     let (whf, whb) = ndutil::split_interleaving_opposite(wh, Axis(0));
     let (wtf, wtb) = ndutil::split_interleaving_opposite(wt, Axis(0));
 
-    let (xh1, tail) = input.split_at(Axis(0), O2);
-    let (xh2, tail) = tail.split_at(Axis(0), O2);
-    let (xmid, tail) = tail.split_at(Axis(0), N2 - O);
-    let (xt1, xt2) = tail.split_at(Axis(0), O2);
+    let (xh1, tail) = input.split_at(Axis(0), o2);
+    let (xh2, tail) = tail.split_at(Axis(0), o2);
+    let (xmid, tail) = tail.split_at(Axis(0), n2 - o);
+    let (xt1, xt2) = tail.split_at(Axis(0), o2);
     // [  xh1   |   xh2  |   xmid   |  xt1   |   xt2  ]
     // [<--O2-->|<--O2-->|<--N2-O-->|<--O2-->|<--O2-->]
     // [<--O2-->|<------------N2------------>|<--O2-->]
@@ -142,11 +139,11 @@ pub fn mdct_forward(
     let (xt2f, xt2b) = ndutil::split_interleaving_opposite(xt2, Axis(0));
 
     // TODO: allocate from a custom per-frame allocator?
-    let mut f = std::vec::from_elem(Complex::zero(), N4);
+    let mut f = std::vec::from_elem(Complex::zero(), n4);
     let fv = aview_mut1(&mut f);
 
-    let (mut fh, tail) = fv.split_at(Axis(0), O4);
-    let (mut fmid, mut ft) = tail.split_at(Axis(0), N4 - O2);
+    let (mut fh, tail) = fv.split_at(Axis(0), o4);
+    let (mut fmid, mut ft) = tail.split_at(Axis(0), n4 - o2);
     // [  fh  |   fmid   |  ft  ]
     // [<-O4->|<--N4-O2->|<-O4->]
     // [<----------N4---------->]
@@ -155,11 +152,11 @@ pub fn mdct_forward(
     /* Window, shuffle, fold */
     {
         // doing two passes because ndarray limits us to only 6 variables (that's sooo small :sob:)
-        azip!((y in &mut fh, &w1 in wtf, &w2 in whb, &x1_N2 in xt2f, &x2 in &xt1b) {
-            y.re = w2 * x1_N2 + w1 * x2;
+        azip!((y in &mut fh, &w1 in wtf, &w2 in whb, &x1_n2 in xt2f, &x2 in &xt1b) {
+            y.re = w2 * x1_n2 + w1 * x2;
         });
-        azip!((y in &mut fh, &w1 in wtf, &w2 in whb, &x1 in xh2f, &x2_N2 in xh1b) {
-            y.im = w1 * x1 - w2 * x2_N2;
+        azip!((y in &mut fh, &w1 in wtf, &w2 in whb, &x1 in xh2f, &x2_n2 in xh1b) {
+            y.im = w1 * x1 - w2 * x2_n2;
         });
 
         azip!((y in &mut fmid, &x1 in xmidf, &x2 in xmidb) {
@@ -168,16 +165,16 @@ pub fn mdct_forward(
         });
 
         // doing two passes because ndarray limits us to only 6 variables (that's sooo small :sob:)
-        azip!((y in &mut ft, &w1 in whf, &w2 in wtb, &x1_N2 in xh1f, &x2 in &xh2b) {
-            y.re = -(w1 * x1_N2) + w2 * x2;
+        azip!((y in &mut ft, &w1 in whf, &w2 in wtb, &x1_n2 in xh1f, &x2 in &xh2b) {
+            y.re = -(w1 * x1_n2) + w2 * x2;
         });
-        azip!((y in &mut ft, &w1 in whf, &w2 in wtb, &x1 in xt1f, &x2_N2 in xt2b) {
-            y.im = w2 * x1 + w1 * x2_N2;
+        azip!((y in &mut ft, &w1 in whf, &w2 in wtb, &x1 in xt1f, &x2_n2 in xt2b) {
+            y.im = w2 * x1 + w1 * x2_n2;
         });
     }
 
     // TODO: allocate from a custom per-frame allocator?
-    let mut f2 = std::vec::from_elem(Complex::zero(), N4);
+    let mut f2 = std::vec::from_elem(Complex::zero(), n4);
 
     /* Pre-rotation */
     {
@@ -216,30 +213,30 @@ pub fn mdct_backward(
     input_stride: usize,
 ) {
     let trig = aview1(l.trig[shift]);
-    let N = l.n >> shift;
-    let N2 = N / 2;
-    let N4 = N / 4;
+    let n = l.n >> shift;
+    let n2 = n / 2;
+    let n4 = n / 4;
 
-    let O = overlap;
-    let O2 = overlap / 2;
+    let o = overlap;
+    let o2 = overlap / 2;
 
-    assert_eq!(l.kfft[shift].nfft, N4);
+    assert_eq!(l.kfft[shift].nfft, n4);
 
-    assert_eq!(window.len(), O);
-    assert_eq!(trig.len(), N2);
+    assert_eq!(window.len(), o);
+    assert_eq!(trig.len(), n2);
     let window = aview1(window);
 
-    assert_eq!(input.len(), N2 * input_stride);
+    assert_eq!(input.len(), n2 * input_stride);
     let input = aview1(input);
     // TODO: it would be nice to accept a strided view directly as an `ArrayView1`
-    let input = input.slice(s![..N2 * input_stride;input_stride]);
+    let input = input.slice(s![..n2 * input_stride;input_stride]);
 
-    assert_eq!(out.len(), N2 + O);
-    let out = &mut out[..N2 + O];
+    assert_eq!(out.len(), n2 + o);
+    let out = &mut out[..n2 + o];
 
-    let (trig_real, trig_imag) = trig.split_at(Axis(0), N4);
+    let (trig_real, trig_imag) = trig.split_at(Axis(0), n4);
 
-    let outmid_scalar = &mut out[O2..][..N2];
+    let outmid_scalar = &mut out[o2..][..n2];
 
     let (xf, xb) = ndutil::split_interleaving_opposite(input, Axis(0));
 
@@ -264,14 +261,14 @@ pub fn mdct_backward(
     /* Loop to (N4+1)>>1 to handle odd N4. When N4 is odd, the
     middle pair will be computed twice. */
     // additional asserts to maybe help the optimizer remove bounds checks
-    assert_eq!(outmid.len(), N4);
-    assert_eq!(trig_real.len(), N4);
-    assert_eq!(trig_imag.len(), N4);
-    for i in 0..(N4 + 1) / 2 {
+    assert_eq!(outmid.len(), n4);
+    assert_eq!(trig_real.len(), n4);
+    assert_eq!(trig_imag.len(), n4);
+    for i in 0..(n4 + 1) / 2 {
         // NB: unlike the loops in ctl_mdct_forward_c, the yp0 and yp1 "pointers" are NOT disjoint because they are stepped only by 1
         // so yp0 and yp1 can alias, especially when N4 is odd
         let yp0 = i;
-        let yp1 = N4 - i - 1;
+        let yp1 = n4 - i - 1;
 
         fn swap(Complex { re, im }: Complex<f32>) -> Complex<f32> {
             Complex { re: im, im: re }
@@ -288,7 +285,7 @@ pub fn mdct_backward(
         outmid[yp0].re = y.re;
         outmid[yp1].im = y.im;
 
-        let t = swap(Complex::new(trig_real[N4 - i - 1], trig_imag[N4 - i - 1]));
+        let t = swap(Complex::new(trig_real[n4 - i - 1], trig_imag[n4 - i - 1]));
         /* We'd scale up by 2 here, but instead it's done when mixing the windows */
         let y = swap(x * t);
         outmid[yp1].re = y.re;
@@ -297,11 +294,11 @@ pub fn mdct_backward(
 
     /* Mirror on both sides for TDAC */
     {
-        let outh = aview_mut1(&mut out[..O]);
-        let (mut outhf, mut outhb) = outh.split_at(Axis(0), O2);
+        let outh = aview_mut1(&mut out[..o]);
+        let (mut outhf, mut outhb) = outh.split_at(Axis(0), o2);
         let mut outhb = outhb.slice_mut(s![..;-1]);
 
-        let (wf, wb) = window.split_at(Axis(0), O2);
+        let (wf, wb) = window.split_at(Axis(0), o2);
         let wb = wb.slice(s![..;-1]);
 
         azip!((of in &mut outhf, ob in &mut outhb, &wf in wf, &wb in wb) {
