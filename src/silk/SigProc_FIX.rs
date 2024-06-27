@@ -43,3 +43,14 @@ pub fn silk_RSHIFT_ROUND(a: i32, shift: i32) -> i32 {
         (((a) >> ((shift) - 1)) + 1) >> 1
     }
 }
+
+#[inline]
+pub fn silk_SAT16(a: i32) -> i32 {
+    if a > i16::MAX as i32 {
+        i16::MAX as i32
+    } else if a < i16::MIN as i32 {
+        i16::MIN as i32
+    } else {
+        a
+    }
+}

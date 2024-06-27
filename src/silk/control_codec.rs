@@ -3,10 +3,6 @@ pub mod errors_h {
     pub const SILK_NO_ERROR: i32 = 0;
 }
 
-pub mod typedef_h {
-    pub const silk_int16_MIN: i32 = i16::MIN as i32;
-    pub const silk_int16_MAX: i32 = i16::MAX as i32;
-}
 use self::errors_h::{SILK_ENC_PACKET_SIZE_NOT_SUPPORTED, SILK_NO_ERROR};
 use crate::externs::memset;
 use crate::silk::control_audio_bandwidth::silk_control_audio_bandwidth;
@@ -90,9 +86,8 @@ unsafe fn silk_setup_resamplers(psEnc: *mut silk_encoder_state_FLP, fs_kHz: i32)
             }) as usize;
             let mut x_bufFIX: Vec<i16> = ::std::vec::from_elem(0, vla);
             silk_float2short_array(
-                x_bufFIX.as_mut_ptr(),
-                ((*psEnc).x_buf).as_mut_ptr(),
-                old_buf_samples,
+                &mut x_bufFIX[..old_buf_samples as usize],
+                &(*psEnc).x_buf[..old_buf_samples as usize],
             );
 
             /* Initialize resampler for temporary resampling of x_buf data to API_fs_Hz */

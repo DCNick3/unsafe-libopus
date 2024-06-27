@@ -1,5 +1,5 @@
 use crate::celt::float_cast::float2int;
-use crate::silk::control_codec::typedef_h::{silk_int16_MAX, silk_int16_MIN};
+use crate::silk::SigProc_FIX::silk_SAT16;
 
 #[inline]
 pub fn silk_float2int(x: f32) -> i32 {
@@ -7,18 +7,12 @@ pub fn silk_float2int(x: f32) -> i32 {
 }
 
 #[inline]
-pub unsafe fn silk_float2short_array(out: *mut i16, in_0: *const f32, length: i32) {
-    let mut k: i32 = 0;
-    k = length - 1;
-    while k >= 0 {
-        *out.offset(k as isize) = (if float2int(*in_0.offset(k as isize)) > silk_int16_MAX {
-            silk_int16_MAX
-        } else if float2int(*in_0.offset(k as isize)) < silk_int16_MIN {
-            silk_int16_MIN
-        } else {
-            float2int(*in_0.offset(k as isize))
-        }) as i16;
-        k -= 1;
+pub fn silk_float2short_array(out: &mut [i16], input: &[f32]) {
+    let length = out.len();
+    assert_eq!(length, input.len());
+
+    for k in (0..length).rev() {
+        out[k] = silk_SAT16(float2int(input[k])) as i16;
     }
 }
 

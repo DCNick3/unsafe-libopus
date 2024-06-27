@@ -113,7 +113,10 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
     max_lag_8kHz = PE_MAX_LAG_MS * 8 - 1;
     if Fs_kHz == 16 {
         let mut frame_16_FIX: [i16; 640] = [0; 640];
-        silk_float2short_array(frame_16_FIX.as_mut_ptr(), frame, frame_length);
+        silk_float2short_array(
+            &mut frame_16_FIX[..frame_length as usize],
+            std::slice::from_raw_parts(frame, frame_length as usize),
+        );
         let filt_state = array_mut_ref![filt_state, 0, 2];
         filt_state.fill(0);
         silk_resampler_down2(
@@ -128,7 +131,10 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
         );
     } else if Fs_kHz == 12 {
         let mut frame_12_FIX: [i16; 480] = [0; 480];
-        silk_float2short_array(frame_12_FIX.as_mut_ptr(), frame, frame_length);
+        silk_float2short_array(
+            &mut frame_12_FIX[..frame_length as usize],
+            std::slice::from_raw_parts(frame, frame_length as usize),
+        );
         filt_state.fill(0);
         silk_resampler_down2_3(
             &mut filt_state,
@@ -142,7 +148,10 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
         );
     } else {
         assert!(Fs_kHz == 8);
-        silk_float2short_array(frame_8_FIX.as_mut_ptr(), frame, frame_length_8kHz);
+        silk_float2short_array(
+            &mut frame_8_FIX[..frame_length_8kHz as usize],
+            std::slice::from_raw_parts(frame, frame_length_8kHz as usize),
+        );
     }
     {
         let filt_state = array_mut_ref![filt_state, 0, 2];
