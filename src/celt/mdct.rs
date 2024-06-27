@@ -11,8 +11,7 @@ use num_complex::Complex;
 use num_traits::Zero as _;
 use std::ops::Neg as _;
 
-#[derive(Copy, Clone)]
-#[repr(C)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct MdctLookup<'a> {
     pub n: usize,
     pub maxshift: i32,

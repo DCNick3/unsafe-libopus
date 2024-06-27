@@ -4,7 +4,7 @@ use num_traits::Zero;
 pub type kiss_fft_cpx = num_complex::Complex32;
 pub type kiss_twiddle_cpx = num_complex::Complex32;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct kiss_fft_state<'a> {
     pub nfft: usize,
     pub scale: f32,

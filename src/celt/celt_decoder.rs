@@ -60,7 +60,7 @@ use crate::varargs::VarArgs;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct OpusCustomDecoder {
-    pub mode: *const OpusCustomMode,
+    pub mode: &'static OpusCustomMode,
     pub overlap: i32,
     pub channels: i32,
     pub stream_channels: i32,
@@ -88,7 +88,10 @@ pub const PLC_PITCH_LAG_MAX: i32 = 720;
 pub const PLC_PITCH_LAG_MIN: i32 = 100;
 pub const DECODE_BUFFER_SIZE: i32 = 2048;
 pub unsafe fn validate_celt_decoder(st: &OpusCustomDecoder) {
-    assert_eq!((*st).mode, opus_custom_mode_create(48000, 960, None));
+    assert_eq!(
+        (*st).mode,
+        opus_custom_mode_create(48000, 960, None).unwrap()
+    );
     assert_eq!((*st).overlap, 120);
     assert!((*st).channels == 1 || (*st).channels == 2);
     assert!((*st).stream_channels == 1 || (*st).stream_channels == 2);
@@ -110,7 +113,7 @@ pub unsafe fn validate_celt_decoder(st: &OpusCustomDecoder) {
     assert!((*st).postfilter_tapset_old >= 0);
 }
 pub unsafe fn celt_decoder_get_size(channels: i32) -> i32 {
-    let mode: *const OpusCustomMode = opus_custom_mode_create(48000, 960, None);
+    let mode: *const OpusCustomMode = opus_custom_mode_create(48000, 960, None).unwrap();
     return opus_custom_decoder_get_size(mode, channels);
 }
 #[inline]
@@ -136,7 +139,11 @@ pub unsafe fn celt_decoder_init(
     channels: i32,
 ) -> i32 {
     let mut ret: i32 = 0;
-    ret = opus_custom_decoder_init(st, opus_custom_mode_create(48000, 960, None), channels);
+    ret = opus_custom_decoder_init(
+        st,
+        opus_custom_mode_create(48000, 960, None).unwrap(),
+        channels,
+    );
     if ret != OPUS_OK {
         return ret;
     }
@@ -150,7 +157,7 @@ pub unsafe fn celt_decoder_init(
 #[inline]
 unsafe fn opus_custom_decoder_init(
     st: *mut OpusCustomDecoder,
-    mode: *const OpusCustomMode,
+    mode: &'static OpusCustomMode,
     channels: i32,
 ) -> i32 {
     if channels < 0 || channels > 2 {
@@ -569,7 +576,7 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
     mode = (*st).mode;
     nbEBands = (*mode).nbEBands;
     overlap = (*mode).overlap;
-    eBands = (*mode).eBands;
+    eBands = (*mode).eBands.as_ptr();
     c = 0;
     loop {
         decode_mem[c as usize] = ((*st)._decode_mem)
@@ -963,7 +970,7 @@ pub unsafe fn celt_decode_with_ec(
     mode = (*st).mode;
     nbEBands = (*mode).nbEBands;
     overlap = (*mode).overlap;
-    eBands = (*mode).eBands;
+    eBands = (*mode).eBands.as_ptr();
     start = (*st).start;
     end = (*st).end;
     frame_size *= (*st).downsample;

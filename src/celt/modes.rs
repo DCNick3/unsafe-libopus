@@ -1,44 +1,33 @@
-#[derive(Copy, Clone)]
-#[repr(C)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct OpusCustomMode {
     pub(crate) Fs: i32,
     pub(crate) overlap: i32,
     pub(crate) nbEBands: i32,
     pub(crate) effEBands: i32,
-    pub(crate) preemph: [opus_val16; 4],
-    pub(crate) eBands: *const i16,
+    pub(crate) preemph: [f32; 4],
+    pub(crate) eBands: &'static [i16],
     pub(crate) maxLM: i32,
     pub(crate) nbShortMdcts: i32,
     pub(crate) shortMdctSize: i32,
     pub(crate) nbAllocVectors: i32,
-    pub(crate) allocVectors: *const u8,
-    pub(crate) logN: *const i16,
-    pub(crate) window: &'static [opus_val16],
+    pub(crate) allocVectors: &'static [u8],
+    pub(crate) logN: &'static [i16],
+    pub(crate) window: &'static [f32],
     pub(crate) mdct: MdctLookup<'static>,
     pub(crate) cache: PulseCache,
 }
-#[derive(Copy, Clone)]
-#[repr(C)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct PulseCache {
     pub size: i32,
-    pub index: *const i16,
-    pub bits: *const u8,
-    pub caps: *const u8,
+    pub index: &'static [i16],
+    pub bits: &'static [u8],
+    pub caps: &'static [u8],
 }
 pub const MAX_PERIOD: i32 = 1024;
 
-pub mod arch_h {
-    pub type opus_val16 = f32;
-}
-pub mod stddef_h {
-    pub const NULL: i32 = 0;
-}
-
 pub mod static_modes_float_h;
 
-pub use self::arch_h::opus_val16;
 pub use self::static_modes_float_h::static_mode_list;
-pub use self::stddef_h::NULL;
 use crate::celt::mdct::MdctLookup;
 use crate::src::opus_defines::{OPUS_BAD_ARG, OPUS_OK};
 
@@ -59,25 +48,24 @@ static band_allocation: [u8; 231] = [
     104,
 ];
 
-pub unsafe fn opus_custom_mode_create(
+pub fn opus_custom_mode_create(
     Fs: i32,
     frame_size: i32,
     error: Option<&mut i32>,
-) -> *const OpusCustomMode {
-    // TODO: make static_mode_list non-mutable (requires Sync)
+) -> Option<&'static OpusCustomMode> {
     // TODO: maybe return Result instead of error code?
     for mode in static_mode_list {
         for j in 0..4 {
-            if Fs == (*mode).Fs && frame_size << j == (*mode).shortMdctSize * (*mode).nbShortMdcts {
+            if Fs == mode.Fs && frame_size << j == mode.shortMdctSize * mode.nbShortMdcts {
                 if let Some(error) = error {
                     *error = OPUS_OK;
                 }
-                return mode;
+                return Some(mode);
             }
         }
     }
     if let Some(error) = error {
         *error = OPUS_BAD_ARG;
     }
-    return NULL as *mut OpusCustomMode;
+    return None;
 }

@@ -111,7 +111,7 @@ pub struct OpusCustomEncoder {
     pub in_mem: [celt_sig; 1],
 }
 pub unsafe fn celt_encoder_get_size(channels: i32) -> i32 {
-    let mode: *const OpusCustomMode = opus_custom_mode_create(48000, 960, None);
+    let mode: *const OpusCustomMode = opus_custom_mode_create(48000, 960, None).unwrap();
     return opus_custom_encoder_get_size(mode, channels);
 }
 #[inline]
@@ -176,7 +176,7 @@ pub unsafe fn celt_encoder_init(
     let mut ret: i32 = 0;
     ret = opus_custom_encoder_init_arch(
         st,
-        opus_custom_mode_create(48000, 960, None),
+        opus_custom_mode_create(48000, 960, None).unwrap(),
         channels,
         arch,
     );
@@ -617,12 +617,12 @@ unsafe fn tf_analysis(
         });
     let vla = len as usize;
     let mut metric: Vec<i32> = ::std::vec::from_elem(0, vla);
-    let vla_0 = ((*((*m).eBands).offset(len as isize) as i32
-        - *((*m).eBands).offset((len - 1) as isize) as i32)
+    let vla_0 = ((*((*m).eBands.as_ptr()).offset(len as isize) as i32
+        - *((*m).eBands.as_ptr()).offset((len - 1) as isize) as i32)
         << LM) as usize;
     let mut tmp: Vec<celt_norm> = ::std::vec::from_elem(0., vla_0);
-    let vla_1 = ((*((*m).eBands).offset(len as isize) as i32
-        - *((*m).eBands).offset((len - 1) as isize) as i32)
+    let vla_1 = ((*((*m).eBands.as_ptr()).offset(len as isize) as i32
+        - *((*m).eBands.as_ptr()).offset((len - 1) as isize) as i32)
         << LM) as usize;
     let mut tmp_1: Vec<celt_norm> = ::std::vec::from_elem(0., vla_1);
     let vla_2 = len as usize;
@@ -637,22 +637,23 @@ unsafe fn tf_analysis(
         let mut L1: opus_val32 = 0.;
         let mut best_L1: opus_val32 = 0.;
         let mut best_level: i32 = 0;
-        N = (*((*m).eBands).offset((i + 1) as isize) as i32
-            - *((*m).eBands).offset(i as isize) as i32)
+        N = (*((*m).eBands.as_ptr()).offset((i + 1) as isize) as i32
+            - *((*m).eBands.as_ptr()).offset(i as isize) as i32)
             << LM;
-        narrow = (*((*m).eBands).offset((i + 1) as isize) as i32
-            - *((*m).eBands).offset(i as isize) as i32
+        narrow = (*((*m).eBands.as_ptr()).offset((i + 1) as isize) as i32
+            - *((*m).eBands.as_ptr()).offset(i as isize) as i32
             == 1) as i32;
         memcpy(
             tmp.as_mut_ptr() as *mut core::ffi::c_void,
             &mut *X.offset(
-                (tf_chan * N0 + ((*((*m).eBands).offset(i as isize) as i32) << LM)) as isize,
+                (tf_chan * N0 + ((*((*m).eBands.as_ptr()).offset(i as isize) as i32) << LM))
+                    as isize,
             ) as *mut celt_norm as *const core::ffi::c_void,
             (N as u64)
                 .wrapping_mul(::core::mem::size_of::<celt_norm>() as u64)
                 .wrapping_add(
                     (0 * tmp.as_mut_ptr().offset_from(&mut *X.offset(
-                        (tf_chan * N0 + ((*((*m).eBands).offset(i as isize) as i32) << LM))
+                        (tf_chan * N0 + ((*((*m).eBands.as_ptr()).offset(i as isize) as i32) << LM))
                             as isize,
                     )) as i64) as u64,
                 ),
@@ -910,10 +911,12 @@ unsafe fn alloc_trim_analysis(
         while i < 8 {
             let mut partial: opus_val32 = 0.;
             partial = celt_inner_prod_c(
-                &*X.offset(((*((*m).eBands).offset(i as isize) as i32) << LM) as isize),
-                &*X.offset((N0 + ((*((*m).eBands).offset(i as isize) as i32) << LM)) as isize),
-                (*((*m).eBands).offset((i + 1) as isize) as i32
-                    - *((*m).eBands).offset(i as isize) as i32)
+                &*X.offset(((*((*m).eBands.as_ptr()).offset(i as isize) as i32) << LM) as isize),
+                &*X.offset(
+                    (N0 + ((*((*m).eBands.as_ptr()).offset(i as isize) as i32) << LM)) as isize,
+                ),
+                (*((*m).eBands.as_ptr()).offset((i + 1) as isize) as i32
+                    - *((*m).eBands.as_ptr()).offset(i as isize) as i32)
                     << LM,
             );
             sum = sum + partial;
@@ -930,10 +933,12 @@ unsafe fn alloc_trim_analysis(
         while i < intensity {
             let mut partial_0: opus_val32 = 0.;
             partial_0 = celt_inner_prod_c(
-                &*X.offset(((*((*m).eBands).offset(i as isize) as i32) << LM) as isize),
-                &*X.offset((N0 + ((*((*m).eBands).offset(i as isize) as i32) << LM)) as isize),
-                (*((*m).eBands).offset((i + 1) as isize) as i32
-                    - *((*m).eBands).offset(i as isize) as i32)
+                &*X.offset(((*((*m).eBands.as_ptr()).offset(i as isize) as i32) << LM) as isize),
+                &*X.offset(
+                    (N0 + ((*((*m).eBands.as_ptr()).offset(i as isize) as i32) << LM)) as isize,
+                ),
+                (*((*m).eBands.as_ptr()).offset((i + 1) as isize) as i32
+                    - *((*m).eBands.as_ptr()).offset(i as isize) as i32)
                     << LM,
             );
             minXC = if minXC < (partial_0).abs() {
@@ -1024,8 +1029,8 @@ unsafe fn stereo_analysis(m: *const OpusCustomMode, X: *const celt_norm, LM: i32
     i = 0;
     while i < 13 {
         let mut j: i32 = 0;
-        j = (*((*m).eBands).offset(i as isize) as i32) << LM;
-        while j < (*((*m).eBands).offset((i + 1) as isize) as i32) << LM {
+        j = (*((*m).eBands.as_ptr()).offset(i as isize) as i32) << LM;
+        while j < (*((*m).eBands.as_ptr()).offset((i + 1) as isize) as i32) << LM {
             let mut L: opus_val32 = 0.;
             let mut R: opus_val32 = 0.;
             let mut M: opus_val32 = 0.;
@@ -1045,8 +1050,9 @@ unsafe fn stereo_analysis(m: *const OpusCustomMode, X: *const celt_norm, LM: i32
     if LM <= 1 {
         thetas -= 8;
     }
-    return ((((*((*m).eBands).offset(13 as isize) as i32) << LM + 1) + thetas) as f32 * sumMS
-        > ((*((*m).eBands).offset(13 as isize) as i32) << LM + 1) as f32 * sumLR)
+    return ((((*((*m).eBands.as_ptr()).offset(13 as isize) as i32) << LM + 1) + thetas) as f32
+        * sumMS
+        > ((*((*m).eBands.as_ptr()).offset(13 as isize) as i32) << LM + 1) as f32 * sumLR)
         as i32;
 }
 unsafe fn median_of_5(x: *const opus_val16) -> opus_val16 {
@@ -1807,7 +1813,7 @@ unsafe fn compute_vbr(
     let mut nbEBands: i32 = 0;
     let mut eBands: *const i16 = 0 as *const i16;
     nbEBands = (*mode).nbEBands;
-    eBands = (*mode).eBands;
+    eBands = (*mode).eBands.as_ptr();
     coded_bands = if lastCodedBands != 0 {
         lastCodedBands
     } else {
@@ -2009,7 +2015,7 @@ pub unsafe fn celt_encode_with_ec(
     mode = (*st).mode;
     nbEBands = (*mode).nbEBands;
     overlap = (*mode).overlap;
-    eBands = (*mode).eBands;
+    eBands = (*mode).eBands.as_ptr();
     start = (*st).start;
     end = (*st).end;
     hybrid = (start != 0) as i32;
@@ -2629,7 +2635,7 @@ pub unsafe fn celt_encode_with_ec(
         C,
         offsets.as_mut_ptr(),
         (*st).lsb_depth,
-        (*mode).logN,
+        (*mode).logN.as_ptr(),
         isTransient,
         (*st).vbr,
         (*st).constrained_vbr,

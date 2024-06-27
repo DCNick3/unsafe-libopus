@@ -15,8 +15,9 @@ pub unsafe fn bits2pulses(m: *const OpusCustomMode, band: i32, mut LM: i32, mut 
     let mut hi: i32 = 0;
     let mut cache: *const u8 = 0 as *const u8;
     LM += 1;
-    cache = ((*m).cache.bits)
-        .offset(*((*m).cache.index).offset((LM * (*m).nbEBands + band) as isize) as i32 as isize);
+    cache = ((*m).cache.bits.as_ptr()).offset(
+        *((*m).cache.index.as_ptr()).offset((LM * (*m).nbEBands + band) as isize) as i32 as isize,
+    );
     lo = 0;
     hi = *cache.offset(0 as isize) as i32;
     bits -= 1;
@@ -48,8 +49,9 @@ pub const LOG_MAX_PSEUDO: i32 = 6;
 pub unsafe fn pulses2bits(m: *const OpusCustomMode, band: i32, mut LM: i32, pulses: i32) -> i32 {
     let mut cache: *const u8 = 0 as *const u8;
     LM += 1;
-    cache = ((*m).cache.bits)
-        .offset(*((*m).cache.index).offset((LM * (*m).nbEBands + band) as isize) as i32 as isize);
+    cache = ((*m).cache.bits.as_ptr()).offset(
+        *((*m).cache.index.as_ptr()).offset((LM * (*m).nbEBands + band) as isize) as i32 as isize,
+    );
     return if pulses == 0 {
         0
     } else {
@@ -186,24 +188,24 @@ unsafe fn interp_bits2pulses(
             left = total - psum;
             percoeff = celt_udiv(
                 left as u32,
-                (*((*m).eBands).offset(codedBands as isize) as i32
-                    - *((*m).eBands).offset(start as isize) as i32) as u32,
+                (*((*m).eBands.as_ptr()).offset(codedBands as isize) as i32
+                    - *((*m).eBands.as_ptr()).offset(start as isize) as i32) as u32,
             ) as i32;
-            left -= (*((*m).eBands).offset(codedBands as isize) as i32
-                - *((*m).eBands).offset(start as isize) as i32)
+            left -= (*((*m).eBands.as_ptr()).offset(codedBands as isize) as i32
+                - *((*m).eBands.as_ptr()).offset(start as isize) as i32)
                 * percoeff;
             rem = if left
-                - (*((*m).eBands).offset(j as isize) as i32
-                    - *((*m).eBands).offset(start as isize) as i32)
+                - (*((*m).eBands.as_ptr()).offset(j as isize) as i32
+                    - *((*m).eBands.as_ptr()).offset(start as isize) as i32)
                 > 0
             {
-                left - (*((*m).eBands).offset(j as isize) as i32
-                    - *((*m).eBands).offset(start as isize) as i32)
+                left - (*((*m).eBands.as_ptr()).offset(j as isize) as i32
+                    - *((*m).eBands.as_ptr()).offset(start as isize) as i32)
             } else {
                 0
             };
-            band_width = *((*m).eBands).offset(codedBands as isize) as i32
-                - *((*m).eBands).offset(j as isize) as i32;
+            band_width = *((*m).eBands.as_ptr()).offset(codedBands as isize) as i32
+                - *((*m).eBands.as_ptr()).offset(j as isize) as i32;
             band_bits = *bits.offset(j as isize) + percoeff * band_width + rem;
             if band_bits
                 >= (if *thresh.offset(j as isize) > alloc_floor + ((1) << 3) {
@@ -285,29 +287,29 @@ unsafe fn interp_bits2pulses(
     left = total - psum;
     percoeff = celt_udiv(
         left as u32,
-        (*((*m).eBands).offset(codedBands as isize) as i32
-            - *((*m).eBands).offset(start as isize) as i32) as u32,
+        (*((*m).eBands.as_ptr()).offset(codedBands as isize) as i32
+            - *((*m).eBands.as_ptr()).offset(start as isize) as i32) as u32,
     ) as i32;
-    left -= (*((*m).eBands).offset(codedBands as isize) as i32
-        - *((*m).eBands).offset(start as isize) as i32)
+    left -= (*((*m).eBands.as_ptr()).offset(codedBands as isize) as i32
+        - *((*m).eBands.as_ptr()).offset(start as isize) as i32)
         * percoeff;
     j = start;
     while j < codedBands {
         *bits.offset(j as isize) += percoeff
-            * (*((*m).eBands).offset((j + 1) as isize) as i32
-                - *((*m).eBands).offset(j as isize) as i32);
+            * (*((*m).eBands.as_ptr()).offset((j + 1) as isize) as i32
+                - *((*m).eBands.as_ptr()).offset(j as isize) as i32);
         j += 1;
     }
     j = start;
     while j < codedBands {
         let tmp_1: i32 = if left
-            < *((*m).eBands).offset((j + 1) as isize) as i32
-                - *((*m).eBands).offset(j as isize) as i32
+            < *((*m).eBands.as_ptr()).offset((j + 1) as isize) as i32
+                - *((*m).eBands.as_ptr()).offset(j as isize) as i32
         {
             left
         } else {
-            *((*m).eBands).offset((j + 1) as isize) as i32
-                - *((*m).eBands).offset(j as isize) as i32
+            *((*m).eBands.as_ptr()).offset((j + 1) as isize) as i32
+                - *((*m).eBands.as_ptr()).offset(j as isize) as i32
         };
         *bits.offset(j as isize) += tmp_1;
         left -= tmp_1;
@@ -324,8 +326,8 @@ unsafe fn interp_bits2pulses(
         let mut excess: i32 = 0;
         let mut bit: i32 = 0;
         assert!(*bits.offset(j as isize) >= 0);
-        N0 = *((*m).eBands).offset((j + 1) as isize) as i32
-            - *((*m).eBands).offset(j as isize) as i32;
+        N0 = *((*m).eBands.as_ptr()).offset((j + 1) as isize) as i32
+            - *((*m).eBands.as_ptr()).offset(j as isize) as i32;
         N = N0 << LM;
         bit = *bits.offset(j as isize) + balance;
         if N > 1 {
@@ -341,7 +343,7 @@ unsafe fn interp_bits2pulses(
                 } else {
                     0
                 });
-            NClogN = den * (*((*m).logN).offset(j as isize) as i32 + logM);
+            NClogN = den * (*((*m).logN.as_ptr()).offset(j as isize) as i32 + logM);
             offset = (NClogN >> 1) - den * FINE_OFFSET;
             if N == 2 {
                 offset += den << BITRES >> 2;
@@ -474,29 +476,29 @@ pub unsafe fn clt_compute_allocation(
     j = start;
     while j < end {
         *thresh.as_mut_ptr().offset(j as isize) = if C << 3
-            > 3 * (*((*m).eBands).offset((j + 1) as isize) as i32
-                - *((*m).eBands).offset(j as isize) as i32)
+            > 3 * (*((*m).eBands.as_ptr()).offset((j + 1) as isize) as i32
+                - *((*m).eBands.as_ptr()).offset(j as isize) as i32)
                 << LM
                 << 3
                 >> 4
         {
             C << 3
         } else {
-            3 * (*((*m).eBands).offset((j + 1) as isize) as i32
-                - *((*m).eBands).offset(j as isize) as i32)
+            3 * (*((*m).eBands.as_ptr()).offset((j + 1) as isize) as i32
+                - *((*m).eBands.as_ptr()).offset(j as isize) as i32)
                 << LM
                 << 3
                 >> 4
         };
         *trim_offset.as_mut_ptr().offset(j as isize) = C
-            * (*((*m).eBands).offset((j + 1) as isize) as i32
-                - *((*m).eBands).offset(j as isize) as i32)
+            * (*((*m).eBands.as_ptr()).offset((j + 1) as isize) as i32
+                - *((*m).eBands.as_ptr()).offset(j as isize) as i32)
             * (alloc_trim - 5 - LM)
             * (end - j - 1)
             * ((1) << LM + BITRES)
             >> 6;
-        if (*((*m).eBands).offset((j + 1) as isize) as i32
-            - *((*m).eBands).offset(j as isize) as i32)
+        if (*((*m).eBands.as_ptr()).offset((j + 1) as isize) as i32
+            - *((*m).eBands.as_ptr()).offset(j as isize) as i32)
             << LM
             == 1
         {
@@ -518,10 +520,11 @@ pub unsafe fn clt_compute_allocation(
                 break;
             }
             let mut bitsj: i32 = 0;
-            let N: i32 = *((*m).eBands).offset((j + 1) as isize) as i32
-                - *((*m).eBands).offset(j as isize) as i32;
-            bitsj =
-                (C * N * *((*m).allocVectors).offset((mid * len + j) as isize) as i32) << LM >> 2;
+            let N: i32 = *((*m).eBands.as_ptr()).offset((j + 1) as isize) as i32
+                - *((*m).eBands.as_ptr()).offset(j as isize) as i32;
+            bitsj = (C * N * *((*m).allocVectors.as_ptr()).offset((mid * len + j) as isize) as i32)
+                << LM
+                >> 2;
             if bitsj > 0 {
                 bitsj = if 0 > bitsj + *trim_offset.as_mut_ptr().offset(j as isize) {
                     0
@@ -557,13 +560,16 @@ pub unsafe fn clt_compute_allocation(
     while j < end {
         let mut bits1j: i32 = 0;
         let mut bits2j: i32 = 0;
-        let N_0: i32 = *((*m).eBands).offset((j + 1) as isize) as i32
-            - *((*m).eBands).offset(j as isize) as i32;
-        bits1j = (C * N_0 * *((*m).allocVectors).offset((lo * len + j) as isize) as i32) << LM >> 2;
+        let N_0: i32 = *((*m).eBands.as_ptr()).offset((j + 1) as isize) as i32
+            - *((*m).eBands.as_ptr()).offset(j as isize) as i32;
+        bits1j = (C * N_0 * *((*m).allocVectors.as_ptr()).offset((lo * len + j) as isize) as i32)
+            << LM
+            >> 2;
         bits2j = if hi >= (*m).nbAllocVectors {
             *cap.offset(j as isize)
         } else {
-            (C * N_0 * *((*m).allocVectors).offset((hi * len + j) as isize) as i32) << LM >> 2
+            (C * N_0 * *((*m).allocVectors.as_ptr()).offset((hi * len + j) as isize) as i32) << LM
+                >> 2
         };
         if bits1j > 0 {
             bits1j = if 0 > bits1j + *trim_offset.as_mut_ptr().offset(j as isize) {

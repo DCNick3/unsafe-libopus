@@ -142,7 +142,7 @@ pub unsafe fn compute_band_energies(
     let mut i: i32 = 0;
     let mut c: i32 = 0;
     let mut N: i32 = 0;
-    let eBands: *const i16 = (*m).eBands;
+    let eBands: *const i16 = (*m).eBands.as_ptr();
     N = (*m).shortMdctSize << LM;
     c = 0;
     loop {
@@ -177,7 +177,7 @@ pub unsafe fn normalise_bands(
     let mut i: i32 = 0;
     let mut c: i32 = 0;
     let mut N: i32 = 0;
-    let eBands: *const i16 = (*m).eBands;
+    let eBands: *const i16 = (*m).eBands.as_ptr();
     N = M * (*m).shortMdctSize;
     c = 0;
     loop {
@@ -215,7 +215,7 @@ pub unsafe fn denormalise_bands(
     let mut bound: i32 = 0;
     let mut f: *mut celt_sig = 0 as *mut celt_sig;
     let mut x: *const celt_norm = 0 as *const celt_norm;
-    let eBands: *const i16 = (*m).eBands;
+    let eBands: *const i16 = (*m).eBands.as_ptr();
     N = M * (*m).shortMdctSize;
     bound = M * *eBands.offset(end as isize) as i32;
     if downsample != 1 {
@@ -295,12 +295,12 @@ pub unsafe fn anti_collapse(
         let mut thresh: opus_val16 = 0.;
         let mut sqrt_1: opus_val16 = 0.;
         let mut depth: i32 = 0;
-        N0 = *((*m).eBands).offset((i + 1) as isize) as i32
-            - *((*m).eBands).offset(i as isize) as i32;
+        N0 = *((*m).eBands.as_ptr()).offset((i + 1) as isize) as i32
+            - *((*m).eBands.as_ptr()).offset(i as isize) as i32;
         depth = (celt_udiv(
             (1 + *pulses.offset(i as isize)) as u32,
-            (*((*m).eBands).offset((i + 1) as isize) as i32
-                - *((*m).eBands).offset(i as isize) as i32) as u32,
+            (*((*m).eBands.as_ptr()).offset((i + 1) as isize) as i32
+                - *((*m).eBands.as_ptr()).offset(i as isize) as i32) as u32,
         ) >> LM) as i32;
         thresh = 0.5f32 * celt_exp2(-0.125f32 * depth as f32);
         sqrt_1 = celt_rsqrt((N0 << LM) as f32);
@@ -337,7 +337,7 @@ pub unsafe fn anti_collapse(
             r = r * sqrt_1;
             X = X_
                 .offset((c * size) as isize)
-                .offset(((*((*m).eBands).offset(i as isize) as i32) << LM) as isize);
+                .offset(((*((*m).eBands.as_ptr()).offset(i as isize) as i32) << LM) as isize);
             k = 0;
             while k < (1) << LM {
                 if *collapse_masks.offset((i * C + c) as isize) as i32 & (1) << k == 0 {
@@ -472,7 +472,7 @@ pub unsafe fn spreading_decision(
     let mut N0: i32 = 0;
     let mut sum: i32 = 0;
     let mut nbBands: i32 = 0;
-    let eBands: *const i16 = (*m).eBands;
+    let eBands: *const i16 = (*m).eBands.as_ptr();
     let mut decision: i32 = 0;
     let mut hf_sum: i32 = 0;
     assert!(end > 0);
@@ -729,7 +729,7 @@ unsafe fn compute_theta(
     intensity = (*ctx).intensity;
     let ec = &mut *(*ctx).ec;
     bandE = (*ctx).bandE;
-    pulse_cap = *((*m).logN).offset(i as isize) as i32 + LM * ((1) << BITRES);
+    pulse_cap = *((*m).logN.as_ptr()).offset(i as isize) as i32 + LM * ((1) << BITRES);
     offset = (pulse_cap >> 1)
         - (if stereo != 0 && N == 2 {
             QTHETA_OFFSET_TWOPHASE
@@ -1011,8 +1011,9 @@ unsafe fn quant_partition(
     i = (*ctx).i;
     spread = (*ctx).spread;
     let ec = &mut *(*ctx).ec;
-    cache = ((*m).cache.bits).offset(
-        *((*m).cache.index).offset(((LM + 1) * (*m).nbEBands + i) as isize) as i32 as isize,
+    cache = ((*m).cache.bits.as_ptr()).offset(
+        *((*m).cache.index.as_ptr()).offset(((LM + 1) * (*m).nbEBands + i) as isize) as i32
+            as isize,
     );
     if LM != -1 && b > *cache.offset(*cache.offset(0 as isize) as isize) as i32 + 12 && N > 2 {
         let mut mbits: i32 = 0;
@@ -1511,7 +1512,7 @@ unsafe fn special_hybrid_folding(
 ) {
     let mut n1: i32 = 0;
     let mut n2: i32 = 0;
-    let eBands: *const i16 = (*m).eBands;
+    let eBands: *const i16 = (*m).eBands.as_ptr();
     n1 = M * (*eBands.offset((start + 1) as isize) as i32 - *eBands.offset(start as isize) as i32);
     n2 = M
         * (*eBands.offset((start + 2) as isize) as i32
@@ -1569,7 +1570,7 @@ pub unsafe fn quant_all_bands(
 ) {
     let mut i: i32 = 0;
     let mut remaining_bits: i32 = 0;
-    let eBands: *const i16 = (*m).eBands;
+    let eBands: *const i16 = (*m).eBands.as_ptr();
     let mut norm: *mut celt_norm = 0 as *mut celt_norm;
     let mut norm2: *mut celt_norm = 0 as *mut celt_norm;
     let mut resynth_alloc: i32 = 0;

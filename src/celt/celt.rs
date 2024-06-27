@@ -188,15 +188,16 @@ pub unsafe fn init_caps(m: *const OpusCustomMode, cap: *mut i32, LM: i32, C: i32
     i = 0;
     while i < (*m).nbEBands {
         let mut N: i32 = 0;
-        N = (*((*m).eBands).offset((i + 1) as isize) as i32
-            - *((*m).eBands).offset(i as isize) as i32)
+        N = (*((*m).eBands.as_ptr()).offset((i + 1) as isize) as i32
+            - *((*m).eBands.as_ptr()).offset(i as isize) as i32)
             << LM;
-        *cap.offset(i as isize) =
-            (*((*m).cache.caps).offset(((*m).nbEBands * (2 * LM + C - 1) + i) as isize) as i32
-                + 64)
-                * C
-                * N
-                >> 2;
+        *cap.offset(i as isize) = (*((*m).cache.caps.as_ptr())
+            .offset(((*m).nbEBands * (2 * LM + C - 1) + i) as isize)
+            as i32
+            + 64)
+            * C
+            * N
+            >> 2;
         i += 1;
     }
 }

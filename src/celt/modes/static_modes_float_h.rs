@@ -1,5 +1,5 @@
 #[rustfmt::skip]
-pub static window120: [opus_val16; 120] = [
+pub static window120: [f32; 120] = [
     6.7286966e-05, 0.00060551348, 0.0016815970, 0.0032947962, 0.0054439943,
     0.0081276923, 0.011344001, 0.015090633, 0.019364886, 0.024163635,
     0.029483315, 0.035319905, 0.041668911, 0.048525347, 0.055883718,
@@ -841,19 +841,19 @@ pub static mdct_twiddles960: [&[f32]; 4] = [
         -0.99186671, -0.99485862, -0.99716878, -0.99879545, -0.99973762,
     ]
 ];
-pub static mut mode48000_960_120: OpusCustomMode = OpusCustomMode {
+static mode48000_960_120: OpusCustomMode = OpusCustomMode {
     Fs: 48000,
     overlap: 120,
     nbEBands: 21,
     effEBands: 21,
     preemph: [0.85000610f32, 0.0000000f32, 1.0000000f32, 1.0000000f32],
-    eBands: eband5ms.as_ptr(),
+    eBands: &eband5ms,
     maxLM: 3,
     nbShortMdcts: 8,
     shortMdctSize: 120,
     nbAllocVectors: 11,
-    allocVectors: band_allocation.as_ptr(),
-    logN: logN400.as_ptr(),
+    allocVectors: &band_allocation,
+    logN: &logN400,
     window: &window120,
     mdct: MdctLookup {
         n: 1920,
@@ -868,15 +868,13 @@ pub static mut mode48000_960_120: OpusCustomMode = OpusCustomMode {
     },
     cache: PulseCache {
         size: 392,
-        index: cache_index50.as_ptr(),
-        bits: cache_bits50.as_ptr(),
-        caps: cache_caps50.as_ptr(),
+        index: &cache_index50,
+        bits: &cache_bits50,
+        caps: &cache_caps50,
     },
 };
-pub static mut static_mode_list: [*const OpusCustomMode; 1] =
-    unsafe { [&mode48000_960_120 as *const OpusCustomMode] };
+pub static static_mode_list: [&'static OpusCustomMode; 1] = [&mode48000_960_120];
 
-use super::arch_h::opus_val16;
 use super::{band_allocation, eband5ms};
 use crate::celt::kiss_fft::{kiss_fft_state, kiss_twiddle_cpx};
 use crate::celt::mdct::MdctLookup;
