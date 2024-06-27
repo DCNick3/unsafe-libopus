@@ -34,3 +34,12 @@ pub fn silk_min_int(a: i32, b: i32) -> i32 {
 pub fn silk_max_int(a: i32, b: i32) -> i32 {
     a.max(b)
 }
+
+#[inline]
+pub fn silk_RSHIFT_ROUND(a: i32, shift: i32) -> i32 {
+    if shift == 1 {
+        ((a) >> 1) + ((a) & 1)
+    } else {
+        (((a) >> ((shift) - 1)) + 1) >> 1
+    }
+}

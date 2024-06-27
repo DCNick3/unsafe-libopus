@@ -70,13 +70,11 @@ pub unsafe fn silk_decode_parameters(
     );
     if (*psDec).lossCnt != 0 {
         silk_bwexpander(
-            ((*psDecCtrl).PredCoef_Q12[0 as usize]).as_mut_ptr(),
-            (*psDec).LPC_order,
+            &mut (*psDecCtrl).PredCoef_Q12[0][..(*psDec).LPC_order as usize],
             BWE_AFTER_LOSS_Q16,
         );
         silk_bwexpander(
-            ((*psDecCtrl).PredCoef_Q12[1 as usize]).as_mut_ptr(),
-            (*psDec).LPC_order,
+            &mut (*psDecCtrl).PredCoef_Q12[1][..(*psDec).LPC_order as usize],
             BWE_AFTER_LOSS_Q16,
         );
     }

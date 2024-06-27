@@ -281,8 +281,7 @@ unsafe fn silk_PLC_conceal(
             PLC_RAND_ATTENUATE_UV_Q15[silk_min_int(NB_ATT - 1, (*psDec).lossCnt) as usize] as i32;
     }
     silk_bwexpander(
-        ((*psPLC).prevLPC_Q12).as_mut_ptr(),
-        (*psDec).LPC_order,
+        &mut (*psPLC).prevLPC_Q12[..(*psDec).LPC_order as usize],
         (0.99f64 * ((1) << 16) as f64 + 0.5f64) as i32,
     );
     memcpy(
