@@ -111,7 +111,7 @@ pub struct OpusCustomEncoder {
     pub in_mem: [celt_sig; 1],
 }
 pub unsafe fn celt_encoder_get_size(channels: i32) -> i32 {
-    let mode: *const OpusCustomMode = opus_custom_mode_create(48000, 960, NULL as *mut i32);
+    let mode: *const OpusCustomMode = opus_custom_mode_create(48000, 960, None);
     return opus_custom_encoder_get_size(mode, channels);
 }
 #[inline]
@@ -176,7 +176,7 @@ pub unsafe fn celt_encoder_init(
     let mut ret: i32 = 0;
     ret = opus_custom_encoder_init_arch(
         st,
-        opus_custom_mode_create(48000, 960, NULL as *mut i32),
+        opus_custom_mode_create(48000, 960, None),
         channels,
         arch,
     );

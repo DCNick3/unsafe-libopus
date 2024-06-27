@@ -87,11 +87,9 @@ pub struct OpusCustomDecoder {
 pub const PLC_PITCH_LAG_MAX: i32 = 720;
 pub const PLC_PITCH_LAG_MIN: i32 = 100;
 pub const DECODE_BUFFER_SIZE: i32 = 2048;
-pub unsafe fn validate_celt_decoder(st: *mut OpusCustomDecoder) {
-    assert!(
-        (*st).mode == opus_custom_mode_create(48000, 960, 0 as *mut i32) as *const OpusCustomMode
-    );
-    assert!((*st).overlap == 120);
+pub unsafe fn validate_celt_decoder(st: &OpusCustomDecoder) {
+    assert_eq!((*st).mode, opus_custom_mode_create(48000, 960, None));
+    assert_eq!((*st).overlap, 120);
     assert!((*st).channels == 1 || (*st).channels == 2);
     assert!((*st).stream_channels == 1 || (*st).stream_channels == 2);
     assert!((*st).downsample > 0);
@@ -112,7 +110,7 @@ pub unsafe fn validate_celt_decoder(st: *mut OpusCustomDecoder) {
     assert!((*st).postfilter_tapset_old >= 0);
 }
 pub unsafe fn celt_decoder_get_size(channels: i32) -> i32 {
-    let mode: *const OpusCustomMode = opus_custom_mode_create(48000, 960, NULL as *mut i32);
+    let mode: *const OpusCustomMode = opus_custom_mode_create(48000, 960, None);
     return opus_custom_decoder_get_size(mode, channels);
 }
 #[inline]
@@ -138,11 +136,7 @@ pub unsafe fn celt_decoder_init(
     channels: i32,
 ) -> i32 {
     let mut ret: i32 = 0;
-    ret = opus_custom_decoder_init(
-        st,
-        opus_custom_mode_create(48000, 960, NULL as *mut i32),
-        channels,
-    );
+    ret = opus_custom_decoder_init(st, opus_custom_mode_create(48000, 960, None), channels);
     if ret != OPUS_OK {
         return ret;
     }
@@ -965,7 +959,7 @@ pub unsafe fn celt_decode_with_ec(
     let mut nbEBands: i32 = 0;
     let mut overlap: i32 = 0;
     let mut eBands: *const i16 = 0 as *const i16;
-    validate_celt_decoder(st);
+    validate_celt_decoder(&*st);
     mode = (*st).mode;
     nbEBands = (*mode).nbEBands;
     overlap = (*mode).overlap;

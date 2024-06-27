@@ -62,21 +62,21 @@ static band_allocation: [u8; 231] = [
 pub unsafe fn opus_custom_mode_create(
     Fs: i32,
     frame_size: i32,
-    error: *mut i32,
+    error: Option<&mut i32>,
 ) -> *const OpusCustomMode {
     // TODO: make static_mode_list non-mutable (requires Sync)
     // TODO: maybe return Result instead of error code?
     for mode in static_mode_list {
         for j in 0..4 {
             if Fs == (*mode).Fs && frame_size << j == (*mode).shortMdctSize * (*mode).nbShortMdcts {
-                if !error.is_null() {
+                if let Some(error) = error {
                     *error = OPUS_OK;
                 }
                 return mode;
             }
         }
     }
-    if !error.is_null() {
+    if let Some(error) = error {
         *error = OPUS_BAD_ARG;
     }
     return NULL as *mut OpusCustomMode;
