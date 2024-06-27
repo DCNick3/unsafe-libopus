@@ -4,7 +4,9 @@ pub mod typedef_h {
 
 pub use self::typedef_h::silk_int32_MAX;
 
-pub unsafe fn silk_log2lin(inLog_Q7: i32) -> i32 {
+/// Approximation of 2^() (very close inverse of silk_lin2log()) */
+/// Convert input to a linear scale
+pub fn silk_log2lin(inLog_Q7: i32) -> i32 {
     let mut out: i32 = 0;
     let mut frac_Q7: i32 = 0;
     if inLog_Q7 < 0 {

@@ -40,7 +40,7 @@ unsafe fn silk_NLSF2A_find_poly(out: *mut i32, cLSF: *const i32, dd: i32) {
     }
 }
 
-// compute whitening filter coefficients from normalized line spectral frequencies
+/// compute whitening filter coefficients from normalized line spectral frequencies
 pub unsafe fn silk_NLSF2A(a_Q12: *mut i16, NLSF: *const i16, d: i32, _arch: i32) {
     static ordering16: [u8; 16] = [0, 15, 8, 7, 4, 11, 12, 3, 2, 13, 10, 5, 6, 9, 14, 1];
     static ordering10: [u8; 10] = [0, 9, 6, 3, 4, 5, 8, 1, 2, 7];
