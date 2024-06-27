@@ -51,7 +51,7 @@ use crate::celt::celt::{
 };
 use crate::celt::celt_encoder::celt_preemphasis;
 use crate::celt::mathops::{celt_log2, isqrt32};
-use crate::celt::mdct::clt_mdct_forward_c;
+use crate::celt::mdct::mdct_forward;
 use crate::celt::modes::OpusCustomMode;
 use crate::celt::pitch::celt_inner_prod_c;
 use crate::celt::quant_bands::amp2Log2;
@@ -425,7 +425,7 @@ pub unsafe fn surround_analysis(
         frame = 0;
         while frame < nb_frames {
             let mut tmpE: [opus_val32; 21] = [0.; 21];
-            clt_mdct_forward_c(
+            mdct_forward(
                 &(*celt_mode).mdct,
                 // TODO: figure out a correct (probably more narrow) slice
                 &in_0[960 * frame as usize..],

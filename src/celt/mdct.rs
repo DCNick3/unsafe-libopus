@@ -74,7 +74,7 @@ mod ndutil {
     }
 }
 
-pub fn clt_mdct_forward_c(
+pub fn mdct_forward(
     l: &MdctLookup,
     input: &[f32],
     out: &mut [f32],

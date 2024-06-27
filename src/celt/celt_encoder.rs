@@ -41,7 +41,7 @@ use crate::celt::entenc::{
     ec_enc_uint,
 };
 use crate::celt::mathops::{celt_exp2, celt_log2, celt_maxabs16, celt_sqrt};
-use crate::celt::mdct::clt_mdct_forward_c;
+use crate::celt::mdct::mdct_forward;
 use crate::celt::modes::{opus_custom_mode_create, OpusCustomMode};
 use crate::celt::pitch::{celt_inner_prod_c, pitch_downsample, pitch_search, remove_doubling};
 use crate::celt::quant_bands::{
@@ -454,7 +454,7 @@ unsafe fn compute_mdcts(
             /* Interleaving the sub-frames while doing the MDCTs */
             let mdct_n = (*mode).mdct.n;
 
-            clt_mdct_forward_c(
+            mdct_forward(
                 &(*mode).mdct,
                 std::slice::from_raw_parts_mut(
                     in_0.offset((c * (B * N + overlap)) as isize)
