@@ -1,6 +1,6 @@
-use crate::src::mlp::{DenseLayer, GRULayer};
+use super::layers::{ActivationFunction, DenseLayer, GRULayer};
 
-static mut layer0_weights: [i8; 800] = [
+static LAYER0_WEIGHTS: [i8; 800] = [
     -30, -9, 2, -12, 5, -1, 8, 9, 9, 8, -13, 18, -17, -34, -5, 17, -11, 0, -4, 10, 2, 10, 15, -8,
     2, -1, 0, 5, 13, -3, -16, 1, -5, 3, 7, -28, -13, 6, 36, -3, 19, -60, -17, -28, 7, -11, -30, -7,
     2, -42, -21, -3, 6, -22, 33, -9, 7, -30, 21, -14, 24, -11, -20, -18, -5, -12, 12, -49, -50,
@@ -39,11 +39,11 @@ static mut layer0_weights: [i8; 800] = [
     -106, 127, 127, -33, 100, -39, -23, 18, -78, -34, -29, -1, -30, 127, -26, 127, -128, 126, -128,
     27, -23, -79, -120, -127, 127, 72, 66, 29, 7, -66, -56, -117, -128,
 ];
-static mut layer0_bias: [i8; 32] = [
+static LAYER0_BIAS: [i8; 32] = [
     51, -16, 1, 13, -5, -6, -16, -7, 11, -6, 106, 26, 28, -14, 21, -29, 7, 18, -18, -17, 21, -17,
     -9, 20, -25, -3, -34, 48, 11, -13, -31, -20,
 ];
-static mut layer1_weights: [i8; 2304] = [
+static LAYER1_WEIGHTS: [i8; 2304] = [
     22, -1, -7, 7, 29, -27, -31, -17, -13, 33, 44, -8, 11, 33, 24, 78, 15, 19, 30, -2, -24, 5, 49,
     5, 36, 29, -14, -11, -48, -33, 21, -42, -38, -12, 55, -37, 54, -8, 1, 36, 17, 0, 51, 31, 59, 7,
     -12, 53, 4, 32, -14, 48, 5, -10, -16, -8, 1, -16, -56, -24, -6, 18, -2, 23, 6, 46, -6, -10, 20,
@@ -150,7 +150,7 @@ static mut layer1_weights: [i8; 2304] = [
     3, 9, 71, 72, -31, -55, 6, 10, -25, 32, -85, -21, 18, -8, 15, 12, -27, -7, 1, -21, -2, -5, 48,
     -16, 18, 1, -22, -26, 16, 14, -31, 27, -6, -15, -21, 4, -14, 18, -36,
 ];
-static mut layer1_recur_weights: [i8; 1728] = [
+static LAYER1_RECUR_WEIGHTS: [i8; 1728] = [
     20, 67, -99, 12, 41, -25, 49, -44, 35, 81, 110, 47, 34, -66, -14, 14, -60, 34, 29, -73, 10, 41,
     35, 89, 7, -35, 22, 7, 27, -20, -6, 56, 26, 66, 6, 33, -55, 53, 1, -21, 14, 17, 68, 55, 59, 0,
     18, -9, 5, -41, 6, -5, -114, -12, 29, 42, -23, 10, 81, -27, 20, -53, -30, -62, 40, 95, 25, -4,
@@ -232,51 +232,41 @@ static mut layer1_recur_weights: [i8; 1728] = [
     -12, -66, -40, 27, -62, -44, -19, 38, -3, 39, -8, 40, -24, 13, 21, 50, -60, -22, 53, -29, -6,
     1, 22, -59, 0, 17, -39, 115,
 ];
-static mut layer1_bias: [i8; 72] = [
+static LAYER1_BIAS: [i8; 72] = [
     -42, 20, 16, 0, 105, 60, 1, -97, 24, 60, 18, 13, 62, 25, 127, 34, 79, 55, 118, 127, 95, 31, -4,
     87, 21, 12, 2, -14, 18, 23, 8, 17, -1, -8, 5, 4, 24, 37, 21, 13, 36, 13, 17, 18, 37, 30, 33, 1,
     8, -16, -11, -5, -31, -3, -5, 0, 6, 3, 58, -7, -1, -16, 5, -13, 16, 10, -2, -14, 11, -4, 3,
     -11,
 ];
-static mut layer2_weights: [i8; 48] = [
+static LAYER2_WEIGHTS: [i8; 48] = [
     -113, -88, 31, -128, -126, -61, 85, -35, 118, -128, -61, 127, -128, -17, -128, 127, 104, -9,
     -128, 33, 45, 127, 5, 83, 84, -128, -85, -128, -45, 48, -53, -128, 46, 127, -17, 125, 117, -41,
     -117, -91, -127, -68, -1, -89, -80, 32, 106, 7,
 ];
-static mut layer2_bias: [i8; 2] = [14, 117];
-pub static mut layer0: DenseLayer = unsafe {
-    {
-        let init = DenseLayer {
-            bias: layer0_bias.as_ptr(),
-            input_weights: layer0_weights.as_ptr(),
-            nb_inputs: 25,
-            nb_neurons: 32,
-            sigmoid: 0,
-        };
-        init
-    }
+static LAYER2_BIAS: [i8; 2] = [14, 117];
+static LAYER0: DenseLayer = DenseLayer {
+    bias: &LAYER0_BIAS,
+    input_weights: &LAYER0_WEIGHTS,
+    activation: ActivationFunction::Tansig,
 };
-pub static mut layer1: GRULayer = unsafe {
-    {
-        let init = GRULayer {
-            bias: layer1_bias.as_ptr(),
-            input_weights: layer1_weights.as_ptr(),
-            recurrent_weights: layer1_recur_weights.as_ptr(),
-            nb_inputs: 32,
-            nb_neurons: 24,
-        };
-        init
-    }
+static LAYER1: GRULayer = GRULayer {
+    bias: &LAYER1_BIAS,
+    input_weights: &LAYER1_WEIGHTS,
+    recurrent_weights: &LAYER1_RECUR_WEIGHTS,
 };
-pub static mut layer2: DenseLayer = unsafe {
-    {
-        let init = DenseLayer {
-            bias: layer2_bias.as_ptr(),
-            input_weights: layer2_weights.as_ptr(),
-            nb_inputs: 24,
-            nb_neurons: 2,
-            sigmoid: 1,
-        };
-        init
-    }
+static LAYER2: DenseLayer = DenseLayer {
+    bias: &LAYER2_BIAS,
+    input_weights: &LAYER2_WEIGHTS,
+    activation: ActivationFunction::Sigmoid,
 };
+
+pub fn run_analysis_mlp(features: &[f32; 25], rnn_state: &mut [f32; 24]) -> [f32; 2] {
+    let mut layer_out: [f32; 32] = [0.0; 32];
+    let mut frame_probs: [f32; 2] = [0.0; 2];
+
+    LAYER0.compute(&mut layer_out, features);
+    LAYER1.compute(rnn_state, &layer_out);
+    LAYER2.compute(&mut frame_probs, rnn_state);
+
+    frame_probs
+}

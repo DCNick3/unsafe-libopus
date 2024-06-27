@@ -58,7 +58,7 @@ pub struct TonalityAnalysisState {
     pub read_subframe: i32,
     pub hp_ener_accum: f32,
     pub initialized: i32,
-    pub rnn_state: [f32; 32],
+    pub rnn_state: [f32; 24],
     pub downmix_state: [opus_val32; 3],
     pub info: [AnalysisInfo; 100],
 }
@@ -84,8 +84,7 @@ use crate::celt::mathops::{celt_log, celt_log10, celt_sqrt, fast_atan2f};
 use crate::celt::modes::OpusCustomMode;
 
 use crate::externs::{memcpy, memmove, memset};
-use crate::src::mlp::{compute_dense, compute_gru};
-use crate::src::mlp_data::{layer0, layer1, layer2};
+use crate::src::mlp::analysis_mlp::run_analysis_mlp;
 use crate::src::opus_encoder::is_digital_silence;
 
 static mut dct_table: [f32; 128] = [
@@ -843,7 +842,6 @@ unsafe fn tonality_analysis(
     let mut slope: f32 = 0 as f32;
     let mut frame_stationarity: f32 = 0.;
     let mut relativeE: f32 = 0.;
-    let mut frame_probs: [f32; 2] = [0.; 2];
     let mut alpha: f32 = 0.;
     let mut alphaE: f32 = 0.;
     let mut alphaE2: f32 = 0.;
@@ -862,7 +860,6 @@ unsafe fn tonality_analysis(
     let mut band_log2: [f32; 19] = [0.; 19];
     let mut leakage_from: [f32; 19] = [0.; 19];
     let mut leakage_to: [f32; 19] = [0.; 19];
-    let mut layer_out: [f32; 32] = [0.; 32];
     let mut below_max_pitch: f32 = 0.;
     let mut above_max_pitch: f32 = 0.;
     let mut is_silence: i32 = 0;
@@ -1498,25 +1495,20 @@ unsafe fn tonality_analysis(
             celt_sqrt((*tonal).std[i as usize]) - std_feature_bias[i as usize];
         i += 1;
     }
-    features[18 as usize] = spec_variability - 0.78f32;
-    features[20 as usize] = (*info).tonality - 0.154723f32;
-    features[21 as usize] = (*info).activity - 0.724643f32;
-    features[22 as usize] = frame_stationarity - 0.743717f32;
-    features[23 as usize] = (*info).tonality_slope + 0.069216f32;
-    features[24 as usize] = (*tonal).lowECount - 0.067930f32;
-    compute_dense(&layer0, layer_out.as_mut_ptr(), features.as_mut_ptr());
-    compute_gru(
-        &layer1,
-        ((*tonal).rnn_state).as_mut_ptr(),
-        layer_out.as_mut_ptr(),
-    );
-    compute_dense(
-        &layer2,
-        frame_probs.as_mut_ptr(),
-        ((*tonal).rnn_state).as_mut_ptr(),
-    );
-    (*info).activity_probability = frame_probs[1 as usize];
-    (*info).music_prob = frame_probs[0 as usize];
+    features[18] = spec_variability - 0.78f32;
+    features[20] = (*info).tonality - 0.154723f32;
+    features[21] = (*info).activity - 0.724643f32;
+    features[22] = frame_stationarity - 0.743717f32;
+    features[23] = (*info).tonality_slope + 0.069216f32;
+    features[24] = (*tonal).lowECount - 0.067930f32;
+
+    let frame_probs = run_analysis_mlp(&features, &mut (*tonal).rnn_state);
+
+    // compute_dense(&layer0, &mut layer_out, &features);
+    // compute_gru(&layer1, &mut (*tonal).rnn_state, &layer_out);
+    // compute_dense(&layer2, &mut frame_probs, &(*tonal).rnn_state);
+    (*info).activity_probability = frame_probs[1];
+    (*info).music_prob = frame_probs[0];
     (*info).bandwidth = bandwidth;
     (*tonal).prev_bandwidth = bandwidth;
     (*info).noisiness = frame_noisiness;
