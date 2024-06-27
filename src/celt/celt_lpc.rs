@@ -6,7 +6,7 @@ pub use self::arch_h::{opus_val16, opus_val32};
 use crate::celt::pitch::{celt_pitch_xcorr_c, xcorr_kernel_c};
 use crate::externs::memset;
 
-pub const LPC_ORDER: i32 = 24;
+pub const LPC_ORDER: usize = 24;
 
 pub unsafe fn _celt_lpc(mut _lpc: *mut opus_val16, ac: *const opus_val32, p: i32) {
     let mut i: i32 = 0;

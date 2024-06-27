@@ -187,18 +187,19 @@ unsafe fn quant_coarse_energy_impl(
             let mut tmp: opus_val32 = 0.;
             let mut oldE: opus_val16 = 0.;
             let mut decay_bound: opus_val16 = 0.;
-            x = *eBands.offset((i + c * (*m).nbEBands) as isize);
-            oldE = if -9.0f32 > *oldEBands.offset((i + c * (*m).nbEBands) as isize) {
+            x = *eBands.offset((i + c * (*m).nbEBands as i32) as isize);
+            oldE = if -9.0f32 > *oldEBands.offset((i + c * (*m).nbEBands as i32) as isize) {
                 -9.0f32
             } else {
-                *oldEBands.offset((i + c * (*m).nbEBands) as isize)
+                *oldEBands.offset((i + c * (*m).nbEBands as i32) as isize)
             };
             f = x - coef * oldE - prev[c as usize];
             qi = (0.5f32 + f).floor() as i32;
-            decay_bound = (if -28.0f32 > *oldEBands.offset((i + c * (*m).nbEBands) as isize) {
+            decay_bound = (if -28.0f32 > *oldEBands.offset((i + c * (*m).nbEBands as i32) as isize)
+            {
                 -28.0f32
             } else {
-                *oldEBands.offset((i + c * (*m).nbEBands) as isize)
+                *oldEBands.offset((i + c * (*m).nbEBands as i32) as isize)
             }) - max_decay;
             if qi < 0 && x < decay_bound {
                 qi += (decay_bound - x) as i32;
@@ -244,11 +245,11 @@ unsafe fn quant_coarse_energy_impl(
             } else {
                 qi = -1;
             }
-            *error.offset((i + c * (*m).nbEBands) as isize) = f - qi as f32;
+            *error.offset((i + c * (*m).nbEBands as i32) as isize) = f - qi as f32;
             badness += (qi0 - qi).abs();
             q = qi as opus_val32;
             tmp = coef * oldE + prev[c as usize] + q;
-            *oldEBands.offset((i + c * (*m).nbEBands) as isize) = tmp;
+            *oldEBands.offset((i + c * (*m).nbEBands as i32) as isize) = tmp;
             prev[c as usize] = prev[c as usize] + q - beta * q;
             c += 1;
             if !(c < C) {
@@ -290,7 +291,7 @@ pub unsafe fn quant_coarse_energy(
             && *delayedIntra > (2 * C * (end - start)) as f32
             && nbAvailableBytes > (end - start) * C) as i32;
     intra_bias = (budget as f32 * *delayedIntra * loss_rate as f32 / (C * 512) as f32) as i32;
-    new_distortion = loss_distortion(eBands, oldEBands, start, effEnd, (*m).nbEBands, C);
+    new_distortion = loss_distortion(eBands, oldEBands, start, effEnd, (*m).nbEBands as i32, C);
     tell = ec_tell(enc) as u32;
     if tell.wrapping_add(3) > budget {
         intra = 0;
@@ -308,14 +309,14 @@ pub unsafe fn quant_coarse_energy(
         max_decay = 3.0f32;
     }
     enc_start_state = enc.save();
-    let vla = (C * (*m).nbEBands) as usize;
+    let vla = (C * (*m).nbEBands as i32) as usize;
     let mut oldEBands_intra: Vec<opus_val16> = ::std::vec::from_elem(0., vla);
-    let vla_0 = (C * (*m).nbEBands) as usize;
+    let vla_0 = (C * (*m).nbEBands as i32) as usize;
     let mut error_intra: Vec<opus_val16> = ::std::vec::from_elem(0., vla_0);
     memcpy(
         oldEBands_intra.as_mut_ptr() as *mut core::ffi::c_void,
         oldEBands as *const core::ffi::c_void,
-        ((C * (*m).nbEBands) as u64)
+        ((C * (*m).nbEBands as i32) as u64)
             .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64)
             .wrapping_add((0 * oldEBands_intra.as_mut_ptr().offset_from(oldEBands) as i64) as u64),
     );
@@ -399,7 +400,7 @@ pub unsafe fn quant_coarse_energy(
             memcpy(
                 oldEBands as *mut core::ffi::c_void,
                 oldEBands_intra.as_mut_ptr() as *const core::ffi::c_void,
-                ((C * (*m).nbEBands) as u64)
+                ((C * (*m).nbEBands as i32) as u64)
                     .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64)
                     .wrapping_add(
                         (0 * oldEBands.offset_from(oldEBands_intra.as_mut_ptr()) as i64) as u64,
@@ -408,7 +409,7 @@ pub unsafe fn quant_coarse_energy(
             memcpy(
                 error as *mut core::ffi::c_void,
                 error_intra.as_mut_ptr() as *const core::ffi::c_void,
-                ((C * (*m).nbEBands) as u64)
+                ((C * (*m).nbEBands as i32) as u64)
                     .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64)
                     .wrapping_add((0 * error.offset_from(error_intra.as_mut_ptr()) as i64) as u64),
             );
@@ -418,7 +419,7 @@ pub unsafe fn quant_coarse_energy(
         memcpy(
             oldEBands as *mut core::ffi::c_void,
             oldEBands_intra.as_mut_ptr() as *const core::ffi::c_void,
-            ((C * (*m).nbEBands) as u64)
+            ((C * (*m).nbEBands as i32) as u64)
                 .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64)
                 .wrapping_add(
                     (0 * oldEBands.offset_from(oldEBands_intra.as_mut_ptr()) as i64) as u64,
@@ -427,7 +428,7 @@ pub unsafe fn quant_coarse_energy(
         memcpy(
             error as *mut core::ffi::c_void,
             error_intra.as_mut_ptr() as *const core::ffi::c_void,
-            ((C * (*m).nbEBands) as u64)
+            ((C * (*m).nbEBands as i32) as u64)
                 .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64)
                 .wrapping_add((0 * error.offset_from(error_intra.as_mut_ptr()) as i64) as u64),
         );
@@ -459,7 +460,7 @@ pub unsafe fn quant_fine_energy(
             loop {
                 let mut q2: i32 = 0;
                 let mut offset: opus_val16 = 0.;
-                q2 = ((*error.offset((i + c * (*m).nbEBands) as isize) + 0.5f32)
+                q2 = ((*error.offset((i + c * (*m).nbEBands as i32) as isize) + 0.5f32)
                     * frac as i32 as f32)
                     .floor() as i32;
                 if q2 > frac as i32 - 1 {
@@ -473,9 +474,9 @@ pub unsafe fn quant_fine_energy(
                     * ((1) << 14 - *fine_quant.offset(i as isize)) as f32
                     * (1.0f32 / 16384 as f32)
                     - 0.5f32;
-                let ref mut fresh0 = *oldEBands.offset((i + c * (*m).nbEBands) as isize);
+                let ref mut fresh0 = *oldEBands.offset((i + c * (*m).nbEBands as i32) as isize);
                 *fresh0 += offset;
-                let ref mut fresh1 = *error.offset((i + c * (*m).nbEBands) as isize);
+                let ref mut fresh1 = *error.offset((i + c * (*m).nbEBands as i32) as isize);
                 *fresh1 -= offset;
                 c += 1;
                 if !(c < C) {
@@ -512,7 +513,7 @@ pub unsafe fn quant_energy_finalise(
                 loop {
                     let mut q2: i32 = 0;
                     let mut offset: opus_val16 = 0.;
-                    q2 = if *error.offset((i + c * (*m).nbEBands) as isize) < 0 as f32 {
+                    q2 = if *error.offset((i + c * (*m).nbEBands as i32) as isize) < 0 as f32 {
                         0
                     } else {
                         1
@@ -521,9 +522,9 @@ pub unsafe fn quant_energy_finalise(
                     offset = (q2 as f32 - 0.5f32)
                         * ((1) << 14 - *fine_quant.offset(i as isize) - 1) as f32
                         * (1.0f32 / 16384 as f32);
-                    let ref mut fresh2 = *oldEBands.offset((i + c * (*m).nbEBands) as isize);
+                    let ref mut fresh2 = *oldEBands.offset((i + c * (*m).nbEBands as i32) as isize);
                     *fresh2 += offset;
-                    let ref mut fresh3 = *error.offset((i + c * (*m).nbEBands) as isize);
+                    let ref mut fresh3 = *error.offset((i + c * (*m).nbEBands as i32) as isize);
                     *fresh3 -= offset;
                     bits_left -= 1;
                     c += 1;
@@ -588,14 +589,16 @@ pub unsafe fn unquant_coarse_energy(
                 qi = -1;
             }
             q = qi as opus_val32;
-            *oldEBands.offset((i + c * (*m).nbEBands) as isize) =
-                if -9.0f32 > *oldEBands.offset((i + c * (*m).nbEBands) as isize) {
+            *oldEBands.offset((i + c * (*m).nbEBands as i32) as isize) =
+                if -9.0f32 > *oldEBands.offset((i + c * (*m).nbEBands as i32) as isize) {
                     -9.0f32
                 } else {
-                    *oldEBands.offset((i + c * (*m).nbEBands) as isize)
+                    *oldEBands.offset((i + c * (*m).nbEBands as i32) as isize)
                 };
-            tmp = coef * *oldEBands.offset((i + c * (*m).nbEBands) as isize) + prev[c as usize] + q;
-            *oldEBands.offset((i + c * (*m).nbEBands) as isize) = tmp;
+            tmp = coef * *oldEBands.offset((i + c * (*m).nbEBands as i32) as isize)
+                + prev[c as usize]
+                + q;
+            *oldEBands.offset((i + c * (*m).nbEBands as i32) as isize) = tmp;
             prev[c as usize] = prev[c as usize] + q - beta * q;
             c += 1;
             if !(c < C) {
@@ -628,7 +631,7 @@ pub unsafe fn unquant_fine_energy(
                     * ((1) << 14 - *fine_quant.offset(i as isize)) as f32
                     * (1.0f32 / 16384 as f32)
                     - 0.5f32;
-                let ref mut fresh4 = *oldEBands.offset((i + c * (*m).nbEBands) as isize);
+                let ref mut fresh4 = *oldEBands.offset((i + c * (*m).nbEBands as i32) as isize);
                 *fresh4 += offset;
                 c += 1;
                 if !(c < C) {
@@ -668,7 +671,7 @@ pub unsafe fn unquant_energy_finalise(
                     offset = (q2 as f32 - 0.5f32)
                         * ((1) << 14 - *fine_quant.offset(i as isize) - 1) as f32
                         * (1.0f32 / 16384 as f32);
-                    let ref mut fresh5 = *oldEBands.offset((i + c * (*m).nbEBands) as isize);
+                    let ref mut fresh5 = *oldEBands.offset((i + c * (*m).nbEBands as i32) as isize);
                     *fresh5 += offset;
                     bits_left -= 1;
                     c += 1;
@@ -696,13 +699,14 @@ pub unsafe fn amp2Log2(
     loop {
         i = 0;
         while i < effEnd {
-            *bandLogE.offset((i + c * (*m).nbEBands) as isize) =
-                celt_log2(*bandE.offset((i + c * (*m).nbEBands) as isize)) - eMeans[i as usize];
+            *bandLogE.offset((i + c * (*m).nbEBands as i32) as isize) =
+                celt_log2(*bandE.offset((i + c * (*m).nbEBands as i32) as isize))
+                    - eMeans[i as usize];
             i += 1;
         }
         i = effEnd;
         while i < end {
-            *bandLogE.offset((c * (*m).nbEBands + i) as isize) = -14.0f32;
+            *bandLogE.offset((c * (*m).nbEBands as i32 + i) as isize) = -14.0f32;
             i += 1;
         }
         c += 1;

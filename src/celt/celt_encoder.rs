@@ -118,7 +118,7 @@ pub unsafe fn celt_encoder_get_size(channels: i32) -> i32 {
 unsafe fn opus_custom_encoder_get_size(mode: *const OpusCustomMode, channels: i32) -> i32 {
     let size: i32 = (::core::mem::size_of::<OpusCustomEncoder>() as u64)
         .wrapping_add(
-            ((channels * (*mode).overlap - 1) as u64)
+            ((channels * (*mode).overlap as i32 - 1) as u64)
                 .wrapping_mul(::core::mem::size_of::<celt_sig>() as u64),
         )
         .wrapping_add(
@@ -126,7 +126,7 @@ unsafe fn opus_custom_encoder_get_size(mode: *const OpusCustomMode, channels: i3
                 .wrapping_mul(::core::mem::size_of::<celt_sig>() as u64),
         )
         .wrapping_add(
-            ((4 * channels * (*mode).nbEBands) as u64)
+            ((4 * channels * (*mode).nbEBands as i32) as u64)
                 .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64),
         ) as i32;
     return size;
@@ -431,7 +431,7 @@ unsafe fn compute_mdcts(
     LM: i32,
     upsample: i32,
 ) {
-    let overlap: i32 = (*mode).overlap;
+    let overlap: i32 = (*mode).overlap as i32;
     let mut N: i32 = 0;
     let mut B: i32 = 0;
     let mut shift: i32 = 0;
@@ -974,7 +974,8 @@ unsafe fn alloc_trim_analysis(
     loop {
         i = 0;
         while i < end - 1 {
-            diff += *bandLogE.offset((i + c * (*m).nbEBands) as isize) * (2 + 2 * i - end) as f32;
+            diff += *bandLogE.offset((i + c * (*m).nbEBands as i32) as isize)
+                * (2 + 2 * i - end) as f32;
             i += 1;
         }
         c += 1;
@@ -1535,7 +1536,7 @@ unsafe fn run_prefilter(
     let mut qg: i32 = 0;
     let mut overlap: i32 = 0;
     mode = (*st).mode;
-    overlap = (*mode).overlap;
+    overlap = (*mode).overlap as i32;
     let vla = (CC * (N + 1024)) as usize;
     let mut _pre: Vec<celt_sig> = ::std::vec::from_elem(0., vla);
     pre[0 as usize] = _pre.as_mut_ptr();
@@ -1812,7 +1813,7 @@ unsafe fn compute_vbr(
     let mut tf_calibration: opus_val16 = 0.;
     let mut nbEBands: i32 = 0;
     let mut eBands: *const i16 = 0 as *const i16;
-    nbEBands = (*mode).nbEBands;
+    nbEBands = (*mode).nbEBands as i32;
     eBands = (*mode).eBands.as_ptr();
     coded_bands = if lastCodedBands != 0 {
         lastCodedBands
@@ -2013,8 +2014,8 @@ pub unsafe fn celt_encode_with_ec(
     let mut weak_transient: i32 = 0;
     let mut enable_tf_analysis: i32 = 0;
     mode = (*st).mode;
-    nbEBands = (*mode).nbEBands;
-    overlap = (*mode).overlap;
+    nbEBands = (*mode).nbEBands as i32;
+    overlap = (*mode).overlap as i32;
     eBands = (*mode).eBands.as_ptr();
     start = (*st).start;
     end = (*st).end;
@@ -3319,7 +3320,7 @@ pub unsafe fn opus_custom_encoder_ctl_impl(
         }
         CELT_SET_START_BAND_REQUEST => {
             let value_0: i32 = ap.arg::<i32>();
-            if value_0 < 0 || value_0 >= (*(*st).mode).nbEBands {
+            if value_0 < 0 || value_0 >= (*(*st).mode).nbEBands as i32 {
                 current_block = 2472048668343472511;
             } else {
                 (*st).start = value_0;
@@ -3328,7 +3329,7 @@ pub unsafe fn opus_custom_encoder_ctl_impl(
         }
         CELT_SET_END_BAND_REQUEST => {
             let value_1: i32 = ap.arg::<i32>();
-            if value_1 < 1 || value_1 > (*(*st).mode).nbEBands {
+            if value_1 < 1 || value_1 > (*(*st).mode).nbEBands as i32 {
                 current_block = 2472048668343472511;
             } else {
                 (*st).end = value_1;
@@ -3420,12 +3421,11 @@ pub unsafe fn opus_custom_encoder_ctl_impl(
             let mut oldBandE: *mut opus_val16 = 0 as *mut opus_val16;
             let mut oldLogE: *mut opus_val16 = 0 as *mut opus_val16;
             let mut oldLogE2: *mut opus_val16 = 0 as *mut opus_val16;
-            oldBandE = ((*st).in_mem)
-                .as_mut_ptr()
-                .offset(((*st).channels * ((*(*st).mode).overlap + COMBFILTER_MAXPERIOD)) as isize)
-                as *mut opus_val16;
-            oldLogE = oldBandE.offset(((*st).channels * (*(*st).mode).nbEBands) as isize);
-            oldLogE2 = oldLogE.offset(((*st).channels * (*(*st).mode).nbEBands) as isize);
+            oldBandE = ((*st).in_mem).as_mut_ptr().offset(
+                ((*st).channels * ((*(*st).mode).overlap as i32 + COMBFILTER_MAXPERIOD)) as isize,
+            ) as *mut opus_val16;
+            oldLogE = oldBandE.offset(((*st).channels * (*(*st).mode).nbEBands as i32) as isize);
+            oldLogE2 = oldLogE.offset(((*st).channels * (*(*st).mode).nbEBands as i32) as isize);
             memset(
                 &mut (*st).rng as *mut u32 as *mut i8 as *mut core::ffi::c_void,
                 0,
@@ -3435,7 +3435,7 @@ pub unsafe fn opus_custom_encoder_ctl_impl(
                     .wrapping_mul(::core::mem::size_of::<i8>() as u64),
             );
             i = 0;
-            while i < (*st).channels * (*(*st).mode).nbEBands {
+            while i < (*st).channels * (*(*st).mode).nbEBands as i32 {
                 let ref mut fresh7 = *oldLogE2.offset(i as isize);
                 *fresh7 = -28.0f32;
                 *oldLogE.offset(i as isize) = *fresh7;

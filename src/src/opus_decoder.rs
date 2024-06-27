@@ -53,10 +53,10 @@ use crate::src::opus_private::{align, MODE_CELT_ONLY, MODE_HYBRID, MODE_SILK_ONL
 use crate::varargs::VarArgs;
 use crate::{opus_custom_decoder_ctl, opus_packet_get_samples_per_frame, opus_pcm_soft_clip};
 
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 #[repr(C)]
 pub struct OpusDecoder {
-    pub(crate) celt_dec_offset: i32,
+    pub(crate) celt_dec: OpusCustomDecoder,
     pub(crate) silk_dec_offset: i32,
     pub(crate) channels: i32,
     pub(crate) Fs: i32,
@@ -118,14 +118,14 @@ pub unsafe fn opus_decoder_get_size(channels: i32) -> i32 {
         return 0;
     }
     silkDecSizeBytes = align(silkDecSizeBytes);
-    celtDecSizeBytes = celt_decoder_get_size(channels);
+    celtDecSizeBytes = celt_decoder_get_size(channels) as i32;
     return align(::core::mem::size_of::<OpusDecoder>() as u64 as i32)
         + silkDecSizeBytes
         + celtDecSizeBytes;
 }
 pub unsafe fn opus_decoder_init(st: *mut OpusDecoder, Fs: i32, channels: i32) -> i32 {
     let mut silk_dec: *mut core::ffi::c_void = 0 as *mut core::ffi::c_void;
-    let mut celt_dec: *mut OpusCustomDecoder = 0 as *mut OpusCustomDecoder;
+    // let mut celt_dec: *mut OpusCustomDecoder = 0 as *mut OpusCustomDecoder;
     let mut ret: i32 = 0;
     let mut silkDecSizeBytes: i32 = 0;
     if Fs != 48000 && Fs != 24000 && Fs != 16000 && Fs != 12000 && Fs != 8000
@@ -144,9 +144,9 @@ pub unsafe fn opus_decoder_init(st: *mut OpusDecoder, Fs: i32, channels: i32) ->
     }
     silkDecSizeBytes = align(silkDecSizeBytes);
     (*st).silk_dec_offset = align(::core::mem::size_of::<OpusDecoder>() as u64 as i32);
-    (*st).celt_dec_offset = (*st).silk_dec_offset + silkDecSizeBytes;
+    // (*st).celt_dec_offset = (*st).silk_dec_offset + silkDecSizeBytes;
     silk_dec = (st as *mut i8).offset((*st).silk_dec_offset as isize) as *mut core::ffi::c_void;
-    celt_dec = (st as *mut i8).offset((*st).celt_dec_offset as isize) as *mut OpusCustomDecoder;
+    // celt_dec = (st as *mut i8).offset((*st).celt_dec_offset as isize) as *mut OpusCustomDecoder;
     (*st).channels = channels;
     (*st).stream_channels = (*st).channels;
     (*st).Fs = Fs;
@@ -156,11 +156,8 @@ pub unsafe fn opus_decoder_init(st: *mut OpusDecoder, Fs: i32, channels: i32) ->
     if ret != 0 {
         return OPUS_INTERNAL_ERROR;
     }
-    ret = celt_decoder_init(celt_dec, Fs, channels);
-    if ret != OPUS_OK {
-        return OPUS_INTERNAL_ERROR;
-    }
-    opus_custom_decoder_ctl!(celt_dec, CELT_SET_SIGNALLING_REQUEST, 0);
+    (*st).celt_dec = celt_decoder_init(Fs, channels as usize);
+    opus_custom_decoder_ctl!(&mut (*st).celt_dec, CELT_SET_SIGNALLING_REQUEST, 0);
     (*st).prev_mode = 0;
     (*st).frame_size = Fs / 400;
     (*st).arch = opus_select_arch();
@@ -239,7 +236,6 @@ unsafe fn opus_decode_frame(
     decode_fec: i32,
 ) -> i32 {
     let mut silk_dec: *mut core::ffi::c_void = 0 as *mut core::ffi::c_void;
-    let mut celt_dec: *mut OpusCustomDecoder = 0 as *mut OpusCustomDecoder;
     let mut i: i32 = 0;
     let mut silk_ret: i32 = 0;
     let mut celt_ret: i32 = 0;
@@ -280,7 +276,7 @@ unsafe fn opus_decode_frame(
     let mut redundant_rng: u32 = 0;
     let mut celt_accum: i32 = 0;
     silk_dec = (st as *mut i8).offset((*st).silk_dec_offset as isize) as *mut core::ffi::c_void;
-    celt_dec = (st as *mut i8).offset((*st).celt_dec_offset as isize) as *mut OpusCustomDecoder;
+    let celt_dec = &mut (*st).celt_dec;
     F20 = (*st).Fs / 50;
     F10 = F20 >> 1;
     F5 = F10 >> 1;
@@ -948,9 +944,8 @@ pub unsafe fn opus_decode_float(
 }
 pub unsafe fn opus_decoder_ctl_impl(st: *mut OpusDecoder, request: i32, args: VarArgs) -> i32 {
     let mut silk_dec: *mut core::ffi::c_void = 0 as *mut core::ffi::c_void;
-    let mut celt_dec: *mut OpusCustomDecoder = 0 as *mut OpusCustomDecoder;
     silk_dec = (st as *mut i8).offset((*st).silk_dec_offset as isize) as *mut core::ffi::c_void;
-    celt_dec = (st as *mut i8).offset((*st).celt_dec_offset as isize) as *mut OpusCustomDecoder;
+    let celt_dec = &mut (*st).celt_dec;
 
     let mut ap = args;
 

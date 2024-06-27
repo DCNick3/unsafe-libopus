@@ -1,33 +1,6 @@
 use crate::celt::bands::{
     anti_collapse, celt_lcg_rand, denormalise_bands, quant_all_bands, SPREAD_NORMAL,
 };
-use crate::opus_custom_decoder_ctl;
-
-pub mod arch_h {
-    pub type opus_val16 = f32;
-    pub type opus_val32 = f32;
-    pub type celt_sig = f32;
-    pub type celt_norm = f32;
-    pub type celt_ener = f32;
-    pub const Q15ONE: f32 = 1.0f32;
-    pub const VERY_SMALL: f32 = 1e-30f32;
-    pub const CELT_SIG_SCALE: f32 = 32768.0f32;
-}
-
-pub mod cpu_support_h {
-    #[inline]
-    pub unsafe fn opus_select_arch() -> i32 {
-        return 0;
-    }
-}
-pub mod stddef_h {
-    pub const NULL: i32 = 0;
-}
-pub use self::arch_h::{
-    celt_ener, celt_norm, celt_sig, opus_val16, opus_val32, CELT_SIG_SCALE, Q15ONE, VERY_SMALL,
-};
-pub use self::cpu_support_h::opus_select_arch;
-pub use self::stddef_h::NULL;
 use crate::celt::celt::{
     comb_filter, init_caps, resampling_factor, spread_icdf, tapset_icdf, tf_select_table, trim_icdf,
 };
@@ -49,21 +22,44 @@ use crate::celt::quant_bands::{
 };
 use crate::celt::rate::clt_compute_allocation;
 use crate::celt::vq::renormalise_vector;
-use crate::externs::{memcpy, memmove, memset};
+use crate::externs::{memcpy, memmove};
+use crate::opus_custom_decoder_ctl;
 use crate::src::opus_defines::{
-    OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_GET_FINAL_RANGE_REQUEST, OPUS_GET_LOOKAHEAD_REQUEST,
+    OPUS_BAD_ARG, OPUS_GET_FINAL_RANGE_REQUEST, OPUS_GET_LOOKAHEAD_REQUEST,
     OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_GET_PITCH_REQUEST, OPUS_INTERNAL_ERROR,
     OPUS_OK, OPUS_RESET_STATE, OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST, OPUS_UNIMPLEMENTED,
 };
 use crate::varargs::VarArgs;
 
+pub use self::arch_h::{
+    celt_ener, celt_norm, celt_sig, opus_val16, opus_val32, CELT_SIG_SCALE, Q15ONE, VERY_SMALL,
+};
+pub use self::stddef_h::NULL;
+
+pub mod arch_h {
+    pub type opus_val16 = f32;
+    pub type opus_val32 = f32;
+    pub type celt_sig = f32;
+    pub type celt_norm = f32;
+    pub type celt_ener = f32;
+    pub const Q15ONE: f32 = 1.0f32;
+    pub const VERY_SMALL: f32 = 1e-30f32;
+    pub const CELT_SIG_SCALE: f32 = 32768.0f32;
+}
+
+pub mod stddef_h {
+    pub const NULL: i32 = 0;
+}
+
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct OpusCustomDecoder {
+    // TODO: a lot of the stuff from the mode should become constants
+    // we only have one "opus custom mode" after all
     pub mode: &'static OpusCustomMode,
-    pub overlap: i32,
-    pub channels: i32,
-    pub stream_channels: i32,
+    pub overlap: usize,
+    pub channels: usize,
+    pub stream_channels: usize,
     pub downsample: i32,
     pub start: i32,
     pub end: i32,
@@ -77,113 +73,111 @@ pub struct OpusCustomDecoder {
     pub skip_plc: i32,
     pub postfilter_period: i32,
     pub postfilter_period_old: i32,
-    pub postfilter_gain: opus_val16,
-    pub postfilter_gain_old: opus_val16,
+    pub postfilter_gain: f32,
+    pub postfilter_gain_old: f32,
     pub postfilter_tapset: i32,
     pub postfilter_tapset_old: i32,
     pub preemph_memD: [celt_sig; 2],
-    pub _decode_mem: [celt_sig; 1],
+
+    pub decode_mem: [f32; 2 * (DECODE_BUFFER_SIZE + 120)], /* Size = channels*(DECODE_BUFFER_SIZE+mode->overlap) */
+    pub lpc: [f32; 2 * LPC_ORDER],                         /* Size = channels*LPC_ORDER */
+    pub oldEBands: [f32; 2 * 21],                          /* Size = 2*mode->nbEBands */
+    pub oldLogE: [f32; 2 * 21],                            /* Size = 2*mode->nbEBands */
+    pub oldLogE2: [f32; 2 * 21],                           /* Size = 2*mode->nbEBands */
+    pub backgroundLogE: [f32; 2 * 21],                     /* Size = 2*mode->nbEBands */
 }
+
 pub const PLC_PITCH_LAG_MAX: i32 = 720;
 pub const PLC_PITCH_LAG_MIN: i32 = 100;
-pub const DECODE_BUFFER_SIZE: i32 = 2048;
+pub const DECODE_BUFFER_SIZE: usize = 2048;
 pub unsafe fn validate_celt_decoder(st: &OpusCustomDecoder) {
-    assert_eq!(
-        (*st).mode,
-        opus_custom_mode_create(48000, 960, None).unwrap()
-    );
-    assert_eq!((*st).overlap, 120);
-    assert!((*st).channels == 1 || (*st).channels == 2);
-    assert!((*st).stream_channels == 1 || (*st).stream_channels == 2);
-    assert!((*st).downsample > 0);
-    assert!((*st).start == 0 || (*st).start == 17);
-    assert!((*st).start < (*st).end);
-    assert!((*st).end <= 21);
-    assert!((*st).arch >= 0);
-    assert!((*st).arch <= 0);
-    assert!((*st).last_pitch_index <= 720);
-    assert!((*st).last_pitch_index >= 100 || (*st).last_pitch_index == 0);
-    assert!((*st).postfilter_period < 1024);
-    assert!((*st).postfilter_period >= 15 || (*st).postfilter_period == 0);
-    assert!((*st).postfilter_period_old < 1024);
-    assert!((*st).postfilter_period_old >= 15 || (*st).postfilter_period_old == 0);
-    assert!((*st).postfilter_tapset <= 2);
-    assert!((*st).postfilter_tapset >= 0);
-    assert!((*st).postfilter_tapset_old <= 2);
-    assert!((*st).postfilter_tapset_old >= 0);
+    assert_eq!(st.mode, opus_custom_mode_create(48000, 960, None).unwrap());
+    assert_eq!(st.overlap, 120);
+    assert!(st.channels == 1 || st.channels == 2);
+    assert!(st.stream_channels == 1 || st.stream_channels == 2);
+    assert!(st.downsample > 0);
+    assert!(st.start == 0 || st.start == 17);
+    assert!(st.start < st.end);
+    assert!(st.end <= 21);
+    assert!(st.arch >= 0);
+    assert!(st.arch <= 0);
+    assert!(st.last_pitch_index <= 720);
+    assert!(st.last_pitch_index >= 100 || st.last_pitch_index == 0);
+    assert!(st.postfilter_period < 1024);
+    assert!(st.postfilter_period >= 15 || st.postfilter_period == 0);
+    assert!(st.postfilter_period_old < 1024);
+    assert!(st.postfilter_period_old >= 15 || st.postfilter_period_old == 0);
+    assert!(st.postfilter_tapset <= 2);
+    assert!(st.postfilter_tapset >= 0);
+    assert!(st.postfilter_tapset_old <= 2);
+    assert!(st.postfilter_tapset_old >= 0);
 }
-pub unsafe fn celt_decoder_get_size(channels: i32) -> i32 {
-    let mode: *const OpusCustomMode = opus_custom_mode_create(48000, 960, None).unwrap();
-    return opus_custom_decoder_get_size(mode, channels);
+pub fn celt_decoder_get_size(channels: i32) -> usize {
+    let mode = opus_custom_mode_create(48000, 960, None).unwrap();
+    opus_custom_decoder_get_size(mode, channels)
 }
 #[inline]
-unsafe fn opus_custom_decoder_get_size(mode: *const OpusCustomMode, channels: i32) -> i32 {
-    let size: i32 = (::core::mem::size_of::<OpusCustomDecoder>() as u64)
-        .wrapping_add(
-            ((channels * (DECODE_BUFFER_SIZE + (*mode).overlap) - 1) as u64)
-                .wrapping_mul(::core::mem::size_of::<celt_sig>() as u64),
-        )
-        .wrapping_add(
-            ((channels * LPC_ORDER) as u64)
-                .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64),
-        )
-        .wrapping_add(
-            ((4 * 2 * (*mode).nbEBands) as u64)
-                .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64),
-        ) as i32;
-    return size;
+fn opus_custom_decoder_get_size(_mode: &OpusCustomMode, _channels: i32) -> usize {
+    // NOTE: we've replaced all the inline allocation tomfoolery with just multiple vector allocations.
+    // we could probably do better by allocating from a bump allocator or something, but this is just way easier for now
+    return core::mem::size_of::<OpusCustomDecoder>();
 }
-pub unsafe fn celt_decoder_init(
-    st: *mut OpusCustomDecoder,
-    sampling_rate: i32,
-    channels: i32,
-) -> i32 {
-    let mut ret: i32 = 0;
-    ret = opus_custom_decoder_init(
-        st,
-        opus_custom_mode_create(48000, 960, None).unwrap(),
+pub fn celt_decoder_init(sampling_rate: i32, channels: usize) -> OpusCustomDecoder {
+    let mode = opus_custom_mode_create(48000, 960, None).unwrap();
+    let mut st = opus_custom_decoder_init(mode, channels);
+    st.downsample = resampling_factor(sampling_rate);
+    if st.downsample == 0 {
+        panic!("Unsupported sampling rate: {}", sampling_rate);
+    }
+
+    return st;
+}
+#[inline]
+fn opus_custom_decoder_init(mode: &'static OpusCustomMode, channels: usize) -> OpusCustomDecoder {
+    if channels > 2 {
+        panic!(
+            "Invalid channel count: {}, want either 0 (??), 1 or 2",
+            channels
+        );
+    }
+    let mut st = OpusCustomDecoder {
+        mode,
+        overlap: mode.overlap,
         channels,
-    );
-    if ret != OPUS_OK {
-        return ret;
-    }
-    (*st).downsample = resampling_factor(sampling_rate);
-    if (*st).downsample == 0 {
-        return OPUS_BAD_ARG;
-    } else {
-        return OPUS_OK;
+        stream_channels: channels,
+        downsample: 1,
+        start: 0,
+        end: mode.effEBands,
+        signalling: 1,
+        disable_inv: (channels == 1) as i32,
+        arch: 0,
+
+        rng: 0,
+        error: 0,
+        last_pitch_index: 0,
+        loss_count: 0,
+        skip_plc: 0,
+        postfilter_period: 0,
+        postfilter_period_old: 0,
+        postfilter_gain: 0.0,
+        postfilter_gain_old: 0.0,
+        postfilter_tapset: 0,
+        postfilter_tapset_old: 0,
+        preemph_memD: [0.0; 2],
+
+        decode_mem: [0.0; 2 * (DECODE_BUFFER_SIZE + 120)],
+        lpc: [0.0; 2 * LPC_ORDER],
+        oldEBands: [0.0; 2 * 21],
+        oldLogE: [0.0; 2 * 21],
+        oldLogE2: [0.0; 2 * 21],
+        backgroundLogE: [0.0; 2 * 21],
     };
-}
-#[inline]
-unsafe fn opus_custom_decoder_init(
-    st: *mut OpusCustomDecoder,
-    mode: &'static OpusCustomMode,
-    channels: i32,
-) -> i32 {
-    if channels < 0 || channels > 2 {
-        return OPUS_BAD_ARG;
+
+    unsafe {
+        opus_custom_decoder_ctl!(&mut st, OPUS_RESET_STATE);
     }
-    if st.is_null() {
-        return OPUS_ALLOC_FAIL;
-    }
-    memset(
-        st as *mut i8 as *mut core::ffi::c_void,
-        0,
-        (opus_custom_decoder_get_size(mode, channels) as u64)
-            .wrapping_mul(::core::mem::size_of::<i8>() as u64),
-    );
-    (*st).mode = mode;
-    (*st).overlap = (*mode).overlap;
-    (*st).channels = channels;
-    (*st).stream_channels = (*st).channels;
-    (*st).downsample = 1;
-    (*st).start = 0;
-    (*st).end = (*(*st).mode).effEBands;
-    (*st).signalling = 1;
-    (*st).disable_inv = (channels == 1) as i32;
-    (*st).arch = opus_select_arch();
-    opus_custom_decoder_ctl!(st, OPUS_RESET_STATE);
-    return OPUS_OK;
+
+    st
 }
 unsafe fn deemphasis_stereo_simple(
     in_0: *mut *mut celt_sig,
@@ -306,8 +300,8 @@ unsafe fn celt_synthesis(
     let mut shift: i32 = 0;
     let mut nbEBands: i32 = 0;
     let mut overlap: i32 = 0;
-    overlap = (*mode).overlap;
-    nbEBands = (*mode).nbEBands;
+    overlap = (*mode).overlap as i32;
+    nbEBands = (*mode).nbEBands as i32;
     N = (*mode).shortMdctSize << LM;
     let vla = N as usize;
     let mut freq: Vec<celt_sig> = ::std::vec::from_elem(0., vla);
@@ -538,7 +532,7 @@ unsafe fn celt_plc_pitch_search(decode_mem: *mut *mut celt_sig, C: i32, arch: i3
     pitch_downsample(
         decode_mem as *mut *mut celt_sig,
         lp_pitch_buf.as_mut_ptr(),
-        DECODE_BUFFER_SIZE,
+        DECODE_BUFFER_SIZE as i32,
         C,
         arch,
     );
@@ -547,7 +541,7 @@ unsafe fn celt_plc_pitch_search(decode_mem: *mut *mut celt_sig, C: i32, arch: i3
             .as_mut_ptr()
             .offset((PLC_PITCH_LAG_MAX >> 1) as isize),
         lp_pitch_buf.as_mut_ptr(),
-        DECODE_BUFFER_SIZE - PLC_PITCH_LAG_MAX,
+        DECODE_BUFFER_SIZE as i32 - PLC_PITCH_LAG_MAX,
         PLC_PITCH_LAG_MAX - PLC_PITCH_LAG_MIN,
         &mut pitch_index,
         arch,
@@ -558,14 +552,9 @@ unsafe fn celt_plc_pitch_search(decode_mem: *mut *mut celt_sig, C: i32, arch: i3
 unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
     let mut c: i32 = 0;
     let mut i: i32 = 0;
-    let C: i32 = (*st).channels;
+    let C: i32 = (*st).channels as i32;
     let mut decode_mem: [*mut celt_sig; 2] = [0 as *mut celt_sig; 2];
     let mut out_syn: [*mut celt_sig; 2] = [0 as *mut celt_sig; 2];
-    let mut lpc: *mut opus_val16 = 0 as *mut opus_val16;
-    let mut oldBandE: *mut opus_val16 = 0 as *mut opus_val16;
-    let mut oldLogE: *mut opus_val16 = 0 as *mut opus_val16;
-    let mut oldLogE2: *mut opus_val16 = 0 as *mut opus_val16;
-    let mut backgroundLogE: *mut opus_val16 = 0 as *mut opus_val16;
     let mut mode: *const OpusCustomMode = 0 as *const OpusCustomMode;
     let mut nbEBands: i32 = 0;
     let mut overlap: i32 = 0;
@@ -574,14 +563,15 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
     let mut noise_based: i32 = 0;
     let mut eBands: *const i16 = 0 as *const i16;
     mode = (*st).mode;
-    nbEBands = (*mode).nbEBands;
-    overlap = (*mode).overlap;
+    nbEBands = (*mode).nbEBands as i32;
+    overlap = (*mode).overlap as i32;
     eBands = (*mode).eBands.as_ptr();
     c = 0;
     loop {
-        decode_mem[c as usize] = ((*st)._decode_mem)
+        decode_mem[c as usize] = (*st)
+            .decode_mem
             .as_mut_ptr()
-            .offset((c * (DECODE_BUFFER_SIZE + overlap)) as isize);
+            .offset((c * (DECODE_BUFFER_SIZE as i32 + overlap)) as isize);
         out_syn[c as usize] = (decode_mem[c as usize])
             .offset(DECODE_BUFFER_SIZE as isize)
             .offset(-(N as isize));
@@ -590,13 +580,11 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
             break;
         }
     }
-    lpc = ((*st)._decode_mem)
-        .as_mut_ptr()
-        .offset(((DECODE_BUFFER_SIZE + overlap) * C) as isize) as *mut opus_val16;
-    oldBandE = lpc.offset((C * LPC_ORDER) as isize);
-    oldLogE = oldBandE.offset((2 * nbEBands) as isize);
-    oldLogE2 = oldLogE.offset((2 * nbEBands) as isize);
-    backgroundLogE = oldLogE2.offset((2 * nbEBands) as isize);
+
+    let lpc = (*st).lpc.as_mut_ptr();
+    let oldBandE = (*st).oldEBands.as_mut_ptr();
+    let backgroundLogE = (*st).backgroundLogE.as_mut_ptr();
+
     loss_count = (*st).loss_count;
     start = (*st).start;
     noise_based = (loss_count >= 5 || start != 0 || (*st).skip_plc != 0) as i32;
@@ -738,8 +726,8 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
             let mut j_0: i32 = 0;
             buf = decode_mem[c as usize];
             i = 0;
-            while i < MAX_PERIOD + LPC_ORDER {
-                *exc.offset((i - LPC_ORDER) as isize) =
+            while i < MAX_PERIOD + LPC_ORDER as i32 {
+                *exc.offset((i - LPC_ORDER as i32) as isize) =
                     *buf.offset((2048 - 1024 - 24 + i) as isize);
                 i += 1;
             }
@@ -750,20 +738,20 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
                     ac.as_mut_ptr(),
                     window,
                     overlap,
-                    LPC_ORDER,
+                    LPC_ORDER as i32,
                     MAX_PERIOD,
                     (*st).arch,
                 );
                 ac[0 as usize] *= 1.0001f32;
                 i = 1;
-                while i <= LPC_ORDER {
+                while i <= LPC_ORDER as i32 {
                     ac[i as usize] -= ac[i as usize] * (0.008f32 * 0.008f32) * i as f32 * i as f32;
                     i += 1;
                 }
                 _celt_lpc(
-                    lpc.offset((c * LPC_ORDER) as isize),
+                    lpc.offset((c * LPC_ORDER as i32) as isize),
                     ac.as_mut_ptr(),
-                    LPC_ORDER,
+                    LPC_ORDER as i32,
                 );
             }
             celt_fir_c(
@@ -820,7 +808,7 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
                     j_0 -= pitch_index;
                     attenuation = attenuation * decay_0;
                 }
-                *buf.offset((DECODE_BUFFER_SIZE - N + i) as isize) =
+                *buf.offset((DECODE_BUFFER_SIZE as i32 - N + i) as isize) =
                     attenuation * *exc.offset((extrapolation_offset + j_0) as isize);
                 tmp = *buf.offset((2048 - 1024 - N + extrapolation_offset + j_0) as isize);
                 S1 += tmp * tmp;
@@ -829,18 +817,18 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
             }
             let mut lpc_mem: [opus_val16; 24] = [0.; 24];
             i = 0;
-            while i < LPC_ORDER {
+            while i < LPC_ORDER as i32 {
                 lpc_mem[i as usize] = *buf.offset((2048 - N - 1 - i) as isize);
                 i += 1;
             }
             celt_iir(
                 buf.offset(DECODE_BUFFER_SIZE as isize)
                     .offset(-(N as isize)),
-                lpc.offset((c * LPC_ORDER) as isize),
+                lpc.offset((c * LPC_ORDER as i32) as isize),
                 buf.offset(DECODE_BUFFER_SIZE as isize)
                     .offset(-(N as isize)),
                 extrapolation_len,
-                LPC_ORDER,
+                LPC_ORDER as i32,
                 lpc_mem.as_mut_ptr(),
                 (*st).arch,
             );
@@ -854,7 +842,7 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
             if !(S1 > 0.2f32 * S2) {
                 i = 0;
                 while i < extrapolation_len {
-                    *buf.offset((DECODE_BUFFER_SIZE - N + i) as isize) = 0 as celt_sig;
+                    *buf.offset((DECODE_BUFFER_SIZE as i32 - N + i) as isize) = 0 as celt_sig;
                     i += 1;
                 }
             } else if S1 < S2 {
@@ -862,13 +850,13 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
                 i = 0;
                 while i < overlap {
                     let tmp_g: opus_val16 = Q15ONE - *window.offset(i as isize) * (1.0f32 - ratio);
-                    *buf.offset((DECODE_BUFFER_SIZE - N + i) as isize) =
+                    *buf.offset((DECODE_BUFFER_SIZE as i32 - N + i) as isize) =
                         tmp_g * *buf.offset((2048 - N + i) as isize);
                     i += 1;
                 }
                 i = overlap;
                 while i < extrapolation_len {
-                    *buf.offset((DECODE_BUFFER_SIZE - N + i) as isize) =
+                    *buf.offset((DECODE_BUFFER_SIZE as i32 - N + i) as isize) =
                         ratio * *buf.offset((2048 - N + i) as isize);
                     i += 1;
                 }
@@ -889,7 +877,7 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
             );
             i = 0;
             while i < overlap / 2 {
-                *buf.offset((DECODE_BUFFER_SIZE + i) as isize) = *window.offset(i as isize)
+                *buf.offset((DECODE_BUFFER_SIZE as i32 + i) as isize) = *window.offset(i as isize)
                     * *etmp.as_mut_ptr().offset((overlap - 1 - i) as isize)
                     + *window.offset((overlap - i - 1) as isize)
                         * *etmp.as_mut_ptr().offset(i as isize);
@@ -933,15 +921,10 @@ pub unsafe fn celt_decode_with_ec(
     };
     let mut decode_mem: [*mut celt_sig; 2] = [0 as *mut celt_sig; 2];
     let mut out_syn: [*mut celt_sig; 2] = [0 as *mut celt_sig; 2];
-    let mut lpc: *mut opus_val16 = 0 as *mut opus_val16;
-    let mut oldBandE: *mut opus_val16 = 0 as *mut opus_val16;
-    let mut oldLogE: *mut opus_val16 = 0 as *mut opus_val16;
-    let mut oldLogE2: *mut opus_val16 = 0 as *mut opus_val16;
-    let mut backgroundLogE: *mut opus_val16 = 0 as *mut opus_val16;
     let mut shortBlocks: i32 = 0;
     let mut isTransient: i32 = 0;
     let mut intra_ener: i32 = 0;
-    let CC: i32 = (*st).channels;
+    let CC: i32 = (*st).channels as i32;
     let mut LM: i32 = 0;
     let mut M: i32 = 0;
     let mut start: i32 = 0;
@@ -961,26 +944,25 @@ pub unsafe fn celt_decode_with_ec(
     let mut anti_collapse_rsv: i32 = 0;
     let mut anti_collapse_on: i32 = 0;
     let mut silence: i32 = 0;
-    let C: i32 = (*st).stream_channels;
+    let C: i32 = (*st).stream_channels as i32;
     let mut mode: *const OpusCustomMode = 0 as *const OpusCustomMode;
     let mut nbEBands: i32 = 0;
     let mut overlap: i32 = 0;
     let mut eBands: *const i16 = 0 as *const i16;
     validate_celt_decoder(&*st);
     mode = (*st).mode;
-    nbEBands = (*mode).nbEBands;
-    overlap = (*mode).overlap;
+    nbEBands = (*mode).nbEBands as i32;
+    overlap = (*mode).overlap as i32;
     eBands = (*mode).eBands.as_ptr();
     start = (*st).start;
     end = (*st).end;
     frame_size *= (*st).downsample;
-    lpc = ((*st)._decode_mem)
-        .as_mut_ptr()
-        .offset(((DECODE_BUFFER_SIZE + overlap) * CC) as isize) as *mut opus_val16;
-    oldBandE = lpc.offset((CC * LPC_ORDER) as isize);
-    oldLogE = oldBandE.offset((2 * nbEBands) as isize);
-    oldLogE2 = oldLogE.offset((2 * nbEBands) as isize);
-    backgroundLogE = oldLogE2.offset((2 * nbEBands) as isize);
+
+    let oldBandE = (*st).oldEBands.as_mut_ptr();
+    let oldLogE = (*st).oldLogE.as_mut_ptr();
+    let oldLogE2 = (*st).oldLogE2.as_mut_ptr();
+    let backgroundLogE = (*st).backgroundLogE.as_mut_ptr();
+
     LM = 0;
     while LM <= (*mode).maxLM {
         if (*mode).shortMdctSize << LM == frame_size {
@@ -998,9 +980,9 @@ pub unsafe fn celt_decode_with_ec(
     N = M * (*mode).shortMdctSize;
     c = 0;
     loop {
-        decode_mem[c as usize] = ((*st)._decode_mem)
+        decode_mem[c as usize] = ((*st).decode_mem)
             .as_mut_ptr()
-            .offset((c * (DECODE_BUFFER_SIZE + overlap)) as isize);
+            .offset((c * (DECODE_BUFFER_SIZE as i32 + overlap)) as isize);
         out_syn[c as usize] = (decode_mem[c as usize])
             .offset(DECODE_BUFFER_SIZE as isize)
             .offset(-(N as isize));
@@ -1469,7 +1451,7 @@ pub unsafe fn opus_custom_decoder_ctl_impl(
     match request {
         CELT_SET_START_BAND_REQUEST => {
             let value: i32 = ap.arg::<i32>();
-            if value < 0 || value >= (*(*st).mode).nbEBands {
+            if value < 0 || value >= (*(*st).mode).nbEBands as i32 {
                 current_block = 7990025728955927862;
             } else {
                 (*st).start = value;
@@ -1478,7 +1460,7 @@ pub unsafe fn opus_custom_decoder_ctl_impl(
         }
         CELT_SET_END_BAND_REQUEST => {
             let value_0: i32 = ap.arg::<i32>();
-            if value_0 < 1 || value_0 > (*(*st).mode).nbEBands {
+            if value_0 < 1 || value_0 > (*(*st).mode).nbEBands as i32 {
                 current_block = 7990025728955927862;
             } else {
                 (*st).end = value_0;
@@ -1490,7 +1472,7 @@ pub unsafe fn opus_custom_decoder_ctl_impl(
             if value_1 < 1 || value_1 > 2 {
                 current_block = 7990025728955927862;
             } else {
-                (*st).stream_channels = value_1;
+                (*st).stream_channels = value_1 as usize;
                 current_block = 3689906465960840878;
             }
         }
@@ -1502,38 +1484,31 @@ pub unsafe fn opus_custom_decoder_ctl_impl(
         }
         OPUS_GET_LOOKAHEAD_REQUEST => {
             let value_3 = ap.arg::<&mut i32>();
-            *value_3 = (*st).overlap / (*st).downsample;
+            *value_3 = (*st).overlap as i32 / (*st).downsample;
             current_block = 3689906465960840878;
         }
         OPUS_RESET_STATE => {
-            let mut i: i32 = 0;
-            let mut lpc: *mut opus_val16 = 0 as *mut opus_val16;
-            let mut oldBandE: *mut opus_val16 = 0 as *mut opus_val16;
-            let mut oldLogE: *mut opus_val16 = 0 as *mut opus_val16;
-            let mut oldLogE2: *mut opus_val16 = 0 as *mut opus_val16;
-            lpc = ((*st)._decode_mem)
-                .as_mut_ptr()
-                .offset(((DECODE_BUFFER_SIZE + (*st).overlap) * (*st).channels) as isize)
-                as *mut opus_val16;
-            oldBandE = lpc.offset(((*st).channels * LPC_ORDER) as isize);
-            oldLogE = oldBandE.offset((2 * (*(*st).mode).nbEBands) as isize);
-            oldLogE2 = oldLogE.offset((2 * (*(*st).mode).nbEBands) as isize);
-            memset(
-                &mut (*st).rng as *mut u32 as *mut i8 as *mut core::ffi::c_void,
-                0,
-                ((opus_custom_decoder_get_size((*st).mode, (*st).channels) as i64
-                    - (&mut (*st).rng as *mut u32 as *mut i8).offset_from(st as *mut i8) as i64)
-                    as u64)
-                    .wrapping_mul(::core::mem::size_of::<i8>() as u64),
-            );
-            i = 0;
-            while i < 2 * (*(*st).mode).nbEBands {
-                let ref mut fresh2 = *oldLogE2.offset(i as isize);
-                *fresh2 = -28.0f32;
-                *oldLogE.offset(i as isize) = *fresh2;
-                i += 1;
-            }
-            (*st).skip_plc = 1;
+            let st = &mut *st;
+
+            st.rng = 0;
+            st.error = 0;
+            st.last_pitch_index = 0;
+            st.loss_count = 0;
+            st.skip_plc = 1;
+            st.postfilter_period = 0;
+            st.postfilter_period_old = 0;
+            st.postfilter_gain = 0.0;
+            st.postfilter_gain_old = 0.0;
+            st.postfilter_tapset = 0;
+            st.postfilter_tapset_old = 0;
+            st.preemph_memD = [0.0; 2];
+            st.decode_mem.fill(0.0);
+            st.lpc.fill(0.0);
+            st.oldEBands.fill(0.0);
+            st.oldLogE.fill(-28.0);
+            st.oldLogE2.fill(-28.0);
+            st.backgroundLogE.fill(0.0);
+
             current_block = 3689906465960840878;
         }
         OPUS_GET_PITCH_REQUEST => {

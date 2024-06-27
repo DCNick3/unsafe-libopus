@@ -186,13 +186,13 @@ pub unsafe fn comb_filter(
 pub unsafe fn init_caps(m: *const OpusCustomMode, cap: *mut i32, LM: i32, C: i32) {
     let mut i: i32 = 0;
     i = 0;
-    while i < (*m).nbEBands {
+    while i < (*m).nbEBands as i32 {
         let mut N: i32 = 0;
         N = (*((*m).eBands.as_ptr()).offset((i + 1) as isize) as i32
             - *((*m).eBands.as_ptr()).offset(i as isize) as i32)
             << LM;
         *cap.offset(i as isize) = (*((*m).cache.caps.as_ptr())
-            .offset(((*m).nbEBands * (2 * LM + C - 1) + i) as isize)
+            .offset(((*m).nbEBands as i32 * (2 * LM + C - 1) + i) as isize)
             as i32
             + 64)
             * C

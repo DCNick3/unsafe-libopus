@@ -156,7 +156,7 @@ pub unsafe fn compute_band_energies(
                     (*eBands.offset((i + 1) as isize) as i32 - *eBands.offset(i as isize) as i32)
                         << LM,
                 );
-            *bandE.offset((i + c * (*m).nbEBands) as isize) = celt_sqrt(sum);
+            *bandE.offset((i + c * (*m).nbEBands as i32) as isize) = celt_sqrt(sum);
             i += 1;
         }
         c += 1;
@@ -185,7 +185,7 @@ pub unsafe fn normalise_bands(
         while i < end {
             let mut j: i32 = 0;
             let g: opus_val16 =
-                1.0f32 / (1e-27f32 + *bandE.offset((i + c * (*m).nbEBands) as isize));
+                1.0f32 / (1e-27f32 + *bandE.offset((i + c * (*m).nbEBands as i32) as isize));
             j = M * *eBands.offset(i as isize) as i32;
             while j < M * *eBands.offset((i + 1) as isize) as i32 {
                 *X.offset((j + c * N) as isize) = *freq.offset((j + c * N) as isize) * g;
@@ -312,21 +312,21 @@ pub unsafe fn anti_collapse(
             let mut Ediff: opus_val32 = 0.;
             let mut r: opus_val16 = 0.;
             let mut renormalize: i32 = 0;
-            prev1 = *prev1logE.offset((c * (*m).nbEBands + i) as isize);
-            prev2 = *prev2logE.offset((c * (*m).nbEBands + i) as isize);
+            prev1 = *prev1logE.offset((c * (*m).nbEBands as i32 + i) as isize);
+            prev2 = *prev2logE.offset((c * (*m).nbEBands as i32 + i) as isize);
             if C == 1 {
-                prev1 = if prev1 > *prev1logE.offset(((*m).nbEBands + i) as isize) {
+                prev1 = if prev1 > *prev1logE.offset(((*m).nbEBands as i32 + i) as isize) {
                     prev1
                 } else {
-                    *prev1logE.offset(((*m).nbEBands + i) as isize)
+                    *prev1logE.offset(((*m).nbEBands as i32 + i) as isize)
                 };
-                prev2 = if prev2 > *prev2logE.offset(((*m).nbEBands + i) as isize) {
+                prev2 = if prev2 > *prev2logE.offset(((*m).nbEBands as i32 + i) as isize) {
                     prev2
                 } else {
-                    *prev2logE.offset(((*m).nbEBands + i) as isize)
+                    *prev2logE.offset(((*m).nbEBands as i32 + i) as isize)
                 };
             }
-            Ediff = *logE.offset((c * (*m).nbEBands + i) as isize)
+            Ediff = *logE.offset((c * (*m).nbEBands as i32 + i) as isize)
                 - (if prev1 < prev2 { prev1 } else { prev2 });
             Ediff = if 0 as f32 > Ediff { 0 as f32 } else { Ediff };
             r = 2.0f32 * celt_exp2(-Ediff);
@@ -387,7 +387,7 @@ unsafe fn intensity_stereo(
     let mut right: opus_val16 = 0.;
     let mut norm: opus_val16 = 0.;
     left = *bandE.offset(i as isize);
-    right = *bandE.offset((i + (*m).nbEBands) as isize);
+    right = *bandE.offset((i + (*m).nbEBands as i32) as isize);
     norm = EPSILON + celt_sqrt(1e-15f32 + left * left + right * right);
     a1 = left / norm;
     a2 = right / norm;
@@ -508,7 +508,7 @@ pub unsafe fn spreading_decision(
                     }
                     j += 1;
                 }
-                if i > (*m).nbEBands - 4 {
+                if i > (*m).nbEBands as i32 - 4 {
                     hf_sum = (hf_sum as u32).wrapping_add(celt_udiv(
                         (32 * (tcount[1 as usize] + tcount[0 as usize])) as u32,
                         N as u32,
@@ -529,7 +529,7 @@ pub unsafe fn spreading_decision(
     }
     if update_hf != 0 {
         if hf_sum != 0 {
-            hf_sum = celt_udiv(hf_sum as u32, (C * (4 - (*m).nbEBands + end)) as u32) as i32;
+            hf_sum = celt_udiv(hf_sum as u32, (C * (4 - (*m).nbEBands as i32 + end)) as u32) as i32;
         }
         *hf_average = *hf_average + hf_sum >> 1;
         hf_sum = *hf_average;
@@ -1012,7 +1012,7 @@ unsafe fn quant_partition(
     spread = (*ctx).spread;
     let ec = &mut *(*ctx).ec;
     cache = ((*m).cache.bits.as_ptr()).offset(
-        *((*m).cache.index.as_ptr()).offset(((LM + 1) * (*m).nbEBands + i) as isize) as i32
+        *((*m).cache.index.as_ptr()).offset(((LM + 1) * (*m).nbEBands as i32 + i) as isize) as i32
             as isize,
     );
     if LM != -1 && b > *cache.offset(*cache.offset(0 as isize) as isize) as i32 + 12 && N > 2 {
@@ -1895,7 +1895,7 @@ pub unsafe fn quant_all_bands(
                     let mut w: [opus_val16; 2] = [0.; 2];
                     compute_channel_weights(
                         *bandE.offset(i as isize),
-                        *bandE.offset((i + (*m).nbEBands) as isize),
+                        *bandE.offset((i + (*m).nbEBands as i32) as isize),
                         w.as_mut_ptr(),
                     );
                     cm = x_cm | y_cm;

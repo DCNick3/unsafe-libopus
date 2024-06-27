@@ -1,8 +1,8 @@
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct OpusCustomMode {
     pub(crate) Fs: i32,
-    pub(crate) overlap: i32,
-    pub(crate) nbEBands: i32,
+    pub(crate) overlap: usize,
+    pub(crate) nbEBands: usize,
     pub(crate) effEBands: i32,
     pub(crate) preemph: [f32; 4],
     pub(crate) eBands: &'static [i16],

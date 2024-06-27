@@ -16,7 +16,8 @@ pub unsafe fn bits2pulses(m: *const OpusCustomMode, band: i32, mut LM: i32, mut 
     let mut cache: *const u8 = 0 as *const u8;
     LM += 1;
     cache = ((*m).cache.bits.as_ptr()).offset(
-        *((*m).cache.index.as_ptr()).offset((LM * (*m).nbEBands + band) as isize) as i32 as isize,
+        *((*m).cache.index.as_ptr()).offset((LM * (*m).nbEBands as i32 + band) as isize) as i32
+            as isize,
     );
     lo = 0;
     hi = *cache.offset(0 as isize) as i32;
@@ -50,7 +51,8 @@ pub unsafe fn pulses2bits(m: *const OpusCustomMode, band: i32, mut LM: i32, puls
     let mut cache: *const u8 = 0 as *const u8;
     LM += 1;
     cache = ((*m).cache.bits.as_ptr()).offset(
-        *((*m).cache.index.as_ptr()).offset((LM * (*m).nbEBands + band) as isize) as i32 as isize,
+        *((*m).cache.index.as_ptr()).offset((LM * (*m).nbEBands as i32 + band) as isize) as i32
+            as isize,
     );
     return if pulses == 0 {
         0
@@ -441,7 +443,7 @@ pub unsafe fn clt_compute_allocation(
     let mut intensity_rsv: i32 = 0;
     let mut dual_stereo_rsv: i32 = 0;
     total = if total > 0 { total } else { 0 };
-    len = (*m).nbEBands;
+    len = (*m).nbEBands as i32;
     skip_start = start;
     skip_rsv = if total >= (1) << BITRES {
         (1) << BITRES
