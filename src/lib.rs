@@ -161,16 +161,10 @@ mod silk {
 #[allow(unused_assignments)]
 mod src {
     pub mod analysis;
-    pub mod mapping_matrix;
     pub mod mlp;
     pub mod opus;
     pub mod opus_decoder;
     pub mod opus_encoder;
-    pub mod opus_multistream;
-    pub mod opus_multistream_decoder;
-    pub mod opus_multistream_encoder;
-    pub mod opus_projection_decoder;
-    pub mod opus_projection_encoder;
     pub mod repacketizer;
     // stuff for structs that do not have a clear home, named after the header files
     pub mod opus_defines;
@@ -204,11 +198,10 @@ pub use crate::src::opus::{
 };
 // opus_repacketizer
 pub use crate::src::repacketizer::{
-    opus_multistream_packet_pad, opus_multistream_packet_unpad, opus_packet_pad, opus_packet_unpad,
-    opus_repacketizer_cat, opus_repacketizer_create, opus_repacketizer_destroy,
-    opus_repacketizer_get_nb_frames, opus_repacketizer_get_size, opus_repacketizer_init,
-    opus_repacketizer_out, opus_repacketizer_out_range, opus_repacketizer_out_range_impl,
-    OpusRepacketizer,
+    opus_packet_pad, opus_packet_unpad, opus_repacketizer_cat, opus_repacketizer_create,
+    opus_repacketizer_destroy, opus_repacketizer_get_nb_frames, opus_repacketizer_get_size,
+    opus_repacketizer_init, opus_repacketizer_out, opus_repacketizer_out_range,
+    opus_repacketizer_out_range_impl, OpusRepacketizer,
 };
 
 // =====
@@ -247,36 +240,6 @@ pub use crate::src::opus_defines::{
 };
 // opus_libinfo
 pub use crate::celt::celt::{opus_get_version_string, opus_strerror};
-
-// =====
-// opus_multistream.h
-// =====
-pub use crate::src::opus_multistream_decoder::{
-    opus_multistream_decode, opus_multistream_decode_float, opus_multistream_decoder_create,
-    opus_multistream_decoder_ctl_impl, opus_multistream_decoder_destroy,
-    opus_multistream_decoder_get_size, opus_multistream_decoder_init, OpusMSDecoder,
-};
-pub use crate::src::opus_multistream_encoder::{
-    opus_multistream_encode, opus_multistream_encode_float, opus_multistream_encoder_create,
-    opus_multistream_encoder_ctl_impl, opus_multistream_encoder_destroy,
-    opus_multistream_encoder_get_size, opus_multistream_encoder_init,
-    opus_multistream_surround_encoder_create, opus_multistream_surround_encoder_get_size,
-    opus_multistream_surround_encoder_init, OpusMSEncoder,
-};
-
-// =====
-// opus_projection.h
-// =====
-pub use crate::src::opus_projection_decoder::{
-    opus_projection_decode, opus_projection_decode_float, opus_projection_decoder_create,
-    opus_projection_decoder_ctl_impl, opus_projection_decoder_destroy,
-    opus_projection_decoder_get_size, opus_projection_decoder_init, OpusProjectionDecoder,
-};
-pub use crate::src::opus_projection_encoder::{
-    opus_projection_ambisonics_encoder_create, opus_projection_ambisonics_encoder_get_size,
-    opus_projection_ambisonics_encoder_init, opus_projection_encode, opus_projection_encode_float,
-    opus_projection_encoder_ctl_impl, opus_projection_encoder_destroy, OpusProjectionEncoder,
-};
 
 // =====
 // opus_custom.h

@@ -93,12 +93,8 @@ use unsafe_libopus::externs::{memcpy, memset};
 use unsafe_libopus::{
     opus_decode, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy,
     opus_decoder_get_size, opus_encode, opus_encoder_create, opus_encoder_ctl,
-    opus_encoder_destroy, opus_encoder_get_size, opus_get_version_string, opus_multistream_decode,
-    opus_multistream_decoder_create, opus_multistream_decoder_ctl,
-    opus_multistream_decoder_destroy, opus_multistream_encode, opus_multistream_encoder_create,
-    opus_multistream_encoder_ctl, opus_multistream_encoder_destroy, opus_multistream_packet_pad,
-    opus_multistream_packet_unpad, opus_packet_pad, opus_packet_parse, opus_packet_unpad,
-    OpusDecoder, OpusEncoder, OpusMSDecoder, OpusMSEncoder,
+    opus_encoder_destroy, opus_encoder_get_size, opus_get_version_string, opus_packet_pad,
+    opus_packet_parse, opus_packet_unpad, OpusDecoder, OpusEncoder,
 };
 
 mod opus_encode_regressions;
@@ -437,27 +433,13 @@ pub unsafe fn fuzz_encoder_settings(num_encoders: i32, num_setting_changes: i32)
 pub unsafe fn run_test1(no_fuzz: bool) -> i32 {
     static mut fsizes: [i32; 6] = [960 * 3, 960 * 2, 120, 240, 480, 960];
     static mut mstrings: [&str; 3] = ["    LP", "Hybrid", "  MDCT"];
-    let mut mapping: [u8; 256] = [
-        0, 1, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    ];
     let mut db62: [u8; 36] = [0; 36];
     let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut rc: i32 = 0;
     let mut err: i32 = 0;
     let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
-    let mut MSenc: *mut OpusMSEncoder = std::ptr::null_mut::<OpusMSEncoder>();
     let mut dec: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
-    let mut MSdec: *mut OpusMSDecoder = std::ptr::null_mut::<OpusMSDecoder>();
-    let mut MSdec_err: *mut OpusMSDecoder = std::ptr::null_mut::<OpusMSDecoder>();
     let mut dec_err: [*mut OpusDecoder; 10] = [std::ptr::null_mut::<OpusDecoder>(); 10];
     let mut inbuf: *mut libc::c_short = std::ptr::null_mut::<libc::c_short>();
     let mut outbuf: *mut libc::c_short = std::ptr::null_mut::<libc::c_short>();
@@ -474,80 +456,12 @@ pub unsafe fn run_test1(no_fuzz: bool) -> i32 {
     if err != 0 || enc.is_null() {
         _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 302);
     }
-    i = 0;
-    while i < 2 {
-        let mut ret_err: *mut i32 = std::ptr::null_mut::<i32>();
-        ret_err = if i != 0 {
-            std::ptr::null_mut::<i32>()
-        } else {
-            &mut err
-        };
-        MSenc = opus_multistream_encoder_create(8000, 2, 2, 0, mapping.as_mut_ptr(), -(5), ret_err);
-        if !ret_err.is_null() && *ret_err != -1 || !MSenc.is_null() {
-            _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 309);
-        }
-        MSenc = opus_multistream_encoder_create(8000, 0, 1, 0, mapping.as_mut_ptr(), 2048, ret_err);
-        if !ret_err.is_null() && *ret_err != -1 || !MSenc.is_null() {
-            _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 312);
-        }
-        MSenc =
-            opus_multistream_encoder_create(44100, 2, 2, 0, mapping.as_mut_ptr(), 2048, ret_err);
-        if !ret_err.is_null() && *ret_err != -1 || !MSenc.is_null() {
-            _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 315);
-        }
-        MSenc = opus_multistream_encoder_create(8000, 2, 2, 3, mapping.as_mut_ptr(), 2048, ret_err);
-        if !ret_err.is_null() && *ret_err != -1 || !MSenc.is_null() {
-            _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 318);
-        }
-        MSenc =
-            opus_multistream_encoder_create(8000, 2, -1, 0, mapping.as_mut_ptr(), 2048, ret_err);
-        if !ret_err.is_null() && *ret_err != -1 || !MSenc.is_null() {
-            _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 321);
-        }
-        MSenc =
-            opus_multistream_encoder_create(8000, 256, 2, 0, mapping.as_mut_ptr(), 2048, ret_err);
-        if !ret_err.is_null() && *ret_err != -1 || !MSenc.is_null() {
-            _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 324);
-        }
-        i += 1;
-    }
-    MSenc = opus_multistream_encoder_create(8000, 2, 2, 0, mapping.as_mut_ptr(), 2049, &mut err);
-    if err != 0 || MSenc.is_null() {
-        _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 328);
-    }
-    if opus_multistream_encoder_ctl!(MSenc, 4003, &mut i) != 0 {
-        _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 331);
-    }
-    if opus_multistream_encoder_ctl!(MSenc, 4037, &mut i) != 0 {
-        _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 332);
-    }
-    if i < 16 {
-        _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 333);
-    }
-    let mut tmp_enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
-    if opus_multistream_encoder_ctl!(MSenc, 5120, 1, &mut tmp_enc) != 0 {
-        _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 337);
-    }
-    if opus_encoder_ctl!(tmp_enc, 4037, &mut j) != 0 {
-        _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 338);
-    }
     if i != j {
         _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 339);
-    }
-    if opus_multistream_encoder_ctl!(MSenc, 5120, 2, &mut tmp_enc) != -1 {
-        _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 340);
     }
     dec = opus_decoder_create(48000, 2, &mut err);
     if err != 0 || dec.is_null() {
         _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 344);
-    }
-    MSdec = opus_multistream_decoder_create(48000, 2, 2, 0, mapping.as_mut_ptr(), &mut err);
-    if err != 0 || MSdec.is_null() {
-        _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 347);
-    }
-    MSdec_err = opus_multistream_decoder_create(48000, 3, 2, 0, mapping.as_mut_ptr(), &mut err);
-    if err != 0 || MSdec_err.is_null() {
-        _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 350);
     }
     dec_err[0 as usize] = malloc(opus_decoder_get_size(2) as u64) as *mut OpusDecoder;
     memcpy(
@@ -839,191 +753,6 @@ pub unsafe fn run_test1(no_fuzz: bool) -> i32 {
     if opus_encoder_ctl!(enc, 4016, 0) != 0 {
         _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 475);
     }
-    rc = 0;
-    while rc < 3 {
-        if opus_multistream_encoder_ctl!(MSenc, 4006, (rc < 2) as i32,) != 0 {
-            _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 479);
-        }
-        if opus_multistream_encoder_ctl!(MSenc, 4020, (rc == 1) as i32,) != 0 {
-            _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 480);
-        }
-        if opus_multistream_encoder_ctl!(MSenc, 4020, (rc == 1) as i32,) != 0 {
-            _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 481);
-        }
-        if opus_multistream_encoder_ctl!(MSenc, 4012, (rc == 0) as i32,) != 0 {
-            _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 482);
-        }
-        j = 0;
-        while j < 16 {
-            let mut rate_0: i32 = 0;
-            let mut modes_0: [i32; 16] = [0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2];
-            let mut rates_0: [i32; 16] = [
-                4000, 12000, 32000, 8000, 16000, 32000, 48000, 88000, 4000, 12000, 32000, 8000,
-                16000, 32000, 48000, 88000,
-            ];
-            let mut frame_0: [i32; 16] = [
-                160 * 1,
-                160,
-                80,
-                160,
-                160,
-                80,
-                40,
-                20,
-                160 * 1,
-                160,
-                80,
-                160,
-                160,
-                80,
-                40,
-                20,
-            ];
-            (rc == 0 && j == 1) as i32;
-            if opus_multistream_encoder_ctl!(MSenc, 4012, (rc == 0 && j == 1) as i32,) != 0 {
-                _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 489);
-            }
-            if opus_multistream_encoder_ctl!(MSenc, 11002, 1000 + modes_0[j as usize],) != 0 {
-                _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 490);
-            }
-            rate_0 = (rates_0[j as usize] as u32)
-                .wrapping_add((fast_rand()).wrapping_rem(rates_0[j as usize] as u32))
-                as i32;
-            fast_rand();
-            if opus_multistream_encoder_ctl!(MSenc, 4016, (fast_rand() & 1) as i32,) != 0 {
-                _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 492);
-            }
-            if opus_multistream_encoder_ctl!(MSenc, 4002, rate_0) != 0 {
-                _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 493);
-            }
-            i = 0;
-            count = i;
-            loop {
-                let mut len_0: i32 = 0;
-                let mut out_samples_0: i32 = 0;
-                let mut frame_size_0: i32 = 0;
-                let mut loss: i32 = 0;
-                let mut pred: i32 = 0;
-                if opus_multistream_encoder_ctl!(MSenc, 4043, &mut pred) != 0 {
-                    _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 498);
-                }
-                fast_rand();
-                if pred != 0 {
-                } else {
-                };
-                if opus_multistream_encoder_ctl!(
-                    MSenc,
-                    4042,
-                    (((fast_rand() & 15) as i32) < (if pred != 0 { 11 } else { 4 })) as i32,
-                ) != 0
-                {
-                    _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 499);
-                }
-                frame_size_0 = frame_0[j as usize];
-                if opus_multistream_encoder_ctl!(MSenc, 4010, (count >> 2) % 11,) != 0 {
-                    _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 501);
-                }
-                fast_rand();
-                fast_rand();
-                if opus_multistream_encoder_ctl!(
-                    MSenc,
-                    4014,
-                    (fast_rand() & 15 & (fast_rand()).wrapping_rem(15)) as i32,
-                ) != 0
-                {
-                    _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 502);
-                }
-                if fast_rand() & 255 == 0 {
-                    if opus_multistream_encoder_ctl!(MSenc, 4028) != 0 {
-                        _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 505);
-                    }
-                    if opus_multistream_decoder_ctl!(MSdec, 4028) != 0 {
-                        _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 506);
-                    }
-                    if fast_rand() & 3 != 0 && opus_multistream_decoder_ctl!(MSdec_err, 4028) != 0 {
-                        _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 509);
-                    }
-                }
-                if fast_rand() & 255 == 0 && opus_multistream_decoder_ctl!(MSdec_err, 4028) != 0 {
-                    _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 514);
-                }
-                len_0 = opus_multistream_encode(
-                    MSenc,
-                    &mut *inbuf.offset((i << 1) as isize),
-                    frame_size_0,
-                    packet.as_mut_ptr(),
-                    1500,
-                );
-                if len_0 < 0 || len_0 > 1500 {
-                    _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 517);
-                }
-                if opus_multistream_encoder_ctl!(MSenc, 4031, &mut enc_final_range) != 0 {
-                    _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 518);
-                }
-                if fast_rand() & 3 == 0 {
-                    if opus_multistream_packet_pad(packet.as_mut_ptr(), len_0, len_0 + 1, 2) != 0 {
-                        _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 521);
-                    }
-                    len_0 += 1;
-                }
-                if fast_rand() & 7 == 0 {
-                    if opus_multistream_packet_pad(packet.as_mut_ptr(), len_0, len_0 + 256, 2) != 0
-                    {
-                        _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 526);
-                    }
-                    len_0 += 256;
-                }
-                if fast_rand() & 3 == 0 {
-                    len_0 = opus_multistream_packet_unpad(packet.as_mut_ptr(), len_0, 2);
-                    if len_0 < 1 {
-                        _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 532);
-                    }
-                }
-                out_samples_0 =
-                    opus_multistream_decode(MSdec, packet.as_mut_ptr(), len_0, out2buf, 5760, 0);
-                if out_samples_0 != frame_size_0 * 6 {
-                    _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 535);
-                }
-                if opus_multistream_decoder_ctl!(MSdec, 4031, &mut dec_final_range) != 0 {
-                    _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 536);
-                }
-                if enc_final_range != dec_final_range {
-                    _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 537);
-                }
-                loss = (fast_rand() & 63 == 0) as i32;
-                out_samples_0 = opus_multistream_decode(
-                    MSdec_err,
-                    packet.as_mut_ptr(),
-                    if loss != 0 { 0 } else { len_0 },
-                    out2buf,
-                    frame_size_0 * 6,
-                    (fast_rand() & 3 != 0) as i32,
-                );
-                if out_samples_0 != frame_size_0 * 6 {
-                    _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 541);
-                }
-                i += frame_size_0;
-                count += 1;
-                if i >= 48000 * 30 / 3 / 12 - 5760 {
-                    break;
-                }
-            }
-            println!(
-                "    Mode {} NB dual-mono MS encode {}, {:6} bps OK.",
-                mstrings[modes_0[j as usize] as usize],
-                if rc == 0 {
-                    " VBR"
-                } else if rc == 1 {
-                    "CVBR"
-                } else {
-                    " CBR"
-                },
-                rate_0,
-            );
-            j += 1;
-        }
-        rc += 1;
-    }
     bitrate_bps = 512000;
     fsize = (fast_rand()).wrapping_rem(31) as i32;
     fswitch = 100;
@@ -1167,19 +896,10 @@ pub unsafe fn run_test1(no_fuzz: bool) -> i32 {
         _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 616);
     }
     opus_encoder_destroy(enc);
-    if opus_multistream_encoder_ctl!(MSenc, 4028) != 0 {
-        _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 618);
-    }
-    opus_multistream_encoder_destroy(MSenc);
     if opus_decoder_ctl!(&mut *dec, 4028) != 0 {
         _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 620);
     }
     opus_decoder_destroy(dec);
-    if opus_multistream_decoder_ctl!(MSdec, 4028) != 0 {
-        _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 622);
-    }
-    opus_multistream_decoder_destroy(MSdec);
-    opus_multistream_decoder_destroy(MSdec_err);
     i = 0;
     while i < 10 {
         opus_decoder_destroy(dec_err[i as usize]);

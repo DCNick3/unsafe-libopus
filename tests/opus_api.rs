@@ -33,16 +33,12 @@ use unsafe_libopus::{
     opus_decode, opus_decode_float, opus_decoder_create, opus_decoder_ctl, opus_decoder_destroy,
     opus_decoder_get_nb_samples, opus_decoder_get_size, opus_decoder_init, opus_encode,
     opus_encode_float, opus_encoder_create, opus_encoder_ctl, opus_encoder_destroy,
-    opus_encoder_get_size, opus_encoder_init, opus_get_version_string, opus_multistream_decode,
-    opus_multistream_decode_float, opus_multistream_decoder_create, opus_multistream_decoder_ctl,
-    opus_multistream_decoder_destroy, opus_multistream_decoder_get_size,
-    opus_multistream_decoder_init, opus_multistream_packet_pad, opus_multistream_packet_unpad,
-    opus_packet_get_bandwidth, opus_packet_get_nb_frames, opus_packet_get_nb_samples,
-    opus_packet_get_samples_per_frame, opus_packet_pad, opus_packet_parse, opus_packet_unpad,
-    opus_repacketizer_cat, opus_repacketizer_create, opus_repacketizer_destroy,
-    opus_repacketizer_get_nb_frames, opus_repacketizer_get_size, opus_repacketizer_init,
-    opus_repacketizer_out, opus_repacketizer_out_range, opus_strerror, OpusDecoder, OpusEncoder,
-    OpusMSDecoder, OpusRepacketizer,
+    opus_encoder_get_size, opus_encoder_init, opus_get_version_string, opus_packet_get_bandwidth,
+    opus_packet_get_nb_frames, opus_packet_get_nb_samples, opus_packet_get_samples_per_frame,
+    opus_packet_pad, opus_packet_parse, opus_packet_unpad, opus_repacketizer_cat,
+    opus_repacketizer_create, opus_repacketizer_destroy, opus_repacketizer_get_nb_frames,
+    opus_repacketizer_get_size, opus_repacketizer_init, opus_repacketizer_out,
+    opus_repacketizer_out_range, opus_strerror, OpusDecoder, OpusEncoder, OpusRepacketizer,
 };
 
 pub static mut null_int_ptr: *mut i32 =
@@ -394,393 +390,6 @@ pub unsafe fn test_dec_api() -> i32 {
     cfgs += 1;
     println!("                   All decoder interface tests passed");
     println!("                   ({:6} API invocations)", cfgs);
-    cfgs
-}
-pub unsafe fn test_msdec_api() -> i32 {
-    let mut dec_final_range: u32 = 0;
-    let mut dec: *mut OpusMSDecoder = std::ptr::null_mut::<OpusMSDecoder>();
-    let mut streamdec: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
-    let mut i: i32 = 0;
-    let mut j: i32 = 0;
-    let mut cfgs: i32 = 0;
-    let mut packet: [u8; 1276] = [0; 1276];
-    let mut mapping: [u8; 256] = [0; 256];
-    let mut fbuf: [f32; 1920] = [0.; 1920];
-    let mut sbuf: [libc::c_short; 1920] = [0; 1920];
-    let mut a: i32 = 0;
-    let mut b: i32 = 0;
-    let mut c: i32 = 0;
-    let mut err: i32 = 0;
-    mapping[0 as usize] = 0;
-    mapping[1 as usize] = 1;
-    i = 2;
-    while i < 256 {
-        i += 1;
-    }
-    cfgs = 0;
-    println!("\n  Multistream decoder basic API tests");
-    println!("  ---------------------------------------------------");
-    a = -1;
-    while a < 4 {
-        b = -1;
-        while b < 4 {
-            i = opus_multistream_decoder_get_size(a, b);
-            if a > 0 && b <= a && b >= 0 && (i <= 2048 || i > ((1) << 16) * a)
-                || (a < 1 || b > a || b < 0) && i != 0
-            {
-                _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 370);
-            }
-            println!(
-                "    opus_multistream_decoder_get_size({:2},{:2})={:4} {}OK.",
-                a,
-                b,
-                i,
-                if i > 0 { "" } else { "... " }
-            );
-            cfgs += 1;
-            b += 1;
-        }
-        a += 1;
-    }
-    c = 1;
-    while c < 3 {
-        i = -(7);
-        while i <= 96000 {
-            let mut fs: i32 = 0;
-            if !((i == 8000 || i == 12000 || i == 16000 || i == 24000 || i == 48000)
-                && (c == 1 || c == 2))
-            {
-                match i {
-                    -5 => {
-                        fs = -(8000);
-                    }
-                    -6 => {
-                        fs = 2147483647;
-                    }
-                    -7 => {
-                        fs = -(2147483647) - 1;
-                    }
-                    _ => {
-                        fs = i;
-                    }
-                }
-                err = 0;
-                dec = opus_multistream_decoder_create(
-                    fs,
-                    c,
-                    1,
-                    c - 1,
-                    mapping.as_mut_ptr(),
-                    &mut err,
-                );
-                if err != -1 || !dec.is_null() {
-                    _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 393);
-                }
-                cfgs += 1;
-                dec = opus_multistream_decoder_create(
-                    fs,
-                    c,
-                    1,
-                    c - 1,
-                    mapping.as_mut_ptr(),
-                    std::ptr::null_mut::<i32>(),
-                );
-                if !dec.is_null() {
-                    _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 396);
-                }
-                cfgs += 1;
-                dec = malloc(opus_multistream_decoder_get_size(1, 1) as u64) as *mut OpusMSDecoder;
-                if dec.is_null() {
-                    _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 399);
-                }
-                err = opus_multistream_decoder_init(dec, fs, c, 1, c - 1, mapping.as_mut_ptr());
-                if err != -1 {
-                    _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 401);
-                }
-                cfgs += 1;
-                free(dec as *mut core::ffi::c_void);
-            }
-            i += 1;
-        }
-        c += 1;
-    }
-    c = 0;
-    while c < 2 {
-        let mut ret_err: *mut i32 = std::ptr::null_mut::<i32>();
-        ret_err = if c != 0 {
-            std::ptr::null_mut::<i32>()
-        } else {
-            &mut err
-        };
-        mapping[0 as usize] = 0;
-        mapping[1 as usize] = 1;
-        i = 2;
-        while i < 256 {
-            i += 1;
-        }
-        dec = opus_multistream_decoder_create(48000, 2, 1, 0, mapping.as_mut_ptr(), ret_err);
-        let _ = ret_err.is_null();
-        if !ret_err.is_null() && *ret_err != -1 || !dec.is_null() {
-            _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 419);
-        }
-        cfgs += 1;
-        mapping[1 as usize] = 0;
-        mapping[0 as usize] = mapping[1 as usize];
-        dec = opus_multistream_decoder_create(48000, 2, 1, 0, mapping.as_mut_ptr(), ret_err);
-        let _ = ret_err.is_null();
-        if !ret_err.is_null() && *ret_err != 0 || dec.is_null() {
-            _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 426);
-        }
-        cfgs += 1;
-        opus_multistream_decoder_destroy(dec);
-        cfgs += 1;
-        dec = opus_multistream_decoder_create(48000, 1, 4, 1, mapping.as_mut_ptr(), ret_err);
-        let _ = ret_err.is_null();
-        if !ret_err.is_null() && *ret_err != 0 || dec.is_null() {
-            _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 434);
-        }
-        cfgs += 1;
-        err = opus_multistream_decoder_init(dec, 48000, 1, 0, 0, mapping.as_mut_ptr());
-        if err != -1 {
-            _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 438);
-        }
-        cfgs += 1;
-        err = opus_multistream_decoder_init(dec, 48000, 1, 1, -1, mapping.as_mut_ptr());
-        if err != -1 {
-            _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 442);
-        }
-        cfgs += 1;
-        opus_multistream_decoder_destroy(dec);
-        cfgs += 1;
-        dec = opus_multistream_decoder_create(48000, 2, 1, 1, mapping.as_mut_ptr(), ret_err);
-        let _ = ret_err.is_null();
-        if !ret_err.is_null() && *ret_err != 0 || dec.is_null() {
-            _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 451);
-        }
-        cfgs += 1;
-        opus_multistream_decoder_destroy(dec);
-        cfgs += 1;
-        dec = opus_multistream_decoder_create(48000, 255, 255, 1, mapping.as_mut_ptr(), ret_err);
-        let _ = ret_err.is_null();
-        if !ret_err.is_null() && *ret_err != -1 || !dec.is_null() {
-            _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 459);
-        }
-        cfgs += 1;
-        dec = opus_multistream_decoder_create(48000, -1, 1, 1, mapping.as_mut_ptr(), ret_err);
-        let _ = ret_err.is_null();
-        if !ret_err.is_null() && *ret_err != -1 || !dec.is_null() {
-            _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 465);
-        }
-        cfgs += 1;
-        dec = opus_multistream_decoder_create(48000, 0, 1, 1, mapping.as_mut_ptr(), ret_err);
-        let _ = ret_err.is_null();
-        if !ret_err.is_null() && *ret_err != -1 || !dec.is_null() {
-            _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 471);
-        }
-        cfgs += 1;
-        dec = opus_multistream_decoder_create(48000, 1, -1, 2, mapping.as_mut_ptr(), ret_err);
-        let _ = ret_err.is_null();
-        if !ret_err.is_null() && *ret_err != -1 || !dec.is_null() {
-            _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 477);
-        }
-        cfgs += 1;
-        dec = opus_multistream_decoder_create(48000, 1, -1, -1, mapping.as_mut_ptr(), ret_err);
-        let _ = ret_err.is_null();
-        if !ret_err.is_null() && *ret_err != -1 || !dec.is_null() {
-            _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 483);
-        }
-        cfgs += 1;
-        dec = opus_multistream_decoder_create(48000, 256, 255, 1, mapping.as_mut_ptr(), ret_err);
-        let _ = ret_err.is_null();
-        if !ret_err.is_null() && *ret_err != -1 || !dec.is_null() {
-            _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 489);
-        }
-        cfgs += 1;
-        dec = opus_multistream_decoder_create(48000, 256, 255, 0, mapping.as_mut_ptr(), ret_err);
-        let _ = ret_err.is_null();
-        if !ret_err.is_null() && *ret_err != -1 || !dec.is_null() {
-            _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 495);
-        }
-        cfgs += 1;
-        mapping[0 as usize] = 255;
-        mapping[1 as usize] = 1;
-        mapping[2 as usize] = 2;
-        dec = opus_multistream_decoder_create(48000, 3, 2, 0, mapping.as_mut_ptr(), ret_err);
-        let _ = ret_err.is_null();
-        if !ret_err.is_null() && *ret_err != -1 || !dec.is_null() {
-            _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 504);
-        }
-        cfgs += 1;
-        mapping[0 as usize] = 0;
-        mapping[1 as usize] = 0;
-        mapping[2 as usize] = 0;
-        dec = opus_multistream_decoder_create(48000, 3, 2, 1, mapping.as_mut_ptr(), ret_err);
-        let _ = ret_err.is_null();
-        if !ret_err.is_null() && *ret_err != 0 || dec.is_null() {
-            _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 513);
-        }
-        cfgs += 1;
-        opus_multistream_decoder_destroy(dec);
-        cfgs += 1;
-        mapping[0 as usize] = 0;
-        mapping[1 as usize] = 255;
-        mapping[2 as usize] = 1;
-        mapping[3 as usize] = 2;
-        mapping[4 as usize] = 3;
-        dec = opus_multistream_decoder_create(48001, 5, 4, 1, mapping.as_mut_ptr(), ret_err);
-        let _ = ret_err.is_null();
-        if !ret_err.is_null() && *ret_err != -1 || !dec.is_null() {
-            _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 526);
-        }
-        cfgs += 1;
-        c += 1;
-    }
-    mapping[0 as usize] = 0;
-    mapping[1 as usize] = 255;
-    mapping[2 as usize] = 1;
-    mapping[3 as usize] = 2;
-    dec = opus_multistream_decoder_create(48000, 4, 2, 1, mapping.as_mut_ptr(), &mut err);
-    if err != 0 || dec.is_null() {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 537);
-    }
-    cfgs += 1;
-    println!("    opus_multistream_decoder_create() ............ OK.");
-    println!("    opus_multistream_decoder_init() .............. OK.");
-    err = opus_multistream_decoder_ctl!(dec, 4031, &mut dec_final_range);
-    if err != 0 {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 545);
-    }
-    println!("    OPUS_GET_FINAL_RANGE ......................... OK.");
-    cfgs += 1;
-    streamdec = std::ptr::null_mut::<OpusDecoder>();
-    err = opus_multistream_decoder_ctl!(dec, 5122, -1, &mut streamdec);
-    if err != -1 {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 553);
-    }
-    cfgs += 1;
-    err = opus_multistream_decoder_ctl!(dec, 5122, 1, &mut streamdec);
-    if err != 0 || streamdec.is_null() {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 556);
-    }
-    cfgs += 1;
-    err = opus_multistream_decoder_ctl!(dec, 5122, 2, &mut streamdec);
-    if err != -1 {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 560);
-    }
-    cfgs += 1;
-    err = opus_multistream_decoder_ctl!(dec, 5122, 0, &mut streamdec);
-    if err != 0 || streamdec.is_null() {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 563);
-    }
-    println!("    OPUS_MULTISTREAM_GET_DECODER_STATE ........... OK.");
-    cfgs += 1;
-    j = 0;
-    while j < 2 {
-        let mut od: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
-        err = opus_multistream_decoder_ctl!(dec, 5122, j, &mut od);
-        if err != 0 {
-            _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 572);
-        }
-        err = opus_decoder_ctl!(&mut *od, 4045, &mut i);
-        if err != 0 || i != 0 {
-            _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 576);
-        }
-        cfgs += 1;
-        j += 1;
-    }
-    err = opus_multistream_decoder_ctl!(dec, 4034, 15);
-    if err != 0 {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 580);
-    }
-    println!("    OPUS_SET_GAIN ................................ OK.");
-    j = 0;
-    while j < 2 {
-        let mut od_0: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
-        err = opus_multistream_decoder_ctl!(dec, 5122, j, &mut od_0);
-        if err != 0 {
-            _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 586);
-        }
-        err = opus_decoder_ctl!(&mut *od_0, 4045, &mut i);
-        if err != 0 || i != 15 {
-            _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 590);
-        }
-        cfgs += 1;
-        j += 1;
-    }
-    println!("    OPUS_GET_GAIN ................................ OK.");
-    err = opus_multistream_decoder_ctl!(dec, 4009, &mut i);
-    if err != 0 || i != 0 {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 597);
-    }
-    println!("    OPUS_GET_BANDWIDTH ........................... OK.");
-    cfgs += 1;
-    err = opus_multistream_decoder_ctl!(dec, -(5));
-    if err != -(5) {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 602);
-    }
-    println!("    OPUS_UNIMPLEMENTED ........................... OK.");
-    cfgs += 1;
-    if opus_multistream_decoder_ctl!(dec, 4028) != 0 {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 635);
-    }
-    println!("    OPUS_RESET_STATE ............................. OK.");
-    cfgs += 1;
-    opus_multistream_decoder_destroy(dec);
-    cfgs += 1;
-    dec = opus_multistream_decoder_create(48000, 2, 1, 1, mapping.as_mut_ptr(), &mut err);
-    if err != 0 || dec.is_null() {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 643);
-    }
-    cfgs += 1;
-    packet[0 as usize] = (((63) << 2) + 3) as u8;
-    packet[1 as usize] = 49;
-    j = 2;
-    while j < 51 {
-        packet[j as usize] = 0;
-        j += 1;
-    }
-    if opus_multistream_decode(dec, packet.as_mut_ptr(), 51, sbuf.as_mut_ptr(), 960, 0) != -(4) {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 650);
-    }
-    cfgs += 1;
-    packet[0 as usize] = ((63) << 2) as u8;
-    packet[2 as usize] = 0;
-    packet[1 as usize] = packet[2 as usize];
-    if opus_multistream_decode(dec, packet.as_mut_ptr(), -1, sbuf.as_mut_ptr(), 960, 0) != -1 {
-        println!(
-            "{}",
-            opus_multistream_decode(dec, packet.as_mut_ptr(), -1, sbuf.as_mut_ptr(), 960, 0,)
-        );
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 654);
-    }
-    cfgs += 1;
-    if opus_multistream_decode(dec, packet.as_mut_ptr(), 3, sbuf.as_mut_ptr(), -(960), 0) != -1 {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 656);
-    }
-    cfgs += 1;
-    if opus_multistream_decode(dec, packet.as_mut_ptr(), 3, sbuf.as_mut_ptr(), 60, 0) != -(2) {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 658);
-    }
-    cfgs += 1;
-    if opus_multistream_decode(dec, packet.as_mut_ptr(), 3, sbuf.as_mut_ptr(), 480, 0) != -(2) {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 660);
-    }
-    cfgs += 1;
-    if opus_multistream_decode(dec, packet.as_mut_ptr(), 3, sbuf.as_mut_ptr(), 960, 0) != 960 {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 662);
-    }
-    cfgs += 1;
-    println!("    opus_multistream_decode() .................... OK.");
-    if opus_multistream_decode_float(dec, packet.as_mut_ptr(), 3, fbuf.as_mut_ptr(), 960, 0) != 960
-    {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 667);
-    }
-    cfgs += 1;
-    println!("    opus_multistream_decode_float() .............. OK.");
-    opus_multistream_decoder_destroy(dec);
-    cfgs += 1;
-    println!("       All multistream decoder interface tests passed");
-    println!("                             ({:6} API invocations)", cfgs);
     cfgs
 }
 pub unsafe fn test_parse() -> i32 {
@@ -2578,34 +2187,7 @@ pub unsafe fn test_repacketizer_api() -> i32 {
                                 );
                             }
                             cfgs += 1;
-                            if opus_multistream_packet_unpad(po, len, 1) != len {
-                                _test_failed(
-                                    b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-                                    1568,
-                                );
-                            }
-                            cfgs += 1;
-                            if opus_multistream_packet_pad(po, len, len + 1, 1) != 0 {
-                                _test_failed(
-                                    b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-                                    1570,
-                                );
-                            }
-                            cfgs += 1;
-                            if opus_multistream_packet_pad(po, len + 1, len + 256, 1) != 0 {
-                                _test_failed(
-                                    b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-                                    1572,
-                                );
-                            }
-                            cfgs += 1;
-                            if opus_multistream_packet_unpad(po, len + 256, 1) != len {
-                                _test_failed(
-                                    b"tests/test_opus_api.c\0" as *const u8 as *const i8,
-                                    1574,
-                                );
-                            }
-                            cfgs += 1;
+
                             if opus_repacketizer_out(rp, po, len - 1) != -(2) {
                                 _test_failed(
                                     b"tests/test_opus_api.c\0" as *const u8 as *const i8,
@@ -2802,22 +2384,6 @@ pub unsafe fn test_repacketizer_api() -> i32 {
                 _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1681);
             }
             cfgs += 1;
-            if opus_multistream_packet_unpad(po, len_0, 1) != len_0 {
-                _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1683);
-            }
-            cfgs += 1;
-            if opus_multistream_packet_pad(po, len_0, len_0 + 1, 1) != 0 {
-                _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1685);
-            }
-            cfgs += 1;
-            if opus_multistream_packet_pad(po, len_0 + 1, len_0 + 256, 1) != 0 {
-                _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1687);
-            }
-            cfgs += 1;
-            if opus_multistream_packet_unpad(po, len_0 + 256, 1) != len_0 {
-                _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1689);
-            }
-            cfgs += 1;
             if opus_repacketizer_out(rp, po, len_0 - 1) != -(2) {
                 _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1691);
             }
@@ -2842,40 +2408,20 @@ pub unsafe fn test_repacketizer_api() -> i32 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1705);
     }
     cfgs += 1;
-    if opus_multistream_packet_pad(po, 4, 4, 1) != 0 {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1707);
-    }
-    cfgs += 1;
     if opus_packet_pad(po, 4, 5) != -(4) {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1709);
-    }
-    cfgs += 1;
-    if opus_multistream_packet_pad(po, 4, 5, 1) != -(4) {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1711);
     }
     cfgs += 1;
     if opus_packet_pad(po, 0, 5) != -1 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1713);
     }
     cfgs += 1;
-    if opus_multistream_packet_pad(po, 0, 5, 1) != -1 {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1715);
-    }
-    cfgs += 1;
     if opus_packet_unpad(po, 0) != -1 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1717);
     }
     cfgs += 1;
-    if opus_multistream_packet_unpad(po, 0, 1) != -1 {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1719);
-    }
-    cfgs += 1;
     if opus_packet_unpad(po, 4) != -(4) {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1721);
-    }
-    cfgs += 1;
-    if opus_multistream_packet_unpad(po, 4, 1) != -(4) {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1723);
     }
     cfgs += 1;
     *po.offset(0 as isize) = 0;
@@ -2885,17 +2431,11 @@ pub unsafe fn test_repacketizer_api() -> i32 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1728);
     }
     cfgs += 1;
-    if opus_multistream_packet_pad(po, 5, 4, 1) != -1 {
-        _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 1730);
-    }
-    cfgs += 1;
     println!("    opus_repacketizer_cat ........................ OK.");
     println!("    opus_repacketizer_out ........................ OK.");
     println!("    opus_repacketizer_out_range .................. OK.");
     println!("    opus_packet_pad .............................. OK.");
     println!("    opus_packet_unpad ............................ OK.");
-    println!("    opus_multistream_packet_pad .................. OK.");
-    println!("    opus_multistream_packet_unpad ................ OK.");
     opus_repacketizer_destroy(rp);
     cfgs += 1;
     free(packet as *mut core::ffi::c_void);
@@ -2927,7 +2467,6 @@ unsafe fn main_0() -> i32 {
     }
     total = 4;
     total += test_dec_api();
-    total += test_msdec_api();
     total += test_parse();
     total += test_enc_api();
     total += test_repacketizer_api();
