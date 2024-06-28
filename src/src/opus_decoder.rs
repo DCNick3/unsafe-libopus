@@ -727,7 +727,8 @@ pub unsafe fn opus_decode_native(
     }
     packet_mode = opus_packet_get_mode(data);
     packet_bandwidth = opus_packet_get_bandwidth(data);
-    packet_frame_size = opus_packet_get_samples_per_frame(data, st.Fs);
+    packet_frame_size =
+        opus_packet_get_samples_per_frame(std::slice::from_raw_parts(data, len as usize), st.Fs);
     packet_stream_channels = opus_packet_get_nb_channels(data);
     count = opus_packet_parse_impl(
         data,
@@ -853,7 +854,8 @@ pub unsafe fn opus_decode(
         return OPUS_BAD_ARG;
     }
     if !data.is_null() && len > 0 && decode_fec == 0 {
-        nb_samples = opus_decoder_get_nb_samples(st, data, len);
+        nb_samples =
+            opus_decoder_get_nb_samples(st, std::slice::from_raw_parts(data, len as usize));
         if nb_samples > 0 {
             frame_size = if frame_size < nb_samples {
                 frame_size
@@ -1036,25 +1038,24 @@ pub unsafe fn opus_packet_get_nb_channels(data: *const u8) -> i32 {
         1
     };
 }
-pub unsafe fn opus_packet_get_nb_frames(packet: *const u8, len: i32) -> i32 {
-    let mut count: i32 = 0;
-    if len < 1 {
+pub fn opus_packet_get_nb_frames(packet: &[u8]) -> i32 {
+    if packet.len() < 1 {
         return OPUS_BAD_ARG;
     }
-    count = *packet.offset(0 as isize) as i32 & 0x3;
+    let count = packet[0] & 0x3;
     if count == 0 {
         return 1;
     } else if count != 3 {
         return 2;
-    } else if len < 2 {
+    } else if packet.len() < 2 {
         return OPUS_INVALID_PACKET;
     } else {
-        return *packet.offset(1 as isize) as i32 & 0x3f;
+        return (packet[1] & 0x3f) as i32;
     };
 }
-pub unsafe fn opus_packet_get_nb_samples(packet: *const u8, len: i32, Fs: i32) -> i32 {
+pub fn opus_packet_get_nb_samples(packet: &[u8], Fs: i32) -> i32 {
     let mut samples: i32 = 0;
-    let count: i32 = opus_packet_get_nb_frames(packet, len);
+    let count: i32 = opus_packet_get_nb_frames(packet);
     if count < 0 {
         return count;
     }
@@ -1065,10 +1066,6 @@ pub unsafe fn opus_packet_get_nb_samples(packet: *const u8, len: i32, Fs: i32) -
         return samples;
     };
 }
-pub unsafe fn opus_decoder_get_nb_samples(
-    dec: &mut OpusDecoder,
-    packet: *const u8,
-    len: i32,
-) -> i32 {
-    return opus_packet_get_nb_samples(packet, len, dec.Fs);
+pub fn opus_decoder_get_nb_samples(dec: &mut OpusDecoder, packet: &[u8]) -> i32 {
+    return opus_packet_get_nb_samples(packet, dec.Fs);
 }

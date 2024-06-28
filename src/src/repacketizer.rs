@@ -52,11 +52,12 @@ unsafe fn opus_repacketizer_cat_impl(
     }
     if (*rp).nb_frames == 0 {
         (*rp).toc = *data.offset(0 as isize);
-        (*rp).framesize = opus_packet_get_samples_per_frame(data, 8000);
+        (*rp).framesize =
+            opus_packet_get_samples_per_frame(std::slice::from_raw_parts(data, len as usize), 8000);
     } else if (*rp).toc as i32 & 0xfc != *data.offset(0 as isize) as i32 & 0xfc {
         return OPUS_INVALID_PACKET;
     }
-    curr_nb_frames = opus_packet_get_nb_frames(data, len);
+    curr_nb_frames = opus_packet_get_nb_frames(std::slice::from_raw_parts(data, len as usize));
     if curr_nb_frames < 1 {
         return OPUS_INVALID_PACKET;
     }

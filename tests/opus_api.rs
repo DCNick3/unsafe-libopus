@@ -241,39 +241,39 @@ pub unsafe fn test_dec_api() -> i32 {
     println!("    OPUS_RESET_STATE ............................. OK.");
     cfgs += 1;
     packet[0 as usize] = 0;
-    if opus_decoder_get_nb_samples(&mut *dec, packet.as_mut_ptr() as *const u8, 1) != 480 {
+    if opus_decoder_get_nb_samples(&mut *dec, &packet[..1]) != 480 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 250);
     }
-    if opus_packet_get_nb_samples(packet.as_mut_ptr() as *const u8, 1, 48000) != 480 {
+    if opus_packet_get_nb_samples(&packet[..1], 48000) != 480 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 251);
     }
-    if opus_packet_get_nb_samples(packet.as_mut_ptr() as *const u8, 1, 96000) != 960 {
+    if opus_packet_get_nb_samples(&packet[..1], 96000) != 960 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 252);
     }
-    if opus_packet_get_nb_samples(packet.as_mut_ptr() as *const u8, 1, 32000) != 320 {
+    if opus_packet_get_nb_samples(&packet[..1], 32000) != 320 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 253);
     }
-    if opus_packet_get_nb_samples(packet.as_mut_ptr() as *const u8, 1, 8000) != 80 {
+    if opus_packet_get_nb_samples(&packet[..1], 8000) != 80 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 254);
     }
     packet[0 as usize] = 3;
-    if opus_packet_get_nb_samples(packet.as_mut_ptr() as *const u8, 1, 24000) != -(4) {
+    if opus_packet_get_nb_samples(&packet[..1], 24000) != -(4) {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 256);
     }
     packet[0 as usize] = ((63) << 2 | 3) as u8;
     packet[1 as usize] = 63;
-    if opus_packet_get_nb_samples(packet.as_mut_ptr() as *const u8, 0, 24000) != -1 {
+    if opus_packet_get_nb_samples(&[], 24000) != -1 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 259);
     }
-    if opus_packet_get_nb_samples(packet.as_mut_ptr() as *const u8, 2, 48000) != -(4) {
+    if opus_packet_get_nb_samples(&packet[..2], 48000) != -(4) {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 260);
     }
-    if opus_decoder_get_nb_samples(&mut *dec, packet.as_mut_ptr() as *const u8, 2) != -(4) {
+    if opus_decoder_get_nb_samples(&mut *dec, &packet[..2]) != -(4) {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 261);
     }
     println!("    opus_{{packet,decoder}}_get_nb_samples() ....... OK.");
     cfgs += 9;
-    if -1 != opus_packet_get_nb_frames(packet.as_mut_ptr() as *const u8, 0) {
+    if -1 != opus_packet_get_nb_frames(&[]) {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 265);
     }
     i = 0;
@@ -281,7 +281,7 @@ pub unsafe fn test_dec_api() -> i32 {
         let mut l1res: [i32; 4] = [1, 2, 2, -(4)];
         packet[0 as usize] = i as u8;
         if l1res[(packet[0 as usize] as i32 & 3) as usize]
-            != opus_packet_get_nb_frames(packet.as_mut_ptr() as *const u8, 1)
+            != opus_packet_get_nb_frames(&packet[..1])
         {
             _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 269);
         }
@@ -293,7 +293,7 @@ pub unsafe fn test_dec_api() -> i32 {
                 l1res[(packet[0 as usize] as i32 & 3) as usize]
             } else {
                 packet[1 as usize] as i32 & 63
-            }) != opus_packet_get_nb_frames(packet.as_mut_ptr() as *const u8, 2)
+            }) != opus_packet_get_nb_frames(&packet[..2])
             {
                 _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 273);
             }
@@ -328,7 +328,7 @@ pub unsafe fn test_dec_api() -> i32 {
         rate = 0;
         while rate < 5 {
             if opus_rates[rate as usize] * 3 / fp3s
-                != opus_packet_get_samples_per_frame(packet.as_mut_ptr(), opus_rates[rate as usize])
+                != opus_packet_get_samples_per_frame(&packet, opus_rates[rate as usize])
             {
                 _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 295);
             }
@@ -1204,7 +1204,7 @@ pub unsafe fn test_parse() -> i32 {
     while i < 64 {
         let mut frame_samp: i32 = 0;
         packet[0 as usize] = ((i << 2) + 3) as u8;
-        frame_samp = opus_packet_get_samples_per_frame(packet.as_mut_ptr(), 48000);
+        frame_samp = opus_packet_get_samples_per_frame(&packet, 48000);
         j = 2;
         while j < 49 {
             packet[1 as usize] = j as u8;
@@ -1281,7 +1281,7 @@ pub unsafe fn test_parse() -> i32 {
         let mut frame_samp_0: i32 = 0;
         packet[0 as usize] = ((i << 2) + 3) as u8;
         packet[1 as usize] = (128 + 1) as u8;
-        frame_samp_0 = opus_packet_get_samples_per_frame(packet.as_mut_ptr(), 48000);
+        frame_samp_0 = opus_packet_get_samples_per_frame(&packet, 48000);
         jj = 0;
         while jj < 1276 {
             toc = u8::MAX;
@@ -2451,7 +2451,7 @@ pub unsafe fn test_repacketizer_api() -> i32 {
     while j < 32 {
         let mut maxi: i32 = 0;
         *packet.offset(0 as isize) = (((j << 1) + (j & 1)) << 2) as u8;
-        maxi = 960 / opus_packet_get_samples_per_frame(packet, 8000);
+        maxi = 960 / opus_packet_get_samples_per_frame(std::slice::from_raw_parts(packet, 1), 8000);
         i = 1;
         while i <= maxi {
             let mut maxp: i32 = 0;
@@ -2461,7 +2461,11 @@ pub unsafe fn test_repacketizer_api() -> i32 {
                 *fresh0 = (*fresh0 as i32 + if i == 2 { 1 } else { 3 }) as u8;
             }
             *packet.offset(1 as isize) = (if i > 2 { i } else { 0 }) as u8;
-            maxp = 960 / (i * opus_packet_get_samples_per_frame(packet, 8000));
+            maxp = 960
+                / (i * opus_packet_get_samples_per_frame(
+                    std::slice::from_raw_parts(packet, 1),
+                    8000,
+                ));
             k = 0;
             while k <= 1275 + 75 {
                 let mut cnt: i32 = 0;
@@ -2738,7 +2742,8 @@ pub unsafe fn test_repacketizer_api() -> i32 {
         let mut sum: i32 = 0;
         let mut rcnt_0: i32 = 0;
         *packet.offset(0 as isize) = (((j << 1) + (j & 1)) << 2) as u8;
-        maxi_0 = 960 / opus_packet_get_samples_per_frame(packet, 8000);
+        maxi_0 =
+            960 / opus_packet_get_samples_per_frame(std::slice::from_raw_parts(packet, 1), 8000);
         sum = 0;
         rcnt_0 = 0;
         opus_repacketizer_init(rp);

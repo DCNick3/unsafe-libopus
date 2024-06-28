@@ -200,7 +200,10 @@ unsafe fn opus_multistream_packet_validate(
         if count < 0 {
             return count;
         }
-        tmp_samples = opus_packet_get_nb_samples(data, packet_offset, Fs);
+        tmp_samples = opus_packet_get_nb_samples(
+            std::slice::from_raw_parts(data, packet_offset as usize),
+            Fs,
+        );
         if s != 0 && samples != tmp_samples {
             return OPUS_INVALID_PACKET;
         }

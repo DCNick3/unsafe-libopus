@@ -328,8 +328,10 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
         }
         t = 0;
         while t < 5 * 2 {
-            expected[t as usize] =
-                opus_decoder_get_nb_samples(&mut *dec[t as usize], packet as *const u8, 1);
+            expected[t as usize] = opus_decoder_get_nb_samples(
+                &mut *dec[t as usize],
+                std::slice::from_raw_parts(packet, 1),
+            );
             if expected[t as usize] > 2880 {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 180);
             }
@@ -513,8 +515,10 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
         *packet.offset(0 as isize) = (i << 2) as u8;
         t = 0;
         while t < 5 * 2 {
-            expected_0[t as usize] =
-                opus_decoder_get_nb_samples(&mut *dec[t as usize], packet as *const u8, 1);
+            expected_0[t as usize] = opus_decoder_get_nb_samples(
+                &mut *dec[t as usize],
+                std::slice::from_raw_parts(packet, 1),
+            );
             t += 1;
         }
         j_0 = 2 + skip;
@@ -561,8 +565,10 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
         *packet.offset(0 as isize) = ((modes[i as usize] as i32) << 2) as u8;
         t = 0;
         while t < 5 * 2 {
-            expected_1[t as usize] =
-                opus_decoder_get_nb_samples(&mut *dec[t as usize], packet as *const u8, plen);
+            expected_1[t as usize] = opus_decoder_get_nb_samples(
+                &mut *dec[t as usize],
+                std::slice::from_raw_parts(packet, plen as usize),
+            );
             t += 1;
         }
         j_1 = 0;
@@ -641,7 +647,10 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
         let mut j_2: i32 = 0;
         let mut expected_2: i32 = 0;
         *packet.offset(0 as isize) = ((modes[i as usize] as i32) << 2) as u8;
-        expected_2 = opus_decoder_get_nb_samples(&mut *dec[t as usize], packet as *const u8, plen);
+        expected_2 = opus_decoder_get_nb_samples(
+            &mut *dec[t as usize],
+            std::slice::from_raw_parts(packet, plen as usize),
+        );
         count = 0;
         while count < 10 {
             j_2 = 0;
