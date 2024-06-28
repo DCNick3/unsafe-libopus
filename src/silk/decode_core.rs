@@ -15,7 +15,7 @@ use crate::silk::Inlines::{silk_DIV32_varQ, silk_INVERSE32_varQ};
 use crate::silk::LPC_analysis_filter::silk_LPC_analysis_filter;
 
 pub unsafe fn silk_decode_core(
-    psDec: *mut silk_decoder_state,
+    psDec: &mut silk_decoder_state,
     psDecCtrl: *mut silk_decoder_control,
     xq: *mut i16,
     pulses: *const i16,
@@ -42,64 +42,64 @@ pub unsafe fn silk_decode_core(
     let mut pred_lag_ptr: *mut i32 = 0 as *mut i32;
     let mut pexc_Q14: *mut i32 = 0 as *mut i32;
     let mut pres_Q14: *mut i32 = 0 as *mut i32;
-    let vla = (*psDec).ltp_mem_length as usize;
+    let vla = psDec.ltp_mem_length as usize;
     let mut sLTP: Vec<i16> = ::std::vec::from_elem(0, vla);
-    let vla_0 = ((*psDec).ltp_mem_length + (*psDec).frame_length) as usize;
+    let vla_0 = (psDec.ltp_mem_length + psDec.frame_length) as usize;
     let mut sLTP_Q15: Vec<i32> = ::std::vec::from_elem(0, vla_0);
-    let vla_1 = (*psDec).subfr_length as usize;
+    let vla_1 = psDec.subfr_length as usize;
     let mut res_Q14: Vec<i32> = ::std::vec::from_elem(0, vla_1);
-    let vla_2 = ((*psDec).subfr_length + 16) as usize;
+    let vla_2 = (psDec.subfr_length + 16) as usize;
     let mut sLPC_Q14: Vec<i32> = ::std::vec::from_elem(0, vla_2);
-    offset_Q10 = silk_Quantization_Offsets_Q10[((*psDec).indices.signalType as i32 >> 1) as usize]
-        [(*psDec).indices.quantOffsetType as usize] as i32;
-    if ((*psDec).indices.NLSFInterpCoef_Q2 as i32) < (1) << 2 {
+    offset_Q10 = silk_Quantization_Offsets_Q10[(psDec.indices.signalType as i32 >> 1) as usize]
+        [psDec.indices.quantOffsetType as usize] as i32;
+    if (psDec.indices.NLSFInterpCoef_Q2 as i32) < (1) << 2 {
         NLSF_interpolation_flag = 1;
     } else {
         NLSF_interpolation_flag = 0;
     }
-    rand_seed = (*psDec).indices.Seed as i32;
+    rand_seed = psDec.indices.Seed as i32;
     i = 0;
-    while i < (*psDec).frame_length {
+    while i < psDec.frame_length {
         rand_seed = 907633515_u32.wrapping_add((rand_seed as u32).wrapping_mul(196314165)) as i32;
-        (*psDec).exc_Q14[i as usize] = ((*pulses.offset(i as isize) as i32 as u32) << 14) as i32;
-        if (*psDec).exc_Q14[i as usize] > 0 {
-            (*psDec).exc_Q14[i as usize] -= QUANT_LEVEL_ADJUST_Q10 << 4;
-        } else if (*psDec).exc_Q14[i as usize] < 0 {
-            (*psDec).exc_Q14[i as usize] += QUANT_LEVEL_ADJUST_Q10 << 4;
+        psDec.exc_Q14[i as usize] = ((*pulses.offset(i as isize) as i32 as u32) << 14) as i32;
+        if psDec.exc_Q14[i as usize] > 0 {
+            psDec.exc_Q14[i as usize] -= QUANT_LEVEL_ADJUST_Q10 << 4;
+        } else if psDec.exc_Q14[i as usize] < 0 {
+            psDec.exc_Q14[i as usize] += QUANT_LEVEL_ADJUST_Q10 << 4;
         }
-        (*psDec).exc_Q14[i as usize] += offset_Q10 << 4;
+        psDec.exc_Q14[i as usize] += offset_Q10 << 4;
         if rand_seed < 0 {
-            (*psDec).exc_Q14[i as usize] = -(*psDec).exc_Q14[i as usize];
+            psDec.exc_Q14[i as usize] = -psDec.exc_Q14[i as usize];
         }
         rand_seed = (rand_seed as u32).wrapping_add(*pulses.offset(i as isize) as u32) as i32;
         i += 1;
     }
     memcpy(
         sLPC_Q14.as_mut_ptr() as *mut core::ffi::c_void,
-        ((*psDec).sLPC_Q14_buf).as_mut_ptr() as *const core::ffi::c_void,
+        (psDec.sLPC_Q14_buf).as_mut_ptr() as *const core::ffi::c_void,
         16_u64.wrapping_mul(::core::mem::size_of::<i32>() as u64),
     );
-    pexc_Q14 = ((*psDec).exc_Q14).as_mut_ptr();
+    pexc_Q14 = (psDec.exc_Q14).as_mut_ptr();
     pxq = xq;
-    sLTP_buf_idx = (*psDec).ltp_mem_length;
+    sLTP_buf_idx = psDec.ltp_mem_length;
     k = 0;
-    while k < (*psDec).nb_subfr {
+    while k < psDec.nb_subfr {
         pres_Q14 = res_Q14.as_mut_ptr();
         A_Q12 = ((*psDecCtrl).PredCoef_Q12[(k >> 1) as usize]).as_mut_ptr();
         memcpy(
             A_Q12_tmp.as_mut_ptr() as *mut core::ffi::c_void,
             A_Q12 as *const core::ffi::c_void,
-            ((*psDec).LPC_order as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
+            (psDec.LPC_order as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
         );
         B_Q14 = &mut *((*psDecCtrl).LTPCoef_Q14)
             .as_mut_ptr()
             .offset((k * LTP_ORDER) as isize) as *mut i16;
-        signalType = (*psDec).indices.signalType as i32;
+        signalType = psDec.indices.signalType as i32;
         Gain_Q10 = (*psDecCtrl).Gains_Q16[k as usize] >> 6;
         inv_gain_Q31 = silk_INVERSE32_varQ((*psDecCtrl).Gains_Q16[k as usize], 47);
-        if (*psDecCtrl).Gains_Q16[k as usize] != (*psDec).prev_gain_Q16 {
+        if (*psDecCtrl).Gains_Q16[k as usize] != psDec.prev_gain_Q16 {
             gain_adj_Q16 = silk_DIV32_varQ(
-                (*psDec).prev_gain_Q16,
+                psDec.prev_gain_Q16,
                 (*psDecCtrl).Gains_Q16[k as usize],
                 16,
             );
@@ -113,10 +113,10 @@ pub unsafe fn silk_decode_core(
         } else {
             gain_adj_Q16 = (1) << 16;
         }
-        (*psDec).prev_gain_Q16 = (*psDecCtrl).Gains_Q16[k as usize];
-        if (*psDec).lossCnt != 0
-            && (*psDec).prevSignalType == TYPE_VOICED
-            && (*psDec).indices.signalType as i32 != TYPE_VOICED
+        psDec.prev_gain_Q16 = (*psDecCtrl).Gains_Q16[k as usize];
+        if psDec.lossCnt != 0
+            && psDec.prevSignalType == TYPE_VOICED
+            && psDec.indices.signalType as i32 != TYPE_VOICED
             && k < MAX_NB_SUBFR / 2
         {
             memset(
@@ -127,30 +127,30 @@ pub unsafe fn silk_decode_core(
             *B_Q14.offset((LTP_ORDER / 2) as isize) =
                 (0.25f64 * ((1) << 14) as f64 + 0.5f64) as i32 as i16;
             signalType = TYPE_VOICED;
-            (*psDecCtrl).pitchL[k as usize] = (*psDec).lagPrev;
+            (*psDecCtrl).pitchL[k as usize] = psDec.lagPrev;
         }
         if signalType == TYPE_VOICED {
             lag = (*psDecCtrl).pitchL[k as usize];
             if k == 0 || k == 2 && NLSF_interpolation_flag != 0 {
-                start_idx = (*psDec).ltp_mem_length - lag - (*psDec).LPC_order - LTP_ORDER / 2;
+                start_idx = psDec.ltp_mem_length - lag - psDec.LPC_order - LTP_ORDER / 2;
                 assert!(start_idx > 0);
                 if k == 2 {
                     memcpy(
-                        &mut *((*psDec).outBuf)
+                        &mut *(psDec.outBuf)
                             .as_mut_ptr()
-                            .offset((*psDec).ltp_mem_length as isize)
+                            .offset(psDec.ltp_mem_length as isize)
                             as *mut i16 as *mut core::ffi::c_void,
                         xq as *const core::ffi::c_void,
-                        ((2 * (*psDec).subfr_length) as u64)
+                        ((2 * psDec.subfr_length) as u64)
                             .wrapping_mul(::core::mem::size_of::<i16>() as u64),
                     );
                 }
 
                 silk_LPC_analysis_filter(
-                    &mut sLTP[start_idx as usize..(*psDec).ltp_mem_length as usize],
-                    &(*psDec).outBuf[(start_idx + k * (*psDec).subfr_length) as usize..]
-                        [..((*psDec).ltp_mem_length - start_idx) as usize],
-                    std::slice::from_raw_parts(A_Q12, (*psDec).LPC_order as usize),
+                    &mut sLTP[start_idx as usize..psDec.ltp_mem_length as usize],
+                    &psDec.outBuf[(start_idx + k * psDec.subfr_length) as usize..]
+                        [..(psDec.ltp_mem_length - start_idx) as usize],
+                    std::slice::from_raw_parts(A_Q12, psDec.LPC_order as usize),
                 );
                 if k == 0 {
                     inv_gain_Q31 = (((inv_gain_Q31 as i64
@@ -165,7 +165,7 @@ pub unsafe fn silk_decode_core(
                         .offset((sLTP_buf_idx - i - 1) as isize) = (inv_gain_Q31 as i64
                         * *sLTP
                             .as_mut_ptr()
-                            .offset(((*psDec).ltp_mem_length - i - 1) as isize)
+                            .offset((psDec.ltp_mem_length - i - 1) as isize)
                             as i64
                         >> 16)
                         as i32;
@@ -193,7 +193,7 @@ pub unsafe fn silk_decode_core(
                 .offset((sLTP_buf_idx - lag + LTP_ORDER / 2) as isize)
                 as *mut i32;
             i = 0;
-            while i < (*psDec).subfr_length {
+            while i < psDec.subfr_length {
                 LTP_pred_Q13 = 2;
                 LTP_pred_Q13 = (LTP_pred_Q13 as i64
                     + (*pred_lag_ptr.offset(0 as isize) as i64 * *B_Q14.offset(0 as isize) as i64
@@ -225,9 +225,9 @@ pub unsafe fn silk_decode_core(
             pres_Q14 = pexc_Q14;
         }
         i = 0;
-        while i < (*psDec).subfr_length {
-            assert!((*psDec).LPC_order == 10 || (*psDec).LPC_order == 16);
-            LPC_pred_Q10 = (*psDec).LPC_order >> 1;
+        while i < psDec.subfr_length {
+            assert!(psDec.LPC_order == 10 || psDec.LPC_order == 16);
+            LPC_pred_Q10 = psDec.LPC_order >> 1;
             LPC_pred_Q10 = (LPC_pred_Q10 as i64
                 + (*sLPC_Q14.as_mut_ptr().offset((16 + i - 1) as isize) as i64
                     * A_Q12_tmp[0 as usize] as i64
@@ -268,7 +268,7 @@ pub unsafe fn silk_decode_core(
                 + (*sLPC_Q14.as_mut_ptr().offset((16 + i - 10) as isize) as i64
                     * A_Q12_tmp[9 as usize] as i64
                     >> 16)) as i32;
-            if (*psDec).LPC_order == 16 {
+            if psDec.LPC_order == 16 {
                 LPC_pred_Q10 = (LPC_pred_Q10 as i64
                     + (*sLPC_Q14.as_mut_ptr().offset((16 + i - 11) as isize) as i64
                         * A_Q12_tmp[10 as usize] as i64
@@ -475,16 +475,16 @@ pub unsafe fn silk_decode_core(
         }
         memcpy(
             sLPC_Q14.as_mut_ptr() as *mut core::ffi::c_void,
-            &mut *sLPC_Q14.as_mut_ptr().offset((*psDec).subfr_length as isize) as *mut i32
+            &mut *sLPC_Q14.as_mut_ptr().offset(psDec.subfr_length as isize) as *mut i32
                 as *const core::ffi::c_void,
             16_u64.wrapping_mul(::core::mem::size_of::<i32>() as u64),
         );
-        pexc_Q14 = pexc_Q14.offset((*psDec).subfr_length as isize);
-        pxq = pxq.offset((*psDec).subfr_length as isize);
+        pexc_Q14 = pexc_Q14.offset(psDec.subfr_length as isize);
+        pxq = pxq.offset(psDec.subfr_length as isize);
         k += 1;
     }
     memcpy(
-        ((*psDec).sLPC_Q14_buf).as_mut_ptr() as *mut core::ffi::c_void,
+        (psDec.sLPC_Q14_buf).as_mut_ptr() as *mut core::ffi::c_void,
         sLPC_Q14.as_mut_ptr() as *const core::ffi::c_void,
         16_u64.wrapping_mul(::core::mem::size_of::<i32>() as u64),
     );

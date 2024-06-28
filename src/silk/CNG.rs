@@ -46,7 +46,7 @@ pub fn silk_CNG_Reset(psDec: &mut silk_decoder_state) {
     psDec.sCNG.rand_seed = 3176576;
 }
 pub unsafe fn silk_CNG(
-    psDec: *mut silk_decoder_state,
+    psDec: &mut silk_decoder_state,
     psDecCtrl: *mut silk_decoder_control,
     frame: *mut i16,
     length: i32,
@@ -58,16 +58,16 @@ pub unsafe fn silk_CNG(
     let mut gain_Q16: i32 = 0;
     let mut gain_Q10: i32 = 0;
     let mut A_Q12: [i16; 16] = [0; 16];
-    let psCNG: *mut silk_CNG_struct = &mut (*psDec).sCNG;
-    if (*psDec).fs_kHz != (*psCNG).fs_kHz {
+    let psCNG: *mut silk_CNG_struct = &mut psDec.sCNG;
+    if psDec.fs_kHz != (*psCNG).fs_kHz {
         silk_CNG_Reset(&mut *psDec);
-        (*psCNG).fs_kHz = (*psDec).fs_kHz;
+        (*psCNG).fs_kHz = psDec.fs_kHz;
     }
-    if (*psDec).lossCnt == 0 && (*psDec).prevSignalType == TYPE_NO_VOICE_ACTIVITY {
+    if psDec.lossCnt == 0 && psDec.prevSignalType == TYPE_NO_VOICE_ACTIVITY {
         i = 0;
-        while i < (*psDec).LPC_order {
+        while i < psDec.LPC_order {
             (*psCNG).CNG_smth_NLSF_Q15[i as usize] = ((*psCNG).CNG_smth_NLSF_Q15[i as usize] as i32
-                + (((*psDec).prevNLSF_Q15[i as usize] as i32
+                + ((psDec.prevNLSF_Q15[i as usize] as i32
                     - (*psCNG).CNG_smth_NLSF_Q15[i as usize] as i32) as i64
                     * 16348 as i64
                     >> 16) as i32) as i16;
@@ -76,7 +76,7 @@ pub unsafe fn silk_CNG(
         max_Gain_Q16 = 0;
         subfr = 0;
         i = 0;
-        while i < (*psDec).nb_subfr {
+        while i < psDec.nb_subfr {
             if (*psDecCtrl).Gains_Q16[i as usize] > max_Gain_Q16 {
                 max_Gain_Q16 = (*psDecCtrl).Gains_Q16[i as usize];
                 subfr = i;
@@ -86,22 +86,22 @@ pub unsafe fn silk_CNG(
         memmove(
             &mut *((*psCNG).CNG_exc_buf_Q14)
                 .as_mut_ptr()
-                .offset((*psDec).subfr_length as isize) as *mut i32
+                .offset(psDec.subfr_length as isize) as *mut i32
                 as *mut core::ffi::c_void,
             ((*psCNG).CNG_exc_buf_Q14).as_mut_ptr() as *const core::ffi::c_void,
-            ((((*psDec).nb_subfr - 1) * (*psDec).subfr_length) as u64)
+            (((psDec.nb_subfr - 1) * psDec.subfr_length) as u64)
                 .wrapping_mul(::core::mem::size_of::<i32>() as u64),
         );
         memcpy(
             ((*psCNG).CNG_exc_buf_Q14).as_mut_ptr() as *mut core::ffi::c_void,
-            &mut *((*psDec).exc_Q14)
+            &mut *(psDec.exc_Q14)
                 .as_mut_ptr()
-                .offset((subfr * (*psDec).subfr_length) as isize) as *mut i32
+                .offset((subfr * psDec.subfr_length) as isize) as *mut i32
                 as *const core::ffi::c_void,
-            ((*psDec).subfr_length as u64).wrapping_mul(::core::mem::size_of::<i32>() as u64),
+            (psDec.subfr_length as u64).wrapping_mul(::core::mem::size_of::<i32>() as u64),
         );
         i = 0;
-        while i < (*psDec).nb_subfr {
+        while i < psDec.nb_subfr {
             (*psCNG).CNG_smth_Gain_Q16 += (((*psDecCtrl).Gains_Q16[i as usize]
                 - (*psCNG).CNG_smth_Gain_Q16) as i64
                 * 4634 as i64
@@ -109,11 +109,11 @@ pub unsafe fn silk_CNG(
             i += 1;
         }
     }
-    if (*psDec).lossCnt != 0 {
+    if psDec.lossCnt != 0 {
         let vla = (length + 16) as usize;
         let mut CNG_sig_Q14: Vec<i32> = ::std::vec::from_elem(0, vla);
-        gain_Q16 = ((*psDec).sPLC.randScale_Q14 as i64
-            * (*psDec).sPLC.prevGain_Q16[1 as usize] as i64
+        gain_Q16 = (psDec.sPLC.randScale_Q14 as i64
+            * psDec.sPLC.prevGain_Q16[1 as usize] as i64
             >> 16) as i32;
         if gain_Q16 >= (1) << 21 || (*psCNG).CNG_smth_Gain_Q16 > (1) << 23 {
             gain_Q16 = (gain_Q16 >> 16) * (gain_Q16 >> 16);
@@ -137,18 +137,18 @@ pub unsafe fn silk_CNG(
         silk_NLSF2A(
             A_Q12.as_mut_ptr(),
             ((*psCNG).CNG_smth_NLSF_Q15).as_mut_ptr(),
-            (*psDec).LPC_order,
-            (*psDec).arch,
+            psDec.LPC_order,
+            psDec.arch,
         );
         memcpy(
             CNG_sig_Q14.as_mut_ptr() as *mut core::ffi::c_void,
             ((*psCNG).CNG_synth_state).as_mut_ptr() as *const core::ffi::c_void,
             16_u64.wrapping_mul(::core::mem::size_of::<i32>() as u64),
         );
-        assert!((*psDec).LPC_order == 10 || (*psDec).LPC_order == 16);
+        assert!(psDec.LPC_order == 10 || psDec.LPC_order == 16);
         i = 0;
         while i < length {
-            LPC_pred_Q10 = (*psDec).LPC_order >> 1;
+            LPC_pred_Q10 = psDec.LPC_order >> 1;
             LPC_pred_Q10 = (LPC_pred_Q10 as i64
                 + (*CNG_sig_Q14.as_mut_ptr().offset((16 + i - 1) as isize) as i64
                     * A_Q12[0 as usize] as i64
@@ -189,7 +189,7 @@ pub unsafe fn silk_CNG(
                 + (*CNG_sig_Q14.as_mut_ptr().offset((16 + i - 10) as isize) as i64
                     * A_Q12[9 as usize] as i64
                     >> 16)) as i32;
-            if (*psDec).LPC_order == 16 {
+            if psDec.LPC_order == 16 {
                 LPC_pred_Q10 = (LPC_pred_Q10 as i64
                     + (*CNG_sig_Q14.as_mut_ptr().offset((16 + i - 11) as isize) as i64
                         * A_Q12[10 as usize] as i64
@@ -544,7 +544,7 @@ pub unsafe fn silk_CNG(
         memset(
             ((*psCNG).CNG_synth_state).as_mut_ptr() as *mut core::ffi::c_void,
             0,
-            ((*psDec).LPC_order as u64).wrapping_mul(::core::mem::size_of::<i32>() as u64),
+            (psDec.LPC_order as u64).wrapping_mul(::core::mem::size_of::<i32>() as u64),
         );
     };
 }

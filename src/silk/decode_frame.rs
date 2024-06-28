@@ -10,7 +10,7 @@ use crate::silk::CNG::silk_CNG;
 use crate::silk::PLC::{silk_PLC, silk_PLC_glue_frames};
 
 pub unsafe fn silk_decode_frame(
-    psDec: *mut silk_decoder_state,
+    psDec: &mut silk_decoder_state,
     psRangeDec: &mut ec_dec,
     pOut: *mut i16,
     pN: *mut i32,
@@ -21,7 +21,7 @@ pub unsafe fn silk_decode_frame(
     let mut L: i32 = 0;
     let mut mv_len: i32 = 0;
     let ret: i32 = 0;
-    L = (*psDec).frame_length;
+    L = psDec.frame_length;
     let mut psDecCtrl: [silk_decoder_control; 1] = [silk_decoder_control {
         pitchL: [0; 4],
         Gains_Q16: [0; 4],
@@ -33,23 +33,23 @@ pub unsafe fn silk_decode_frame(
     assert!(L > 0 && L <= 5 * 4 * 16);
     if lostFlag == FLAG_DECODE_NORMAL
         || lostFlag == FLAG_DECODE_LBRR
-            && (*psDec).LBRR_flags[(*psDec).nFramesDecoded as usize] == 1
+            && psDec.LBRR_flags[psDec.nFramesDecoded as usize] == 1
     {
         let vla = (L + 16 - 1 & !(16 - 1)) as usize;
         let mut pulses: Vec<i16> = ::std::vec::from_elem(0, vla);
         silk_decode_indices(
             psDec,
             psRangeDec,
-            (*psDec).nFramesDecoded,
+            psDec.nFramesDecoded,
             lostFlag,
             condCoding,
         );
         silk_decode_pulses(
             psRangeDec,
             pulses.as_mut_ptr(),
-            (*psDec).indices.signalType as i32,
-            (*psDec).indices.quantOffsetType as i32,
-            (*psDec).frame_length,
+            psDec.indices.signalType as i32,
+            psDec.indices.quantOffsetType as i32,
+            psDec.frame_length,
         );
         silk_decode_parameters(psDec, psDecCtrl.as_mut_ptr(), condCoding);
         silk_decode_core(
@@ -60,32 +60,32 @@ pub unsafe fn silk_decode_frame(
             arch,
         );
         silk_PLC(psDec, psDecCtrl.as_mut_ptr(), pOut, 0, arch);
-        (*psDec).lossCnt = 0;
-        (*psDec).prevSignalType = (*psDec).indices.signalType as i32;
-        assert!((*psDec).prevSignalType >= 0 && (*psDec).prevSignalType <= 2);
-        (*psDec).first_frame_after_reset = 0;
+        psDec.lossCnt = 0;
+        psDec.prevSignalType = psDec.indices.signalType as i32;
+        assert!(psDec.prevSignalType >= 0 && psDec.prevSignalType <= 2);
+        psDec.first_frame_after_reset = 0;
     } else {
-        (*psDec).indices.signalType = (*psDec).prevSignalType as i8;
+        psDec.indices.signalType = psDec.prevSignalType as i8;
         silk_PLC(psDec, psDecCtrl.as_mut_ptr(), pOut, 1, arch);
     }
-    assert!((*psDec).ltp_mem_length >= (*psDec).frame_length);
-    mv_len = (*psDec).ltp_mem_length - (*psDec).frame_length;
+    assert!(psDec.ltp_mem_length >= psDec.frame_length);
+    mv_len = psDec.ltp_mem_length - psDec.frame_length;
     memmove(
-        ((*psDec).outBuf).as_mut_ptr() as *mut core::ffi::c_void,
-        &mut *((*psDec).outBuf)
+        (psDec.outBuf).as_mut_ptr() as *mut core::ffi::c_void,
+        &mut *(psDec.outBuf)
             .as_mut_ptr()
-            .offset((*psDec).frame_length as isize) as *mut i16 as *const core::ffi::c_void,
+            .offset(psDec.frame_length as isize) as *mut i16 as *const core::ffi::c_void,
         (mv_len as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
     );
     memcpy(
-        &mut *((*psDec).outBuf).as_mut_ptr().offset(mv_len as isize) as *mut i16
+        &mut *(psDec.outBuf).as_mut_ptr().offset(mv_len as isize) as *mut i16
             as *mut core::ffi::c_void,
         pOut as *const core::ffi::c_void,
-        ((*psDec).frame_length as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
+        (psDec.frame_length as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
     );
     silk_CNG(psDec, psDecCtrl.as_mut_ptr(), pOut, L);
     silk_PLC_glue_frames(psDec, pOut, L);
-    (*psDec).lagPrev = (*psDecCtrl.as_mut_ptr()).pitchL[((*psDec).nb_subfr - 1) as usize];
+    psDec.lagPrev = (*psDecCtrl.as_mut_ptr()).pitchL[(psDec.nb_subfr - 1) as usize];
     *pN = L;
     return ret;
 }

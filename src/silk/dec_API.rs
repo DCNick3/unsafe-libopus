@@ -73,7 +73,7 @@ pub unsafe fn silk_Decode(
     let mut samplesOut1_tmp: [*mut i16; 2] = [0 as *mut i16; 2];
     let mut MS_pred_Q13: [i32; 2] = [0, 0];
     let psDec = decState;
-    let channel_state: *mut silk_decoder_state = (psDec.channel_state).as_mut_ptr();
+    let channel_state = &mut (psDec.channel_state);
     let mut has_side: i32 = 0;
     let mut stereo_to_mono: i32 = 0;
     let mut delay_stack_alloc: i32 = 0;
@@ -81,36 +81,37 @@ pub unsafe fn silk_Decode(
     if newPacketFlag != 0 {
         n = 0;
         while n < decControl.nChannelsInternal {
-            (*channel_state.offset(n as isize)).nFramesDecoded = 0;
+            channel_state[n as usize].nFramesDecoded = 0;
             n += 1;
         }
     }
     if decControl.nChannelsInternal > psDec.nChannelsInternal {
-        *channel_state.offset(1 as isize) = silk_init_decoder();
+        channel_state[1] = silk_init_decoder();
     }
     stereo_to_mono = (decControl.nChannelsInternal == 1
         && psDec.nChannelsInternal == 2
-        && decControl.internalSampleRate == 1000 * (*channel_state.offset(0 as isize)).fs_kHz)
+        && decControl.internalSampleRate == 1000 * (channel_state[0]).fs_kHz)
         as i32;
-    if (*channel_state.offset(0 as isize)).nFramesDecoded == 0 {
+    if (channel_state[0]).nFramesDecoded == 0 {
         n = 0;
         while n < decControl.nChannelsInternal {
             let mut fs_kHz_dec: i32 = 0;
             if decControl.payloadSize_ms == 0 {
-                (*channel_state.offset(n as isize)).nFramesPerPacket = 1;
-                (*channel_state.offset(n as isize)).nb_subfr = 2;
+                /* Assuming packet loss, use 10 ms */
+                channel_state[n as usize].nFramesPerPacket = 1;
+                channel_state[n as usize].nb_subfr = 2;
             } else if decControl.payloadSize_ms == 10 {
-                (*channel_state.offset(n as isize)).nFramesPerPacket = 1;
-                (*channel_state.offset(n as isize)).nb_subfr = 2;
+                channel_state[n as usize].nFramesPerPacket = 1;
+                channel_state[n as usize].nb_subfr = 2;
             } else if decControl.payloadSize_ms == 20 {
-                (*channel_state.offset(n as isize)).nFramesPerPacket = 1;
-                (*channel_state.offset(n as isize)).nb_subfr = 4;
+                channel_state[n as usize].nFramesPerPacket = 1;
+                channel_state[n as usize].nb_subfr = 4;
             } else if decControl.payloadSize_ms == 40 {
-                (*channel_state.offset(n as isize)).nFramesPerPacket = 2;
-                (*channel_state.offset(n as isize)).nb_subfr = 4;
+                channel_state[n as usize].nFramesPerPacket = 2;
+                channel_state[n as usize].nb_subfr = 4;
             } else if decControl.payloadSize_ms == 60 {
-                (*channel_state.offset(n as isize)).nFramesPerPacket = 3;
-                (*channel_state.offset(n as isize)).nb_subfr = 4;
+                channel_state[n as usize].nFramesPerPacket = 3;
+                channel_state[n as usize].nb_subfr = 4;
             } else {
                 // see comments in `[unsafe_libopus::silk::check_control_input]`
                 panic!("libopus: assert(0) called");
@@ -122,7 +123,7 @@ pub unsafe fn silk_Decode(
                 // return SILK_DEC_INVALID_SAMPLING_FREQUENCY;
             }
             ret += silk_decoder_set_fs(
-                &mut *channel_state.offset(n as isize),
+                &mut channel_state[n as usize],
                 fs_kHz_dec,
                 decControl.API_sampleRate,
             );
@@ -144,9 +145,8 @@ pub unsafe fn silk_Decode(
             ::core::mem::size_of::<[i16; 2]>() as u64,
         );
         memcpy(
-            &mut (*channel_state.offset(1 as isize)).resampler_state as *mut ResamplerState
-                as *mut core::ffi::c_void,
-            &mut (*channel_state.offset(0 as isize)).resampler_state as *mut ResamplerState
+            &mut channel_state[1].resampler_state as *mut ResamplerState as *mut core::ffi::c_void,
+            &mut channel_state[0].resampler_state as *mut ResamplerState
                 as *const core::ffi::c_void,
             ::core::mem::size_of::<ResamplerState>() as u64,
         );
@@ -157,40 +157,37 @@ pub unsafe fn silk_Decode(
         ret = SILK_DEC_INVALID_SAMPLING_FREQUENCY;
         return ret;
     }
-    if lostFlag != FLAG_PACKET_LOST && (*channel_state.offset(0 as isize)).nFramesDecoded == 0 {
+    if lostFlag != FLAG_PACKET_LOST && (channel_state[0]).nFramesDecoded == 0 {
         n = 0;
         while n < decControl.nChannelsInternal {
             i = 0;
-            while i < (*channel_state.offset(n as isize)).nFramesPerPacket {
-                (*channel_state.offset(n as isize)).VAD_flags[i as usize] =
-                    ec_dec_bit_logp(psRangeDec, 1);
+            while i < channel_state[n as usize].nFramesPerPacket {
+                channel_state[n as usize].VAD_flags[i as usize] = ec_dec_bit_logp(psRangeDec, 1);
                 i += 1;
             }
-            (*channel_state.offset(n as isize)).LBRR_flag = ec_dec_bit_logp(psRangeDec, 1);
+            channel_state[n as usize].LBRR_flag = ec_dec_bit_logp(psRangeDec, 1);
             n += 1;
         }
         n = 0;
         while n < decControl.nChannelsInternal {
             memset(
-                ((*channel_state.offset(n as isize)).LBRR_flags).as_mut_ptr()
-                    as *mut core::ffi::c_void,
+                (channel_state[n as usize].LBRR_flags).as_mut_ptr() as *mut core::ffi::c_void,
                 0,
                 ::core::mem::size_of::<[i32; 3]>() as u64,
             );
-            if (*channel_state.offset(n as isize)).LBRR_flag != 0 {
-                if (*channel_state.offset(n as isize)).nFramesPerPacket == 1 {
-                    (*channel_state.offset(n as isize)).LBRR_flags[0 as usize] = 1;
+            if channel_state[n as usize].LBRR_flag != 0 {
+                if channel_state[n as usize].nFramesPerPacket == 1 {
+                    channel_state[n as usize].LBRR_flags[0 as usize] = 1;
                 } else {
                     LBRR_symbol = ec_dec_icdf(
                         psRangeDec,
                         silk_LBRR_flags_iCDF_ptr
-                            [((*channel_state.offset(n as isize)).nFramesPerPacket - 2) as usize],
+                            [(channel_state[n as usize].nFramesPerPacket - 2) as usize],
                         8,
                     ) + 1;
                     i = 0;
-                    while i < (*channel_state.offset(n as isize)).nFramesPerPacket {
-                        (*channel_state.offset(n as isize)).LBRR_flags[i as usize] =
-                            LBRR_symbol >> i & 1;
+                    while i < channel_state[n as usize].nFramesPerPacket {
+                        channel_state[n as usize].LBRR_flags[i as usize] = LBRR_symbol >> i & 1;
                         i += 1;
                     }
                 }
@@ -199,27 +196,25 @@ pub unsafe fn silk_Decode(
         }
         if lostFlag == FLAG_DECODE_NORMAL {
             i = 0;
-            while i < (*channel_state.offset(0 as isize)).nFramesPerPacket {
+            while i < channel_state[0].nFramesPerPacket {
                 n = 0;
                 while n < decControl.nChannelsInternal {
-                    if (*channel_state.offset(n as isize)).LBRR_flags[i as usize] != 0 {
+                    if channel_state[n as usize].LBRR_flags[i as usize] != 0 {
                         let mut pulses: [i16; 320] = [0; 320];
                         let mut condCoding: i32 = 0;
                         if decControl.nChannelsInternal == 2 && n == 0 {
                             silk_stereo_decode_pred(psRangeDec, MS_pred_Q13.as_mut_ptr());
-                            if (*channel_state.offset(1 as isize)).LBRR_flags[i as usize] == 0 {
+                            if channel_state[1].LBRR_flags[i as usize] == 0 {
                                 silk_stereo_decode_mid_only(psRangeDec, &mut decode_only_middle);
                             }
                         }
-                        if i > 0
-                            && (*channel_state.offset(n as isize)).LBRR_flags[(i - 1) as usize] != 0
-                        {
+                        if i > 0 && channel_state[n as usize].LBRR_flags[(i - 1) as usize] != 0 {
                             condCoding = CODE_CONDITIONALLY;
                         } else {
                             condCoding = CODE_INDEPENDENTLY;
                         }
                         silk_decode_indices(
-                            &mut *channel_state.offset(n as isize),
+                            &mut channel_state[n as usize],
                             psRangeDec,
                             i,
                             1,
@@ -228,9 +223,9 @@ pub unsafe fn silk_Decode(
                         silk_decode_pulses(
                             psRangeDec,
                             pulses.as_mut_ptr(),
-                            (*channel_state.offset(n as isize)).indices.signalType as i32,
-                            (*channel_state.offset(n as isize)).indices.quantOffsetType as i32,
-                            (*channel_state.offset(n as isize)).frame_length,
+                            channel_state[n as usize].indices.signalType as i32,
+                            channel_state[n as usize].indices.quantOffsetType as i32,
+                            channel_state[n as usize].frame_length,
                         );
                     }
                     n += 1;
@@ -242,19 +237,13 @@ pub unsafe fn silk_Decode(
     if decControl.nChannelsInternal == 2 {
         if lostFlag == FLAG_DECODE_NORMAL
             || lostFlag == FLAG_DECODE_LBRR
-                && (*channel_state.offset(0 as isize)).LBRR_flags
-                    [(*channel_state.offset(0 as isize)).nFramesDecoded as usize]
-                    == 1
+                && channel_state[0].LBRR_flags[channel_state[0].nFramesDecoded as usize] == 1
         {
             silk_stereo_decode_pred(psRangeDec, MS_pred_Q13.as_mut_ptr());
             if lostFlag == FLAG_DECODE_NORMAL
-                && (*channel_state.offset(1 as isize)).VAD_flags
-                    [(*channel_state.offset(0 as isize)).nFramesDecoded as usize]
-                    == 0
+                && channel_state[1].VAD_flags[channel_state[0].nFramesDecoded as usize] == 0
                 || lostFlag == FLAG_DECODE_LBRR
-                    && (*channel_state.offset(1 as isize)).LBRR_flags
-                        [(*channel_state.offset(0 as isize)).nFramesDecoded as usize]
-                        == 0
+                    && channel_state[1].LBRR_flags[channel_state[0].nFramesDecoded as usize] == 0
             {
                 silk_stereo_decode_mid_only(psRangeDec, &mut decode_only_middle);
             } else {
@@ -273,39 +262,38 @@ pub unsafe fn silk_Decode(
         && psDec.prev_decode_only_middle == 1
     {
         memset(
-            (psDec.channel_state[1 as usize].outBuf).as_mut_ptr() as *mut core::ffi::c_void,
+            (channel_state[1].outBuf).as_mut_ptr() as *mut core::ffi::c_void,
             0,
             ::core::mem::size_of::<[i16; 480]>() as u64,
         );
         memset(
-            (psDec.channel_state[1 as usize].sLPC_Q14_buf).as_mut_ptr()
-                as *mut core::ffi::c_void,
+            (channel_state[1].sLPC_Q14_buf).as_mut_ptr() as *mut core::ffi::c_void,
             0,
             ::core::mem::size_of::<[i32; 16]>() as u64,
         );
-        psDec.channel_state[1 as usize].lagPrev = 100;
-        psDec.channel_state[1 as usize].LastGainIndex = 10;
-        psDec.channel_state[1 as usize].prevSignalType = TYPE_NO_VOICE_ACTIVITY;
-        psDec.channel_state[1 as usize].first_frame_after_reset = 1;
+        channel_state[1].lagPrev = 100;
+        channel_state[1].LastGainIndex = 10;
+        channel_state[1].prevSignalType = TYPE_NO_VOICE_ACTIVITY;
+        channel_state[1].first_frame_after_reset = 1;
     }
     delay_stack_alloc = (decControl.internalSampleRate * decControl.nChannelsInternal
         < decControl.API_sampleRate * decControl.nChannelsAPI) as i32;
     let vla = (if delay_stack_alloc != 0 {
         1
     } else {
-        decControl.nChannelsInternal * ((*channel_state.offset(0 as isize)).frame_length + 2)
+        decControl.nChannelsInternal * (channel_state[0].frame_length + 2)
     }) as usize;
     let mut samplesOut1_tmp_storage1: Vec<i16> = ::std::vec::from_elem(0, vla);
     if delay_stack_alloc != 0 {
         samplesOut1_tmp[0 as usize] = samplesOut;
         samplesOut1_tmp[1 as usize] = samplesOut
-            .offset((*channel_state.offset(0 as isize)).frame_length as isize)
+            .offset(channel_state[0].frame_length as isize)
             .offset(2 as isize);
     } else {
         samplesOut1_tmp[0 as usize] = samplesOut1_tmp_storage1.as_mut_ptr();
         samplesOut1_tmp[1 as usize] = samplesOut1_tmp_storage1
             .as_mut_ptr()
-            .offset((*channel_state.offset(0 as isize)).frame_length as isize)
+            .offset(channel_state[0].frame_length as isize)
             .offset(2 as isize);
     }
     if lostFlag == FLAG_DECODE_NORMAL {
@@ -314,34 +302,31 @@ pub unsafe fn silk_Decode(
         has_side = (psDec.prev_decode_only_middle == 0
             || decControl.nChannelsInternal == 2
                 && lostFlag == FLAG_DECODE_LBRR
-                && (*channel_state.offset(1 as isize)).LBRR_flags
-                    [(*channel_state.offset(1 as isize)).nFramesDecoded as usize]
-                    == 1) as i32;
+                && channel_state[1].LBRR_flags[channel_state[1].nFramesDecoded as usize] == 1)
+            as i32;
     }
     n = 0;
     while n < decControl.nChannelsInternal {
         if n == 0 || has_side != 0 {
             let mut FrameIndex: i32 = 0;
             let mut condCoding_0: i32 = 0;
-            FrameIndex = (*channel_state.offset(0 as isize)).nFramesDecoded - n;
+            FrameIndex = channel_state[0].nFramesDecoded - n;
             if FrameIndex <= 0 {
                 condCoding_0 = CODE_INDEPENDENTLY;
             } else if lostFlag == FLAG_DECODE_LBRR {
-                condCoding_0 = if (*channel_state.offset(n as isize)).LBRR_flags
-                    [(FrameIndex - 1) as usize]
-                    != 0
-                {
-                    CODE_CONDITIONALLY
-                } else {
-                    CODE_INDEPENDENTLY
-                };
+                condCoding_0 =
+                    if channel_state[n as usize].LBRR_flags[(FrameIndex - 1) as usize] != 0 {
+                        CODE_CONDITIONALLY
+                    } else {
+                        CODE_INDEPENDENTLY
+                    };
             } else if n > 0 && psDec.prev_decode_only_middle != 0 {
                 condCoding_0 = CODE_INDEPENDENTLY_NO_LTP_SCALING;
             } else {
                 condCoding_0 = CODE_CONDITIONALLY;
             }
             ret += silk_decode_frame(
-                &mut *channel_state.offset(n as isize),
+                &mut channel_state[n as usize],
                 psRangeDec,
                 &mut *(*samplesOut1_tmp.as_mut_ptr().offset(n as isize)).offset(2 as isize),
                 &mut nSamplesOutDec,
@@ -357,7 +342,7 @@ pub unsafe fn silk_Decode(
                 (nSamplesOutDec as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
             );
         }
-        let ref mut fresh0 = (*channel_state.offset(n as isize)).nFramesDecoded;
+        let ref mut fresh0 = channel_state[n as usize].nFramesDecoded;
         *fresh0 += 1;
         n += 1;
     }
@@ -367,7 +352,7 @@ pub unsafe fn silk_Decode(
             samplesOut1_tmp[0 as usize],
             samplesOut1_tmp[1 as usize],
             MS_pred_Q13.as_mut_ptr() as *const i32,
-            (*channel_state.offset(0 as isize)).fs_kHz,
+            channel_state[0].fs_kHz,
             nSamplesOutDec,
         );
     } else {
@@ -383,8 +368,8 @@ pub unsafe fn silk_Decode(
             2_u64.wrapping_mul(::core::mem::size_of::<i16>() as u64),
         );
     }
-    *nSamplesOut = nSamplesOutDec * decControl.API_sampleRate
-        / ((*channel_state.offset(0 as isize)).fs_kHz as i16 as i32 * 1000);
+    *nSamplesOut =
+        nSamplesOutDec * decControl.API_sampleRate / (channel_state[0].fs_kHz as i16 as i32 * 1000);
 
     let vla_0 = (if decControl.nChannelsAPI == 2 {
         *nSamplesOut
@@ -400,7 +385,7 @@ pub unsafe fn silk_Decode(
     };
 
     let vla_1 = (if delay_stack_alloc != 0 {
-        decControl.nChannelsInternal * ((*channel_state.offset(0 as isize)).frame_length + 2)
+        decControl.nChannelsInternal * (channel_state[0].frame_length + 2)
     } else {
         1
     }) as usize;
@@ -409,8 +394,7 @@ pub unsafe fn silk_Decode(
         memcpy(
             samplesOut1_tmp_storage2.as_mut_ptr() as *mut core::ffi::c_void,
             samplesOut as *const core::ffi::c_void,
-            ((decControl.nChannelsInternal
-                * ((*channel_state.offset(0 as isize)).frame_length + 2)) as u64)
+            ((decControl.nChannelsInternal * (channel_state[0].frame_length + 2)) as u64)
                 .wrapping_mul(::core::mem::size_of::<i16>() as u64)
                 .wrapping_add(
                     (0 * samplesOut1_tmp_storage2
@@ -421,7 +405,7 @@ pub unsafe fn silk_Decode(
         samplesOut1_tmp[0 as usize] = samplesOut1_tmp_storage2.as_mut_ptr();
         samplesOut1_tmp[1 as usize] = samplesOut1_tmp_storage2
             .as_mut_ptr()
-            .offset((*channel_state.offset(0 as isize)).frame_length as isize)
+            .offset(channel_state[0].frame_length as isize)
             .offset(2 as isize);
     }
     n = 0;
@@ -434,7 +418,7 @@ pub unsafe fn silk_Decode(
     {
         /* Resample decoded signal to API_sampleRate */
         ret += silk_resampler(
-            &mut (*channel_state.offset(n as isize)).resampler_state,
+            &mut channel_state[n as usize].resampler_state,
             resample_out_ptr,
             std::slice::from_raw_parts(
                 &mut *samplesOut1_tmp[n as usize].offset(1 as isize) as *mut i16 as *const i16,
@@ -457,7 +441,7 @@ pub unsafe fn silk_Decode(
             /* Resample right channel for newly collapsed stereo just in case
             we weren't doing collapsing when switching to mono */
             ret += silk_resampler(
-                &mut (*channel_state.offset(1 as isize)).resampler_state,
+                &mut channel_state[1].resampler_state,
                 resample_out_ptr,
                 std::slice::from_raw_parts(
                     &mut *samplesOut1_tmp[0].offset(1 as isize) as *mut i16 as *const i16,
@@ -477,10 +461,10 @@ pub unsafe fn silk_Decode(
             }
         }
     }
-    if (*channel_state.offset(0 as isize)).prevSignalType == TYPE_VOICED {
+    if channel_state[0].prevSignalType == TYPE_VOICED {
         let mult_tab: [i32; 3] = [6, 4, 3];
-        decControl.prevPitchLag = (*channel_state.offset(0 as isize)).lagPrev
-            * mult_tab[((*channel_state.offset(0 as isize)).fs_kHz - 8 >> 2) as usize];
+        decControl.prevPitchLag =
+            channel_state[0].lagPrev * mult_tab[(channel_state[0].fs_kHz - 8 >> 2) as usize];
     } else {
         decControl.prevPitchLag = 0;
     }
