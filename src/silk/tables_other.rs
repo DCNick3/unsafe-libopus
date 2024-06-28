@@ -1,4 +1,7 @@
-use crate::silk::define::{OFFSET_UVH_Q10, OFFSET_UVL_Q10, OFFSET_VH_Q10, OFFSET_VL_Q10};
+use crate::silk::define::{
+    OFFSET_UVH_Q10, OFFSET_UVL_Q10, OFFSET_VH_Q10, OFFSET_VL_Q10, TRANSITION_INT_NUM,
+    TRANSITION_NA, TRANSITION_NB,
+};
 
 pub static silk_stereo_pred_quant_Q13: [i16; 16] = [
     -13732, -10050, -8266, -7526, -6500, -5000, -2950, -820, 820, 2950, 5000, 6500, 7526, 8266,
@@ -29,14 +32,14 @@ pub static silk_uniform5_iCDF: [u8; 5] = [205, 154, 102, 51, 0];
 pub static silk_uniform6_iCDF: [u8; 6] = [213, 171, 128, 85, 43, 0];
 pub static silk_uniform8_iCDF: [u8; 8] = [224, 192, 160, 128, 96, 64, 32, 0];
 pub static silk_NLSF_EXT_iCDF: [u8; 7] = [100, 40, 16, 7, 3, 1, 0];
-pub static silk_Transition_LP_B_Q28: [[i32; 3]; 5] = [
+pub static silk_Transition_LP_B_Q28: [[i32; TRANSITION_NB]; TRANSITION_INT_NUM] = [
     [250767114, 501534038, 250767114],
     [209867381, 419732057, 209867381],
     [170987846, 341967853, 170987846],
     [131531482, 263046905, 131531482],
     [89306658, 178584282, 89306658],
 ];
-pub static silk_Transition_LP_A_Q28: [[i32; 2]; 5] = [
+pub static silk_Transition_LP_A_Q28: [[i32; TRANSITION_NA]; TRANSITION_INT_NUM] = [
     [506393414, 239854379],
     [411067935, 169683996],
     [306733530, 116694253],
