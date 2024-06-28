@@ -208,7 +208,7 @@ unsafe fn silk_PLC_conceal(
     psDec: *mut silk_decoder_state,
     psDecCtrl: *mut silk_decoder_control,
     frame: *mut i16,
-    arch: i32,
+    _arch: i32,
 ) {
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -324,12 +324,9 @@ unsafe fn silk_PLC_conceal(
     idx = (*psDec).ltp_mem_length - lag - (*psDec).LPC_order - LTP_ORDER / 2;
     assert!(idx > 0);
     silk_LPC_analysis_filter(
-        &mut *sLTP.as_mut_ptr().offset(idx as isize),
-        &mut *((*psDec).outBuf).as_mut_ptr().offset(idx as isize),
-        A_Q12.as_mut_ptr(),
-        (*psDec).ltp_mem_length - idx,
-        (*psDec).LPC_order,
-        arch,
+        &mut sLTP[idx as usize..(*psDec).ltp_mem_length as usize],
+        &(*psDec).outBuf[idx as usize..(*psDec).ltp_mem_length as usize],
+        &A_Q12[..(*psDec).LPC_order as usize],
     );
     inv_gain_Q30 = silk_INVERSE32_varQ((*psPLC).prevGain_Q16[1 as usize], 46);
     inv_gain_Q30 = if inv_gain_Q30 < 0x7fffffff >> 1 {

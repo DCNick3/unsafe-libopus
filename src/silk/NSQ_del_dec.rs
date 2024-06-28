@@ -339,14 +339,10 @@ pub unsafe fn silk_NSQ_del_dec_c(
                     (*psEncC).ltp_mem_length - lag - (*psEncC).predictLPCOrder - LTP_ORDER / 2;
                 assert!(start_idx > 0);
                 silk_LPC_analysis_filter(
-                    &mut *sLTP.as_mut_ptr().offset(start_idx as isize),
-                    &mut *((*NSQ).xq)
-                        .as_mut_ptr()
-                        .offset((start_idx + k * (*psEncC).subfr_length) as isize),
-                    A_Q12,
-                    (*psEncC).ltp_mem_length - start_idx,
-                    (*psEncC).predictLPCOrder,
-                    (*psEncC).arch,
+                    &mut sLTP[start_idx as usize..(*psEncC).ltp_mem_length as usize],
+                    &(*NSQ).xq[(start_idx + k * (*psEncC).subfr_length) as usize..]
+                        [..((*psEncC).ltp_mem_length - start_idx) as usize],
+                    std::slice::from_raw_parts(A_Q12, (*psEncC).predictLPCOrder as usize),
                 );
                 (*NSQ).sLTP_buf_idx = (*psEncC).ltp_mem_length;
                 (*NSQ).rewhite_flag = 1;

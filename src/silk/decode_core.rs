@@ -19,7 +19,7 @@ pub unsafe fn silk_decode_core(
     psDecCtrl: *mut silk_decoder_control,
     xq: *mut i16,
     pulses: *const i16,
-    arch: i32,
+    _arch: i32,
 ) {
     let mut i: i32 = 0;
     let mut k: i32 = 0;
@@ -145,15 +145,12 @@ pub unsafe fn silk_decode_core(
                             .wrapping_mul(::core::mem::size_of::<i16>() as u64),
                     );
                 }
+
                 silk_LPC_analysis_filter(
-                    &mut *sLTP.as_mut_ptr().offset(start_idx as isize),
-                    &mut *((*psDec).outBuf)
-                        .as_mut_ptr()
-                        .offset((start_idx + k * (*psDec).subfr_length) as isize),
-                    A_Q12,
-                    (*psDec).ltp_mem_length - start_idx,
-                    (*psDec).LPC_order,
-                    arch,
+                    &mut sLTP[start_idx as usize..(*psDec).ltp_mem_length as usize],
+                    &(*psDec).outBuf[(start_idx + k * (*psDec).subfr_length) as usize..]
+                        [..((*psDec).ltp_mem_length - start_idx) as usize],
+                    std::slice::from_raw_parts(A_Q12, (*psDec).LPC_order as usize),
                 );
                 if k == 0 {
                     inv_gain_Q31 = (((inv_gain_Q31 as i64
