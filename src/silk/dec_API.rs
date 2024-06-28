@@ -45,12 +45,7 @@ pub struct silk_decoder {
     pub nChannelsInternal: i32,
     pub prev_decode_only_middle: i32,
 }
-pub fn silk_Get_Decoder_Size(decSizeBytes: &mut i32) -> i32 {
-    let ret: i32 = SILK_NO_ERROR;
-    *decSizeBytes = ::core::mem::size_of::<silk_decoder>() as u64 as i32;
-    return ret;
-}
-pub unsafe fn silk_InitDecoder() -> silk_decoder {
+pub fn silk_InitDecoder() -> silk_decoder {
     silk_decoder {
         channel_state: [silk_init_decoder(), silk_init_decoder()],
         sStereo: stereo_dec_state::default(),

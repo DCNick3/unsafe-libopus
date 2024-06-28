@@ -8,12 +8,6 @@ pub mod stddef_h {
     pub type size_t = u64;
     pub const NULL: i32 = 0;
 }
-pub mod cpu_support_h {
-    #[inline]
-    pub unsafe fn opus_select_arch() -> i32 {
-        return 0;
-    }
-}
 pub mod stack_alloc_h {
     pub const ALLOC_NONE: i32 = 1;
     #[inline]
@@ -22,13 +16,10 @@ pub mod stack_alloc_h {
     }
 }
 pub use self::arch_h::{opus_val16, opus_val32};
-pub use self::cpu_support_h::opus_select_arch;
 pub use self::stack_alloc_h::{_opus_false, ALLOC_NONE};
 pub use self::stddef_h::{size_t, NULL};
 use crate::celt::celt::CELT_SET_SIGNALLING_REQUEST;
-use crate::celt::celt_decoder::{
-    celt_decode_with_ec, celt_decoder_get_size, celt_decoder_init, OpusCustomDecoder,
-};
+use crate::celt::celt_decoder::{celt_decode_with_ec, celt_decoder_init, OpusCustomDecoder};
 use crate::celt::entcode::ec_tell;
 use crate::celt::entdec::ec_dec;
 use crate::celt::entdec::{ec_dec_bit_logp, ec_dec_init, ec_dec_uint};
@@ -37,7 +28,7 @@ use crate::celt::mathops::celt_exp2;
 use crate::celt::modes::OpusCustomMode;
 use crate::externs::memset;
 use crate::silk::dec_API::{silk_DecControlStruct, silk_decoder};
-use crate::silk::dec_API::{silk_Decode, silk_Get_Decoder_Size, silk_InitDecoder};
+use crate::silk::dec_API::{silk_Decode, silk_InitDecoder};
 use crate::src::opus::opus_packet_parse_impl;
 use crate::src::opus_defines::{
     OPUS_ALLOC_FAIL, OPUS_BAD_ARG, OPUS_BANDWIDTH_FULLBAND, OPUS_BANDWIDTH_MEDIUMBAND,
@@ -62,7 +53,6 @@ pub struct OpusDecoder {
     pub(crate) Fs: i32,
     pub(crate) DecControl: silk_DecControlStruct,
     pub(crate) decode_gain: i32,
-    pub(crate) arch: i32,
     pub(crate) stream_channels: i32,
     pub(crate) bandwidth: i32,
     pub(crate) mode: i32,
@@ -102,26 +92,10 @@ unsafe fn validate_opus_decoder(st: &OpusDecoder) {
             || (*st).DecControl.payloadSize_ms == 40
             || (*st).DecControl.payloadSize_ms == 60
     );
-    assert!((*st).arch >= 0);
-    assert!((*st).arch <= 0);
     assert!((*st).stream_channels == 1 || (*st).stream_channels == 2);
 }
-pub unsafe fn opus_decoder_get_size(channels: i32) -> i32 {
-    let mut silkDecSizeBytes: i32 = 0;
-    let mut celtDecSizeBytes: i32 = 0;
-    let mut ret: i32 = 0;
-    if channels < 1 || channels > 2 {
-        return 0;
-    }
-    ret = silk_Get_Decoder_Size(&mut silkDecSizeBytes);
-    if ret != 0 {
-        return 0;
-    }
-    silkDecSizeBytes = align(silkDecSizeBytes);
-    celtDecSizeBytes = celt_decoder_get_size(channels) as i32;
-    return align(::core::mem::size_of::<OpusDecoder>() as u64 as i32)
-        + silkDecSizeBytes
-        + celtDecSizeBytes;
+pub fn opus_decoder_get_size(_channels: i32) -> usize {
+    align(core::mem::size_of::<OpusDecoder>() as _) as usize
 }
 pub unsafe fn opus_decoder_init(st: *mut OpusDecoder, Fs: i32, channels: i32) -> i32 {
     if Fs != 48000 && Fs != 24000 && Fs != 16000 && Fs != 12000 && Fs != 8000
@@ -144,7 +118,6 @@ pub unsafe fn opus_decoder_init(st: *mut OpusDecoder, Fs: i32, channels: i32) ->
     opus_custom_decoder_ctl!(&mut (*st).celt_dec, CELT_SET_SIGNALLING_REQUEST, 0);
     (*st).prev_mode = 0;
     (*st).frame_size = Fs / 400;
-    (*st).arch = opus_select_arch();
     return OPUS_OK;
 }
 pub unsafe fn opus_decoder_create(Fs: i32, channels: i32, error: *mut i32) -> *mut OpusDecoder {
@@ -413,7 +386,7 @@ unsafe fn opus_decode_frame(
                 &mut dec,
                 pcm_ptr,
                 &mut silk_frame_size,
-                (*st).arch,
+                0,
             );
             if silk_ret != 0 {
                 if lost_flag != 0 {

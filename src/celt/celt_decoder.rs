@@ -90,7 +90,7 @@ pub struct OpusCustomDecoder {
 pub const PLC_PITCH_LAG_MAX: i32 = 720;
 pub const PLC_PITCH_LAG_MIN: i32 = 100;
 pub const DECODE_BUFFER_SIZE: usize = 2048;
-pub unsafe fn validate_celt_decoder(st: &OpusCustomDecoder) {
+pub fn validate_celt_decoder(st: &OpusCustomDecoder) {
     assert_eq!(st.mode, opus_custom_mode_create(48000, 960, None).unwrap());
     assert_eq!(st.overlap, 120);
     assert!(st.channels == 1 || st.channels == 2);
@@ -111,16 +111,6 @@ pub unsafe fn validate_celt_decoder(st: &OpusCustomDecoder) {
     assert!(st.postfilter_tapset >= 0);
     assert!(st.postfilter_tapset_old <= 2);
     assert!(st.postfilter_tapset_old >= 0);
-}
-pub fn celt_decoder_get_size(channels: i32) -> usize {
-    let mode = opus_custom_mode_create(48000, 960, None).unwrap();
-    opus_custom_decoder_get_size(mode, channels)
-}
-#[inline]
-fn opus_custom_decoder_get_size(_mode: &OpusCustomMode, _channels: i32) -> usize {
-    // NOTE: we've replaced all the inline allocation tomfoolery with just multiple vector allocations.
-    // we could probably do better by allocating from a bump allocator or something, but this is just way easier for now
-    return core::mem::size_of::<OpusCustomDecoder>();
 }
 pub fn celt_decoder_init(sampling_rate: i32, channels: usize) -> OpusCustomDecoder {
     let mode = opus_custom_mode_create(48000, 960, None).unwrap();
