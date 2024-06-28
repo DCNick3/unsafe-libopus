@@ -6,12 +6,10 @@
 
 mod cli;
 
-use crate::cli::{Backend, Cli, Mode};
+use crate::cli::{Cli, Mode};
 use unsafe_libopus::opus_get_version_string;
-use unsafe_libopus_tools::demo::UpstreamLibopusBackend;
 use unsafe_libopus_tools::demo::{
-    opus_demo_adjust_length, opus_demo_decode, opus_demo_encode, DecodeArgs, OpusBackend,
-    RustLibopusBackend,
+    opus_demo_adjust_length, opus_demo_decode, opus_demo_encode, DecodeArgs,
 };
 
 pub fn main() {
@@ -19,10 +17,7 @@ pub fn main() {
 
     eprintln!("{}", opus_get_version_string());
 
-    let backend: &dyn OpusBackend = match cli.backend {
-        Backend::RustLibOpus => &RustLibopusBackend,
-        Backend::UpstreamLibOpus => &UpstreamLibopusBackend,
-    };
+    let backend = cli.backend;
 
     match cli.mode {
         Mode::EncodeDecode(args) => {

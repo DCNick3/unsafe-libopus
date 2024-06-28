@@ -17,8 +17,8 @@
 mod backend;
 mod input;
 
-pub use backend::UpstreamLibopusBackend;
-pub use backend::{OpusBackend, RustLibopusBackend};
+pub use self::backend::OpusBackend;
+use self::backend::{OpusBackendTrait, RustLibopusBackend, UpstreamLibopusBackend};
 
 pub use input::{
     Application, Bandwidth, Channels, CommonOptions, Complexity, DecodeArgs, EncodeArgs,
@@ -47,9 +47,9 @@ fn handle_opus_error(err: i32, call: &str) -> u32 {
 }
 
 macro_rules! checked_opus_encoder_ctl {
-    ($backend:ident, $st:expr, $request:expr, $($arg:expr),*) => {
+    ($B:ident, $st:expr, $request:expr, $($arg:expr),*) => {
         {
-            let ret = $backend.opus_encoder_ctl_impl(
+            let ret = $B::opus_encoder_ctl_impl(
                 $st,
                 $request,
                 unsafe_libopus::varargs!($($arg),*)
@@ -62,9 +62,9 @@ macro_rules! checked_opus_encoder_ctl {
 }
 
 macro_rules! checked_opus_decoder_ctl {
-    ($backend:ident, $st:expr, $request:expr, $($arg:expr),*) => {
+    ($B:ident, $st:expr, $request:expr, $($arg:expr),*) => {
         {
-            let ret = $backend.opus_decoder_ctl_impl(
+            let ret = $B::opus_decoder_ctl_impl(
                 $st,
                 $request,
                 unsafe_libopus::varargs!($($arg),*)
@@ -79,8 +79,14 @@ macro_rules! checked_opus_decoder_ctl {
 /// Encode an opus stream, like `opus_demo -e`
 ///
 /// See module documentation for the format of input and output data.
-pub fn opus_demo_encode(
-    backend: &dyn OpusBackend,
+pub fn opus_demo_encode(backend: OpusBackend, data: &[u8], args: EncodeArgs) -> (Vec<u8>, usize) {
+    match backend {
+        OpusBackend::Rust => opus_demo_encode_impl::<RustLibopusBackend>(data, args),
+        OpusBackend::Upstream => opus_demo_encode_impl::<UpstreamLibopusBackend>(data, args),
+    }
+}
+
+fn opus_demo_encode_impl<B: OpusBackendTrait>(
     data: &[u8],
     EncodeArgs {
         sample_rate: sampling_rate,
@@ -97,10 +103,10 @@ pub fn opus_demo_encode(
         samples.push(i16::from_le_bytes(data.try_into().unwrap()));
     }
 
-    let enc = {
+    let mut enc = {
         let mut err: i32 = 0;
         let enc = unsafe {
-            backend.opus_encoder_create(
+            B::opus_encoder_create(
                 usize::from(sampling_rate) as i32,
                 channels as i32,
                 application.into_opus(),
@@ -121,38 +127,38 @@ pub fn opus_demo_encode(
     }
 
     unsafe {
-        checked_opus_encoder_ctl!(backend, enc, OPUS_SET_BITRATE_REQUEST, bitrate as i32);
+        checked_opus_encoder_ctl!(B, &mut enc, OPUS_SET_BITRATE_REQUEST, bitrate as i32);
         checked_opus_encoder_ctl!(
-            backend,
-            enc,
+            B,
+            &mut enc,
             OPUS_SET_BANDWIDTH_REQUEST,
             options.bandwidth.map_or(OPUS_AUTO, |v| v.into_opus())
         );
-        checked_opus_encoder_ctl!(backend, enc, OPUS_SET_VBR_REQUEST, !options.cbr as i32);
+        checked_opus_encoder_ctl!(B, &mut enc, OPUS_SET_VBR_REQUEST, !options.cbr as i32);
         checked_opus_encoder_ctl!(
-            backend,
-            enc,
+            B,
+            &mut enc,
             OPUS_SET_VBR_CONSTRAINT_REQUEST,
             options.cvbr as i32
         );
         checked_opus_encoder_ctl!(
-            backend,
-            enc,
+            B,
+            &mut enc,
             OPUS_SET_COMPLEXITY_REQUEST,
             i32::from(options.complexity)
         );
         checked_opus_encoder_ctl!(
-            backend,
-            enc,
+            B,
+            &mut enc,
             OPUS_SET_FORCE_CHANNELS_REQUEST,
             if options.forcemono { 1 } else { OPUS_AUTO }
         );
-        checked_opus_encoder_ctl!(backend, enc, OPUS_SET_DTX_REQUEST, options.dtx as i32);
-        checked_opus_encoder_ctl!(backend, enc, OPUS_GET_LOOKAHEAD_REQUEST, &mut skip);
-        checked_opus_encoder_ctl!(backend, enc, OPUS_SET_LSB_DEPTH_REQUEST, 16);
+        checked_opus_encoder_ctl!(B, &mut enc, OPUS_SET_DTX_REQUEST, options.dtx as i32);
+        checked_opus_encoder_ctl!(B, &mut enc, OPUS_GET_LOOKAHEAD_REQUEST, &mut skip);
+        checked_opus_encoder_ctl!(B, &mut enc, OPUS_SET_LSB_DEPTH_REQUEST, 16);
         checked_opus_encoder_ctl!(
-            backend,
-            enc,
+            B,
+            &mut enc,
             OPUS_SET_EXPERT_FRAME_DURATION_REQUEST,
             OPUS_FRAMESIZE_ARG
         );
@@ -176,8 +182,8 @@ pub fn opus_demo_encode(
 
         let res = handle_opus_error(
             unsafe {
-                backend.opus_encode(
-                    enc,
+                B::opus_encode(
+                    &mut enc,
                     frame.as_ptr(),
                     // it's not the length of the frame slice!
                     frame_size as i32,
@@ -192,8 +198,8 @@ pub fn opus_demo_encode(
         let mut enc_final_range: u32 = 0;
         unsafe {
             checked_opus_encoder_ctl!(
-                backend,
-                enc,
+                B,
+                &mut enc,
                 OPUS_GET_FINAL_RANGE_REQUEST,
                 &mut enc_final_range
             );
@@ -209,7 +215,7 @@ pub fn opus_demo_encode(
     unsafe {
         // yes we leak the encoder on panics
         // so what?
-        backend.opus_encoder_destroy(enc);
+        B::opus_encoder_destroy(enc);
     }
 
     (output, skip as usize)
@@ -218,8 +224,14 @@ pub fn opus_demo_encode(
 /// Decode an opus stream, like `opus_demo -d`
 ///
 /// See module documentation for the format of input and output data.
-pub fn opus_demo_decode(
-    backend: &dyn OpusBackend,
+pub fn opus_demo_decode(backend: OpusBackend, data: &[u8], args: DecodeArgs) -> Vec<u8> {
+    match backend {
+        OpusBackend::Rust => opus_demo_decode_impl::<RustLibopusBackend>(data, args),
+        OpusBackend::Upstream => opus_demo_decode_impl::<UpstreamLibopusBackend>(data, args),
+    }
+}
+
+fn opus_demo_decode_impl<B: OpusBackendTrait>(
     data: &[u8],
     DecodeArgs {
         sample_rate,
@@ -232,10 +244,10 @@ pub fn opus_demo_decode(
 
     let channels: usize = channels.into();
 
-    let dec = {
+    let mut dec = {
         let mut err: i32 = 0;
         let dec = unsafe {
-            backend.opus_decoder_create(usize::from(sample_rate) as i32, channels as i32, &mut err)
+            B::opus_decoder_create(usize::from(sample_rate) as i32, channels as i32, &mut err)
         };
         handle_opus_error(err, "opus_decoder_create()");
         dec
@@ -263,8 +275,8 @@ pub fn opus_demo_decode(
 
         let output_samples = handle_opus_error(
             unsafe {
-                backend.opus_decode(
-                    dec,
+                B::opus_decode(
+                    &mut dec,
                     data.as_ptr(),
                     data.len() as i32,
                     samples.as_mut_ptr(),
@@ -280,8 +292,8 @@ pub fn opus_demo_decode(
             let mut dec_final_range: u32 = 0;
             unsafe {
                 checked_opus_decoder_ctl!(
-                    backend,
-                    dec,
+                    B,
+                    &mut dec,
                     OPUS_GET_FINAL_RANGE_REQUEST,
                     &mut dec_final_range
                 );
@@ -302,7 +314,7 @@ pub fn opus_demo_decode(
         frame_idx += 1;
     }
 
-    unsafe { backend.opus_decoder_destroy(dec) };
+    unsafe { B::opus_decoder_destroy(dec) };
 
     output
 }

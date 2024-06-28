@@ -8,7 +8,7 @@ use std::iter::Peekable;
 use std::path::PathBuf;
 use std::str::FromStr;
 use unsafe_libopus_tools::demo::{
-    CommonOptions, DecodeArgs, EncodeArgs, EncoderOptions, MAX_PACKET,
+    CommonOptions, DecodeArgs, EncodeArgs, EncoderOptions, OpusBackend, MAX_PACKET,
 };
 
 #[rustfmt::skip]
@@ -175,25 +175,6 @@ fn parse_decode_args<I: Iterator<Item = String>>(args: &mut ArgsCursor<I>) -> Re
     })
 }
 
-#[derive(Debug, Copy, Clone, Default)]
-pub enum Backend {
-    #[default]
-    RustLibOpus,
-    UpstreamLibOpus,
-}
-
-impl FromStr for Backend {
-    type Err = &'static str;
-
-    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
-        match s {
-            "unsafe" => Ok(Backend::RustLibOpus),
-            "upstream" => Ok(Backend::UpstreamLibOpus),
-            _ => Err("Invalid backend"),
-        }
-    }
-}
-
 #[derive(Debug, Copy, Clone)]
 pub enum Mode {
     EncodeDecode(EncodeArgs),
@@ -203,7 +184,7 @@ pub enum Mode {
 
 #[derive(Debug, Clone)]
 pub struct Cli {
-    pub backend: Backend,
+    pub backend: OpusBackend,
     pub mode: Mode,
     pub input: PathBuf,
     pub output: PathBuf,
@@ -236,7 +217,7 @@ impl Cli {
         let backend = if args.poke("-b")? {
             args.next().map_err(|_| "Missing backend".to_string())?
         } else {
-            Backend::default()
+            OpusBackend::default()
         };
 
         let mode = if args.poke("-e")? {

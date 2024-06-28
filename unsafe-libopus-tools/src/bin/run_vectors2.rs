@@ -16,8 +16,8 @@ use std::fmt::Display;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 use unsafe_libopus_tools::demo::{
-    opus_demo_decode, opus_demo_encode, Application, Channels, DecodeArgs, EncodeArgs,
-    RustLibopusBackend, SampleRate, UpstreamLibopusBackend,
+    opus_demo_decode, opus_demo_encode, Application, Channels, DecodeArgs, EncodeArgs, OpusBackend,
+    SampleRate,
 };
 use unsafe_libopus_tools::CompareResult;
 
@@ -158,9 +158,9 @@ fn run_test(
             };
 
             let upstream_decoded =
-                opus_demo_decode(&UpstreamLibopusBackend, &test_vector.encoded, decode_args);
+                opus_demo_decode(OpusBackend::Upstream, &test_vector.encoded, decode_args);
             let rust_decoded =
-                opus_demo_decode(&RustLibopusBackend, &test_vector.encoded, decode_args);
+                opus_demo_decode(OpusBackend::Rust, &test_vector.encoded, decode_args);
 
             if let Some(dump_directory) = dump_directory {
                 let name_base = format!(
@@ -206,9 +206,9 @@ fn run_test(
             };
 
             let (upstream_encoded, pre_skip) =
-                opus_demo_encode(&UpstreamLibopusBackend, &true_decoded, encode_args);
+                opus_demo_encode(OpusBackend::Upstream, &true_decoded, encode_args);
             let (rust_encoded, rust_pre_skip) =
-                opus_demo_encode(&RustLibopusBackend, &true_decoded, encode_args);
+                opus_demo_encode(OpusBackend::Rust, &true_decoded, encode_args);
             assert_eq!(rust_pre_skip, pre_skip);
 
             if let Some(dump_directory) = dump_directory {
@@ -227,9 +227,9 @@ fn run_test(
 
                 // decode & save decoded files
                 let upstream_decoded =
-                    opus_demo_decode(&UpstreamLibopusBackend, &upstream_encoded, decode_args);
+                    opus_demo_decode(OpusBackend::Upstream, &upstream_encoded, decode_args);
                 let rust_decoded =
-                    opus_demo_decode(&UpstreamLibopusBackend, &rust_encoded, decode_args);
+                    opus_demo_decode(OpusBackend::Upstream, &rust_encoded, decode_args);
 
                 std::fs::write(
                     dump_directory
