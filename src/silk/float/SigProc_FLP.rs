@@ -17,12 +17,12 @@ pub fn silk_float2short_array(out: &mut [i16], input: &[f32]) {
 }
 
 #[inline]
-pub unsafe fn silk_short2float_array(out: *mut f32, in_0: *const i16, length: i32) {
-    let mut k: i32 = 0;
-    k = length - 1;
-    while k >= 0 {
-        *out.offset(k as isize) = *in_0.offset(k as isize) as f32;
-        k -= 1;
+pub fn silk_short2float_array(out: &mut [f32], input: &[i16]) {
+    let length = out.len();
+    assert_eq!(length, input.len());
+
+    for k in (0..length).rev() {
+        out[k] = input[k] as f32;
     }
 }
 

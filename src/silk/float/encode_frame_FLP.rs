@@ -153,9 +153,14 @@ pub unsafe fn silk_encode_frame_FLP(
         (*psEnc).sCmn.frame_length,
     );
     silk_short2float_array(
-        x_frame.offset((LA_SHAPE_MS * (*psEnc).sCmn.fs_kHz) as isize),
-        ((*psEnc).sCmn.inputBuf).as_mut_ptr().offset(1 as isize),
-        (*psEnc).sCmn.frame_length,
+        std::slice::from_raw_parts_mut(
+            x_frame.offset((LA_SHAPE_MS * (*psEnc).sCmn.fs_kHz) as isize),
+            (*psEnc).sCmn.frame_length as usize,
+        ),
+        std::slice::from_raw_parts(
+            ((*psEnc).sCmn.inputBuf).as_mut_ptr().offset(1 as isize),
+            (*psEnc).sCmn.frame_length as usize,
+        ),
     );
     i = 0;
     while i < 8 {

@@ -116,9 +116,8 @@ unsafe fn silk_setup_resamplers(psEnc: *mut silk_encoder_state_FLP, fs_kHz: i32)
                 &x_buf_API_fs_Hz[..api_buf_samples as usize],
             );
             silk_short2float_array(
-                ((*psEnc).x_buf).as_mut_ptr(),
-                x_bufFIX.as_mut_ptr(),
-                new_buf_samples,
+                &mut (*psEnc).x_buf[..new_buf_samples as usize],
+                &x_bufFIX[..new_buf_samples as usize],
             );
         }
     }

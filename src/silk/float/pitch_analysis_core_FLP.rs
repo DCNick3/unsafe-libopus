@@ -125,9 +125,8 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
             &frame_16_FIX[..frame_length as usize],
         );
         silk_short2float_array(
-            frame_8kHz.as_mut_ptr(),
-            frame_8_FIX.as_mut_ptr(),
-            frame_length_8kHz,
+            &mut frame_8kHz[..frame_length_8kHz as usize],
+            &frame_8_FIX[..frame_length_8kHz as usize],
         );
     } else if Fs_kHz == 12 {
         let mut frame_12_FIX: [i16; 480] = [0; 480];
@@ -142,9 +141,8 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
             &frame_12_FIX[..frame_length as usize],
         );
         silk_short2float_array(
-            frame_8kHz.as_mut_ptr(),
-            frame_8_FIX.as_mut_ptr(),
-            frame_length_8kHz,
+            &mut frame_8kHz[..frame_length_8kHz as usize],
+            &frame_8_FIX[..frame_length_8kHz as usize],
         );
     } else {
         assert!(Fs_kHz == 8);
@@ -163,9 +161,8 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
         );
     }
     silk_short2float_array(
-        frame_4kHz.as_mut_ptr(),
-        frame_4_FIX.as_mut_ptr(),
-        frame_length_4kHz,
+        &mut frame_4kHz[..frame_length_4kHz as usize],
+        &frame_4_FIX[..frame_length_4kHz as usize],
     );
     i = frame_length_4kHz - 1;
     while i > 0 {
