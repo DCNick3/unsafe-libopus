@@ -5,8 +5,6 @@
 #![allow(unused_mut)]
 #![allow(deprecated)]
 
-use libc::{getpid, rand, time};
-
 pub mod test_opus_common_h {
     #[inline]
     pub unsafe fn deb2_impl(
@@ -114,8 +112,8 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
     let mut dec_final_acc: u32 = 0;
     let mut packet: *mut u8 = std::ptr::null_mut::<u8>();
     let mut modes: [u8; 4096] = [0; 4096];
-    let mut outbuf_int: *mut libc::c_short = std::ptr::null_mut::<libc::c_short>();
-    let mut outbuf: *mut libc::c_short = std::ptr::null_mut::<libc::c_short>();
+    let mut outbuf_int: *mut i16 = std::ptr::null_mut::<i16>();
+    let mut outbuf: *mut i16 = std::ptr::null_mut::<i16>();
     dec_final_range2 = 2;
     dec_final_range1 = dec_final_range2;
     packet = malloc((::core::mem::size_of::<u8>() as u64).wrapping_mul(1500)) as *mut u8;
@@ -123,16 +121,16 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
         _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 70);
     }
     outbuf_int = malloc(
-        (::core::mem::size_of::<libc::c_short>() as u64)
+        (::core::mem::size_of::<i16>() as u64)
             .wrapping_mul((5760 + 16) as u64)
             .wrapping_mul(2),
-    ) as *mut libc::c_short;
+    ) as *mut i16;
     i = 0;
     while i < (5760 + 16) * 2 {
-        *outbuf_int.offset(i as isize) = 32749 as libc::c_short;
+        *outbuf_int.offset(i as isize) = 32749 as i16;
         i += 1;
     }
-    outbuf = &mut *outbuf_int.offset((8 * 2) as isize) as *mut libc::c_short;
+    outbuf = &mut *outbuf_int.offset((8 * 2) as isize) as *mut i16;
     println!("  Starting {} decoders...", 5 * 2);
     t = 0;
     while t < 5 * 2 {
@@ -257,7 +255,7 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
             if out_samples != 120 / factor {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 132);
             }
-            *outbuf.offset(0 as isize) = 32749 as libc::c_short;
+            *outbuf.offset(0 as isize) = 32749 as i16;
             out_samples = opus_decode(&mut *dec[t as usize], packet, 0, outbuf, 0, fec);
             if out_samples > 0 {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 137);
@@ -640,7 +638,12 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
         .wrapping_mul(8)
         .wrapping_add(skip as u32)
         .wrapping_add(3) as i32;
-    t = rand() & 3;
+
+    t = {
+        let mut t = [0];
+        getrandom::getrandom(&mut t).unwrap();
+        t[0] as i32 & 0x3
+    };
     i = 0;
     while i < 4096 {
         let mut count: i32 = 0;
@@ -816,8 +819,11 @@ unsafe fn main_0() -> i32 {
                 v
             }
             None => {
-                let v = time(std::ptr::null_mut()) as u32 ^ (getpid() as u32 & 65535) << 16;
-                eprintln!("Using time-based seed: {}", v);
+                let mut v = [0; 4];
+                getrandom::getrandom(&mut v).unwrap();
+                let v = u32::from_le_bytes(v);
+
+                eprintln!("Using random seed: {}", v);
                 v
             }
         },

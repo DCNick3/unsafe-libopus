@@ -35,10 +35,7 @@ ndarray = "0.15.6"
 hex = { version = "0.4.3", optional = true }
 
 [dev-dependencies]
-# some translated tests haven't been rewritten not to use libc yet
-libc = "0.2"
-libc-stdhandle = "0.1.0"
-
+getrandom = "0.2.15"
 insta = "1.29.0"
 
 [features]

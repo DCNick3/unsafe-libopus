@@ -55,7 +55,7 @@ pub unsafe fn test_dec_api() -> i32 {
     let mut cfgs: i32 = 0;
     let mut packet: [u8; 1276] = [0; 1276];
     let mut fbuf: [f32; 1920] = [0.; 1920];
-    let mut sbuf: [libc::c_short; 1920] = [0; 1920];
+    let mut sbuf: [i16; 1920] = [0; 1920];
     let mut c: i32 = 0;
     let mut err: i32 = 0;
     cfgs = 0;
@@ -402,7 +402,7 @@ pub unsafe fn test_parse() -> i32 {
     let mut cfgs_total: i32 = 0;
     let mut toc: u8 = 0;
     let mut frames: [*const u8; 48] = [std::ptr::null::<u8>(); 48];
-    let mut size: [libc::c_short; 48] = [0; 48];
+    let mut size: [i16; 48] = [0; 48];
     let mut payload_offset: i32 = 0;
     let mut ret: i32 = 0;
     println!("\n  Packet header parsing tests");
@@ -1220,7 +1220,7 @@ pub unsafe fn test_enc_api() -> i32 {
     let mut j: i32 = 0;
     let mut packet: [u8; 1276] = [0; 1276];
     let mut fbuf: [f32; 1920] = [0.; 1920];
-    let mut sbuf: [libc::c_short; 1920] = [0; 1920];
+    let mut sbuf: [i16; 1920] = [0; 1920];
     let mut c: i32 = 0;
     let mut err: i32 = 0;
     let mut cfgs: i32 = 0;
@@ -1911,7 +1911,7 @@ pub unsafe fn test_enc_api() -> i32 {
     memset(
         sbuf.as_mut_ptr() as *mut core::ffi::c_void,
         0,
-        (::core::mem::size_of::<libc::c_short>() as u64)
+        (::core::mem::size_of::<i16>() as u64)
             .wrapping_mul(2)
             .wrapping_mul(960),
     );

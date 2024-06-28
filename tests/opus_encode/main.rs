@@ -5,8 +5,6 @@
 #![allow(unused_mut)]
 #![allow(deprecated)]
 
-use libc::{getpid, time};
-
 pub mod test_opus_common_h {
     #[inline]
     pub unsafe fn deb2_impl(
@@ -100,7 +98,7 @@ use unsafe_libopus::{
 mod opus_encode_regressions;
 use opus_encode_regressions::regression_test;
 
-pub unsafe fn generate_music(mut buf: *mut libc::c_short, mut len: i32) {
+pub unsafe fn generate_music(mut buf: *mut i16, mut len: i32) {
     let mut a1: i32 = 0;
     let mut b1: i32 = 0;
     let mut a2: i32 = 0;
@@ -123,7 +121,7 @@ pub unsafe fn generate_music(mut buf: *mut libc::c_short, mut len: i32) {
     i = 0;
     while i < 2880 {
         let fresh0 = &mut (*buf.offset((i * 2 + 1) as isize));
-        *fresh0 = 0 as libc::c_short;
+        *fresh0 = 0 as i16;
         *buf.offset((i * 2) as isize) = *fresh0;
         i += 1;
     }
@@ -156,14 +154,14 @@ pub unsafe fn generate_music(mut buf: *mut libc::c_short, mut len: i32) {
             -(32768)
         } else {
             v1
-        }) as libc::c_short;
+        }) as i16;
         *buf.offset((i * 2 + 1) as isize) = (if v2 > 32767 {
             32767
         } else if v2 < -(32768) {
             -(32768)
         } else {
             v2
-        }) as libc::c_short;
+        }) as i16;
         if i % 6 == 0 {
             j += 1;
         }
@@ -441,9 +439,9 @@ pub unsafe fn run_test1(no_fuzz: bool) -> i32 {
     let mut enc: *mut OpusEncoder = std::ptr::null_mut::<OpusEncoder>();
     let mut dec: *mut OpusDecoder = std::ptr::null_mut::<OpusDecoder>();
     let mut dec_err: [*mut OpusDecoder; 10] = [std::ptr::null_mut::<OpusDecoder>(); 10];
-    let mut inbuf: *mut libc::c_short = std::ptr::null_mut::<libc::c_short>();
-    let mut outbuf: *mut libc::c_short = std::ptr::null_mut::<libc::c_short>();
-    let mut out2buf: *mut libc::c_short = std::ptr::null_mut::<libc::c_short>();
+    let mut inbuf: *mut i16 = std::ptr::null_mut::<i16>();
+    let mut outbuf: *mut i16 = std::ptr::null_mut::<i16>();
+    let mut out2buf: *mut i16 = std::ptr::null_mut::<i16>();
     let mut bitrate_bps: i32 = 0;
     let mut packet: [u8; 1757] = [0; 1757];
     let mut enc_final_range: u32 = 0;
@@ -500,20 +498,20 @@ pub unsafe fn run_test1(no_fuzz: bool) -> i32 {
     opus_encoder_destroy(enc);
     enc = enccpy;
     inbuf = malloc(
-        (::core::mem::size_of::<libc::c_short>() as u64)
+        (::core::mem::size_of::<i16>() as u64)
             .wrapping_mul((48000 * 30) as u64)
             .wrapping_mul(2),
-    ) as *mut libc::c_short;
+    ) as *mut i16;
     outbuf = malloc(
-        (::core::mem::size_of::<libc::c_short>() as u64)
+        (::core::mem::size_of::<i16>() as u64)
             .wrapping_mul((48000 * 30) as u64)
             .wrapping_mul(2),
-    ) as *mut libc::c_short;
+    ) as *mut i16;
     out2buf = malloc(
-        (::core::mem::size_of::<libc::c_short>() as u64)
+        (::core::mem::size_of::<i16>() as u64)
             .wrapping_mul(5760)
             .wrapping_mul(3),
-    ) as *mut libc::c_short;
+    ) as *mut i16;
     if inbuf.is_null() || outbuf.is_null() || out2buf.is_null() {
         _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 378);
     }
@@ -762,7 +760,7 @@ pub unsafe fn run_test1(no_fuzz: bool) -> i32 {
     loop {
         let mut toc: u8 = 0;
         let mut frames: [*const u8; 48] = [std::ptr::null::<u8>(); 48];
-        let mut size: [libc::c_short; 48] = [0; 48];
+        let mut size: [i16; 48] = [0; 48];
         let mut payload_offset: i32 = 0;
         let mut dec_final_range2: u32 = 0;
         let mut jj: i32 = 0;
@@ -946,8 +944,11 @@ unsafe fn main_0() -> i32 {
                 v
             }
             None => {
-                let v = time(std::ptr::null_mut()) as u32 ^ (getpid() as u32 & 65535) << 16;
-                eprintln!("Using time-based seed: {}", v);
+                let mut v = [0; 4];
+                getrandom::getrandom(&mut v).unwrap();
+                let v = u32::from_le_bytes(v);
+
+                eprintln!("Using random seed: {}", v);
                 v
             }
         },
