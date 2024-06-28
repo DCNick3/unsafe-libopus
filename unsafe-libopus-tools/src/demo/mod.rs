@@ -103,19 +103,14 @@ fn opus_demo_encode_impl<B: OpusBackendTrait>(
         samples.push(i16::from_le_bytes(data.try_into().unwrap()));
     }
 
-    let mut enc = {
-        let mut err: i32 = 0;
-        let enc = unsafe {
-            B::opus_encoder_create(
-                usize::from(sampling_rate) as i32,
-                channels as i32,
-                application.into_opus(),
-                &mut err,
-            )
-        };
-        handle_opus_error(err, "opus_encoder_create");
-        enc
-    };
+    let mut enc = unsafe {
+        B::opus_encoder_create(
+            usize::from(sampling_rate) as i32,
+            channels as i32,
+            application.into_opus(),
+        )
+    }
+    .expect("opus_encoder_create failed");
 
     let mut skip: i32 = 0;
 
@@ -244,14 +239,9 @@ fn opus_demo_decode_impl<B: OpusBackendTrait>(
 
     let channels: usize = channels.into();
 
-    let mut dec = {
-        let mut err: i32 = 0;
-        let dec = unsafe {
-            B::opus_decoder_create(usize::from(sample_rate) as i32, channels as i32, &mut err)
-        };
-        handle_opus_error(err, "opus_decoder_create()");
-        dec
-    };
+    let mut dec =
+        unsafe { B::opus_decoder_create(usize::from(sample_rate) as i32, channels as i32) }
+            .expect("opus_decoder_create failed");
 
     if options.inbandfec {
         panic!("inbandfec not supported")

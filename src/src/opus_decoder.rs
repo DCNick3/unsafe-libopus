@@ -63,6 +63,45 @@ pub struct OpusDecoder {
     pub(crate) softclip_mem: [opus_val16; 2],
     pub(crate) rangeFinal: u32,
 }
+impl OpusDecoder {
+    pub unsafe fn new(Fs: i32, channels: usize) -> Result<OpusDecoder, i32> {
+        if Fs != 48000 && Fs != 24000 && Fs != 16000 && Fs != 12000 && Fs != 8000
+            || channels != 1 && channels != 2
+        {
+            return Err(OPUS_BAD_ARG);
+        }
+
+        let mut st = OpusDecoder {
+            celt_dec: celt_decoder_init(Fs, channels),
+            silk_dec: silk_InitDecoder(),
+            channels: channels as i32,
+            Fs,
+            DecControl: silk_DecControlStruct {
+                nChannelsAPI: channels as i32,
+                nChannelsInternal: 0,
+                API_sampleRate: Fs,
+                internalSampleRate: 0,
+                payloadSize_ms: 0,
+                prevPitchLag: 0,
+            },
+            decode_gain: 0,
+            stream_channels: channels as i32,
+            bandwidth: 0,
+            mode: 0,
+            prev_mode: 0,
+            frame_size: Fs / 400,
+            prev_redundancy: 0,
+            last_packet_duration: 0,
+            softclip_mem: [0.0; 2],
+            rangeFinal: 0,
+        };
+
+        opus_custom_decoder_ctl!(&mut st.celt_dec, CELT_SET_SIGNALLING_REQUEST, 0);
+
+        Ok(st)
+    }
+}
+
 unsafe fn validate_opus_decoder(st: &OpusDecoder) {
     assert!((*st).channels == 1 || (*st).channels == 2);
     assert!(
@@ -94,34 +133,27 @@ unsafe fn validate_opus_decoder(st: &OpusDecoder) {
     );
     assert!((*st).stream_channels == 1 || (*st).stream_channels == 2);
 }
-pub fn opus_decoder_get_size(_channels: i32) -> usize {
-    align(core::mem::size_of::<OpusDecoder>() as _) as usize
-}
-pub unsafe fn opus_decoder_init(st: *mut OpusDecoder, Fs: i32, channels: i32) -> i32 {
-    if Fs != 48000 && Fs != 24000 && Fs != 16000 && Fs != 12000 && Fs != 8000
-        || channels != 1 && channels != 2
-    {
-        return OPUS_BAD_ARG;
+#[deprecated]
+pub fn opus_decoder_get_size(channels: i32) -> i32 {
+    if channels < 1 || channels > 2 {
+        return 0;
     }
-    memset(
-        st as *mut i8 as *mut core::ffi::c_void,
-        0,
-        (opus_decoder_get_size(channels) as u64).wrapping_mul(::core::mem::size_of::<i8>() as u64),
-    );
-    (*st).channels = channels;
-    (*st).stream_channels = (*st).channels;
-    (*st).Fs = Fs;
-    (*st).DecControl.API_sampleRate = (*st).Fs;
-    (*st).DecControl.nChannelsAPI = (*st).channels;
-    (*st).silk_dec = silk_InitDecoder();
-    (*st).celt_dec = celt_decoder_init(Fs, channels as usize);
-    opus_custom_decoder_ctl!(&mut (*st).celt_dec, CELT_SET_SIGNALLING_REQUEST, 0);
-    (*st).prev_mode = 0;
-    (*st).frame_size = Fs / 400;
-    return OPUS_OK;
+    align(core::mem::size_of::<OpusDecoder>() as _)
 }
+#[deprecated]
+pub unsafe fn opus_decoder_init(st: *mut OpusDecoder, Fs: i32, channels: i32) -> i32 {
+    match OpusDecoder::new(Fs, channels as usize) {
+        Ok(dec) => {
+            *st = dec;
+            return OPUS_OK;
+        }
+        Err(err) => {
+            return err;
+        }
+    }
+}
+#[deprecated]
 pub unsafe fn opus_decoder_create(Fs: i32, channels: i32, error: *mut i32) -> *mut OpusDecoder {
-    let mut ret: i32 = 0;
     let mut st: *mut OpusDecoder = 0 as *mut OpusDecoder;
     if Fs != 48000 && Fs != 24000 && Fs != 16000 && Fs != 12000 && Fs != 8000
         || channels != 1 && channels != 2
@@ -138,7 +170,7 @@ pub unsafe fn opus_decoder_create(Fs: i32, channels: i32, error: *mut i32) -> *m
         }
         return NULL as *mut OpusDecoder;
     }
-    ret = opus_decoder_init(st, Fs, channels);
+    let ret = opus_decoder_init(st, Fs, channels);
     if !error.is_null() {
         *error = ret;
     }
@@ -999,6 +1031,7 @@ macro_rules! opus_decoder_ctl {
         opus_decoder_ctl!($st, $request,)
     };
 }
+#[deprecated]
 pub unsafe fn opus_decoder_destroy(st: *mut OpusDecoder) {
     free(st as *mut core::ffi::c_void);
 }

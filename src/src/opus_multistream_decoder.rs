@@ -43,7 +43,7 @@ use crate::src::opus_multistream::{
 use crate::src::opus_private::align;
 use crate::varargs::VarArgs;
 use crate::{
-    opus_decoder_ctl, opus_decoder_get_size, opus_decoder_init, opus_multistream_decoder_ctl,
+    opus_decoder_ctl, opus_decoder_get_size, opus_multistream_decoder_ctl,
     opus_packet_get_nb_samples, OpusDecoder,
 };
 
@@ -71,7 +71,6 @@ pub unsafe fn opus_multistream_decoder_init(
     mapping: *const u8,
 ) -> i32 {
     let mut i: i32 = 0;
-    let mut ret: i32 = 0;
     let mut ptr: *mut i8 = 0 as *mut i8;
     if channels > 255
         || channels < 1
@@ -99,18 +98,28 @@ pub unsafe fn opus_multistream_decoder_init(
     let mono_size = opus_decoder_get_size(1);
     i = 0;
     while i < (*st).layout.nb_coupled_streams {
-        ret = opus_decoder_init(ptr as *mut OpusDecoder, Fs, 2);
-        if ret != OPUS_OK {
-            return ret;
+        match OpusDecoder::new(Fs, 2) {
+            Err(e) => {
+                return e;
+            }
+            Ok(dec) => {
+                *(ptr as *mut OpusDecoder) = dec;
+            }
         }
+
         ptr = ptr.offset(align(coupled_size as _) as isize);
         i += 1;
     }
     while i < (*st).layout.nb_streams {
-        ret = opus_decoder_init(ptr as *mut OpusDecoder, Fs, 1);
-        if ret != OPUS_OK {
-            return ret;
+        match OpusDecoder::new(Fs, 2) {
+            Err(e) => {
+                return e;
+            }
+            Ok(dec) => {
+                *(ptr as *mut OpusDecoder) = dec;
+            }
         }
+
         ptr = ptr.offset(align(mono_size as _) as isize);
         i += 1;
     }

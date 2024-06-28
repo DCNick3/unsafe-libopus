@@ -12,8 +12,7 @@ pub(crate) trait OpusBackendTrait {
         Fs: i32,
         channels: i32,
         application: i32,
-        error: *mut i32,
-    ) -> Self::Encoder;
+    ) -> Result<Self::Encoder, i32>;
     unsafe fn opus_encoder_ctl_impl(st: &mut Self::Encoder, request: i32, args: VarArgs) -> i32;
     unsafe fn opus_encode(
         st: &mut Self::Encoder,
@@ -24,7 +23,7 @@ pub(crate) trait OpusBackendTrait {
     ) -> i32;
     unsafe fn opus_encoder_destroy(st: Self::Encoder);
 
-    unsafe fn opus_decoder_create(Fs: i32, channels: i32, error: *mut i32) -> Self::Decoder;
+    unsafe fn opus_decoder_create(Fs: i32, channels: i32) -> Result<Self::Decoder, i32>;
     unsafe fn opus_decode(
         st: &mut Self::Decoder,
         data: *const u8,
@@ -38,26 +37,30 @@ pub(crate) trait OpusBackendTrait {
 }
 
 mod unsafe_libopus {
-    use ::unsafe_libopus::varargs::VarArgs;
-    use ::unsafe_libopus::{
-        opus_decode, opus_decoder_create, opus_decoder_ctl_impl, opus_decoder_destroy, opus_encode,
-        opus_encoder_create, opus_encoder_ctl_impl, opus_encoder_destroy,
+    use unsafe_libopus::{
+        opus_decode, opus_decoder_ctl_impl, opus_encode, opus_encoder_create,
+        opus_encoder_ctl_impl, opus_encoder_destroy, varargs::VarArgs, OpusDecoder, OpusEncoder,
     };
-    use unsafe_libopus::{OpusDecoder, OpusEncoder};
 
     pub struct RustLibopusBackend;
 
     impl super::OpusBackendTrait for RustLibopusBackend {
         type Encoder = *mut OpusEncoder;
-        type Decoder = *mut OpusDecoder;
+        type Decoder = Box<OpusDecoder>;
 
         unsafe fn opus_encoder_create(
             Fs: i32,
             channels: i32,
             application: i32,
-            error: *mut i32,
-        ) -> *mut OpusEncoder {
-            opus_encoder_create(Fs, channels, application, error)
+        ) -> Result<*mut OpusEncoder, i32> {
+            let mut error = 0;
+
+            let res = opus_encoder_create(Fs, channels, application, &mut error);
+            if res.is_null() {
+                Err(error)
+            } else {
+                Ok(res)
+            }
         }
 
         unsafe fn opus_encoder_ctl_impl(
@@ -82,31 +85,31 @@ mod unsafe_libopus {
             opus_encoder_destroy(st)
         }
 
-        unsafe fn opus_decoder_create(Fs: i32, channels: i32, error: *mut i32) -> *mut OpusDecoder {
-            opus_decoder_create(Fs, channels, error)
+        unsafe fn opus_decoder_create(Fs: i32, channels: i32) -> Result<Box<OpusDecoder>, i32> {
+            OpusDecoder::new(Fs, channels as usize).map(Box::new)
         }
 
         unsafe fn opus_decode(
-            &mut st: &mut *mut OpusDecoder,
+            st: &mut Box<OpusDecoder>,
             data: *const u8,
             len: i32,
             pcm: *mut i16,
             frame_size: i32,
             decode_fec: i32,
         ) -> i32 {
-            opus_decode(st, data, len, pcm, frame_size, decode_fec)
+            opus_decode(st.as_mut(), data, len, pcm, frame_size, decode_fec)
         }
 
         unsafe fn opus_decoder_ctl_impl(
-            &mut st: &mut *mut OpusDecoder,
+            st: &mut Box<OpusDecoder>,
             request: i32,
             args: VarArgs,
         ) -> i32 {
-            opus_decoder_ctl_impl(st, request, args)
+            opus_decoder_ctl_impl(st.as_mut(), request, args)
         }
 
-        unsafe fn opus_decoder_destroy(st: *mut OpusDecoder) {
-            opus_decoder_destroy(st)
+        unsafe fn opus_decoder_destroy(st: Box<OpusDecoder>) {
+            drop(st)
         }
     }
 }
@@ -130,9 +133,15 @@ mod libopus {
             Fs: i32,
             channels: i32,
             application: i32,
-            error: *mut i32,
-        ) -> *mut OpusEncoder {
-            opus_encoder_create(Fs, channels, application, error)
+        ) -> Result<*mut OpusEncoder, i32> {
+            let mut error = 0;
+
+            let res = opus_encoder_create(Fs, channels, application, &mut error);
+            if res.is_null() {
+                Err(error)
+            } else {
+                Ok(res)
+            }
         }
 
         unsafe fn opus_encoder_ctl_impl(
@@ -163,8 +172,14 @@ mod libopus {
             opus_encoder_destroy(st)
         }
 
-        unsafe fn opus_decoder_create(Fs: i32, channels: i32, error: *mut i32) -> *mut OpusDecoder {
-            opus_decoder_create(Fs, channels, error)
+        unsafe fn opus_decoder_create(Fs: i32, channels: i32) -> Result<*mut OpusDecoder, i32> {
+            let mut error = 0;
+            let res = opus_decoder_create(Fs, channels, &mut error);
+            if res.is_null() {
+                Err(error)
+            } else {
+                Ok(res)
+            }
         }
 
         unsafe fn opus_decode(
