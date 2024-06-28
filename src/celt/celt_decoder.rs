@@ -1032,7 +1032,7 @@ pub unsafe fn celt_decode_with_ec(
     }
     if silence != 0 {
         tell = len * 8;
-        (*dec).nbits_total += tell - ec_tell(dec);
+        dec.nbits_total += tell - ec_tell(dec);
     }
     postfilter_gain = 0 as opus_val16;
     postfilter_pitch = 0;
@@ -1411,7 +1411,7 @@ pub unsafe fn celt_decode_with_ec(
             break;
         }
     }
-    (*st).rng = (*dec).rng;
+    (*st).rng = dec.rng;
     deemphasis(
         out_syn.as_mut_ptr(),
         pcm,
@@ -1441,7 +1441,7 @@ pub unsafe fn opus_custom_decoder_ctl_impl(
     match request {
         CELT_SET_START_BAND_REQUEST => {
             let value: i32 = ap.arg::<i32>();
-            if value < 0 || value >= (*(*st).mode).nbEBands as i32 {
+            if value < 0 || value >= (*st).mode.nbEBands as i32 {
                 current_block = 7990025728955927862;
             } else {
                 (*st).start = value;
@@ -1450,7 +1450,7 @@ pub unsafe fn opus_custom_decoder_ctl_impl(
         }
         CELT_SET_END_BAND_REQUEST => {
             let value_0: i32 = ap.arg::<i32>();
-            if value_0 < 1 || value_0 > (*(*st).mode).nbEBands as i32 {
+            if value_0 < 1 || value_0 > (*st).mode.nbEBands as i32 {
                 current_block = 7990025728955927862;
             } else {
                 (*st).end = value_0;

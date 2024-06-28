@@ -56,9 +56,8 @@ pub unsafe fn silk_decode_indices(
     }
     (*psDec).indices.NLSFIndices[0 as usize] = ec_dec_icdf(
         psRangeDec,
-        &(*(*psDec).psNLSF_CB).CB1_iCDF[(((*psDec).indices.signalType as i32 >> 1)
-            * (*(*psDec).psNLSF_CB).nVectors as i32)
-            as usize..],
+        &(*psDec).psNLSF_CB.CB1_iCDF[(((*psDec).indices.signalType as i32 >> 1)
+            * (*psDec).psNLSF_CB.nVectors as i32) as usize..],
         8,
     ) as i8;
     silk_NLSF_unpack(
@@ -67,12 +66,12 @@ pub unsafe fn silk_decode_indices(
         (*psDec).psNLSF_CB,
         (*psDec).indices.NLSFIndices[0 as usize] as i32,
     );
-    assert!((*(*psDec).psNLSF_CB).order as i32 == (*psDec).LPC_order);
+    assert!((*psDec).psNLSF_CB.order as i32 == (*psDec).LPC_order);
     i = 0;
-    while i < (*(*psDec).psNLSF_CB).order as i32 {
+    while i < (*psDec).psNLSF_CB.order as i32 {
         Ix = ec_dec_icdf(
             psRangeDec,
-            &(*(*psDec).psNLSF_CB).ec_iCDF[*ec_ix.as_mut_ptr().offset(i as isize) as usize..],
+            &(*psDec).psNLSF_CB.ec_iCDF[*ec_ix.as_mut_ptr().offset(i as isize) as usize..],
             8,
         );
         if Ix == 0 {

@@ -563,7 +563,7 @@ pub unsafe fn unquant_coarse_energy(
         beta = beta_coef[LM as usize];
         coef = pred_coef[LM as usize];
     }
-    budget = ((*dec).storage).wrapping_mul(8) as i32;
+    budget = dec.storage.wrapping_mul(8) as i32;
     i = start;
     while i < end {
         c = 0;

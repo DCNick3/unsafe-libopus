@@ -97,7 +97,7 @@ mod unsafe_libopus {
             frame_size: i32,
             decode_fec: i32,
         ) -> i32 {
-            opus_decode(st.as_mut(), data, len, pcm, frame_size, decode_fec)
+            opus_decode(st, data, len, pcm, frame_size, decode_fec)
         }
 
         unsafe fn opus_decoder_ctl_impl(
@@ -105,7 +105,7 @@ mod unsafe_libopus {
             request: i32,
             args: VarArgs,
         ) -> i32 {
-            opus_decoder_ctl_impl(st.as_mut(), request, args)
+            opus_decoder_ctl_impl(st, request, args)
         }
 
         unsafe fn opus_decoder_destroy(st: Box<OpusDecoder>) {

@@ -34,16 +34,16 @@ pub fn silk_CNG_Reset(psDec: &mut silk_decoder_state) {
     let mut i: i32 = 0;
     let mut NLSF_step_Q15: i32 = 0;
     let mut NLSF_acc_Q15: i32 = 0;
-    NLSF_step_Q15 = 0x7fff / ((*psDec).LPC_order + 1);
+    NLSF_step_Q15 = 0x7fff / (psDec.LPC_order + 1);
     NLSF_acc_Q15 = 0;
     i = 0;
-    while i < (*psDec).LPC_order {
+    while i < psDec.LPC_order {
         NLSF_acc_Q15 += NLSF_step_Q15;
-        (*psDec).sCNG.CNG_smth_NLSF_Q15[i as usize] = NLSF_acc_Q15 as i16;
+        psDec.sCNG.CNG_smth_NLSF_Q15[i as usize] = NLSF_acc_Q15 as i16;
         i += 1;
     }
-    (*psDec).sCNG.CNG_smth_Gain_Q16 = 0;
-    (*psDec).sCNG.rand_seed = 3176576;
+    psDec.sCNG.CNG_smth_Gain_Q16 = 0;
+    psDec.sCNG.rand_seed = 3176576;
 }
 pub unsafe fn silk_CNG(
     psDec: *mut silk_decoder_state,

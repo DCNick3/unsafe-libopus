@@ -3,6 +3,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_assignments)]
 #![allow(unused_mut)]
+#![allow(deprecated)]
 
 use libc::{getpid, rand, time};
 
@@ -175,7 +176,7 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
         while fec < 2 {
             let mut dur: i32 = 0;
             out_samples = opus_decode(
-                dec[t as usize],
+                &mut *dec[t as usize],
                 std::ptr::null::<u8>(),
                 0,
                 outbuf,
@@ -185,14 +186,14 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
             if out_samples != 120 / factor {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 110);
             }
-            if opus_decoder_ctl!(dec[t as usize], 4039, &mut dur) != 0 {
+            if opus_decoder_ctl!(&mut *dec[t as usize], 4039, &mut dur) != 0 {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 111);
             }
             if dur != 120 / factor {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 112);
             }
             out_samples = opus_decode(
-                dec[t as usize],
+                &mut *dec[t as usize],
                 std::ptr::null::<u8>(),
                 0,
                 outbuf,
@@ -203,7 +204,7 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 116);
             }
             out_samples = opus_decode(
-                dec[t as usize],
+                &mut *dec[t as usize],
                 std::ptr::null::<u8>(),
                 -1,
                 outbuf,
@@ -214,7 +215,7 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 120);
             }
             out_samples = opus_decode(
-                dec[t as usize],
+                &mut *dec[t as usize],
                 std::ptr::null::<u8>(),
                 1,
                 outbuf,
@@ -225,7 +226,7 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 122);
             }
             out_samples = opus_decode(
-                dec[t as usize],
+                &mut *dec[t as usize],
                 std::ptr::null::<u8>(),
                 10,
                 outbuf,
@@ -236,7 +237,7 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 124);
             }
             out_samples = opus_decode(
-                dec[t as usize],
+                &mut *dec[t as usize],
                 std::ptr::null::<u8>(),
                 fast_rand() as i32,
                 outbuf,
@@ -246,23 +247,23 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
             if out_samples != 120 / factor {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 126);
             }
-            if opus_decoder_ctl!(dec[t as usize], 4039, &mut dur) != 0 {
+            if opus_decoder_ctl!(&mut *dec[t as usize], 4039, &mut dur) != 0 {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 127);
             }
             if dur != 120 / factor {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 128);
             }
-            out_samples = opus_decode(dec[t as usize], packet, 0, outbuf, 120 / factor, fec);
+            out_samples = opus_decode(&mut *dec[t as usize], packet, 0, outbuf, 120 / factor, fec);
             if out_samples != 120 / factor {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 132);
             }
             *outbuf.offset(0 as isize) = 32749 as libc::c_short;
-            out_samples = opus_decode(dec[t as usize], packet, 0, outbuf, 0, fec);
+            out_samples = opus_decode(&mut *dec[t as usize], packet, 0, outbuf, 0, fec);
             if out_samples > 0 {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 137);
             }
             out_samples = opus_decode(
-                dec[t as usize],
+                &mut *dec[t as usize],
                 packet,
                 0,
                 std::ptr::null_mut::<i16>(),
@@ -275,12 +276,12 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
             if *outbuf.offset(0 as isize) as i32 != 32749 {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 147);
             }
-            out_samples = opus_decode(dec[t as usize], packet, -1, outbuf, 5760, fec);
+            out_samples = opus_decode(&mut *dec[t as usize], packet, -1, outbuf, 5760, fec);
             if out_samples >= 0 {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 151);
             }
             out_samples = opus_decode(
-                dec[t as usize],
+                &mut *dec[t as usize],
                 packet,
                 -(2147483647) - 1,
                 outbuf,
@@ -290,12 +291,12 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
             if out_samples >= 0 {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 153);
             }
-            out_samples = opus_decode(dec[t as usize], packet, -1, outbuf, -1, fec);
+            out_samples = opus_decode(&mut *dec[t as usize], packet, -1, outbuf, -1, fec);
             if out_samples >= 0 {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 155);
             }
             out_samples = opus_decode(
-                dec[t as usize],
+                &mut *dec[t as usize],
                 packet,
                 1,
                 outbuf,
@@ -305,7 +306,7 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
             if out_samples >= 0 {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 159);
             }
-            if opus_decoder_ctl!(dec[t as usize], 4028) != 0 {
+            if opus_decoder_ctl!(&mut *dec[t as usize], 4028) != 0 {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 162);
             }
             fec += 1;
@@ -328,7 +329,7 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
         t = 0;
         while t < 5 * 2 {
             expected[t as usize] =
-                opus_decoder_get_nb_samples(dec[t as usize], packet as *const u8, 1);
+                opus_decoder_get_nb_samples(&mut *dec[t as usize], packet as *const u8, 1);
             if expected[t as usize] > 2880 {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 180);
             }
@@ -339,17 +340,17 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
             *packet.offset(1 as isize) = j as u8;
             t = 0;
             while t < 5 * 2 {
-                out_samples = opus_decode(dec[t as usize], packet, 3, outbuf, 5760, 0);
+                out_samples = opus_decode(&mut *dec[t as usize], packet, 3, outbuf, 5760, 0);
                 if out_samples != expected[t as usize] {
                     _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 189);
                 }
-                if opus_decoder_ctl!(dec[t as usize], 4039, &mut dur_0) != 0 {
+                if opus_decoder_ctl!(&mut *dec[t as usize], 4039, &mut dur_0) != 0 {
                     _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 190);
                 }
                 if dur_0 != out_samples {
                     _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 191);
                 }
-                opus_decoder_ctl!(dec[t as usize], 4031, &mut dec_final_range1);
+                opus_decoder_ctl!(&mut *dec[t as usize], 4031, &mut dec_final_range1);
                 if t == 0 {
                     dec_final_range2 = dec_final_range1;
                 } else if dec_final_range1 != dec_final_range2 {
@@ -365,7 +366,7 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
             j = 0;
             while j < 6 {
                 out_samples = opus_decode(
-                    dec[t as usize],
+                    &mut *dec[t as usize],
                     std::ptr::null::<u8>(),
                     0,
                     outbuf,
@@ -375,7 +376,7 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
                 if out_samples != expected[t as usize] {
                     _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 204);
                 }
-                if opus_decoder_ctl!(dec[t as usize], 4039, &mut dur_0) != 0 {
+                if opus_decoder_ctl!(&mut *dec[t as usize], 4039, &mut dur_0) != 0 {
                     _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 205);
                 }
                 if dur_0 != out_samples {
@@ -385,7 +386,7 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
             }
             if expected[t as usize] != 120 / factor_0 {
                 out_samples = opus_decode(
-                    dec[t as usize],
+                    &mut *dec[t as usize],
                     std::ptr::null::<u8>(),
                     0,
                     outbuf,
@@ -395,7 +396,7 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
                 if out_samples != 120 / factor_0 {
                     _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 213);
                 }
-                if opus_decoder_ctl!(dec[t as usize], 4039, &mut dur_0) != 0 {
+                if opus_decoder_ctl!(&mut *dec[t as usize], 4039, &mut dur_0) != 0 {
                     _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 214);
                 }
                 if dur_0 != out_samples {
@@ -403,7 +404,7 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
                 }
             }
             out_samples = opus_decode(
-                dec[t as usize],
+                &mut *dec[t as usize],
                 packet,
                 2,
                 outbuf,
@@ -464,11 +465,11 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
         *packet.offset(1 as isize) = (i >> 8) as u8;
         *packet.offset(2 as isize) = (i & 255) as u8;
         *packet.offset(3 as isize) = 255;
-        out_samples = opus_decode(dec[t as usize], packet, 4, outbuf, 5760, 0);
+        out_samples = opus_decode(&mut *dec[t as usize], packet, 4, outbuf, 5760, 0);
         if out_samples != 120 / factor_1 {
             _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 260);
         }
-        opus_decoder_ctl!(dec[t as usize], 4031, &mut dec_final_range1);
+        opus_decoder_ctl!(&mut *dec[t as usize], 4031, &mut dec_final_range1);
         dec_final_acc = (dec_final_acc as u32).wrapping_add(dec_final_range1) as u32 as u32;
         i += 1;
     }
@@ -489,11 +490,11 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
         *packet.offset(1 as isize) = (i >> 8) as u8;
         *packet.offset(2 as isize) = (i & 255) as u8;
         *packet.offset(3 as isize) = 255;
-        out_samples = opus_decode(dec[t as usize], packet, 4, outbuf, 5760, 0);
+        out_samples = opus_decode(&mut *dec[t as usize], packet, 4, outbuf, 5760, 0);
         if out_samples != 480 / factor_2 {
             _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 278);
         }
-        opus_decoder_ctl!(dec[t as usize], 4031, &mut dec_final_range1);
+        opus_decoder_ctl!(&mut *dec[t as usize], 4031, &mut dec_final_range1);
         dec_final_acc = (dec_final_acc as u32).wrapping_add(dec_final_range1) as u32 as u32;
         i += 1;
     }
@@ -513,7 +514,7 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
         t = 0;
         while t < 5 * 2 {
             expected_0[t as usize] =
-                opus_decoder_get_nb_samples(dec[t as usize], packet as *const u8, 1);
+                opus_decoder_get_nb_samples(&mut *dec[t as usize], packet as *const u8, 1);
             t += 1;
         }
         j_0 = 2 + skip;
@@ -526,11 +527,11 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
             }
             t = 0;
             while t < 5 * 2 {
-                out_samples = opus_decode(dec[t as usize], packet, j_0 + 1, outbuf, 5760, 0);
+                out_samples = opus_decode(&mut *dec[t as usize], packet, j_0 + 1, outbuf, 5760, 0);
                 if out_samples != expected_0[t as usize] {
                     _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 299);
                 }
-                opus_decoder_ctl!(dec[t as usize], 4031, &mut dec_final_range1);
+                opus_decoder_ctl!(&mut *dec[t as usize], 4031, &mut dec_final_range1);
                 if t == 0 {
                     dec_final_range2 = dec_final_range1;
                 } else if dec_final_range1 != dec_final_range2 {
@@ -561,7 +562,7 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
         t = 0;
         while t < 5 * 2 {
             expected_1[t as usize] =
-                opus_decoder_get_nb_samples(dec[t as usize], packet as *const u8, plen);
+                opus_decoder_get_nb_samples(&mut *dec[t as usize], packet as *const u8, plen);
             t += 1;
         }
         j_1 = 0;
@@ -574,8 +575,14 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
             dec[0 as usize] as *const core::ffi::c_void,
             decsize as u64,
         );
-        if opus_decode(decbak, packet, plen + 1, outbuf, expected_1[0 as usize], 1)
-            != expected_1[0 as usize]
+        if opus_decode(
+            &mut *decbak,
+            packet,
+            plen + 1,
+            outbuf,
+            expected_1[0 as usize],
+            1,
+        ) != expected_1[0 as usize]
         {
             _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 317);
         }
@@ -584,7 +591,7 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
             dec[0 as usize] as *const core::ffi::c_void,
             decsize as u64,
         );
-        if opus_decode(decbak, std::ptr::null::<u8>(), 0, outbuf, 5760, 1) < 20 {
+        if opus_decode(&mut *decbak, std::ptr::null::<u8>(), 0, outbuf, 5760, 1) < 20 {
             _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 319);
         }
         memcpy(
@@ -592,13 +599,13 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
             dec[0 as usize] as *const core::ffi::c_void,
             decsize as u64,
         );
-        if opus_decode(decbak, std::ptr::null::<u8>(), 0, outbuf, 5760, 0) < 20 {
+        if opus_decode(&mut *decbak, std::ptr::null::<u8>(), 0, outbuf, 5760, 0) < 20 {
             _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 321);
         }
         t = 0;
         while t < 5 * 2 {
             let mut dur_1: i32 = 0;
-            out_samples = opus_decode(dec[t as usize], packet, plen + 1, outbuf, 5760, 0);
+            out_samples = opus_decode(&mut *dec[t as usize], packet, plen + 1, outbuf, 5760, 0);
             if out_samples != expected_1[t as usize] {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 326);
             }
@@ -607,7 +614,7 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
             } else if dec_final_range1 != dec_final_range2 {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 328);
             }
-            if opus_decoder_ctl!(dec[t as usize], 4039, &mut dur_1) != 0 {
+            if opus_decoder_ctl!(&mut *dec[t as usize], 4039, &mut dur_1) != 0 {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 329);
             }
             if dur_1 != out_samples {
@@ -634,7 +641,7 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
         let mut j_2: i32 = 0;
         let mut expected_2: i32 = 0;
         *packet.offset(0 as isize) = ((modes[i as usize] as i32) << 2) as u8;
-        expected_2 = opus_decoder_get_nb_samples(dec[t as usize], packet as *const u8, plen);
+        expected_2 = opus_decoder_get_nb_samples(&mut *dec[t as usize], packet as *const u8, plen);
         count = 0;
         while count < 10 {
             j_2 = 0;
@@ -642,7 +649,7 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
                 *packet.offset((j_2 + 1) as isize) = ((fast_rand() | fast_rand()) & 255) as u8;
                 j_2 += 1;
             }
-            out_samples = opus_decode(dec[t as usize], packet, plen + 1, outbuf, 5760, 0);
+            out_samples = opus_decode(&mut *dec[t as usize], packet, plen + 1, outbuf, 5760, 0);
             if out_samples != expected_2 {
                 _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 346);
             }
@@ -671,7 +678,14 @@ pub unsafe fn test_decoder_code0(no_fuzz: bool) -> i32 {
             *packet.offset(j_3 as isize) = (fast_rand() & 255) as u8;
             j_3 += 1;
         }
-        out_samples = opus_decode(dec[t as usize], packet, tlen[i as usize], outbuf, 5760, 0);
+        out_samples = opus_decode(
+            &mut *dec[t as usize],
+            packet,
+            tlen[i as usize],
+            outbuf,
+            5760,
+            0,
+        );
         if out_samples != tret[i as usize] {
             _test_failed(b"tests/test_opus_decode.c\0" as *const u8 as *const i8, 364);
         }

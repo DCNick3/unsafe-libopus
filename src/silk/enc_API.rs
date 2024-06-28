@@ -565,7 +565,7 @@ pub unsafe fn silk_Encode(
         }
         TargetRate_bps -= (*psEnc).nBitsExceeded * 1000 / 500;
         if prefillFlag == 0 && (*psEnc).state_Fxx[0 as usize].sCmn.nFramesEncoded > 0 {
-            let bitsBalance: i32 = ec_tell(&mut **psRangeEnc.as_mut().unwrap())
+            let bitsBalance: i32 = ec_tell(psRangeEnc.as_mut().unwrap())
                 - (*psEnc).nBitsUsedLBRR
                 - nBits * (*psEnc).state_Fxx[0 as usize].sCmn.nFramesEncoded;
             TargetRate_bps -= bitsBalance * 1000 / 500;
@@ -791,7 +791,7 @@ pub unsafe fn silk_Encode(
             }
             if prefillFlag == 0 {
                 ec_enc_patch_initial_bits(
-                    &mut **psRangeEnc.as_mut().unwrap(),
+                    psRangeEnc.as_mut().unwrap(),
                     flags as u32,
                     (((*psEnc).state_Fxx[0 as usize].sCmn.nFramesPerPacket + 1)
                         * (*encControl).nChannelsInternal) as u32,

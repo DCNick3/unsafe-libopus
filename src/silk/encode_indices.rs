@@ -77,8 +77,8 @@ pub unsafe fn silk_encode_indices(
     ec_enc_icdf(
         psRangeEnc,
         (*psIndices).NLSFIndices[0 as usize] as i32,
-        &(*(*psEncC).psNLSF_CB).CB1_iCDF[(((*psIndices).signalType as i32 >> 1)
-            * (*(*psEncC).psNLSF_CB).nVectors as i32)
+        &(*psEncC).psNLSF_CB.CB1_iCDF[(((*psIndices).signalType as i32 >> 1)
+            * (*psEncC).psNLSF_CB.nVectors as i32)
             as usize..],
         8,
     );
@@ -88,14 +88,14 @@ pub unsafe fn silk_encode_indices(
         (*psEncC).psNLSF_CB,
         (*psIndices).NLSFIndices[0 as usize] as i32,
     );
-    assert!((*(*psEncC).psNLSF_CB).order as i32 == (*psEncC).predictLPCOrder);
+    assert!((*psEncC).psNLSF_CB.order as i32 == (*psEncC).predictLPCOrder);
     i = 0;
-    while i < (*(*psEncC).psNLSF_CB).order as i32 {
+    while i < (*psEncC).psNLSF_CB.order as i32 {
         if (*psIndices).NLSFIndices[(i + 1) as usize] as i32 >= NLSF_QUANT_MAX_AMPLITUDE {
             ec_enc_icdf(
                 psRangeEnc,
                 2 * NLSF_QUANT_MAX_AMPLITUDE,
-                &(*(*psEncC).psNLSF_CB).ec_iCDF[*ec_ix.as_mut_ptr().offset(i as isize) as usize..],
+                &(*psEncC).psNLSF_CB.ec_iCDF[*ec_ix.as_mut_ptr().offset(i as isize) as usize..],
                 8,
             );
             ec_enc_icdf(
@@ -108,7 +108,7 @@ pub unsafe fn silk_encode_indices(
             ec_enc_icdf(
                 psRangeEnc,
                 0,
-                &(*(*psEncC).psNLSF_CB).ec_iCDF[*ec_ix.as_mut_ptr().offset(i as isize) as usize..],
+                &(*psEncC).psNLSF_CB.ec_iCDF[*ec_ix.as_mut_ptr().offset(i as isize) as usize..],
                 8,
             );
             ec_enc_icdf(
@@ -121,7 +121,7 @@ pub unsafe fn silk_encode_indices(
             ec_enc_icdf(
                 psRangeEnc,
                 (*psIndices).NLSFIndices[(i + 1) as usize] as i32 + NLSF_QUANT_MAX_AMPLITUDE,
-                &(*(*psEncC).psNLSF_CB).ec_iCDF[*ec_ix.as_mut_ptr().offset(i as isize) as usize..],
+                &(*psEncC).psNLSF_CB.ec_iCDF[*ec_ix.as_mut_ptr().offset(i as isize) as usize..],
                 8,
             );
         }

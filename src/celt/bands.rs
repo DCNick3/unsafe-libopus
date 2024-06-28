@@ -1976,7 +1976,7 @@ pub unsafe fn quant_all_bands(
                         );
                     }
                     nstart_bytes = ec_save.offs as i32;
-                    nend_bytes = (*ec).storage as i32;
+                    nend_bytes = ec.storage as i32;
                     bytes_buf = ec.buf.as_ptr().offset(nstart_bytes as isize);
                     save_bytes = nend_bytes - nstart_bytes;
                     memcpy(

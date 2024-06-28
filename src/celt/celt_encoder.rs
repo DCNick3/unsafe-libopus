@@ -839,7 +839,7 @@ unsafe fn tf_encode(
     let mut logp: i32 = 0;
     let mut budget: u32 = 0;
     let mut tell: u32 = 0;
-    budget = ((*enc).storage).wrapping_mul(8);
+    budget = enc.storage.wrapping_mul(8);
     tell = ec_tell(enc) as u32;
     logp = if isTransient != 0 { 2 } else { 4 };
     tf_select_rsv = (LM > 0 && tell.wrapping_add(logp as u32).wrapping_add(1) <= budget) as i32;
@@ -2045,8 +2045,8 @@ pub unsafe fn celt_encode_with_ec(
     oldLogE2 = oldLogE.offset((CC * nbEBands) as isize);
     energyError = oldLogE2.offset((CC * nbEBands) as isize);
     if let Some(enc) = enc.as_mut() {
-        tell0_frac = ec_tell_frac(*enc) as i32;
-        tell = ec_tell(*enc);
+        tell0_frac = ec_tell_frac(enc) as i32;
+        tell = ec_tell(enc);
         nbFilledBytes = tell + 4 >> 3;
     } else {
         tell = 1;
@@ -2187,7 +2187,7 @@ pub unsafe fn celt_encode_with_ec(
             ec_enc_shrink(enc, nbCompressedBytes as u32);
         }
         tell = nbCompressedBytes * 8;
-        (*enc).nbits_total += tell - ec_tell(enc);
+        enc.nbits_total += tell - ec_tell(enc);
     }
     c = 0;
     loop {
@@ -3293,7 +3293,7 @@ pub unsafe fn celt_encode_with_ec(
     } else {
         (*st).consec_transient = 0;
     }
-    (*st).rng = (*enc).rng;
+    (*st).rng = enc.rng;
     ec_enc_done(enc);
     if ec_get_error(enc) != 0 {
         return OPUS_INTERNAL_ERROR;

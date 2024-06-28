@@ -188,9 +188,13 @@ pub use crate::src::opus_encoder::{
     opus_encoder_destroy, opus_encoder_get_size, opus_encoder_init, OpusEncoder,
 };
 // opus_decoder
+#[allow(deprecated)]
 pub use crate::src::opus_decoder::{
-    opus_decode, opus_decode_float, opus_decoder_create, opus_decoder_ctl_impl,
-    opus_decoder_destroy, opus_decoder_get_nb_samples, opus_decoder_get_size, opus_decoder_init,
+    opus_decoder_create, opus_decoder_destroy, opus_decoder_get_size, opus_decoder_init,
+};
+
+pub use crate::src::opus_decoder::{
+    opus_decode, opus_decode_float, opus_decoder_ctl_impl, opus_decoder_get_nb_samples,
     opus_packet_get_bandwidth, opus_packet_get_nb_channels, opus_packet_get_nb_frames,
     opus_packet_get_nb_samples, OpusDecoder,
 };

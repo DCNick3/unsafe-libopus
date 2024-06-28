@@ -3,6 +3,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_assignments)]
 #![allow(unused_mut)]
+#![allow(deprecated)]
 
 pub mod test_opus_common_h {
     pub unsafe fn _test_failed(mut file: *const i8, mut line: i32) -> ! {
@@ -134,31 +135,31 @@ pub unsafe fn test_dec_api() -> i32 {
     cfgs += 1;
     println!("    opus_decoder_create() ........................ OK.");
     println!("    opus_decoder_init() .......................... OK.");
-    err = opus_decoder_ctl!(dec, 4031, &mut dec_final_range);
+    err = opus_decoder_ctl!(&mut *dec, 4031, &mut dec_final_range);
     if err != 0 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 155);
     }
     println!("    OPUS_GET_FINAL_RANGE ......................... OK.");
     cfgs += 1;
-    err = opus_decoder_ctl!(dec, -(5));
+    err = opus_decoder_ctl!(&mut *dec, -(5));
     if err != -(5) {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 161);
     }
     println!("    OPUS_UNIMPLEMENTED ........................... OK.");
     cfgs += 1;
-    err = opus_decoder_ctl!(dec, 4009, &mut i);
+    err = opus_decoder_ctl!(&mut *dec, 4009, &mut i);
     if err != 0 || i != 0 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 169);
     }
     println!("    OPUS_GET_BANDWIDTH ........................... OK.");
     cfgs += 1;
-    err = opus_decoder_ctl!(dec, 4029, &mut i);
+    err = opus_decoder_ctl!(&mut *dec, 4029, &mut i);
     if err != 0 || i != 48000 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 177);
     }
     println!("    OPUS_GET_SAMPLE_RATE ......................... OK.");
     cfgs += 1;
-    err = opus_decoder_ctl!(dec, 4033, &mut i);
+    err = opus_decoder_ctl!(&mut *dec, 4033, &mut i);
     if err != 0 || i > 0 || i < -1 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 187);
     }
@@ -166,53 +167,53 @@ pub unsafe fn test_dec_api() -> i32 {
     packet[0 as usize] = ((63) << 2) as u8;
     packet[2 as usize] = 0;
     packet[1 as usize] = packet[2 as usize];
-    if opus_decode(dec, packet.as_mut_ptr(), 3, sbuf.as_mut_ptr(), 960, 0) != 960 {
+    if opus_decode(&mut *dec, packet.as_mut_ptr(), 3, sbuf.as_mut_ptr(), 960, 0) != 960 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 191);
     }
     cfgs += 1;
-    err = opus_decoder_ctl!(dec, 4033, &mut i);
+    err = opus_decoder_ctl!(&mut *dec, 4033, &mut i);
     if err != 0 || i > 0 || i < -1 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 195);
     }
     cfgs += 1;
     packet[0 as usize] = 1;
-    if opus_decode(dec, packet.as_mut_ptr(), 1, sbuf.as_mut_ptr(), 960, 0) != 960 {
+    if opus_decode(&mut *dec, packet.as_mut_ptr(), 1, sbuf.as_mut_ptr(), 960, 0) != 960 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 198);
     }
     cfgs += 1;
-    err = opus_decoder_ctl!(dec, 4033, &mut i);
+    err = opus_decoder_ctl!(&mut *dec, 4033, &mut i);
     if err != 0 || i > 0 || i < -1 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 202);
     }
     cfgs += 1;
     println!("    OPUS_GET_PITCH ............................... OK.");
-    err = opus_decoder_ctl!(dec, 4039, &mut i);
+    err = opus_decoder_ctl!(&mut *dec, 4039, &mut i);
     if err != 0 || i != 960 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 210);
     }
     cfgs += 1;
     println!("    OPUS_GET_LAST_PACKET_DURATION ................ OK.");
-    err = opus_decoder_ctl!(dec, 4045, &mut i);
+    err = opus_decoder_ctl!(&mut *dec, 4045, &mut i);
     if err != 0 || i != 0 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 217);
     }
     cfgs += 1;
-    err = opus_decoder_ctl!(dec, 4034, -(32769));
+    err = opus_decoder_ctl!(&mut *dec, 4034, -(32769));
     if err != -1 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 223);
     }
     cfgs += 1;
-    err = opus_decoder_ctl!(dec, 4034, 32768);
+    err = opus_decoder_ctl!(&mut *dec, 4034, 32768);
     if err != -1 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 226);
     }
     cfgs += 1;
-    err = opus_decoder_ctl!(dec, 4034, -(15));
+    err = opus_decoder_ctl!(&mut *dec, 4034, -(15));
     if err != 0 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 229);
     }
     cfgs += 1;
-    err = opus_decoder_ctl!(dec, 4045, &mut i);
+    err = opus_decoder_ctl!(&mut *dec, 4045, &mut i);
     if err != 0 || i != -(15) {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 234);
     }
@@ -225,7 +226,7 @@ pub unsafe fn test_dec_api() -> i32 {
         dec as *const core::ffi::c_void,
         opus_decoder_get_size(2) as u64,
     );
-    if opus_decoder_ctl!(dec, 4028) != 0 {
+    if opus_decoder_ctl!(&mut *dec, 4028) != 0 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 242);
     }
     if memcmp(
@@ -240,7 +241,7 @@ pub unsafe fn test_dec_api() -> i32 {
     println!("    OPUS_RESET_STATE ............................. OK.");
     cfgs += 1;
     packet[0 as usize] = 0;
-    if opus_decoder_get_nb_samples(dec, packet.as_mut_ptr() as *const u8, 1) != 480 {
+    if opus_decoder_get_nb_samples(&mut *dec, packet.as_mut_ptr() as *const u8, 1) != 480 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 250);
     }
     if opus_packet_get_nb_samples(packet.as_mut_ptr() as *const u8, 1, 48000) != 480 {
@@ -267,7 +268,7 @@ pub unsafe fn test_dec_api() -> i32 {
     if opus_packet_get_nb_samples(packet.as_mut_ptr() as *const u8, 2, 48000) != -(4) {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 260);
     }
-    if opus_decoder_get_nb_samples(dec, packet.as_mut_ptr() as *const u8, 2) != -(4) {
+    if opus_decoder_get_nb_samples(&mut *dec, packet.as_mut_ptr() as *const u8, 2) != -(4) {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 261);
     }
     println!("    opus_{{packet,decoder}}_get_nb_samples() ....... OK.");
@@ -344,31 +345,47 @@ pub unsafe fn test_dec_api() -> i32 {
         packet[j as usize] = 0;
         j += 1;
     }
-    if opus_decode(dec, packet.as_mut_ptr(), 51, sbuf.as_mut_ptr(), 960, 0) != -(4) {
+    if opus_decode(
+        &mut *dec,
+        packet.as_mut_ptr(),
+        51,
+        sbuf.as_mut_ptr(),
+        960,
+        0,
+    ) != -(4)
+    {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 305);
     }
     cfgs += 1;
     packet[0 as usize] = ((63) << 2) as u8;
     packet[2 as usize] = 0;
     packet[1 as usize] = packet[2 as usize];
-    if opus_decode(dec, packet.as_mut_ptr(), -1, sbuf.as_mut_ptr(), 960, 0) != -1 {
+    if opus_decode(
+        &mut *dec,
+        packet.as_mut_ptr(),
+        -1,
+        sbuf.as_mut_ptr(),
+        960,
+        0,
+    ) != -1
+    {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 309);
     }
     cfgs += 1;
-    if opus_decode(dec, packet.as_mut_ptr(), 3, sbuf.as_mut_ptr(), 60, 0) != -(2) {
+    if opus_decode(&mut *dec, packet.as_mut_ptr(), 3, sbuf.as_mut_ptr(), 60, 0) != -(2) {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 311);
     }
     cfgs += 1;
-    if opus_decode(dec, packet.as_mut_ptr(), 3, sbuf.as_mut_ptr(), 480, 0) != -(2) {
+    if opus_decode(&mut *dec, packet.as_mut_ptr(), 3, sbuf.as_mut_ptr(), 480, 0) != -(2) {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 313);
     }
     cfgs += 1;
-    if opus_decode(dec, packet.as_mut_ptr(), 3, sbuf.as_mut_ptr(), 960, 0) != 960 {
+    if opus_decode(&mut *dec, packet.as_mut_ptr(), 3, sbuf.as_mut_ptr(), 960, 0) != 960 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 315);
     }
     cfgs += 1;
     println!("    opus_decode() ................................ OK.");
-    if opus_decode_float(dec, packet.as_mut_ptr(), 3, fbuf.as_mut_ptr(), 960, 0) != 960 {
+    if opus_decode_float(&mut *dec, packet.as_mut_ptr(), 3, fbuf.as_mut_ptr(), 960, 0) != 960 {
         _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 320);
     }
     cfgs += 1;
@@ -664,7 +681,7 @@ pub unsafe fn test_msdec_api() -> i32 {
         if err != 0 {
             _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 572);
         }
-        err = opus_decoder_ctl!(od, 4045, &mut i);
+        err = opus_decoder_ctl!(&mut *od, 4045, &mut i);
         if err != 0 || i != 0 {
             _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 576);
         }
@@ -683,7 +700,7 @@ pub unsafe fn test_msdec_api() -> i32 {
         if err != 0 {
             _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 586);
         }
-        err = opus_decoder_ctl!(od_0, 4045, &mut i);
+        err = opus_decoder_ctl!(&mut *od_0, 4045, &mut i);
         if err != 0 || i != 15 {
             _test_failed(b"tests/test_opus_api.c\0" as *const u8 as *const i8, 590);
         }

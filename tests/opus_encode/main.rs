@@ -3,6 +3,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_assignments)]
 #![allow(unused_mut)]
+#![allow(deprecated)]
 
 use libc::{getpid, time};
 
@@ -232,7 +233,7 @@ pub unsafe fn test_encode(
             ret = -1;
             break;
         } else {
-            out_samples = opus_decode(dec, packet.as_mut_ptr(), len, outbuf, 5760, 0);
+            out_samples = opus_decode(&mut *dec, packet.as_mut_ptr(), len, outbuf, 5760, 0);
             if out_samples != frame_size {
                 eprintln!("opus_decode() returned {}", out_samples);
                 ret = -1;
@@ -664,17 +665,17 @@ pub unsafe fn run_test1(no_fuzz: bool) -> i32 {
                     if opus_encoder_ctl!(enc, 4028) != 0 {
                         _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 410);
                     }
-                    if opus_decoder_ctl!(dec, 4028) != 0 {
+                    if opus_decoder_ctl!(&mut *dec, 4028) != 0 {
                         _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 411);
                     }
                     if fast_rand() & 1 != 0
-                        && opus_decoder_ctl!(dec_err[(fast_rand() & 1) as usize], 4028,) != 0
+                        && opus_decoder_ctl!(&mut *dec_err[(fast_rand() & 1) as usize], 4028,) != 0
                     {
                         _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 414);
                     }
                 }
                 if fast_rand() & 127 == 0
-                    && opus_decoder_ctl!(dec_err[(fast_rand() & 1) as usize], 4028,) != 0
+                    && opus_decoder_ctl!(&mut *dec_err[(fast_rand() & 1) as usize], 4028,) != 0
                 {
                     _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 419);
                 }
@@ -685,7 +686,7 @@ pub unsafe fn run_test1(no_fuzz: bool) -> i32 {
                     }
                 }
                 if (fast_rand()).wrapping_rem(50) == 0 {
-                    opus_decoder_ctl!(dec, 4028);
+                    opus_decoder_ctl!(&mut *dec, 4028);
                 }
                 if opus_encoder_ctl!(enc, 4012, (rc == 0) as i32,) != 0 {
                     _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 426);
@@ -766,7 +767,7 @@ pub unsafe fn run_test1(no_fuzz: bool) -> i32 {
                     }
                 }
                 out_samples = opus_decode(
-                    dec,
+                    &mut *dec,
                     packet.as_mut_ptr(),
                     len,
                     &mut *outbuf.offset((i << 1) as isize),
@@ -776,14 +777,14 @@ pub unsafe fn run_test1(no_fuzz: bool) -> i32 {
                 if out_samples != frame_size {
                     _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 457);
                 }
-                if opus_decoder_ctl!(dec, 4031, &mut dec_final_range) != 0 {
+                if opus_decoder_ctl!(&mut *dec, 4031, &mut dec_final_range) != 0 {
                     _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 458);
                 }
                 if enc_final_range != dec_final_range {
                     _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 459);
                 }
                 out_samples = opus_decode(
-                    dec_err[0 as usize],
+                    &mut *dec_err[0 as usize],
                     packet.as_mut_ptr(),
                     len,
                     out2buf,
@@ -794,7 +795,7 @@ pub unsafe fn run_test1(no_fuzz: bool) -> i32 {
                     _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 462);
                 }
                 out_samples = opus_decode(
-                    dec_err[1 as usize],
+                    &mut *dec_err[1 as usize],
                     packet.as_mut_ptr(),
                     if fast_rand() & 3 == 0 { 0 } else { len },
                     out2buf,
@@ -1055,7 +1056,7 @@ pub unsafe fn run_test1(no_fuzz: bool) -> i32 {
         count += 1;
         opus_encoder_ctl!(enc, 4031, &mut enc_final_range);
         out_samples_1 = opus_decode(
-            dec,
+            &mut *dec,
             packet.as_mut_ptr(),
             len_1,
             &mut *outbuf.offset((offset << 1) as isize),
@@ -1065,7 +1066,7 @@ pub unsafe fn run_test1(no_fuzz: bool) -> i32 {
         if out_samples_1 != frame_size_1 {
             _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 575);
         }
-        opus_decoder_ctl!(dec, 4031, &mut dec_final_range);
+        opus_decoder_ctl!(&mut *dec, 4031, &mut dec_final_range);
         if dec_final_range != enc_final_range {
             _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 580);
         }
@@ -1095,7 +1096,7 @@ pub unsafe fn run_test1(no_fuzz: bool) -> i32 {
             j += 1;
         }
         out_samples_1 = opus_decode(
-            dec_err[0 as usize],
+            &mut *dec_err[0 as usize],
             if len_1 > 0 {
                 packet.as_mut_ptr()
             } else {
@@ -1112,10 +1113,10 @@ pub unsafe fn run_test1(no_fuzz: bool) -> i32 {
         if len_1 > 0 && out_samples_1 != frame_size_1 {
             _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 590);
         }
-        opus_decoder_ctl!(dec_err[0 as usize], 4031, &mut dec_final_range);
+        opus_decoder_ctl!(&mut *dec_err[0 as usize], 4031, &mut dec_final_range);
         dec2 = (fast_rand()).wrapping_rem(9).wrapping_add(1) as i32;
         out_samples_1 = opus_decode(
-            dec_err[dec2 as usize],
+            &mut *dec_err[dec2 as usize],
             if len_1 > 0 {
                 packet.as_mut_ptr()
             } else {
@@ -1129,7 +1130,7 @@ pub unsafe fn run_test1(no_fuzz: bool) -> i32 {
         if out_samples_1 < 0 || out_samples_1 > 5760 {
             _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 597);
         }
-        opus_decoder_ctl!(dec_err[dec2 as usize], 4031, &mut dec_final_range2);
+        opus_decoder_ctl!(&mut *dec_err[dec2 as usize], 4031, &mut dec_final_range2);
         if len_1 > 0 && dec_final_range != dec_final_range2 {
             _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 600);
         }
@@ -1170,7 +1171,7 @@ pub unsafe fn run_test1(no_fuzz: bool) -> i32 {
         _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 618);
     }
     opus_multistream_encoder_destroy(MSenc);
-    if opus_decoder_ctl!(dec, 4028) != 0 {
+    if opus_decoder_ctl!(&mut *dec, 4028) != 0 {
         _test_failed(b"tests/test_opus_encode.c\0" as *const u8 as *const i8, 620);
     }
     opus_decoder_destroy(dec);

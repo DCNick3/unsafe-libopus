@@ -1,3 +1,7 @@
+// we mark unidiomatic functions that have better analogues as deprecated
+// but multistream decoder still uses it
+#![allow(deprecated)]
+
 use crate::externs::{free, malloc};
 
 #[derive(Copy, Clone)]
@@ -56,8 +60,8 @@ pub unsafe fn opus_multistream_decoder_get_size(nb_streams: i32, nb_coupled_stre
     if nb_streams < 1 || nb_coupled_streams > nb_streams || nb_coupled_streams < 0 {
         return 0;
     }
-    let coupled_size = opus_decoder_get_size(2);
-    let mono_size = opus_decoder_get_size(1);
+    let coupled_size = crate::opus_decoder_get_size(2);
+    let mono_size = crate::opus_decoder_get_size(1);
     return align(::core::mem::size_of::<OpusMSDecoder>() as u64 as i32)
         + nb_coupled_streams * align(coupled_size as _)
         + (nb_streams - nb_coupled_streams) * align(mono_size as _);
@@ -276,7 +280,7 @@ pub unsafe fn opus_multistream_decode_native(
         }
         packet_offset = 0;
         ret_0 = opus_decode_native(
-            dec,
+            &mut *dec,
             data,
             len,
             buf.as_mut_ptr(),
@@ -510,7 +514,7 @@ pub unsafe fn opus_multistream_decoder_ctl_va_list(
             let mut dec: *mut OpusDecoder = 0 as *mut OpusDecoder;
             let value: &mut i32 = ap.arg::<&mut i32>();
             dec = ptr as *mut OpusDecoder;
-            ret = opus_decoder_ctl!(dec, request, value);
+            ret = opus_decoder_ctl!(&mut *dec, request, value);
             current_block = 7343950298149844727;
         }
         OPUS_GET_FINAL_RANGE_REQUEST => {
@@ -527,7 +531,7 @@ pub unsafe fn opus_multistream_decoder_ctl_va_list(
                 } else {
                     ptr = ptr.offset(align(mono_size as _) as isize);
                 }
-                ret = opus_decoder_ctl!(dec_0, request, &mut tmp);
+                ret = opus_decoder_ctl!(&mut *dec_0, request, &mut tmp);
                 if ret != OPUS_OK {
                     break;
                 }
@@ -547,7 +551,7 @@ pub unsafe fn opus_multistream_decoder_ctl_va_list(
                 } else {
                     ptr = ptr.offset(align(mono_size as _) as isize);
                 }
-                ret = opus_decoder_ctl!(dec_1, OPUS_RESET_STATE);
+                ret = opus_decoder_ctl!(&mut *dec_1, OPUS_RESET_STATE);
                 if ret != OPUS_OK {
                     break;
                 }
@@ -589,7 +593,7 @@ pub unsafe fn opus_multistream_decoder_ctl_va_list(
                 } else {
                     ptr = ptr.offset(align(mono_size as _) as isize);
                 }
-                ret = opus_decoder_ctl!(dec_2, request, value_2);
+                ret = opus_decoder_ctl!(&mut *dec_2, request, value_2);
                 if ret != OPUS_OK {
                     break;
                 }

@@ -3,6 +3,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_assignments)]
 #![allow(unused_mut)]
+#![allow(deprecated)]
 
 pub mod test_opus_common_h {
     pub static mut iseed: u32 = 0;
@@ -49,7 +50,7 @@ pub unsafe fn test_overflow() -> i32 {
     );
     *in_0.offset((16909318 - 1) as isize) = 0xb;
     decoder = opus_decoder_create(48000, 2, &mut error);
-    result = opus_decode(decoder, in_0, 16909318, out, 5760, 0);
+    result = opus_decode(&mut *decoder, in_0, 16909318, out, 5760, 0);
     opus_decoder_destroy(decoder);
     free(in_0 as *mut core::ffi::c_void);
     free(out as *mut core::ffi::c_void);
