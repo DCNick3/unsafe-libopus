@@ -539,10 +539,10 @@ unsafe fn celt_plc_pitch_search(decode_mem: *mut *mut celt_sig, C: i32, arch: i3
     pitch_index = PLC_PITCH_LAG_MAX - pitch_index;
     return pitch_index;
 }
-unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
+unsafe fn celt_decode_lost(st: &mut OpusCustomDecoder, N: i32, LM: i32) {
     let mut c: i32 = 0;
     let mut i: i32 = 0;
-    let C: i32 = (*st).channels as i32;
+    let C: i32 = st.channels as i32;
     let mut decode_mem: [*mut celt_sig; 2] = [0 as *mut celt_sig; 2];
     let mut out_syn: [*mut celt_sig; 2] = [0 as *mut celt_sig; 2];
     let mut mode: *const OpusCustomMode = 0 as *const OpusCustomMode;
@@ -552,13 +552,13 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
     let mut loss_count: i32 = 0;
     let mut noise_based: i32 = 0;
     let mut eBands: *const i16 = 0 as *const i16;
-    mode = (*st).mode;
+    mode = st.mode;
     nbEBands = (*mode).nbEBands as i32;
     overlap = (*mode).overlap as i32;
     eBands = (*mode).eBands.as_ptr();
     c = 0;
     loop {
-        decode_mem[c as usize] = (*st)
+        decode_mem[c as usize] = st
             .decode_mem
             .as_mut_ptr()
             .offset((c * (DECODE_BUFFER_SIZE as i32 + overlap)) as isize);
@@ -571,19 +571,19 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
         }
     }
 
-    let lpc = (*st).lpc.as_mut_ptr();
-    let oldBandE = (*st).oldEBands.as_mut_ptr();
-    let backgroundLogE = (*st).backgroundLogE.as_mut_ptr();
+    let lpc = st.lpc.as_mut_ptr();
+    let oldBandE = st.oldEBands.as_mut_ptr();
+    let backgroundLogE = st.backgroundLogE.as_mut_ptr();
 
-    loss_count = (*st).loss_count;
-    start = (*st).start;
-    noise_based = (loss_count >= 5 || start != 0 || (*st).skip_plc != 0) as i32;
+    loss_count = st.loss_count;
+    start = st.start;
+    noise_based = (loss_count >= 5 || start != 0 || st.skip_plc != 0) as i32;
     if noise_based != 0 {
         let mut seed: u32 = 0;
         let mut end: i32 = 0;
         let mut effEnd: i32 = 0;
         let mut decay: opus_val16 = 0.;
-        end = (*st).end;
+        end = st.end;
         effEnd = if start
             > (if end < (*mode).effEBands {
                 end
@@ -618,7 +618,7 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
                 break;
             }
         }
-        seed = (*st).rng;
+        seed = st.rng;
         c = 0;
         while c < C {
             i = start;
@@ -640,13 +640,13 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
                     X.as_mut_ptr().offset(boffs as isize),
                     blen,
                     Q15ONE,
-                    (*st).arch,
+                    st.arch,
                 );
                 i += 1;
             }
             c += 1;
         }
-        (*st).rng = seed;
+        st.rng = seed;
         c = 0;
         loop {
             memmove(
@@ -676,9 +676,9 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
             C,
             0,
             LM,
-            (*st).downsample,
+            st.downsample,
             0,
-            (*st).arch,
+            st.arch,
         );
     } else {
         let mut exc_length: i32 = 0;
@@ -687,10 +687,10 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
         let mut fade: opus_val16 = Q15ONE;
         let mut pitch_index: i32 = 0;
         if loss_count == 0 {
-            pitch_index = celt_plc_pitch_search(decode_mem.as_mut_ptr(), C, (*st).arch);
-            (*st).last_pitch_index = pitch_index;
+            pitch_index = celt_plc_pitch_search(decode_mem.as_mut_ptr(), C, st.arch);
+            st.last_pitch_index = pitch_index;
         } else {
-            pitch_index = (*st).last_pitch_index;
+            pitch_index = st.last_pitch_index;
             fade = 0.8f32;
         }
         exc_length = if 2 * pitch_index < 1024 {
@@ -730,7 +730,7 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
                     overlap,
                     LPC_ORDER as i32,
                     MAX_PERIOD,
-                    (*st).arch,
+                    st.arch,
                 );
                 ac[0 as usize] *= 1.0001f32;
                 i = 1;
@@ -750,7 +750,7 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
                 fir_tmp.as_mut_ptr(),
                 exc_length,
                 24,
-                (*st).arch,
+                st.arch,
             );
             memcpy(
                 exc.offset(1024 as isize).offset(-(exc_length as isize)) as *mut core::ffi::c_void,
@@ -820,7 +820,7 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
                 extrapolation_len,
                 LPC_ORDER as i32,
                 lpc_mem.as_mut_ptr(),
-                (*st).arch,
+                st.arch,
             );
             let mut S2: opus_val32 = 0 as opus_val32;
             i = 0;
@@ -854,16 +854,16 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
             comb_filter(
                 etmp.as_mut_ptr(),
                 buf.offset(DECODE_BUFFER_SIZE as isize),
-                (*st).postfilter_period,
-                (*st).postfilter_period,
+                st.postfilter_period,
+                st.postfilter_period,
                 overlap,
-                -(*st).postfilter_gain,
-                -(*st).postfilter_gain,
-                (*st).postfilter_tapset,
-                (*st).postfilter_tapset,
+                -st.postfilter_gain,
+                -st.postfilter_gain,
+                st.postfilter_tapset,
+                st.postfilter_tapset,
                 NULL as *const opus_val16,
                 0,
-                (*st).arch,
+                st.arch,
             );
             i = 0;
             while i < overlap / 2 {
@@ -879,10 +879,10 @@ unsafe fn celt_decode_lost(st: *mut OpusCustomDecoder, N: i32, LM: i32) {
             }
         }
     }
-    (*st).loss_count = loss_count + 1;
+    st.loss_count = loss_count + 1;
 }
 pub unsafe fn celt_decode_with_ec(
-    st: *mut OpusCustomDecoder,
+    st: &mut OpusCustomDecoder,
     data: *const u8,
     len: i32,
     pcm: *mut opus_val16,
@@ -914,7 +914,7 @@ pub unsafe fn celt_decode_with_ec(
     let mut shortBlocks: i32 = 0;
     let mut isTransient: i32 = 0;
     let mut intra_ener: i32 = 0;
-    let CC: i32 = (*st).channels as i32;
+    let CC: i32 = st.channels as i32;
     let mut LM: i32 = 0;
     let mut M: i32 = 0;
     let mut start: i32 = 0;
@@ -934,24 +934,24 @@ pub unsafe fn celt_decode_with_ec(
     let mut anti_collapse_rsv: i32 = 0;
     let mut anti_collapse_on: i32 = 0;
     let mut silence: i32 = 0;
-    let C: i32 = (*st).stream_channels as i32;
+    let C: i32 = st.stream_channels as i32;
     let mut mode: *const OpusCustomMode = 0 as *const OpusCustomMode;
     let mut nbEBands: i32 = 0;
     let mut overlap: i32 = 0;
     let mut eBands: *const i16 = 0 as *const i16;
     validate_celt_decoder(&*st);
-    mode = (*st).mode;
+    mode = st.mode;
     nbEBands = (*mode).nbEBands as i32;
     overlap = (*mode).overlap as i32;
     eBands = (*mode).eBands.as_ptr();
-    start = (*st).start;
-    end = (*st).end;
-    frame_size *= (*st).downsample;
+    start = st.start;
+    end = st.end;
+    frame_size *= st.downsample;
 
-    let oldBandE = (*st).oldEBands.as_mut_ptr();
-    let oldLogE = (*st).oldLogE.as_mut_ptr();
-    let oldLogE2 = (*st).oldLogE2.as_mut_ptr();
-    let backgroundLogE = (*st).backgroundLogE.as_mut_ptr();
+    let oldBandE = st.oldEBands.as_mut_ptr();
+    let oldLogE = st.oldLogE.as_mut_ptr();
+    let oldLogE2 = st.oldLogE2.as_mut_ptr();
+    let backgroundLogE = st.backgroundLogE.as_mut_ptr();
 
     LM = 0;
     while LM <= (*mode).maxLM {
@@ -970,7 +970,7 @@ pub unsafe fn celt_decode_with_ec(
     N = M * (*mode).shortMdctSize;
     c = 0;
     loop {
-        decode_mem[c as usize] = ((*st).decode_mem)
+        decode_mem[c as usize] = (st.decode_mem)
             .as_mut_ptr()
             .offset((c * (DECODE_BUFFER_SIZE as i32 + overlap)) as isize);
         out_syn[c as usize] = (decode_mem[c as usize])
@@ -992,14 +992,14 @@ pub unsafe fn celt_decode_with_ec(
             pcm,
             N,
             CC,
-            (*st).downsample,
+            st.downsample,
             ((*mode).preemph).as_ptr(),
-            ((*st).preemph_memD).as_mut_ptr(),
+            (st.preemph_memD).as_mut_ptr(),
             accum,
         );
-        return frame_size / (*st).downsample;
+        return frame_size / st.downsample;
     }
-    (*st).skip_plc = ((*st).loss_count != 0) as i32;
+    st.skip_plc = (st.loss_count != 0) as i32;
     let dec = if let Some(dec) = dec {
         dec
     } else {
@@ -1214,10 +1214,10 @@ pub unsafe fn celt_decode_with_ec(
         dec,
         LM,
         codedBands,
-        &mut (*st).rng,
+        &mut st.rng,
         0,
-        (*st).arch,
-        (*st).disable_inv,
+        st.arch,
+        st.disable_inv,
     );
     if anti_collapse_rsv > 0 {
         anti_collapse_on = ec_dec_bits(dec, 1) as i32;
@@ -1247,8 +1247,8 @@ pub unsafe fn celt_decode_with_ec(
             oldLogE,
             oldLogE2,
             pulses.as_mut_ptr(),
-            (*st).rng,
-            (*st).arch,
+            st.rng,
+            st.arch,
         );
     }
     if silence != 0 {
@@ -1269,50 +1269,50 @@ pub unsafe fn celt_decode_with_ec(
         CC,
         isTransient,
         LM,
-        (*st).downsample,
+        st.downsample,
         silence,
-        (*st).arch,
+        st.arch,
     );
     c = 0;
     loop {
-        (*st).postfilter_period = if (*st).postfilter_period > 15 {
-            (*st).postfilter_period
+        st.postfilter_period = if st.postfilter_period > 15 {
+            st.postfilter_period
         } else {
             15
         };
-        (*st).postfilter_period_old = if (*st).postfilter_period_old > 15 {
-            (*st).postfilter_period_old
+        st.postfilter_period_old = if st.postfilter_period_old > 15 {
+            st.postfilter_period_old
         } else {
             15
         };
         comb_filter(
             out_syn[c as usize],
             out_syn[c as usize],
-            (*st).postfilter_period_old,
-            (*st).postfilter_period,
+            st.postfilter_period_old,
+            st.postfilter_period,
             (*mode).shortMdctSize,
-            (*st).postfilter_gain_old,
-            (*st).postfilter_gain,
-            (*st).postfilter_tapset_old,
-            (*st).postfilter_tapset,
+            st.postfilter_gain_old,
+            st.postfilter_gain,
+            st.postfilter_tapset_old,
+            st.postfilter_tapset,
             (*mode).window.as_ptr(),
             overlap,
-            (*st).arch,
+            st.arch,
         );
         if LM != 0 {
             comb_filter(
                 (out_syn[c as usize]).offset((*mode).shortMdctSize as isize),
                 (out_syn[c as usize]).offset((*mode).shortMdctSize as isize),
-                (*st).postfilter_period,
+                st.postfilter_period,
                 postfilter_pitch,
                 N - (*mode).shortMdctSize,
-                (*st).postfilter_gain,
+                st.postfilter_gain,
                 postfilter_gain,
-                (*st).postfilter_tapset,
+                st.postfilter_tapset,
                 postfilter_tapset,
                 (*mode).window.as_ptr(),
                 overlap,
-                (*st).arch,
+                st.arch,
             );
         }
         c += 1;
@@ -1320,16 +1320,16 @@ pub unsafe fn celt_decode_with_ec(
             break;
         }
     }
-    (*st).postfilter_period_old = (*st).postfilter_period;
-    (*st).postfilter_gain_old = (*st).postfilter_gain;
-    (*st).postfilter_tapset_old = (*st).postfilter_tapset;
-    (*st).postfilter_period = postfilter_pitch;
-    (*st).postfilter_gain = postfilter_gain;
-    (*st).postfilter_tapset = postfilter_tapset;
+    st.postfilter_period_old = st.postfilter_period;
+    st.postfilter_gain_old = st.postfilter_gain;
+    st.postfilter_tapset_old = st.postfilter_tapset;
+    st.postfilter_period = postfilter_pitch;
+    st.postfilter_gain = postfilter_gain;
+    st.postfilter_tapset = postfilter_tapset;
     if LM != 0 {
-        (*st).postfilter_period_old = (*st).postfilter_period;
-        (*st).postfilter_gain_old = (*st).postfilter_gain;
-        (*st).postfilter_tapset_old = (*st).postfilter_tapset;
+        st.postfilter_period_old = st.postfilter_period;
+        st.postfilter_gain_old = st.postfilter_gain;
+        st.postfilter_tapset_old = st.postfilter_tapset;
     }
     if C == 1 {
         memcpy(
@@ -1359,7 +1359,7 @@ pub unsafe fn celt_decode_with_ec(
                 .wrapping_mul(::core::mem::size_of::<opus_val16>() as u64)
                 .wrapping_add((0 * oldLogE.offset_from(oldBandE) as i64) as u64),
         );
-        if (*st).loss_count < 10 {
+        if st.loss_count < 10 {
             max_background_increase = M as f32 * 0.001f32;
         } else {
             max_background_increase = 1.0f32;
@@ -1411,28 +1411,28 @@ pub unsafe fn celt_decode_with_ec(
             break;
         }
     }
-    (*st).rng = dec.rng;
+    st.rng = dec.rng;
     deemphasis(
         out_syn.as_mut_ptr(),
         pcm,
         N,
         CC,
-        (*st).downsample,
+        st.downsample,
         ((*mode).preemph).as_ptr(),
-        ((*st).preemph_memD).as_mut_ptr(),
+        (st.preemph_memD).as_mut_ptr(),
         accum,
     );
-    (*st).loss_count = 0;
+    st.loss_count = 0;
     if ec_tell(dec) > 8 * len {
         return OPUS_INTERNAL_ERROR;
     }
     if ec_get_error(dec) != 0 {
-        (*st).error = 1;
+        st.error = 1;
     }
-    return frame_size / (*st).downsample;
+    return frame_size / st.downsample;
 }
 pub unsafe fn opus_custom_decoder_ctl_impl(
-    st: *mut OpusCustomDecoder,
+    st: &mut OpusCustomDecoder,
     request: i32,
     args: VarArgs,
 ) -> i32 {
@@ -1441,19 +1441,19 @@ pub unsafe fn opus_custom_decoder_ctl_impl(
     match request {
         CELT_SET_START_BAND_REQUEST => {
             let value: i32 = ap.arg::<i32>();
-            if value < 0 || value >= (*st).mode.nbEBands as i32 {
+            if value < 0 || value >= st.mode.nbEBands as i32 {
                 current_block = 7990025728955927862;
             } else {
-                (*st).start = value;
+                st.start = value;
                 current_block = 3689906465960840878;
             }
         }
         CELT_SET_END_BAND_REQUEST => {
             let value_0: i32 = ap.arg::<i32>();
-            if value_0 < 1 || value_0 > (*st).mode.nbEBands as i32 {
+            if value_0 < 1 || value_0 > st.mode.nbEBands as i32 {
                 current_block = 7990025728955927862;
             } else {
-                (*st).end = value_0;
+                st.end = value_0;
                 current_block = 3689906465960840878;
             }
         }
@@ -1462,19 +1462,19 @@ pub unsafe fn opus_custom_decoder_ctl_impl(
             if value_1 < 1 || value_1 > 2 {
                 current_block = 7990025728955927862;
             } else {
-                (*st).stream_channels = value_1 as usize;
+                st.stream_channels = value_1 as usize;
                 current_block = 3689906465960840878;
             }
         }
         CELT_GET_AND_CLEAR_ERROR_REQUEST => {
             let value_2: &mut i32 = ap.arg::<&mut i32>();
-            *value_2 = (*st).error;
-            (*st).error = 0;
+            *value_2 = st.error;
+            st.error = 0;
             current_block = 3689906465960840878;
         }
         OPUS_GET_LOOKAHEAD_REQUEST => {
             let value_3 = ap.arg::<&mut i32>();
-            *value_3 = (*st).overlap as i32 / (*st).downsample;
+            *value_3 = st.overlap as i32 / st.downsample;
             current_block = 3689906465960840878;
         }
         OPUS_RESET_STATE => {
@@ -1503,22 +1503,22 @@ pub unsafe fn opus_custom_decoder_ctl_impl(
         }
         OPUS_GET_PITCH_REQUEST => {
             let value_4 = ap.arg::<&mut i32>();
-            *value_4 = (*st).postfilter_period;
+            *value_4 = st.postfilter_period;
             current_block = 3689906465960840878;
         }
         CELT_GET_MODE_REQUEST => {
             let value_5 = ap.arg::<&mut *const OpusCustomMode>();
-            *value_5 = (*st).mode;
+            *value_5 = st.mode;
             current_block = 3689906465960840878;
         }
         CELT_SET_SIGNALLING_REQUEST => {
             let value_6: i32 = ap.arg::<i32>();
-            (*st).signalling = value_6;
+            st.signalling = value_6;
             current_block = 3689906465960840878;
         }
         OPUS_GET_FINAL_RANGE_REQUEST => {
             let value_7 = ap.arg::<&mut u32>();
-            *value_7 = (*st).rng;
+            *value_7 = st.rng;
             current_block = 3689906465960840878;
         }
         OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST => {
@@ -1526,13 +1526,13 @@ pub unsafe fn opus_custom_decoder_ctl_impl(
             if value_8 < 0 || value_8 > 1 {
                 current_block = 7990025728955927862;
             } else {
-                (*st).disable_inv = value_8;
+                st.disable_inv = value_8;
                 current_block = 3689906465960840878;
             }
         }
         OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST => {
             let value_9 = ap.arg::<&mut i32>();
-            *value_9 = (*st).disable_inv;
+            *value_9 = st.disable_inv;
             current_block = 3689906465960840878;
         }
         _ => return OPUS_UNIMPLEMENTED,
