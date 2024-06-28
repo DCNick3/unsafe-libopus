@@ -32,7 +32,7 @@ pub unsafe fn silk_NLSF2A_FLP(pAR: *mut f32, NLSF_Q15: *const i16, LPC_order: i3
     }
 }
 pub unsafe fn silk_process_NLSFs_FLP(
-    psEncC: *mut silk_encoder_state,
+    psEncC: &mut silk_encoder_state,
     PredCoef: *mut [f32; 16],
     NLSF_Q15: *mut i16,
     prev_NLSF_Q15: *const i16,
@@ -44,7 +44,7 @@ pub unsafe fn silk_process_NLSFs_FLP(
     j = 0;
     while j < 2 {
         i = 0;
-        while i < (*psEncC).predictLPCOrder {
+        while i < psEncC.predictLPCOrder {
             (*PredCoef.offset(j as isize))[i as usize] =
                 PredCoef_Q12[j as usize][i as usize] as f32 * (1.0f32 / 4096.0f32);
             i += 1;

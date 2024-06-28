@@ -236,110 +236,110 @@ unsafe fn silk_setup_fs(
     assert!((*psEnc).sCmn.subfr_length * (*psEnc).sCmn.nb_subfr == (*psEnc).sCmn.frame_length);
     return ret;
 }
-unsafe fn silk_setup_complexity(psEncC: *mut silk_encoder_state, Complexity: i32) -> i32 {
+unsafe fn silk_setup_complexity(psEncC: &mut silk_encoder_state, Complexity: i32) -> i32 {
     let ret: i32 = 0;
     assert!(Complexity >= 0 && Complexity <= 10);
     if Complexity < 1 {
-        (*psEncC).pitchEstimationComplexity = SILK_PE_MIN_COMPLEX;
-        (*psEncC).pitchEstimationThreshold_Q16 = (0.8f64 * ((1) << 16) as f64 + 0.5f64) as i32;
-        (*psEncC).pitchEstimationLPCOrder = 6;
-        (*psEncC).shapingLPCOrder = 12;
-        (*psEncC).la_shape = 3 * (*psEncC).fs_kHz;
-        (*psEncC).nStatesDelayedDecision = 1;
-        (*psEncC).useInterpolatedNLSFs = 0;
-        (*psEncC).NLSF_MSVQ_Survivors = 2;
-        (*psEncC).warping_Q16 = 0;
+        psEncC.pitchEstimationComplexity = SILK_PE_MIN_COMPLEX;
+        psEncC.pitchEstimationThreshold_Q16 = (0.8f64 * ((1) << 16) as f64 + 0.5f64) as i32;
+        psEncC.pitchEstimationLPCOrder = 6;
+        psEncC.shapingLPCOrder = 12;
+        psEncC.la_shape = 3 * psEncC.fs_kHz;
+        psEncC.nStatesDelayedDecision = 1;
+        psEncC.useInterpolatedNLSFs = 0;
+        psEncC.NLSF_MSVQ_Survivors = 2;
+        psEncC.warping_Q16 = 0;
     } else if Complexity < 2 {
-        (*psEncC).pitchEstimationComplexity = SILK_PE_MID_COMPLEX;
-        (*psEncC).pitchEstimationThreshold_Q16 = (0.76f64 * ((1) << 16) as f64 + 0.5f64) as i32;
-        (*psEncC).pitchEstimationLPCOrder = 8;
-        (*psEncC).shapingLPCOrder = 14;
-        (*psEncC).la_shape = 5 * (*psEncC).fs_kHz;
-        (*psEncC).nStatesDelayedDecision = 1;
-        (*psEncC).useInterpolatedNLSFs = 0;
-        (*psEncC).NLSF_MSVQ_Survivors = 3;
-        (*psEncC).warping_Q16 = 0;
+        psEncC.pitchEstimationComplexity = SILK_PE_MID_COMPLEX;
+        psEncC.pitchEstimationThreshold_Q16 = (0.76f64 * ((1) << 16) as f64 + 0.5f64) as i32;
+        psEncC.pitchEstimationLPCOrder = 8;
+        psEncC.shapingLPCOrder = 14;
+        psEncC.la_shape = 5 * psEncC.fs_kHz;
+        psEncC.nStatesDelayedDecision = 1;
+        psEncC.useInterpolatedNLSFs = 0;
+        psEncC.NLSF_MSVQ_Survivors = 3;
+        psEncC.warping_Q16 = 0;
     } else if Complexity < 3 {
-        (*psEncC).pitchEstimationComplexity = SILK_PE_MIN_COMPLEX;
-        (*psEncC).pitchEstimationThreshold_Q16 = (0.8f64 * ((1) << 16) as f64 + 0.5f64) as i32;
-        (*psEncC).pitchEstimationLPCOrder = 6;
-        (*psEncC).shapingLPCOrder = 12;
-        (*psEncC).la_shape = 3 * (*psEncC).fs_kHz;
-        (*psEncC).nStatesDelayedDecision = 2;
-        (*psEncC).useInterpolatedNLSFs = 0;
-        (*psEncC).NLSF_MSVQ_Survivors = 2;
-        (*psEncC).warping_Q16 = 0;
+        psEncC.pitchEstimationComplexity = SILK_PE_MIN_COMPLEX;
+        psEncC.pitchEstimationThreshold_Q16 = (0.8f64 * ((1) << 16) as f64 + 0.5f64) as i32;
+        psEncC.pitchEstimationLPCOrder = 6;
+        psEncC.shapingLPCOrder = 12;
+        psEncC.la_shape = 3 * psEncC.fs_kHz;
+        psEncC.nStatesDelayedDecision = 2;
+        psEncC.useInterpolatedNLSFs = 0;
+        psEncC.NLSF_MSVQ_Survivors = 2;
+        psEncC.warping_Q16 = 0;
     } else if Complexity < 4 {
-        (*psEncC).pitchEstimationComplexity = SILK_PE_MID_COMPLEX;
-        (*psEncC).pitchEstimationThreshold_Q16 = (0.76f64 * ((1) << 16) as f64 + 0.5f64) as i32;
-        (*psEncC).pitchEstimationLPCOrder = 8;
-        (*psEncC).shapingLPCOrder = 14;
-        (*psEncC).la_shape = 5 * (*psEncC).fs_kHz;
-        (*psEncC).nStatesDelayedDecision = 2;
-        (*psEncC).useInterpolatedNLSFs = 0;
-        (*psEncC).NLSF_MSVQ_Survivors = 4;
-        (*psEncC).warping_Q16 = 0;
+        psEncC.pitchEstimationComplexity = SILK_PE_MID_COMPLEX;
+        psEncC.pitchEstimationThreshold_Q16 = (0.76f64 * ((1) << 16) as f64 + 0.5f64) as i32;
+        psEncC.pitchEstimationLPCOrder = 8;
+        psEncC.shapingLPCOrder = 14;
+        psEncC.la_shape = 5 * psEncC.fs_kHz;
+        psEncC.nStatesDelayedDecision = 2;
+        psEncC.useInterpolatedNLSFs = 0;
+        psEncC.NLSF_MSVQ_Survivors = 4;
+        psEncC.warping_Q16 = 0;
     } else if Complexity < 6 {
-        (*psEncC).pitchEstimationComplexity = SILK_PE_MID_COMPLEX;
-        (*psEncC).pitchEstimationThreshold_Q16 = (0.74f64 * ((1) << 16) as f64 + 0.5f64) as i32;
-        (*psEncC).pitchEstimationLPCOrder = 10;
-        (*psEncC).shapingLPCOrder = 16;
-        (*psEncC).la_shape = 5 * (*psEncC).fs_kHz;
-        (*psEncC).nStatesDelayedDecision = 2;
-        (*psEncC).useInterpolatedNLSFs = 1;
-        (*psEncC).NLSF_MSVQ_Survivors = 6;
-        (*psEncC).warping_Q16 =
-            (*psEncC).fs_kHz * ((0.015f32 * ((1) << 16) as f32) as f64 + 0.5f64) as i32;
+        psEncC.pitchEstimationComplexity = SILK_PE_MID_COMPLEX;
+        psEncC.pitchEstimationThreshold_Q16 = (0.74f64 * ((1) << 16) as f64 + 0.5f64) as i32;
+        psEncC.pitchEstimationLPCOrder = 10;
+        psEncC.shapingLPCOrder = 16;
+        psEncC.la_shape = 5 * psEncC.fs_kHz;
+        psEncC.nStatesDelayedDecision = 2;
+        psEncC.useInterpolatedNLSFs = 1;
+        psEncC.NLSF_MSVQ_Survivors = 6;
+        psEncC.warping_Q16 =
+            psEncC.fs_kHz * ((0.015f32 * ((1) << 16) as f32) as f64 + 0.5f64) as i32;
     } else if Complexity < 8 {
-        (*psEncC).pitchEstimationComplexity = SILK_PE_MID_COMPLEX;
-        (*psEncC).pitchEstimationThreshold_Q16 = (0.72f64 * ((1) << 16) as f64 + 0.5f64) as i32;
-        (*psEncC).pitchEstimationLPCOrder = 12;
-        (*psEncC).shapingLPCOrder = 20;
-        (*psEncC).la_shape = 5 * (*psEncC).fs_kHz;
-        (*psEncC).nStatesDelayedDecision = 3;
-        (*psEncC).useInterpolatedNLSFs = 1;
-        (*psEncC).NLSF_MSVQ_Survivors = 8;
-        (*psEncC).warping_Q16 =
-            (*psEncC).fs_kHz * ((0.015f32 * ((1) << 16) as f32) as f64 + 0.5f64) as i32;
+        psEncC.pitchEstimationComplexity = SILK_PE_MID_COMPLEX;
+        psEncC.pitchEstimationThreshold_Q16 = (0.72f64 * ((1) << 16) as f64 + 0.5f64) as i32;
+        psEncC.pitchEstimationLPCOrder = 12;
+        psEncC.shapingLPCOrder = 20;
+        psEncC.la_shape = 5 * psEncC.fs_kHz;
+        psEncC.nStatesDelayedDecision = 3;
+        psEncC.useInterpolatedNLSFs = 1;
+        psEncC.NLSF_MSVQ_Survivors = 8;
+        psEncC.warping_Q16 =
+            psEncC.fs_kHz * ((0.015f32 * ((1) << 16) as f32) as f64 + 0.5f64) as i32;
     } else {
-        (*psEncC).pitchEstimationComplexity = SILK_PE_MAX_COMPLEX;
-        (*psEncC).pitchEstimationThreshold_Q16 = (0.7f64 * ((1) << 16) as f64 + 0.5f64) as i32;
-        (*psEncC).pitchEstimationLPCOrder = 16;
-        (*psEncC).shapingLPCOrder = 24;
-        (*psEncC).la_shape = 5 * (*psEncC).fs_kHz;
-        (*psEncC).nStatesDelayedDecision = MAX_DEL_DEC_STATES;
-        (*psEncC).useInterpolatedNLSFs = 1;
-        (*psEncC).NLSF_MSVQ_Survivors = 16;
-        (*psEncC).warping_Q16 =
-            (*psEncC).fs_kHz * ((0.015f32 * ((1) << 16) as f32) as f64 + 0.5f64) as i32;
+        psEncC.pitchEstimationComplexity = SILK_PE_MAX_COMPLEX;
+        psEncC.pitchEstimationThreshold_Q16 = (0.7f64 * ((1) << 16) as f64 + 0.5f64) as i32;
+        psEncC.pitchEstimationLPCOrder = 16;
+        psEncC.shapingLPCOrder = 24;
+        psEncC.la_shape = 5 * psEncC.fs_kHz;
+        psEncC.nStatesDelayedDecision = MAX_DEL_DEC_STATES;
+        psEncC.useInterpolatedNLSFs = 1;
+        psEncC.NLSF_MSVQ_Survivors = 16;
+        psEncC.warping_Q16 =
+            psEncC.fs_kHz * ((0.015f32 * ((1) << 16) as f32) as f64 + 0.5f64) as i32;
     }
-    (*psEncC).pitchEstimationLPCOrder =
-        silk_min_int((*psEncC).pitchEstimationLPCOrder, (*psEncC).predictLPCOrder);
-    (*psEncC).shapeWinLength = SUB_FRAME_LENGTH_MS * (*psEncC).fs_kHz + 2 * (*psEncC).la_shape;
-    (*psEncC).Complexity = Complexity;
-    assert!((*psEncC).pitchEstimationLPCOrder <= 16);
-    assert!((*psEncC).shapingLPCOrder <= 24);
-    assert!((*psEncC).nStatesDelayedDecision <= 4);
-    assert!((*psEncC).warping_Q16 <= 32767);
-    assert!((*psEncC).la_shape <= 5 * 16);
-    assert!((*psEncC).shapeWinLength <= 15 * 16);
+    psEncC.pitchEstimationLPCOrder =
+        silk_min_int(psEncC.pitchEstimationLPCOrder, psEncC.predictLPCOrder);
+    psEncC.shapeWinLength = SUB_FRAME_LENGTH_MS * psEncC.fs_kHz + 2 * psEncC.la_shape;
+    psEncC.Complexity = Complexity;
+    assert!(psEncC.pitchEstimationLPCOrder <= 16);
+    assert!(psEncC.shapingLPCOrder <= 24);
+    assert!(psEncC.nStatesDelayedDecision <= 4);
+    assert!(psEncC.warping_Q16 <= 32767);
+    assert!(psEncC.la_shape <= 5 * 16);
+    assert!(psEncC.shapeWinLength <= 15 * 16);
     return ret;
 }
 #[inline]
 unsafe fn silk_setup_LBRR(
-    psEncC: *mut silk_encoder_state,
+    psEncC: &mut silk_encoder_state,
     encControl: *const silk_EncControlStruct,
 ) -> i32 {
     let mut LBRR_in_previous_packet: i32 = 0;
     let ret: i32 = SILK_NO_ERROR;
-    LBRR_in_previous_packet = (*psEncC).LBRR_enabled;
-    (*psEncC).LBRR_enabled = (*encControl).LBRR_coded;
-    if (*psEncC).LBRR_enabled != 0 {
+    LBRR_in_previous_packet = psEncC.LBRR_enabled;
+    psEncC.LBRR_enabled = (*encControl).LBRR_coded;
+    if psEncC.LBRR_enabled != 0 {
         if LBRR_in_previous_packet == 0 {
-            (*psEncC).LBRR_GainIncreases = 7;
+            psEncC.LBRR_GainIncreases = 7;
         } else {
-            (*psEncC).LBRR_GainIncreases = silk_max_int(
-                7 - ((*psEncC).PacketLoss_perc as i64
+            psEncC.LBRR_GainIncreases = silk_max_int(
+                7 - (psEncC.PacketLoss_perc as i64
                     * (0.4f64 * ((1) << 16) as f64 + 0.5f64) as i32 as i16 as i64
                     >> 16) as i32,
                 2,

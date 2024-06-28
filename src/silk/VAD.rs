@@ -42,7 +42,7 @@ pub unsafe fn silk_VAD_Init(psSilk_VAD: *mut silk_VAD_state) -> i32 {
     return ret;
 }
 static mut tiltWeights: [i32; 4] = [30000, 6000, -(12000), -(12000)];
-pub unsafe fn silk_VAD_GetSA_Q8_c(psEncC: *mut silk_encoder_state, pIn: *const i16) -> i32 {
+pub unsafe fn silk_VAD_GetSA_Q8_c(psEncC: &mut silk_encoder_state, pIn: *const i16) -> i32 {
     let mut SA_Q15: i32 = 0;
     let mut pSNR_dB_Q7: i32 = 0;
     let mut input_tilt: i32 = 0;
@@ -64,13 +64,13 @@ pub unsafe fn silk_VAD_GetSA_Q8_c(psEncC: *mut silk_encoder_state, pIn: *const i
     let mut x_tmp: i32 = 0;
     let mut X_offset: [i32; 4] = [0; 4];
     let ret: i32 = 0;
-    let psSilk_VAD: *mut silk_VAD_state = &mut (*psEncC).sVAD;
-    assert!(5 * 4 * 16 >= (*psEncC).frame_length);
-    assert!((*psEncC).frame_length <= 512);
-    assert!((*psEncC).frame_length == 8 * ((*psEncC).frame_length >> 3));
-    decimated_framelength1 = (*psEncC).frame_length >> 1;
-    decimated_framelength2 = (*psEncC).frame_length >> 2;
-    decimated_framelength = (*psEncC).frame_length >> 3;
+    let psSilk_VAD: *mut silk_VAD_state = &mut psEncC.sVAD;
+    assert!(5 * 4 * 16 >= psEncC.frame_length);
+    assert!(psEncC.frame_length <= 512);
+    assert!(psEncC.frame_length == 8 * (psEncC.frame_length >> 3));
+    decimated_framelength1 = psEncC.frame_length >> 1;
+    decimated_framelength2 = psEncC.frame_length >> 2;
+    decimated_framelength = psEncC.frame_length >> 3;
     X_offset[0 as usize] = 0;
     X_offset[1 as usize] = decimated_framelength + decimated_framelength2;
     X_offset[2 as usize] = X_offset[1 as usize] + decimated_framelength;
@@ -84,7 +84,7 @@ pub unsafe fn silk_VAD_GetSA_Q8_c(psEncC: *mut silk_encoder_state, pIn: *const i
         &mut *X
             .as_mut_ptr()
             .offset(*X_offset.as_mut_ptr().offset(3 as isize) as isize),
-        (*psEncC).frame_length,
+        psEncC.frame_length,
     );
     silk_ana_filt_bank_1(
         X.as_mut_ptr(),
@@ -120,7 +120,7 @@ pub unsafe fn silk_VAD_GetSA_Q8_c(psEncC: *mut silk_encoder_state, pIn: *const i
     (*psSilk_VAD).HPstate = HPstateTmp;
     b = 0;
     while b < VAD_N_BANDS {
-        decimated_framelength = (*psEncC).frame_length >> silk_min_int(4 - b, 4 - 1);
+        decimated_framelength = psEncC.frame_length >> silk_min_int(4 - b, 4 - 1);
         dec_subframe_length = decimated_framelength >> 2;
         dec_subframe_offset = 0;
         Xnrg[b as usize] = (*psSilk_VAD).XnrgSubfr[b as usize];
@@ -199,14 +199,14 @@ pub unsafe fn silk_VAD_GetSA_Q8_c(psEncC: *mut silk_encoder_state, pIn: *const i
     pSNR_dB_Q7 = (3 * silk_SQRT_APPROX(sumSquared)) as i16 as i32;
     SA_Q15 =
         silk_sigm_Q15((45000 * pSNR_dB_Q7 as i16 as i64 >> 16) as i32 - VAD_NEGATIVE_OFFSET_Q5);
-    (*psEncC).input_tilt_Q15 = (((silk_sigm_Q15(input_tilt) - 16384) as u32) << 1) as i32;
+    psEncC.input_tilt_Q15 = (((silk_sigm_Q15(input_tilt) - 16384) as u32) << 1) as i32;
     speech_nrg = 0;
     b = 0;
     while b < VAD_N_BANDS {
         speech_nrg += (b + 1) * (Xnrg[b as usize] - (*psSilk_VAD).NL[b as usize] >> 4);
         b += 1;
     }
-    if (*psEncC).frame_length == 20 * (*psEncC).fs_kHz {
+    if psEncC.frame_length == 20 * psEncC.fs_kHz {
         speech_nrg = speech_nrg >> 1;
     }
     if speech_nrg <= 0 {
@@ -216,10 +216,10 @@ pub unsafe fn silk_VAD_GetSA_Q8_c(psEncC: *mut silk_encoder_state, pIn: *const i
         speech_nrg = silk_SQRT_APPROX(speech_nrg);
         SA_Q15 = ((32768 + speech_nrg) as i64 * SA_Q15 as i16 as i64 >> 16) as i32;
     }
-    (*psEncC).speech_activity_Q8 = silk_min_int(SA_Q15 >> 7, silk_uint8_MAX);
+    psEncC.speech_activity_Q8 = silk_min_int(SA_Q15 >> 7, silk_uint8_MAX);
     smooth_coef_Q16 =
         (4096 * (SA_Q15 as i64 * SA_Q15 as i16 as i64 >> 16) as i32 as i16 as i64 >> 16) as i32;
-    if (*psEncC).frame_length == 10 * (*psEncC).fs_kHz {
+    if psEncC.frame_length == 10 * psEncC.fs_kHz {
         smooth_coef_Q16 >>= 1;
     }
     b = 0;
@@ -230,7 +230,7 @@ pub unsafe fn silk_VAD_GetSA_Q8_c(psEncC: *mut silk_encoder_state, pIn: *const i
                 * smooth_coef_Q16 as i16 as i64
                 >> 16)) as i32;
         SNR_Q7 = 3 * (silk_lin2log((*psSilk_VAD).NrgRatioSmth_Q8[b as usize]) - 8 * 128);
-        (*psEncC).input_quality_bands_Q15[b as usize] = silk_sigm_Q15(SNR_Q7 - 16 * 128 >> 4);
+        psEncC.input_quality_bands_Q15[b as usize] = silk_sigm_Q15(SNR_Q7 - 16 * 128 >> 4);
         b += 1;
     }
     return ret;
