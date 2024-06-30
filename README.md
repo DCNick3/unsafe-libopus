@@ -90,6 +90,8 @@ I am currently in the process of slowly refactoring the code to make certain par
 validity was a challenge, but now that there are tests checking the implementation against the C code, it should become
 easier.
 
+![](https://unsafe-track.dcnick3.me/github/DCNick3/unsafe-libopus?x_coord=Index&y_coord=Functions&path_filter=^/src/(celt/([^/]*\.rs|modes/[^/]*\.rs)|silk/([^/]*\.rs|float/[^/]*\.rs|resampler/[^/]*\.rs)|src/.*\.rs)$)
+
 ## License
 
 Same as the original libopus, `unsafe-libopus` is licensed under the BSD 3-clause license.
