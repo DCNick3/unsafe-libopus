@@ -302,7 +302,7 @@ unsafe fn silk_setup_complexity(psEncC: &mut silk_encoder_state, Complexity: i32
         psEncC.warping_Q16 =
             psEncC.fs_kHz * ((0.015f32 * ((1) << 16) as f32) as f64 + 0.5f64) as i32;
     } else {
-        psEncC.pitchEstimationComplexity = SILK_PE_MAX_COMPLEX;
+        psEncC.pitchEstimationComplexity = SILK_PE_MAX_COMPLEX as i32;
         psEncC.pitchEstimationThreshold_Q16 = (0.7f64 * ((1) << 16) as f64 + 0.5f64) as i32;
         psEncC.pitchEstimationLPCOrder = 16;
         psEncC.shapingLPCOrder = 24;

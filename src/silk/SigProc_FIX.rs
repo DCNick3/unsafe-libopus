@@ -54,3 +54,22 @@ pub fn silk_SAT16(a: i32) -> i32 {
         a
     }
 }
+
+#[inline]
+pub fn silk_LIMIT(a: i32, limit1: i32, limit2: i32) -> i32 {
+    if limit1 > limit2 {
+        if a > limit1 {
+            limit1
+        } else if a < limit2 {
+            limit2
+        } else {
+            a
+        }
+    } else if a > limit2 {
+        limit2
+    } else if a < limit1 {
+        limit1
+    } else {
+        a
+    }
+}

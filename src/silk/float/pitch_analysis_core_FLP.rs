@@ -357,22 +357,18 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
     } else {
         prevLag_log2 = 0 as f32;
     }
-    if nb_subfr == PE_MAX_NB_SUBFR {
-        cbk_size = PE_NB_CBKS_STAGE2_EXT;
-        Lag_CB_ptr = &*(*silk_CB_lags_stage2.as_ptr().offset(0 as isize))
-            .as_ptr()
-            .offset(0 as isize) as *const i8;
+    if nb_subfr == PE_MAX_NB_SUBFR as i32 {
+        cbk_size = PE_NB_CBKS_STAGE2_EXT as i32;
+        Lag_CB_ptr = silk_CB_lags_stage2.as_ptr();
         if Fs_kHz == 8 && complexity > SILK_PE_MIN_COMPLEX {
-            nb_cbk_search = PE_NB_CBKS_STAGE2_EXT;
+            nb_cbk_search = PE_NB_CBKS_STAGE2_EXT as i32;
         } else {
             nb_cbk_search = PE_NB_CBKS_STAGE2;
         }
     } else {
-        cbk_size = PE_NB_CBKS_STAGE2_10MS;
-        Lag_CB_ptr = &*(*silk_CB_lags_stage2_10_ms.as_ptr().offset(0 as isize))
-            .as_ptr()
-            .offset(0 as isize) as *const i8;
-        nb_cbk_search = PE_NB_CBKS_STAGE2_10MS;
+        cbk_size = PE_NB_CBKS_STAGE2_10MS as i32;
+        Lag_CB_ptr = silk_CB_lags_stage2_10_ms.as_ptr();
+        nb_cbk_search = PE_NB_CBKS_STAGE2_10MS as i32;
     }
     k = 0;
     while k < length_d_srch {
@@ -475,18 +471,14 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
         );
         lag_counter = 0;
         contour_bias = PE_FLATCONTOUR_BIAS / lag as f32;
-        if nb_subfr == PE_MAX_NB_SUBFR {
+        if nb_subfr == PE_MAX_NB_SUBFR as i32 {
             nb_cbk_search = silk_nb_cbk_searchs_stage3[complexity as usize] as i32;
-            cbk_size = PE_NB_CBKS_STAGE3_MAX;
-            Lag_CB_ptr = &*(*silk_CB_lags_stage3.as_ptr().offset(0 as isize))
-                .as_ptr()
-                .offset(0 as isize) as *const i8;
+            cbk_size = PE_NB_CBKS_STAGE3_MAX as i32;
+            Lag_CB_ptr = silk_CB_lags_stage3.as_ptr();
         } else {
-            nb_cbk_search = PE_NB_CBKS_STAGE3_10MS;
-            cbk_size = PE_NB_CBKS_STAGE3_10MS;
-            Lag_CB_ptr = &*(*silk_CB_lags_stage3_10_ms.as_ptr().offset(0 as isize))
-                .as_ptr()
-                .offset(0 as isize) as *const i8;
+            nb_cbk_search = PE_NB_CBKS_STAGE3_10MS as i32;
+            cbk_size = PE_NB_CBKS_STAGE3_10MS as i32;
+            Lag_CB_ptr = silk_CB_lags_stage3_10_ms.as_ptr();
         }
         target_ptr = &*frame.offset((PE_LTP_MEM_LENGTH_MS * Fs_kHz) as isize) as *const f32;
         energy_tmp = silk_energy_FLP(target_ptr, nb_subfr * sf_length) + 1.0f64;
@@ -509,9 +501,7 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
                 } else {
                     CCmax_new = 0.0f32;
                 }
-                if CCmax_new > CCmax
-                    && d + silk_CB_lags_stage3[0 as usize][j as usize] as i32 <= max_lag
-                {
+                if CCmax_new > CCmax && d + silk_CB_lags_stage3[j as usize] as i32 <= max_lag {
                     CCmax = CCmax_new;
                     lag_new = d;
                     CBimax = j;
@@ -598,27 +588,23 @@ unsafe fn silk_P_Ana_calc_corr_st3(
     let mut Lag_CB_ptr: *const i8 = 0 as *const i8;
     assert!(complexity >= 0);
     assert!(complexity <= 2);
-    if nb_subfr == PE_MAX_NB_SUBFR {
+    if nb_subfr == PE_MAX_NB_SUBFR as i32 {
         Lag_range_ptr = &*(*(*silk_Lag_range_stage3.as_ptr().offset(complexity as isize))
             .as_ptr()
             .offset(0 as isize))
         .as_ptr()
         .offset(0 as isize) as *const i8;
-        Lag_CB_ptr = &*(*silk_CB_lags_stage3.as_ptr().offset(0 as isize))
-            .as_ptr()
-            .offset(0 as isize) as *const i8;
+        Lag_CB_ptr = silk_CB_lags_stage3.as_ptr();
         nb_cbk_search = silk_nb_cbk_searchs_stage3[complexity as usize] as i32;
-        cbk_size = PE_NB_CBKS_STAGE3_MAX;
+        cbk_size = PE_NB_CBKS_STAGE3_MAX as i32;
     } else {
         assert!(nb_subfr == 4 >> 1);
         Lag_range_ptr = &*(*silk_Lag_range_stage3_10_ms.as_ptr().offset(0 as isize))
             .as_ptr()
             .offset(0 as isize) as *const i8;
-        Lag_CB_ptr = &*(*silk_CB_lags_stage3_10_ms.as_ptr().offset(0 as isize))
-            .as_ptr()
-            .offset(0 as isize) as *const i8;
-        nb_cbk_search = PE_NB_CBKS_STAGE3_10MS;
-        cbk_size = PE_NB_CBKS_STAGE3_10MS;
+        Lag_CB_ptr = silk_CB_lags_stage3_10_ms.as_ptr();
+        nb_cbk_search = PE_NB_CBKS_STAGE3_10MS as i32;
+        cbk_size = PE_NB_CBKS_STAGE3_10MS as i32;
     }
     target_ptr = &*frame.offset(((sf_length as u32) << 2) as i32 as isize) as *const f32;
     k = 0;
@@ -683,27 +669,23 @@ unsafe fn silk_P_Ana_calc_energy_st3(
     let mut Lag_CB_ptr: *const i8 = 0 as *const i8;
     assert!(complexity >= 0);
     assert!(complexity <= 2);
-    if nb_subfr == PE_MAX_NB_SUBFR {
+    if nb_subfr == PE_MAX_NB_SUBFR as i32 {
         Lag_range_ptr = &*(*(*silk_Lag_range_stage3.as_ptr().offset(complexity as isize))
             .as_ptr()
             .offset(0 as isize))
         .as_ptr()
         .offset(0 as isize) as *const i8;
-        Lag_CB_ptr = &*(*silk_CB_lags_stage3.as_ptr().offset(0 as isize))
-            .as_ptr()
-            .offset(0 as isize) as *const i8;
+        Lag_CB_ptr = silk_CB_lags_stage3.as_ptr();
         nb_cbk_search = silk_nb_cbk_searchs_stage3[complexity as usize] as i32;
-        cbk_size = PE_NB_CBKS_STAGE3_MAX;
+        cbk_size = PE_NB_CBKS_STAGE3_MAX as i32;
     } else {
         assert!(nb_subfr == 4 >> 1);
         Lag_range_ptr = &*(*silk_Lag_range_stage3_10_ms.as_ptr().offset(0 as isize))
             .as_ptr()
             .offset(0 as isize) as *const i8;
-        Lag_CB_ptr = &*(*silk_CB_lags_stage3_10_ms.as_ptr().offset(0 as isize))
-            .as_ptr()
-            .offset(0 as isize) as *const i8;
-        nb_cbk_search = PE_NB_CBKS_STAGE3_10MS;
-        cbk_size = PE_NB_CBKS_STAGE3_10MS;
+        Lag_CB_ptr = silk_CB_lags_stage3_10_ms.as_ptr();
+        nb_cbk_search = PE_NB_CBKS_STAGE3_10MS as i32;
+        cbk_size = PE_NB_CBKS_STAGE3_10MS as i32;
     }
     target_ptr = &*frame.offset(((sf_length as u32) << 2) as i32 as isize) as *const f32;
     k = 0;

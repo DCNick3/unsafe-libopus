@@ -82,9 +82,8 @@ pub unsafe fn silk_decode_parameters(
         silk_decode_pitch(
             psDec.indices.lagIndex,
             psDec.indices.contourIndex,
-            ((*psDecCtrl).pitchL).as_mut_ptr(),
+            &mut (*psDecCtrl).pitchL[..psDec.nb_subfr as usize],
             psDec.fs_kHz,
-            psDec.nb_subfr,
         );
         cbk_ptr_Q7 = silk_LTP_vq_ptrs_Q7[psDec.indices.PERIndex as usize];
         k = 0;
