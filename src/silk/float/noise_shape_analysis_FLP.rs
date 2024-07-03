@@ -253,10 +253,8 @@ pub unsafe fn silk_noise_shape_analysis_FLP(
             );
         } else {
             silk_autocorrelation_FLP(
-                auto_corr.as_mut_ptr(),
-                x_windowed.as_mut_ptr(),
-                (*psEnc).sCmn.shapeWinLength,
-                (*psEnc).sCmn.shapingLPCOrder + 1,
+                &mut auto_corr[..((*psEnc).sCmn.shapingLPCOrder + 1) as usize],
+                &x_windowed[..(*psEnc).sCmn.shapeWinLength as usize],
             );
         }
         auto_corr[0 as usize] += auto_corr[0 as usize] * SHAPE_WHITE_NOISE_FRACTION + 1.0f32;

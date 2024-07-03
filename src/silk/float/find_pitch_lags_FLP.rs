@@ -55,10 +55,8 @@ pub unsafe fn silk_find_pitch_lags_FLP(
         .offset(((*psEnc).sCmn.pitch_LPC_win_length - ((*psEnc).sCmn.la_pitch << 1)) as isize);
     silk_apply_sine_window_FLP(Wsig_ptr, x_buf_ptr, 2, (*psEnc).sCmn.la_pitch);
     silk_autocorrelation_FLP(
-        auto_corr.as_mut_ptr(),
-        Wsig.as_mut_ptr(),
-        (*psEnc).sCmn.pitch_LPC_win_length,
-        (*psEnc).sCmn.pitchEstimationLPCOrder + 1,
+        &mut auto_corr[..((*psEnc).sCmn.pitchEstimationLPCOrder + 1) as usize],
+        &Wsig[..(*psEnc).sCmn.pitch_LPC_win_length as usize],
     );
     auto_corr[0 as usize] += auto_corr[0 as usize] * FIND_PITCH_WHITE_NOISE_FRACTION + 1 as f32;
     res_nrg = silk_schur_FLP(
