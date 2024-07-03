@@ -23,7 +23,11 @@ pub unsafe fn silk_find_LTP_FLP(
     while k < nb_subfr {
         lag_ptr = r_ptr.offset(-((*lag.offset(k as isize) + LTP_ORDER / 2) as isize));
         silk_corrMatrix_FLP(lag_ptr, subfr_length, LTP_ORDER, XX_ptr);
-        silk_corrVector_FLP(lag_ptr, r_ptr, subfr_length, LTP_ORDER, xX_ptr);
+        silk_corrVector_FLP(
+            std::slice::from_raw_parts(lag_ptr, (subfr_length + LTP_ORDER - 1) as usize),
+            std::slice::from_raw_parts(r_ptr, subfr_length as usize),
+            std::slice::from_raw_parts_mut(xX_ptr, LTP_ORDER as usize),
+        );
         xx = silk_energy_FLP(std::slice::from_raw_parts(
             r_ptr,
             (subfr_length + LTP_ORDER) as usize,

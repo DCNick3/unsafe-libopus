@@ -29,7 +29,11 @@ bytemuck = "1.16.1"
 # for slicing arrays to other arrays
 arrayref = "0.3.7"
 const-chunks = "0.3.0"
+
+# better abstractions for multidimensional arrays
 ndarray = "0.15.6"
+# iterate over stuff
+itertools = "0.13.0"
 
 # for dumping data in ent-dump
 hex = { version = "0.4.3", optional = true }
