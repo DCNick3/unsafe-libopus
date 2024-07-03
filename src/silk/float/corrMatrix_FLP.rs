@@ -7,7 +7,10 @@ pub unsafe fn silk_corrVector_FLP(x: *const f32, t: *const f32, L: i32, Order: i
     ptr1 = &*x.offset((Order - 1) as isize) as *const f32;
     lag = 0;
     while lag < Order {
-        *Xt.offset(lag as isize) = silk_inner_product_FLP(ptr1, t, L) as f32;
+        *Xt.offset(lag as isize) = silk_inner_product_FLP(
+            std::slice::from_raw_parts(ptr1, L as usize),
+            std::slice::from_raw_parts(t, L as usize),
+        ) as f32;
         ptr1 = ptr1.offset(-1);
         lag += 1;
     }
@@ -32,7 +35,10 @@ pub unsafe fn silk_corrMatrix_FLP(x: *const f32, L: i32, Order: i32, XX: *mut f3
     ptr2 = &*x.offset((Order - 2) as isize) as *const f32;
     lag = 1;
     while lag < Order {
-        energy = silk_inner_product_FLP(ptr1, ptr2, L);
+        energy = silk_inner_product_FLP(
+            std::slice::from_raw_parts(ptr1, L as usize),
+            std::slice::from_raw_parts(ptr2, L as usize),
+        );
         *XX.offset((lag * Order + 0) as isize) = energy as f32;
         *XX.offset((0 * Order + lag) as isize) = energy as f32;
         j = 1;

@@ -12,9 +12,12 @@ pub unsafe fn silk_autocorrelation_FLP(
     }
     i = 0;
     while i < correlationCount {
-        *results.offset(i as isize) =
-            silk_inner_product_FLP(inputData, inputData.offset(i as isize), inputDataSize - i)
-                as f32;
+        let size = (inputDataSize - i) as usize;
+
+        *results.offset(i as isize) = silk_inner_product_FLP(
+            std::slice::from_raw_parts(inputData, size),
+            std::slice::from_raw_parts(inputData.offset(i as isize), size),
+        ) as f32;
         i += 1;
     }
 }

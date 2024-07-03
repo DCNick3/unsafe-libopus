@@ -48,8 +48,12 @@ pub unsafe fn silk_burg_modified_FLP(
         x_ptr = x.offset((s * subfr_length) as isize);
         n = 1;
         while n < D + 1 {
-            C_first_row[(n - 1) as usize] +=
-                silk_inner_product_FLP(x_ptr, x_ptr.offset(n as isize), subfr_length - n);
+            let size = (subfr_length - n) as usize;
+
+            C_first_row[(n - 1) as usize] += silk_inner_product_FLP(
+                std::slice::from_raw_parts(x_ptr, size),
+                std::slice::from_raw_parts(x_ptr.offset(n as isize), size),
+            );
             n += 1;
         }
         s += 1;

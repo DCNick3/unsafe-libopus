@@ -338,7 +338,10 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
         while j < length_d_comp {
             d = d_comp[j as usize] as i32;
             basis_ptr = target_ptr.offset(-(d as isize));
-            cross_corr = silk_inner_product_FLP(basis_ptr, target_ptr, sf_length_8kHz);
+            cross_corr = silk_inner_product_FLP(
+                std::slice::from_raw_parts(basis_ptr, sf_length_8kHz as usize),
+                std::slice::from_raw_parts(target_ptr, sf_length_8kHz as usize),
+            );
             if cross_corr > 0.0f32 as f64 {
                 energy = silk_energy_FLP(std::slice::from_raw_parts(
                     basis_ptr,
