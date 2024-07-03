@@ -24,11 +24,15 @@ pub unsafe fn silk_residual_energy_FLP(
         LPC_order,
     );
     *nrgs.offset(0 as isize) = ((*gains.offset(0 as isize) * *gains.offset(0 as isize)) as f64
-        * silk_energy_FLP(LPC_res_ptr.offset((0 * shift) as isize), subfr_length))
-        as f32;
+        * silk_energy_FLP(std::slice::from_raw_parts(
+            LPC_res_ptr.offset((0 * shift) as isize),
+            subfr_length as usize,
+        ))) as f32;
     *nrgs.offset(1 as isize) = ((*gains.offset(1 as isize) * *gains.offset(1 as isize)) as f64
-        * silk_energy_FLP(LPC_res_ptr.offset((1 * shift) as isize), subfr_length))
-        as f32;
+        * silk_energy_FLP(std::slice::from_raw_parts(
+            LPC_res_ptr.offset((1 * shift) as isize),
+            subfr_length as usize,
+        ))) as f32;
     if nb_subfr == MAX_NB_SUBFR {
         silk_LPC_analysis_filter_FLP(
             LPC_res.as_mut_ptr(),
@@ -38,10 +42,14 @@ pub unsafe fn silk_residual_energy_FLP(
             LPC_order,
         );
         *nrgs.offset(2 as isize) = ((*gains.offset(2 as isize) * *gains.offset(2 as isize)) as f64
-            * silk_energy_FLP(LPC_res_ptr.offset((0 * shift) as isize), subfr_length))
-            as f32;
+            * silk_energy_FLP(std::slice::from_raw_parts(
+                LPC_res_ptr.offset((0 * shift) as isize),
+                subfr_length as usize,
+            ))) as f32;
         *nrgs.offset(3 as isize) = ((*gains.offset(3 as isize) * *gains.offset(3 as isize)) as f64
-            * silk_energy_FLP(LPC_res_ptr.offset((1 * shift) as isize), subfr_length))
-            as f32;
+            * silk_energy_FLP(std::slice::from_raw_parts(
+                LPC_res_ptr.offset((1 * shift) as isize),
+                subfr_length as usize,
+            ))) as f32;
     }
 }

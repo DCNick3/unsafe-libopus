@@ -212,9 +212,13 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
             arch,
         );
         cross_corr = xcorr[(max_lag_4kHz - min_lag_4kHz) as usize] as f64;
-        normalizer = silk_energy_FLP(target_ptr, sf_length_8kHz)
-            + silk_energy_FLP(basis_ptr, sf_length_8kHz)
-            + (sf_length_8kHz as f32 * 4000.0f32) as f64;
+        normalizer = silk_energy_FLP(std::slice::from_raw_parts(
+            target_ptr,
+            sf_length_8kHz as usize,
+        )) + silk_energy_FLP(std::slice::from_raw_parts(
+            basis_ptr,
+            sf_length_8kHz as usize,
+        )) + (sf_length_8kHz as f32 * 4000.0f32) as f64;
         C[0 as usize][min_lag_4kHz as usize] += (2 as f64 * cross_corr / normalizer) as f32;
         d = min_lag_4kHz + 1;
         while d <= max_lag_4kHz {
@@ -326,14 +330,20 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
     }
     k = 0;
     while k < nb_subfr {
-        energy_tmp = silk_energy_FLP(target_ptr, sf_length_8kHz) + 1.0f64;
+        energy_tmp = silk_energy_FLP(std::slice::from_raw_parts(
+            target_ptr,
+            sf_length_8kHz as usize,
+        )) + 1.0f64;
         j = 0;
         while j < length_d_comp {
             d = d_comp[j as usize] as i32;
             basis_ptr = target_ptr.offset(-(d as isize));
             cross_corr = silk_inner_product_FLP(basis_ptr, target_ptr, sf_length_8kHz);
             if cross_corr > 0.0f32 as f64 {
-                energy = silk_energy_FLP(basis_ptr, sf_length_8kHz);
+                energy = silk_energy_FLP(std::slice::from_raw_parts(
+                    basis_ptr,
+                    sf_length_8kHz as usize,
+                ));
                 C[k as usize][d as usize] = (2 as f64 * cross_corr / (energy + energy_tmp)) as f32;
             } else {
                 C[k as usize][d as usize] = 0.0f32;
@@ -481,7 +491,10 @@ pub unsafe fn silk_pitch_analysis_core_FLP(
             Lag_CB_ptr = silk_CB_lags_stage3_10_ms.as_ptr();
         }
         target_ptr = &*frame.offset((PE_LTP_MEM_LENGTH_MS * Fs_kHz) as isize) as *const f32;
-        energy_tmp = silk_energy_FLP(target_ptr, nb_subfr * sf_length) + 1.0f64;
+        energy_tmp = silk_energy_FLP(std::slice::from_raw_parts(
+            target_ptr,
+            (nb_subfr * sf_length) as usize,
+        )) + 1.0f64;
         d = start_lag;
         while d <= end_lag {
             j = 0;
@@ -693,7 +706,8 @@ unsafe fn silk_P_Ana_calc_energy_st3(
         lag_counter = 0;
         basis_ptr = target_ptr
             .offset(-((start_lag + *Lag_range_ptr.offset((k * 2 + 0) as isize) as i32) as isize));
-        energy = silk_energy_FLP(basis_ptr, sf_length) + 1e-3f64;
+        energy =
+            silk_energy_FLP(std::slice::from_raw_parts(basis_ptr, sf_length as usize)) + 1e-3f64;
         scratch_mem[lag_counter as usize] = energy as f32;
         lag_counter += 1;
         lag_diff = *Lag_range_ptr.offset((k * 2 + 1) as isize) as i32

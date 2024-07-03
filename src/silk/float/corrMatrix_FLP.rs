@@ -19,7 +19,7 @@ pub unsafe fn silk_corrMatrix_FLP(x: *const f32, L: i32, Order: i32, XX: *mut f3
     let mut ptr1: *const f32 = 0 as *const f32;
     let mut ptr2: *const f32 = 0 as *const f32;
     ptr1 = &*x.offset((Order - 1) as isize) as *const f32;
-    energy = silk_energy_FLP(ptr1, L);
+    energy = silk_energy_FLP(std::slice::from_raw_parts(ptr1, L as usize));
     *XX.offset((0 * Order + 0) as isize) = energy as f32;
     j = 1;
     while j < Order {

@@ -34,7 +34,10 @@ pub unsafe fn silk_burg_modified_FLP(
     let mut CAb: [f64; 25] = [0.; 25];
     let mut Af: [f64; 24] = [0.; 24];
     assert!(subfr_length * nb_subfr <= 384);
-    C0 = silk_energy_FLP(x, nb_subfr * subfr_length);
+    C0 = silk_energy_FLP(std::slice::from_raw_parts(
+        x,
+        (nb_subfr * subfr_length) as usize,
+    ));
     memset(
         C_first_row.as_mut_ptr() as *mut core::ffi::c_void,
         0,
@@ -156,7 +159,10 @@ pub unsafe fn silk_burg_modified_FLP(
         }
         s = 0;
         while s < nb_subfr {
-            C0 -= silk_energy_FLP(x.offset((s * subfr_length) as isize), D);
+            C0 -= silk_energy_FLP(std::slice::from_raw_parts(
+                x.offset((s * subfr_length) as isize),
+                D as usize,
+            ));
             s += 1;
         }
         nrg_f = C0 * invGain;

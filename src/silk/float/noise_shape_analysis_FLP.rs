@@ -201,7 +201,9 @@ pub unsafe fn silk_noise_shape_analysis_FLP(
         nSegs = 5 * (*psEnc).sCmn.nb_subfr as i16 as i32 / 2;
         k = 0;
         while k < nSegs {
-            nrg = nSamples as f32 + silk_energy_FLP(pitch_res_ptr, nSamples) as f32;
+            nrg = nSamples as f32
+                + silk_energy_FLP(std::slice::from_raw_parts(pitch_res_ptr, nSamples as usize))
+                    as f32;
             log_energy = silk_log2(nrg as f64);
             if k > 0 {
                 energy_variation += (log_energy - log_energy_prev).abs();

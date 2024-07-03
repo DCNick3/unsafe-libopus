@@ -79,16 +79,11 @@ pub unsafe fn silk_find_LPC_FLP(
                 psEncC.predictLPCOrder,
             );
             res_nrg_interp = (silk_energy_FLP(
-                LPC_res
-                    .as_mut_ptr()
-                    .offset(psEncC.predictLPCOrder as isize),
-                subfr_length - psEncC.predictLPCOrder,
+                &LPC_res[psEncC.predictLPCOrder as usize..]
+                    [..(subfr_length - psEncC.predictLPCOrder) as usize],
             ) + silk_energy_FLP(
-                LPC_res
-                    .as_mut_ptr()
-                    .offset(psEncC.predictLPCOrder as isize)
-                    .offset(subfr_length as isize),
-                subfr_length - psEncC.predictLPCOrder,
+                &LPC_res[(psEncC.predictLPCOrder + subfr_length) as usize..]
+                    [..(subfr_length - psEncC.predictLPCOrder) as usize],
             )) as f32;
             if res_nrg_interp < res_nrg {
                 res_nrg = res_nrg_interp;
