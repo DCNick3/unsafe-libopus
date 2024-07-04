@@ -112,8 +112,7 @@ pub unsafe fn silk_CNG(
     if psDec.lossCnt != 0 {
         let vla = (length + 16) as usize;
         let mut CNG_sig_Q14: Vec<i32> = ::std::vec::from_elem(0, vla);
-        gain_Q16 = (psDec.sPLC.randScale_Q14 as i64
-            * psDec.sPLC.prevGain_Q16[1 as usize] as i64
+        gain_Q16 = (psDec.sPLC.randScale_Q14 as i64 * psDec.sPLC.prevGain_Q16[1 as usize] as i64
             >> 16) as i32;
         if gain_Q16 >= (1) << 21 || (*psCNG).CNG_smth_Gain_Q16 > (1) << 23 {
             gain_Q16 = (gain_Q16 >> 16) * (gain_Q16 >> 16);
@@ -135,10 +134,8 @@ pub unsafe fn silk_CNG(
             &mut (*psCNG).rand_seed,
         );
         silk_NLSF2A(
-            A_Q12.as_mut_ptr(),
-            ((*psCNG).CNG_smth_NLSF_Q15).as_mut_ptr(),
-            psDec.LPC_order,
-            psDec.arch,
+            &mut A_Q12[..psDec.LPC_order as usize],
+            &(*psCNG).CNG_smth_NLSF_Q15[..psDec.LPC_order as usize],
         );
         memcpy(
             CNG_sig_Q14.as_mut_ptr() as *mut core::ffi::c_void,

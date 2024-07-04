@@ -19,8 +19,7 @@ pub unsafe fn silk_process_NLSFs(
     let mut pNLSFW_QW: [i16; 16] = [0; 16];
     let mut pNLSFW0_temp_QW: [i16; 16] = [0; 16];
     assert!(
-        psEncC.useInterpolatedNLSFs == 1
-            || psEncC.indices.NLSFInterpCoef_Q2 as i32 == (1) << 2
+        psEncC.useInterpolatedNLSFs == 1 || psEncC.indices.NLSFInterpCoef_Q2 as i32 == (1) << 2
     );
     NLSF_mu_Q20 = ((0.003f64 * ((1) << 20) as f64 + 0.5f64) as i32 as i64
         + ((-0.001f64 * ((1) << 28) as f64 + 0.5f64) as i32 as i64
@@ -34,8 +33,8 @@ pub unsafe fn silk_process_NLSFs(
         &mut pNLSFW_QW[..psEncC.predictLPCOrder as usize],
         std::slice::from_raw_parts(pNLSF_Q15, psEncC.predictLPCOrder as usize),
     );
-    doInterpolate = (psEncC.useInterpolatedNLSFs == 1
-        && (psEncC.indices.NLSFInterpCoef_Q2 as i32) < 4) as i32;
+    doInterpolate =
+        (psEncC.useInterpolatedNLSFs == 1 && (psEncC.indices.NLSFInterpCoef_Q2 as i32) < 4) as i32;
     if doInterpolate != 0 {
         silk_interpolate(
             &mut pNLSF0_temp_Q15[..psEncC.predictLPCOrder as usize],
@@ -68,10 +67,8 @@ pub unsafe fn silk_process_NLSFs(
         psEncC.indices.signalType as i32,
     );
     silk_NLSF2A(
-        (*PredCoef_Q12.offset(1 as isize)).as_mut_ptr(),
-        pNLSF_Q15 as *const i16,
-        psEncC.predictLPCOrder,
-        psEncC.arch,
+        &mut (*PredCoef_Q12.offset(1))[..psEncC.predictLPCOrder as usize],
+        std::slice::from_raw_parts(pNLSF_Q15, psEncC.predictLPCOrder as usize),
     );
     if doInterpolate != 0 {
         silk_interpolate(
@@ -81,10 +78,8 @@ pub unsafe fn silk_process_NLSFs(
             psEncC.indices.NLSFInterpCoef_Q2 as i32,
         );
         silk_NLSF2A(
-            (*PredCoef_Q12.offset(0 as isize)).as_mut_ptr(),
-            pNLSF0_temp_Q15.as_mut_ptr(),
-            psEncC.predictLPCOrder,
-            psEncC.arch,
+            &mut (*PredCoef_Q12)[..psEncC.predictLPCOrder as usize],
+            &pNLSF0_temp_Q15[..psEncC.predictLPCOrder as usize],
         );
     } else {
         assert!(psEncC.predictLPCOrder <= 16);

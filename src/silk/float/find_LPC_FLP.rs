@@ -69,7 +69,6 @@ pub unsafe fn silk_find_LPC_FLP(
                 a_tmp.as_mut_ptr(),
                 NLSF0_Q15.as_mut_ptr(),
                 psEncC.predictLPCOrder,
-                psEncC.arch,
             );
             silk_LPC_analysis_filter_FLP(
                 LPC_res.as_mut_ptr(),

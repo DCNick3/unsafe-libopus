@@ -32,10 +32,8 @@ pub unsafe fn silk_decode_parameters(
         psDec.psNLSF_CB,
     );
     silk_NLSF2A(
-        ((*psDecCtrl).PredCoef_Q12[1 as usize]).as_mut_ptr(),
-        pNLSF_Q15.as_mut_ptr(),
-        psDec.LPC_order,
-        psDec.arch,
+        &mut (*psDecCtrl).PredCoef_Q12[1][..psDec.LPC_order as usize],
+        &pNLSF_Q15[..psDec.LPC_order as usize],
     );
     if psDec.first_frame_after_reset == 1 {
         psDec.indices.NLSFInterpCoef_Q2 = 4;
@@ -50,10 +48,8 @@ pub unsafe fn silk_decode_parameters(
             i += 1;
         }
         silk_NLSF2A(
-            ((*psDecCtrl).PredCoef_Q12[0 as usize]).as_mut_ptr(),
-            pNLSF0_Q15.as_mut_ptr(),
-            psDec.LPC_order,
-            psDec.arch,
+            &mut (*psDecCtrl).PredCoef_Q12[0][..psDec.LPC_order as usize],
+            &pNLSF0_Q15[..psDec.LPC_order as usize],
         );
     } else {
         memcpy(

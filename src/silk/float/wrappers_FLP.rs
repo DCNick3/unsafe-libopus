@@ -21,10 +21,13 @@ pub unsafe fn silk_A2NLSF_FLP(NLSF_Q15: *mut i16, pAR: *const f32, LPC_order: i3
     }
     silk_A2NLSF(NLSF_Q15, a_fix_Q16.as_mut_ptr(), LPC_order);
 }
-pub unsafe fn silk_NLSF2A_FLP(pAR: *mut f32, NLSF_Q15: *const i16, LPC_order: i32, arch: i32) {
+pub unsafe fn silk_NLSF2A_FLP(pAR: *mut f32, NLSF_Q15: *const i16, LPC_order: i32) {
     let mut i: i32 = 0;
     let mut a_fix_Q12: [i16; 16] = [0; 16];
-    silk_NLSF2A(a_fix_Q12.as_mut_ptr(), NLSF_Q15, LPC_order, arch);
+    silk_NLSF2A(
+        &mut a_fix_Q12[..LPC_order as usize],
+        std::slice::from_raw_parts(NLSF_Q15, LPC_order as usize),
+    );
     i = 0;
     while i < LPC_order {
         *pAR.offset(i as isize) = a_fix_Q12[i as usize] as f32 * (1.0f32 / 4096.0f32);
