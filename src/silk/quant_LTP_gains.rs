@@ -48,7 +48,7 @@ pub unsafe fn silk_quant_LTP_gains(
     while k < 3 {
         let gain_safety: i32 = (0.4f64 * ((1) << 7) as f64 + 0.5f64) as i32;
         cl_ptr_Q5 = silk_LTP_gain_BITS_Q5_ptrs[k as usize].as_ptr();
-        cbk_ptr_Q7 = silk_LTP_vq_ptrs_Q7[k as usize];
+        cbk_ptr_Q7 = &*(*silk_LTP_vq_ptrs_Q7[k as usize].as_ptr()).as_ptr();
         cbk_gain_ptr_Q7 = silk_LTP_vq_gain_ptrs_Q7[k as usize];
         cbk_size = silk_LTP_vq_sizes[k as usize] as i32;
         XX_Q17_ptr = XX_Q17;
@@ -117,7 +117,7 @@ pub unsafe fn silk_quant_LTP_gains(
         }
         k += 1;
     }
-    cbk_ptr_Q7 = silk_LTP_vq_ptrs_Q7[*periodicity_index as usize];
+    cbk_ptr_Q7 = &*(*silk_LTP_vq_ptrs_Q7[*periodicity_index as usize].as_ptr()).as_ptr();
     j = 0;
     while j < nb_subfr {
         k = 0;
