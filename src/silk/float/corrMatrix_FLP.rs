@@ -1,5 +1,6 @@
 use crate::silk::float::energy_FLP::silk_energy_FLP;
 use crate::silk::float::inner_product_FLP::silk_inner_product_FLP;
+use nalgebra::{VectorView, VectorViewMut, U1};
 
 // Correlation matrix computations for LS estimate.
 
@@ -8,15 +9,26 @@ use crate::silk::float::inner_product_FLP::silk_inner_product_FLP;
 /// ```text
 /// x       I    x vector [L+order-1] used to create X
 /// t       I    Target vector [L]
-/// L       I    Length of vecors
+/// L       I    Length of vectors
 /// Order   I    Max lag for correlation
-/// *Xt     O    X'*t correlation vector [order]
+/// Xt      O    X'*t correlation vector [order]
 /// ```
-pub fn silk_corrVector_FLP(x: &[f32], t: &[f32], Xt: &mut [f32]) {
-    let L = t.len();
+pub fn silk_corrVector_FLP<Dx, L, Order>(
+    x: &VectorView<f32, Dx>,
+    t: &VectorView<f32, L>,
+    Xt: &mut VectorViewMut<f32, Order>,
+) where
+    Dx: nalgebra::Dim,
+    L: nalgebra::Dim,
+    Order: nalgebra::Dim,
+{
+    let (L, _) = t.shape_generic();
+    let (Order, _) = Xt.shape_generic();
+    assert_eq!(x.shape().0, L.value() + Order.value() - 1);
 
-    for (out, x) in itertools::zip_eq(Xt.iter_mut(), x.windows(L).rev()) {
-        *out = silk_inner_product_FLP(x, t) as f32;
+    for lag in 0..Order.value() {
+        let ptr1 = x.generic_view::<L, U1>((Order.value() - 1 - lag, 0), (L, U1));
+        Xt[lag] = ptr1.dot(t);
     }
 }
 

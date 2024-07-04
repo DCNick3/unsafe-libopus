@@ -32,6 +32,9 @@ const-chunks = "0.3.0"
 
 # better abstractions for multidimensional arrays
 ndarray = "0.15.6"
+# better abstractions for multidimensional arrays, another crate (I should probably choose one 💀)
+nalgebra = "0.33.0"
+
 # iterate over stuff
 itertools = "0.13.0"
 
