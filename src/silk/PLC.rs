@@ -68,10 +68,10 @@ unsafe fn silk_PLC_update(psDec: &mut silk_decoder_state, psDecCtrl: *mut silk_d
                 break;
             }
             temp_LTP_Gain_Q14 = 0;
-            i = 0;
-            while i < LTP_ORDER {
+            let mut i = 0;
+            while i < LTP_ORDER as usize {
                 temp_LTP_Gain_Q14 += (*psDecCtrl).LTPCoef_Q14
-                    [((psDec.nb_subfr - 1 - j) * LTP_ORDER + i) as usize]
+                    [(psDec.nb_subfr - 1 - j) as usize * LTP_ORDER as usize + i]
                     as i32;
                 i += 1;
             }

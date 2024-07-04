@@ -1,3 +1,4 @@
+use crate::silk::define::{LTP_ORDER, MAX_LPC_ORDER, MAX_NB_SUBFR};
 use crate::silk::resampler::ResamplerState;
 
 #[derive(Copy, Clone)]
@@ -111,10 +112,10 @@ pub struct silk_decoder_state {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct silk_decoder_control {
-    pub pitchL: [i32; 4],
-    pub Gains_Q16: [i32; 4],
-    pub PredCoef_Q12: [[i16; 16]; 2],
-    pub LTPCoef_Q14: [i16; 20],
+    pub pitchL: [i32; MAX_NB_SUBFR as usize],
+    pub Gains_Q16: [i32; MAX_NB_SUBFR as usize],
+    pub PredCoef_Q12: [[i16; MAX_LPC_ORDER as usize]; 2],
+    pub LTPCoef_Q14: [i16; LTP_ORDER as usize * MAX_NB_SUBFR as usize],
     pub LTP_scale_Q14: i32,
 }
 
