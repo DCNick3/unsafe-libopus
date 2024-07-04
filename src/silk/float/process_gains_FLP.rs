@@ -54,11 +54,10 @@ pub unsafe fn silk_process_gains_FLP(
     );
     (*psEncCtrl).lastGainIndexPrev = (*psShapeSt).LastGainIndex;
     silk_gains_quant(
-        ((*psEnc).sCmn.indices.GainsIndices).as_mut_ptr(),
-        pGains_Q16.as_mut_ptr(),
+        &mut (*psEnc).sCmn.indices.GainsIndices[..(*psEnc).sCmn.nb_subfr as usize],
+        &mut pGains_Q16[..(*psEnc).sCmn.nb_subfr as usize],
         &mut (*psShapeSt).LastGainIndex,
-        (condCoding == CODE_CONDITIONALLY) as i32,
-        (*psEnc).sCmn.nb_subfr,
+        condCoding == CODE_CONDITIONALLY,
     );
     k = 0;
     while k < (*psEnc).sCmn.nb_subfr {

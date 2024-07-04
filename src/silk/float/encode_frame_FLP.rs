@@ -444,11 +444,10 @@ pub unsafe fn silk_encode_frame_FLP(
                 }
                 (*psEnc).sShape.LastGainIndex = sEncCtrl.lastGainIndexPrev;
                 silk_gains_quant(
-                    ((*psEnc).sCmn.indices.GainsIndices).as_mut_ptr(),
-                    pGains_Q16.as_mut_ptr(),
+                    &mut (*psEnc).sCmn.indices.GainsIndices[..(*psEnc).sCmn.nb_subfr as usize],
+                    &mut pGains_Q16[..(*psEnc).sCmn.nb_subfr as usize],
                     &mut (*psEnc).sShape.LastGainIndex,
-                    (condCoding == CODE_CONDITIONALLY) as i32,
-                    (*psEnc).sCmn.nb_subfr,
+                    condCoding == CODE_CONDITIONALLY,
                 );
                 gainsID = silk_gains_ID(
                     ((*psEnc).sCmn.indices.GainsIndices).as_mut_ptr() as *const i8,
