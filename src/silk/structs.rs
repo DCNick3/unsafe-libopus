@@ -9,11 +9,11 @@ pub struct silk_NLSF_CB_struct {
     pub invQuantStepSize_Q6: i16,
     pub CB1_NLSF_Q8: &'static [u8],
     pub CB1_Wght_Q9: &'static [i16],
-    pub CB1_iCDF: &'static [u8],
+    pub CB1_iCDF: &'static [u8; 64],
     pub pred_Q8: &'static [u8],
     pub ec_sel: &'static [u8],
-    pub ec_iCDF: &'static [u8],
-    pub ec_Rates_Q5: &'static [u8],
+    pub ec_iCDF: &'static [u8; 72],
+    pub ec_Rates_Q5: &'static [u8; 72],
     pub deltaMin_Q15: &'static [i16],
 }
 #[derive(Copy, Clone, Default)]
