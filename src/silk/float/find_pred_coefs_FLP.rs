@@ -1,6 +1,7 @@
 use crate::externs::{memcpy, memset};
 use crate::silk::define::{
-    MAX_PREDICTION_POWER_GAIN, MAX_PREDICTION_POWER_GAIN_AFTER_RESET, TYPE_VOICED,
+    LTP_ORDER, MAX_LPC_ORDER, MAX_NB_SUBFR, MAX_PREDICTION_POWER_GAIN,
+    MAX_PREDICTION_POWER_GAIN_AFTER_RESET, TYPE_VOICED,
 };
 use crate::silk::float::find_LPC_FLP::silk_find_LPC_FLP;
 use crate::silk::float::find_LTP_FLP::silk_find_LTP_FLP;
@@ -11,6 +12,8 @@ use crate::silk::float::wrappers_FLP::{silk_process_NLSFs_FLP, silk_quant_LTP_ga
 use crate::silk::float::LTP_analysis_filter_FLP::silk_LTP_analysis_filter_FLP;
 use crate::silk::float::LTP_scale_ctrl_FLP::silk_LTP_scale_ctrl_FLP;
 use crate::silk::mathops::silk_exp2;
+use crate::util::nalgebra::make_viewr_mut_generic;
+use nalgebra::{Const, Dyn, VectorView};
 
 pub unsafe fn silk_find_pred_coefs_FLP(
     psEnc: *mut silk_encoder_state_FLP,
@@ -20,13 +23,13 @@ pub unsafe fn silk_find_pred_coefs_FLP(
     condCoding: i32,
 ) {
     let mut i: i32 = 0;
-    let mut XXLTP: [f32; 100] = [0.; 100];
-    let mut xXLTP: [f32; 20] = [0.; 20];
-    let mut invGains: [f32; 4] = [0.; 4];
-    let mut NLSF_Q15: [i16; 16] = [0; 16];
+    let mut XXLTP: [f32; (MAX_NB_SUBFR * LTP_ORDER * LTP_ORDER) as usize] = [0.; 100];
+    let mut xXLTP: [f32; (MAX_NB_SUBFR * LTP_ORDER) as usize] = [0.; 20];
+    let mut invGains: [f32; MAX_NB_SUBFR as usize] = [0.; 4];
+    let mut NLSF_Q15: [i16; MAX_LPC_ORDER as usize] = [0; 16];
     let mut x_ptr: *const f32 = 0 as *const f32;
     let mut x_pre_ptr: *mut f32 = 0 as *mut f32;
-    let mut LPC_in_pre: [f32; 384] = [0.; 384];
+    let mut LPC_in_pre: [f32; (MAX_NB_SUBFR * MAX_LPC_ORDER + 320) as usize] = [0.; 384];
     let mut minInvGain: f32 = 0.;
     i = 0;
     while i < (*psEnc).sCmn.nb_subfr {
@@ -38,13 +41,36 @@ pub unsafe fn silk_find_pred_coefs_FLP(
             (*psEnc).sCmn.ltp_mem_length - (*psEnc).sCmn.predictLPCOrder
                 >= (*psEncCtrl).pitchL[0 as usize] + 5 / 2
         );
+        let nb_subfr = (*psEnc).sCmn.nb_subfr as usize;
+        let subfr_length = (*psEnc).sCmn.subfr_length as usize;
+
+        const LTP_ORDER: usize = crate::silk::define::LTP_ORDER as usize;
+
+        // nalgebra would only allow us to construct column-major matrices
+        // we fix this with unsafe!
+        let mut XXLTP_mat = make_viewr_mut_generic(
+            &mut XXLTP,
+            Dyn(nb_subfr * LTP_ORDER),
+            Const::<{ LTP_ORDER }>,
+        );
+
+        let mut xXLTP_mat =
+            make_viewr_mut_generic(&mut xXLTP, Dyn(nb_subfr), Const::<{ LTP_ORDER }>);
+
+        let r_ptr = (*psEnc).sCmn.ltp_mem_length as usize;
+        let res_pitch = std::slice::from_raw_parts(
+            res_pitch.offset(-(r_ptr as isize)),
+            subfr_length * nb_subfr + r_ptr + LTP_ORDER,
+        );
+        let lag = VectorView::<i32, Dyn>::from_slice(&(*psEncCtrl).pitchL[..nb_subfr], nb_subfr);
+
         silk_find_LTP_FLP(
-            XXLTP.as_mut_ptr(),
-            xXLTP.as_mut_ptr(),
+            &mut XXLTP_mat,
+            &mut xXLTP_mat,
             res_pitch,
-            ((*psEncCtrl).pitchL).as_mut_ptr() as *const i32,
-            (*psEnc).sCmn.subfr_length,
-            (*psEnc).sCmn.nb_subfr,
+            r_ptr,
+            &lag,
+            subfr_length,
         );
         silk_quant_LTP_gains_FLP(
             ((*psEncCtrl).LTPCoef).as_mut_ptr(),

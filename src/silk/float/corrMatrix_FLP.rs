@@ -1,7 +1,6 @@
 use crate::silk::float::inner_product_FLP::silk_inner_product2_FLP;
-use nalgebra::{
-    Dim, DimAdd, DimDiff, DimSub, DimSum, MatrixViewMut, VectorView, VectorViewMut, U1,
-};
+use crate::util::nalgebra::MatrixViewRMut;
+use nalgebra::{Dim, DimAdd, DimDiff, DimSub, DimSum, VectorView, U1};
 
 // Correlation matrix computations for LS estimate.
 
@@ -17,7 +16,8 @@ use nalgebra::{
 pub fn silk_corrVector_FLP<L, Order>(
     x: &VectorView<f32, DimDiff<DimSum<L, Order>, U1>>,
     t: &VectorView<f32, L>,
-    Xt: &mut VectorViewMut<f32, Order>,
+    // accept a row vector because it's more convenient
+    Xt: &mut MatrixViewRMut<f32, U1, Order>,
 ) where
     L: Dim,
     Order: Dim,
@@ -26,7 +26,7 @@ pub fn silk_corrVector_FLP<L, Order>(
 {
     let (x_len, _) = x.shape_generic();
     let (L, _) = t.shape_generic();
-    let (Order, _) = Xt.shape_generic();
+    let (_, Order) = Xt.shape_generic();
     assert_eq!(x_len.value(), L.add(Order).sub(U1).value());
 
     for lag in 0..Order.value() {
@@ -46,7 +46,7 @@ pub fn silk_corrVector_FLP<L, Order>(
 pub fn silk_corrMatrix_FLP<Dx, L, Order>(
     x: &VectorView<f32, Dx>,
     L: L,
-    XX: &mut MatrixViewMut<f32, Order, Order>,
+    XX: &mut MatrixViewRMut<f32, Order, Order, Order, U1>,
 ) where
     Dx: Dim,
     L: Dim,

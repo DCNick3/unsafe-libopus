@@ -1,6 +1,7 @@
 extern crate core;
 
 pub mod externs;
+pub mod util;
 pub mod varargs;
 
 #[allow(non_camel_case_types)]
@@ -109,7 +110,6 @@ mod silk {
         pub mod process_gains_FLP;
         pub mod residual_energy_FLP;
         pub mod scale_copy_vector_FLP;
-        pub mod scale_vector_FLP;
         pub mod schur_FLP;
         pub mod sort_FLP;
         pub mod structs_FLP;
