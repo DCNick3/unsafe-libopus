@@ -540,15 +540,14 @@ unsafe fn silk_LBRR_encode_FLP(
                     + (*psEnc).sCmn.LBRR_GainIncreases) as i8;
             (*psIndices_LBRR).GainsIndices[0 as usize] = silk_min_int(
                 (*psIndices_LBRR).GainsIndices[0 as usize] as i32,
-                N_LEVELS_QGAIN - 1,
+                N_LEVELS_QGAIN as i32 - 1,
             ) as i8;
         }
         silk_gains_dequant(
-            Gains_Q16.as_mut_ptr(),
-            ((*psIndices_LBRR).GainsIndices).as_mut_ptr() as *const i8,
+            &mut Gains_Q16[..(*psEnc).sCmn.nb_subfr as usize],
+            &(*psIndices_LBRR).GainsIndices[..(*psEnc).sCmn.nb_subfr as usize],
             &mut (*psEnc).sCmn.LBRRprevLastGainIndex,
-            (condCoding == CODE_CONDITIONALLY) as i32,
-            (*psEnc).sCmn.nb_subfr,
+            condCoding == CODE_CONDITIONALLY,
         );
         k = 0;
         while k < (*psEnc).sCmn.nb_subfr {

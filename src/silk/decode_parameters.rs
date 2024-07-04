@@ -21,11 +21,10 @@ pub unsafe fn silk_decode_parameters(
     let mut pNLSF0_Q15: [i16; 16] = [0; 16];
     let mut cbk_ptr_Q7: *const i8 = 0 as *const i8;
     silk_gains_dequant(
-        ((*psDecCtrl).Gains_Q16).as_mut_ptr(),
-        (psDec.indices.GainsIndices).as_mut_ptr() as *const i8,
+        &mut ((*psDecCtrl).Gains_Q16)[..psDec.nb_subfr as usize],
+        &psDec.indices.GainsIndices[..psDec.nb_subfr as usize],
         &mut psDec.LastGainIndex,
-        (condCoding == CODE_CONDITIONALLY) as i32,
-        psDec.nb_subfr,
+        condCoding == CODE_CONDITIONALLY,
     );
     silk_NLSF_decode(
         &mut pNLSF_Q15[..psDec.psNLSF_CB.order as usize],

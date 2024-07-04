@@ -56,7 +56,7 @@ pub fn silk_SAT16(a: i32) -> i32 {
 }
 
 #[inline]
-pub fn silk_LIMIT(a: i32, limit1: i32, limit2: i32) -> i32 {
+pub fn silk_LIMIT<T: Ord>(a: T, limit1: T, limit2: T) -> T {
     if limit1 > limit2 {
         if a > limit1 {
             limit1
