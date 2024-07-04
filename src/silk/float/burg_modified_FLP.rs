@@ -1,10 +1,7 @@
-pub mod tuning_parameters_h {
-    pub const FIND_LPC_COND_FAC: f32 = 1e-5f32;
-}
-pub use self::tuning_parameters_h::FIND_LPC_COND_FAC;
 use crate::externs::{memcpy, memset};
 use crate::silk::float::energy_FLP::silk_energy_FLP;
 use crate::silk::float::inner_product_FLP::silk_inner_product_FLP;
+use crate::silk::tuning_parameters::FIND_LPC_COND_FAC;
 
 pub unsafe fn silk_burg_modified_FLP(
     A: *mut f32,

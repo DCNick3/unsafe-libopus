@@ -46,6 +46,7 @@ use crate::silk::enc_API::{silk_Encode, silk_Get_Encoder_Size, silk_InitEncoder}
 use crate::silk::float::structs_FLP::silk_encoder;
 use crate::silk::lin2log::silk_lin2log;
 use crate::silk::log2lin::silk_log2lin;
+use crate::silk::tuning_parameters::{VARIABLE_HP_MIN_CUTOFF_HZ, VARIABLE_HP_SMTH_COEF2};
 use crate::src::analysis::{
     downmix_func, run_analysis, tonality_analysis_init, tonality_analysis_reset, AnalysisInfo,
     TonalityAnalysisState,
@@ -255,7 +256,7 @@ pub unsafe fn opus_encoder_init(
     (*st).delay_compensation = (*st).Fs / 250;
     (*st).hybrid_stereo_width_Q14 = ((1) << 14) as i16;
     (*st).prev_HB_gain = Q15ONE;
-    (*st).variable_HP_smth2_Q15 = ((silk_lin2log(60) as u32) << 8) as i32;
+    (*st).variable_HP_smth2_Q15 = ((silk_lin2log(VARIABLE_HP_MIN_CUTOFF_HZ) as u32) << 8) as i32;
     (*st).first = 1;
     (*st).mode = MODE_HYBRID;
     (*st).bandwidth = OPUS_BANDWIDTH_FULLBAND;
@@ -1751,7 +1752,7 @@ pub unsafe fn opus_encode_native(
             ),
     );
     if (*st).mode == MODE_CELT_ONLY {
-        hp_freq_smth1 = ((silk_lin2log(60) as u32) << 8) as i32;
+        hp_freq_smth1 = ((silk_lin2log(VARIABLE_HP_MIN_CUTOFF_HZ) as u32) << 8) as i32;
     } else {
         hp_freq_smth1 = (*(silk_enc as *mut silk_encoder)).state_Fxx[0 as usize]
             .sCmn
@@ -1759,7 +1760,7 @@ pub unsafe fn opus_encode_native(
     }
     (*st).variable_HP_smth2_Q15 = ((*st).variable_HP_smth2_Q15 as i64
         + ((hp_freq_smth1 - (*st).variable_HP_smth2_Q15) as i64
-            * ((0.015f32 * ((1) << 16) as f32) as f64 + 0.5f64) as i32 as i16 as i64
+            * ((VARIABLE_HP_SMTH_COEF2 * ((1) << 16) as f32) as f64 + 0.5f64) as i32 as i16 as i64
             >> 16)) as i32;
     cutoff_Hz = silk_log2lin((*st).variable_HP_smth2_Q15 >> 8);
     if (*st).application == OPUS_APPLICATION_VOIP {
@@ -2942,7 +2943,8 @@ pub unsafe fn opus_encoder_ctl_impl(st: *mut OpusEncoder, request: i32, args: Va
             (*st).first = 1;
             (*st).mode = MODE_HYBRID;
             (*st).bandwidth = OPUS_BANDWIDTH_FULLBAND;
-            (*st).variable_HP_smth2_Q15 = ((silk_lin2log(60) as u32) << 8) as i32;
+            (*st).variable_HP_smth2_Q15 =
+                ((silk_lin2log(VARIABLE_HP_MIN_CUTOFF_HZ) as u32) << 8) as i32;
             current_block = 16167632229894708628;
         }
         OPUS_SET_FORCE_MODE_REQUEST => {

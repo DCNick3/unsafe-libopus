@@ -25,6 +25,7 @@ use crate::silk::tables_pitch_lag::{
     silk_pitch_contour_10_ms_NB_iCDF, silk_pitch_contour_10_ms_iCDF, silk_pitch_contour_NB_iCDF,
     silk_pitch_contour_iCDF,
 };
+use crate::silk::tuning_parameters::WARPING_MULTIPLIER;
 use crate::silk::SigProc_FIX::{silk_max_int, silk_min_int};
 
 pub unsafe fn silk_control_encoder(
@@ -289,7 +290,7 @@ unsafe fn silk_setup_complexity(psEncC: &mut silk_encoder_state, Complexity: i32
         psEncC.useInterpolatedNLSFs = 1;
         psEncC.NLSF_MSVQ_Survivors = 6;
         psEncC.warping_Q16 =
-            psEncC.fs_kHz * ((0.015f32 * ((1) << 16) as f32) as f64 + 0.5f64) as i32;
+            psEncC.fs_kHz * ((WARPING_MULTIPLIER * ((1) << 16) as f32) as f64 + 0.5f64) as i32;
     } else if Complexity < 8 {
         psEncC.pitchEstimationComplexity = SILK_PE_MID_COMPLEX;
         psEncC.pitchEstimationThreshold_Q16 = (0.72f64 * ((1) << 16) as f64 + 0.5f64) as i32;
@@ -300,7 +301,7 @@ unsafe fn silk_setup_complexity(psEncC: &mut silk_encoder_state, Complexity: i32
         psEncC.useInterpolatedNLSFs = 1;
         psEncC.NLSF_MSVQ_Survivors = 8;
         psEncC.warping_Q16 =
-            psEncC.fs_kHz * ((0.015f32 * ((1) << 16) as f32) as f64 + 0.5f64) as i32;
+            psEncC.fs_kHz * ((WARPING_MULTIPLIER * ((1) << 16) as f32) as f64 + 0.5f64) as i32;
     } else {
         psEncC.pitchEstimationComplexity = SILK_PE_MAX_COMPLEX as i32;
         psEncC.pitchEstimationThreshold_Q16 = (0.7f64 * ((1) << 16) as f64 + 0.5f64) as i32;
@@ -311,7 +312,7 @@ unsafe fn silk_setup_complexity(psEncC: &mut silk_encoder_state, Complexity: i32
         psEncC.useInterpolatedNLSFs = 1;
         psEncC.NLSF_MSVQ_Survivors = 16;
         psEncC.warping_Q16 =
-            psEncC.fs_kHz * ((0.015f32 * ((1) << 16) as f32) as f64 + 0.5f64) as i32;
+            psEncC.fs_kHz * ((WARPING_MULTIPLIER * ((1) << 16) as f32) as f64 + 0.5f64) as i32;
     }
     psEncC.pitchEstimationLPCOrder =
         silk_min_int(psEncC.pitchEstimationLPCOrder, psEncC.predictLPCOrder);

@@ -1,16 +1,3 @@
-pub mod tuning_parameters_h {
-    pub const LAMBDA_OFFSET: f32 = 1.2f32;
-    pub const LAMBDA_SPEECH_ACT: f32 = -0.2f32;
-    pub const LAMBDA_DELAYED_DECISIONS: f32 = -0.05f32;
-    pub const LAMBDA_INPUT_QUALITY: f32 = -0.1f32;
-    pub const LAMBDA_CODING_QUALITY: f32 = -0.2f32;
-    pub const LAMBDA_QUANT_OFFSET: f32 = 0.8f32;
-}
-
-pub use self::tuning_parameters_h::{
-    LAMBDA_CODING_QUALITY, LAMBDA_DELAYED_DECISIONS, LAMBDA_INPUT_QUALITY, LAMBDA_OFFSET,
-    LAMBDA_QUANT_OFFSET, LAMBDA_SPEECH_ACT,
-};
 use crate::celt::mathops::celt_sqrt;
 use crate::externs::memcpy;
 use crate::silk::define::{CODE_CONDITIONALLY, TYPE_VOICED};
@@ -21,6 +8,10 @@ use crate::silk::float::SigProc_FLP::silk_sigmoid;
 use crate::silk::gain_quant::silk_gains_quant;
 use crate::silk::mathops::silk_exp2;
 use crate::silk::tables_other::silk_Quantization_Offsets_Q10;
+use crate::silk::tuning_parameters::{
+    LAMBDA_CODING_QUALITY, LAMBDA_DELAYED_DECISIONS, LAMBDA_INPUT_QUALITY, LAMBDA_OFFSET,
+    LAMBDA_QUANT_OFFSET, LAMBDA_SPEECH_ACT,
+};
 
 pub unsafe fn silk_process_gains_FLP(
     psEnc: *mut silk_encoder_state_FLP,

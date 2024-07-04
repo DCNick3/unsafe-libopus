@@ -1,10 +1,3 @@
-pub mod tuning_parameters_h {
-    pub const FIND_PITCH_WHITE_NOISE_FRACTION: f32 = 1e-3f32;
-    pub const FIND_PITCH_BANDWIDTH_EXPANSION: f32 = 0.99f32;
-}
-pub use self::tuning_parameters_h::{
-    FIND_PITCH_BANDWIDTH_EXPANSION, FIND_PITCH_WHITE_NOISE_FRACTION,
-};
 use crate::externs::{memcpy, memset};
 use crate::silk::define::{TYPE_NO_VOICE_ACTIVITY, TYPE_UNVOICED, TYPE_VOICED};
 use crate::silk::float::apply_sine_window_FLP::silk_apply_sine_window_FLP;
@@ -15,6 +8,9 @@ use crate::silk::float::pitch_analysis_core_FLP::silk_pitch_analysis_core_FLP;
 use crate::silk::float::schur_FLP::silk_schur_FLP;
 use crate::silk::float::structs_FLP::{silk_encoder_control_FLP, silk_encoder_state_FLP};
 use crate::silk::float::LPC_analysis_filter_FLP::silk_LPC_analysis_filter_FLP;
+use crate::silk::tuning_parameters::{
+    FIND_PITCH_BANDWIDTH_EXPANSION, FIND_PITCH_WHITE_NOISE_FRACTION,
+};
 
 pub unsafe fn silk_find_pitch_lags_FLP(
     psEnc: *mut silk_encoder_state_FLP,

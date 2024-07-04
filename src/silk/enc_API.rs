@@ -54,6 +54,9 @@ use crate::silk::stereo_LR_to_MS::silk_stereo_LR_to_MS;
 use crate::silk::stereo_encode_pred::{silk_stereo_encode_mid_only, silk_stereo_encode_pred};
 use crate::silk::structs::{silk_LP_state, silk_nsq_state};
 use crate::silk::tables_other::{silk_LBRR_flags_iCDF_ptr, silk_Quantization_Offsets_Q10};
+use crate::silk::tuning_parameters::{
+    BITRESERVOIR_DECAY_TIME_MS, MAX_BANDWIDTH_SWITCH_DELAY_MS, SPEECH_ACTIVITY_DTX_THRES,
+};
 use crate::silk::HP_variable_cutoff::silk_HP_variable_cutoff;
 
 pub unsafe fn silk_Get_Encoder_Size(encSizeBytes: *mut i32) -> i32 {
@@ -563,12 +566,12 @@ pub unsafe fn silk_Encode(
         } else {
             TargetRate_bps = nBits as i16 as i32 * 50;
         }
-        TargetRate_bps -= (*psEnc).nBitsExceeded * 1000 / 500;
+        TargetRate_bps -= (*psEnc).nBitsExceeded * 1000 / BITRESERVOIR_DECAY_TIME_MS;
         if prefillFlag == 0 && (*psEnc).state_Fxx[0 as usize].sCmn.nFramesEncoded > 0 {
             let bitsBalance: i32 = ec_tell(psRangeEnc.as_mut().unwrap())
                 - (*psEnc).nBitsUsedLBRR
                 - nBits * (*psEnc).state_Fxx[0 as usize].sCmn.nFramesEncoded;
-            TargetRate_bps -= bitsBalance * 1000 / 500;
+            TargetRate_bps -= bitsBalance * 1000 / BITRESERVOIR_DECAY_TIME_MS;
         }
         TargetRate_bps = if (*encControl).bitRate > 5000 {
             if TargetRate_bps > (*encControl).bitRate {
@@ -820,10 +823,11 @@ pub unsafe fn silk_Encode(
             } else {
                 (*psEnc).nBitsExceeded
             };
-            speech_act_thr_for_switch_Q8 = (((0.05f32 * ((1) << 8) as f32) as f64 + 0.5f64) as i32
-                as i64
-                + ((((1 as f32 - 0.05f32) / 5000 as f32 * ((1) << 16 + 8) as f32) as f64 + 0.5f64)
-                    as i32 as i64
+            speech_act_thr_for_switch_Q8 = (((SPEECH_ACTIVITY_DTX_THRES * ((1) << 8) as f32) as f64
+                + 0.5f64) as i32 as i64
+                + ((((1 as f32 - SPEECH_ACTIVITY_DTX_THRES) / MAX_BANDWIDTH_SWITCH_DELAY_MS
+                    * ((1) << 16 + 8) as f32) as f64
+                    + 0.5f64) as i32 as i64
                     * (*psEnc).timeSinceSwitchAllowed_ms as i16 as i64
                     >> 16)) as i32;
             if (*psEnc).state_Fxx[0 as usize].sCmn.speech_activity_Q8 < speech_act_thr_for_switch_Q8

@@ -17,12 +17,14 @@ use crate::silk::float::SigProc_FLP::silk_short2float_array;
 use crate::silk::gain_quant::{silk_gains_ID, silk_gains_dequant, silk_gains_quant};
 use crate::silk::log2lin::silk_log2lin;
 use crate::silk::structs::{silk_nsq_state, SideInfoIndices};
+use crate::silk::tuning_parameters::{LBRR_SPEECH_ACTIVITY_THRES, SPEECH_ACTIVITY_DTX_THRES};
 use crate::silk::LP_variable_cutoff::silk_LP_variable_cutoff;
 use crate::silk::SigProc_FIX::silk_min_int;
 use crate::silk::VAD::silk_VAD_GetSA_Q8_c;
 
 pub unsafe fn silk_encode_do_VAD_FLP(psEnc: *mut silk_encoder_state_FLP, activity: i32) {
-    let activity_threshold: i32 = ((0.05f32 * ((1) << 8) as f32) as f64 + 0.5f64) as i32;
+    let activity_threshold: i32 =
+        ((SPEECH_ACTIVITY_DTX_THRES * ((1) << 8) as f32) as f64 + 0.5f64) as i32;
     silk_VAD_GetSA_Q8_c(
         &mut (*psEnc).sCmn,
         ((*psEnc).sCmn.inputBuf).as_mut_ptr().offset(1 as isize) as *const i16,
@@ -510,7 +512,8 @@ unsafe fn silk_LBRR_encode_FLP(
         rewhite_flag: 0,
     };
     if (*psEnc).sCmn.LBRR_enabled != 0
-        && (*psEnc).sCmn.speech_activity_Q8 > ((0.3f32 * ((1) << 8) as f32) as f64 + 0.5f64) as i32
+        && (*psEnc).sCmn.speech_activity_Q8
+            > ((LBRR_SPEECH_ACTIVITY_THRES * ((1) << 8) as f32) as f64 + 0.5f64) as i32
     {
         (*psEnc).sCmn.LBRR_flags[(*psEnc).sCmn.nFramesEncoded as usize] = 1;
         memcpy(

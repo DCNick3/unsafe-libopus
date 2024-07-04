@@ -9,6 +9,7 @@ use crate::silk::log2lin::silk_log2lin;
 use crate::silk::tables_LTP::{
     silk_LTP_gain_BITS_Q5_ptrs, silk_LTP_vq_gain_ptrs_Q7, silk_LTP_vq_ptrs_Q7, silk_LTP_vq_sizes,
 };
+use crate::silk::tuning_parameters::MAX_SUM_LOG_GAIN_DB;
 use crate::silk::VQ_WMat_EC::silk_VQ_WMat_EC_c;
 
 pub unsafe fn silk_quant_LTP_gains(
@@ -58,7 +59,7 @@ pub unsafe fn silk_quant_LTP_gains(
         j = 0;
         while j < nb_subfr {
             max_gain_Q7 = silk_log2lin(
-                (250.0f32 as f64 / 6.0f64 * ((1) << 7) as f64 + 0.5f64) as i32
+                (MAX_SUM_LOG_GAIN_DB as f64 / 6.0f64 * ((1) << 7) as f64 + 0.5f64) as i32
                     - sum_log_gain_tmp_Q7
                     + ((7 * ((1) << 7)) as f64 + 0.5f64) as i32,
             ) - gain_safety;

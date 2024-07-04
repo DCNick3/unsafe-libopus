@@ -2,6 +2,7 @@ use crate::silk::define::LTP_ORDER;
 use crate::silk::float::corrMatrix_FLP::{silk_corrMatrix_FLP, silk_corrVector_FLP};
 use crate::silk::float::energy_FLP::silk_energy_FLP;
 use crate::silk::float::scale_vector_FLP::silk_scale_vector_FLP;
+use crate::silk::tuning_parameters::LTP_CORR_INV_MAX;
 use nalgebra::{Const, Dyn, MatrixViewMut, VectorView, VectorViewMut, U1};
 
 pub unsafe fn silk_find_LTP_FLP(
@@ -17,7 +18,6 @@ pub unsafe fn silk_find_LTP_FLP(
     let mut XX_ptr: *mut f32 = 0 as *mut f32;
     let mut lag_ptr: *const f32 = 0 as *const f32;
     let mut xx: f32 = 0.;
-    let mut temp: f32 = 0.;
     xX_ptr = xX;
     XX_ptr = XX;
     k = 0;
@@ -56,16 +56,13 @@ pub unsafe fn silk_find_LTP_FLP(
             r_ptr,
             (subfr_length + LTP_ORDER) as usize,
         )) as f32;
-        temp = 1.0f32
-            / (if xx
-                > 0.03f32 * 0.5f32 * (*XX_ptr.offset(0 as isize) + *XX_ptr.offset(24 as isize))
-                    + 1.0f32
-            {
-                xx
-            } else {
-                0.03f32 * 0.5f32 * (*XX_ptr.offset(0 as isize) + *XX_ptr.offset(24 as isize))
-                    + 1.0f32
-            });
+        let temp = 1.0f32
+            / xx.max(
+                LTP_CORR_INV_MAX
+                    * 0.5f32
+                    * (*XX_ptr.offset(0 as isize) + *XX_ptr.offset(24 as isize))
+                    + 1.0f32,
+            );
         silk_scale_vector_FLP(XX_ptr, temp, LTP_ORDER * LTP_ORDER);
         silk_scale_vector_FLP(xX_ptr, temp, LTP_ORDER);
         r_ptr = r_ptr.offset(subfr_length as isize);
