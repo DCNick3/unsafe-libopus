@@ -1,3 +1,6 @@
+/// max order of the LPC analysis in schur() and k2a()
+pub const SILK_MAX_ORDER_LPC: usize = 24;
+
 #[inline]
 pub fn silk_ROR32(a32: i32, rot: i32) -> i32 {
     let x: u32 = a32 as u32;
@@ -37,6 +40,15 @@ pub fn silk_max_int(a: i32, b: i32) -> i32 {
 
 #[inline]
 pub fn silk_RSHIFT_ROUND(a: i32, shift: i32) -> i32 {
+    if shift == 1 {
+        ((a) >> 1) + ((a) & 1)
+    } else {
+        (((a) >> ((shift) - 1)) + 1) >> 1
+    }
+}
+
+#[inline]
+pub fn silk_RSHIFT_ROUND64(a: i64, shift: i32) -> i64 {
     if shift == 1 {
         ((a) >> 1) + ((a) & 1)
     } else {

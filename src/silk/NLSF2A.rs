@@ -3,40 +3,35 @@ use crate::silk::define::MAX_LPC_STABILIZE_ITERATIONS;
 use crate::silk::table_LSF_cos::silk_LSFCosTab_FIX_Q12;
 use crate::silk::LPC_fit::silk_LPC_fit;
 use crate::silk::LPC_inv_pred_gain::silk_LPC_inverse_pred_gain_c;
+use crate::silk::SigProc_FIX::{silk_RSHIFT_ROUND64, SILK_MAX_ORDER_LPC};
 
 pub const QA: i32 = 16;
+
+/// helper function for NLSF2A(..)
+///
+/// ```text
+/// out     O   intermediate polynomial, QA [dd+1]
+/// cLSF    I   vector of interleaved 2*cos(LSFs), QA [d]
+/// dd      I   polynomial order (= 1/2 * filter order)
+/// ```
 #[inline]
-unsafe fn silk_NLSF2A_find_poly(out: *mut i32, cLSF: *const i32, dd: i32) {
-    let mut k: i32 = 0;
-    let mut n: i32 = 0;
-    let mut ftmp: i32 = 0;
-    *out.offset(0 as isize) = ((1) << 16) as i32;
-    *out.offset(1 as isize) = -*cLSF.offset(0 as isize);
-    k = 1;
-    while k < dd {
-        ftmp = *cLSF.offset((2 * k) as isize);
-        *out.offset((k + 1) as isize) = ((*out.offset((k - 1) as isize) as u32) << 1) as i32
-            - (if 16 == 1 {
-                (ftmp as i64 * *out.offset(k as isize) as i64 >> 1)
-                    + (ftmp as i64 * *out.offset(k as isize) as i64 & 1)
-            } else {
-                (ftmp as i64 * *out.offset(k as isize) as i64 >> 16 - 1) + 1 >> 1
-            }) as i32;
-        n = k;
-        while n > 1 {
-            let ref mut fresh0 = *out.offset(n as isize);
-            *fresh0 += *out.offset((n - 2) as isize)
-                - (if 16 == 1 {
-                    (ftmp as i64 * *out.offset((n - 1) as isize) as i64 >> 1)
-                        + (ftmp as i64 * *out.offset((n - 1) as isize) as i64 & 1)
-                } else {
-                    (ftmp as i64 * *out.offset((n - 1) as isize) as i64 >> 16 - 1) + 1 >> 1
-                }) as i32;
-            n -= 1;
+fn silk_NLSF2A_find_poly(out: &mut [i32], cLSF: &[i32]) {
+    let d = cLSF.len();
+    let dd = d / 2;
+    assert_eq!(out.len(), dd + 1);
+
+    out[0] = 1 << QA;
+    out[1] = -cLSF[0];
+
+    for k in 1..dd {
+        let ftmp = cLSF[2 * k]; /* QA */
+        out[k + 1] = out[k - 1] * 2 - silk_RSHIFT_ROUND64(ftmp as i64 * out[k] as i64, QA) as i32;
+
+        for n in (2..=k).rev() {
+            out[n] += out[n - 2] - silk_RSHIFT_ROUND64(ftmp as i64 * out[n - 1] as i64, QA) as i32;
         }
-        let ref mut fresh1 = *out.offset(1 as isize);
-        *fresh1 -= ftmp;
-        k += 1;
+
+        out[1] -= ftmp;
     }
 }
 
@@ -48,16 +43,16 @@ pub unsafe fn silk_NLSF2A(a_Q12: *mut i16, NLSF: *const i16, d: i32, _arch: i32)
     let mut k: i32 = 0;
     let mut i: i32 = 0;
     let mut dd: i32 = 0;
-    let mut cos_LSF_QA: [i32; 24] = [0; 24];
-    let mut P: [i32; 13] = [0; 13];
-    let mut Q: [i32; 13] = [0; 13];
+    let mut cos_LSF_QA: [i32; SILK_MAX_ORDER_LPC] = [0; 24];
+    let mut P: [i32; SILK_MAX_ORDER_LPC / 2 + 1] = [0; 13];
+    let mut Q: [i32; SILK_MAX_ORDER_LPC / 2 + 1] = [0; 13];
     let mut Ptmp: i32 = 0;
     let mut Qtmp: i32 = 0;
     let mut f_int: i32 = 0;
     let mut f_frac: i32 = 0;
     let mut cos_val: i32 = 0;
     let mut delta: i32 = 0;
-    let mut a32_QA1: [i32; 24] = [0; 24];
+    let mut a32_QA1: [i32; SILK_MAX_ORDER_LPC] = [0; 24];
     assert!(d == 10 || d == 16);
     ordering = if d == 16 {
         ordering16.as_ptr()
@@ -79,16 +74,8 @@ pub unsafe fn silk_NLSF2A(a_Q12: *mut i16, NLSF: *const i16, d: i32, _arch: i32)
         k += 1;
     }
     dd = d >> 1;
-    silk_NLSF2A_find_poly(
-        P.as_mut_ptr(),
-        &mut *cos_LSF_QA.as_mut_ptr().offset(0 as isize),
-        dd,
-    );
-    silk_NLSF2A_find_poly(
-        Q.as_mut_ptr(),
-        &mut *cos_LSF_QA.as_mut_ptr().offset(1 as isize),
-        dd,
-    );
+    silk_NLSF2A_find_poly(&mut P[..dd as usize + 1], &cos_LSF_QA[..d as usize]);
+    silk_NLSF2A_find_poly(&mut Q[..dd as usize + 1], &cos_LSF_QA[1..][..d as usize]);
     k = 0;
     while k < dd {
         Ptmp = P[(k + 1) as usize] + P[k as usize];
