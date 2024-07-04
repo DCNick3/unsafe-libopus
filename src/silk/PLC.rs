@@ -85,9 +85,8 @@ unsafe fn silk_PLC_update(psDec: &mut silk_decoder_state, psDecCtrl: *mut silk_d
                         as *mut i16 as *const core::ffi::c_void,
                     5_u64.wrapping_mul(::core::mem::size_of::<i16>() as u64),
                 );
-                (*psPLC).pitchL_Q8 = (((*psDecCtrl).pitchL[(psDec.nb_subfr - 1 - j) as usize]
-                    as u32)
-                    << 8) as i32;
+                (*psPLC).pitchL_Q8 =
+                    (((*psDecCtrl).pitchL[(psDec.nb_subfr - 1 - j) as usize] as u32) << 8) as i32;
             }
             j += 1;
         }
@@ -140,8 +139,7 @@ unsafe fn silk_PLC_update(psDec: &mut silk_decoder_state, psDecCtrl: *mut silk_d
         ((*psPLC).prevGain_Q16).as_mut_ptr() as *mut core::ffi::c_void,
         &mut *((*psDecCtrl).Gains_Q16)
             .as_mut_ptr()
-            .offset((psDec.nb_subfr - 2) as isize) as *mut i32
-            as *const core::ffi::c_void,
+            .offset((psDec.nb_subfr - 2) as isize) as *mut i32 as *const core::ffi::c_void,
         2_u64.wrapping_mul(::core::mem::size_of::<i32>() as u64),
     );
     (*psPLC).subfr_length = psDec.subfr_length;
@@ -303,10 +301,8 @@ unsafe fn silk_PLC_conceal(
         } else {
             let mut invGain_Q30: i32 = 0;
             let mut down_scale_Q30: i32 = 0;
-            invGain_Q30 = silk_LPC_inverse_pred_gain_c(
-                ((*psPLC).prevLPC_Q12).as_mut_ptr(),
-                psDec.LPC_order,
-            );
+            invGain_Q30 =
+                silk_LPC_inverse_pred_gain_c(&mut (*psPLC).prevLPC_Q12[..psDec.LPC_order as usize]);
             down_scale_Q30 = silk_min_32((1) << 30 >> 3, invGain_Q30);
             down_scale_Q30 = silk_max_32((1) << 30 >> 8, down_scale_Q30);
             down_scale_Q30 = ((down_scale_Q30 as u32) << 3) as i32;

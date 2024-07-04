@@ -44,11 +44,13 @@ pub fn silk_RSHIFT_ROUND64(a: i64, shift: i32) -> i64 {
     }
 }
 
-/// Convert floating-point constants to fixed-point
-#[inline]
-pub fn SILK_FIX_CONST(C: f64, Q: i32) -> i32 {
-    (C * (1i64 << Q) as f64 + 0.5f64) as i32
+/// Macro to convert floating-point constants to fixed-point
+macro_rules! SILK_FIX_CONST {
+    ($C:expr, $Q:expr) => {
+        (($C as f64) * (1i64 << ($Q as i32)) as f64 + 0.5f64) as i32
+    };
 }
+pub(crate) use SILK_FIX_CONST;
 
 #[inline]
 pub fn silk_min_int(a: i32, b: i32) -> i32 {
@@ -90,4 +92,9 @@ pub fn silk_LIMIT<T: Ord>(a: T, limit1: T, limit2: T) -> T {
     } else {
         a
     }
+}
+
+#[inline]
+pub fn silk_SMMUL(a32: i32, b32: i32) -> i32 {
+    ((a32 as i64 * b32 as i64) >> 32) as i32
 }
