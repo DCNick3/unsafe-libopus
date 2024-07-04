@@ -2,6 +2,17 @@
 pub const SILK_MAX_ORDER_LPC: usize = 24;
 
 #[inline]
+pub fn silk_SAT16(a: i32) -> i32 {
+    if a > i16::MAX as i32 {
+        i16::MAX as i32
+    } else if a < i16::MIN as i32 {
+        i16::MIN as i32
+    } else {
+        a
+    }
+}
+
+#[inline]
 pub fn silk_ROR32(a32: i32, rot: i32) -> i32 {
     let x: u32 = a32 as u32;
     let r: u32 = rot as u32;
@@ -13,29 +24,6 @@ pub fn silk_ROR32(a32: i32, rot: i32) -> i32 {
     } else {
         return (x << (32u32).wrapping_sub(r) | x >> r) as i32;
     };
-}
-
-#[inline]
-pub fn silk_max_16(a: i16, b: i16) -> i16 {
-    a.max(b)
-}
-
-#[inline]
-pub fn silk_min_32(a: i32, b: i32) -> i32 {
-    a.min(b)
-}
-#[inline]
-pub fn silk_max_32(a: i32, b: i32) -> i32 {
-    a.max(b)
-}
-
-#[inline]
-pub fn silk_min_int(a: i32, b: i32) -> i32 {
-    a.min(b)
-}
-#[inline]
-pub fn silk_max_int(a: i32, b: i32) -> i32 {
-    a.max(b)
 }
 
 #[inline]
@@ -56,15 +44,33 @@ pub fn silk_RSHIFT_ROUND64(a: i64, shift: i32) -> i64 {
     }
 }
 
+/// Convert floating-point constants to fixed-point
 #[inline]
-pub fn silk_SAT16(a: i32) -> i32 {
-    if a > i16::MAX as i32 {
-        i16::MAX as i32
-    } else if a < i16::MIN as i32 {
-        i16::MIN as i32
-    } else {
-        a
-    }
+pub fn SILK_FIX_CONST(C: f64, Q: i32) -> i32 {
+    (C * (1i64 << Q) as f64 + 0.5f64) as i32
+}
+
+#[inline]
+pub fn silk_min_int(a: i32, b: i32) -> i32 {
+    a.min(b)
+}
+#[inline]
+pub fn silk_max_int(a: i32, b: i32) -> i32 {
+    a.max(b)
+}
+
+#[inline]
+pub fn silk_max_16(a: i16, b: i16) -> i16 {
+    a.max(b)
+}
+
+#[inline]
+pub fn silk_min_32(a: i32, b: i32) -> i32 {
+    a.min(b)
+}
+#[inline]
+pub fn silk_max_32(a: i32, b: i32) -> i32 {
+    a.max(b)
 }
 
 #[inline]

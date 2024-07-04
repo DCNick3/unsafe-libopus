@@ -1,84 +1,59 @@
 use crate::silk::bwexpander_32::silk_bwexpander_32;
+use crate::silk::SigProc_FIX::{silk_RSHIFT_ROUND, silk_SAT16, SILK_FIX_CONST};
+use ndarray::azip;
 
-pub mod typedef_h {
-    pub const silk_int16_MIN: i32 = i16::MIN as i32;
-    pub const silk_int16_MAX: i32 = i16::MAX as i32;
-}
+/// Convert int32 coefficients to int16 coefs and make sure there's no wrap-around
+///
+/// ```text
+/// a_QOUT   O     Output signal
+/// a_QIN    I/O   Input signal
+/// QOUT     I     Input Q domain
+/// QIN      I     Input Q domain
+/// d        I     Filter order
+/// ```
+pub fn silk_LPC_fit(a_QOUT: &mut [i16], a_QIN: &mut [i32], QOUT: i32, QIN: i32) {
+    let d = a_QOUT.len();
+    assert_eq!(a_QIN.len(), d);
 
-pub use self::typedef_h::{silk_int16_MAX, silk_int16_MIN};
-
-pub unsafe fn silk_LPC_fit(a_QOUT: *mut i16, a_QIN: *mut i32, QOUT: i32, QIN: i32, d: i32) {
-    let mut i: i32 = 0;
-    let mut k: i32 = 0;
-    let mut idx: i32 = 0;
-    let mut maxabs: i32 = 0;
-    let mut absval: i32 = 0;
-    let mut chirp_Q16: i32 = 0;
-    i = 0;
+    /* Limit the maximum absolute value of the prediction coefficients, so that they'll fit in int16 */
+    let mut i = 0;
     while i < 10 {
-        maxabs = 0;
-        k = 0;
+        /* Find maximum absolute value and its index */
+        let mut maxabs = 0;
+        let mut idx = 0;
+        let mut k = 0;
         while k < d {
-            absval = if *a_QIN.offset(k as isize) > 0 {
-                *a_QIN.offset(k as isize)
-            } else {
-                -*a_QIN.offset(k as isize)
-            };
+            let absval = a_QIN[k].abs();
             if absval > maxabs {
                 maxabs = absval;
                 idx = k;
             }
             k += 1;
         }
-        maxabs = if QIN - QOUT == 1 {
-            (maxabs >> 1) + (maxabs & 1)
+        maxabs = silk_RSHIFT_ROUND(maxabs, QIN - QOUT);
+
+        if maxabs > i16::MAX as i32 {
+            /* Reduce magnitude of prediction coefficients */
+            maxabs = std::cmp::min(maxabs, 163838); /* ( silk_int32_MAX >> 14 ) + silk_int16_MAX = 163838 */
+            let chirp_Q16 = SILK_FIX_CONST(0.999f64, 16)
+                - ((maxabs - i16::MAX as i32) << 14) / ((maxabs * (idx as i32 + 1)) >> 2);
+            silk_bwexpander_32(a_QIN, chirp_Q16);
         } else {
-            (maxabs >> QIN - QOUT - 1) + 1 >> 1
-        };
-        if !(maxabs > silk_int16_MAX) {
             break;
         }
-        maxabs = if maxabs < 163838 { maxabs } else { 163838 };
-        chirp_Q16 = (0.999f64 * ((1) << 16) as f64 + 0.5f64) as i32
-            - (((maxabs - 0x7fff) as u32) << 14) as i32 / (maxabs * (idx + 1) >> 2);
-        silk_bwexpander_32(std::slice::from_raw_parts_mut(a_QIN, d as usize), chirp_Q16);
+
         i += 1;
     }
+
     if i == 10 {
-        k = 0;
-        while k < d {
-            *a_QOUT.offset(k as isize) = (if (if QIN - QOUT == 1 {
-                (*a_QIN.offset(k as isize) >> 1) + (*a_QIN.offset(k as isize) & 1)
-            } else {
-                (*a_QIN.offset(k as isize) >> QIN - QOUT - 1) + 1 >> 1
-            }) > silk_int16_MAX
-            {
-                silk_int16_MAX
-            } else if (if QIN - QOUT == 1 {
-                (*a_QIN.offset(k as isize) >> 1) + (*a_QIN.offset(k as isize) & 1)
-            } else {
-                (*a_QIN.offset(k as isize) >> QIN - QOUT - 1) + 1 >> 1
-            }) < silk_int16_MIN
-            {
-                silk_int16_MIN
-            } else if QIN - QOUT == 1 {
-                (*a_QIN.offset(k as isize) >> 1) + (*a_QIN.offset(k as isize) & 1)
-            } else {
-                (*a_QIN.offset(k as isize) >> QIN - QOUT - 1) + 1 >> 1
-            }) as i16;
-            *a_QIN.offset(k as isize) =
-                ((*a_QOUT.offset(k as isize) as i32 as u32) << QIN - QOUT) as i32;
-            k += 1;
-        }
+        /* Reached the last iteration, clip the coefficients */
+        azip!((out in a_QOUT, input in a_QIN) {
+            *out = silk_SAT16(silk_RSHIFT_ROUND(*input, QIN - QOUT)) as i16;
+            *input = (*out as i32) << (QIN - QOUT);
+        });
     } else {
-        k = 0;
-        while k < d {
-            *a_QOUT.offset(k as isize) = (if QIN - QOUT == 1 {
-                (*a_QIN.offset(k as isize) >> 1) + (*a_QIN.offset(k as isize) & 1)
-            } else {
-                (*a_QIN.offset(k as isize) >> QIN - QOUT - 1) + 1 >> 1
-            }) as i16;
-            k += 1;
-        }
+        azip!((out in a_QOUT, &mut input in a_QIN) {
+            *out = silk_RSHIFT_ROUND(input, QIN - QOUT) as i16;
+        });
     };
 }

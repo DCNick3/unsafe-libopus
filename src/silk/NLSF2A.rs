@@ -84,7 +84,12 @@ pub unsafe fn silk_NLSF2A(a_Q12: *mut i16, NLSF: *const i16, d: i32, _arch: i32)
         a32_QA1[(d - k - 1) as usize] = Qtmp - Ptmp;
         k += 1;
     }
-    silk_LPC_fit(a_Q12, a32_QA1.as_mut_ptr(), 12, QA + 1, d);
+    silk_LPC_fit(
+        std::slice::from_raw_parts_mut(a_Q12, d as usize),
+        &mut a32_QA1[..d as usize],
+        12,
+        QA + 1,
+    );
     i = 0;
     while silk_LPC_inverse_pred_gain_c(a_Q12, d) == 0 && i < MAX_LPC_STABILIZE_ITERATIONS {
         silk_bwexpander_32(&mut a32_QA1[..d as usize], 65536 - ((2) << i) as i32);
