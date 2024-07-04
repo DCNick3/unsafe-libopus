@@ -2,7 +2,7 @@ use crate::silk::define::LTP_ORDER;
 use crate::silk::float::corrMatrix_FLP::{silk_corrMatrix_FLP, silk_corrVector_FLP};
 use crate::silk::float::energy_FLP::silk_energy_FLP;
 use crate::silk::float::scale_vector_FLP::silk_scale_vector_FLP;
-use nalgebra::{Const, Dyn, VectorView, VectorViewMut, U1};
+use nalgebra::{Const, Dyn, MatrixViewMut, VectorView, VectorViewMut, U1};
 
 pub unsafe fn silk_find_LTP_FLP(
     XX: *mut f32,
@@ -23,13 +23,24 @@ pub unsafe fn silk_find_LTP_FLP(
     k = 0;
     while k < nb_subfr {
         lag_ptr = r_ptr.offset(-((*lag.offset(k as isize) + LTP_ORDER / 2) as isize));
-        silk_corrMatrix_FLP(lag_ptr, subfr_length, LTP_ORDER, XX_ptr);
 
         let x = VectorView::<f32, Dyn>::from_slice_generic(
             std::slice::from_raw_parts(lag_ptr, (subfr_length + LTP_ORDER - 1) as usize),
             Dyn((subfr_length + LTP_ORDER - 1) as usize),
             U1,
         );
+
+        let mut XX = MatrixViewMut::<
+            f32,
+            Const<{ LTP_ORDER as usize }>,
+            Const<{ LTP_ORDER as usize }>,
+        >::from_slice(std::slice::from_raw_parts_mut(
+            XX_ptr,
+            LTP_ORDER as usize * LTP_ORDER as usize,
+        ));
+
+        silk_corrMatrix_FLP(&x, Dyn(subfr_length as usize), &mut XX);
+
         let t = VectorView::<f32, Dyn>::from_slice_generic(
             std::slice::from_raw_parts(r_ptr, subfr_length as usize),
             Dyn(subfr_length as usize),

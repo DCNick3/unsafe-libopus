@@ -1,6 +1,7 @@
-use crate::silk::float::energy_FLP::silk_energy_FLP;
-use crate::silk::float::inner_product_FLP::silk_inner_product_FLP;
-use nalgebra::{VectorView, VectorViewMut, U1};
+use crate::silk::float::inner_product_FLP::silk_inner_product2_FLP;
+use nalgebra::{
+    Dim, DimAdd, DimDiff, DimSub, DimSum, MatrixViewMut, VectorView, VectorViewMut, U1,
+};
 
 // Correlation matrix computations for LS estimate.
 
@@ -13,61 +14,66 @@ use nalgebra::{VectorView, VectorViewMut, U1};
 /// Order   I    Max lag for correlation
 /// Xt      O    X'*t correlation vector [order]
 /// ```
-pub fn silk_corrVector_FLP<Dx, L, Order>(
-    x: &VectorView<f32, Dx>,
+pub fn silk_corrVector_FLP<L, Order>(
+    x: &VectorView<f32, DimDiff<DimSum<L, Order>, U1>>,
     t: &VectorView<f32, L>,
     Xt: &mut VectorViewMut<f32, Order>,
 ) where
-    Dx: nalgebra::Dim,
-    L: nalgebra::Dim,
-    Order: nalgebra::Dim,
+    L: Dim,
+    Order: Dim,
+    L: DimAdd<Order>,
+    <L as DimAdd<Order>>::Output: DimSub<U1>,
 {
+    let (x_len, _) = x.shape_generic();
     let (L, _) = t.shape_generic();
     let (Order, _) = Xt.shape_generic();
-    assert_eq!(x.shape().0, L.value() + Order.value() - 1);
+    assert_eq!(x_len.value(), L.add(Order).sub(U1).value());
 
     for lag in 0..Order.value() {
         let ptr1 = x.generic_view::<L, U1>((Order.value() - 1 - lag, 0), (L, U1));
-        Xt[lag] = ptr1.dot(t);
+        Xt[lag] = silk_inner_product2_FLP(&ptr1, t) as f32;
     }
 }
 
-pub unsafe fn silk_corrMatrix_FLP(x: *const f32, L: i32, Order: i32, XX: *mut f32) {
-    let mut j: i32 = 0;
-    let mut lag: i32 = 0;
-    let mut energy: f64 = 0.;
-    let mut ptr1: *const f32 = 0 as *const f32;
-    let mut ptr2: *const f32 = 0 as *const f32;
-    ptr1 = &*x.offset((Order - 1) as isize) as *const f32;
-    energy = silk_energy_FLP(std::slice::from_raw_parts(ptr1, L as usize));
-    *XX.offset((0 * Order + 0) as isize) = energy as f32;
-    j = 1;
-    while j < Order {
-        energy += (*ptr1.offset(-j as isize) * *ptr1.offset(-j as isize)
-            - *ptr1.offset((L - j) as isize) * *ptr1.offset((L - j) as isize))
-            as f64;
-        *XX.offset((j * Order + j) as isize) = energy as f32;
-        j += 1;
-    }
-    ptr2 = &*x.offset((Order - 2) as isize) as *const f32;
-    lag = 1;
-    while lag < Order {
-        energy = silk_inner_product_FLP(
-            std::slice::from_raw_parts(ptr1, L as usize),
-            std::slice::from_raw_parts(ptr2, L as usize),
-        );
-        *XX.offset((lag * Order + 0) as isize) = energy as f32;
-        *XX.offset((0 * Order + lag) as isize) = energy as f32;
-        j = 1;
-        while j < Order - lag {
-            energy += (*ptr1.offset(-j as isize) * *ptr2.offset(-j as isize)
-                - *ptr1.offset((L - j) as isize) * *ptr2.offset((L - j) as isize))
-                as f64;
-            *XX.offset(((lag + j) * Order + j) as isize) = energy as f32;
-            *XX.offset((j * Order + (lag + j)) as isize) = energy as f32;
-            j += 1;
+/// Calculates correlation matrix X'*X
+///
+/// ```text
+/// x       I   x vector [ L+order-1 ] used to create X
+/// L       I   Length of vectors
+/// Order   I   Max lag for correlation
+/// XX      O   X'*X correlation matrix [order x order]
+/// ```
+pub fn silk_corrMatrix_FLP<Dx, L, Order>(
+    x: &VectorView<f32, Dx>,
+    L: L,
+    XX: &mut MatrixViewMut<f32, Order, Order>,
+) where
+    Dx: Dim,
+    L: Dim,
+    Order: Dim,
+{
+    let (Order, _) = XX.shape_generic();
+    assert_eq!(x.shape().0, L.value() + Order.value() - 1);
+
+    let window_at = |lag: usize| x.generic_view((Order.value() - 1 - lag, 0), (L, U1));
+    let hvalue_at = |lag: usize| x[Order.value() - 1 - lag];
+    let tvalue_at = |lag: usize| x[Order.value() + L.value() - 1 - lag];
+
+    let Order = Order.value();
+
+    // calculate the diagonal by using a sliding window
+    for lag in 0..Order {
+        // use a sliding window
+        let mut energy = silk_inner_product2_FLP(&window_at(0), &window_at(lag));
+        XX[(lag, 0)] = energy as f32;
+        XX[(0, lag)] = energy as f32;
+
+        for j in 1..(Order - lag) {
+            energy +=
+                // yes, this is how it's done in the C impl: the sliding window diff is calculated as an f32
+                (hvalue_at(j) * hvalue_at(lag + j) - tvalue_at(j) * tvalue_at(lag + j)) as f64;
+            XX[(lag + j, j)] = energy as f32;
+            XX[(j, lag + j)] = energy as f32;
         }
-        ptr2 = ptr2.offset(-1);
-        lag += 1;
     }
 }
