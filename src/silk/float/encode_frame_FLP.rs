@@ -194,10 +194,8 @@ pub unsafe fn silk_encode_frame_FLP(
         gainMult_Q8 = ((1 * ((1) << 8)) as f64 + 0.5f64) as i32 as i16;
         found_lower = 0;
         found_upper = 0;
-        gainsID = silk_gains_ID(
-            ((*psEnc).sCmn.indices.GainsIndices).as_mut_ptr() as *const i8,
-            (*psEnc).sCmn.nb_subfr,
-        );
+        gainsID =
+            silk_gains_ID(&(*psEnc).sCmn.indices.GainsIndices[..(*psEnc).sCmn.nb_subfr as usize]);
         gainsID_lower = -1;
         gainsID_upper = -1;
         sRangeEnc_copy = psRangeEnc.save();
@@ -450,8 +448,7 @@ pub unsafe fn silk_encode_frame_FLP(
                     condCoding == CODE_CONDITIONALLY,
                 );
                 gainsID = silk_gains_ID(
-                    ((*psEnc).sCmn.indices.GainsIndices).as_mut_ptr() as *const i8,
-                    (*psEnc).sCmn.nb_subfr,
+                    &(*psEnc).sCmn.indices.GainsIndices[..(*psEnc).sCmn.nb_subfr as usize],
                 );
                 i = 0;
                 while i < (*psEnc).sCmn.nb_subfr {

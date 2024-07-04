@@ -114,14 +114,15 @@ pub fn silk_gains_dequant(gain_Q16: &mut [i32], ind: &[i8], prev_ind: &mut i8, c
     });
 }
 
-pub unsafe fn silk_gains_ID(ind: *const i8, nb_subfr: i32) -> i32 {
-    let mut k: i32 = 0;
-    let mut gainsID: i32 = 0;
-    gainsID = 0;
-    k = 0;
-    while k < nb_subfr {
-        gainsID = *ind.offset(k as isize) as i32 + ((gainsID as u32) << 8) as i32;
-        k += 1;
+/// Compute unique identifier of gain indices vector
+#[inline]
+pub fn silk_gains_ID(ind: &[i8]) -> i32 {
+    assert!(ind.len() <= 4);
+    let mut gainsID = 0;
+
+    for &ind in ind {
+        gainsID = ind as i32 | (gainsID << 8);
     }
+
     return gainsID;
 }
