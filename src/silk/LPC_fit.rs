@@ -41,7 +41,7 @@ pub unsafe fn silk_LPC_fit(a_QOUT: *mut i16, a_QIN: *mut i32, QOUT: i32, QIN: i3
         maxabs = if maxabs < 163838 { maxabs } else { 163838 };
         chirp_Q16 = (0.999f64 * ((1) << 16) as f64 + 0.5f64) as i32
             - (((maxabs - 0x7fff) as u32) << 14) as i32 / (maxabs * (idx + 1) >> 2);
-        silk_bwexpander_32(a_QIN, d, chirp_Q16);
+        silk_bwexpander_32(std::slice::from_raw_parts_mut(a_QIN, d as usize), chirp_Q16);
         i += 1;
     }
     if i == 10 {

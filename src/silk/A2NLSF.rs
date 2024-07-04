@@ -178,7 +178,10 @@ pub unsafe fn silk_A2NLSF(NLSF: *mut i16, a_Q16: *mut i32, d: i32) {
                     }
                     return;
                 }
-                silk_bwexpander_32(a_Q16, d, 65536 - ((1) << i) as i32);
+                silk_bwexpander_32(
+                    std::slice::from_raw_parts_mut(a_Q16, d as usize),
+                    65536 - ((1) << i) as i32,
+                );
                 silk_A2NLSF_init(a_Q16, P.as_mut_ptr(), Q.as_mut_ptr(), dd);
                 p = P.as_mut_ptr();
                 xlo = silk_LSFCosTab_FIX_Q12[0 as usize] as i32;
