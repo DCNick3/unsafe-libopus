@@ -19,7 +19,7 @@ where
     R: Dim,
     C: Dim,
 {
-    assert!(slice.len() <= rows.value() * cols.value());
+    assert!(slice.len() >= rows.value() * cols.value());
     Matrix::from_data(unsafe {
         ViewStorageMut::from_raw_parts(slice.as_mut_ptr(), (rows, cols), (cols, U1))
     })
@@ -30,7 +30,7 @@ where
     R: Dim,
     C: Dim,
 {
-    assert!(slice.len() <= rows.value() * cols.value());
+    assert!(slice.len() >= rows.value() * cols.value());
     Matrix::from_data(unsafe {
         ViewStorage::from_raw_parts(slice.as_ptr(), (rows, cols), (cols, U1))
     })
