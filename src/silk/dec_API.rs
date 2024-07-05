@@ -43,7 +43,7 @@ pub struct silk_decoder {
     pub sStereo: stereo_dec_state,
     pub nChannelsAPI: i32,
     pub nChannelsInternal: i32,
-    pub prev_decode_only_middle: i32,
+    pub prev_decode_only_middle: bool,
 }
 pub fn silk_InitDecoder() -> silk_decoder {
     silk_decoder {
@@ -51,7 +51,7 @@ pub fn silk_InitDecoder() -> silk_decoder {
         sStereo: stereo_dec_state::default(),
         nChannelsAPI: 0,
         nChannelsInternal: 0,
-        prev_decode_only_middle: 0,
+        prev_decode_only_middle: false,
     }
 }
 pub unsafe fn silk_Decode(
@@ -66,7 +66,7 @@ pub unsafe fn silk_Decode(
 ) -> i32 {
     let mut i: i32 = 0;
     let mut n: i32 = 0;
-    let mut decode_only_middle: i32 = 0;
+    let mut decode_only_middle: bool = false;
     let mut ret: i32 = SILK_NO_ERROR;
     let mut nSamplesOutDec: i32 = 0;
     let mut LBRR_symbol: i32 = 0;
@@ -203,7 +203,7 @@ pub unsafe fn silk_Decode(
                         let mut pulses: [i16; 320] = [0; 320];
                         let mut condCoding: i32 = 0;
                         if decControl.nChannelsInternal == 2 && n == 0 {
-                            silk_stereo_decode_pred(psRangeDec, MS_pred_Q13.as_mut_ptr());
+                            silk_stereo_decode_pred(psRangeDec, &mut MS_pred_Q13);
                             if channel_state[1].LBRR_flags[i as usize] == 0 {
                                 silk_stereo_decode_mid_only(psRangeDec, &mut decode_only_middle);
                             }
@@ -247,7 +247,7 @@ pub unsafe fn silk_Decode(
             || lostFlag == FLAG_DECODE_LBRR
                 && channel_state[0].LBRR_flags[channel_state[0].nFramesDecoded as usize] == 1
         {
-            silk_stereo_decode_pred(psRangeDec, MS_pred_Q13.as_mut_ptr());
+            silk_stereo_decode_pred(psRangeDec, &mut MS_pred_Q13);
             if lostFlag == FLAG_DECODE_NORMAL
                 && channel_state[1].VAD_flags[channel_state[0].nFramesDecoded as usize] == 0
                 || lostFlag == FLAG_DECODE_LBRR
@@ -255,7 +255,7 @@ pub unsafe fn silk_Decode(
             {
                 silk_stereo_decode_mid_only(psRangeDec, &mut decode_only_middle);
             } else {
-                decode_only_middle = 0;
+                decode_only_middle = false;
             }
         } else {
             n = 0;
@@ -266,8 +266,8 @@ pub unsafe fn silk_Decode(
         }
     }
     if decControl.nChannelsInternal == 2
-        && decode_only_middle == 0
-        && psDec.prev_decode_only_middle == 1
+        && decode_only_middle == false
+        && psDec.prev_decode_only_middle == true
     {
         memset(
             (channel_state[1].outBuf).as_mut_ptr() as *mut core::ffi::c_void,
@@ -305,9 +305,9 @@ pub unsafe fn silk_Decode(
             .offset(2 as isize);
     }
     if lostFlag == FLAG_DECODE_NORMAL {
-        has_side = (decode_only_middle == 0) as i32;
+        has_side = (decode_only_middle == false) as i32;
     } else {
-        has_side = (psDec.prev_decode_only_middle == 0
+        has_side = (psDec.prev_decode_only_middle == false
             || decControl.nChannelsInternal == 2
                 && lostFlag == FLAG_DECODE_LBRR
                 && channel_state[1].LBRR_flags[channel_state[1].nFramesDecoded as usize] == 1)
@@ -328,7 +328,7 @@ pub unsafe fn silk_Decode(
                     } else {
                         CODE_INDEPENDENTLY
                     };
-            } else if n > 0 && psDec.prev_decode_only_middle != 0 {
+            } else if n > 0 && psDec.prev_decode_only_middle != false {
                 condCoding_0 = CODE_INDEPENDENTLY_NO_LTP_SCALING;
             } else {
                 condCoding_0 = CODE_CONDITIONALLY;
