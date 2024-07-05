@@ -34,7 +34,7 @@ pub fn silk_stereo_decode_pred(psRangeDec: &mut ec_dec, pred_Q13: &mut [i32; 2])
         ix[n][0] += 3 * ix[n][2];
         let low_Q13 = silk_stereo_pred_quant_Q13[ix[n][0]] as i32;
         let step_Q13 = silk_SMULWB(
-            (silk_stereo_pred_quant_Q13[ix[n][0] + 1] as i32 - low_Q13),
+            silk_stereo_pred_quant_Q13[ix[n][0] + 1] as i32 - low_Q13,
             SILK_FIX_CONST!(0.5 / STEREO_QUANT_SUB_STEPS as f64, 16),
         );
 

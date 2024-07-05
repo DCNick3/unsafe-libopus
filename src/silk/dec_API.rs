@@ -357,10 +357,10 @@ pub unsafe fn silk_Decode(
     if decControl.nChannelsAPI == 2 && decControl.nChannelsInternal == 2 {
         silk_stereo_MS_to_LR(
             &mut psDec.sStereo,
-            samplesOut1_tmp[0 as usize],
-            samplesOut1_tmp[1 as usize],
-            MS_pred_Q13.as_mut_ptr() as *const i32,
-            channel_state[0].fs_kHz,
+            std::slice::from_raw_parts_mut(samplesOut1_tmp[0], nSamplesOutDec as usize + 2),
+            std::slice::from_raw_parts_mut(samplesOut1_tmp[1], nSamplesOutDec as usize + 2),
+            &MS_pred_Q13,
+            channel_state[0].fs_kHz as usize,
             nSamplesOutDec,
         );
     } else {

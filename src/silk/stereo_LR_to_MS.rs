@@ -277,7 +277,7 @@ pub unsafe fn silk_stereo_LR_to_MS(
     }
     if *mid_only_flag as i32 == 1 {
         (*state).silent_side_len = ((*state).silent_side_len as i32
-            + (frame_length - STEREO_INTERP_LEN_MS * fs_kHz))
+            + (frame_length - STEREO_INTERP_LEN_MS as i32 * fs_kHz))
             as i16;
         if ((*state).silent_side_len as i32) < LA_SHAPE_MS * fs_kHz {
             *mid_only_flag = 0;
@@ -328,7 +328,7 @@ pub unsafe fn silk_stereo_LR_to_MS(
         >> 16) as i32 as u32)
         << 10) as i32;
     n = 0;
-    while n < STEREO_INTERP_LEN_MS * fs_kHz {
+    while n < STEREO_INTERP_LEN_MS as i32 * fs_kHz {
         pred0_Q13 += delta0_Q13;
         pred1_Q13 += delta1_Q13;
         w_Q24 += deltaw_Q24;
@@ -367,7 +367,7 @@ pub unsafe fn silk_stereo_LR_to_MS(
     pred0_Q13 = -pred_Q13[0 as usize];
     pred1_Q13 = -pred_Q13[1 as usize];
     w_Q24 = ((width_Q14 as u32) << 10) as i32;
-    n = STEREO_INTERP_LEN_MS * fs_kHz;
+    n = STEREO_INTERP_LEN_MS as i32 * fs_kHz;
     while n < frame_length {
         sum = (((*mid.offset(n as isize) as i32
             + *mid.offset((n + 2) as isize) as i32
