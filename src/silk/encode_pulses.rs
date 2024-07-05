@@ -64,14 +64,14 @@ pub fn silk_encode_pulses(
     iter = frame_length >> 4;
     // special case for 10 ms @ 12 kHz: the frame length is not a multiple of SHELL_CODEC_FRAME_LENGTH
     // we expand the frame length to the next multiple of SHELL_CODEC_FRAME_LENGTH, filling the extra space with zeros
-    if iter * SHELL_CODEC_FRAME_LENGTH < frame_length {
+    if iter * (SHELL_CODEC_FRAME_LENGTH as i32) < frame_length {
         assert_eq!(frame_length, 12 * 10); /* Make sure only happens for 10 ms @ 12 kHz */
         iter += 1;
 
         // zero out the unused part of pulses_buffer
         pulses_buffer[frame_length as usize..].fill(0);
     }
-    let pulses_frame = &mut pulses_buffer[..(iter * SHELL_CODEC_FRAME_LENGTH) as usize];
+    let pulses_frame = &mut pulses_buffer[..iter as usize * SHELL_CODEC_FRAME_LENGTH];
 
     /* Take the absolute value of the pulses */
     let mut abs_pulses = pulses_frame
@@ -111,12 +111,12 @@ pub fn silk_encode_pulses(
             }
             nRshifts[i as usize] += 1;
             k = 0;
-            while k < SHELL_CODEC_FRAME_LENGTH {
+            while k < SHELL_CODEC_FRAME_LENGTH as i32 {
                 abs_pulses_ptr[k as usize] >>= 1;
                 k += 1;
             }
         }
-        abs_pulses_ptr = &mut abs_pulses_ptr[SHELL_CODEC_FRAME_LENGTH as usize..];
+        abs_pulses_ptr = &mut abs_pulses_ptr[SHELL_CODEC_FRAME_LENGTH..];
 
         i += 1;
     }
@@ -198,11 +198,11 @@ pub fn silk_encode_pulses(
     i = 0;
     while i < iter {
         if nRshifts[i as usize] > 0 {
-            let pulses_ptr = &mut pulses_frame[(i * SHELL_CODEC_FRAME_LENGTH) as usize..]
+            let pulses_ptr = &mut pulses_frame[i as usize * SHELL_CODEC_FRAME_LENGTH..]
                 [..SHELL_CODEC_FRAME_LENGTH as usize];
             nLS = nRshifts[i as usize] - 1;
             k = 0;
-            while k < SHELL_CODEC_FRAME_LENGTH {
+            while k < SHELL_CODEC_FRAME_LENGTH as i32 {
                 abs_q = pulses_ptr[k as usize].abs() as i32;
                 j = nLS;
                 while j > 0 {

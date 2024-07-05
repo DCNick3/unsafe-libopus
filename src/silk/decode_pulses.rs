@@ -13,10 +13,8 @@ pub unsafe fn silk_decode_pulses(
     quantOffsetType: i32,
     frame_length: i32,
 ) {
-    let mut i: i32 = 0;
     let mut j: i32 = 0;
     let mut k: i32 = 0;
-    let mut iter: i32 = 0;
     let mut abs_q: i32 = 0;
     let mut nLS: i32 = 0;
     let mut RateLevelIndex: i32 = 0;
@@ -28,13 +26,14 @@ pub unsafe fn silk_decode_pulses(
         &(silk_rate_levels_iCDF[(signalType >> 1) as usize]),
         8,
     );
-    iter = frame_length >> 4;
-    if iter * SHELL_CODEC_FRAME_LENGTH < frame_length {
-        assert!(frame_length == 12 * 10);
+    let mut iter = frame_length / SHELL_CODEC_FRAME_LENGTH as i32;
+    if iter * (SHELL_CODEC_FRAME_LENGTH as i32) < frame_length {
+        assert_eq!(frame_length, 12 * 10); /* Make sure only happens for 10 ms @ 12 kHz */
         iter += 1;
     }
+    let iter = iter;
     let cdf_ptr = &silk_pulses_per_block_iCDF[RateLevelIndex as usize];
-    i = 0;
+    let mut i = 0;
     while i < iter {
         nLshifts[i as usize] = 0;
         sum_pulses[i as usize] = ec_dec_icdf(psRangeDec, cdf_ptr, 8);
@@ -49,7 +48,7 @@ pub unsafe fn silk_decode_pulses(
         }
         i += 1;
     }
-    i = 0;
+    let mut i = 0;
     while i < iter {
         if sum_pulses[i as usize] > 0 {
             silk_shell_decoder(
@@ -70,13 +69,13 @@ pub unsafe fn silk_decode_pulses(
         }
         i += 1;
     }
-    i = 0;
+    let mut i = 0;
     while i < iter {
         if nLshifts[i as usize] > 0 {
             nLS = nLshifts[i as usize];
             pulses_ptr = &mut *pulses.offset((i as i16 as i32 * 16) as isize) as *mut i16;
             k = 0;
-            while k < SHELL_CODEC_FRAME_LENGTH {
+            while k < SHELL_CODEC_FRAME_LENGTH as i32 {
                 abs_q = *pulses_ptr.offset(k as isize) as i32;
                 j = 0;
                 while j < nLS {
@@ -93,10 +92,9 @@ pub unsafe fn silk_decode_pulses(
     }
     silk_decode_signs(
         psRangeDec,
-        pulses,
-        frame_length,
+        std::slice::from_raw_parts_mut(pulses, iter as usize * SHELL_CODEC_FRAME_LENGTH),
         signalType,
         quantOffsetType,
-        sum_pulses.as_mut_ptr() as *const i32,
+        &sum_pulses[..iter as usize],
     );
 }
