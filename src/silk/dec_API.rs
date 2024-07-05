@@ -26,7 +26,7 @@ use crate::silk::decode_pulses::silk_decode_pulses;
 use crate::silk::decoder_set_fs::silk_decoder_set_fs;
 use crate::silk::define::{
     CODE_CONDITIONALLY, CODE_INDEPENDENTLY, CODE_INDEPENDENTLY_NO_LTP_SCALING, MAX_API_FS_KHZ,
-    TYPE_NO_VOICE_ACTIVITY, TYPE_VOICED,
+    SHELL_CODEC_FRAME_LENGTH, TYPE_NO_VOICE_ACTIVITY, TYPE_VOICED,
 };
 use crate::silk::init_decoder::silk_init_decoder;
 use crate::silk::resampler::silk_resampler;
@@ -220,12 +220,20 @@ pub unsafe fn silk_Decode(
                             1,
                             condCoding,
                         );
+
+                        let frame_length = channel_state[n as usize].frame_length as usize;
+                        let mut shell_frames = frame_length / SHELL_CODEC_FRAME_LENGTH;
+                        if shell_frames * SHELL_CODEC_FRAME_LENGTH < frame_length {
+                            assert_eq!(frame_length, 12 * 10); /* Make sure only happens for 10 ms @ 12 kHz */
+                            shell_frames += 1;
+                        }
+                        let frame_buffer_length = shell_frames * SHELL_CODEC_FRAME_LENGTH;
+
                         silk_decode_pulses(
                             psRangeDec,
-                            pulses.as_mut_ptr(),
+                            &mut pulses[..frame_buffer_length],
                             channel_state[n as usize].indices.signalType as i32,
                             channel_state[n as usize].indices.quantOffsetType as i32,
-                            channel_state[n as usize].frame_length,
                         );
                     }
                     n += 1;

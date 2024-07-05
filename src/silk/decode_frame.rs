@@ -5,6 +5,7 @@ use crate::silk::decode_core::silk_decode_core;
 use crate::silk::decode_indices::silk_decode_indices;
 use crate::silk::decode_parameters::silk_decode_parameters;
 use crate::silk::decode_pulses::silk_decode_pulses;
+use crate::silk::define::SHELL_CODEC_FRAME_LENGTH;
 use crate::silk::structs::{silk_decoder_control, silk_decoder_state};
 use crate::silk::CNG::silk_CNG;
 use crate::silk::PLC::{silk_PLC, silk_PLC_glue_frames};
@@ -34,8 +35,10 @@ pub unsafe fn silk_decode_frame(
     if lostFlag == FLAG_DECODE_NORMAL
         || lostFlag == FLAG_DECODE_LBRR && psDec.LBRR_flags[psDec.nFramesDecoded as usize] == 1
     {
-        let vla = (L + 16 - 1 & !(16 - 1)) as usize;
-        let mut pulses: Vec<i16> = ::std::vec::from_elem(0, vla);
+        // add room for padding samples so that the samples are a multiple of 16
+        // these samples are not _really_ part of the frame
+        let padded_frame_length = (L as usize).next_multiple_of(SHELL_CODEC_FRAME_LENGTH);
+        let mut pulses: Vec<i16> = ::std::vec::from_elem(0, padded_frame_length);
         silk_decode_indices(
             psDec,
             psRangeDec,
@@ -45,10 +48,9 @@ pub unsafe fn silk_decode_frame(
         );
         silk_decode_pulses(
             psRangeDec,
-            pulses.as_mut_ptr(),
+            &mut pulses,
             psDec.indices.signalType as i32,
             psDec.indices.quantOffsetType as i32,
-            psDec.frame_length,
         );
         silk_decode_parameters(psDec, &mut psDecCtrl, condCoding);
         silk_decode_core(
