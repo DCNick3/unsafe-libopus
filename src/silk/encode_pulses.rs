@@ -224,7 +224,6 @@ pub fn silk_encode_pulses(
     silk_encode_signs(
         psRangeEnc,
         pulses_frame,
-        frame_length,
         signalType,
         quantOffsetType,
         &sum_pulses,
