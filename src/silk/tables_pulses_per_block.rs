@@ -1,5 +1,7 @@
+use crate::silk::define::{N_RATE_LEVELS, SILK_MAX_PULSES};
+
 pub static silk_max_pulses_table: [u8; 4] = [8, 10, 12, 16];
-pub static silk_pulses_per_block_iCDF: [[u8; 18]; 10] = [
+pub static silk_pulses_per_block_iCDF: [[u8; SILK_MAX_PULSES + 2]; N_RATE_LEVELS] = [
     [
         125, 51, 26, 18, 15, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0,
     ],
@@ -31,7 +33,7 @@ pub static silk_pulses_per_block_iCDF: [[u8; 18]; 10] = [
         255, 254, 253, 247, 220, 162, 106, 67, 42, 28, 18, 12, 9, 6, 4, 3, 2, 0,
     ],
 ];
-pub static silk_pulses_per_block_BITS_Q5: [[u8; 18]; 9] = [
+pub static silk_pulses_per_block_BITS_Q5: [[u8; SILK_MAX_PULSES + 2]; N_RATE_LEVELS - 1] = [
     [
         31, 57, 107, 160, 205, 205, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     ],
@@ -60,11 +62,11 @@ pub static silk_pulses_per_block_BITS_Q5: [[u8; 18]; 9] = [
         255, 224, 224, 182, 155, 134, 118, 109, 104, 102, 106, 111, 118, 131, 145, 160, 173, 131,
     ],
 ];
-pub static silk_rate_levels_iCDF: [[u8; 9]; 2] = [
+pub static silk_rate_levels_iCDF: [[u8; N_RATE_LEVELS - 1]; 2] = [
     [241, 190, 178, 132, 87, 74, 41, 14, 0],
     [223, 193, 157, 140, 106, 57, 39, 18, 0],
 ];
-pub static silk_rate_levels_BITS_Q5: [[u8; 9]; 2] = [
+pub static silk_rate_levels_BITS_Q5: [[u8; N_RATE_LEVELS - 1]; 2] = [
     [131, 74, 141, 79, 80, 138, 95, 104, 134],
     [95, 99, 91, 125, 93, 76, 123, 115, 123],
 ];

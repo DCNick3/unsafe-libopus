@@ -37,11 +37,11 @@ pub unsafe fn silk_decode_pulses(
     while i < iter {
         nLshifts[i as usize] = 0;
         sum_pulses[i as usize] = ec_dec_icdf(psRangeDec, cdf_ptr, 8);
-        while sum_pulses[i as usize] == SILK_MAX_PULSES + 1 {
+        while sum_pulses[i as usize] == SILK_MAX_PULSES as i32 + 1 {
             nLshifts[i as usize] += 1;
             sum_pulses[i as usize] = ec_dec_icdf(
                 psRangeDec,
-                &silk_pulses_per_block_iCDF[(N_RATE_LEVELS - 1) as usize]
+                &silk_pulses_per_block_iCDF[N_RATE_LEVELS - 1]
                     [(nLshifts[i as usize] == 10) as i32 as usize..],
                 8,
             );
@@ -54,7 +54,7 @@ pub unsafe fn silk_decode_pulses(
             silk_shell_decoder(
                 std::slice::from_raw_parts_mut(
                     &mut *pulses.offset((i as i16 as i32 * 16) as isize),
-                    SHELL_CODEC_FRAME_LENGTH as usize,
+                    SHELL_CODEC_FRAME_LENGTH,
                 ),
                 psRangeDec,
                 sum_pulses[i as usize],
