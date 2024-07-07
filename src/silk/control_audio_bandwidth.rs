@@ -39,13 +39,13 @@ pub unsafe fn silk_control_audio_bandwidth(
         };
         fs_kHz = fs_Hz / 1000;
     } else {
-        if psEncC.sLP.transition_frame_no >= TRANSITION_FRAMES {
+        if psEncC.sLP.transition_frame_no >= TRANSITION_FRAMES as i32 {
             psEncC.sLP.mode = 0;
         }
         if psEncC.allow_bandwidth_switch != 0 || (*encControl).opusCanSwitch != 0 {
             if orig_kHz as i16 as i32 * 1000 > psEncC.desiredInternal_fs_Hz {
                 if psEncC.sLP.mode == 0 {
-                    psEncC.sLP.transition_frame_no = TRANSITION_FRAMES;
+                    psEncC.sLP.transition_frame_no = TRANSITION_FRAMES as i32;
                     memset(
                         (psEncC.sLP.In_LP_State).as_mut_ptr() as *mut core::ffi::c_void,
                         0,

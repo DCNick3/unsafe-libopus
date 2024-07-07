@@ -28,7 +28,7 @@ pub unsafe fn silk_process_gains_FLP(
     if (*psEnc).sCmn.indices.signalType as i32 == TYPE_VOICED {
         s = 1.0f32 - 0.5f32 * silk_sigmoid(0.25f32 * ((*psEncCtrl).LTPredCodGain - 12.0f32));
         k = 0;
-        while k < (*psEnc).sCmn.nb_subfr {
+        while k < (*psEnc).sCmn.nb_subfr as i32 {
             (*psEncCtrl).Gains[k as usize] *= s;
             k += 1;
         }
@@ -36,14 +36,14 @@ pub unsafe fn silk_process_gains_FLP(
     InvMaxSqrVal = silk_exp2(0.33f32 * (21.0f32 - (*psEnc).sCmn.SNR_dB_Q7 as f32 * (1.0 / 128.0)))
         / (*psEnc).sCmn.subfr_length as f32;
     k = 0;
-    while k < (*psEnc).sCmn.nb_subfr {
+    while k < (*psEnc).sCmn.nb_subfr as i32 {
         gain = (*psEncCtrl).Gains[k as usize];
         gain = celt_sqrt(gain * gain + (*psEncCtrl).ResNrg[k as usize] * InvMaxSqrVal);
         (*psEncCtrl).Gains[k as usize] = if gain < 32767.0f32 { gain } else { 32767.0f32 };
         k += 1;
     }
     k = 0;
-    while k < (*psEnc).sCmn.nb_subfr {
+    while k < (*psEnc).sCmn.nb_subfr as i32 {
         pGains_Q16[k as usize] = ((*psEncCtrl).Gains[k as usize] * 65536.0f32) as i32;
         k += 1;
     }
@@ -60,7 +60,7 @@ pub unsafe fn silk_process_gains_FLP(
         condCoding == CODE_CONDITIONALLY,
     );
     k = 0;
-    while k < (*psEnc).sCmn.nb_subfr {
+    while k < (*psEnc).sCmn.nb_subfr as i32 {
         (*psEncCtrl).Gains[k as usize] = pGains_Q16[k as usize] as f32 / 65536.0f32;
         k += 1;
     }

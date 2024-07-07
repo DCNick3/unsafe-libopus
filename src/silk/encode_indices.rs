@@ -65,7 +65,7 @@ pub unsafe fn silk_encode_indices(
         );
     }
     i = 1;
-    while i < psEncC.nb_subfr {
+    while i < psEncC.nb_subfr as i32 {
         ec_enc_icdf(
             psRangeEnc,
             (*psIndices).GainsIndices[i as usize] as i32,
@@ -77,9 +77,8 @@ pub unsafe fn silk_encode_indices(
     ec_enc_icdf(
         psRangeEnc,
         (*psIndices).NLSFIndices[0 as usize] as i32,
-        &psEncC.psNLSF_CB.CB1_iCDF[(((*psIndices).signalType as i32 >> 1)
-            * psEncC.psNLSF_CB.nVectors as i32)
-            as usize..],
+        &psEncC.psNLSF_CB.CB1_iCDF
+            [(((*psIndices).signalType as i32 >> 1) * psEncC.psNLSF_CB.nVectors as i32) as usize..],
         8,
     );
     silk_NLSF_unpack(
@@ -175,7 +174,7 @@ pub unsafe fn silk_encode_indices(
             8,
         );
         k = 0;
-        while k < psEncC.nb_subfr {
+        while k < psEncC.nb_subfr as i32 {
             ec_enc_icdf(
                 psRangeEnc,
                 (*psIndices).LTPIndex[k as usize] as i32,

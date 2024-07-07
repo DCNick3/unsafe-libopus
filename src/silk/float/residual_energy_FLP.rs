@@ -33,7 +33,7 @@ pub unsafe fn silk_residual_energy_FLP(
             LPC_res_ptr.offset((1 * shift) as isize),
             subfr_length as usize,
         ))) as f32;
-    if nb_subfr == MAX_NB_SUBFR {
+    if nb_subfr == MAX_NB_SUBFR as i32 {
         silk_LPC_analysis_filter_FLP(
             LPC_res.as_mut_ptr(),
             (*a.offset(1 as isize)).as_mut_ptr() as *const f32,

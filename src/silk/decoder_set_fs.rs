@@ -18,13 +18,13 @@ pub unsafe fn silk_decoder_set_fs(
     let mut frame_length: i32 = 0;
     assert!(fs_kHz == 8 || fs_kHz == 12 || fs_kHz == 16);
     assert!(psDec.nb_subfr == 4 || psDec.nb_subfr == 4 / 2);
-    psDec.subfr_length = 5 * fs_kHz as i16 as i32;
+    psDec.subfr_length = 5 * fs_kHz as usize;
     frame_length = psDec.nb_subfr as i16 as i32 * psDec.subfr_length as i16 as i32;
     if psDec.fs_kHz != fs_kHz || psDec.fs_API_hz != fs_API_Hz {
         psDec.resampler_state = silk_resampler_init(fs_kHz as i16 as i32 * 1000, fs_API_Hz, 0);
         psDec.fs_API_hz = fs_API_Hz;
     }
-    if psDec.fs_kHz != fs_kHz || frame_length != psDec.frame_length {
+    if psDec.fs_kHz != fs_kHz || frame_length != psDec.frame_length as i32 {
         if fs_kHz == 8 {
             if psDec.nb_subfr == MAX_NB_SUBFR {
                 psDec.pitch_contour_iCDF = &silk_pitch_contour_NB_iCDF;
@@ -37,7 +37,7 @@ pub unsafe fn silk_decoder_set_fs(
             psDec.pitch_contour_iCDF = &silk_pitch_contour_10_ms_iCDF;
         }
         if psDec.fs_kHz != fs_kHz {
-            psDec.ltp_mem_length = 20 * fs_kHz as i16 as i32;
+            psDec.ltp_mem_length = 20 * fs_kHz as i16 as usize;
             if fs_kHz == 8 || fs_kHz == 12 {
                 psDec.LPC_order = MIN_LPC_ORDER;
                 psDec.psNLSF_CB = &silk_NLSF_CB_NB_MB;
@@ -70,7 +70,7 @@ pub unsafe fn silk_decoder_set_fs(
             );
         }
         psDec.fs_kHz = fs_kHz;
-        psDec.frame_length = frame_length;
+        psDec.frame_length = frame_length as usize;
     }
     assert!(psDec.frame_length > 0 && psDec.frame_length <= 5 * 4 * 16);
 

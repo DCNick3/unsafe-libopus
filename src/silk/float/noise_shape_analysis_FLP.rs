@@ -206,7 +206,7 @@ pub unsafe fn silk_noise_shape_analysis_FLP(
     BWExp = BANDWIDTH_EXPANSION / (1.0f32 + strength * strength);
     warping = (*psEnc).sCmn.warping_Q16 as f32 / 65536.0f32 + 0.01f32 * (*psEncCtrl).coding_quality;
     k = 0;
-    while k < (*psEnc).sCmn.nb_subfr {
+    while k < (*psEnc).sCmn.nb_subfr as i32 {
         let mut shift: i32 = 0;
         let mut slope_part: i32 = 0;
         let mut flat_part: i32 = 0;
@@ -294,7 +294,7 @@ pub unsafe fn silk_noise_shape_analysis_FLP(
     gain_mult = silk_exp2(-0.16f32 * SNR_adj_dB);
     gain_add = silk_exp2(0.16f32 * MIN_QGAIN_DB as f32);
     k = 0;
-    while k < (*psEnc).sCmn.nb_subfr {
+    while k < (*psEnc).sCmn.nb_subfr as i32 {
         (*psEncCtrl).Gains[k as usize] *= gain_mult;
         (*psEncCtrl).Gains[k as usize] += gain_add;
         k += 1;
@@ -308,7 +308,7 @@ pub unsafe fn silk_noise_shape_analysis_FLP(
     strength *= (*psEnc).sCmn.speech_activity_Q8 as f32 * (1.0f32 / 256.0f32);
     if (*psEnc).sCmn.indices.signalType as i32 == TYPE_VOICED {
         k = 0;
-        while k < (*psEnc).sCmn.nb_subfr {
+        while k < (*psEnc).sCmn.nb_subfr as i32 {
             b = 0.2f32 / (*psEnc).sCmn.fs_kHz as f32
                 + 3.0f32 / (*psEncCtrl).pitchL[k as usize] as f32;
             (*psEncCtrl).LF_MA_shp[k as usize] = -1.0f32 + b;
@@ -325,7 +325,7 @@ pub unsafe fn silk_noise_shape_analysis_FLP(
         (*psEncCtrl).LF_MA_shp[0 as usize] = -1.0f32 + b;
         (*psEncCtrl).LF_AR_shp[0 as usize] = 1.0f32 - b - b * strength * 0.6f32;
         k = 1;
-        while k < (*psEnc).sCmn.nb_subfr {
+        while k < (*psEnc).sCmn.nb_subfr as i32 {
             (*psEncCtrl).LF_MA_shp[k as usize] = (*psEncCtrl).LF_MA_shp[0 as usize];
             (*psEncCtrl).LF_AR_shp[k as usize] = (*psEncCtrl).LF_AR_shp[0 as usize];
             k += 1;
@@ -341,7 +341,7 @@ pub unsafe fn silk_noise_shape_analysis_FLP(
         HarmShapeGain = 0.0f32;
     }
     k = 0;
-    while k < (*psEnc).sCmn.nb_subfr {
+    while k < (*psEnc).sCmn.nb_subfr as i32 {
         (*psShapeSt).HarmShapeGain_smth +=
             SUBFR_SMTH_COEF * (HarmShapeGain - (*psShapeSt).HarmShapeGain_smth);
         (*psEncCtrl).HarmShapeGain[k as usize] = (*psShapeSt).HarmShapeGain_smth;

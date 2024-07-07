@@ -68,9 +68,9 @@ pub unsafe fn silk_VAD_GetSA_Q8_c(psEncC: &mut silk_encoder_state, pIn: *const i
     assert!(5 * 4 * 16 >= psEncC.frame_length);
     assert!(psEncC.frame_length <= 512);
     assert!(psEncC.frame_length == 8 * (psEncC.frame_length >> 3));
-    decimated_framelength1 = psEncC.frame_length >> 1;
-    decimated_framelength2 = psEncC.frame_length >> 2;
-    decimated_framelength = psEncC.frame_length >> 3;
+    decimated_framelength1 = psEncC.frame_length as i32 / 2;
+    decimated_framelength2 = psEncC.frame_length as i32 / 4;
+    decimated_framelength = psEncC.frame_length as i32 / 8;
     X_offset[0 as usize] = 0;
     X_offset[1 as usize] = decimated_framelength + decimated_framelength2;
     X_offset[2 as usize] = X_offset[1 as usize] + decimated_framelength;
@@ -84,7 +84,7 @@ pub unsafe fn silk_VAD_GetSA_Q8_c(psEncC: &mut silk_encoder_state, pIn: *const i
         &mut *X
             .as_mut_ptr()
             .offset(*X_offset.as_mut_ptr().offset(3 as isize) as isize),
-        psEncC.frame_length,
+        psEncC.frame_length as i32,
     );
     silk_ana_filt_bank_1(
         X.as_mut_ptr(),
@@ -120,7 +120,7 @@ pub unsafe fn silk_VAD_GetSA_Q8_c(psEncC: &mut silk_encoder_state, pIn: *const i
     (*psSilk_VAD).HPstate = HPstateTmp;
     b = 0;
     while b < VAD_N_BANDS {
-        decimated_framelength = psEncC.frame_length >> silk_min_int(4 - b, 4 - 1);
+        decimated_framelength = psEncC.frame_length as i32 >> silk_min_int(4 - b, 4 - 1);
         dec_subframe_length = decimated_framelength >> 2;
         dec_subframe_offset = 0;
         Xnrg[b as usize] = (*psSilk_VAD).XnrgSubfr[b as usize];
@@ -206,7 +206,7 @@ pub unsafe fn silk_VAD_GetSA_Q8_c(psEncC: &mut silk_encoder_state, pIn: *const i
         speech_nrg += (b + 1) * (Xnrg[b as usize] - (*psSilk_VAD).NL[b as usize] >> 4);
         b += 1;
     }
-    if psEncC.frame_length == 20 * psEncC.fs_kHz {
+    if psEncC.frame_length as i32 == 20 * psEncC.fs_kHz {
         speech_nrg = speech_nrg >> 1;
     }
     if speech_nrg <= 0 {
@@ -219,7 +219,7 @@ pub unsafe fn silk_VAD_GetSA_Q8_c(psEncC: &mut silk_encoder_state, pIn: *const i
     psEncC.speech_activity_Q8 = silk_min_int(SA_Q15 >> 7, silk_uint8_MAX);
     smooth_coef_Q16 =
         (4096 * (SA_Q15 as i64 * SA_Q15 as i16 as i64 >> 16) as i32 as i16 as i64 >> 16) as i32;
-    if psEncC.frame_length == 10 * psEncC.fs_kHz {
+    if psEncC.frame_length as i32 == 10 * psEncC.fs_kHz {
         smooth_coef_Q16 >>= 1;
     }
     b = 0;

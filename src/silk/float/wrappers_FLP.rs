@@ -76,7 +76,7 @@ pub unsafe fn silk_NSQ_wrapper_FLP(
     let mut Tilt_Q14: [i32; 4] = [0; 4];
     let mut HarmShapeGain_Q14: [i32; 4] = [0; 4];
     i = 0;
-    while i < (*psEnc).sCmn.nb_subfr {
+    while i < (*psEnc).sCmn.nb_subfr as i32 {
         j = 0;
         while j < (*psEnc).sCmn.shapingLPCOrder {
             AR_Q13[(i * MAX_SHAPE_LPC_ORDER + j) as usize] =
@@ -87,7 +87,7 @@ pub unsafe fn silk_NSQ_wrapper_FLP(
         i += 1;
     }
     i = 0;
-    while i < (*psEnc).sCmn.nb_subfr {
+    while i < (*psEnc).sCmn.nb_subfr as i32 {
         LF_shp_Q14[i as usize] =
             ((silk_float2int((*psEncCtrl).LF_AR_shp[i as usize] * 16384.0f32) as u32) << 16) as i32
                 | silk_float2int((*psEncCtrl).LF_MA_shp[i as usize] * 16384.0f32) as u16 as i32;
@@ -98,7 +98,7 @@ pub unsafe fn silk_NSQ_wrapper_FLP(
     }
     Lambda_Q10 = silk_float2int((*psEncCtrl).Lambda * 1024.0f32);
     i = 0;
-    while i < (*psEnc).sCmn.nb_subfr * LTP_ORDER {
+    while i < (*psEnc).sCmn.nb_subfr as i32 * LTP_ORDER as i32 {
         LTPCoef_Q14[i as usize] =
             silk_float2int((*psEncCtrl).LTPCoef[i as usize] * 16384.0f32) as i16;
         i += 1;
@@ -114,7 +114,7 @@ pub unsafe fn silk_NSQ_wrapper_FLP(
         j += 1;
     }
     i = 0;
-    while i < (*psEnc).sCmn.nb_subfr {
+    while i < (*psEnc).sCmn.nb_subfr as i32 {
         Gains_Q16[i as usize] = silk_float2int((*psEncCtrl).Gains[i as usize] * 65536.0f32);
         i += 1;
     }
@@ -124,7 +124,7 @@ pub unsafe fn silk_NSQ_wrapper_FLP(
         LTP_scale_Q14 = 0;
     }
     i = 0;
-    while i < (*psEnc).sCmn.frame_length {
+    while i < (*psEnc).sCmn.frame_length as i32 {
         x16[i as usize] = silk_float2int(*x.offset(i as isize)) as i16;
         i += 1;
     }
@@ -184,12 +184,12 @@ pub unsafe fn silk_quant_LTP_gains_FLP(
     let mut XX_Q17: [i32; 100] = [0; 100];
     let mut xX_Q17: [i32; 20] = [0; 20];
     i = 0;
-    while i < nb_subfr * LTP_ORDER * LTP_ORDER {
+    while i < nb_subfr * LTP_ORDER as i32 * LTP_ORDER as i32 {
         XX_Q17[i as usize] = silk_float2int(*XX.offset(i as isize) * 131072.0f32);
         i += 1;
     }
     i = 0;
-    while i < nb_subfr * LTP_ORDER {
+    while i < nb_subfr * LTP_ORDER as i32 {
         xX_Q17[i as usize] = silk_float2int(*xX.offset(i as isize) * 131072.0f32);
         i += 1;
     }
@@ -206,7 +206,7 @@ pub unsafe fn silk_quant_LTP_gains_FLP(
         arch,
     );
     i = 0;
-    while i < nb_subfr * LTP_ORDER {
+    while i < nb_subfr * LTP_ORDER as i32 {
         *B.offset(i as isize) = B_Q14[i as usize] as f32 * (1.0f32 / 16384.0f32);
         i += 1;
     }

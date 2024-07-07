@@ -80,7 +80,7 @@ pub fn silk_decode_indices(
         psDec.psNLSF_CB,
         psDec.indices.NLSFIndices[0] as i32,
     );
-    assert_eq!(psDec.psNLSF_CB.order as i32, psDec.LPC_order);
+    assert_eq!(psDec.psNLSF_CB.order as i32, psDec.LPC_order as i32);
     for (i, &ec_ix) in ec_ix
         .iter()
         .enumerate()

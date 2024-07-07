@@ -166,7 +166,8 @@ pub unsafe fn silk_encode_frame_FLP(
     i = 0;
     while i < 8 {
         *x_frame.offset(
-            (LA_SHAPE_MS * (*psEnc).sCmn.fs_kHz + i * ((*psEnc).sCmn.frame_length >> 3)) as isize,
+            (LA_SHAPE_MS * (*psEnc).sCmn.fs_kHz + i * ((*psEnc).sCmn.frame_length as i32 >> 3))
+                as isize,
         ) += (1 - (i & 2)) as f32 * 1e-6f32;
         i += 1;
     }
@@ -255,7 +256,7 @@ pub unsafe fn silk_encode_frame_FLP(
                     psRangeEnc.restore(sRangeEnc_copy2);
                     (*psEnc).sShape.LastGainIndex = sEncCtrl.lastGainIndexPrev;
                     i = 0;
-                    while i < (*psEnc).sCmn.nb_subfr {
+                    while i < (*psEnc).sCmn.nb_subfr as i32 {
                         (*psEnc).sCmn.indices.GainsIndices[i as usize] = 4;
                         i += 1;
                     }
@@ -265,7 +266,7 @@ pub unsafe fn silk_encode_frame_FLP(
                     (*psEnc).sCmn.ec_prevLagIndex = ec_prevLagIndex_copy;
                     (*psEnc).sCmn.ec_prevSignalType = ec_prevSignalType_copy;
                     i = 0;
-                    while i < (*psEnc).sCmn.frame_length {
+                    while i < (*psEnc).sCmn.frame_length as i32 {
                         (*psEnc).sCmn.pulses[i as usize] = 0;
                         i += 1;
                     }
@@ -351,10 +352,10 @@ pub unsafe fn silk_encode_frame_FLP(
                 if found_lower == 0 && nBits > maxBits {
                     let mut j: i32 = 0;
                     i = 0;
-                    while i < (*psEnc).sCmn.nb_subfr {
+                    while i < (*psEnc).sCmn.nb_subfr as i32 {
                         let mut sum: i32 = 0;
-                        j = i * (*psEnc).sCmn.subfr_length;
-                        while j < (i + 1) * (*psEnc).sCmn.subfr_length {
+                        j = i * (*psEnc).sCmn.subfr_length as i32;
+                        while j < (i + 1) * (*psEnc).sCmn.subfr_length as i32 {
                             sum += ((*psEnc).sCmn.pulses[j as usize] as i32).abs();
                             j += 1;
                         }
@@ -377,7 +378,8 @@ pub unsafe fn silk_encode_frame_FLP(
                     } else {
                         let mut gain_factor_Q16: i32 = 0;
                         gain_factor_Q16 = silk_log2lin(
-                            (((nBits - maxBits) as u32) << 7) as i32 / (*psEnc).sCmn.frame_length
+                            (((nBits - maxBits) as u32) << 7) as i32
+                                / (*psEnc).sCmn.frame_length as i32
                                 + ((16 * ((1) << 7)) as f64 + 0.5f64) as i32,
                         );
                         gainMult_Q8 =
@@ -399,7 +401,7 @@ pub unsafe fn silk_encode_frame_FLP(
                     }
                 }
                 i = 0;
-                while i < (*psEnc).sCmn.nb_subfr {
+                while i < (*psEnc).sCmn.nb_subfr as i32 {
                     let mut tmp: i16 = 0;
                     if gain_lock[i as usize] != 0 {
                         tmp = best_gain_mult[i as usize];
@@ -451,7 +453,7 @@ pub unsafe fn silk_encode_frame_FLP(
                     &(*psEnc).sCmn.indices.GainsIndices[..(*psEnc).sCmn.nb_subfr as usize],
                 );
                 i = 0;
-                while i < (*psEnc).sCmn.nb_subfr {
+                while i < (*psEnc).sCmn.nb_subfr as i32 {
                     sEncCtrl.Gains[i as usize] = pGains_Q16[i as usize] as f32 / 65536.0f32;
                     i += 1;
                 }
@@ -465,7 +467,7 @@ pub unsafe fn silk_encode_frame_FLP(
             .as_mut_ptr()
             .offset((*psEnc).sCmn.frame_length as isize) as *mut f32
             as *const core::ffi::c_void,
-        (((*psEnc).sCmn.ltp_mem_length + 5 * (*psEnc).sCmn.fs_kHz) as u64)
+        (((*psEnc).sCmn.ltp_mem_length + 5 * (*psEnc).sCmn.fs_kHz as usize) as u64)
             .wrapping_mul(::core::mem::size_of::<f32>() as u64),
     );
     if (*psEnc).sCmn.prefillFlag != 0 {
@@ -546,7 +548,7 @@ unsafe fn silk_LBRR_encode_FLP(
             condCoding == CODE_CONDITIONALLY,
         );
         k = 0;
-        while k < (*psEnc).sCmn.nb_subfr {
+        while k < (*psEnc).sCmn.nb_subfr as i32 {
             (*psEncCtrl).Gains[k as usize] = Gains_Q16[k as usize] as f32 * (1.0f32 / 65536.0f32);
             k += 1;
         }

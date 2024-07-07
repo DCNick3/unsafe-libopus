@@ -23,22 +23,22 @@ pub unsafe fn silk_find_pred_coefs_FLP(
     condCoding: i32,
 ) {
     let mut i: i32 = 0;
-    let mut XXLTP: [f32; (MAX_NB_SUBFR * LTP_ORDER * LTP_ORDER) as usize] = [0.; 100];
-    let mut xXLTP: [f32; (MAX_NB_SUBFR * LTP_ORDER) as usize] = [0.; 20];
-    let mut invGains: [f32; MAX_NB_SUBFR as usize] = [0.; 4];
-    let mut NLSF_Q15: [i16; MAX_LPC_ORDER as usize] = [0; 16];
+    let mut XXLTP: [f32; MAX_NB_SUBFR * LTP_ORDER * LTP_ORDER] = [0.; 100];
+    let mut xXLTP: [f32; MAX_NB_SUBFR * LTP_ORDER] = [0.; 20];
+    let mut invGains: [f32; MAX_NB_SUBFR] = [0.; 4];
+    let mut NLSF_Q15: [i16; MAX_LPC_ORDER] = [0; 16];
     let mut x_ptr: *const f32 = 0 as *const f32;
     let mut x_pre_ptr: *mut f32 = 0 as *mut f32;
-    let mut LPC_in_pre: [f32; (MAX_NB_SUBFR * MAX_LPC_ORDER + 320) as usize] = [0.; 384];
+    let mut LPC_in_pre: [f32; MAX_NB_SUBFR * MAX_LPC_ORDER + 320] = [0.; 384];
     let mut minInvGain: f32 = 0.;
     i = 0;
-    while i < (*psEnc).sCmn.nb_subfr {
+    while i < (*psEnc).sCmn.nb_subfr as i32 {
         invGains[i as usize] = 1.0f32 / (*psEncCtrl).Gains[i as usize];
         i += 1;
     }
     if (*psEnc).sCmn.indices.signalType as i32 == TYPE_VOICED {
         assert!(
-            (*psEnc).sCmn.ltp_mem_length - (*psEnc).sCmn.predictLPCOrder
+            (*psEnc).sCmn.ltp_mem_length as i32 - (*psEnc).sCmn.predictLPCOrder
                 >= (*psEncCtrl).pitchL[0 as usize] + 5 / 2
         );
         let nb_subfr = (*psEnc).sCmn.nb_subfr as usize;
@@ -80,8 +80,8 @@ pub unsafe fn silk_find_pred_coefs_FLP(
             &mut (*psEncCtrl).LTPredCodGain,
             XXLTP.as_mut_ptr() as *const f32,
             xXLTP.as_mut_ptr() as *const f32,
-            (*psEnc).sCmn.subfr_length,
-            (*psEnc).sCmn.nb_subfr,
+            (*psEnc).sCmn.subfr_length as i32,
+            (*psEnc).sCmn.nb_subfr as i32,
             (*psEnc).sCmn.arch,
         );
         silk_LTP_scale_ctrl_FLP(psEnc, psEncCtrl, condCoding);
@@ -91,23 +91,24 @@ pub unsafe fn silk_find_pred_coefs_FLP(
             ((*psEncCtrl).LTPCoef).as_mut_ptr() as *const f32,
             ((*psEncCtrl).pitchL).as_mut_ptr() as *const i32,
             invGains.as_mut_ptr() as *const f32,
-            (*psEnc).sCmn.subfr_length,
-            (*psEnc).sCmn.nb_subfr,
+            (*psEnc).sCmn.subfr_length as i32,
+            (*psEnc).sCmn.nb_subfr as i32,
             (*psEnc).sCmn.predictLPCOrder,
         );
     } else {
         x_ptr = x.offset(-((*psEnc).sCmn.predictLPCOrder as isize));
         x_pre_ptr = LPC_in_pre.as_mut_ptr();
         i = 0;
-        while i < (*psEnc).sCmn.nb_subfr {
+        while i < (*psEnc).sCmn.nb_subfr as i32 {
             silk_scale_copy_vector_FLP(
                 x_pre_ptr,
                 x_ptr,
                 invGains[i as usize],
-                (*psEnc).sCmn.subfr_length + (*psEnc).sCmn.predictLPCOrder,
+                (*psEnc).sCmn.subfr_length as i32 + (*psEnc).sCmn.predictLPCOrder as i32,
             );
-            x_pre_ptr = x_pre_ptr
-                .offset(((*psEnc).sCmn.subfr_length + (*psEnc).sCmn.predictLPCOrder) as isize);
+            x_pre_ptr = x_pre_ptr.offset(
+                ((*psEnc).sCmn.subfr_length as i32 + (*psEnc).sCmn.predictLPCOrder) as isize,
+            );
             x_ptr = x_ptr.offset((*psEnc).sCmn.subfr_length as isize);
             i += 1;
         }
@@ -143,8 +144,8 @@ pub unsafe fn silk_find_pred_coefs_FLP(
         LPC_in_pre.as_mut_ptr() as *const f32,
         ((*psEncCtrl).PredCoef).as_mut_ptr(),
         ((*psEncCtrl).Gains).as_mut_ptr() as *const f32,
-        (*psEnc).sCmn.subfr_length,
-        (*psEnc).sCmn.nb_subfr,
+        (*psEnc).sCmn.subfr_length as i32,
+        (*psEnc).sCmn.nb_subfr as i32,
         (*psEnc).sCmn.predictLPCOrder,
     );
     memcpy(

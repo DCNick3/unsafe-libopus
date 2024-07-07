@@ -121,11 +121,11 @@ pub unsafe fn silk_quant_LTP_gains(
     j = 0;
     while j < nb_subfr {
         k = 0;
-        while k < LTP_ORDER {
-            *B_Q14.offset((j * LTP_ORDER + k) as isize) = ((*cbk_ptr_Q7
-                .offset((*cbk_index.offset(j as isize) as i32 * 5 + k) as isize)
-                as u32)
-                << 7) as i32 as i16;
+        while k < LTP_ORDER as i32 {
+            *B_Q14.offset((j * LTP_ORDER as i32 + k) as isize) =
+                ((*cbk_ptr_Q7.offset((*cbk_index.offset(j as isize) as i32 * 5 + k) as isize)
+                    as u32)
+                    << 7) as i32 as i16;
             k += 1;
         }
         j += 1;

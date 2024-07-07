@@ -8,11 +8,13 @@ use crate::silk::SigProc_FIX::{silk_RSHIFT_ROUND, silk_SAT16};
 /// filter always starts with zero state
 /// first d output samples are set to zero
 ///
-/// out  O    Output signal
-/// in   I    Input signal
-/// B    I    MA prediction coefficients, Q12 [order]
-/// len  I    Signal length
-/// d    I    Filter order
+/// ```text
+/// out   O   Output signal
+/// in    I   Input signal
+/// B     I   MA prediction coefficients, Q12 [order]
+/// len   I   Signal length
+/// d     I   Filter order
+/// ```
 pub fn silk_LPC_analysis_filter(out: &mut [i16], input: &[i16], B: &[i16]) {
     let len = input.len();
     let d = B.len();

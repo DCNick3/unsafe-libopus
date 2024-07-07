@@ -83,7 +83,7 @@ pub unsafe fn silk_NLSF_encode(
         *RD_Q25.as_mut_ptr().offset(s as isize) = silk_NLSF_del_dec_quant(
             &mut *tempIndices2
                 .as_mut_ptr()
-                .offset((s * MAX_LPC_ORDER) as isize),
+                .offset((s * MAX_LPC_ORDER as i32) as isize),
             res_Q10.as_mut_ptr() as *const i16,
             W_adj_Q5.as_mut_ptr() as *const i16,
             pred_Q8.as_mut_ptr() as *const u8,

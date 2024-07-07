@@ -29,7 +29,9 @@ pub unsafe fn silk_find_pitch_lags_FLP(
     let mut refl_coef: [f32; 16] = [0.; 16];
     let mut Wsig: [f32; 384] = [0.; 384];
     let mut Wsig_ptr: *mut f32 = 0 as *mut f32;
-    buf_len = (*psEnc).sCmn.la_pitch + (*psEnc).sCmn.frame_length + (*psEnc).sCmn.ltp_mem_length;
+    buf_len = (*psEnc).sCmn.la_pitch
+        + (*psEnc).sCmn.frame_length as i32
+        + (*psEnc).sCmn.ltp_mem_length as i32;
     assert!(buf_len >= (*psEnc).sCmn.pitch_LPC_win_length);
     x_buf = x.offset(-((*psEnc).sCmn.ltp_mem_length as isize));
     x_buf_ptr = x_buf
@@ -98,7 +100,7 @@ pub unsafe fn silk_find_pitch_lags_FLP(
             thrhld,
             (*psEnc).sCmn.fs_kHz,
             (*psEnc).sCmn.pitchEstimationComplexity,
-            (*psEnc).sCmn.nb_subfr,
+            (*psEnc).sCmn.nb_subfr as i32,
             arch,
         ) == 0
         {

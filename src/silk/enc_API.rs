@@ -317,7 +317,7 @@ pub unsafe fn silk_Encode(
     let vla = nSamplesFromInputMax as usize;
     let mut buf: Vec<i16> = ::std::vec::from_elem(0, vla);
     loop {
-        nSamplesToBuffer = (*psEnc).state_Fxx[0 as usize].sCmn.frame_length
+        nSamplesToBuffer = (*psEnc).state_Fxx[0 as usize].sCmn.frame_length as i32
             - (*psEnc).state_Fxx[0 as usize].sCmn.inputBufIx;
         nSamplesToBuffer = if nSamplesToBuffer < nSamplesToBufferMax {
             nSamplesToBuffer
@@ -358,7 +358,7 @@ pub unsafe fn silk_Encode(
             );
             (*psEnc).state_Fxx[0 as usize].sCmn.inputBufIx += nSamplesToBuffer;
 
-            nSamplesToBuffer = (*psEnc).state_Fxx[1 as usize].sCmn.frame_length
+            nSamplesToBuffer = (*psEnc).state_Fxx[1 as usize].sCmn.frame_length as i32
                 - (*psEnc).state_Fxx[1 as usize].sCmn.inputBufIx;
             nSamplesToBuffer = if nSamplesToBuffer
                 < 10 * nBlocksOf10ms * (*psEnc).state_Fxx[1 as usize].sCmn.fs_kHz
@@ -415,7 +415,7 @@ pub unsafe fn silk_Encode(
                     &buf[..nSamplesFromInput as usize],
                 );
                 n = 0;
-                while n < (*psEnc).state_Fxx[0 as usize].sCmn.frame_length {
+                while n < (*psEnc).state_Fxx[0 as usize].sCmn.frame_length as i32 {
                     (*psEnc).state_Fxx[0 as usize].sCmn.inputBuf
                         [((*psEnc).state_Fxx[0 as usize].sCmn.inputBufIx + n + 2) as usize] =
                         ((*psEnc).state_Fxx[0 as usize].sCmn.inputBuf
@@ -451,18 +451,18 @@ pub unsafe fn silk_Encode(
         nSamplesIn -= nSamplesFromInput;
         (*psEnc).allowBandwidthSwitch = 0;
         if !((*psEnc).state_Fxx[0 as usize].sCmn.inputBufIx
-            >= (*psEnc).state_Fxx[0 as usize].sCmn.frame_length)
+            >= (*psEnc).state_Fxx[0 as usize].sCmn.frame_length as i32)
         {
             break;
         }
         assert!(
             (*psEnc).state_Fxx[0 as usize].sCmn.inputBufIx
-                == (*psEnc).state_Fxx[0 as usize].sCmn.frame_length
+                == (*psEnc).state_Fxx[0 as usize].sCmn.frame_length as i32
         );
         assert!(
             (*encControl).nChannelsInternal == 1
                 || (*psEnc).state_Fxx[1 as usize].sCmn.inputBufIx
-                    == (*psEnc).state_Fxx[1 as usize].sCmn.frame_length
+                    == (*psEnc).state_Fxx[1 as usize].sCmn.frame_length as i32
         );
         if (*psEnc).state_Fxx[0 as usize].sCmn.nFramesEncoded == 0 && prefillFlag == 0 {
             // https://stackoverflow.com/questions/69615120/extracting-a-mutable-reference-from-an-option
@@ -614,7 +614,7 @@ pub unsafe fn silk_Encode(
                 (*psEnc).state_Fxx[0 as usize].sCmn.speech_activity_Q8,
                 (*encControl).toMono,
                 (*psEnc).state_Fxx[0 as usize].sCmn.fs_kHz,
-                (*psEnc).state_Fxx[0 as usize].sCmn.frame_length,
+                (*psEnc).state_Fxx[0 as usize].sCmn.frame_length as i32,
             );
             if (*psEnc).sStereo.mid_only_flags
                 [(*psEnc).state_Fxx[0 as usize].sCmn.nFramesEncoded as usize] as i32

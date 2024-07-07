@@ -33,14 +33,14 @@ pub unsafe fn silk_find_LPC_FLP(
     let mut NLSF0_Q15: [i16; 16] = [0; 16];
     let mut a_tmp: [f32; 16] = [0.; 16];
     let mut LPC_res: [f32; 384] = [0.; 384];
-    subfr_length = psEncC.subfr_length + psEncC.predictLPCOrder;
+    subfr_length = psEncC.subfr_length as i32 + psEncC.predictLPCOrder;
     psEncC.indices.NLSFInterpCoef_Q2 = 4;
     res_nrg = silk_burg_modified_FLP(
         a.as_mut_ptr(),
         x,
         minInvGain,
         subfr_length,
-        psEncC.nb_subfr,
+        psEncC.nb_subfr as i32,
         psEncC.predictLPCOrder,
     );
     if psEncC.useInterpolatedNLSFs != 0
@@ -49,10 +49,10 @@ pub unsafe fn silk_find_LPC_FLP(
     {
         res_nrg -= silk_burg_modified_FLP(
             a_tmp.as_mut_ptr(),
-            x.offset((MAX_NB_SUBFR / 2 * subfr_length) as isize),
+            x.offset((MAX_NB_SUBFR as i32 / 2 * subfr_length) as isize),
             minInvGain,
             subfr_length,
-            MAX_NB_SUBFR / 2,
+            MAX_NB_SUBFR as i32 / 2,
             psEncC.predictLPCOrder,
         );
         silk_A2NLSF_FLP(NLSF_Q15, a_tmp.as_mut_ptr(), psEncC.predictLPCOrder);

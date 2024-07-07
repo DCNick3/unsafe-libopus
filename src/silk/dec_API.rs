@@ -289,7 +289,7 @@ pub unsafe fn silk_Decode(
     let vla = (if delay_stack_alloc != 0 {
         1
     } else {
-        decControl.nChannelsInternal * (channel_state[0].frame_length + 2)
+        decControl.nChannelsInternal * (channel_state[0].frame_length + 2) as i32
     }) as usize;
     let mut samplesOut1_tmp_storage1: Vec<i16> = ::std::vec::from_elem(0, vla);
     if delay_stack_alloc != 0 {
@@ -393,7 +393,7 @@ pub unsafe fn silk_Decode(
     };
 
     let vla_1 = (if delay_stack_alloc != 0 {
-        decControl.nChannelsInternal * (channel_state[0].frame_length + 2)
+        decControl.nChannelsInternal * (channel_state[0].frame_length + 2) as i32
     } else {
         1
     }) as usize;
@@ -402,7 +402,7 @@ pub unsafe fn silk_Decode(
         memcpy(
             samplesOut1_tmp_storage2.as_mut_ptr() as *mut core::ffi::c_void,
             samplesOut as *const core::ffi::c_void,
-            ((decControl.nChannelsInternal * (channel_state[0].frame_length + 2)) as u64)
+            ((decControl.nChannelsInternal * (channel_state[0].frame_length + 2) as i32) as u64)
                 .wrapping_mul(::core::mem::size_of::<i16>() as u64)
                 .wrapping_add(
                     (0 * samplesOut1_tmp_storage2

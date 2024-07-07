@@ -139,7 +139,7 @@ unsafe fn silk_setup_fs(
         if PacketSize_ms <= 10 {
             (*psEnc).sCmn.nFramesPerPacket = 1;
             (*psEnc).sCmn.nb_subfr = if PacketSize_ms == 10 { 2 } else { 1 };
-            (*psEnc).sCmn.frame_length = PacketSize_ms as i16 as i32 * fs_kHz as i16 as i32;
+            (*psEnc).sCmn.frame_length = PacketSize_ms as usize * fs_kHz as usize;
             (*psEnc).sCmn.pitch_LPC_win_length =
                 (10 + ((2) << 1)) as i16 as i32 * fs_kHz as i16 as i32;
             if (*psEnc).sCmn.fs_kHz == 8 {
@@ -150,7 +150,7 @@ unsafe fn silk_setup_fs(
         } else {
             (*psEnc).sCmn.nFramesPerPacket = PacketSize_ms / (5 * 4);
             (*psEnc).sCmn.nb_subfr = MAX_NB_SUBFR;
-            (*psEnc).sCmn.frame_length = 20 * fs_kHz as i16 as i32;
+            (*psEnc).sCmn.frame_length = 20 * fs_kHz as usize;
             (*psEnc).sCmn.pitch_LPC_win_length =
                 (20 + ((2) << 1)) as i16 as i32 * fs_kHz as i16 as i32;
             if (*psEnc).sCmn.fs_kHz == 8 {
@@ -207,16 +207,15 @@ unsafe fn silk_setup_fs(
             (*psEnc).sCmn.pitch_contour_iCDF = &silk_pitch_contour_10_ms_iCDF;
         }
         if (*psEnc).sCmn.fs_kHz == 8 || (*psEnc).sCmn.fs_kHz == 12 {
-            (*psEnc).sCmn.predictLPCOrder = MIN_LPC_ORDER;
+            (*psEnc).sCmn.predictLPCOrder = MIN_LPC_ORDER as i32;
             (*psEnc).sCmn.psNLSF_CB = &silk_NLSF_CB_NB_MB;
         } else {
-            (*psEnc).sCmn.predictLPCOrder = MAX_LPC_ORDER;
+            (*psEnc).sCmn.predictLPCOrder = MAX_LPC_ORDER as i32;
             (*psEnc).sCmn.psNLSF_CB = &silk_NLSF_CB_WB;
         }
-        (*psEnc).sCmn.subfr_length = SUB_FRAME_LENGTH_MS * fs_kHz;
-        (*psEnc).sCmn.frame_length =
-            (*psEnc).sCmn.subfr_length as i16 as i32 * (*psEnc).sCmn.nb_subfr as i16 as i32;
-        (*psEnc).sCmn.ltp_mem_length = 20 * fs_kHz as i16 as i32;
+        (*psEnc).sCmn.subfr_length = SUB_FRAME_LENGTH_MS * fs_kHz as usize;
+        (*psEnc).sCmn.frame_length = (*psEnc).sCmn.subfr_length * (*psEnc).sCmn.nb_subfr;
+        (*psEnc).sCmn.ltp_mem_length = 20 * fs_kHz as usize;
         (*psEnc).sCmn.la_pitch = 2 * fs_kHz as i16 as i32;
         (*psEnc).sCmn.max_pitch_lag = 18 * fs_kHz as i16 as i32;
         if (*psEnc).sCmn.nb_subfr == MAX_NB_SUBFR {
@@ -316,7 +315,7 @@ unsafe fn silk_setup_complexity(psEncC: &mut silk_encoder_state, Complexity: i32
     }
     psEncC.pitchEstimationLPCOrder =
         silk_min_int(psEncC.pitchEstimationLPCOrder, psEncC.predictLPCOrder);
-    psEncC.shapeWinLength = SUB_FRAME_LENGTH_MS * psEncC.fs_kHz + 2 * psEncC.la_shape;
+    psEncC.shapeWinLength = SUB_FRAME_LENGTH_MS as i32 * psEncC.fs_kHz + 2 * psEncC.la_shape;
     psEncC.Complexity = Complexity;
     assert!(psEncC.pitchEstimationLPCOrder <= 16);
     assert!(psEncC.shapingLPCOrder <= 24);

@@ -22,7 +22,7 @@ pub unsafe fn silk_decode_frame(
     let mut L: i32 = 0;
     let mut mv_len: i32 = 0;
     let ret: i32 = 0;
-    L = psDec.frame_length;
+    L = psDec.frame_length as i32;
     let mut psDecCtrl = silk_decoder_control {
         pitchL: [0; 4],
         Gains_Q16: [0; 4],
@@ -56,9 +56,8 @@ pub unsafe fn silk_decode_frame(
         silk_decode_core(
             psDec,
             &mut psDecCtrl,
-            pOut,
-            pulses.as_mut_ptr() as *const i16,
-            arch,
+            std::slice::from_raw_parts_mut(pOut, psDec.frame_length),
+            &pulses[..psDec.frame_length],
         );
         silk_PLC(psDec, &mut psDecCtrl, pOut, 0, arch);
         psDec.lossCnt = 0;
@@ -70,7 +69,7 @@ pub unsafe fn silk_decode_frame(
         silk_PLC(psDec, &mut psDecCtrl, pOut, 1, arch);
     }
     assert!(psDec.ltp_mem_length >= psDec.frame_length);
-    mv_len = psDec.ltp_mem_length - psDec.frame_length;
+    mv_len = psDec.ltp_mem_length as i32 - psDec.frame_length as i32;
     memmove(
         (psDec.outBuf).as_mut_ptr() as *mut core::ffi::c_void,
         &mut *(psDec.outBuf)

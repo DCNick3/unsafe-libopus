@@ -9,7 +9,9 @@ use crate::externs::{memcpy, memmove, memset};
 use crate::silk::define::{CNG_BUF_MASK_MAX, MAX_LPC_ORDER, TYPE_NO_VOICE_ACTIVITY};
 use crate::silk::structs::{silk_CNG_struct, silk_decoder_control, silk_decoder_state};
 use crate::silk::Inlines::silk_SQRT_APPROX;
+use crate::silk::SigProc_FIX::silk_RAND;
 use crate::silk::NLSF2A::silk_NLSF2A;
+
 #[inline]
 unsafe fn silk_CNG_exc(exc_Q14: *mut i32, exc_buf_Q14: *mut i32, length: i32, rand_seed: *mut i32) {
     let mut seed: i32 = 0;
@@ -23,7 +25,7 @@ unsafe fn silk_CNG_exc(exc_Q14: *mut i32, exc_buf_Q14: *mut i32, length: i32, ra
     seed = *rand_seed;
     i = 0;
     while i < length {
-        seed = 907633515_u32.wrapping_add((seed as u32).wrapping_mul(196314165)) as i32;
+        seed = silk_RAND(seed);
         idx = seed >> 24 & exc_mask;
         *exc_Q14.offset(i as isize) = *exc_buf_Q14.offset(idx as isize);
         i += 1;
@@ -31,15 +33,14 @@ unsafe fn silk_CNG_exc(exc_Q14: *mut i32, exc_buf_Q14: *mut i32, length: i32, ra
     *rand_seed = seed;
 }
 pub fn silk_CNG_Reset(psDec: &mut silk_decoder_state) {
-    let mut i: i32 = 0;
     let mut NLSF_step_Q15: i32 = 0;
     let mut NLSF_acc_Q15: i32 = 0;
-    NLSF_step_Q15 = 0x7fff / (psDec.LPC_order + 1);
+    NLSF_step_Q15 = 0x7fff / (psDec.LPC_order as i32 + 1);
     NLSF_acc_Q15 = 0;
-    i = 0;
+    let mut i = 0;
     while i < psDec.LPC_order {
         NLSF_acc_Q15 += NLSF_step_Q15;
-        psDec.sCNG.CNG_smth_NLSF_Q15[i as usize] = NLSF_acc_Q15 as i16;
+        psDec.sCNG.CNG_smth_NLSF_Q15[i] = NLSF_acc_Q15 as i16;
         i += 1;
     }
     psDec.sCNG.CNG_smth_Gain_Q16 = 0;
@@ -65,7 +66,7 @@ pub unsafe fn silk_CNG(
     }
     if psDec.lossCnt == 0 && psDec.prevSignalType == TYPE_NO_VOICE_ACTIVITY {
         i = 0;
-        while i < psDec.LPC_order {
+        while i < psDec.LPC_order as i32 {
             (*psCNG).CNG_smth_NLSF_Q15[i as usize] = ((*psCNG).CNG_smth_NLSF_Q15[i as usize] as i32
                 + ((psDec.prevNLSF_Q15[i as usize] as i32
                     - (*psCNG).CNG_smth_NLSF_Q15[i as usize] as i32) as i64
@@ -76,7 +77,7 @@ pub unsafe fn silk_CNG(
         max_Gain_Q16 = 0;
         subfr = 0;
         i = 0;
-        while i < psDec.nb_subfr {
+        while i < psDec.nb_subfr as i32 {
             if (*psDecCtrl).Gains_Q16[i as usize] > max_Gain_Q16 {
                 max_Gain_Q16 = (*psDecCtrl).Gains_Q16[i as usize];
                 subfr = i;
@@ -96,12 +97,12 @@ pub unsafe fn silk_CNG(
             ((*psCNG).CNG_exc_buf_Q14).as_mut_ptr() as *mut core::ffi::c_void,
             &mut *(psDec.exc_Q14)
                 .as_mut_ptr()
-                .offset((subfr * psDec.subfr_length) as isize) as *mut i32
+                .offset((subfr * psDec.subfr_length as i32) as isize) as *mut i32
                 as *const core::ffi::c_void,
             (psDec.subfr_length as u64).wrapping_mul(::core::mem::size_of::<i32>() as u64),
         );
         i = 0;
-        while i < psDec.nb_subfr {
+        while i < psDec.nb_subfr as i32 {
             (*psCNG).CNG_smth_Gain_Q16 += (((*psDecCtrl).Gains_Q16[i as usize]
                 - (*psCNG).CNG_smth_Gain_Q16) as i64
                 * 4634 as i64
@@ -145,7 +146,7 @@ pub unsafe fn silk_CNG(
         assert!(psDec.LPC_order == 10 || psDec.LPC_order == 16);
         i = 0;
         while i < length {
-            LPC_pred_Q10 = psDec.LPC_order >> 1;
+            LPC_pred_Q10 = psDec.LPC_order as i32 >> 1;
             LPC_pred_Q10 = (LPC_pred_Q10 as i64
                 + (*CNG_sig_Q14.as_mut_ptr().offset((16 + i - 1) as isize) as i64
                     * A_Q12[0 as usize] as i64
@@ -214,7 +215,7 @@ pub unsafe fn silk_CNG(
             }
             *CNG_sig_Q14
                 .as_mut_ptr()
-                .offset((MAX_LPC_ORDER + i) as isize) =
+                .offset((MAX_LPC_ORDER as i32 + i) as isize) =
                 if (*CNG_sig_Q14.as_mut_ptr().offset((16 + i) as isize) as u32).wrapping_add(
                     (((if 0x80000000 as u32 as i32 >> 4 > 0x7fffffff >> 4 {
                         if LPC_pred_Q10 > 0x80000000 as u32 as i32 >> 4 {

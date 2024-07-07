@@ -81,12 +81,12 @@ fn silk_LP_interpolate_filter_taps(
 /// frame_length I    Frame length
 /// ```
 pub fn silk_LP_variable_cutoff(psLP: &mut silk_LP_state, frame: &mut [i16]) {
-    assert!(psLP.transition_frame_no >= 0 && psLP.transition_frame_no <= TRANSITION_FRAMES);
+    assert!(psLP.transition_frame_no >= 0 && psLP.transition_frame_no <= TRANSITION_FRAMES as i32);
 
     /* Run filter if needed */
     if psLP.mode != 0 {
         /* Calculate index and interpolation factor for interpolation */
-        let fac_Q16 = (TRANSITION_FRAMES - psLP.transition_frame_no) << (16 - 6);
+        let fac_Q16 = (TRANSITION_FRAMES as i32 - psLP.transition_frame_no) << (16 - 6);
         let ind = fac_Q16 >> 16;
         let fac_Q16 = fac_Q16 - (ind << 16);
 

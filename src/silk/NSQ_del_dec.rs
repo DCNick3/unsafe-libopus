@@ -76,7 +76,7 @@ use crate::silk::structs::{silk_encoder_state, silk_nsq_state, SideInfoIndices};
 use crate::silk::tables_other::silk_Quantization_Offsets_Q10;
 use crate::silk::Inlines::{silk_DIV32_varQ, silk_INVERSE32_varQ};
 use crate::silk::LPC_analysis_filter::silk_LPC_analysis_filter;
-use crate::silk::SigProc_FIX::silk_min_int;
+use crate::silk::SigProc_FIX::{silk_RAND, silk_min_int};
 
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -175,8 +175,7 @@ pub unsafe fn silk_NSQ_del_dec_c(
         (*psDD).RD_Q10 = 0;
         (*psDD).LF_AR_Q14 = (*NSQ).sLF_AR_shp_Q14;
         (*psDD).Diff_Q14 = (*NSQ).sDiff_shp_Q14;
-        (*psDD).Shape_Q14[0 as usize] =
-            (*NSQ).sLTP_shp_Q14[(psEncC.ltp_mem_length - 1) as usize];
+        (*psDD).Shape_Q14[0 as usize] = (*NSQ).sLTP_shp_Q14[(psEncC.ltp_mem_length - 1) as usize];
         memcpy(
             ((*psDD).sLPC_Q14).as_mut_ptr() as *mut core::ffi::c_void,
             ((*NSQ).sLPC_Q14).as_mut_ptr() as *const core::ffi::c_void,
@@ -192,18 +191,18 @@ pub unsafe fn silk_NSQ_del_dec_c(
     offset_Q10 = silk_Quantization_Offsets_Q10[((*psIndices).signalType as i32 >> 1) as usize]
         [(*psIndices).quantOffsetType as usize] as i32;
     smpl_buf_idx = 0;
-    decisionDelay = silk_min_int(DECISION_DELAY, psEncC.subfr_length);
+    decisionDelay = silk_min_int(DECISION_DELAY, psEncC.subfr_length as i32);
     if (*psIndices).signalType as i32 == TYPE_VOICED {
         k = 0;
-        while k < psEncC.nb_subfr {
+        while k < psEncC.nb_subfr as i32 {
             decisionDelay = silk_min_int(
                 decisionDelay,
-                *pitchL.offset(k as isize) - LTP_ORDER / 2 - 1,
+                *pitchL.offset(k as isize) - LTP_ORDER as i32 / 2 - 1,
             );
             k += 1;
         }
     } else if lag > 0 {
-        decisionDelay = silk_min_int(decisionDelay, lag - LTP_ORDER / 2 - 1);
+        decisionDelay = silk_min_int(decisionDelay, lag - LTP_ORDER as i32 / 2 - 1);
     }
     if (*psIndices).NLSFInterpCoef_Q2 as i32 == 4 {
         LSF_interpolation_flag = 0;
@@ -220,15 +219,15 @@ pub unsafe fn silk_NSQ_del_dec_c(
     pxq = &mut *((*NSQ).xq)
         .as_mut_ptr()
         .offset(psEncC.ltp_mem_length as isize) as *mut i16;
-    (*NSQ).sLTP_shp_buf_idx = psEncC.ltp_mem_length;
-    (*NSQ).sLTP_buf_idx = psEncC.ltp_mem_length;
+    (*NSQ).sLTP_shp_buf_idx = psEncC.ltp_mem_length as i32;
+    (*NSQ).sLTP_buf_idx = psEncC.ltp_mem_length as i32;
     subfr = 0;
     k = 0;
-    while k < psEncC.nb_subfr {
+    while k < psEncC.nb_subfr as i32 {
         A_Q12 = &*PredCoef_Q12
-            .offset(((k >> 1 | 1 - LSF_interpolation_flag) * MAX_LPC_ORDER) as isize)
+            .offset(((k >> 1 | 1 - LSF_interpolation_flag) * MAX_LPC_ORDER as i32) as isize)
             as *const i16;
-        B_Q14 = &*LTPCoef_Q14.offset((k * LTP_ORDER) as isize) as *const i16;
+        B_Q14 = &*LTPCoef_Q14.offset((k * LTP_ORDER as i32) as isize) as *const i16;
         AR_shp_Q13 = &*AR_Q13.offset((k * MAX_SHAPE_LPC_ORDER) as isize) as *const i16;
         HarmShapeFIRPacked_Q14 = *HarmShapeGain_Q14.offset(k as isize) >> 2;
         HarmShapeFIRPacked_Q14 |=
@@ -335,16 +334,18 @@ pub unsafe fn silk_NSQ_del_dec_c(
                     }
                     subfr = 0;
                 }
-                start_idx =
-                    psEncC.ltp_mem_length - lag - psEncC.predictLPCOrder - LTP_ORDER / 2;
+                start_idx = psEncC.ltp_mem_length as i32
+                    - lag
+                    - psEncC.predictLPCOrder
+                    - LTP_ORDER as i32 / 2;
                 assert!(start_idx > 0);
                 silk_LPC_analysis_filter(
                     &mut sLTP[start_idx as usize..psEncC.ltp_mem_length as usize],
-                    &(*NSQ).xq[(start_idx + k * psEncC.subfr_length) as usize..]
-                        [..(psEncC.ltp_mem_length - start_idx) as usize],
+                    &(*NSQ).xq[(start_idx + k * psEncC.subfr_length as i32) as usize..]
+                        [..psEncC.ltp_mem_length - start_idx as usize],
                     std::slice::from_raw_parts(A_Q12, psEncC.predictLPCOrder as usize),
                 );
-                (*NSQ).sLTP_buf_idx = psEncC.ltp_mem_length;
+                (*NSQ).sLTP_buf_idx = psEncC.ltp_mem_length as i32;
                 (*NSQ).rewhite_flag = 1;
             }
         }
@@ -385,7 +386,7 @@ pub unsafe fn silk_NSQ_del_dec_c(
             *Gains_Q16.offset(k as isize),
             Lambda_Q10,
             offset_Q10,
-            psEncC.subfr_length,
+            psEncC.subfr_length as i32,
             fresh1,
             psEncC.shapingLPCOrder,
             psEncC.predictLPCOrder,
@@ -468,8 +469,7 @@ pub unsafe fn silk_NSQ_del_dec_c(
         ((*NSQ).sLPC_Q14).as_mut_ptr() as *mut core::ffi::c_void,
         &mut *((*psDD).sLPC_Q14)
             .as_mut_ptr()
-            .offset(psEncC.subfr_length as isize) as *mut i32
-            as *const core::ffi::c_void,
+            .offset(psEncC.subfr_length as isize) as *mut i32 as *const core::ffi::c_void,
         16_u64.wrapping_mul(::core::mem::size_of::<i32>() as u64),
     );
     memcpy(
@@ -484,16 +484,14 @@ pub unsafe fn silk_NSQ_del_dec_c(
         ((*NSQ).xq).as_mut_ptr() as *mut core::ffi::c_void,
         &mut *((*NSQ).xq)
             .as_mut_ptr()
-            .offset(psEncC.frame_length as isize) as *mut i16
-            as *const core::ffi::c_void,
+            .offset(psEncC.frame_length as isize) as *mut i16 as *const core::ffi::c_void,
         (psEncC.ltp_mem_length as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
     );
     memmove(
         ((*NSQ).sLTP_shp_Q14).as_mut_ptr() as *mut core::ffi::c_void,
         &mut *((*NSQ).sLTP_shp_Q14)
             .as_mut_ptr()
-            .offset(psEncC.frame_length as isize) as *mut i32
-            as *const core::ffi::c_void,
+            .offset(psEncC.frame_length as isize) as *mut i32 as *const core::ffi::c_void,
         (psEncC.ltp_mem_length as u64).wrapping_mul(::core::mem::size_of::<i32>() as u64),
     );
 }
@@ -579,8 +577,9 @@ unsafe fn silk_noise_shape_quantizer_del_dec(
         .as_mut_ptr()
         .offset(((*NSQ).sLTP_shp_buf_idx - lag + HARM_SHAPE_FIR_TAPS / 2) as isize)
         as *mut i32;
-    pred_lag_ptr =
-        &mut *sLTP_Q15.offset(((*NSQ).sLTP_buf_idx - lag + LTP_ORDER / 2) as isize) as *mut i32;
+    pred_lag_ptr = &mut *sLTP_Q15
+        .offset(((*NSQ).sLTP_buf_idx - lag + LTP_ORDER as i32 / 2) as isize)
+        as *mut i32;
     Gain_Q10 = Gain_Q16 >> 6;
     i = 0;
     while i < length {
@@ -623,11 +622,11 @@ unsafe fn silk_noise_shape_quantizer_del_dec(
         while k < nStatesDelayedDecision {
             psDD = &mut *psDelDec.offset(k as isize) as *mut NSQ_del_dec_struct;
             psSS = (*psSampleState.as_mut_ptr().offset(k as isize)).as_mut_ptr();
-            (*psDD).Seed =
-                907633515_u32.wrapping_add(((*psDD).Seed as u32).wrapping_mul(196314165)) as i32;
+            (*psDD).Seed = silk_RAND((*psDD).Seed);
             psLPC_Q14 = &mut *((*psDD).sLPC_Q14)
                 .as_mut_ptr()
-                .offset((NSQ_LPC_BUF_LENGTH - 1 + i) as isize) as *mut i32;
+                .offset((NSQ_LPC_BUF_LENGTH as i32 - 1 + i) as isize)
+                as *mut i32;
             LPC_pred_Q14 =
                 silk_noise_shape_quantizer_short_prediction_c(psLPC_Q14, a_Q12, predictLPCOrder);
             LPC_pred_Q14 = ((LPC_pred_Q14 as u32) << 4) as i32;
@@ -930,7 +929,7 @@ unsafe fn silk_noise_shape_quantizer_del_dec(
                 .offset(0 as isize) as *mut NSQ_sample_struct;
             (*psDD).LF_AR_Q14 = (*psSS).LF_AR_Q14;
             (*psDD).Diff_Q14 = (*psSS).Diff_Q14;
-            (*psDD).sLPC_Q14[(NSQ_LPC_BUF_LENGTH + i) as usize] = (*psSS).xq_Q14;
+            (*psDD).sLPC_Q14[(NSQ_LPC_BUF_LENGTH as i32 + i) as usize] = (*psSS).xq_Q14;
             (*psDD).Xq_Q14[*smpl_buf_idx as usize] = (*psSS).xq_Q14;
             (*psDD).Q_Q10[*smpl_buf_idx as usize] = (*psSS).Q_Q10;
             (*psDD).Pred_Q15[*smpl_buf_idx as usize] = (((*psSS).LPC_exc_Q14 as u32) << 1) as i32;
@@ -1000,7 +999,7 @@ unsafe fn silk_nsq_del_dec_scale_states(
         (inv_gain_Q31 >> 5 - 1) + 1 >> 1
     };
     i = 0;
-    while i < psEncC.subfr_length {
+    while i < psEncC.subfr_length as i32 {
         *x_sc_Q10.offset(i as isize) =
             (*x16.offset(i as isize) as i64 * inv_gain_Q26 as i64 >> 16) as i32;
         i += 1;
@@ -1011,7 +1010,7 @@ unsafe fn silk_nsq_del_dec_scale_states(
                 as u32)
                 << 2) as i32;
         }
-        i = (*NSQ).sLTP_buf_idx - lag - LTP_ORDER / 2;
+        i = (*NSQ).sLTP_buf_idx - lag - LTP_ORDER as i32 / 2;
         while i < (*NSQ).sLTP_buf_idx {
             *sLTP_Q15.offset(i as isize) =
                 (inv_gain_Q31 as i64 * *sLTP.offset(i as isize) as i64 >> 16) as i32;
@@ -1020,14 +1019,14 @@ unsafe fn silk_nsq_del_dec_scale_states(
     }
     if *Gains_Q16.offset(subfr as isize) != (*NSQ).prev_gain_Q16 {
         gain_adj_Q16 = silk_DIV32_varQ((*NSQ).prev_gain_Q16, *Gains_Q16.offset(subfr as isize), 16);
-        i = (*NSQ).sLTP_shp_buf_idx - psEncC.ltp_mem_length;
+        i = (*NSQ).sLTP_shp_buf_idx - psEncC.ltp_mem_length as i32;
         while i < (*NSQ).sLTP_shp_buf_idx {
             (*NSQ).sLTP_shp_Q14[i as usize] =
                 (gain_adj_Q16 as i64 * (*NSQ).sLTP_shp_Q14[i as usize] as i64 >> 16) as i32;
             i += 1;
         }
         if signal_type == TYPE_VOICED && (*NSQ).rewhite_flag == 0 {
-            i = (*NSQ).sLTP_buf_idx - lag - LTP_ORDER / 2;
+            i = (*NSQ).sLTP_buf_idx - lag - LTP_ORDER as i32 / 2;
             while i < (*NSQ).sLTP_buf_idx - decisionDelay {
                 *sLTP_Q15.offset(i as isize) =
                     (gain_adj_Q16 as i64 * *sLTP_Q15.offset(i as isize) as i64 >> 16) as i32;
@@ -1040,7 +1039,7 @@ unsafe fn silk_nsq_del_dec_scale_states(
             (*psDD).LF_AR_Q14 = (gain_adj_Q16 as i64 * (*psDD).LF_AR_Q14 as i64 >> 16) as i32;
             (*psDD).Diff_Q14 = (gain_adj_Q16 as i64 * (*psDD).Diff_Q14 as i64 >> 16) as i32;
             i = 0;
-            while i < NSQ_LPC_BUF_LENGTH {
+            while i < NSQ_LPC_BUF_LENGTH as i32 {
                 (*psDD).sLPC_Q14[i as usize] =
                     (gain_adj_Q16 as i64 * (*psDD).sLPC_Q14[i as usize] as i64 >> 16) as i32;
                 i += 1;
