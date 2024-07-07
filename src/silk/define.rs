@@ -20,6 +20,7 @@ pub const CODE_INDEPENDENTLY: i32 = 0;
 pub const CODE_CONDITIONALLY: i32 = 2;
 pub const NLSF_QUANT_MAX_AMPLITUDE: i32 = 4;
 pub const CODE_INDEPENDENTLY_NO_LTP_SCALING: i32 = 1;
+pub const MAX_FS_KHZ: usize = 16;
 pub const MAX_API_FS_KHZ: i32 = 48;
 pub const ENCODER_NUM_CHANNELS: i32 = 2;
 pub const QUANT_LEVEL_ADJUST_Q10: i32 = 80;
@@ -40,12 +41,12 @@ pub const NLSF_QUANT_DEL_DEC_STATES: i32 = (1) << NLSF_QUANT_DEL_DEC_STATES_LOG2
 pub const NLSF_QUANT_MAX_AMPLITUDE_EXT: i32 = 10;
 pub const DECISION_DELAY: i32 = 40;
 pub const MAX_FRAME_LENGTH_MS: usize = SUB_FRAME_LENGTH_MS * MAX_NB_SUBFR;
+pub const MAX_FRAME_LENGTH: usize = MAX_FRAME_LENGTH_MS * MAX_FS_KHZ;
 pub const TRANSITION_TIME_MS: usize = 5120;
 pub const TRANSITION_FRAMES: usize = TRANSITION_TIME_MS / MAX_FRAME_LENGTH_MS;
 pub const LSF_COS_TAB_SZ_FIX: i32 = 128;
 pub const MAX_LPC_STABILIZE_ITERATIONS: i32 = 16;
 pub const MAX_PREDICTION_POWER_GAIN: f32 = 1e4f32;
-pub const CNG_BUF_MASK_MAX: i32 = 255;
 pub const TYPE_UNVOICED: i32 = 1;
 pub const NB_SPEECH_FRAMES_BEFORE_DTX: i32 = 10;
 pub const MAX_CONSECUTIVE_DTX: i32 = 20;
@@ -60,3 +61,12 @@ pub const VAD_INTERNAL_SUBFRAMES: i32 = (1) << VAD_INTERNAL_SUBFRAMES_LOG2;
 pub const USE_HARM_SHAPING: i32 = 1;
 pub const VAD_NO_DECISION: i32 = -1;
 pub const DTX_ACTIVITY_THRESHOLD: f32 = 0.1f32;
+
+// Defines for CN generation
+
+/// 2^floor(log2(MAX_FRAME_LENGTH))-1
+pub const CNG_BUF_MASK_MAX: i32 = 255;
+/// 0.25^(1/4)
+pub const CNG_GAIN_SMTH_Q16: i32 = 4634;
+/// 0.25
+pub const CNG_NLSF_SMTH_Q16: i32 = 16348;

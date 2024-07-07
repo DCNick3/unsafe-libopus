@@ -1,4 +1,4 @@
-use crate::silk::define::{LTP_ORDER, MAX_LPC_ORDER, MAX_NB_SUBFR};
+use crate::silk::define::{LTP_ORDER, MAX_FRAME_LENGTH, MAX_LPC_ORDER, MAX_NB_SUBFR};
 use crate::silk::resampler::ResamplerState;
 
 #[derive(Copy, Clone)]
@@ -52,9 +52,9 @@ pub struct silk_PLC_struct {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct silk_CNG_struct {
-    pub CNG_exc_buf_Q14: [i32; 320],
-    pub CNG_smth_NLSF_Q15: [i16; 16],
-    pub CNG_synth_state: [i32; 16],
+    pub CNG_exc_buf_Q14: [i32; MAX_FRAME_LENGTH],
+    pub CNG_smth_NLSF_Q15: [i16; MAX_LPC_ORDER],
+    pub CNG_synth_state: [i32; MAX_LPC_ORDER],
     pub CNG_smth_Gain_Q16: i32,
     pub rand_seed: i32,
     pub fs_kHz: i32,
@@ -77,7 +77,7 @@ impl Default for silk_CNG_struct {
 #[repr(C)]
 pub struct silk_decoder_state {
     pub prev_gain_Q16: i32,
-    pub exc_Q14: [i32; 320],
+    pub exc_Q14: [i32; MAX_FRAME_LENGTH],
     pub sLPC_Q14_buf: [i32; MAX_LPC_ORDER],
     pub outBuf: [i16; 480],
     pub lagPrev: i32,

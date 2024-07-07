@@ -83,9 +83,13 @@ pub unsafe fn silk_decode_frame(
         pOut as *const core::ffi::c_void,
         (psDec.frame_length as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
     );
-    silk_CNG(psDec, &mut psDecCtrl, pOut, L);
+    silk_CNG(
+        psDec,
+        &mut psDecCtrl,
+        std::slice::from_raw_parts_mut(pOut, L as usize),
+    );
     silk_PLC_glue_frames(psDec, pOut, L);
-    psDec.lagPrev = psDecCtrl.pitchL[(psDec.nb_subfr - 1) as usize];
+    psDec.lagPrev = psDecCtrl.pitchL[psDec.nb_subfr - 1];
     *pN = L;
     return ret;
 }

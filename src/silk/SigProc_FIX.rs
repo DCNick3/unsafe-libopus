@@ -20,6 +20,11 @@ pub fn silk_ROR32(a32: i32, rot: i32) -> i32 {
 }
 
 #[inline]
+pub fn silk_SMULTT(a32: i32, b32: i32) -> i32 {
+    (a32 >> 16) * (b32 >> 16)
+}
+
+#[inline]
 pub fn silk_SAT16(a: i32) -> i32 {
     if a > i16::MAX as i32 {
         i16::MAX as i32

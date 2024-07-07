@@ -69,7 +69,7 @@ pub fn silk_decode_core(
     let mut k = 0;
     while k < psDec.nb_subfr {
         let mut pres_Q14 = res_Q14.as_mut_slice();
-        let A_Q12 = &psDecCtrl.PredCoef_Q12[(k >> 1)][..psDec.LPC_order];
+        let A_Q12 = &psDecCtrl.PredCoef_Q12[k >> 1][..psDec.LPC_order];
 
         let mut A_Q12_tmp: [i16; MAX_LPC_ORDER] = [0; 16];
         let A_Q12_tmp = &mut A_Q12_tmp[..psDec.LPC_order];
