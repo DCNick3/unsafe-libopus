@@ -32,14 +32,21 @@ pub struct SideInfoIndices {
     pub LTP_scaleIndex: i8,
     pub Seed: i8,
 }
+
+/// Struct for Packet Loss Concealment
 #[derive(Copy, Clone, Default)]
 #[repr(C)]
 pub struct silk_PLC_struct {
+    /// Pitch lag to use for voiced concealment
     pub pitchL_Q8: i32,
-    pub LTPCoef_Q14: [i16; 5],
-    pub prevLPC_Q12: [i16; 16],
+    /// LTP coeficients to use for voiced concealment
+    pub LTPCoef_Q14: [i16; LTP_ORDER],
+    pub prevLPC_Q12: [i16; MAX_LPC_ORDER],
+    /// Was previous frame lost
     pub last_frame_lost: i32,
+    /// Seed for unvoiced signal generation
     pub rand_seed: i32,
+    /// Scaling of unvoiced random signal
     pub randScale_Q14: i16,
     pub conc_energy: i32,
     pub conc_energy_shift: i32,
@@ -49,6 +56,7 @@ pub struct silk_PLC_struct {
     pub nb_subfr: i32,
     pub subfr_length: i32,
 }
+
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct silk_CNG_struct {

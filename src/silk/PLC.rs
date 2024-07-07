@@ -1,7 +1,11 @@
+const BWE_COEF: f64 = 0.99;
+/// 0.7 in Q14
+const V_PITCH_GAIN_START_MIN_Q14: i32 = 11469;
+/// 0.95 in Q14
+const V_PITCH_GAIN_START_MAX_Q14: i32 = 15565;
+
 pub const RAND_BUF_MASK: i32 = RAND_BUF_SIZE - 1;
 pub const RAND_BUF_SIZE: i32 = 128;
-pub const V_PITCH_GAIN_START_MIN_Q14: i32 = 11469;
-pub const V_PITCH_GAIN_START_MAX_Q14: i32 = 15565;
 pub mod typedef_h {
     pub const silk_int32_MIN: i32 = i32::MIN;
     pub const silk_int32_MAX: i32 = i32::MAX;
@@ -14,7 +18,7 @@ use crate::silk::bwexpander::silk_bwexpander;
 use crate::silk::define::{
     LTP_ORDER, MAX_LPC_ORDER, MAX_NB_SUBFR, TYPE_NO_VOICE_ACTIVITY, TYPE_VOICED,
 };
-use crate::silk::macros::silk_CLZ32;
+use crate::silk::macros::{silk_CLZ32, silk_SMULBB};
 use crate::silk::structs::{silk_PLC_struct, silk_decoder_control, silk_decoder_state};
 use crate::silk::sum_sqr_shift::silk_sum_sqr_shift;
 use crate::silk::Inlines::{silk_INVERSE32_varQ, silk_SQRT_APPROX};
@@ -25,9 +29,9 @@ use crate::silk::SigProc_FIX::{
 };
 
 pub const NB_ATT: i32 = 2;
-static mut HARM_ATT_Q15: [i16; 2] = [32440, 31130];
-static mut PLC_RAND_ATTENUATE_V_Q15: [i16; 2] = [31130, 26214];
-static mut PLC_RAND_ATTENUATE_UV_Q15: [i16; 2] = [32440, 29491];
+static HARM_ATT_Q15: [i16; 2] = [32440, 31130];
+static PLC_RAND_ATTENUATE_V_Q15: [i16; 2] = [31130, 26214];
+static PLC_RAND_ATTENUATE_UV_Q15: [i16; 2] = [32440, 29491];
 pub fn silk_PLC_Reset(psDec: &mut silk_decoder_state) {
     psDec.sPLC.pitchL_Q8 = ((psDec.frame_length as u32) << (8 - 1)) as i32;
     psDec.sPLC.prevGain_Q16[0] = ((1 * ((1) << 16)) as f64 + 0.5f64) as i32;
@@ -37,7 +41,7 @@ pub fn silk_PLC_Reset(psDec: &mut silk_decoder_state) {
 }
 pub unsafe fn silk_PLC(
     psDec: &mut silk_decoder_state,
-    psDecCtrl: *mut silk_decoder_control,
+    psDecCtrl: &mut silk_decoder_control,
     frame: *mut i16,
     lost: i32,
     arch: i32,
@@ -47,109 +51,87 @@ pub unsafe fn silk_PLC(
         psDec.sPLC.fs_kHz = psDec.fs_kHz;
     }
     if lost != 0 {
+        // Not refactoring this, as the current testing implementation doesn't test it
         silk_PLC_conceal(psDec, psDecCtrl, frame, arch);
         psDec.lossCnt += 1;
     } else {
         silk_PLC_update(psDec, psDecCtrl);
     };
 }
+
+/// Update state of PLC
+///
+/// ```text
+/// psDec       I/O   Decoder state
+/// psDecCtrl   I/O   Decoder control
+/// ```
 #[inline]
-unsafe fn silk_PLC_update(psDec: &mut silk_decoder_state, psDecCtrl: *mut silk_decoder_control) {
-    let mut LTP_Gain_Q14: i32 = 0;
-    let mut temp_LTP_Gain_Q14: i32 = 0;
-    let mut i: i32 = 0;
-    let mut j: i32 = 0;
-    let mut psPLC: *mut silk_PLC_struct = 0 as *mut silk_PLC_struct;
-    psPLC = &mut psDec.sPLC;
+fn silk_PLC_update(psDec: &mut silk_decoder_state, psDecCtrl: &mut silk_decoder_control) {
+    let psPLC = &mut psDec.sPLC;
+
+    /* Update parameters used in case of packet loss */
     psDec.prevSignalType = psDec.indices.signalType as i32;
-    LTP_Gain_Q14 = 0;
+    let mut LTP_Gain_Q14 = 0;
     if psDec.indices.signalType as i32 == TYPE_VOICED {
-        j = 0;
-        while j * (psDec.subfr_length as i32) < (*psDecCtrl).pitchL[psDec.nb_subfr - 1] {
-            if j == psDec.nb_subfr as i32 {
-                break;
-            }
-            temp_LTP_Gain_Q14 = 0;
-            let mut i = 0;
-            while i < LTP_ORDER {
-                temp_LTP_Gain_Q14 += (*psDecCtrl).LTPCoef_Q14
-                    [(psDec.nb_subfr as i32 - 1 - j) as usize * LTP_ORDER + i]
-                    as i32;
-                i += 1;
+        /* Find the parameters for the last subframe which contains a pitch pulse */
+
+        // I hope this translation is correct...
+        for j in 0..std::cmp::min(
+            (psDecCtrl.pitchL[psDec.nb_subfr - 1] as usize).div_ceil(psDec.subfr_length),
+            psDec.nb_subfr,
+        ) {
+            let mut temp_LTP_Gain_Q14 = 0;
+            for i in 0..LTP_ORDER {
+                temp_LTP_Gain_Q14 +=
+                    psDecCtrl.LTPCoef_Q14[(psDec.nb_subfr - 1 - j) * LTP_ORDER + i] as i32;
             }
             if temp_LTP_Gain_Q14 > LTP_Gain_Q14 {
                 LTP_Gain_Q14 = temp_LTP_Gain_Q14;
-                memcpy(
-                    (*psPLC).LTPCoef_Q14.as_mut_ptr() as *mut core::ffi::c_void,
-                    &mut *(*psDecCtrl)
-                        .LTPCoef_Q14
-                        .as_mut_ptr()
-                        .offset(((psDec.nb_subfr as i32 - 1 - j) as i16 as i32 * 5) as isize)
-                        as *mut i16 as *const core::ffi::c_void,
-                    5_u64.wrapping_mul(::core::mem::size_of::<i16>() as u64),
+                psPLC.LTPCoef_Q14.copy_from_slice(
+                    &psDecCtrl.LTPCoef_Q14[(psDec.nb_subfr - 1 - j) * LTP_ORDER..][..LTP_ORDER],
                 );
-                (*psPLC).pitchL_Q8 = (((*psDecCtrl).pitchL[(psDec.nb_subfr as i32 - 1 - j) as usize]
-                    as u32)
-                    << 8) as i32;
+                psPLC.pitchL_Q8 = ((psDecCtrl.pitchL[psDec.nb_subfr - 1 - j] as u32) << 8) as i32;
             }
-            j += 1;
         }
-        memset(
-            (*psPLC).LTPCoef_Q14.as_mut_ptr() as *mut core::ffi::c_void,
-            0,
-            5_u64.wrapping_mul(::core::mem::size_of::<i16>() as u64),
-        );
-        (*psPLC).LTPCoef_Q14[LTP_ORDER / 2] = LTP_Gain_Q14 as i16;
+
+        psPLC.LTPCoef_Q14.fill(0);
+        psPLC.LTPCoef_Q14[LTP_ORDER / 2] = LTP_Gain_Q14 as i16;
+
+        /* Limit LT coefs */
         if LTP_Gain_Q14 < V_PITCH_GAIN_START_MIN_Q14 {
-            let mut scale_Q10: i32 = 0;
-            let mut tmp: i32 = 0;
-            tmp = (11469) << 10;
-            scale_Q10 = tmp / (if LTP_Gain_Q14 > 1 { LTP_Gain_Q14 } else { 1 });
-            i = 0;
-            while i < LTP_ORDER as i32 {
-                (*psPLC).LTPCoef_Q14[i as usize] = ((*psPLC).LTPCoef_Q14[i as usize] as i32
-                    * scale_Q10 as i16 as i32
-                    >> 10) as i16;
-                i += 1;
+            let tmp = V_PITCH_GAIN_START_MIN_Q14 << 10;
+            let scale_Q10 = tmp / std::cmp::max(LTP_Gain_Q14, 1);
+            for i in 0..LTP_ORDER {
+                psPLC.LTPCoef_Q14[i] =
+                    (silk_SMULBB(psPLC.LTPCoef_Q14[i] as i32, scale_Q10) >> 10) as i16;
             }
         } else if LTP_Gain_Q14 > V_PITCH_GAIN_START_MAX_Q14 {
-            let mut scale_Q14: i32 = 0;
-            let mut tmp_0: i32 = 0;
-            tmp_0 = (15565) << 14;
-            scale_Q14 = tmp_0 / (if LTP_Gain_Q14 > 1 { LTP_Gain_Q14 } else { 1 });
-            i = 0;
-            while i < LTP_ORDER as i32 {
-                (*psPLC).LTPCoef_Q14[i as usize] = ((*psPLC).LTPCoef_Q14[i as usize] as i32
-                    * scale_Q14 as i16 as i32
-                    >> 14) as i16;
-                i += 1;
+            let tmp_0 = V_PITCH_GAIN_START_MAX_Q14 << 14;
+            let scale_Q14 = tmp_0 / std::cmp::max(LTP_Gain_Q14, 1);
+            for i in 0..LTP_ORDER {
+                psPLC.LTPCoef_Q14[i] =
+                    (silk_SMULBB(psPLC.LTPCoef_Q14[i] as i32, scale_Q14) >> 14) as i16;
             }
         }
     } else {
-        (*psPLC).pitchL_Q8 = (((psDec.fs_kHz as i16 as i32 * 18) as u32) << 8) as i32;
-        memset(
-            (*psPLC).LTPCoef_Q14.as_mut_ptr() as *mut core::ffi::c_void,
-            0,
-            5_u64.wrapping_mul(::core::mem::size_of::<i16>() as u64),
-        );
+        psPLC.pitchL_Q8 = silk_SMULBB(psDec.fs_kHz, 18) << 8;
+        psPLC.LTPCoef_Q14.fill(0);
     }
-    memcpy(
-        (*psPLC).prevLPC_Q12.as_mut_ptr() as *mut core::ffi::c_void,
-        (*psDecCtrl).PredCoef_Q12[1 as usize].as_mut_ptr() as *const core::ffi::c_void,
-        (psDec.LPC_order as u64).wrapping_mul(::core::mem::size_of::<i16>() as u64),
-    );
-    (*psPLC).prevLTP_scale_Q14 = (*psDecCtrl).LTP_scale_Q14 as i16;
-    memcpy(
-        (*psPLC).prevGain_Q16.as_mut_ptr() as *mut core::ffi::c_void,
-        &mut *(*psDecCtrl)
-            .Gains_Q16
-            .as_mut_ptr()
-            .offset((psDec.nb_subfr - 2) as isize) as *mut i32 as *const core::ffi::c_void,
-        2_u64.wrapping_mul(::core::mem::size_of::<i32>() as u64),
-    );
-    (*psPLC).subfr_length = psDec.subfr_length as i32;
-    (*psPLC).nb_subfr = psDec.nb_subfr as i32;
+
+    /* Save LPC coeficients */
+    psPLC.prevLPC_Q12[..psDec.LPC_order]
+        .copy_from_slice(&psDecCtrl.PredCoef_Q12[1][..psDec.LPC_order]);
+    psPLC.prevLTP_scale_Q14 = psDecCtrl.LTP_scale_Q14 as i16;
+
+    /* Save last two gains */
+    psPLC
+        .prevGain_Q16
+        .copy_from_slice(&psDecCtrl.Gains_Q16[psDec.nb_subfr - 2..][..2]);
+
+    psPLC.subfr_length = psDec.subfr_length as i32;
+    psPLC.nb_subfr = psDec.nb_subfr as i32;
 }
+
 #[inline]
 unsafe fn silk_PLC_energy(
     energy1: *mut i32,
@@ -209,6 +191,7 @@ unsafe fn silk_PLC_energy(
         &mut exc_buf[subfr_length as usize..],
     );
 }
+
 #[inline]
 unsafe fn silk_PLC_conceal(
     psDec: &mut silk_decoder_state,
@@ -760,6 +743,7 @@ unsafe fn silk_PLC_conceal(
         i += 1;
     }
 }
+
 pub unsafe fn silk_PLC_glue_frames(psDec: &mut silk_decoder_state, frame: *mut i16, length: i32) {
     let mut i: i32 = 0;
     let mut energy_shift: i32 = 0;
