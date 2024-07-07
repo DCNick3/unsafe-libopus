@@ -25,20 +25,22 @@ use crate::silk::Inlines::{silk_INVERSE32_varQ, silk_SQRT_APPROX};
 use crate::silk::LPC_analysis_filter::silk_LPC_analysis_filter;
 use crate::silk::LPC_inv_pred_gain::silk_LPC_inverse_pred_gain_c;
 use crate::silk::SigProc_FIX::{
-    silk_RAND, silk_max_16, silk_max_32, silk_max_int, silk_min_32, silk_min_int,
+    silk_RAND, silk_max_16, silk_max_32, silk_max_int, silk_min_32, silk_min_int, SILK_FIX_CONST,
 };
 
 pub const NB_ATT: i32 = 2;
 static HARM_ATT_Q15: [i16; 2] = [32440, 31130];
 static PLC_RAND_ATTENUATE_V_Q15: [i16; 2] = [31130, 26214];
 static PLC_RAND_ATTENUATE_UV_Q15: [i16; 2] = [32440, 29491];
+
 pub fn silk_PLC_Reset(psDec: &mut silk_decoder_state) {
-    psDec.sPLC.pitchL_Q8 = ((psDec.frame_length as u32) << (8 - 1)) as i32;
-    psDec.sPLC.prevGain_Q16[0] = ((1 * ((1) << 16)) as f64 + 0.5f64) as i32;
-    psDec.sPLC.prevGain_Q16[1] = ((1 * ((1) << 16)) as f64 + 0.5f64) as i32;
+    psDec.sPLC.pitchL_Q8 = (psDec.frame_length as i32) << (8 - 1);
+    psDec.sPLC.prevGain_Q16[0] = SILK_FIX_CONST!(1, 16);
+    psDec.sPLC.prevGain_Q16[1] = SILK_FIX_CONST!(1, 16);
     psDec.sPLC.subfr_length = 20;
     psDec.sPLC.nb_subfr = 2;
 }
+
 pub unsafe fn silk_PLC(
     psDec: &mut silk_decoder_state,
     psDecCtrl: &mut silk_decoder_control,
