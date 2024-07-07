@@ -198,12 +198,15 @@ unsafe fn silk_PLC_energy(
         exc_buf_ptr = exc_buf_ptr.offset(subfr_length as isize);
         k += 1;
     }
-    silk_sum_sqr_shift(energy1, shift1, exc_buf.as_mut_ptr(), subfr_length);
     silk_sum_sqr_shift(
-        energy2,
-        shift2,
-        &mut *exc_buf.as_mut_ptr().offset(subfr_length as isize),
-        subfr_length,
+        &mut *energy1,
+        &mut *shift1,
+        &mut exc_buf[..subfr_length as usize],
+    );
+    silk_sum_sqr_shift(
+        &mut *energy2,
+        &mut *shift2,
+        &mut exc_buf[subfr_length as usize..],
     );
 }
 #[inline]
@@ -767,13 +770,16 @@ pub unsafe fn silk_PLC_glue_frames(psDec: &mut silk_decoder_state, frame: *mut i
         silk_sum_sqr_shift(
             &mut (*psPLC).conc_energy,
             &mut (*psPLC).conc_energy_shift,
-            frame as *const i16,
-            length,
+            std::slice::from_raw_parts(frame, length as usize),
         );
         (*psPLC).last_frame_lost = 1;
     } else {
         if psDec.sPLC.last_frame_lost != 0 {
-            silk_sum_sqr_shift(&mut energy, &mut energy_shift, frame as *const i16, length);
+            silk_sum_sqr_shift(
+                &mut energy,
+                &mut energy_shift,
+                std::slice::from_raw_parts(frame, length as usize),
+            );
             if energy_shift > (*psPLC).conc_energy_shift {
                 (*psPLC).conc_energy =
                     (*psPLC).conc_energy >> energy_shift - (*psPLC).conc_energy_shift;

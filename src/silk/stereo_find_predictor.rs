@@ -20,8 +20,16 @@ pub unsafe fn silk_stereo_find_predictor(
     let mut corr: i32 = 0;
     let mut pred_Q13: i32 = 0;
     let mut pred2_Q10: i32 = 0;
-    silk_sum_sqr_shift(&mut nrgx, &mut scale1, x, length);
-    silk_sum_sqr_shift(&mut nrgy, &mut scale2, y, length);
+    silk_sum_sqr_shift(
+        &mut nrgx,
+        &mut scale1,
+        std::slice::from_raw_parts(x, length as usize),
+    );
+    silk_sum_sqr_shift(
+        &mut nrgy,
+        &mut scale2,
+        std::slice::from_raw_parts(y, length as usize),
+    );
     scale = silk_max_int(scale1, scale2);
     scale = scale + (scale & 1);
     nrgy = nrgy >> scale - scale2;
