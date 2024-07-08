@@ -1,4 +1,4 @@
-use crate::silk::macros::silk_CLZ32;
+use crate::silk::macros::{silk_CLZ32, silk_SMULBB};
 use crate::silk::SigProc_FIX::silk_max_32;
 
 fn silk_sum_sqr_shift_inner(mut nrg: i32, shft: i32, x: &[i16]) -> i32 {
@@ -6,15 +6,15 @@ fn silk_sum_sqr_shift_inner(mut nrg: i32, shft: i32, x: &[i16]) -> i32 {
 
     let mut i = 0;
     while i < len - 1 {
-        let nrg_tmp = x[i] as i32 * x[i] as i32;
-        let nrg_tmp = nrg_tmp.wrapping_add(x[i + 1] as i32 * x[i + 1] as i32);
-        nrg = nrg.wrapping_add(nrg_tmp >> shft);
+        let nrg_tmp = silk_SMULBB(x[i] as i32, x[i] as i32) as u32;
+        let nrg_tmp = nrg_tmp.wrapping_add(silk_SMULBB(x[i + 1] as i32, x[i + 1] as i32) as u32);
+        nrg = nrg.wrapping_add((nrg_tmp >> shft) as i32);
         i += 2;
     }
     if i < len {
         /* One sample left to process */
-        let nrg_tmp = x[i] as i32 * x[i] as i32;
-        nrg = nrg.wrapping_add(nrg_tmp >> shft);
+        let nrg_tmp = silk_SMULBB(x[i] as i32, x[i] as i32) as u32;
+        nrg = nrg.wrapping_add((nrg_tmp >> shft) as i32);
     }
 
     debug_assert!(nrg >= 0);
