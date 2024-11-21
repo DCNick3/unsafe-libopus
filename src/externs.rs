@@ -99,20 +99,20 @@ pub unsafe fn memset(dest: *mut core::ffi::c_void, ch: i32, count: u64) -> *mut 
     dest
 }
 
-pub unsafe fn strcmp(lhs: *const i8, rhs: *const i8) -> i32 {
+pub unsafe fn strcmp(lhs: *const std::ffi::c_char, rhs: *const std::ffi::c_char) -> i32 {
     let lhs = slice::from_raw_parts(lhs.cast::<u8>(), strlen(lhs) as usize);
     let rhs = slice::from_raw_parts(rhs.cast::<u8>(), strlen(rhs) as usize);
     lhs.cmp(rhs) as i32
 }
 
-pub unsafe fn strdup(src: *const i8) -> *mut i8 {
+pub unsafe fn strdup(src: *const std::ffi::c_char) -> *mut std::ffi::c_char {
     let len = strlen(src);
     let dest = malloc(len + 1);
     memcpy(dest, src.cast(), len + 1);
     dest.cast()
 }
 
-pub unsafe fn strlen(str: *const i8) -> u64 {
+pub unsafe fn strlen(str: *const std::ffi::c_char) -> u64 {
     let mut end = str;
     while *end != 0 {
         end = end.add(1);
@@ -120,7 +120,7 @@ pub unsafe fn strlen(str: *const i8) -> u64 {
     end.offset_from(str) as u64
 }
 
-pub unsafe fn strncmp(lhs: *const i8, rhs: *const i8, mut count: u64) -> i32 {
+pub unsafe fn strncmp(lhs: *const std::ffi::c_char, rhs: *const std::ffi::c_char, mut count: u64) -> i32 {
     let mut lhs = lhs.cast::<u8>();
     let mut rhs = rhs.cast::<u8>();
     while count > 0 && *lhs != 0 && *lhs == *rhs {

@@ -32,7 +32,7 @@ pub mod test_opus_common_h {
         eprintln!(
             "'make check SEED={} fails {} at line {} for {}'",
             iseed,
-            std::ffi::CStr::from_ptr(file).to_str().unwrap(),
+            std::ffi::CStr::from_ptr(file as *const std::ffi::c_char).to_str().unwrap(),
             line,
             std::ffi::CStr::from_ptr(opus_get_version_string())
                 .to_str()

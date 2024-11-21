@@ -15,7 +15,7 @@ pub mod test_opus_common_h {
         eprintln!(
             "'make check SEED={} fails {} at line {} for {}'",
             iseed,
-            std::ffi::CStr::from_ptr(file).to_str().unwrap(),
+            std::ffi::CStr::from_ptr(file as *const std::ffi::c_char).to_str().unwrap(),
             line,
             std::ffi::CStr::from_ptr(opus_get_version_string())
                 .to_str()
@@ -67,7 +67,7 @@ pub unsafe fn test_overflow() -> i32 {
     1 as i32
 }
 unsafe fn main_0() -> i32 {
-    let mut oversion: *const i8 = std::ptr::null::<i8>();
+    let mut oversion: *const std::ffi::c_char = std::ptr::null::<_>();
     let mut _tests: i32 = 0 as i32;
     iseed = 0 as i32 as u32;
     oversion = opus_get_version_string();

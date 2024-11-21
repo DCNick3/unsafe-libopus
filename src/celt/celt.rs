@@ -4,8 +4,8 @@ pub mod arch_h {
     pub type opus_val16 = f32;
     pub type opus_val32 = f32;
     pub unsafe fn celt_fatal(str: *const i8, file: *const i8, line: i32) -> ! {
-        let str = std::ffi::CStr::from_ptr(str);
-        let file = std::ffi::CStr::from_ptr(file);
+        let str = std::ffi::CStr::from_ptr(str as *const std::ffi::c_char);
+        let file = std::ffi::CStr::from_ptr(file as *const std::ffi::c_char);
         panic!(
             "Fatal (internal) error in {}, line {}: {}",
             file.to_str().unwrap(),
@@ -234,23 +234,23 @@ pub unsafe fn init_caps(m: *const OpusCustomMode, cap: *mut i32, LM: i32, C: i32
         i += 1;
     }
 }
-pub unsafe fn opus_strerror(error: i32) -> *const i8 {
-    static mut error_strings: [*const i8; 8] = [
-        b"success\0" as *const u8 as *const i8,
-        b"invalid argument\0" as *const u8 as *const i8,
-        b"buffer too small\0" as *const u8 as *const i8,
-        b"internal error\0" as *const u8 as *const i8,
-        b"corrupted stream\0" as *const u8 as *const i8,
-        b"request not implemented\0" as *const u8 as *const i8,
-        b"invalid state\0" as *const u8 as *const i8,
-        b"memory allocation failed\0" as *const u8 as *const i8,
+pub unsafe fn opus_strerror(error: i32) -> *const std::ffi::c_char {
+    static mut error_strings: [*const std::ffi::c_char; 8] = [
+        b"success\0" as *const u8 as *const std::ffi::c_char,
+        b"invalid argument\0" as *const u8 as *const std::ffi::c_char,
+        b"buffer too small\0" as *const u8 as *const std::ffi::c_char,
+        b"internal error\0" as *const u8 as *const std::ffi::c_char,
+        b"corrupted stream\0" as *const u8 as *const std::ffi::c_char,
+        b"request not implemented\0" as *const u8 as *const std::ffi::c_char,
+        b"invalid state\0" as *const u8 as *const std::ffi::c_char,
+        b"memory allocation failed\0" as *const u8 as *const std::ffi::c_char,
     ];
     if error > 0 as i32 || error < -(7 as i32) {
-        return b"unknown error\0" as *const u8 as *const i8;
+        return b"unknown error\0" as *const u8 as *const std::ffi::c_char;
     } else {
         return error_strings[-error as usize];
     };
 }
-pub unsafe fn opus_get_version_string() -> *const i8 {
-    return b"unsafe-libopus (rust port) 1.3.1\0" as *const u8 as *const i8;
+pub unsafe fn opus_get_version_string() -> *const std::ffi::c_char {
+    return b"unsafe-libopus (rust port) 1.3.1\0" as *const u8 as *const std::ffi::c_char;
 }

@@ -13,7 +13,7 @@ pub mod test_opus_common_h {
         eprintln!("Please report this failure and include");
         eprintln!(
             "'make check fails {} at line {} for {}'",
-            std::ffi::CStr::from_ptr(file).to_str().unwrap(),
+            std::ffi::CStr::from_ptr(file as *const std::ffi::c_char).to_str().unwrap(),
             line,
             std::ffi::CStr::from_ptr(opus_get_version_string())
                 .to_str()
@@ -4296,7 +4296,7 @@ pub unsafe fn test_malloc_fail() -> i32 {
 
 unsafe fn main_0() -> i32 {
     let mut total: i32 = 0;
-    let mut oversion: *const i8 = std::ptr::null::<i8>();
+    let mut oversion: *const std::ffi::c_char = std::ptr::null::<_>();
     oversion = opus_get_version_string();
     if oversion.is_null() {
         _test_failed(
@@ -4306,7 +4306,7 @@ unsafe fn main_0() -> i32 {
     }
     eprintln!(
         "Testing the {} API deterministically",
-        std::ffi::CStr::from_ptr(oversion).to_str().unwrap()
+        std::ffi::CStr::from_ptr(oversion as *const std::ffi::c_char).to_str().unwrap()
     );
     if (opus_strerror(-(32768 as i32))).is_null() {
         _test_failed(
