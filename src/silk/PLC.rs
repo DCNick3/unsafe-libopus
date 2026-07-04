@@ -18,14 +18,15 @@ use crate::silk::bwexpander::silk_bwexpander;
 use crate::silk::define::{
     LTP_ORDER, MAX_LPC_ORDER, MAX_NB_SUBFR, TYPE_NO_VOICE_ACTIVITY, TYPE_VOICED,
 };
-use crate::silk::macros::{silk_CLZ32, silk_SMULBB};
+use crate::silk::macros::{silk_CLZ32, silk_SMULBB, silk_SMULWW};
 use crate::silk::structs::{silk_PLC_struct, silk_decoder_control, silk_decoder_state};
 use crate::silk::sum_sqr_shift::silk_sum_sqr_shift;
 use crate::silk::Inlines::{silk_INVERSE32_varQ, silk_SQRT_APPROX};
 use crate::silk::LPC_analysis_filter::silk_LPC_analysis_filter;
 use crate::silk::LPC_inv_pred_gain::silk_LPC_inverse_pred_gain_c;
 use crate::silk::SigProc_FIX::{
-    silk_RAND, silk_max_16, silk_max_32, silk_max_int, silk_min_32, silk_min_int, SILK_FIX_CONST,
+    silk_RAND, silk_RSHIFT_ROUND, silk_SAT16, silk_max_16, silk_max_32, silk_max_int, silk_min_32,
+    silk_min_int, SILK_FIX_CONST,
 };
 
 pub const NB_ATT: i32 = 2;
@@ -566,169 +567,18 @@ unsafe fn silk_PLC_conceal(
                     }) as u32)
                         << 4) as i32
             };
-        *frame.offset(i as isize) = (if (if (if 8 == 1 {
-            ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64 * prevGain_Q10[1 as usize] as i64
-                >> 16) as i32
-                >> 1)
-                + ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64
-                    * prevGain_Q10[1 as usize] as i64
-                    >> 16) as i32
-                    & 1)
-        } else {
-            ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64 * prevGain_Q10[1 as usize] as i64
-                >> 16) as i32
-                >> 8 - 1)
-                + 1
-                >> 1
-        }) > 0x7fff
-        {
-            0x7fff
-        } else {
-            if (if 8 == 1 {
-                ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64 * prevGain_Q10[1 as usize] as i64
-                    >> 16) as i32
-                    >> 1)
-                    + ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64
-                        * prevGain_Q10[1 as usize] as i64
-                        >> 16) as i32
-                        & 1)
-            } else {
-                ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64 * prevGain_Q10[1 as usize] as i64
-                    >> 16) as i32
-                    >> 8 - 1)
-                    + 1
-                    >> 1
-            }) < 0x8000
-            {
-                0x8000
-            } else {
-                if 8 == 1 {
-                    ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64
-                        * prevGain_Q10[1 as usize] as i64
-                        >> 16) as i32
-                        >> 1)
-                        + ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64
-                            * prevGain_Q10[1 as usize] as i64
-                            >> 16) as i32
-                            & 1)
-                } else {
-                    ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64
-                        * prevGain_Q10[1 as usize] as i64
-                        >> 16) as i32
-                        >> 8 - 1)
-                        + 1
-                        >> 1
-                }
-            }
-        }) > silk_int16_MAX
-        {
-            silk_int16_MAX
-        } else if (if (if 8 == 1 {
-            ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64 * prevGain_Q10[1 as usize] as i64
-                >> 16) as i32
-                >> 1)
-                + ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64
-                    * prevGain_Q10[1 as usize] as i64
-                    >> 16) as i32
-                    & 1)
-        } else {
-            ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64 * prevGain_Q10[1 as usize] as i64
-                >> 16) as i32
-                >> 8 - 1)
-                + 1
-                >> 1
-        }) > 0x7fff
-        {
-            0x7fff
-        } else {
-            if (if 8 == 1 {
-                ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64 * prevGain_Q10[1 as usize] as i64
-                    >> 16) as i32
-                    >> 1)
-                    + ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64
-                        * prevGain_Q10[1 as usize] as i64
-                        >> 16) as i32
-                        & 1)
-            } else {
-                ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64 * prevGain_Q10[1 as usize] as i64
-                    >> 16) as i32
-                    >> 8 - 1)
-                    + 1
-                    >> 1
-            }) < 0x8000
-            {
-                0x8000
-            } else {
-                if 8 == 1 {
-                    ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64
-                        * prevGain_Q10[1 as usize] as i64
-                        >> 16) as i32
-                        >> 1)
-                        + ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64
-                            * prevGain_Q10[1 as usize] as i64
-                            >> 16) as i32
-                            & 1)
-                } else {
-                    ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64
-                        * prevGain_Q10[1 as usize] as i64
-                        >> 16) as i32
-                        >> 8 - 1)
-                        + 1
-                        >> 1
-                }
-            }
-        }) < silk_int16_MIN
-        {
-            silk_int16_MIN
-        } else if (if 8 == 1 {
-            ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64 * prevGain_Q10[1 as usize] as i64
-                >> 16) as i32
-                >> 1)
-                + ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64
-                    * prevGain_Q10[1 as usize] as i64
-                    >> 16) as i32
-                    & 1)
-        } else {
-            ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64 * prevGain_Q10[1 as usize] as i64
-                >> 16) as i32
-                >> 8 - 1)
-                + 1
-                >> 1
-        }) > 0x7fff
-        {
-            0x7fff
-        } else if (if 8 == 1 {
-            ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64 * prevGain_Q10[1 as usize] as i64
-                >> 16) as i32
-                >> 1)
-                + ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64
-                    * prevGain_Q10[1 as usize] as i64
-                    >> 16) as i32
-                    & 1)
-        } else {
-            ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64 * prevGain_Q10[1 as usize] as i64
-                >> 16) as i32
-                >> 8 - 1)
-                + 1
-                >> 1
-        }) < 0x8000
-        {
-            0x8000
-        } else if 8 == 1 {
-            ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64 * prevGain_Q10[1 as usize] as i64
-                >> 16) as i32
-                >> 1)
-                + ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64
-                    * prevGain_Q10[1 as usize] as i64
-                    >> 16) as i32
-                    & 1)
-        } else {
-            ((*sLPC_Q14_ptr.offset((16 + i) as isize) as i64 * prevGain_Q10[1 as usize] as i64
-                >> 16) as i32
-                >> 8 - 1)
-                + 1
-                >> 1
-        }) as i16;
+        // Upstream C (silk/PLC.c):
+        //   frame[i] = (opus_int16)silk_SAT16(silk_SAT16(
+        //       silk_RSHIFT_ROUND(silk_SMULWW(sLPC_Q14_ptr[MAX_LPC_ORDER + i], prevGain_Q10[1]), 8)));
+        // The previous c2rust expansion of this line translated silk_SAT16's
+        // LOWER bound ((opus_int16)0x8000 == -32768) as the bare literal
+        // 0x8000 (= +32768 as i32), so every sample that was not positively
+        // saturated took the "clamped low" arm and each concealed frame came
+        // out as full-scale garbage (RMS ~1.0) on SILK/hybrid streams.
+        *frame.offset(i as isize) = silk_SAT16(silk_SAT16(silk_RSHIFT_ROUND(
+            silk_SMULWW(*sLPC_Q14_ptr.offset((16 + i) as isize), prevGain_Q10[1 as usize]),
+            8,
+        ))) as i16;
         i += 1;
     }
     memcpy(
